@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Example"
 include(":app")
+include(":core-methods")
