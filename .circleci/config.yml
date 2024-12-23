@@ -1,10 +1,13 @@
 version: 2.1
 
+orbs:
+  android: circleci/android@3.0.2
+
 executors:
   android-executor:
     docker:
-      - image: circleci/android:api-30
-    working_directory: ~/repo
+      - image: circleci/android:api-30-ndk
+    working_directory: ~/repo/core-methods
 
 jobs:
   build:
@@ -13,42 +16,31 @@ jobs:
       - checkout
 
       - run:
-          name: Install OpenJDK 17
+          name: Set up JDK 17
           command: |
-            sudo apt-get update && sudo apt-get install openjdk-17-jdk
-            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
-            echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.circlerc
+            echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $BASH_ENV
+            echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> $BASH_ENV
+            source $BASH_ENV
 
       - run:
           name: Install dependencies
-          command: |
-            cd core-methods
-            ../gradlew dependencies
+          command: ../gradlew dependencies
 
       - run:
           name: Build the app
-          command: |
-            cd core-methods
-            ../gradlew assemble
+          command: ../gradlew assemble
 
       - run:
           name: Run Detekt
-          command: |
-            cd core-methods
-            ../gradlew detekt
+          command: ../gradlew detekt
 
       - run:
           name: Run KLint
-          command: |
-            cd core-methods
-            ../gradlew ktlintCheck
+          command: ../gradlew ktlintCheck
 
       - run:
           name: Run unit tests
-          command: |
-            cd core-methods
-            ../gradlew test
+          command: ../gradlew test
 
 workflows:
   version: 2
