@@ -6,7 +6,7 @@ orbs:
 executors:
   android-executor:
     docker:
-      - image: circleci/android:api-30-ndk
+      - image: circleci/android:api-30
     working_directory: ~/repo/core-methods
 
 jobs:
@@ -14,39 +14,37 @@ jobs:
     executor: android-executor
     steps:
       - checkout
-
+      - android/initialize:
+            api-level: 30
+            target: default
       - run:
           name: Check Java Version
           command: |
             java -version
-
       - run:
-          name: Set up JDK 17
+          name: Install OpenJDK 17
           command: |
-            sudo apt update
-            sudo apt install -y openjdk-17-jdk
-
+            sudo apt-get update
+            sudo apt-get install -y openjdk-17-jdk
+            sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
+            sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+            java -version
       - run:
           name: Check Java Version Again
           command: |
             java -version
-
       - run:
           name: Install dependencies
           command: ./gradlew dependencies
-
       - run:
           name: Build the app
           command: ./gradlew assemble
-
       - run:
           name: Run Detekt
           command: ./gradlew detekt
-
       - run:
           name: Run KLint
           command: ./gradlew ktlintCheck
-
       - run:
           name: Run unit tests
           command: ./gradlew test
