@@ -10,6 +10,24 @@ executors:
     working_directory: ~/repo/core-methods
 
 jobs:
+  setup:
+    executor: android-executor
+    steps:
+      - checkout
+      - run:
+          name: Set up ANDROID_HOME
+          command: |
+            echo 'export ANDROID_HOME=/opt/android-sdk' >> $BASH_ENV
+            echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
+            echo 'export HIDDEN_API_FATAL_WARNING=false' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
+          name: Install SDK Components
+          command: |
+            yes | sdkmanager --licenses
+            sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+
   build:
     executor: android-executor
     docker:
@@ -39,4 +57,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build
+      - setup
+      - build:
+          requires:
+            - setup
