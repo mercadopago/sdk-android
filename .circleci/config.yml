@@ -7,7 +7,7 @@ executors:
   android-executor:
     docker:
       - image: circleci/android:api-30
-    working_directory: ~/repo/core-methods
+    working_directory: ~/repo
 
 jobs:
   build:
@@ -16,10 +16,6 @@ jobs:
       - checkout
       - run:
           name: Check Java Version
-          command: |
-            java -version
-      - run:
-          name: Check Java Version Again
           command: |
             java -version
       - run:
