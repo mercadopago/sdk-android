@@ -14,9 +14,6 @@ jobs:
     executor: android-executor
     steps:
       - checkout
-      - android/initialize:
-            api-level: 30
-            target: default
       - run:
           name: Check Java Version
           command: |
