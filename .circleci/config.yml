@@ -11,8 +11,6 @@ executors:
 
 jobs:
   build:
-    docker:
-      - image: cimg/openjdk:17.0.13
     executor: android-executor
     steps:
       - checkout
