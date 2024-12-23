@@ -39,3 +39,6 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinKover" }
+
+# KLIN
+klint = {id = "org.jlleitschuh.gradle.ktlint", version = "10.3.0"}
