@@ -16,6 +16,16 @@ jobs:
       - checkout
 
       - run:
+          name: Check Java Version
+          command: |
+            java -version
+
+      - run:
+          name: Check Java Path
+          command: |
+            update-alternatives --config java
+
+      - run:
           name: Set up JDK 17
           command: |
             echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $BASH_ENV
