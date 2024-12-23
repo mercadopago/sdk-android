@@ -7,52 +7,36 @@ executors:
   android-executor:
     docker:
       - image: circleci/android:api-30
-    working_directory: ~/repo
+    working_directory: ~/repo/core-methods
 
 jobs:
-  install_dependencies:
+  build:
+    executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
-    executor: android-executor
     steps:
       - checkout
+      - run:
+          name: Check Java Version
+          command: java -version
       - run:
           name: Install dependencies
           command: ./gradlew dependencies
-
-  assemble:
-    executor: android-executor
-    steps:
-      - checkout
-      - run:
-          name: Assemble the library
-          command: ./gradlew assemble  # Ensure that your build.gradle is correctly set
-
-  run_detekt:
-    docker:
-      - image: cimg/openjdk:17.0.13
-    executor: android-executor
-    steps:
-      - checkout
       - run:
           name: Run Detekt
           command: ./gradlew detekt
-
-  run_ktlint:
-    docker:
-      - image: cimg/openjdk:17.0.13
-    executor: android-executor
-    steps:
-      - checkout
       - run:
-          name: Run Ktlint
+          name: Run KLint
           command: ./gradlew ktlintCheck
+      - run:
+          name: Run unit tests
+          command: ./gradlew test
+      - run:
+          name: Build the app
+          command: ./gradlew assemble
 
 workflows:
   version: 2
   build:
     jobs:
-      - install_dependencies
-      - assemble
-      - run_detekt
-      - run_ktlint
+      - build
