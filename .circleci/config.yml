@@ -6,8 +6,8 @@ orbs:
 executors:
   android-executor:
     docker:
-      - image: circleci/android:api-30
-    working_directory: ~/repo
+      - image: cimg/openjdk:23.0.1
+    working_directory: ~/repo/core-methods
 
 jobs:
   build:
@@ -18,9 +18,6 @@ jobs:
           name: Check Java Version
           command: |
             java -version
-      - run:
-          name: Install dependencies
-          command: ./gradlew dependencies
       - run:
           name: Build the app
           command: ./gradlew assemble
