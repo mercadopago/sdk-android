@@ -21,16 +21,15 @@ jobs:
             java -version
 
       - run:
-          name: Check Java Path
-          command: |
-            update-alternatives --config java
-
-      - run:
           name: Set up JDK 17
           command: |
-            echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk" >> $BASH_ENV
-            echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> $BASH_ENV
-            source $BASH_ENV
+            sudo apt update
+            sudo apt install -y openjdk-17-jdk
+
+      - run:
+          name: Check Java Version Again
+          command: |
+            java -version
 
       - run:
           name: Install dependencies
