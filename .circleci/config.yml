@@ -1,0 +1,49 @@
+version: 2.1
+
+executors:
+  android-executor:
+    docker:
+      - image: circleci/android:api-30
+    working_directory: ~/repo
+
+jobs:
+  build:
+    executor: android-executor
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: |
+            cd app
+            ./gradlew dependencies
+
+      - run:
+          name: Build the app
+          command: |
+            cd app
+            ./gradlew build
+
+      - run:
+          name: Run Detekt
+          command: |
+            cd app
+            ./gradlew detekt
+
+      - run:
+          name: Run KLint
+          command: |
+            cd app
+            ./gradlew ktlint
+
+      - run:
+          name: Run unit tests
+          command: |
+            cd app
+            ./gradlew test
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
