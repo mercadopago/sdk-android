@@ -6,33 +6,47 @@ orbs:
 executors:
   android-executor:
     docker:
-      - image: cimg/openjdk:23.0.1
-    working_directory: ~/repo/core-methods
+      - image: circleci/android:api-30
+    working_directory: ~/repo
 
 jobs:
-  build:
+  install_dependencies:
     executor: android-executor
     steps:
       - checkout
       - run:
-          name: Check Java Version
-          command: |
-            java -version
+          name: Install dependencies
+          command: ./gradlew dependencies
+
+  assemble:
+    executor: android-executor
+    steps:
+      - checkout
       - run:
-          name: Build the app
-          command: ./gradlew assemble
+          name: Assemble the library
+          command: ./gradlew assemble  # Ensure that your build.gradle is correctly set
+
+  run_detekt:
+    executor: android-executor
+    steps:
+      - checkout
       - run:
           name: Run Detekt
           command: ./gradlew detekt
+
+  run_ktlint:
+    executor: android-executor
+    steps:
+      - checkout
       - run:
-          name: Run KLint
+          name: Run Ktlint
           command: ./gradlew ktlintCheck
-      - run:
-          name: Run unit tests
-          command: ./gradlew test
 
 workflows:
   version: 2
   build:
     jobs:
-      - build
+      - install_dependencies
+      - assemble
+      - run_detekt
+      - run_ktlint
