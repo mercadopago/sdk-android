@@ -11,6 +11,8 @@ executors:
 
 jobs:
   install_dependencies:
+    docker:
+      - image: cimg/openjdk:17.0.13
     executor: android-executor
     steps:
       - checkout
@@ -27,6 +29,8 @@ jobs:
           command: ./gradlew assemble  # Ensure that your build.gradle is correctly set
 
   run_detekt:
+    docker:
+      - image: cimg/openjdk:17.0.13
     executor: android-executor
     steps:
       - checkout
@@ -35,6 +39,8 @@ jobs:
           command: ./gradlew detekt
 
   run_ktlint:
+    docker:
+      - image: cimg/openjdk:17.0.13
     executor: android-executor
     steps:
       - checkout
