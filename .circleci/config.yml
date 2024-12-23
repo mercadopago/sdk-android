@@ -22,12 +22,6 @@ jobs:
             echo 'export HIDDEN_API_FATAL_WARNING=false' >> $BASH_ENV
             source $BASH_ENV
 
-      - run:
-          name: Install SDK Components
-          command: |
-            yes | sdkmanager --licenses
-            sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-
   build:
     executor: android-executor
     docker:
