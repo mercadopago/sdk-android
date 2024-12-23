@@ -16,31 +16,31 @@ jobs:
           name: Install dependencies
           command: |
             cd core-methods
-            ./gradlew dependencies
+            ../gradlew dependencies
 
       - run:
           name: Build the app
           command: |
             cd core-methods
-            ./gradlew build
+            ../gradlew build
 
       - run:
           name: Run Detekt
           command: |
             cd core-methods
-            ./gradlew detekt
+            ../gradlew detekt
 
       - run:
           name: Run KLint
           command: |
             cd core-methods
-            ./gradlew ktlint
+            ../gradlew ktlintCheck
 
       - run:
           name: Run unit tests
           command: |
             cd core-methods
-            ./gradlew test
+            ../gradlew test
 
 workflows:
   version: 2
