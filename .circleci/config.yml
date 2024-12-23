@@ -24,23 +24,23 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: ../gradlew dependencies
+          command: ./gradlew dependencies
 
       - run:
           name: Build the app
-          command: ../gradlew assemble
+          command: ./gradlew assemble
 
       - run:
           name: Run Detekt
-          command: ../gradlew detekt
+          command: ./gradlew detekt
 
       - run:
           name: Run KLint
-          command: ../gradlew ktlintCheck
+          command: ./gradlew ktlintCheck
 
       - run:
           name: Run unit tests
-          command: ../gradlew test
+          command: ./gradlew test
 
 workflows:
   version: 2
