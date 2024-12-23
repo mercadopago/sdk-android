@@ -7,9 +7,10 @@ executors:
   android-executor:
     docker:
       - image: circleci/android:api-30
-    working_directory: ~/repo/core-methods
+    working_directory: ~/repo
 
 jobs:
+
   setup:
     executor: android-executor
     steps:
@@ -31,6 +32,15 @@ jobs:
       - run:
           name: Check Java Version
           command: java -version
+
+      - run:
+          name: Set up ANDROID_HOME
+          command: |
+            echo 'export ANDROID_HOME=/opt/android-sdk' >> $BASH_ENV
+            echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
+            echo 'export HIDDEN_API_FATAL_WARNING=false' >> $BASH_ENV
+            source $BASH_ENV
+
       - run:
           name: Install dependencies
           command: ./gradlew dependencies
