@@ -34,15 +34,15 @@ jobs:
             echo 'export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
-          name: Accept SDK licenses
-          command: |
-            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-            yes | $ANDROID_HOME/tools/bin/sdkmanager --update
-      # SETUP STEP
-      - run:
           name: Verify ANDROID_HOME
           command: echo $ANDROID_HOME
+      - run:
+          name: Accept SDK licenses
+          command: |
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --update
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
+      # SETUP STEP
       - run:
           name: Check Java Version
           command: java -version
