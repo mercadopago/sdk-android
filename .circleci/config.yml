@@ -34,6 +34,11 @@ jobs:
             export PATH=$PATH:$HOME/android-sdk/tools/bin
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
 
+      - run:
+          name: Accept sdk licenses
+          command: |
+            yes | sdkmanager --licenses || exit 0
+            yes | sdkmanager --update || exit 0
       # SETUP STEP
       - run:
           name: Verify ANDROID_HOME after
