@@ -78,10 +78,17 @@ jobs:
           name: Run KLint Check
           command: ./gradlew ktlintCheck
       - run:
-          name: Run Kover
-          command: ./gradlew koverXmlReport
+          name: Run Code Coverage
+          command: ./gradlew koverReport
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/test-results/junit/
+            find . -type f -regex ".*/build/reports/kover/xml/*.xml" -exec cp {} ~/test-results/junit/ \;
+            when: always
+          when: always
       - store_test_results:
-          path: core-methods/build/reports/kover
+          path: ~/test-results
 
       # BUILD STEP
       - run:
