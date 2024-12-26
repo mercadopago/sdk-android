@@ -10,11 +10,13 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  pre-setup:
+  build:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
+      - checkout
+
       # PRE SETUP
       - run:
           name: Check JDK exists
@@ -53,12 +55,7 @@ jobs:
           command: |
             yes | sdkmanager --licenses || exit 0
             yes | sdkmanager --update || exit 0
-  build:
-    executor: android-executor
-    docker:
-      - image: cimg/openjdk:17.0.13
-    steps:
-      - checkout
+
       # SETUP STEP
       - run:
           name: Check Java Version
@@ -88,12 +85,22 @@ jobs:
       - run:
           name: Build the app
           command: ./gradlew assemble --stacktrace
+      - run:
+          name: Archive APK
+          command: |
+            mkdir -p ~/circleci-artifacts
+            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/
+      - run:
+          name: Archive .AAR
+          command: |
+            mkdir -p ~/circleci-artifacts
+            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/
+      - store_artifacts:
+          path: ~/circleci-artifacts
+          destination: apk
 
 workflows:
   version: 2
   build:
     jobs:
-      - pre-setup
-      - build:
-          requires:
-            - pre-setup
+      - build
