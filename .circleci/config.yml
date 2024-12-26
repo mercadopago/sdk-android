@@ -80,6 +80,11 @@ jobs:
       - run:
           name: Run Unit Test
           command: ./gradlew test
+      - run:
+          name: Run Kover
+          command: ./gradlew koverHtmlReport
+      - store_test_results:
+          path: core-methods/build/reports/kover/html
 
       # BUILD STEP
       - run:
