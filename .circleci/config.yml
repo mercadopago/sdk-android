@@ -19,8 +19,8 @@ jobs:
 
       # PRE SETUP
       - run:
-            name: Check Jdk exists
-            command: javac -version
+          name: Check Jdk exists
+          command: javac -version
       - run:
           name: Download platform tools
           command: |
@@ -31,8 +31,9 @@ jobs:
             unzip platform-tools-latest-linux.zip
       - run:
           name: Download commandline tools
-          commadn: |
-            cd ..android-sdk
+          command: |
+            cd ..
+            cd android-sdk
             mkdir cmdline-tools
             cd cmdline-tools
             wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
