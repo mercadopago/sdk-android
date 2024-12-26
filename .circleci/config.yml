@@ -33,7 +33,7 @@ jobs:
           name: Set up ANDROID_HOME
           command: |
             echo 'export ANDROID_HOME=$HOME/android-sdk' >> $BASH_ENV
-            echo 'export PATH=$PATH:$HOME/android-sdk/tools/bin' >> $BASH_ENV
+            echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
             echo 'export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
