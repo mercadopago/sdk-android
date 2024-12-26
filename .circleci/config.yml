@@ -29,6 +29,8 @@ jobs:
             cd android-sdk
             wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
             unzip platform-tools-latest-linux.zip
+            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip commandlinetools-linux-11076708_latest.zip
       - run:
           name: Set up ANDROID_HOME
           command: |
@@ -48,9 +50,6 @@ jobs:
       - run:
           name: Accept SDK licenses
           command: |
-            cd $ANDROID_HOME
-            cd ..
-            cd tools/bin
             yes | sdkmanager --update
             yes | sdkmanager --licenses
 
