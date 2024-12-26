@@ -13,6 +13,8 @@ jobs:
   # SETUP STEP
   setup:
     executor: android-executor
+    docker:
+      - image: cimg/openjdk:17.0.13
     steps:
       - checkout
       - run:
