@@ -51,15 +51,10 @@ jobs:
           name: Verify ANDROID_HOME
           command: echo $ANDROID_HOME
       - run:
-          name: Verify directories
-          command: |
-            cd $ANDROID_HOME
-            ls
-      - run:
           name: Accept SDK licenses
           command: |
-            yes | sdkmanager --update || exit 0
             yes | sdkmanager --licenses || exit 0
+            yes | sdkmanager --update || exit 0
 
       # SETUP STEP
       - run:
