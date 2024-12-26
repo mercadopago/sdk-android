@@ -40,6 +40,10 @@ jobs:
             echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
             echo 'export HIDDEN_API_FATAL_WARNING=false' >> $BASH_ENV
             source $BASH_ENV
+      - run:
+          name: Verify ANDROID_HOME
+          command: |
+            echo $ANDROID_HOME
 
       - run:
           name: Install dependencies
