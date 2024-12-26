@@ -80,14 +80,8 @@ jobs:
       - run:
           name: Run Code Coverage
           command: ./gradlew koverXmlReport
-      - run:
-          name: Save test results
-          command: |
-            mkdir -p ~/test-results/junit/
-            find . -type f -regex ".*/build/reports/kover/xml/*.xml" -exec cp {} ~/test-results/junit/ \;
-          when: always
       - store_test_results:
-          path: ~/test-results
+          path: core-methods/build/reports/kover/report.xml
 
       # BUILD STEP
       - run:
