@@ -29,14 +29,17 @@ jobs:
             cd android-sdk
             wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
             unzip platform-tools-latest-linux.zip
+            mkdir cmdline-tools
+            cd cmdline-tools
             wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
             unzip commandlinetools-linux-11076708_latest.zip
+            mv cmdline-tools latest
       - run:
           name: Set up ANDROID_HOME
           command: |
             echo '
             export ANDROID_HOME=$HOME/android-sdk
-            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin
+            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
