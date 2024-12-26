@@ -78,13 +78,10 @@ jobs:
           name: Run KLint Check
           command: ./gradlew ktlintCheck
       - run:
-          name: Run Unit Test
-          command: ./gradlew test
-      - run:
           name: Run Kover
-          command: ./gradlew koverHtmlReport
+          command: ./gradlew koverXmlReport
       - store_test_results:
-          path: core-methods/build/reports/kover/html
+          path: core-methods/build/reports/kover
 
       # BUILD STEP
       - run:
