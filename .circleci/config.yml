@@ -15,21 +15,26 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      # SETUP STEP
       - checkout
 
+      # PRE SETUP
       - run:
-          name: Verify ANDROID_HOME
-          command: echo $ANDROID_HOME
-
-      - run:
-          name: Set up ANDROID_HOME
+          name: Download android sdk
           command: |
-            echo 'export ANDROID_HOME=/opt/android-sdk' >> $BASH_ENV
-            echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
-            echo 'export HIDDEN_API_FATAL_WARNING=false' >> $BASH_ENV
-            source $BASH_ENV
+            cd ..
+            mkdir android-sdk
+            cd android-sdk
+            wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+            unzip sdk-tools-linux-4333796.zip
+      - run:
+          name: Set env vars for android sdk tools
+          command: |
+            echo '
+            export ANDROID_HOME=$HOME/android-sdk
+            export PATH=$PATH:$HOME/android-sdk/tools/bin
+            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
 
+      # SETUP STEP
       - run:
           name: Verify ANDROID_HOME after
           command: echo $ANDROID_HOME
