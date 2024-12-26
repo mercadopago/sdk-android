@@ -12,11 +12,7 @@ executors:
 jobs:
   # SETUP STEP
   setup:
-    executor:
-      name: android/android_machine
-      tag: default
-      docker:
-        - image: circleci/android:api-30
+    executor: android-executor
     steps:
       - checkout
       - run:
@@ -40,11 +36,7 @@ jobs:
 
 # TEST STEP
   test:
-    executor:
-      name: android/android_machine
-      tag: default
-      docker:
-        - image: circleci/android:api-30
+    executor: android-executor
     steps:
       - run:
           name: Run Detekt
@@ -61,13 +53,7 @@ jobs:
 
   # BUILD STEP
   build:
-    executor:
-      name: android/android_machine
-      tag: default
-      docker:
-        - image: circleci/android:api-30
-    docker:
-      - image: cimg/openjdk:17.0.13
+    executor: android-executor
     steps:
       - run:
           name: Build the app
