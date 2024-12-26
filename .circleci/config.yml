@@ -47,8 +47,7 @@ jobs:
 
       - android/restore_gradle_cache
 
-      - android/run_tests:
-          test-command: ./gradlew testDebug
+      - android/run_tests
 
       - android/save_gradle_cache
 
