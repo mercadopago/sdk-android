@@ -49,12 +49,8 @@ jobs:
           name: Run KLint
           command: ./gradlew ktlintCheck
 
-      - android/restore-gradle-cache
-
       - android/run-tests:
           test-command: ./gradlew testDebug
-
-      - android/save-gradle-cache
 
       - run:
           name: Build the app
