@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.detekt) apply true
+    alias(libs.plugins.kotlin.kover) apply true
 }
 
 tasks.withType(Detekt::class).configureEach {
@@ -20,6 +21,31 @@ tasks.withType(Detekt::class).configureEach {
     include("**/*.kts")
     exclude("resources/")
     exclude("build/")
+}
+
+allprojects {
+    apply(plugin = "org.jetbrains.kotlinx.kover")
+    kover {
+        reports {
+            filters {
+                excludes {
+                    // exclusions for all report variants
+                    annotatedBy(
+                        "androidx.compose.ui.tooling.preview.Preview",
+                        "*Generated",
+                    )
+                    classes("*.BuildConfig")
+                }
+            }
+            verify {
+                rule {
+                    bound {
+                        minValue = 80
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {

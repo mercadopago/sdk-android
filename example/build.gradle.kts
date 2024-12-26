@@ -36,6 +36,11 @@ android {
     }
 }
 
+kover.reports.filters.excludes {
+    // Disabled reports for sample app
+    classes("*")
+}
+
 dependencies {
     implementation(project(":core-methods"))
     implementation(libs.androidx.core.ktx)
