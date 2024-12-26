@@ -30,17 +30,17 @@ jobs:
           name: Set up ANDROID_HOME
           command: |
             echo 'export ANDROID_HOME=$HOME/android-sdk' >> $BASH_ENV
-            echo 'export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
+            echo 'export PATH=$PATH:$HOME/android-sdk/tools/bin' >> $BASH_ENV
             echo 'export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Accept SDK licenses
           command: |
-            yes | sdkmanager --licenses || exit 0
-            yes | sdkmanager --update || exit 0
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+            yes | $ANDROID_HOME/tools/bin/sdkmanager --update
       # SETUP STEP
       - run:
-          name: Verify ANDROID_HOME after
+          name: Verify ANDROID_HOME
           command: echo $ANDROID_HOME
 
       - run:
