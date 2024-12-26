@@ -10,12 +10,12 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  # SETUP STEP
-  setup:
+  build:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
+      # SETUP STEP
       - checkout
       - run:
           name: Verify ANDROID_HOME
@@ -36,11 +36,7 @@ jobs:
           name: Install dependencies
           command: ./gradlew dependencies
 
-# TEST STEP
-  test:
-    executor: android-executor
-    steps:
-      - checkout
+      # TEST STEP
       - run:
           name: Run Detekt
           command: ./gradlew detekt
@@ -54,11 +50,7 @@ jobs:
 
       - android/save_gradle_cache
 
-  # BUILD STEP
-  build:
-    executor: android-executor
-    steps:
-      - checkout
+      # BUILD STEP
       - run:
           name: Build the app
           command: ./gradlew assemble
@@ -67,10 +59,4 @@ workflows:
   version: 2
   build:
     jobs:
-      - setup
-      - test:
-          requires:
-            - setup
-      - build:
-          requires:
-            - test
+      - build
