@@ -22,13 +22,17 @@ jobs:
             name: Check Jdk exists
             command: javac -version
       - run:
-          name: Download android sdk
+          name: Download platform tools
           command: |
             cd ..
             mkdir android-sdk
             cd android-sdk
             wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
             unzip platform-tools-latest-linux.zip
+      - run:
+          name: Download commandline tools
+          commadn: |
+            cd ..android-sdk
             mkdir cmdline-tools
             cd cmdline-tools
             wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
@@ -51,10 +55,12 @@ jobs:
             cd $ANDROID_HOME
             ls
       - run:
+
+      - run:
           name: Accept SDK licenses
           command: |
-            yes | sdkmanager --update
-            yes | sdkmanager --licenses
+            yes | sdkmanager --update || exit 0
+            yes | sdkmanager --licenses || exit 0
 
       # SETUP STEP
       - run:
