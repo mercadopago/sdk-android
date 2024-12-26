@@ -10,15 +10,15 @@ executors:
     working_directory: ~/repo
 
 jobs:
-
+  # SETUP STEP
   setup:
     executor: android-executor
     steps:
       - checkout
       - run:
-            name: Verify ANDROID_HOME
-            command: |
-              echo $ANDROID_HOME
+          name: Verify ANDROID_HOME
+          command: |
+            echo $ANDROID_HOME
       - run:
           name: Set up ANDROID_HOME
           command: |
@@ -30,28 +30,34 @@ jobs:
           name: Check Java Version
           command: java -version
 
+      - run:
+          name: Install dependencies
+          command: ./gradlew dependencies
+
+# TEST STEP
+  test:
+    executor: android/android_machine
+    steps:
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run KLint Check
+          command: ./gradlew ktlintCheck
+
+      - android/restore_gradle_cache
+
+      - android/run_tests:
+          test-command: ./gradlew testDebug
+
+      - android/save_gradle_cache
+
+  # BUILD STEP
   build:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
-      - run:
-          name: Check Java Version
-          command: java -version
-      - run:
-          name: Install dependencies
-          command: ./gradlew dependencies
-      - run:
-          name: Run Detekt
-          command: ./gradlew detekt
-      - run:
-          name: Run KLint
-          command: ./gradlew ktlintCheck
-
-      - android/run-tests:
-          test-command: ./gradlew testDebug
-
       - run:
           name: Build the app
           command: ./gradlew assemble
@@ -61,6 +67,9 @@ workflows:
   build:
     jobs:
       - setup
-      - build:
+      - test:
           requires:
             - setup
+      - build:
+          requires:
+            - test
