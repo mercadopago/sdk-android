@@ -19,10 +19,10 @@ jobs:
 
       # PRE SETUP
       - run:
-          name: Check Jdk exists
+          name: Check JDK exists
           command: javac -version
       - run:
-          name: Download platform tools
+          name: Download Platform Tools
           command: |
             cd ..
             mkdir android-sdk
@@ -30,7 +30,7 @@ jobs:
             wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
             unzip platform-tools-latest-linux.zip
       - run:
-          name: Download commandline tools
+          name: Download Commandline Tools
           command: |
             cd ..
             cd android-sdk
@@ -40,7 +40,7 @@ jobs:
             unzip commandlinetools-linux-11076708_latest.zip
             mv cmdline-tools latest
       - run:
-          name: Set up ANDROID_HOME
+          name: Set up Android Home
           command: |
             echo '
             export ANDROID_HOME=$HOME/android-sdk
@@ -48,7 +48,7 @@ jobs:
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
-          name: Verify ANDROID_HOME
+          name: Verify Android Home
           command: echo $ANDROID_HOME
       - run:
           name: Accept SDK licenses
@@ -62,8 +62,13 @@ jobs:
           command: java -version
 
       - run:
-          name: Install dependencies
+          name: Install Dependencies
           command: ./gradlew dependencies
+
+      # PRE TEST
+      - run:
+          name: KLint Format
+          command: ./gradlew ktlintFormat
 
       # TEST STEP
       - run:
@@ -72,7 +77,9 @@ jobs:
       - run:
           name: Run KLint Check
           command: ./gradlew ktlintCheck
-
+      - run:
+          name: Run Unit Test
+          command: ./gradlew test
 
       # BUILD STEP
       - run:
