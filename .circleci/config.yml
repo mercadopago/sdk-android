@@ -6,7 +6,7 @@ orbs:
 jobs:
   build:
     executor:
-      name: android/android-docker
+      name: android/android_machine
       tag: default
     docker:
       - image: cimg/openjdk:17.0.13
