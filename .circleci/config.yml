@@ -10,13 +10,11 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  build:
+  pre-setup:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
-
       # PRE SETUP
       - run:
           name: Check JDK exists
@@ -55,7 +53,12 @@ jobs:
           command: |
             yes | sdkmanager --licenses || exit 0
             yes | sdkmanager --update || exit 0
-
+  build:
+    executor: android-executor
+    docker:
+      - image: cimg/openjdk:17.0.13
+    steps:
+      - checkout
       # SETUP STEP
       - run:
           name: Check Java Version
@@ -90,4 +93,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build
+      - pre-setup
+      - build:
+          requires:
+            - pre-setup
