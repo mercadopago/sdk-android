@@ -43,8 +43,10 @@ jobs:
           name: Verify directories
           command: |
             ls
+            {...}
             cd ..
             ls
+            {...}
             cd $ANDROID_HOME
             ls
       - run:
