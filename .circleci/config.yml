@@ -3,17 +3,14 @@ version: 2.1
 orbs:
   android: circleci/android@3.0.2
 
-executors:
-  android-executor:
-    docker:
-      - image: circleci/android:api-30
-    working_directory: ~/repo
-
 jobs:
   build:
-    executor: android-executor
+    executor:
+      name: android/android-docker
+      tag: default
     docker:
       - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
     steps:
       # SETUP STEP
       - checkout
