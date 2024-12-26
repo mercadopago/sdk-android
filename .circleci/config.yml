@@ -55,8 +55,6 @@ jobs:
             cd $ANDROID_HOME
             ls
       - run:
-
-      - run:
           name: Accept SDK licenses
           command: |
             yes | sdkmanager --update || exit 0
