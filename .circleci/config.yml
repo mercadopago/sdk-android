@@ -3,12 +3,18 @@ version: 2.1
 orbs:
   android: circleci/android@3.0.2
 
+executors:
+  android-executor:
+    name: android/android_machine
+    tag: default
+    docker:
+      - image: circleci/android:api-30
+    working_directory: ~/repo
+
 jobs:
   # SETUP STEP
   setup:
-    executor:
-      name: android/android_machine
-      tag: default
+    executor: android-executor
     steps:
       - checkout
       - run:
@@ -32,9 +38,7 @@ jobs:
 
 # TEST STEP
   test:
-    executor:
-      name: android/android_machine
-      tag: default
+    executor: android-executor
     steps:
       - run:
           name: Run Detekt
@@ -51,9 +55,7 @@ jobs:
 
   # BUILD STEP
   build:
-    executor:
-      name: android/android_machine
-      tag: default
+    executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
