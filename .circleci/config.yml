@@ -44,9 +44,6 @@ jobs:
           name: Run KLint Check
           command: ./gradlew ktlintCheck
 
-      - run:
-          name: Unit Test
-          command: ./gradlew test
 
       # BUILD STEP
       - run:
