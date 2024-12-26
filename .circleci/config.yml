@@ -3,13 +3,17 @@ version: 2.1
 orbs:
   android: circleci/android@3.0.2
 
+executors:
+  android-executor:
+    docker:
+      - image: circleci/android:api-30
+    working_directory: ~/repo
+
 jobs:
   build:
-    executor:
-      name: android/android_machine
-      resource_class: large
-      tag: default
-    working_directory: ~/repo
+    executor: android-executor
+    docker:
+      - image: cimg/openjdk:17.0.13
     steps:
       # SETUP STEP
       - checkout
@@ -40,11 +44,9 @@ jobs:
           name: Run KLint Check
           command: ./gradlew ktlintCheck
 
-      - android/restore_gradle_cache
-
-      - android/run_tests
-
-      - android/save_gradle_cache
+      - run:
+          name: Unit Test
+          command: ./gradlew test
 
       # BUILD STEP
       - run:
