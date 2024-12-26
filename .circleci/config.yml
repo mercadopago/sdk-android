@@ -19,13 +19,16 @@ jobs:
 
       # PRE SETUP
       - run:
+            name: Check Jdk exists
+            command: javac -version
+      - run:
           name: Download android sdk
           command: |
             cd ..
             mkdir android-sdk
             cd android-sdk
-            wget https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-            unzip sdk-tools-linux-4333796.zip
+            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+            unzip platform-tools-latest-linux.zip
       - run:
           name: Set up ANDROID_HOME
           command: |
