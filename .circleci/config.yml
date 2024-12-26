@@ -36,7 +36,7 @@ jobs:
           command: |
             echo '
             export ANDROID_HOME=$HOME/android-sdk
-            export PATH=$PATH:$HOME/android-sdk/tools/bin
+            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/bin
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
       - run:
