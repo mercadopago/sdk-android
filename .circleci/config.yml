@@ -48,7 +48,7 @@ jobs:
       # BUILD STEP
       - run:
           name: Build the app
-          command: ./gradlew assemble
+          command: ./gradlew assemble --stacktrace
 
 workflows:
   version: 2
