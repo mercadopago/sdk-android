@@ -39,8 +39,9 @@ jobs:
       - run:
           name: Accept SDK licenses
           command: |
-            yes | $ANDROID_HOME/tools/bin/sdkmanager --update
-            yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+            cd $ANDROID_HOME/tools/bin
+            yes | sdkmanager --update
+            yes | sdkmanager --licenses
 
       # SETUP STEP
       - run:
