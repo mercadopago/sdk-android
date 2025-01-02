@@ -40,6 +40,10 @@ kover.reports.filters.excludes {
     classes("com.mercadopago.sdk.android.coremethods.GreetingKt")
 }
 
+ksp {
+    arg("skipPrivatePreviews", "true")
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
