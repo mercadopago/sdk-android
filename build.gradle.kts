@@ -58,6 +58,31 @@ allprojects {
     }
 }
 
+allprojects {
+    apply(plugin = "org.jetbrains.kotlinx.kover")
+    kover {
+        reports {
+            filters {
+                excludes {
+                    // exclusions for all report variants
+                    annotatedBy(
+                        "androidx.compose.ui.tooling.preview.Preview",
+                        "*Generated",
+                    )
+                    classes("*.BuildConfig")
+                }
+            }
+            verify {
+                rule {
+                    bound {
+                        minValue = 80
+                    }
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     detektPlugins(libs.detekt.formatting)
 }
