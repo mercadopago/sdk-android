@@ -15,8 +15,6 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
-
       # PRE SETUP
       - run:
           name: Install Git LFS
@@ -24,6 +22,7 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
             sudo apt-get install git-lfs
             git lfs install
+      - checkout
       - run:
           name: Check JDK exists
           command: javac -version
