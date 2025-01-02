@@ -2,15 +2,16 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.cashapp.paparazzi)
     alias(libs.plugins.google.ksp)
 }
 
 android {
-    namespace = "com.mercadopago.sdk.android"
+    namespace = "com.mercadopago.sdk.android.showkase"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.mercadopago.sdk.android"
+        applicationId = "com.mercadopago.sdk.android.showkase"
         minSdk = 21
         targetSdk = 35
         versionCode = 1
@@ -38,7 +39,6 @@ android {
 }
 
 kover.reports.filters.excludes {
-    // Disabled reports for sample app
     classes("*")
 }
 
@@ -55,11 +55,17 @@ dependencies {
     debugImplementation(libs.showkase)
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)
+
+    androidTestImplementation(libs.androidx.compose.test)
+    debugImplementation(libs.androidx.compose.test.manifest)
+    testImplementation(libs.test.parameterInjector)
     testImplementation(libs.junit)
+    testImplementation(libs.showkase.test)
+    kspTest(libs.showkase.processor)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.test.manifest)
 }

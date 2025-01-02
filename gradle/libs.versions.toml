@@ -12,6 +12,10 @@ appcompat = "1.7.0"
 material = "1.12.0"
 detekt = "1.23.7"
 kotlinKover = "0.9.0"
+paparazzi = "1.3.5"
+showkase = "1.0.3"
+googleKsp = "2.0.21-1.0.25"
+testParameterInjector = "1.17"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,6 +26,8 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -31,6 +37,11 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+showkase = { group = "com.airbnb.android", name = "showkase", version.ref = "showkase" }
+showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotation", version.ref = "showkase" }
+showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
+showkase-test = { group = "com.airbnb.android", name = "showkase-screenshot-testing", version.ref = "showkase" }
+test-parameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParameterInjector" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -39,6 +50,8 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinKover" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
+cashapp-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 # KLIN
 klint = {id = "org.jlleitschuh.gradle.ktlint", version = "10.3.0"}

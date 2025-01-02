@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.detekt) apply true
     alias(libs.plugins.kotlin.kover) apply true
+    alias(libs.plugins.cashapp.paparazzi) apply false
 }
 
 tasks.withType(Detekt::class).configureEach {
@@ -20,7 +21,7 @@ tasks.withType(Detekt::class).configureEach {
     include("**/*.kt")
     include("**/*.kts")
     exclude("resources/")
-    exclude("build/")
+    exclude("**/build/**")
 }
 
 allprojects {
@@ -34,7 +35,16 @@ allprojects {
                         "androidx.compose.ui.tooling.preview.Preview",
                         "*Generated",
                     )
-                    classes("*.BuildConfig")
+                    classes(
+                        "*.BuildConfig",
+                        "**/*$*",
+                        "*Preview*Kt",
+                        "*Ioelementandroid*PreviewKt$*",
+                        "*Ioelementandroid*PreviewKt",
+                        "*.ComposableSingletons*",
+                        "*.*\$*Preview\$*",
+                    )
+                    packages("com.airbnb.android.showkase*")
                 }
             }
             verify {
