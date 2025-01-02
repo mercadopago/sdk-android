@@ -58,6 +58,7 @@ dependencies {
 
     androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)
+    kspTest(libs.showkase.processor)
     testImplementation(libs.test.parameterInjector)
     testImplementation(libs.junit)
     testImplementation(libs.showkase.test)
