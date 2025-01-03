@@ -15,9 +15,15 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
-
       # PRE SETUP
+      - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+      - checkout
+      - run: git lfs fetch --all
       - run:
           name: Check JDK exists
           command: javac -version
@@ -79,9 +85,12 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverXmlReport
+          command: ./gradlew koverXmlReportDebug
+      - run:
+          name: Run Screenshot Tests
+          command: ./gradlew verifyPaparazziDebug
       - store_test_results:
-          path: core-methods/build/reports/kover/report.xml
+          path: core-methods/build/reports/kover/reportDebug.xml
 
       # BUILD STEP
       - run:
