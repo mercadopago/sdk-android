@@ -1,6 +1,7 @@
 # Gradle files
 .gradle/
 build/
+debug/
 
 .DS_Store
 # Local configuration file (sdk path, etc)
