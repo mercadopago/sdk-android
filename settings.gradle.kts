@@ -24,3 +24,4 @@ rootProject.name = "mercado-pago-android"
 include(":example")
 include(":core-methods")
 include(":showkase")
+include(":analytics")
