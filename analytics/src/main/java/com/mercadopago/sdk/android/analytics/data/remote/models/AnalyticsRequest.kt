@@ -3,12 +3,12 @@ package com.mercadopago.sdk.android.analytics.data.remote.models
 import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
 
-data class AnalyticsRequest(
+internal data class AnalyticsRequest(
     @SerializedName("tracks")
     val tracks: List<TrackRequest>
 )
 
-data class TrackRequest(
+internal data class TrackRequest(
     @SerializedName("path")
     val path: String,
     @SerializedName("user")
@@ -27,12 +27,12 @@ data class TrackRequest(
     val device: DeviceRequest
 )
 
-data class UserRequest(
+internal data class UserRequest(
     @SerializedName("uid")
     val uid: String
 )
 
-data class ApplicationRequest(
+internal data class ApplicationRequest(
     @SerializedName("business")
     val business: String,
     @SerializedName("site_id")
@@ -41,7 +41,7 @@ data class ApplicationRequest(
     val version: String
 )
 
-data class DeviceRequest(
+internal data class DeviceRequest(
     @SerializedName("platform")
     val platform: String
 )

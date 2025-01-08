@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.analytics.domain
 
 import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
 
-interface Analytics {
+internal interface Analytics {
     /** Sets custom data for the next event
      *
      * @param data Object implementing `AnalyticsEventData` containing event data

@@ -10,7 +10,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import junit.framework.TestCase.assertSame
 import org.junit.Test
 
-class AnalyticsTrackerTest {
+internal class AnalyticsTrackerTest {
 
     @Test
     fun `trackEvent should set TrackType to event and return self`() {

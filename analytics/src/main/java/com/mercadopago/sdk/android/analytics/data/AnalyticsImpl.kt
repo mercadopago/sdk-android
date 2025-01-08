@@ -26,7 +26,7 @@ import java.util.UUID
  *      .send()
  * ```
  * */
-class AnalyticsImpl : Analytics {
+internal class AnalyticsImpl : Analytics {
 
     /** Unique identifier for the current analytics session */
     private var sessionId: String = UUID.randomUUID().toString()
