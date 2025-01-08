@@ -27,6 +27,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
     buildFeatures {
         compose = true
     }
@@ -36,8 +41,7 @@ android {
 }
 
 kover.reports.filters.excludes {
-    // Ignoring example composable
-    classes("com.mercadopago.sdk.android.coremethods.GreetingKt")
+    // Add exclusions from reports
 }
 
 ksp {
@@ -58,10 +62,13 @@ dependencies {
     debugImplementation(libs.showkase)
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)
+    implementation(libs.androidx.annotation)
 
     androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.compose.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
