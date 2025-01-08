@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 
 /**
- * PCI field that holds the logic to be used across multiple fields.
+ * This class holds the input data of secure fields, safeguarding it against exposure
+ * and helping maintain a PCI Compliant environment.
  * @param value The current value of the field. It should use the value from the PCIFieldState.
  * @param onValueChange The callback that is triggered when the value of the field changes.
  * This should update the value of the PCIFieldState.
@@ -29,8 +30,11 @@ import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
  * @param modifier The modifier to be applied to the field.
  * @param decorationBox The decoration box to be applied to the field. This will be passed by the integrators.
  * @param textStyle The text style to be applied to the field.
- * @param enabled Whether the field is enabled or not.
- * @param readOnly Whether the field is read only or not.
+ * @param enabled controls the enabled state of the [PCITextField]. When `false`, the text
+ * field will be neither editable nor focusable, the input of the text field will not be selectable
+ * @param readOnly controls the editable state of the [PCITextField]. When `true`, the text
+ * field can not be modified, however, a user can focus it and copy text from it. Read-only text
+ * fields are usually used to display pre-filled forms that user can not edit
  * @param keyboardOptions The keyboard options to be applied to the field.
  * @param cursorBrush The cursor brush to be applied to the field.
  * @param visualTransformation The visual transformation to be applied to the field.
