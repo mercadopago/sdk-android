@@ -1,59 +1,13 @@
-package com.mercadopago.sdk.android.analytics
+package com.mercadopago.sdk.android.analytics.data
 
-import com.mercadopago.sdk.android.analytics.models.Application
-import com.mercadopago.sdk.android.analytics.models.Device
-import com.mercadopago.sdk.android.analytics.models.Track
-import com.mercadopago.sdk.android.analytics.models.User
+import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
+import com.mercadopago.sdk.android.analytics.domain.Analytics
+import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
+import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import java.util.UUID
-
-/** AnalyticsEventData open class
- *
- * Extend this class with your data class
- * that's will be sent in track's event data.
- *
- * Example:
- * ```kotlin
- * data class PaymentTrackData(
- *     val paymentID: String = "paymentID"
- * ) : AnalyticsEventData()
- * ```
- * */
-open class AnalyticsEventData
-
-/** Track Type enum class */
-enum class TrackType {
-    VIEW,
-    EVENT
-}
-
-interface AnalyticsInterface {
-
-    /** Sets custom data for the next event
-     *
-     * @param data Object implementing `AnalyticsEventData` containing event data
-     * @return Self instance for method chaining */
-    fun setEventData(data: AnalyticsEventData): AnalyticsInterface
-
-    /** Tracks a custom event
-     *
-     * @param path Path identifying the event (e.g., "payment/credit_card")
-     * @return Self instance for method chaining */
-    fun trackEvent(path: String): AnalyticsInterface
-
-    /** Tracks a screen view
-     *
-     * @param path Path identifying the screen (e.g., "checkout/review")
-     * @return Self instance for method chaining */
-    fun trackView(path: String): AnalyticsInterface
-
-    /** Sets the site ID for the next event
-     *
-     * @param siteId Site identifier (e.g., "MLB" )
-     * @return Self instance for method chaining */
-    fun setSiteId(siteId: String): AnalyticsInterface
-
-    fun send(): Track
-}
 
 /** Core analytics implementation for the MercadoPago SDK.
  *
@@ -72,7 +26,7 @@ interface AnalyticsInterface {
  *      .send()
  * ```
  * */
-class Analytics : AnalyticsInterface {
+class AnalyticsImpl : Analytics {
 
     /** Unique identifier for the current analytics session */
     private var sessionId: String = UUID.randomUUID().toString()
@@ -92,24 +46,24 @@ class Analytics : AnalyticsInterface {
     /** Site ID (e.g., MLB, MLA)*/
     private var siteId = ""
 
-    override fun trackEvent(path: String): AnalyticsInterface {
+    override fun trackEvent(path: String): AnalyticsImpl {
         this.type = TrackType.EVENT
         this.path = path
         return this
     }
 
-    override fun trackView(path: String): AnalyticsInterface {
+    override fun trackView(path: String): AnalyticsImpl {
         this.type = TrackType.VIEW
         this.path = path
         return this
     }
 
-    override fun setSiteId(siteId: String): AnalyticsInterface {
+    override fun setSiteId(siteId: String): AnalyticsImpl {
         this.siteId = siteId
         return this
     }
 
-    override fun setEventData(data: AnalyticsEventData): AnalyticsInterface {
+    override fun setEventData(data: AnalyticsEventData): AnalyticsImpl {
         eventData = data
         return this
     }
@@ -118,7 +72,7 @@ class Analytics : AnalyticsInterface {
      *
      * @param version String containing the version (e.g., "1.0.0")
      * @return Self instance for method chaining */
-    fun setVersion(version: String): AnalyticsInterface {
+    fun setVersion(version: String): AnalyticsImpl {
         this.version = version
         return this
     }
@@ -130,22 +84,22 @@ class Analytics : AnalyticsInterface {
      * 4. Sends the data (currently just prints to console)
      *
      * - Note: Actual data sending implementation should be added in the future */
-    override fun send(): Track {
-        val track = Track(
+    fun send(): TrackRequest {
+        val track = TrackRequest(
             path = this.path,
-            user = User(
+            user = UserRequest(
                 uid = ""
             ),
             type = this.type.name,
             id = this.sessionId,
             userTime = System.currentTimeMillis().toString(),
             eventData = this.eventData,
-            application = Application(
+            application = ApplicationRequest(
                 business = "mercadopago",
                 siteId = this.siteId,
                 version = this.version
             ),
-            device = Device(
+            device = DeviceRequest(
                 platform = "/mobile/android"
             )
         )

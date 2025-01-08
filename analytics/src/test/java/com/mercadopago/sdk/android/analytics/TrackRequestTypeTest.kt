@@ -1,9 +1,10 @@
 package com.mercadopago.sdk.android.analytics
 
+import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class TrackTypeTest {
+class TrackRequestTypeTest {
 
     @Test
     fun `trackTypeEnum should have two types`() {

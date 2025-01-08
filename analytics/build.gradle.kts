@@ -37,8 +37,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
-    implementation("com.squareup.retrofit2:converter-gson:2.6.4")
-    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:2.11.0")
+    implementation(libs.converter.gson)
+    implementation(libs.converter.kotlinx.serialization)
 
     implementation(libs.material)
     testImplementation(libs.junit)

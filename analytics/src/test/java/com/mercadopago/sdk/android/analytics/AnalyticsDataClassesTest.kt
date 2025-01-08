@@ -1,10 +1,11 @@
 package com.mercadopago.sdk.android.analytics
 
-import com.mercadopago.sdk.android.analytics.models.AnalyticsRequest
-import com.mercadopago.sdk.android.analytics.models.Application
-import com.mercadopago.sdk.android.analytics.models.Device
-import com.mercadopago.sdk.android.analytics.models.Track
-import com.mercadopago.sdk.android.analytics.models.User
+import com.mercadopago.sdk.android.analytics.data.remote.models.AnalyticsRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
+import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
@@ -13,13 +14,13 @@ class AnalyticsDataClassesTest {
 
     @Test
     fun `test User data class`() {
-        val user = User(uid = "user123")
+        val user = UserRequest(uid = "user123")
         assertEquals("user123", user.uid)
     }
 
     @Test
     fun `test Application data class`() {
-        val application = Application(business = "MyApp", siteId = "MLB", version = "1.0.0")
+        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
         assertEquals("MyApp", application.business)
         assertEquals("MLB", application.siteId)
         assertEquals("1.0.0", application.version)
@@ -27,17 +28,17 @@ class AnalyticsDataClassesTest {
 
     @Test
     fun `test Device data class`() {
-        val device = Device(platform = "Android")
+        val device = DeviceRequest(platform = "Android")
         assertEquals("Android", device.platform)
     }
 
     @Test
     fun `test Track data class`() {
-        val user = User(uid = "user123")
-        val application = Application(business = "MyApp", siteId = "MLB", version = "1.0.0")
-        val device = Device(platform = "Android")
+        val user = UserRequest(uid = "user123")
+        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
+        val device = DeviceRequest(platform = "Android")
         val eventData = AnalyticsEventData()
-        val track = Track(
+        val track = TrackRequest(
             path = "payment/credit_card",
             user = user,
             type = "EVENT",
@@ -59,11 +60,11 @@ class AnalyticsDataClassesTest {
 
     @Test
     fun `test AnalyticsRequest data class`() {
-        val user = User(uid = "user123")
-        val application = Application(business = "MyApp", siteId = "MLB", version = "1.0.0")
-        val device = Device(platform = "Android")
+        val user = UserRequest(uid = "user123")
+        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
+        val device = DeviceRequest(platform = "Android")
         val eventData = AnalyticsEventData()
-        val track = Track(
+        val track = TrackRequest(
             path = "payment/credit_card",
             user = user,
             type = "EVENT",

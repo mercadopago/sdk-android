@@ -16,6 +16,8 @@ paparazzi = "1.3.5"
 showkase = "1.0.3"
 googleKsp = "2.0.21-1.0.25"
 testParameterInjector = "1.17"
+converterGson = "2.6.4"
+converterKotlinxSerialization = "2.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +44,8 @@ showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotatio
 showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
 showkase-test = { group = "com.airbnb.android", name = "showkase-screenshot-testing", version.ref = "showkase" }
 test-parameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParameterInjector" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -54,4 +58,4 @@ google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
 cashapp-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 # KLIN
-klint = {id = "org.jlleitschuh.gradle.ktlint", version = "10.3.0"}
+klint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.3.0" }
