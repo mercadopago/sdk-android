@@ -10,7 +10,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
-internal class AnalyticsDataClassesTest {
+internal class SetupTrackDataClassesTest {
 
     @Test
     fun `test User data class`() {

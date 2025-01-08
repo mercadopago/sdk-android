@@ -1,10 +1,11 @@
 package com.mercadopago.sdk.android.analytics.data
 
+import androidx.annotation.VisibleForTesting
 import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
-import com.mercadopago.sdk.android.analytics.domain.Analytics
+import com.mercadopago.sdk.android.analytics.domain.SetupTrack
 import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import java.util.UUID
@@ -26,7 +27,7 @@ import java.util.UUID
  *      .send()
  * ```
  * */
-internal class AnalyticsImpl : Analytics {
+class Analytics : SetupTrack {
 
     /** Unique identifier for the current analytics session */
     private var sessionId: String = UUID.randomUUID().toString()
@@ -46,25 +47,25 @@ internal class AnalyticsImpl : Analytics {
     /** Site ID (e.g., MLB, MLA)*/
     private var siteId = ""
 
-    override fun trackEvent(path: String): AnalyticsImpl {
+    override fun trackEvent(path: String): Analytics {
         this.type = TrackType.EVENT
         this.path = path
         return this
     }
 
-    override fun trackView(path: String): AnalyticsImpl {
+    override fun trackView(path: String): Analytics {
         this.type = TrackType.VIEW
         this.path = path
         return this
     }
 
-    override fun setSiteId(siteId: String): AnalyticsImpl {
+    override fun setSiteId(siteId: String): Analytics {
         this.siteId = siteId
         return this
     }
 
-    override fun setEventData(data: AnalyticsEventData): AnalyticsImpl {
-        eventData = data
+    override fun setTrackData(data: AnalyticsEventData): Analytics {
+        this.eventData = data
         return this
     }
 
@@ -72,7 +73,7 @@ internal class AnalyticsImpl : Analytics {
      *
      * @param version String containing the version (e.g., "1.0.0")
      * @return Self instance for method chaining */
-    fun setVersion(version: String): AnalyticsImpl {
+    override fun setVersion(version: String): Analytics {
         this.version = version
         return this
     }
@@ -84,8 +85,13 @@ internal class AnalyticsImpl : Analytics {
      * 4. Sends the data (currently just prints to console)
      *
      * - Note: Actual data sending implementation should be added in the future */
-    fun send(): TrackRequest {
-        val track = TrackRequest(
+    fun send() {
+        setupTrackRequest()
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    internal fun setupTrackRequest(): TrackRequest {
+        return TrackRequest(
             path = this.path,
             user = UserRequest(
                 uid = ""
@@ -103,6 +109,5 @@ internal class AnalyticsImpl : Analytics {
                 platform = "/mobile/android"
             )
         )
-        return track
     }
 }

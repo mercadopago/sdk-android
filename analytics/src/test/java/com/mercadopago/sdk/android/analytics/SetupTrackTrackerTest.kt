@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.analytics
 
-import com.mercadopago.sdk.android.analytics.data.AnalyticsImpl
+import com.mercadopago.sdk.android.analytics.data.Analytics
 import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
@@ -10,18 +10,18 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import junit.framework.TestCase.assertSame
 import org.junit.Test
 
-internal class AnalyticsTrackerTest {
+internal class SetupTrackTrackerTest {
 
     @Test
     fun `trackEvent should set TrackType to event and return self`() {
-        val analytics = AnalyticsImpl()
+        val analytics = Analytics()
         val result = analytics.trackEvent("payment/credit_card")
         assertSame(analytics, result)
     }
 
     @Test
     fun `trackView should set TrackType to view and return self`() {
-        val analytics = AnalyticsImpl()
+        val analytics = Analytics()
         val result = analytics.trackView("checkout/review")
         assertSame(analytics, result)
     }
@@ -29,13 +29,13 @@ internal class AnalyticsTrackerTest {
     @Test
     fun `track should set Track values and return Track`() {
         val eventData = AnalyticsEventData()
-        val analytics = AnalyticsImpl()
+        val analytics = Analytics()
             .setVersion("1.0.0")
             .trackView("payment/credit_card")
-            .setEventData(eventData)
+            .setTrackData(eventData)
             .setSiteId("MLB")
 
-        val result = analytics.send()
+        val result = analytics.setupTrackRequest()
         val expected = TrackRequest(
             path = "payment/credit_card",
             user = UserRequest(
