@@ -67,7 +67,7 @@ class PaparazziScreenshotTest {
                 }?.toInt() ?: baseDeviceConfig.deviceConfig.screenWidth,
             )
         )
-        paparazzi.snapshot {
+        paparazzi.snapshot(name = "") {
             val lifecycleOwner = LocalLifecycleOwner.current
             CompositionLocalProvider(
                 LocalInspectionMode provides true,

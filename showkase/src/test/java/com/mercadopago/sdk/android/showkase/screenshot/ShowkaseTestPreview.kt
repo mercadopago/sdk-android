@@ -28,7 +28,13 @@ class ShowkaseComponentTestPreview(
 ) : ShowkaseTestPreview {
     @Composable
     override fun Content() = showkaseBrowserComponent.component()
-    override fun toString(): String = showkaseBrowserComponent.componentKey
+    override fun toString(): String = showkaseBrowserComponent
+        .componentKey
+        .removeRange(
+            startIndex = 0,
+            endIndex = showkaseBrowserComponent.componentKey.indexOf(string = "_", startIndex = 1) + 1
+        )
+        .replace("_null", "")
     override val height: Int? = showkaseBrowserComponent.heightDp
     override val width: Int? = showkaseBrowserComponent.widthDp
 }
