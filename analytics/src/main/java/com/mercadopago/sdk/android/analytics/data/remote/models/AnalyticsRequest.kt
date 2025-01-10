@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.analytics.data.remote.models
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
+import com.mercadopago.sdk.android.analytics.domain.models.EventData
 
 internal data class AnalyticsRequest(
     @SerializedName("tracks")
@@ -20,7 +20,7 @@ internal data class TrackRequest(
     @SerializedName("user_time")
     val userTime: String,
     @SerializedName("event_data")
-    val eventData: AnalyticsEventData?,
+    val eventData: EventData?,
     @SerializedName("application")
     val application: ApplicationRequest,
     @SerializedName("device")

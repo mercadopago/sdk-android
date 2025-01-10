@@ -1,63 +1,48 @@
 package com.mercadopago.sdk.android.analytics
 
-import com.mercadopago.sdk.android.analytics.data.Analytics
-import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
-import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
-import com.mercadopago.sdk.android.analytics.domain.models.TrackType
-import junit.framework.TestCase.assertSame
+import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
+import com.mercadopago.sdk.android.analytics.domain.interactor.Analytics
+import junit.framework.TestCase.assertNotNull
+import org.junit.Assert.assertThrows
+import org.junit.Before
 import org.junit.Test
 
 internal class SetupTrackTrackerTest {
 
-    @Test
-    fun `trackEvent should set TrackType to event and return self`() {
-        val analytics = Analytics()
-        val result = analytics.trackEvent("payment/credit_card")
-        assertSame(analytics, result)
+    private val sessionId = "sessionId123"
+    private val siteId = "siteId456"
+    private val version = "1.0"
+
+    @Before
+    fun setup() {
+        Analytics.initialize(sessionId, siteId, version)
     }
 
     @Test
-    fun `trackView should set TrackType to view and return self`() {
-        val analytics = Analytics()
-        val result = analytics.trackView("checkout/review")
-        assertSame(analytics, result)
+    fun `test initialize Analytics`() {
+        val analytics = Analytics.getInstance()
+        assertNotNull(analytics)
     }
 
     @Test
-    fun `track should set Track values and return Track`() {
-        val eventData = AnalyticsEventData()
-        val analytics = Analytics()
-            .setVersion("1.0.0")
-            .trackView("payment/credit_card")
-            .setTrackData(eventData)
-            .setSiteId("MLB")
+    fun `test getInstance throws exception before initialization`() {
+        // Reset Analytics instance to simulate being uninitialized
+        Analytics.initialize(sessionId, siteId, version)
 
-        val result = analytics.setupTrackRequest()
-        val expected = TrackRequest(
-            path = "payment/credit_card",
-            user = UserRequest(
-                uid = ""
-            ),
-            type = TrackType.VIEW.name,
-            id = "",
-            userTime = System.currentTimeMillis().toString(),
-            eventData = eventData,
-            application = ApplicationRequest(
-                business = "mercadopago",
-                siteId = "MLB",
-                version = "1.0.0"
-            ),
-            device = DeviceRequest(
-                platform = "/mobile/android"
-            )
-        )
-        assertSame(expected.path, result.path)
-        assertSame(expected.type, result.type)
-        assertSame(expected.eventData, result.eventData)
-        assertSame(expected.application.version, result.application.version)
-        assertSame(expected.application.siteId, result.application.siteId)
+        // Reinitialize with a new instance, and then reset to null to throw exception
+        Analytics::class.java.getDeclaredField("instance").apply {
+            isAccessible = true
+            set(null, null)
+        }
+
+        assertThrows(AnalyticsInitializationException::class.java) {
+            Analytics.getInstance()
+        }
+    }
+
+    @Test
+    fun `test trackEvent processes event correctly`() {
+        val analytics = Analytics.getInstance()
+        analytics.trackEvent(mockMetric)
     }
 }

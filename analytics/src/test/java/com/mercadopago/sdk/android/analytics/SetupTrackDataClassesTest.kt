@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationReque
 import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
 import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
-import com.mercadopago.sdk.android.analytics.domain.models.AnalyticsEventData
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test
@@ -37,7 +36,7 @@ internal class SetupTrackDataClassesTest {
         val user = UserRequest(uid = "user123")
         val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
         val device = DeviceRequest(platform = "Android")
-        val eventData = AnalyticsEventData()
+        val eventData = MockEventData("")
         val track = TrackRequest(
             path = "payment/credit_card",
             user = user,
@@ -53,6 +52,7 @@ internal class SetupTrackDataClassesTest {
         assertEquals("EVENT", track.type)
         assertEquals("track123", track.id)
         assertEquals(user, track.user)
+        assertEquals(eventData, track.eventData)
         assertEquals(application, track.application)
         assertEquals(device, track.device)
         assertNotNull(track.eventData)
@@ -63,7 +63,7 @@ internal class SetupTrackDataClassesTest {
         val user = UserRequest(uid = "user123")
         val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
         val device = DeviceRequest(platform = "Android")
-        val eventData = AnalyticsEventData()
+        val eventData = MockEventData("")
         val track = TrackRequest(
             path = "payment/credit_card",
             user = user,
