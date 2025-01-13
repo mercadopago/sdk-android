@@ -8,6 +8,12 @@ import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializ
  * - Collecting events and screen views
  * - Aggregating environment data
  * - Formatting and sending analytics data
+ *
+ *  This class have to be initialized first with [initialize] method
+ *  then get a instance by [getInstance]
+ * @param sessionId session identification of this analytics instance
+ * @param siteId site Id of the seller
+ * @param version this application SDK version
  * */
 class Analytics constructor(
     private val sessionId: String,

@@ -10,16 +10,5 @@ package com.mercadopago.sdk.android.analytics.domain.models
  * @param data indicates this track [EventData]
  * @see EventData
  * @see TrackType
- *
- * Example:
- * ```kotlin
- *  Metric(
- *     type = TrackType.EVENT,
- *     path = "metric/path",
- *     data = MyMetricData(
- *         someProperty = "String"
- *     )
- * )
- * ```
  * */
 data class Metric(val type: TrackType, val path: String, val data: EventData)
