@@ -15,13 +15,14 @@ import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializ
  * @param siteId site Id of the seller
  * @param version this application SDK version
  * */
-class Analytics constructor(
+class Analytics internal constructor(
     private val sessionId: String,
     private val siteId: String,
     private val version: String
 ) {
 
     companion object {
+        @Volatile
         private var instance: Analytics? = null
 
         fun getInstance(): Analytics {
