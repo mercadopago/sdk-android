@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.3"
+annotation = "1.9.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -18,8 +19,10 @@ googleKsp = "2.0.21-1.0.25"
 testParameterInjector = "1.17"
 converterGson = "2.6.4"
 converterKotlinxSerialization = "2.11.0"
+robolectric = "4.12"
 
 [libraries]
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -44,6 +47,7 @@ showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotatio
 showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
 showkase-test = { group = "com.airbnb.android", name = "showkase-screenshot-testing", version.ref = "showkase" }
 test-parameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParameterInjector" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
 

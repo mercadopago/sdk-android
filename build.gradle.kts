@@ -34,6 +34,7 @@ allprojects {
                     annotatedBy(
                         "androidx.compose.ui.tooling.preview.Preview",
                         "*Generated",
+                        "*Sampled",
                     )
                     classes(
                         "*.BuildConfig",
@@ -43,8 +44,12 @@ allprojects {
                         "*Ioelementandroid*PreviewKt",
                         "*.ComposableSingletons*",
                         "*.*\$*Preview\$*",
+                        "*.*\$*Sample\$*",
                     )
-                    packages("com.airbnb.android.showkase*")
+                    packages(
+                        "com.airbnb.android.showkase*",
+                        "com.mercadopago.sdk.android.coremethods.ui.components.samples*",
+                    )
                 }
             }
             verify {
