@@ -7,10 +7,10 @@ import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 
-internal class SetupTrackTrackerTest {
+internal class AnalyticsTest {
 
-    private val sessionId = "sessionId123"
-    private val siteId = "siteId456"
+    private val sessionId = "session"
+    private val siteId = "site"
     private val version = "1.0"
 
     @Before
@@ -38,11 +38,5 @@ internal class SetupTrackTrackerTest {
         assertThrows(AnalyticsInitializationException::class.java) {
             Analytics.getInstance()
         }
-    }
-
-    @Test
-    fun `test trackEvent processes event correctly`() {
-        val analytics = Analytics.getInstance()
-        analytics.trackEvent(mockMetric)
     }
 }

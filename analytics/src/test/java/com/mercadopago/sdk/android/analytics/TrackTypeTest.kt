@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class TrackRequestTypeTest {
+internal class TrackTypeTest {
 
     @Test
     fun `trackTypeEnum should have two types`() {
