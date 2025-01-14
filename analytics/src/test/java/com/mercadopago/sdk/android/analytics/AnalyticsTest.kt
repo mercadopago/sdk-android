@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.analytics
 
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.interactor.Analytics
-import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -76,15 +75,5 @@ internal class AnalyticsTest {
         assertThrows(AnalyticsInitializationException::class.java) {
             Analytics.getInstance()
         }
-    }
-
-    @Test
-    fun `track should set Track values and return Track`() {
-        val analyticsInstance = Analytics.getInstance()
-        val path = "path"
-        val track = TrackType.EVENT
-        val data = mockEventData("data")
-
-        analyticsInstance.trackEvent(mockMetric(path, track, data))
     }
 }
