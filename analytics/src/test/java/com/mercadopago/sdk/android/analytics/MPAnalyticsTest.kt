@@ -1,14 +1,14 @@
 package com.mercadopago.sdk.android.analytics
 
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
-import com.mercadopago.sdk.android.analytics.domain.interactor.Analytics
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 
-internal class AnalyticsTest {
+internal class MPAnalyticsTest {
 
     private val sessionId = "session"
     private val siteId = "site"
@@ -16,19 +16,19 @@ internal class AnalyticsTest {
 
     @Before
     fun setup() {
-        Analytics.initialize(sessionId, siteId, version)
+        MPAnalytics.initialize(sessionId, siteId, version)
     }
 
     @Test
     fun `test initialize Analytics`() {
-        val analytics = Analytics.getInstance()
+        val analytics = MPAnalytics.getInstance()
         assertNotNull(analytics)
     }
 
     @Test
     fun `test sessionId is correctly set`() {
-        val analyticsInstance = Analytics.getInstance()
-        val sessionIdProperty = Analytics::class.java.declaredFields
+        val analyticsInstance = MPAnalytics.getInstance()
+        val sessionIdProperty = MPAnalytics::class.java.declaredFields
             .first { it.name == "sessionId" }
 
         sessionIdProperty.isAccessible = true // Make private property accessible
@@ -39,8 +39,8 @@ internal class AnalyticsTest {
 
     @Test
     fun `test siteId is correctly set`() {
-        val analyticsInstance = Analytics.getInstance()
-        val siteIdProperty = Analytics::class.java.declaredFields
+        val analyticsInstance = MPAnalytics.getInstance()
+        val siteIdProperty = MPAnalytics::class.java.declaredFields
             .first { it.name == "siteId" }
 
         siteIdProperty.isAccessible = true
@@ -51,8 +51,8 @@ internal class AnalyticsTest {
 
     @Test
     fun `test version is correctly set`() {
-        val analyticsInstance = Analytics.getInstance()
-        val versionProperty = Analytics::class.java.declaredFields
+        val analyticsInstance = MPAnalytics.getInstance()
+        val versionProperty = MPAnalytics::class.java.declaredFields
             .first { it.name == "version" }
 
         versionProperty.isAccessible = true
@@ -64,16 +64,16 @@ internal class AnalyticsTest {
     @Test
     fun `test getInstance throws exception before initialization`() {
         // Reset Analytics instance to simulate being uninitialized
-        Analytics.initialize(sessionId, siteId, version)
+        MPAnalytics.initialize(sessionId, siteId, version)
 
         // Reinitialize with a new instance, and then reset to null to throw exception
-        Analytics::class.java.getDeclaredField("instance").apply {
+        MPAnalytics::class.java.getDeclaredField("instance").apply {
             isAccessible = true
             set(null, null)
         }
 
         assertThrows(AnalyticsInitializationException::class.java) {
-            Analytics.getInstance()
+            MPAnalytics.getInstance()
         }
     }
 }

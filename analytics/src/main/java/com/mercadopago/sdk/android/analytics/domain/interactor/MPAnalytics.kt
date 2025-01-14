@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.analytics.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
+import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.utils.KoverIgnore
 
 /** Core analytics implementation for the MercadoPago SDK.
  *
@@ -15,7 +17,7 @@ import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializ
  * @param siteId site Id of the seller
  * @param version this application SDK version
  * */
-class Analytics internal constructor(
+class MPAnalytics internal constructor(
     private val sessionId: String,
     private val siteId: String,
     private val version: String
@@ -23,9 +25,9 @@ class Analytics internal constructor(
 
     companion object {
         @Volatile
-        private var instance: Analytics? = null
+        private var instance: MPAnalytics? = null
 
-        fun getInstance(): Analytics {
+        fun getInstance(): MPAnalytics {
             return instance ?: throw AnalyticsInitializationException()
         }
 
@@ -34,11 +36,22 @@ class Analytics internal constructor(
             siteId: String,
             version: String
         ) {
-            instance = Analytics(
+            instance = MPAnalytics(
                 sessionId,
                 siteId,
                 version
             )
         }
     }
+
+    /** Processes and sends the current event
+     * This method:
+     * 1. Collects user information
+     * 2. Builds the payload with all required data
+     * 4. Sends the data (currently just prints to console)
+     *
+     * - Note: Actual data sending implementation should be added in the future */
+    @KoverIgnore("implementation should be added in the future")
+    @Suppress("EmptyFunctionBlock", "UnusedParameter")
+    fun trackMetric(metric: Metric) { }
 }

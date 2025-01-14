@@ -35,6 +35,7 @@ allprojects {
                         "androidx.compose.ui.tooling.preview.Preview",
                         "*Generated",
                         "*Sampled",
+                        "*KoverIgnore"
                     )
                     classes(
                         "*.BuildConfig",
@@ -45,6 +46,7 @@ allprojects {
                         "*.ComposableSingletons*",
                         "*.*\$*Preview\$*",
                         "*.*\$*Sample\$*",
+                        "*.*\$*KoverIgnore\$*",
                     )
                     packages(
                         "com.airbnb.android.showkase*",
