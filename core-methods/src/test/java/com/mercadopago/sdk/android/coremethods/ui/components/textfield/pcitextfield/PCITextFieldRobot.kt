@@ -12,11 +12,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import junit.framework.TestCase.assertEquals
 
-internal class PCITextFieldRobot(
+internal open class PCITextFieldRobot(
     private val composeRule: ComposeContentTestRule
 ) {
 
-    private lateinit var fieldState: PCIFieldState
+    internal lateinit var fieldState: PCIFieldState
 
     fun createTextField(
         enabled: Boolean = true,
@@ -43,7 +43,7 @@ internal class PCITextFieldRobot(
         }
     }
 
-    private fun setContent(stateRestorationTester: StateRestorationTester?, content: @Composable () -> Unit) {
+    internal fun setContent(stateRestorationTester: StateRestorationTester?, content: @Composable () -> Unit) {
         if (stateRestorationTester != null) {
             stateRestorationTester.setContent(content)
         } else {
