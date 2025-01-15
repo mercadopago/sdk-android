@@ -65,6 +65,7 @@ data class SecurityCodeState(
 )
 
 @Composable
+@Suppress("LongMethod")
 fun SecurityCodeExample() {
     var secureCodeState by remember { mutableStateOf(SecurityCodeState()) }
     val state: PCIFieldState = rememberPCIFieldState()
@@ -86,6 +87,18 @@ fun SecurityCodeExample() {
                         is SecurityCodeFieldEvent.FocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused
+                            )
+                        }
+
+                        is SecurityCodeFieldEvent.Length -> {
+                            secureCodeState = secureCodeState.copy(
+                                length = securityCodeFieldEvent.length
+                            )
+                        }
+
+                        is SecurityCodeFieldEvent.Filled -> {
+                            secureCodeState = secureCodeState.copy(
+                                filled = securityCodeFieldEvent.isFilled
                             )
                         }
                     }

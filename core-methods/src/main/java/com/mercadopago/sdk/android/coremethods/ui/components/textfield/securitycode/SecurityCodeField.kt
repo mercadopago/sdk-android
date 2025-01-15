@@ -15,32 +15,28 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
 /**
- *  This class
+ *  The SecurityCode input
  *
- * @param state
- * @param onEvent
- * @param securityCodeSize The callback that is triggered when the focus of the field changes.
  * @param modifier The modifier to be applied to the field.
- * @param enabled controls the enabled state of the [PCITextField]. When `false`, the text
- * field will be neither editable nor focusable, the input of the text field will not be selectable
- * @param readOnly controls the editable state of the [PCITextField]. When `true`, the text
- * field can not be modified, however, a user can focus it and copy text from it. Read-only text
- * fields are usually used to display pre-filled forms that user can not edit
- * @param decorationBox The decoration box to be applied to the field. This will be passed by the integrators.
+ * @param state [PCIFieldState] This class holds the input data of secure fields
+ * @param onEvent The callback that is triggered when the focus of the field changes.
+ * @param securityCodeSize The security code length limit
+ * @param enabled controls the enabled state of the [SecurityCode].
+ * @param readOnly controls the editable state of the [SecurityCode].
+ * @param decorationBox The decoration box to be applied to the field.
  * @param textStyle The text style to be applied to the field.
  * @param keyboardOptions The keyboard options to be applied to the field.
  * @param cursorBrush The cursor brush to be applied to the field.
- * @param textSelectionColor The selection text box color to be applied to the field.
  * @param visualTransformation The visual transformation to be applied to the field.
  * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldBasicSample
  * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldDecorationBoxSample
  */
 @Composable
 fun SecurityCode(
+    modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (SecurityCodeFieldEvent) -> Unit,
     securityCodeSize: Int = 3, // TODO- change to use a constant
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
