@@ -4,11 +4,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.StateRestorationTester
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.FieldRobot
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
 
 internal open class PCITextFieldRobot(
     composeRule: ComposeContentTestRule
-) : FieldRobot(composeRule) {
+) : PCIFieldRobot(composeRule) {
 
     fun createTextField(
         enabled: Boolean = true,

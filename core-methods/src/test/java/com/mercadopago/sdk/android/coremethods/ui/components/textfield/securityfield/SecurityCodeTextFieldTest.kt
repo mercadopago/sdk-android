@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SecurityFieldTest {
+internal class SecurityCodeTextFieldTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()

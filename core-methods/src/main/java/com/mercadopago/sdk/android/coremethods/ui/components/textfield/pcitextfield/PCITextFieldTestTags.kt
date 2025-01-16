@@ -4,5 +4,5 @@ internal enum class PCITextFieldTestTags(
     val tag: String,
 ) {
     Field("pci_text_field"),
-    Security("pci_security_field")
+    SecurityCode("pci_security_code_field")
 }

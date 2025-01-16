@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCode
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 
 @Sampled
 @Composable
@@ -17,7 +17,7 @@ internal fun SecurityCodeFieldBasicSample() {
     // A basic use of this Component
     // Create a PCIFieldState to use in input
     val state: PCIFieldState = rememberPCIFieldState()
-    SecurityCode(
+    SecurityCodeTextField(
         state = state,
         onEvent = { securityCodeFieldEvent ->
             // Handle the security code events
@@ -32,7 +32,7 @@ internal fun SecurityCodeFieldDecorationBoxSample() {
     // Adding a decoration in the component
     // Create a PCIFieldState to use in input
     val state: PCIFieldState = rememberPCIFieldState()
-    SecurityCode(
+    SecurityCodeTextField(
         state = state,
         onEvent = { securityCodeFieldEvent ->
             // Handle the security code events

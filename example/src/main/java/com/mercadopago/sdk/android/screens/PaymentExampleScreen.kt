@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCode
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 
@@ -80,7 +80,7 @@ fun SecurityCodeExample() {
                 MaterialTheme.colorScheme.tertiaryContainer
             )
         ) {
-            SecurityCode(
+            SecurityCodeTextField(
                 state = state,
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {

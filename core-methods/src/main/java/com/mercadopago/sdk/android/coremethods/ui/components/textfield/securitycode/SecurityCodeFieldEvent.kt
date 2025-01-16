@@ -2,20 +2,20 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.security
 
 interface SecurityCodeFieldEvent {
     /**
-     * This function informs if the cvv input has been filled.
-     * @param isFilled: cvv input is filled or not
+     * This function informs if the security code field has been filled.
+     * @param isFilled: security code field is filled or not
      */
     data class Filled(val isFilled: Boolean) : SecurityCodeFieldEvent
 
     /**
-     * This function informs the text length.
+     * This function informs the security code field length.
      * @param length: number of characters typed
      */
     data class Length(val length: Int) : SecurityCodeFieldEvent
 
     /**
-     * This function informs if the cvv input has been focused.
-     * @param isFocused: cvv input is focused or not
+     * This function informs if the security code field has been focused.
+     * @param isFocused: security code field is focused or not
      */
     data class FocusChanged(val isFocused: Boolean) : SecurityCodeFieldEvent
 }

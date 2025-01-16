@@ -4,15 +4,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.StateRestorationTester
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.FieldRobot
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCode
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 
-internal class SecurityFieldRobot(
+internal class SecurityCodeTextFieldRobot(
     composeRule: ComposeContentTestRule
-) : FieldRobot(composeRule) {
+) : PCIFieldRobot(composeRule) {
 
     fun createSecurityField(
         enabled: Boolean = true,
@@ -22,11 +22,11 @@ internal class SecurityFieldRobot(
             @Composable { innerTextField -> innerTextField() },
         stateRestorationTester: StateRestorationTester? = null,
     ) {
-        testTag = PCITextFieldTestTags.Security.tag
+        testTag = PCITextFieldTestTags.SecurityCode.tag
         setContent(stateRestorationTester) {
             fieldState = rememberPCIFieldState()
             MaterialTheme {
-                SecurityCode(
+                SecurityCodeTextField(
                     state = fieldState,
                     onEvent = onEvent,
                     enabled = enabled,
@@ -40,5 +40,5 @@ internal class SecurityFieldRobot(
 
 internal fun securityFieldRobot(
     composeTestRule: ComposeContentTestRule,
-    block: SecurityFieldRobot.() -> Unit
-) = SecurityFieldRobot(composeTestRule).apply(block)
+    block: SecurityCodeTextFieldRobot.() -> Unit
+) = SecurityCodeTextFieldRobot(composeTestRule).apply(block)

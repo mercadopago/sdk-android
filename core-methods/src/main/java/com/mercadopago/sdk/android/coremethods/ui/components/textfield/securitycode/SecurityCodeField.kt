@@ -17,28 +17,32 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
 /**
- *  The SecurityCode input
+ * Security code input component.
  *
- * @param modifier The modifier to be applied to the field.
- * @param state [PCIFieldState] This class holds the input data of secure fields
- * @param onEvent The callback that is triggered when the focus of the field changes.
- * @param securityCodeSize The security code length limit
- * @param enabled controls the enabled state of the [SecurityCode].
- * @param readOnly controls the editable state of the [SecurityCode].
- * @param decorationBox The decoration box to be applied to the field.
- * @param textStyle The text style to be applied to the field.
- * @param keyboardOptions The keyboard options to be applied to the field.
- * @param cursorBrush The cursor brush to be applied to the field.
- * @param visualTransformation The visual transformation to be applied to the field.
+ * This component allows users to enter a card security code.
+ * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
+ *
+ * @param modifier Modifier to customize the style and behavior of the field.
+ * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
+ * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
+ * @param securityCodeSize Length limit for the security code to be entered (default is 3).
+ * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
+ * @param readOnly Controls whether the field is editable or read-only.
+ * @param decorationBox A composable that allows the addition of decorative elements around the text field.
+ * @param textStyle Text style to be applied to the field's content.
+ * @param keyboardOptions Keyboard options that influence the behavior of the input field.
+ * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+ * @param visualTransformation Allows for visual transformations to be applied to the text, such as masking characters.
+ *
  * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldBasicSample
  * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldDecorationBoxSample
  */
 @Composable
-fun SecurityCode(
+fun SecurityCodeTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (SecurityCodeFieldEvent) -> Unit,
-    securityCodeSize: Int = 3, // TODO- change to use a constant
+    securityCodeSize: Int = 3,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -61,7 +65,7 @@ fun SecurityCode(
         onFocusChanged = { isFocused ->
             onEvent(SecurityCodeFieldEvent.FocusChanged(isFocused))
         },
-        modifier = modifier.testTag(PCITextFieldTestTags.Security.tag),
+        modifier = modifier.testTag(PCITextFieldTestTags.SecurityCode.tag),
         enabled = enabled,
         readOnly = readOnly,
         decorationBox = decorationBox,
@@ -72,11 +76,33 @@ fun SecurityCode(
     )
 }
 
-@Preview(name = "Empty Security Field", group = PreviewGroup.SECURITY_FIELD, showBackground = true)
+@Preview(
+    name = "Security Code Field Empty",
+    group = PreviewGroup.SECURITY_FIELD,
+    showBackground = true
+)
 @Composable
-fun SecurityCodePreview() {
+fun SecurityCodeEmptyPreview() {
     val state: PCIFieldState = rememberPCIFieldState()
-    SecurityCode(
+    SecurityCodeTextField(
+        state = state,
+        onEvent = { securityCodeFieldEvent ->
+        },
+        securityCodeSize = 3
+    )
+}
+
+@Preview(
+    name = "Security Code Field Filled",
+    group = PreviewGroup.SECURITY_FIELD,
+    showBackground = true
+)
+@Composable
+fun SecurityCodeFilledPreview() {
+    val state: PCIFieldState = rememberPCIFieldState().apply {
+        input = "123"
+    }
+    SecurityCodeTextField(
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
