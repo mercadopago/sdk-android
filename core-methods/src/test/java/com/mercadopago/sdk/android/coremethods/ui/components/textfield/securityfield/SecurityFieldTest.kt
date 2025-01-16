@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityfield
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
