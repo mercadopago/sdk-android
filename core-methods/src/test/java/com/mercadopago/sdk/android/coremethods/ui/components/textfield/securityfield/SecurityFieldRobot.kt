@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.FieldRobot
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCode
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
@@ -21,6 +22,7 @@ internal class SecurityFieldRobot(
             @Composable { innerTextField -> innerTextField() },
         stateRestorationTester: StateRestorationTester? = null,
     ) {
+        testTag = PCITextFieldTestTags.Security.tag
         setContent(stateRestorationTester) {
             fieldState = rememberPCIFieldState()
             MaterialTheme {

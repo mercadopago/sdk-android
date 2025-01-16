@@ -18,6 +18,7 @@ internal open class PCITextFieldRobot(
             @Composable { innerTextField -> innerTextField() },
         stateRestorationTester: StateRestorationTester? = null,
     ) {
+        testTag = PCITextFieldTestTags.Field.tag
         setContent(stateRestorationTester) {
             fieldState = rememberPCIFieldState()
             MaterialTheme {

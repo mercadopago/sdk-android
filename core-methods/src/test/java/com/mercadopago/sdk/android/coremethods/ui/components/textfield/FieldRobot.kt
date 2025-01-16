@@ -10,7 +10,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import junit.framework.TestCase.assertEquals
 
 /**
@@ -22,11 +21,15 @@ internal open class FieldRobot(
 ) {
 
     /** Used to test fields States
-     *
      */
     internal lateinit var fieldState: PCIFieldState
 
-    internal fun setContent(stateRestorationTester: StateRestorationTester?, content: @Composable () -> Unit) {
+    internal lateinit var testTag: String
+
+    internal fun setContent(
+        stateRestorationTester: StateRestorationTester?,
+        content: @Composable () -> Unit
+    ) {
         if (stateRestorationTester != null) {
             stateRestorationTester.setContent(content)
         } else {
@@ -35,19 +38,19 @@ internal open class FieldRobot(
     }
 
     fun performTapOnInput() {
-        composeRule.onNodeWithTag(PCITextFieldTestTags.Field.tag)
+        composeRule.onNodeWithTag(testTag)
             .assertExists()
             .performClick()
     }
 
     fun performTextInput(text: String) {
-        composeRule.onNodeWithTag(PCITextFieldTestTags.Field.tag)
+        composeRule.onNodeWithTag(testTag)
             .assertExists()
             .performTextInput(text)
     }
 
     fun assertTextInput(text: String) {
-        composeRule.onNodeWithTag(PCITextFieldTestTags.Field.tag)
+        composeRule.onNodeWithTag(testTag)
             .assertExists()
             .assert(hasText(text))
         assertEquals(text, fieldState.input)
