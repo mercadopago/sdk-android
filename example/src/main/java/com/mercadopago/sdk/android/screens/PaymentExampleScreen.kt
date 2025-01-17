@@ -62,6 +62,7 @@ data class SecurityCodeState(
     var isFocused: Boolean = false,
     var filled: Boolean = false,
     var length: Int = 0,
+    var error: Boolean = false
 )
 
 @Composable
@@ -84,19 +85,19 @@ fun SecurityCodeExample() {
                 state = state,
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.FocusChanged -> {
+                        is SecurityCodeFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused
                             )
                         }
 
-                        is SecurityCodeFieldEvent.Length -> {
+                        is SecurityCodeFieldEvent.OnLengthChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 length = securityCodeFieldEvent.length
                             )
                         }
 
-                        is SecurityCodeFieldEvent.Filled -> {
+                        is SecurityCodeFieldEvent.OnInputFilled -> {
                             secureCodeState = secureCodeState.copy(
                                 filled = securityCodeFieldEvent.isFilled
                             )
@@ -112,6 +113,7 @@ fun SecurityCodeExample() {
                         modifier = Modifier
                             .addBorder(
                                 isFocused = secureCodeState.isFocused,
+                                isError = secureCodeState.error
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),

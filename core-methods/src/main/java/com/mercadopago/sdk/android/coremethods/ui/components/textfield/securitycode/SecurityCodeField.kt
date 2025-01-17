@@ -57,13 +57,13 @@ fun SecurityCodeTextField(
         value = state.input,
         onValueChange = { value ->
             if (value.length <= securityCodeSize && value.none { !it.isDigit() }) {
-                onEvent(SecurityCodeFieldEvent.Filled(isFilled = value.length == securityCodeSize))
-                onEvent(SecurityCodeFieldEvent.Length(length = value.length))
+                onEvent(SecurityCodeFieldEvent.OnInputFilled(isFilled = value.length == securityCodeSize))
+                onEvent(SecurityCodeFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }
         },
         onFocusChanged = { isFocused ->
-            onEvent(SecurityCodeFieldEvent.FocusChanged(isFocused))
+            onEvent(SecurityCodeFieldEvent.OnFocusChanged(isFocused))
         },
         modifier = modifier.testTag(PCITextFieldTestTags.SecurityCode.tag),
         enabled = enabled,

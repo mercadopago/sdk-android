@@ -64,7 +64,7 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.FocusChanged -> {
+                        is SecurityCodeFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused
                             )
@@ -89,7 +89,7 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.FocusChanged -> {
+                        is SecurityCodeFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused
                             )

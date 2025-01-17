@@ -5,17 +5,17 @@ interface SecurityCodeFieldEvent {
      * This function informs if the security code field has been filled.
      * @param isFilled: security code field is filled or not
      */
-    data class Filled(val isFilled: Boolean) : SecurityCodeFieldEvent
+    data class OnInputFilled(val isFilled: Boolean) : SecurityCodeFieldEvent
 
     /**
      * This function informs the security code field length.
      * @param length: number of characters typed
      */
-    data class Length(val length: Int) : SecurityCodeFieldEvent
+    data class OnLengthChanged(val length: Int) : SecurityCodeFieldEvent
 
     /**
      * This function informs if the security code field has been focused.
      * @param isFocused: security code field is focused or not
      */
-    data class FocusChanged(val isFocused: Boolean) : SecurityCodeFieldEvent
+    data class OnFocusChanged(val isFocused: Boolean) : SecurityCodeFieldEvent
 }
