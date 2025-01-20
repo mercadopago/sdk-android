@@ -1,0 +1,158 @@
+package com.mercadopago.sdk.android.screens
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.R
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.extensions.addBorder
+import com.mercadopago.sdk.android.ui.theme.ExampleTheme
+
+@Composable
+fun PaymentExampleScreen() {
+    PaymentExampleScreenContent()
+}
+
+@Composable
+fun PaymentExampleScreenContent(
+    modifier: Modifier = Modifier
+) {
+    Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = modifier) {
+                SecurityCodeExample()
+            }
+        }
+    }
+}
+
+data class SecurityCodeState(
+    var isFocused: Boolean = false,
+    var filled: Boolean = false,
+    var length: Int = 0,
+    var error: Boolean = false
+)
+
+@Composable
+@Suppress("LongMethod")
+fun SecurityCodeExample() {
+    var secureCodeState by remember { mutableStateOf(SecurityCodeState()) }
+    val state: PCIFieldState = rememberPCIFieldState()
+    Column {
+        Text(
+            text = "Security code",
+        )
+        Spacer(Modifier.height(4.dp))
+        CompositionLocalProvider(
+            LocalTextSelectionColors provides TextSelectionColors(
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.tertiaryContainer
+            )
+        ) {
+            SecurityCodeTextField(
+                state = state,
+                onEvent = { securityCodeFieldEvent ->
+                    when (securityCodeFieldEvent) {
+                        is SecurityCodeFieldEvent.OnFocusChanged -> {
+                            secureCodeState = secureCodeState.copy(
+                                isFocused = securityCodeFieldEvent.isFocused
+                            )
+                        }
+
+                        is SecurityCodeFieldEvent.OnLengthChanged -> {
+                            secureCodeState = secureCodeState.copy(
+                                length = securityCodeFieldEvent.length
+                            )
+                        }
+
+                        is SecurityCodeFieldEvent.OnInputFilled -> {
+                            secureCodeState = secureCodeState.copy(
+                                filled = securityCodeFieldEvent.isFilled
+                            )
+                        }
+                    }
+                },
+                securityCodeSize = 3,
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                decorationBox = { innerTextField ->
+                    // Customize the input with relevant information like borders, icons, colors and more
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .addBorder(
+                                isFocused = secureCodeState.isFocused,
+                                isError = secureCodeState.error
+                            )
+                            .height(OutlinedTextFieldDefaults.MinHeight)
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            if (secureCodeState.length == 0) {
+                                Text(
+                                    text = "123",
+                                    color = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                )
+                            }
+                            innerTextField()
+                        }
+                        Spacer(Modifier.width(4.dp))
+                        Image(
+                            painter = painterResource(R.drawable.ic_security_code),
+                            contentDescription = null,
+                            modifier = Modifier.size(34.dp),
+                        )
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Preview(name = "PaymentScreen Example", showBackground = true)
+@Composable
+fun PaymentExampleScreenPreview() {
+    ExampleTheme {
+        PaymentExampleScreen()
+    }
+}
+
+@Preview(name = "Empty Security Field", showBackground = true)
+@Composable
+fun SecurityCodeExamplePreview() {
+    ExampleTheme {
+        SecurityCodeExample()
+    }
+}
