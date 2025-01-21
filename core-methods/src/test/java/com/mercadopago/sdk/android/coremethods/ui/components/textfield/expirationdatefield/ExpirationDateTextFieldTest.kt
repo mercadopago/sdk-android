@@ -65,7 +65,7 @@ class ExpirationDateTextFieldTest {
             createExpirationDateField(
                 onEvent = { expirationDateFieldEvent ->
                     when (expirationDateFieldEvent) {
-                        is ExpirationDateFieldEvent.FocusChanged -> {
+                        is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateFieldEvent.isFocused
                             )
@@ -90,7 +90,7 @@ class ExpirationDateTextFieldTest {
             createExpirationDateField(
                 onEvent = { expirationDateFieldEvent ->
                     when (expirationDateFieldEvent) {
-                        is ExpirationDateFieldEvent.FocusChanged -> {
+                        is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateFieldEvent.isFocused
                             )

@@ -179,19 +179,19 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                 state = state,
                 onEvent = { expirationDateEvent ->
                     when (expirationDateEvent) {
-                        is ExpirationDateFieldEvent.Filled -> {
+                        is ExpirationDateFieldEvent.OnInputFilled -> {
                             expirationDateState = expirationDateState.copy(
                                 filled = expirationDateEvent.isFilled
                             )
                         }
 
-                        is ExpirationDateFieldEvent.FocusChanged -> {
+                        is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateEvent.isFocused
                             )
                         }
 
-                        is ExpirationDateFieldEvent.Length -> {
+                        is ExpirationDateFieldEvent.OnLengthChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 length = expirationDateEvent.length
                             )

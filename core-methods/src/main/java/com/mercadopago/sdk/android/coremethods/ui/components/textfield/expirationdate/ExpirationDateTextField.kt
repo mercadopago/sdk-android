@@ -49,12 +49,12 @@ fun ExpirationDateField(
     PCITextField(
         value = state.input,
         onFocusChanged = { isFocused ->
-            onEvent(ExpirationDateFieldEvent.FocusChanged(isFocused))
+            onEvent(ExpirationDateFieldEvent.OnFocusChanged(isFocused))
         },
         onValueChange = { value ->
             if (value.length <= ExpirationDateLenght && value.none { !it.isDigit() }) {
-                onEvent(ExpirationDateFieldEvent.Filled(isFilled = value.length == ExpirationDateLenght))
-                onEvent(ExpirationDateFieldEvent.Length(length = value.length))
+                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == ExpirationDateLenght))
+                onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }
         },
