@@ -17,7 +17,7 @@ import junit.framework.TestCase.assertEquals
  * @param composeRule allows you to set content without the necessity to provide a host for the content.
  */
 internal open class PCIFieldRobot(
-    private val composeRule: ComposeContentTestRule
+    internal val composeRule: ComposeContentTestRule
 ) {
 
     /** Used to test fields States

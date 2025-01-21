@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.R
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
@@ -51,8 +54,16 @@ fun PaymentExampleScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Column(modifier = modifier) {
-                SecurityCodeExample()
+            Column {
+                Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    ExpirationDateExample(
+                        Modifier.weight(1f)
+                    )
+                    Spacer(Modifier.width(16.dp))
+                    SecurityCodeExample(
+                        Modifier.weight(1f)
+                    )
+                }
             }
         }
     }
@@ -65,12 +76,18 @@ data class SecurityCodeState(
     var error: Boolean = false
 )
 
+data class ExpirationDateState(
+    var isFocused: Boolean = false,
+    var filled: Boolean = false,
+    var length: Int = 0
+)
+
 @Composable
 @Suppress("LongMethod")
-fun SecurityCodeExample() {
+fun SecurityCodeExample(modifier: Modifier = Modifier) {
     var secureCodeState by remember { mutableStateOf(SecurityCodeState()) }
     val state: PCIFieldState = rememberPCIFieldState()
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = "Security code",
         )
@@ -141,6 +158,73 @@ fun SecurityCodeExample() {
     }
 }
 
+@Composable
+@Suppress("LongMethod")
+fun ExpirationDateExample(modifier: Modifier = Modifier) {
+    val state: PCIFieldState = rememberPCIFieldState()
+    var expirationDateState by remember { mutableStateOf(ExpirationDateState()) }
+    Column(modifier = modifier) {
+        Text(
+            text = "Expiration Date",
+        )
+        Spacer(Modifier.height(4.dp))
+        CompositionLocalProvider(
+            LocalTextSelectionColors provides TextSelectionColors(
+                MaterialTheme.colorScheme.primary,
+                MaterialTheme.colorScheme.tertiaryContainer
+            )
+        ) {
+            ExpirationDateField(
+                modifier = Modifier.fillMaxWidth(),
+                state = state,
+                onEvent = { expirationDateEvent ->
+                    when (expirationDateEvent) {
+                        is ExpirationDateFieldEvent.Filled -> {
+                            expirationDateState = expirationDateState.copy(
+                                filled = expirationDateEvent.isFilled
+                            )
+                        }
+
+                        is ExpirationDateFieldEvent.FocusChanged -> {
+                            expirationDateState = expirationDateState.copy(
+                                isFocused = expirationDateEvent.isFocused
+                            )
+                        }
+
+                        is ExpirationDateFieldEvent.Length -> {
+                            expirationDateState = expirationDateState.copy(
+                                length = expirationDateEvent.length
+                            )
+                        }
+                    }
+                },
+                decorationBox = { innerTextField ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .addBorder(
+                                isFocused = expirationDateState.isFocused,
+                            )
+                            .height(OutlinedTextFieldDefaults.MinHeight)
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        Box {
+                            if (expirationDateState.length == 0) {
+                                Text(
+                                    text = "MM/AA",
+                                    color = MaterialTheme.colorScheme.outline,
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                )
+                            }
+                            innerTextField()
+                        }
+                    }
+                }
+            )
+        }
+    }
+}
+
 @Preview(name = "PaymentScreen Example", showBackground = true)
 @Composable
 fun PaymentExampleScreenPreview() {
@@ -154,5 +238,13 @@ fun PaymentExampleScreenPreview() {
 fun SecurityCodeExamplePreview() {
     ExampleTheme {
         SecurityCodeExample()
+    }
+}
+
+@Preview(name = "Empty Expiration Date Field", showBackground = true)
+@Composable
+fun ExpirationDatePreview() {
+    ExampleTheme {
+        ExpirationDateExample()
     }
 }
