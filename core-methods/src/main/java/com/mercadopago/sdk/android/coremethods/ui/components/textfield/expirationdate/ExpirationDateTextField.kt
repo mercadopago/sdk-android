@@ -11,7 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.ExpirationDateLenght
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.ExpirationDateLength
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
@@ -52,8 +52,8 @@ fun ExpirationDateField(
             onEvent(ExpirationDateFieldEvent.OnFocusChanged(isFocused))
         },
         onValueChange = { value ->
-            if (value.length <= ExpirationDateLenght && value.none { !it.isDigit() }) {
-                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == ExpirationDateLenght))
+            if (value.length <= ExpirationDateLength && value.none { !it.isDigit() }) {
+                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == ExpirationDateLength))
                 onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }

@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield
 
-internal const val ExpirationDateLenght = 4
-internal const val ExpirationYearStart = "20"
+internal const val ExpirationDateLength = 4
 
 // String
 internal const val EmptyString = ""
