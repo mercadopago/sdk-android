@@ -1,9 +1,11 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield
+package com.mercadopago.sdk.android.coremethods.ui.utils
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.IntOne
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.IntZero
 import kotlin.math.absoluteValue
 
 /** Creates a visual transformation that masks the input of a field. It helps

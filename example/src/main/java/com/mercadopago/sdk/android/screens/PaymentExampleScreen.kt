@@ -30,8 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.R
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
@@ -174,7 +174,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                 MaterialTheme.colorScheme.tertiaryContainer
             )
         ) {
-            ExpirationDateField(
+            ExpirationDateTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
                 onEvent = { expirationDateEvent ->

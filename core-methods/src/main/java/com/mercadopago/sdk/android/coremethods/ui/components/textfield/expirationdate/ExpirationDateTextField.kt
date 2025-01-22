@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate
 
+import androidx.annotation.IntRange
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,13 +13,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.ExpirationDateLength
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.MaskVisualTransformationDefaults
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.DefaultExpirationDateMaxLength
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
 /**
  * Expiration date input component.
@@ -29,17 +30,25 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param modifier Modifier to customize the style and behavior of the field.
  * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
  * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
+ * @param maxLength This changes the max length that the input handle,
+ * this have to be align to the visual transformation mask
  * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
  * @param readOnly Controls whether the field is editable or read-only.
  * @param decorationBox A composable that allows the addition of decorative elements around the text field.
  * @param textStyle Text style to be applied to the field's content.
+ * @param keyboardOptions The keyboard options to be applied to the field.
  * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+ * @param visualTransformation The visual transformation to be applied to the field.
+ * @see MaskVisualTransformationDefaults
+ *
+ * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.ExpirationDateFieldWithCustomMask
  */
 @Composable
-fun ExpirationDateField(
+fun ExpirationDateTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (ExpirationDateFieldEvent) -> Unit,
+    @IntRange(from = 4, to = 8) maxLength: Int = DefaultExpirationDateMaxLength,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -56,8 +65,8 @@ fun ExpirationDateField(
             onEvent(ExpirationDateFieldEvent.OnFocusChanged(isFocused))
         },
         onValueChange = { value ->
-            if (value.length <= ExpirationDateLength && value.none { !it.isDigit() }) {
-                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == ExpirationDateLength))
+            if ((value.length <= maxLength) && value.none { !it.isDigit() }) {
+                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == maxLength))
                 onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }
@@ -81,9 +90,9 @@ fun ExpirationDateField(
 @Composable
 fun ExpirationDateEmptyPreview() {
     val state: PCIFieldState = rememberPCIFieldState()
-    ExpirationDateField(
+    ExpirationDateTextField(
         state = state,
-        onEvent = { securityCodeFieldEvent ->
+        onEvent = { expirationDateEvent ->
         }
     )
 }
@@ -98,9 +107,9 @@ fun ExpirationDateFilledPreview() {
     val state: PCIFieldState = rememberPCIFieldState().apply {
         input = "1225"
     }
-    ExpirationDateField(
+    ExpirationDateTextField(
         state = state,
-        onEvent = { securityCodeFieldEvent ->
+        onEvent = { expirationDateEvent ->
         }
     )
 }
