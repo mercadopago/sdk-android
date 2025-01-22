@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -36,6 +37,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
  * field can not be modified, however, a user can focus it and copy text from it. Read-only text
  * fields are usually used to display pre-filled forms that user can not edit
  * @param keyboardOptions The keyboard options to be applied to the field.
+ * @param keyboardActions when the input service emits an IME action, the corresponding callback
+ * is called. Note that this IME action may be different from what you specified in
+ * [KeyboardOptions.imeAction].
  * @param cursorBrush The cursor brush to be applied to the field.
  * @param visualTransformation The visual transformation to be applied to the field.
  *
@@ -53,6 +57,7 @@ internal fun PCITextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
@@ -65,6 +70,7 @@ internal fun PCITextField(
         cursorBrush = cursorBrush,
         readOnly = readOnly,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
         visualTransformation = visualTransformation,
         modifier = modifier
             .testTag(PCITextFieldTestTags.Field.tag)

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import junit.framework.TestCase.assertEquals
@@ -49,11 +50,19 @@ internal open class PCIFieldRobot(
             .performTextInput(text)
     }
 
-    fun assertTextInput(text: String) {
+    fun clearTextInput() {
+        composeRule.onNodeWithTag(testTag)
+            .performTextClearance()
+    }
+
+    fun assertTextInput(
+        text: String,
+        input: String = text,
+    ) {
         composeRule.onNodeWithTag(testTag)
             .assertExists()
             .assert(hasText(text))
-        assertEquals(text, fieldState.input)
+        assertEquals(input, fieldState.input)
     }
 
     fun assertTextIsDisplayed(text: String) {

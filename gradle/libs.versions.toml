@@ -20,6 +20,7 @@ testParameterInjector = "1.17"
 converterGson = "2.6.4"
 converterKotlinxSerialization = "2.11.0"
 robolectric = "4.12"
+turbine = "1.2.0"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
@@ -50,6 +51,7 @@ test-parameterInjector = { module = "com.google.testparameterinjector:test-param
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
+cashapp-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

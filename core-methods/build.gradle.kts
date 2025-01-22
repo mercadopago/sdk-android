@@ -69,6 +69,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.compose.test)
+    testImplementation(libs.cashapp.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
