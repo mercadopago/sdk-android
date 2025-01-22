@@ -14,6 +14,12 @@ interface ExpirationDateFieldEvent {
     data class OnInputFilled(val isFilled: Boolean) : ExpirationDateFieldEvent
 
     /**
+     * This function informs if expiration date that was typed is valid.
+     * @param isValid: if the date typed is valid or not
+     */
+    data class IsValid(val isValid: Boolean) : ExpirationDateFieldEvent
+
+    /**
      * This function informs the expiration date field length.
      * @param length: number of characters typed
      */

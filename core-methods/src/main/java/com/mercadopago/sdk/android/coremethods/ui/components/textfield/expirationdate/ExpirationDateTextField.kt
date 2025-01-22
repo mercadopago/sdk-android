@@ -4,6 +4,7 @@ import androidx.annotation.IntRange
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.coremethods.domain.usecase.IsExpirationDateValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.DefaultExpirationDateMaxLength
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -59,17 +61,22 @@ fun ExpirationDateTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.ExpirationDate,
 ) {
+    val isCardNumberValidUseCase = remember { IsExpirationDateValidUseCase() }
+
     PCITextField(
         value = state.input,
         onFocusChanged = { isFocused ->
             onEvent(ExpirationDateFieldEvent.OnFocusChanged(isFocused))
         },
         onValueChange = { value ->
-            if ((value.length <= maxLength) && value.none { !it.isDigit() }) {
-                onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = value.length == maxLength))
-                onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = value.length))
-                state.input = value
-            }
+            val updatedValue = value.take(maxLength)
+            val inputDigits = updatedValue.filter { it.isDigit() }
+            val isValid = isCardNumberValidUseCase(inputDigits)
+
+            onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = updatedValue.length))
+            onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = updatedValue.length == maxLength))
+            onEvent(ExpirationDateFieldEvent.IsValid(isValid))
+            state.input = updatedValue
         },
         keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),
         modifier = modifier.testTag(PCITextFieldTestTags.ExpirationDate.tag),
