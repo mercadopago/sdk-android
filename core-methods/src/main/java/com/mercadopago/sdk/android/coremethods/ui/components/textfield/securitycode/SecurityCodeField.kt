@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
@@ -70,7 +71,7 @@ fun SecurityCodeTextField(
         readOnly = readOnly,
         decorationBox = decorationBox,
         cursorBrush = cursorBrush,
-        keyboardOptions = keyboardOptions,
+        keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),
         textStyle = textStyle,
         visualTransformation = visualTransformation
     )

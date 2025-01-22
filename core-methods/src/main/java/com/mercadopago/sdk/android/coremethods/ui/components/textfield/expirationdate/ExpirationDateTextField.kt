@@ -9,9 +9,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.ExpirationDateLength
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.MaskVisualTransformationDefaults
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
@@ -44,7 +46,9 @@ fun ExpirationDateField(
         innerTextField: @Composable () -> Unit
     ) -> Unit = @Composable { innerTextField -> innerTextField() },
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
+    visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.ExpirationDate,
 ) {
     PCITextField(
         value = state.input,
@@ -58,13 +62,13 @@ fun ExpirationDateField(
                 state.input = value
             }
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),
         modifier = modifier.testTag(PCITextFieldTestTags.ExpirationDate.tag),
         decorationBox = decorationBox,
         textStyle = textStyle,
         enabled = enabled,
         readOnly = readOnly,
-        visualTransformation = ExpirationDateTextFieldMasks(),
+        visualTransformation = visualTransformation,
         cursorBrush = cursorBrush,
     )
 }
