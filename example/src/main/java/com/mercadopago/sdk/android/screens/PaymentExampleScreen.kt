@@ -73,13 +73,13 @@ data class SecurityCodeState(
     var isFocused: Boolean = false,
     var filled: Boolean = false,
     var length: Int = 0,
-    var error: Boolean = false
 )
 
 data class ExpirationDateState(
     var isFocused: Boolean = false,
     var filled: Boolean = false,
-    var length: Int = 0
+    var length: Int = 0,
+    var error: Boolean = false
 )
 
 @Composable
@@ -130,7 +130,6 @@ fun SecurityCodeExample(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .addBorder(
                                 isFocused = secureCodeState.isFocused,
-                                isError = secureCodeState.error
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),
@@ -185,6 +184,12 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                             )
                         }
 
+                        is ExpirationDateFieldEvent.IsValid -> {
+                            expirationDateState = expirationDateState.copy(
+                                error = !expirationDateEvent.isValid
+                            )
+                        }
+
                         is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateEvent.isFocused
@@ -204,6 +209,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                         modifier = Modifier
                             .addBorder(
                                 isFocused = expirationDateState.isFocused,
+                                isError = expirationDateState.error
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),

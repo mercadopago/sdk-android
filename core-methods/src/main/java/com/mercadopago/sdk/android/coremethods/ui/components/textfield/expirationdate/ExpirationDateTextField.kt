@@ -71,7 +71,7 @@ fun ExpirationDateTextField(
         onValueChange = { value ->
             val updatedValue = value.take(maxLength)
             val inputDigits = updatedValue.filter { it.isDigit() }
-            val isValid = isCardNumberValidUseCase(inputDigits)
+            val isValid = isCardNumberValidUseCase(inputDigits, maxLength)
 
             onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = updatedValue.length))
             onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = updatedValue.length == maxLength))
