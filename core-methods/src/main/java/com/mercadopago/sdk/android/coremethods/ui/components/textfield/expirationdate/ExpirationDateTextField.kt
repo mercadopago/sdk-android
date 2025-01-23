@@ -50,7 +50,7 @@ fun ExpirationDateTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (ExpirationDateFieldEvent) -> Unit,
-    @IntRange(from = 4, to = 8) maxLength: Int = DefaultExpirationDateMaxLength,
+    @IntRange(from = 4, to = 6) maxLength: Int = DefaultExpirationDateMaxLength,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (

@@ -36,6 +36,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 
@@ -176,6 +177,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
             ExpirationDateTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
+                maxLength = 6,
                 onEvent = { expirationDateEvent ->
                     when (expirationDateEvent) {
                         is ExpirationDateFieldEvent.OnInputFilled -> {
@@ -203,6 +205,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                         }
                     }
                 },
+                visualTransformation = MaskVisualTransformation("##/####"),
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -217,7 +220,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                         Box {
                             if (expirationDateState.length == 0) {
                                 Text(
-                                    text = "MM/AA",
+                                    text = "MM/YYYY",
                                     color = MaterialTheme.colorScheme.outline,
                                     modifier = Modifier.align(Alignment.CenterStart),
                                 )
