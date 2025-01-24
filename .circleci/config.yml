@@ -22,8 +22,8 @@ jobs:
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
             sudo apt-get install git-lfs
             git lfs install
-      - checkout
       - run: GIT_LFS_SKIP_SMUDGE=1
+      - checkout
       - run: git lfs fetch --all
       - run:
           name: Check JDK exists
