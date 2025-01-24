@@ -23,6 +23,7 @@ jobs:
             sudo apt-get install git-lfs
             git lfs install
       - checkout
+      - run: GIT_LFS_SKIP_SMUDGE=1
       - run: git lfs fetch --all
       - run:
           name: Check JDK exists
