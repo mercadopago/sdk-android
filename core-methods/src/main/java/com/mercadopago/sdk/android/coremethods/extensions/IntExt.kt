@@ -8,7 +8,7 @@ import kotlin.math.min
  * @param min: minimal range
  * @param max: maximum range
  */
-fun Int.between(min: Int, max: Int): Int {
+internal fun Int.between(min: Int, max: Int): Int {
     return max(min, min(this, max))
 }
 
@@ -16,6 +16,6 @@ fun Int.between(min: Int, max: Int): Int {
  * Take the last digits by count
  * @param num: digits to take
  */
-fun Int.takeLast(num: Int): Int {
+internal fun Int.takeLast(num: Int): Int {
     return this.toString().takeLast(num).toInt()
 }

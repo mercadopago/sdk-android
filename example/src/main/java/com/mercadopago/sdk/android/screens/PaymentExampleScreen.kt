@@ -30,13 +30,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.R
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationCodeDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
-import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 
@@ -177,7 +177,7 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
             ExpirationDateTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
-                maxLength = 6,
+                dateFormat = ExpirationCodeDateFormat.LongFormat,
                 onEvent = { expirationDateEvent ->
                     when (expirationDateEvent) {
                         is ExpirationDateFieldEvent.OnInputFilled -> {
@@ -205,7 +205,6 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                         }
                     }
                 },
-                visualTransformation = MaskVisualTransformation("##/####"),
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,

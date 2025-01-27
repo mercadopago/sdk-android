@@ -51,5 +51,4 @@ class MaskVisualTransformation(
 
 internal object MaskVisualTransformationDefaults {
     val CardNumber = MaskVisualTransformation("#### #### #### ####")
-    val ExpirationDate = MaskVisualTransformation("##/##")
 }

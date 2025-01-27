@@ -6,7 +6,7 @@ import org.junit.Test
 import java.util.Calendar
 import java.util.Locale
 
-class ExpirationDateValidationTest {
+internal class ExpirationDateValidationTest {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR) % 100
     val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
 

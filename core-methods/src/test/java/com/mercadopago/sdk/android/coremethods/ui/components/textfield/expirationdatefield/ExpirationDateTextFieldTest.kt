@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class ExpirationDateTextFieldTest {
+internal class ExpirationDateTextFieldTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()

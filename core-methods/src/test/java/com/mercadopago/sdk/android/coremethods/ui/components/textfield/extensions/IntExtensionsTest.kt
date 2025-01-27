@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.coremethods.extensions.takeLast
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class IntExtensionsTest {
+internal class IntExtensionsTest {
 
     @Test
     fun `when pass a great number should return max range value`() {
