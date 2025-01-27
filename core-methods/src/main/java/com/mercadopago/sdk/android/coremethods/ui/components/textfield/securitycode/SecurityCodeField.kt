@@ -79,7 +79,7 @@ fun SecurityCodeTextField(
 
 @Preview(
     name = "Security Code Field Empty",
-    group = PreviewGroup.SECURITY_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
@@ -95,7 +95,7 @@ fun SecurityCodeEmptyPreview() {
 
 @Preview(
     name = "Security Code Field Filled",
-    group = PreviewGroup.SECURITY_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable

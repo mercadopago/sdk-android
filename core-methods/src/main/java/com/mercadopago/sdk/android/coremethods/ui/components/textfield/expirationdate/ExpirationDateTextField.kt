@@ -91,7 +91,7 @@ fun ExpirationDateTextField(
 
 @Preview(
     name = "Expiration Date Field Empty",
-    group = PreviewGroup.EXPIRATION_DATE_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
@@ -106,7 +106,7 @@ fun ExpirationDateEmptyPreview() {
 
 @Preview(
     name = "Expiration Date Field Filled",
-    group = PreviewGroup.EXPIRATION_DATE_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
