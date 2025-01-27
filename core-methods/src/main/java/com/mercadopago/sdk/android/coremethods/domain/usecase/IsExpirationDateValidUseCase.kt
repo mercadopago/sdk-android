@@ -21,7 +21,7 @@ internal class IsExpirationDateValidUseCase {
 
                 when (lastSegmentDate >= year) {
                     true -> {
-                        firstSegment.between(IntOne, MaxMonth) >= month
+                        firstSegment.between(IntOne, MaxMonth) <= month.between(IntOne, MaxMonth)
                     }
 
                     else -> {
