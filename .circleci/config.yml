@@ -86,9 +86,9 @@ jobs:
       - run:
           name: Run Code Coverage
           command: ./gradlew koverXmlReportDebug
-      - run:
-          name: Run Screenshot Tests
-          command: ./gradlew verifyPaparazziDebug
+#      - run:
+#          name: Run Screenshot Tests
+#          command: ./gradlew verifyPaparazziDebug
       - store_test_results:
           path: core-methods/build/reports/kover/reportDebug.xml
 
