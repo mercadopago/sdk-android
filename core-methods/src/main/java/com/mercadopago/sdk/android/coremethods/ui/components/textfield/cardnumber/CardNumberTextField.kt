@@ -125,7 +125,7 @@ fun CardNumberTextField(
 }
 
 @Preview(
-    group = PreviewGroup.SECURITY_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
@@ -138,7 +138,7 @@ internal fun CardNumberTextFieldEmptyPreview() {
 }
 
 @Preview(
-    group = PreviewGroup.SECURITY_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
@@ -153,7 +153,7 @@ internal fun CardNumberText16DigitsFieldFilledPreview() {
 }
 
 @Preview(
-    group = PreviewGroup.SECURITY_FIELD,
+    group = PreviewGroup.TEXT_FIELD,
     showBackground = true
 )
 @Composable
