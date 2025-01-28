@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -38,6 +39,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.extensions.addBorder
+import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 
 @Composable
@@ -63,6 +65,25 @@ fun PaymentExampleScreenContent(
                     Spacer(Modifier.width(16.dp))
                     SecurityCodeExample(
                         Modifier.weight(1f)
+                    )
+                }
+
+                Spacer(Modifier.size(16.dp))
+
+                val state1: PCIFieldState = rememberPCIFieldState()
+                val state2: PCIFieldState = rememberPCIFieldState()
+                val state3: PCIFieldState = rememberPCIFieldState()
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = { PaymentScreenViewModel().generateToken(state1, state2, state3) },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Text(
+                        text = "Pay",
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             }
