@@ -29,6 +29,8 @@ import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 internal const val BinLength = 8
 internal const val DefaultCardNumberMaxLength = 19
 internal const val LastDigitsLength = 4
+internal const val MinCardLength = 8L
+internal const val MaxCardLength = 19L
 
 /**
  * Card Number input component. This PCI handles user input of card numbers.
@@ -73,7 +75,7 @@ fun CardNumberTextField(
     state: PCIFieldState,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
     modifier: Modifier = Modifier,
-    @IntRange(from = 8, to = 19) maxLength: Int = DefaultCardNumberMaxLength,
+    @IntRange(from = MinCardLength, to = MaxCardLength) maxLength: Int = DefaultCardNumberMaxLength,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -90,12 +92,12 @@ fun CardNumberTextField(
     PCITextField(
         value = state.input,
         onValueChange = { value ->
-            val updatedValue = value.take(maxLength)
-            val inputDigits = updatedValue.filter { it.isDigit() }
-            onEvent(CardNumberTextFieldEvent.OnLengthChanged(length = updatedValue.length))
-            if (inputDigits.length >= BinLength) {
+            val inputDigits = value.filter { it.isDigit() }.take(maxLength)
+            onEvent(CardNumberTextFieldEvent.OnLengthChanged(length = inputDigits.length))
+            if (inputDigits.length >= BinLength && state.input.length < BinLength) {
                 onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = inputDigits.take(BinLength)))
-            } else {
+            }
+            if (inputDigits.length < BinLength && state.input.length >= BinLength) {
                 onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = null))
             }
             val isValid = isCardNumberValidUseCase(inputDigits)
@@ -107,7 +109,7 @@ fun CardNumberTextField(
                 )
             }
             onEvent(CardNumberTextFieldEvent.IsValid(isValid))
-            state.input = updatedValue
+            state.input = inputDigits
         },
         onFocusChanged = { isFocused ->
             onEvent(CardNumberTextFieldEvent.OnFocusChanged(isFocused))
