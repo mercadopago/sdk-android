@@ -14,7 +14,6 @@ import androidx.compose.runtime.setValue
  */
 @Stable
 class PCIFieldState internal constructor() {
-
     internal var input: String by mutableStateOf("")
 
     companion object {
@@ -24,7 +23,7 @@ class PCIFieldState internal constructor() {
                 PCIFieldState().apply {
                     input = restored
                 }
-            }
+            },
         )
     }
 }

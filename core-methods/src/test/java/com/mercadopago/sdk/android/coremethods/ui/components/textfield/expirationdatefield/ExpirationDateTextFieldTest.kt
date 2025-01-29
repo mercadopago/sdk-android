@@ -14,14 +14,13 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ExpirationDateTextFieldTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
     data class ExpirationDateState(
         var isFocused: Boolean = false,
         var filled: Boolean = false,
-        var length: Int = 0
+        var length: Int = 0,
     )
 
     @Test
@@ -67,11 +66,11 @@ internal class ExpirationDateTextFieldTest {
                     when (expirationDateFieldEvent) {
                         is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
-                                isFocused = expirationDateFieldEvent.isFocused
+                                isFocused = expirationDateFieldEvent.isFocused,
                             )
                         }
                     }
-                }
+                },
             )
             performTapOnInput()
 
@@ -92,7 +91,7 @@ internal class ExpirationDateTextFieldTest {
                     when (expirationDateFieldEvent) {
                         is ExpirationDateFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
-                                isFocused = expirationDateFieldEvent.isFocused
+                                isFocused = expirationDateFieldEvent.isFocused,
                             )
                         }
                     }
@@ -121,7 +120,7 @@ internal class ExpirationDateTextFieldTest {
                         Text(text = title)
                         innerTextField()
                     }
-                }
+                },
             )
             performTapOnInput()
             performTextInput(input)

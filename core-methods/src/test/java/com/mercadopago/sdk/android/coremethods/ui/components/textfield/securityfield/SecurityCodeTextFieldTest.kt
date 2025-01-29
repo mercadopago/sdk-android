@@ -14,7 +14,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class SecurityCodeTextFieldTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -66,11 +65,11 @@ internal class SecurityCodeTextFieldTest {
                     when (securityCodeFieldEvent) {
                         is SecurityCodeFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
-                                isFocused = securityCodeFieldEvent.isFocused
+                                isFocused = securityCodeFieldEvent.isFocused,
                             )
                         }
                     }
-                }
+                },
             )
             performTapOnInput()
 
@@ -91,7 +90,7 @@ internal class SecurityCodeTextFieldTest {
                     when (securityCodeFieldEvent) {
                         is SecurityCodeFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
-                                isFocused = securityCodeFieldEvent.isFocused
+                                isFocused = securityCodeFieldEvent.isFocused,
                             )
                         }
                     }
@@ -119,7 +118,7 @@ internal class SecurityCodeTextFieldTest {
                         Text(text = title)
                         innerTextField()
                     }
-                }
+                },
             )
             performTapOnInput()
             performTextInput(input)

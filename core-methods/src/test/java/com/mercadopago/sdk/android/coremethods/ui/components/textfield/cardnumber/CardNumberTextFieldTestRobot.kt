@@ -1,57 +1,47 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdatefield
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.StateRestorationTester
-import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import junit.framework.TestCase.assertEquals
+import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
-internal class ExpirationDateTextFieldRobot(
+internal class CardNumberTextFieldTestRobot(
     composeRule: ComposeContentTestRule,
 ) : PCIFieldRobot(composeRule) {
-    fun createExpirationDateField(
+    fun createTextField(
+        visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
         enabled: Boolean = true,
         readOnly: Boolean = false,
-        onEvent: (ExpirationDateFieldEvent) -> Unit = {},
+        onEvent: (CardNumberTextFieldEvent) -> Unit = {},
         decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
             @Composable { innerTextField -> innerTextField() },
+        maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
         stateRestorationTester: StateRestorationTester? = null,
     ) {
-        testTag = PCITextFieldTestTags.ExpirationDate.tag
+        testTag = PCITextFieldTestTags.CardNumber.tag
         setContent(stateRestorationTester) {
             fieldState = rememberPCIFieldState()
             MaterialTheme {
-                ExpirationDateTextField(
+                CardNumberTextField(
                     state = fieldState,
                     onEvent = onEvent,
+                    visualTransformation = visualTransformation,
                     enabled = enabled,
                     readOnly = readOnly,
+                    maxLength = maxLength,
                     decorationBox = decorationBox,
                 )
             }
         }
     }
-
-    fun assetTextVisualTransformation(
-        unmaskedText: String,
-        maskedText: String,
-    ) {
-        composeRule.onNodeWithTag(testTag)
-            .assertExists()
-            .assert(hasText(maskedText))
-        assertEquals(unmaskedText, fieldState.input)
-    }
 }
 
-internal fun expirationDateRobot(
+internal fun cardNumberTextFieldRobot(
     composeTestRule: ComposeContentTestRule,
-    block: ExpirationDateTextFieldRobot.() -> Unit,
-) = ExpirationDateTextFieldRobot(composeTestRule).apply(block)
+    block: CardNumberTextFieldTestRobot.() -> Unit,
+) = CardNumberTextFieldTestRobot(composeTestRule).apply(block)
