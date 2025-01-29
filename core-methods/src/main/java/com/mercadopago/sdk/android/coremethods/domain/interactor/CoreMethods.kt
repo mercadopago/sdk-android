@@ -39,8 +39,8 @@ class CoreMethods internal constructor(
         return coreMethodsProvider.provideCoreMethodsRepository().generateCardToken(
             CardTokenFields(
                 cardNumber = cardNumberState.input,
-                expirationMonth = 1,
-                expirationYear = 2032,
+                expirationMonth = expirationMonth.toInt(),
+                expirationYear = expirationYear.toInt(),
                 securityCode = securityCodeState.input
             )
         )

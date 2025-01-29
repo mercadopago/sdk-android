@@ -24,6 +24,7 @@ converterKotlinxSerialization = "2.11.0"
 robolectric = "4.12"
 koin-bom = "3.5.0"
 retrofit = "2.11.0"
+lifecycleViewmodelCompose = "2.8.7"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
@@ -59,6 +60,7 @@ converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-k
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 squareup-retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
