@@ -7,9 +7,8 @@ import androidx.compose.ui.test.junit4.StateRestorationTester
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
 
 internal open class PCITextFieldRobot(
-    composeRule: ComposeContentTestRule
+    composeRule: ComposeContentTestRule,
 ) : PCIFieldRobot(composeRule) {
-
     fun createTextField(
         enabled: Boolean = true,
         readOnly: Boolean = false,
@@ -39,5 +38,5 @@ internal open class PCITextFieldRobot(
 
 internal fun pciTextFieldRobot(
     composeTestRule: ComposeContentTestRule,
-    block: PCITextFieldRobot.() -> Unit
+    block: PCITextFieldRobot.() -> Unit,
 ) = PCITextFieldRobot(composeTestRule).apply(block)

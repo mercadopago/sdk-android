@@ -21,6 +21,7 @@ converterGson = "2.6.4"
 converterKotlinxSerialization = "2.11.0"
 robolectric = "4.12"
 turbine = "1.2.0"
+ktlint = "12.1.2"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
@@ -64,4 +65,4 @@ google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
 cashapp-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 # KLIN
-klint = { id = "org.jlleitschuh.gradle.ktlint", version = "10.3.0" }
+klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

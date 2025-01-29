@@ -6,7 +6,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class IntExtensionsTest {
-
     @Test
     fun `when pass a great number should return max range value`() {
         val number = 100

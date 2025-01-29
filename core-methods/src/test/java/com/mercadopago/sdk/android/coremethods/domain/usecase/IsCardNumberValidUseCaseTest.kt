@@ -5,7 +5,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class IsCardNumberValidUseCaseTest {
-
     private val useCase = IsCardNumberValidUseCase()
 
     @Test

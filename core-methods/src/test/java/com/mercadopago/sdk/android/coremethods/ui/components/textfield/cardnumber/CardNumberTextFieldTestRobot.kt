@@ -11,9 +11,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
 internal class CardNumberTextFieldTestRobot(
-    composeRule: ComposeContentTestRule
+    composeRule: ComposeContentTestRule,
 ) : PCIFieldRobot(composeRule) {
-
     fun createTextField(
         visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
         enabled: Boolean = true,
@@ -21,7 +20,7 @@ internal class CardNumberTextFieldTestRobot(
         onEvent: (CardNumberTextFieldEvent) -> Unit = {},
         decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
             @Composable { innerTextField -> innerTextField() },
-        maxLength: Int = DefaultCardNumberMaxLength,
+        maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
         stateRestorationTester: StateRestorationTester? = null,
     ) {
         testTag = PCITextFieldTestTags.CardNumber.tag
@@ -44,5 +43,5 @@ internal class CardNumberTextFieldTestRobot(
 
 internal fun cardNumberTextFieldRobot(
     composeTestRule: ComposeContentTestRule,
-    block: CardNumberTextFieldTestRobot.() -> Unit
+    block: CardNumberTextFieldTestRobot.() -> Unit,
 ) = CardNumberTextFieldTestRobot(composeTestRule).apply(block)

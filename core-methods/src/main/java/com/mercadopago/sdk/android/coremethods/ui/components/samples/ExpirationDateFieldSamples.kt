@@ -23,19 +23,20 @@ internal fun ExpirationDateFieldWithCustomMask() {
         onEvent = { securityCodeFieldEvent ->
             // Handle the security code events
         },
-        dateFormat = ExpirationCodeDateFormat.ShortFormat, // Pass the current date format
+        // Pass the current date format
+        dateFormat = ExpirationCodeDateFormat.ShortFormat,
         decorationBox = { innerTextField ->
             // Adding the inner text inside a box with a border
             Box(
                 modifier = Modifier.border(
                     width = 2.dp,
                     color = Color.Black,
-                    shape = RoundedCornerShape(10.dp)
-                )
+                    shape = RoundedCornerShape(10.dp),
+                ),
             ) {
                 // Don`t forget to call the innerTextField()
                 innerTextField()
             }
-        }
+        },
     )
 }

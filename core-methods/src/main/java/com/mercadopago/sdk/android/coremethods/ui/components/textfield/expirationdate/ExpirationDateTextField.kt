@@ -49,11 +49,11 @@ fun ExpirationDateTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
-        innerTextField: @Composable () -> Unit
+        innerTextField: @Composable () -> Unit,
     ) -> Unit = @Composable { innerTextField -> innerTextField() },
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary)
+    cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
 ) {
     val isCardNumberValidUseCase = remember { IsExpirationDateValidUseCase() }
 
@@ -86,7 +86,7 @@ fun ExpirationDateTextField(
 @Preview(
     name = "Expiration Date Field Empty",
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 fun ExpirationDateEmptyPreview() {
@@ -94,14 +94,14 @@ fun ExpirationDateEmptyPreview() {
     ExpirationDateTextField(
         state = state,
         onEvent = { _ ->
-        }
+        },
     )
 }
 
 @Preview(
     name = "Expiration Date Field Filled",
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 fun ExpirationDateFilledPreview() {
@@ -111,6 +111,6 @@ fun ExpirationDateFilledPreview() {
     ExpirationDateTextField(
         state = state,
         onEvent = { _ ->
-        }
+        },
     )
 }

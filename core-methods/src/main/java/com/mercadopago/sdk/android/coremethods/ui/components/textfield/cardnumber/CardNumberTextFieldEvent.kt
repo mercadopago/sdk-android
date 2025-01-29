@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
 
 interface CardNumberTextFieldEvent {
-
     /**
      * Informs if the card number bin has been filled.
      * @param cardBin: bin of the card number if it is available. This will return null if the bin is deleted.

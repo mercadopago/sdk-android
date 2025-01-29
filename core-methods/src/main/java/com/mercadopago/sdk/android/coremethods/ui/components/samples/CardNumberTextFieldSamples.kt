@@ -31,7 +31,7 @@ internal fun CardNumberWithIssuerIconSample() {
                     width = 2.dp,
                     color = Color.Blue,
                     shape = RoundedCornerShape(10.dp),
-                )
+                ),
             ) {
                 Row {
                     if (iconUrl.isNotEmpty()) {
@@ -42,6 +42,6 @@ internal fun CardNumberWithIssuerIconSample() {
                     innerTextField()
                 }
             }
-        }
+        },
     )
 }

@@ -11,9 +11,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 
 internal class SecurityCodeTextFieldRobot(
-    composeRule: ComposeContentTestRule
+    composeRule: ComposeContentTestRule,
 ) : PCIFieldRobot(composeRule) {
-
     fun createSecurityField(
         enabled: Boolean = true,
         readOnly: Boolean = false,
@@ -31,7 +30,7 @@ internal class SecurityCodeTextFieldRobot(
                     onEvent = onEvent,
                     enabled = enabled,
                     readOnly = readOnly,
-                    decorationBox = decorationBox
+                    decorationBox = decorationBox,
                 )
             }
         }
@@ -40,5 +39,5 @@ internal class SecurityCodeTextFieldRobot(
 
 internal fun securityFieldRobot(
     composeTestRule: ComposeContentTestRule,
-    block: SecurityCodeTextFieldRobot.() -> Unit
+    block: SecurityCodeTextFieldRobot.() -> Unit,
 ) = SecurityCodeTextFieldRobot(composeTestRule).apply(block)

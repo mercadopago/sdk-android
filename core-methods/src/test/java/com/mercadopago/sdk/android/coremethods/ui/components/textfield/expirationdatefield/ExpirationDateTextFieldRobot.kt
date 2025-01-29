@@ -15,9 +15,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import junit.framework.TestCase.assertEquals
 
 internal class ExpirationDateTextFieldRobot(
-    composeRule: ComposeContentTestRule
+    composeRule: ComposeContentTestRule,
 ) : PCIFieldRobot(composeRule) {
-
     fun createExpirationDateField(
         enabled: Boolean = true,
         readOnly: Boolean = false,
@@ -35,13 +34,16 @@ internal class ExpirationDateTextFieldRobot(
                     onEvent = onEvent,
                     enabled = enabled,
                     readOnly = readOnly,
-                    decorationBox = decorationBox
+                    decorationBox = decorationBox,
                 )
             }
         }
     }
 
-    fun assetTextVisualTransformation(unmaskedText: String, maskedText: String) {
+    fun assetTextVisualTransformation(
+        unmaskedText: String,
+        maskedText: String,
+    ) {
         composeRule.onNodeWithTag(testTag)
             .assertExists()
             .assert(hasText(maskedText))
@@ -51,5 +53,5 @@ internal class ExpirationDateTextFieldRobot(
 
 internal fun expirationDateRobot(
     composeTestRule: ComposeContentTestRule,
-    block: ExpirationDateTextFieldRobot.() -> Unit
+    block: ExpirationDateTextFieldRobot.() -> Unit,
 ) = ExpirationDateTextFieldRobot(composeTestRule).apply(block)

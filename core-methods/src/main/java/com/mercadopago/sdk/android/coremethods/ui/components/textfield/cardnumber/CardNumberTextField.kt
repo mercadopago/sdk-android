@@ -26,11 +26,11 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
-internal const val BinLength = 8
-internal const val DefaultCardNumberMaxLength = 19
-internal const val LastDigitsLength = 4
-internal const val MinCardLength = 8L
-internal const val MaxCardLength = 19L
+internal const val BIN_LENGTH = 8
+internal const val DEFAULT_CARD_NUMBER_MAX_LENGTH = 19
+internal const val LAST_DIGITS_LENGTH = 4
+internal const val MIN_CARD_LENGTH = 8L
+internal const val MAX_CARD_LENGTH = 19L
 
 /**
  * Card Number input component. This PCI handles user input of card numbers.
@@ -75,11 +75,11 @@ fun CardNumberTextField(
     state: PCIFieldState,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
     modifier: Modifier = Modifier,
-    @IntRange(from = MinCardLength, to = MaxCardLength) maxLength: Int = DefaultCardNumberMaxLength,
+    @IntRange(from = MIN_CARD_LENGTH, to = MAX_CARD_LENGTH) maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
-        innerTextField: @Composable () -> Unit
+        innerTextField: @Composable () -> Unit,
     ) -> Unit = @Composable { innerTextField -> innerTextField() },
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
@@ -94,18 +94,18 @@ fun CardNumberTextField(
         onValueChange = { value ->
             val inputDigits = value.filter { it.isDigit() }.take(maxLength)
             onEvent(CardNumberTextFieldEvent.OnLengthChanged(length = inputDigits.length))
-            if (inputDigits.length >= BinLength && state.input.length < BinLength) {
-                onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = inputDigits.take(BinLength)))
+            if (inputDigits.length >= BIN_LENGTH && state.input.length < BIN_LENGTH) {
+                onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = inputDigits.take(BIN_LENGTH)))
             }
-            if (inputDigits.length < BinLength && state.input.length >= BinLength) {
+            if (inputDigits.length < BIN_LENGTH && state.input.length >= BIN_LENGTH) {
                 onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = null))
             }
             val isValid = isCardNumberValidUseCase(inputDigits)
             if (isValid) {
                 onEvent(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
-                        lastFourDigits = inputDigits.takeLast(LastDigitsLength)
-                    )
+                        lastFourDigits = inputDigits.takeLast(LAST_DIGITS_LENGTH),
+                    ),
                 )
             }
             onEvent(CardNumberTextFieldEvent.IsValid(isValid))
@@ -128,7 +128,7 @@ fun CardNumberTextField(
 
 @Preview(
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 internal fun CardNumberTextFieldEmptyPreview() {
@@ -141,7 +141,7 @@ internal fun CardNumberTextFieldEmptyPreview() {
 
 @Preview(
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 internal fun CardNumberText16DigitsFieldFilledPreview() {
@@ -156,7 +156,7 @@ internal fun CardNumberText16DigitsFieldFilledPreview() {
 
 @Preview(
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 internal fun CardNumberText19DigitsFieldFilledPreview() {
