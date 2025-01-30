@@ -4,8 +4,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.IntOne
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.IntZero
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ONE
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
 import kotlin.math.absoluteValue
 
 /** Creates a visual transformation that masks the input of a field. It helps
@@ -14,12 +14,11 @@ import kotlin.math.absoluteValue
 class MaskVisualTransformation(
     private val mask: String,
 ) : VisualTransformation {
-
     private val specialSymbolsIndices = mask.indices.filter { mask[it] != '#' }
 
     override fun filter(text: AnnotatedString): TransformedText {
         var out = ""
-        var maskIndex = IntZero
+        var maskIndex = INT_ZERO
         text.forEach { char ->
             while (specialSymbolsIndices.contains(maskIndex)) {
                 out += mask[maskIndex]
@@ -31,22 +30,23 @@ class MaskVisualTransformation(
         return TransformedText(AnnotatedString(out), offsetTranslator())
     }
 
-    private fun offsetTranslator() = object : OffsetMapping {
-        override fun originalToTransformed(offset: Int): Int {
-            val offsetValue = offset.absoluteValue
-            if (offsetValue == IntZero) return IntZero
-            var numberOfHashtags = IntZero
-            val masked = mask.takeWhile {
-                if (it == '#') numberOfHashtags++
-                numberOfHashtags < offsetValue
+    private fun offsetTranslator() =
+        object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                val offsetValue = offset.absoluteValue
+                if (offsetValue == INT_ZERO) return INT_ZERO
+                var numberOfHashtags = INT_ZERO
+                val masked = mask.takeWhile {
+                    if (it == '#') numberOfHashtags++
+                    numberOfHashtags < offsetValue
+                }
+                return masked.length + INT_ONE
             }
-            return masked.length + IntOne
-        }
 
-        override fun transformedToOriginal(offset: Int): Int {
-            return mask.take(offset.absoluteValue).count { it == '#' }
+            override fun transformedToOriginal(offset: Int): Int {
+                return mask.take(offset.absoluteValue).count { it == '#' }
+            }
         }
-    }
 }
 
 internal object MaskVisualTransformationDefaults {

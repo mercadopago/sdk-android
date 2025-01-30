@@ -22,7 +22,8 @@ internal fun SecurityCodeFieldBasicSample() {
         onEvent = { securityCodeFieldEvent ->
             // Handle the security code events
         },
-        securityCodeSize = 3, // Pass the securityCode length number
+        // Pass the securityCode length number
+        securityCodeSize = 3,
     )
 }
 
@@ -37,19 +38,20 @@ internal fun SecurityCodeFieldDecorationBoxSample() {
         onEvent = { securityCodeFieldEvent ->
             // Handle the security code events
         },
-        securityCodeSize = 3, // Pass the securityCode length number,
+        // Pass the securityCode length number
+        securityCodeSize = 3,
         decorationBox = { innerTextField ->
             // Adding the inner text inside a box with a border
             Box(
                 modifier = Modifier.border(
                     width = 2.dp,
                     color = Color.Black,
-                    shape = RoundedCornerShape(10.dp)
-                )
+                    shape = RoundedCornerShape(10.dp),
+                ),
             ) {
                 // Don`t forget to call the innerTextField()
                 innerTextField()
             }
-        }
+        },
     )
 }

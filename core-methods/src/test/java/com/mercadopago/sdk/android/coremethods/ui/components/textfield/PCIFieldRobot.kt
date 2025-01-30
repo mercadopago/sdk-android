@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import junit.framework.TestCase.assertEquals
@@ -17,9 +18,8 @@ import junit.framework.TestCase.assertEquals
  * @param composeRule allows you to set content without the necessity to provide a host for the content.
  */
 internal open class PCIFieldRobot(
-    internal val composeRule: ComposeContentTestRule
+    internal val composeRule: ComposeContentTestRule,
 ) {
-
     /** Used to test fields States
      */
     internal lateinit var fieldState: PCIFieldState
@@ -28,7 +28,7 @@ internal open class PCIFieldRobot(
 
     internal fun setContent(
         stateRestorationTester: StateRestorationTester?,
-        content: @Composable () -> Unit
+        content: @Composable () -> Unit,
     ) {
         if (stateRestorationTester != null) {
             stateRestorationTester.setContent(content)
@@ -49,11 +49,19 @@ internal open class PCIFieldRobot(
             .performTextInput(text)
     }
 
-    fun assertTextInput(text: String) {
+    fun clearTextInput() {
+        composeRule.onNodeWithTag(testTag)
+            .performTextClearance()
+    }
+
+    fun assertTextInput(
+        text: String,
+        input: String = text,
+    ) {
         composeRule.onNodeWithTag(testTag)
             .assertExists()
             .assert(hasText(text))
-        assertEquals(text, fieldState.input)
+        assertEquals(input, fieldState.input)
     }
 
     fun assertTextIsDisplayed(text: String) {

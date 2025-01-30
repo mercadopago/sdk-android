@@ -47,7 +47,7 @@ fun SecurityCodeTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
-        innerTextField: @Composable () -> Unit
+        innerTextField: @Composable () -> Unit,
     ) -> Unit = @Composable { innerTextField -> innerTextField() },
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -73,14 +73,14 @@ fun SecurityCodeTextField(
         cursorBrush = cursorBrush,
         keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),
         textStyle = textStyle,
-        visualTransformation = visualTransformation
+        visualTransformation = visualTransformation,
     )
 }
 
 @Preview(
     name = "Security Code Field Empty",
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 fun SecurityCodeEmptyPreview() {
@@ -89,14 +89,14 @@ fun SecurityCodeEmptyPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = 3
+        securityCodeSize = 3,
     )
 }
 
 @Preview(
     name = "Security Code Field Filled",
     group = PreviewGroup.TEXT_FIELD,
-    showBackground = true
+    showBackground = true,
 )
 @Composable
 fun SecurityCodeFilledPreview() {
@@ -107,6 +107,6 @@ fun SecurityCodeFilledPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = 3
+        securityCodeSize = 3,
     )
 }

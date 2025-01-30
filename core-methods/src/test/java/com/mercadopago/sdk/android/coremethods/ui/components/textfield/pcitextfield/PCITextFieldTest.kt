@@ -13,7 +13,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class PCITextFieldTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -100,7 +99,7 @@ internal class PCITextFieldTest {
                         Text(text = title)
                         innerTextField()
                     }
-                }
+                },
             )
             performTapOnInput()
             performTextInput(input)
