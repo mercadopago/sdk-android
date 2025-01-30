@@ -41,6 +41,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
+import com.mercadopago.sdk.android.presentation.state.CardNumberTextFieldState
 import com.mercadopago.sdk.android.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
@@ -61,7 +62,8 @@ fun PaymentExampleScreen(
         expirationDateState = expirationDateState,
         securityCodeState = securityCodeState,
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
-        onSecurityCodeEvent = viewModel::onSecurityCodeEvent
+        onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
+        onCardNumberEvent = viewModel::onCardNumberEvent
     )
 }
 
@@ -73,7 +75,8 @@ fun PaymentExampleScreenContent(
     expirationDateState: PCIFieldState,
     securityCodeState: PCIFieldState,
     onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit,
-    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit
+    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit,
+    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         Box(
@@ -83,10 +86,13 @@ fun PaymentExampleScreenContent(
         ) {
             Column {
                 Spacer(Modifier.height(16.dp))
-                CardNumberTextField(
+                CardNumberTextFieldExample(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
+                    state = cardNumberState,
+                    cardNumberState = viewState.cardNumberState,
+                    onCardNumberEvent = onCardNumberEvent
                 )
                 Spacer(Modifier.height(16.dp))
                 Row(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -128,15 +134,6 @@ fun PaymentExampleScreenContent(
         }
     }
 }
-
-data class CardNumberTextFieldState(
-    var isFocused: Boolean = false,
-    var filled: Boolean = false,
-    var length: Int = 0,
-    val isValid: Boolean = false,
-    val lastFourDigits: String = "",
-    val cardBin: String? = null,
-)
 
 @Composable
 fun SecurityCodeExample(
@@ -247,11 +244,12 @@ fun ExpirationDateExample(
 }
 
 @Composable
-fun CardNumberTextField(
+fun CardNumberTextFieldExample(
     modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    cardNumberState: CardNumberTextFieldState,
+    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
 ) {
-    val state = rememberPCIFieldState()
-    var fieldState by remember { mutableStateOf(CardNumberTextFieldState()) }
     Column(modifier = modifier) {
         Text(
             text = "Card Number",
@@ -259,39 +257,20 @@ fun CardNumberTextField(
         Spacer(Modifier.height(4.dp))
         CardNumberTextField(
             state = state,
-            onEvent = { event ->
-                fieldState = when (event) {
-                    is CardNumberTextFieldEvent.OnFocusChanged -> {
-                        fieldState.copy(isFocused = event.isFocused)
-                    }
-                    is CardNumberTextFieldEvent.OnLengthChanged -> {
-                        fieldState.copy(length = event.length)
-                    }
-                    is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
-                        fieldState.copy(lastFourDigits = event.lastFourDigits)
-                    }
-                    is CardNumberTextFieldEvent.IsValid -> {
-                        fieldState.copy(isValid = event.isValid)
-                    }
-                    is CardNumberTextFieldEvent.OnBinChanged -> {
-                        fieldState.copy(cardBin = event.cardBin)
-                    }
-                    else -> fieldState
-                }
-            },
+            onEvent = onCardNumberEvent,
             decorationBox = { innerTextField ->
                 // Customize the input with relevant information like borders, icons, colors and more
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .addBorder(
-                            isFocused = fieldState.isFocused,
+                            isFocused = cardNumberState.isFocused,
                         )
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
                 ) {
                     Box {
-                        if (fieldState.length == 0) {
+                        if (cardNumberState.length == 0) {
                             Text(
                                 text = "4444 4444 4444 4444",
                                 color = MaterialTheme.colorScheme.outline,
@@ -314,27 +293,27 @@ fun PaymentExampleScreenPreview() {
         PaymentExampleScreen()
     }
 }
-
-@Preview(name = "Empty Security Field", showBackground = true)
-@Composable
-fun SecurityCodeExamplePreview() {
-    ExampleTheme {
-        SecurityCodeExample()
-    }
-}
-
-@Preview(name = "Empty Expiration Date Field", showBackground = true)
-@Composable
-fun ExpirationDatePreview() {
-    ExampleTheme {
-        ExpirationDateExample()
-    }
-}
-
-@Preview(name = "Empty Card Number Field", showBackground = true)
-@Composable
-fun CardNumberPreview() {
-    ExampleTheme {
-        CardNumberTextField()
-    }
-}
+//
+//@Preview(name = "Empty Security Field", showBackground = true)
+//@Composable
+//fun SecurityCodeExamplePreview() {
+//    ExampleTheme {
+//        SecurityCodeExample()
+//    }
+//}
+//
+//@Preview(name = "Empty Expiration Date Field", showBackground = true)
+//@Composable
+//fun ExpirationDatePreview() {
+//    ExampleTheme {
+//        ExpirationDateExample()
+//    }
+//}
+//
+//@Preview(name = "Empty Card Number Field", showBackground = true)
+//@Composable
+//fun CardNumberPreview() {
+//    ExampleTheme {
+//        CardNumberTextField()
+//    }
+//}

@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
@@ -96,6 +97,50 @@ class PaymentScreenViewModel(
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         filled = event.isFilled
+                    )
+                )
+            }
+        }
+    }
+
+    fun onCardNumberEvent(event: CardNumberTextFieldEvent) {
+        when (event) {
+            is CardNumberTextFieldEvent.OnFocusChanged -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        isFocused = event.isFocused
+                    )
+                )
+            }
+
+            is CardNumberTextFieldEvent.OnLengthChanged -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        length = event.length
+                    )
+                )
+            }
+
+            is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        lastFourDigits = event.lastFourDigits
+                    )
+                )
+            }
+
+            is CardNumberTextFieldEvent.IsValid -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        isValid = event.isValid
+                    )
+                )
+            }
+
+            is CardNumberTextFieldEvent.OnBinChanged -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        cardBin = event.cardBin
                     )
                 )
             }

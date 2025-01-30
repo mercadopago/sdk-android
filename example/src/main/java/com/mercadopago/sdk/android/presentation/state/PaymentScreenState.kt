@@ -2,7 +2,8 @@ package com.mercadopago.sdk.android.presentation.state
 
 data class PaymentScreenViewState(
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
-    val secureCodeState: SecurityCodeState = SecurityCodeState()
+    val secureCodeState: SecurityCodeState = SecurityCodeState(),
+    val cardNumberState: CardNumberTextFieldState = CardNumberTextFieldState()
 )
 
 data class SecurityCodeState(
@@ -16,4 +17,13 @@ data class ExpirationDateState(
     val filled: Boolean = false,
     val length: Int = 0,
     val valid: Boolean = false
+)
+
+data class CardNumberTextFieldState(
+    var isFocused: Boolean = false,
+    var filled: Boolean = false,
+    var length: Int = 0,
+    val isValid: Boolean = false,
+    val lastFourDigits: String = "",
+    val cardBin: String? = null,
 )
