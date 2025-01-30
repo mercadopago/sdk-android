@@ -1,30 +1,36 @@
 package com.mercadopago.sdk.android.coremethods.di
 
+import com.mercadopago.sdk.android.core.di.CoreKoinModuleProvider
+import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.di.repository.repositoryModule
 import com.mercadopago.sdk.android.coremethods.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import org.koin.core.KoinApplication
+import org.koin.core.Koin
 import org.koin.core.logger.Level
-import org.koin.dsl.koinApplication
+import org.koin.core.module.Module
 
 internal class CoreMethodsModulesProvider(
     private val publicKey: String
-) {
-    private val koinApp: KoinApplication = koinApplication {}
+) : CoreKoinModuleProvider {
+
+    private val isolatedKoin: Koin = CoreKoinFactory.createKoinApp(
+        provider = this,
+        loggerLevel = Level.DEBUG
+    )
 
     init {
-        // Add a koin log debug
-        koinApp.printLogger(level = Level.DEBUG)
         // Load modules
-        koinApp.koin.loadModules(
-            listOf(
-                provideNetworkModule(publicKey),
-                repositoryModule
-            )
+        isolatedKoin.loadModules(provideModules())
+    }
+
+    override fun provideModules(): List<Module> {
+        return listOf(
+            provideNetworkModule(publicKey),
+            repositoryModule
         )
     }
 
-    fun provideCoreMethodsRepository(): CoreMethodsRepository {
-        return koinApp.koin.get()
+    internal fun provideCoreMethodsRepository(): CoreMethodsRepository {
+        return isolatedKoin.get()
     }
 }

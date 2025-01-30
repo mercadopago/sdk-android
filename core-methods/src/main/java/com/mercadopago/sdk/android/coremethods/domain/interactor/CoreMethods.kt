@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 class CoreMethods internal constructor(
     private val coreMethodsProvider: CoreMethodsModulesProvider
 ) {
+
     companion object {
         @Volatile
         private var instance: CoreMethods? = null
@@ -35,7 +36,7 @@ class CoreMethods internal constructor(
         securityCodeState: PCIFieldState,
     ): Flow<Result<CardToken, ResultError>> {
         val expirationMonth = expirationDateState.input.take(2)
-        val expirationYear = expirationDateState.input.takeLast(2)
+        val expirationYear = expirationDateState.input.takeLast(4)
         return coreMethodsProvider.provideCoreMethodsRepository().generateCardToken(
             CardTokenFields(
                 cardNumber = cardNumberState.input,

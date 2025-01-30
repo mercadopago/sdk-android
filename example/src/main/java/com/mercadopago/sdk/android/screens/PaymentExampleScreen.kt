@@ -293,7 +293,7 @@ fun PaymentExampleScreenPreview() {
         PaymentExampleScreen()
     }
 }
-//
+
 //@Preview(name = "Empty Security Field", showBackground = true)
 //@Composable
 //fun SecurityCodeExamplePreview() {
