@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.coremethods.data.remote.request
 
 import com.google.gson.annotations.SerializedName
 
-data class CardTokenBodyRequest(
+internal data class CardTokenBodyRequest(
     @SerializedName("cardId")
     val cardId: String? = null,
     @SerializedName("esc")
@@ -21,7 +21,7 @@ data class CardTokenBodyRequest(
     val buyerIdentification: BuyerIdentificationBodyRequest? = null,
 )
 
-data class BuyerIdentificationBodyRequest(
+internal data class BuyerIdentificationBodyRequest(
     @SerializedName("name")
     val name: String,
     @SerializedName("number")

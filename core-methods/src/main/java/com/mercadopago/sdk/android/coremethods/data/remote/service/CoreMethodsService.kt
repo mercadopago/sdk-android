@@ -8,7 +8,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 internal interface CoreMethodsService {
-
     @POST("v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
