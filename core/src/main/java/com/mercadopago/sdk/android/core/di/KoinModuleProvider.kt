@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.core.di
 
+import androidx.annotation.RestrictTo
 import org.koin.core.Koin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
@@ -8,6 +9,7 @@ import org.koin.dsl.koinApplication
 /**
  * Interface that`s provide the module list
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 interface CoreKoinModuleProvider {
     /**
      * Provide the module list
@@ -18,6 +20,7 @@ interface CoreKoinModuleProvider {
 /**
  * Factory that`s create a Koin Application instance in a isolated context
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 object CoreKoinFactory {
 
     /**
