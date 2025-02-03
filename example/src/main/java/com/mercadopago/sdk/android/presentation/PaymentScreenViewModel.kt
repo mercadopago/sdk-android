@@ -3,21 +3,18 @@ package com.mercadopago.sdk.android.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = CoreMethods.getInstance(),
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
@@ -29,13 +26,22 @@ class PaymentScreenViewModel(
         securityCodeState: PCIFieldState,
     ) {
         viewModelScope.launch {
-            coreMethods.generateCardToken(
+            val result = coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
                 securityCodeState = securityCodeState
             )
-                .flowOn(coroutineDispatcher)
-                .collect { }
+
+            when (result) {
+                is Result.Success -> {
+                }
+
+                is Result.Error -> {
+                }
+
+                is Result.Failure -> {
+                }
+            }
         }
     }
 

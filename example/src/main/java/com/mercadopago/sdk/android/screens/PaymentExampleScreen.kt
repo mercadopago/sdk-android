@@ -294,26 +294,26 @@ fun PaymentExampleScreenPreview() {
     }
 }
 
-//@Preview(name = "Empty Security Field", showBackground = true)
-//@Composable
-//fun SecurityCodeExamplePreview() {
+// @Preview(name = "Empty Security Field", showBackground = true)
+// @Composable
+// fun SecurityCodeExamplePreview() {
 //    ExampleTheme {
 //        SecurityCodeExample()
 //    }
-//}
+// }
 //
-//@Preview(name = "Empty Expiration Date Field", showBackground = true)
-//@Composable
-//fun ExpirationDatePreview() {
+// @Preview(name = "Empty Expiration Date Field", showBackground = true)
+// @Composable
+// fun ExpirationDatePreview() {
 //    ExampleTheme {
 //        ExpirationDateExample()
 //    }
-//}
+// }
 //
-//@Preview(name = "Empty Card Number Field", showBackground = true)
-//@Composable
-//fun CardNumberPreview() {
+// @Preview(name = "Empty Card Number Field", showBackground = true)
+// @Composable
+// fun CardNumberPreview() {
 //    ExampleTheme {
 //        CardNumberTextField()
 //    }
-//}
+// }

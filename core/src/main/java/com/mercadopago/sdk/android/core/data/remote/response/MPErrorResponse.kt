@@ -1,8 +1,8 @@
-package com.mercadopago.sdk.android.coremethods.data.remote.response
+package com.mercadopago.sdk.android.core.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-internal data class ErrorResponse(
+data class MPErrorResponse(
     @SerializedName("code")
     val code: String,
     @SerializedName("message")

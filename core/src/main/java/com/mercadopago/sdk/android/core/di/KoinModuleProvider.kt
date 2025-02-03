@@ -1,8 +1,8 @@
 package com.mercadopago.sdk.android.core.di
 
 import org.koin.core.Koin
-import org.koin.core.module.Module
 import org.koin.core.logger.Level
+import org.koin.core.module.Module
 import org.koin.dsl.koinApplication
 
 /**

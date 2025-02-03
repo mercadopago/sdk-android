@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.core.di
 
+import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Use this class to create a new retrofit service
  * @param publicKey seller public key
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RetrofitServiceFactory(private val publicKey: String) {
 
     private val okHttpClient: OkHttpClient by lazy {
