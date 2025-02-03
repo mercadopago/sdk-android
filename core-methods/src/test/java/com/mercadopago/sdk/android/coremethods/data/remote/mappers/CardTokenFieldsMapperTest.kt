@@ -7,13 +7,11 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import kotlin.test.Test
 
-internal class CardTokenFieldsExtensionsTest {
+internal class CardTokenFieldsMapperTest {
     @Test
     fun `test toCardTokenRequest conversion`() {
-        // Cria uma instância de BuyerIdentification
         val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
 
-        // Cria uma instância de CardTokenFields
         val cardTokenFields = CardTokenFields(
             cardId = "card_123",
             esc = "esc_value",
@@ -25,10 +23,8 @@ internal class CardTokenFieldsExtensionsTest {
             buyerIdentification = buyerIdentification
         )
 
-        // Chama a função de extensão
         val cardTokenRequest = cardTokenFields.toCardTokenRequest()
 
-        // Verifique se os valores estão corretos
         assertEquals("card_123", cardTokenRequest.cardId)
         assertEquals("esc_value", cardTokenRequest.esc)
         assertFalse(cardTokenRequest.requireEsc)
@@ -37,7 +33,6 @@ internal class CardTokenFieldsExtensionsTest {
         assertEquals(12, cardTokenRequest.expirationMonth)
         assertEquals(2025, cardTokenRequest.expirationYear)
 
-        // Verifica se a buyerIdentification foi convertida corretamente
         assertNotNull(cardTokenRequest.buyerIdentification)
         assertEquals("John Doe", cardTokenRequest.buyerIdentification?.name)
         assertEquals("123456789", cardTokenRequest.buyerIdentification?.number)
@@ -46,13 +41,10 @@ internal class CardTokenFieldsExtensionsTest {
 
     @Test
     fun `test toBuyerIdentificationRequest conversion`() {
-        // Cria uma instância de BuyerIdentification
         val buyerIdentification = BuyerIdentification(name = "Jane Doe", number = "987654321", type = "CNPJ")
 
-        // Chama a função de extensão
         val buyerIdentificationRequest = buyerIdentification.toBuyerIdentificationRequest()
 
-        // Verifica se os valores estão corretos
         assertEquals("Jane Doe", buyerIdentificationRequest.name)
         assertEquals("987654321", buyerIdentificationRequest.number)
         assertEquals("CNPJ", buyerIdentificationRequest.type)
