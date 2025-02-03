@@ -25,7 +25,7 @@ internal class ProvidersModuleTest : KoinTest {
         startKoin {
             modules(
                 listOf(
-                    provideNetworkModule(""),
+                    provideNetworkModule("your_public_key", "https://yourapi.com/"),
                     provideDataSourceModule(),
                     provideRepositoryModule(),
                     provideUseCaseModule(),
@@ -49,7 +49,7 @@ internal class ProvidersModuleTest : KoinTest {
     }
 
     @Test
-    fun `when provideNetworkModule then provides GenerateCardTokenUseCase`() {
+    fun `when provideNetworkModule then provides CoreMethodsService`() {
         // Tenta injetar o GenerateCardTokenUseCase
         val network: CoreMethodsService by inject(CoreMethodsService::class.java)
 
@@ -58,7 +58,7 @@ internal class ProvidersModuleTest : KoinTest {
     }
 
     @Test
-    fun `when provideRepositoryModule then provides GenerateCardTokenUseCase`() {
+    fun `when provideRepositoryModule then provides CoreMethodsRepository`() {
         // Tenta injetar o GenerateCardTokenUseCase
         val repository: CoreMethodsRepository by inject(CoreMethodsRepository::class.java)
 
@@ -67,7 +67,7 @@ internal class ProvidersModuleTest : KoinTest {
     }
 
     @Test
-    fun `when provideDataSourceModule then provides GenerateCardTokenUseCase`() {
+    fun `when provideDataSourceModule then provides CoreMethodsRemoteDataSource`() {
         // Tenta injetar o GenerateCardTokenUseCase
         val datasource: CoreMethodsRemoteDataSource by inject(CoreMethodsRemoteDataSource::class.java)
 

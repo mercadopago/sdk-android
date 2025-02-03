@@ -11,6 +11,8 @@ import org.koin.core.Koin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
 
+internal const val PUBLIC_API_URL = "https://api.mercadopago.com/"
+
 internal class CoreMethodsModulesProvider(
     private val publicKey: String
 ) : CoreKoinModuleProvider {
@@ -27,7 +29,7 @@ internal class CoreMethodsModulesProvider(
 
     override fun provideModules(): List<Module> {
         return listOf(
-            provideNetworkModule(publicKey),
+            provideNetworkModule(publicKey = publicKey, baseUrl = PUBLIC_API_URL),
             provideDataSourceModule(),
             provideRepositoryModule(),
             provideUseCaseModule()

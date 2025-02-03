@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @param publicKey seller public key
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class RetrofitServiceFactory(private val publicKey: String) {
+class RetrofitServiceFactory(private val publicKey: String, private val baseUrl: String) {
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -27,7 +27,7 @@ class RetrofitServiceFactory(private val publicKey: String) {
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl("https://api.mercadopago.com/")
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

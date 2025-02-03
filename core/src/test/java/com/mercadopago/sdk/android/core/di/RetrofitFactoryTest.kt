@@ -8,9 +8,10 @@ class RetrofitFactoryTest {
     @Test
     fun `test RetrofitServiceFactory creation`() {
         val publicKey = "your_public_key"
+        val url = "https://yourapi.com/"
 
         // Criar uma instância do RetrofitServiceFactory
-        val factory = RetrofitServiceFactory(publicKey)
+        val factory = RetrofitServiceFactory(publicKey, url)
 
         // Verificar se a instância do Retrofit foi criada corretamente
         val someService = factory.createService(SomeService::class.java)
