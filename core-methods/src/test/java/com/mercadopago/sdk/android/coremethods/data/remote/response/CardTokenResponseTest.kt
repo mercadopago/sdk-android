@@ -8,10 +8,8 @@ import kotlin.test.Test
 internal class CardTokenResponseTest {
     @Test
     fun `test CardTokenResponse creation with default values`() {
-        // Cria uma instância de CardTokenResponse com valores padrão
         val cardTokenResponse = CardTokenResponse()
 
-        // Verifica se os valores padrão são esperados
         assertNull(cardTokenResponse.id)
         assertNull(cardTokenResponse.publicKey)
         assertNull(cardTokenResponse.luhnValidation)
@@ -31,11 +29,9 @@ internal class CardTokenResponseTest {
 
     @Test
     fun `test CardTokenResponse creation with specified values`() {
-        // Cria uma instância de CardHolderResponse
         val identificationResponse = IdentificationResponse(number = "123456789", type = "CPF")
         val cardHolderResponse = CardHolderResponse(identification = identificationResponse, name = "John Doe")
 
-        // Cria uma instância de CardTokenResponse com valores especificados
         val cardTokenResponse = CardTokenResponse(
             id = "token_123",
             publicKey = "public_key_123",
@@ -54,7 +50,6 @@ internal class CardTokenResponseTest {
             esc = "esc_value"
         )
 
-        // Verifica se os valores estão corretos
         assertEquals("token_123", cardTokenResponse.id)
         assertEquals("public_key_123", cardTokenResponse.publicKey)
         assertEquals("VALID", cardTokenResponse.luhnValidation)
@@ -77,21 +72,17 @@ internal class CardTokenResponseTest {
 
     @Test
     fun `test identification response creation`() {
-        // Cria uma instância de IdentificationResponse
         val identificationResponse = IdentificationResponse(number = "987654321", type = "CNPJ")
 
-        // Verifica se os valores estão corretos
         assertEquals("987654321", identificationResponse.number)
         assertEquals("CNPJ", identificationResponse.type)
     }
 
     @Test
     fun `test card holder response creation`() {
-        // Cria uma instância de IdentificationResponse
         val identificationResponse = IdentificationResponse(number = "123456789", type = "CPF")
         val cardHolderResponse = CardHolderResponse(identification = identificationResponse, name = "Jane Doe")
 
-        // Verifica se os valores estão corretos
         assertEquals("Jane Doe", cardHolderResponse.name)
         assertNotNull(cardHolderResponse.identification)
         assertEquals("123456789", cardHolderResponse.identification?.number)

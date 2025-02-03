@@ -6,8 +6,8 @@ import java.util.Calendar
 import java.util.Locale
 
 internal class IsExpirationDateValidationTest {
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR) % 100
-    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+    private val currentYear = Calendar.getInstance().get(Calendar.YEAR) % 100
+    private val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
 
     @Test
     fun `when pass a expiration date and a length of four Then return is valid`() {

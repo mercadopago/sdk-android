@@ -8,31 +8,25 @@ internal class ResultErrorTest {
 
     @Test
     fun `test ResultError creation with default values`() {
-        // Cria uma instância de ResultError com valores padrão
         val resultError = ResultError()
 
-        // Verifica se os valores padrão são os esperados
         assertEquals("", resultError.message)
         assertEquals("", resultError.code)
     }
 
     @Test
     fun `test ResultError creation with specified values`() {
-        // Mensagens de erro personalizadas
         val customMessage = "An error occurred"
         val customCode = "404"
 
-        // Cria uma instância de ResultError com valores especificados
         val resultError = ResultError(message = customMessage, code = customCode)
 
-        // Verifique se os valores estão corretos
         assertEquals(customMessage, resultError.message)
         assertEquals(customCode, resultError.code)
     }
 
     @Test
     fun `test ResultError equality`() {
-        // Cria duas instâncias idênticas
         val message = "An error occurred"
         val code = "400"
 

@@ -9,10 +9,8 @@ internal class CardTokenBodyRequestTest {
 
     @Test
     fun `test CardTokenBodyRequest creation with default values`() {
-        // Cria uma instância de CardTokenBodyRequest com valores padrão
         val cardTokenBodyRequest = CardTokenBodyRequest()
 
-        // Verifica se os valores padrão são esperados
         assertNull(cardTokenBodyRequest.cardId)
         assertNull(cardTokenBodyRequest.esc)
         assertFalse(cardTokenBodyRequest.requireEsc)
@@ -25,7 +23,6 @@ internal class CardTokenBodyRequestTest {
 
     @Test
     fun `test CardTokenBodyRequest creation with specified values`() {
-        // Preparar dados
         val buyerIdentification = BuyerIdentificationBodyRequest(name = "John Doe", number = "123456789", type = "CPF")
         val cardTokenBodyRequest = CardTokenBodyRequest(
             cardId = "card_123",
@@ -38,7 +35,6 @@ internal class CardTokenBodyRequestTest {
             buyerIdentification = buyerIdentification
         )
 
-        // Verifica se os valores estão corretos
         assertEquals("card_123", cardTokenBodyRequest.cardId)
         assertEquals("esc_value", cardTokenBodyRequest.esc)
         assertFalse(cardTokenBodyRequest.requireEsc)
@@ -51,10 +47,8 @@ internal class CardTokenBodyRequestTest {
 
     @Test
     fun `test BuyerIdentificationBodyRequest creation`() {
-        // Prepare data for BuyerIdentificationBodyRequest
         val buyerIdentification = BuyerIdentificationBodyRequest(name = "Jane Doe", number = "987654321", type = "CNPJ")
 
-        // Verify that the properties are properly set
         assertEquals("Jane Doe", buyerIdentification.name)
         assertEquals("987654321", buyerIdentification.number)
         assertEquals("CNPJ", buyerIdentification.type)
@@ -74,7 +68,6 @@ internal class CardTokenBodyRequestTest {
             buyerIdentification = buyerIdentification2
         )
 
-        // Verifica se as duas instâncias são consideradas iguais
         assertEquals(cardTokenBodyRequest1, cardTokenBodyRequest2)
     }
 }

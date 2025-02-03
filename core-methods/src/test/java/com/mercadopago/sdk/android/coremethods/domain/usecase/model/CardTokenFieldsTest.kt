@@ -11,10 +11,8 @@ internal class CardTokenFieldsTest {
 
     @Test
     fun `test CardTokenFields creation with default values`() {
-        // Cria uma instância de CardTokenFields com valores padrão
         val cardTokenFields = CardTokenFields()
 
-        // Verifica se os valores padrão são os esperados
         assertNull(cardTokenFields.cardId)
         assertNull(cardTokenFields.esc)
         assertFalse(cardTokenFields.requireEsc)
@@ -27,7 +25,6 @@ internal class CardTokenFieldsTest {
 
     @Test
     fun `test CardTokenFields creation with specified values`() {
-        // Preparar os dados
         val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
         val cardTokenFields = CardTokenFields(
             cardId = "card_123",
@@ -40,7 +37,6 @@ internal class CardTokenFieldsTest {
             buyerIdentification = buyerIdentification
         )
 
-        // Verifica se os valores estão corretos
         assertEquals("card_123", cardTokenFields.cardId)
         assertEquals("esc_value", cardTokenFields.esc)
         assertFalse(cardTokenFields.requireEsc)
@@ -53,7 +49,6 @@ internal class CardTokenFieldsTest {
 
     @Test
     fun `test CardTokenFields equality`() {
-        // Cria duas instâncias idênticas
         val buyerIdentification = BuyerIdentification(name = "Jane Doe", number = "987654321", type = "CNPJ")
         val cardTokenFields1 = CardTokenFields(
             cardId = "card_456",
@@ -76,7 +71,6 @@ internal class CardTokenFieldsTest {
             buyerIdentification = buyerIdentification
         )
 
-        // Verifica se as duas instâncias são consideradas iguais
         assertEquals(cardTokenFields1, cardTokenFields2)
     }
 }

@@ -12,7 +12,6 @@ class MPResponseTest {
         val successResponse = "This is a successful response"
         val response = MPResponse.Success(successResponse)
 
-        // Verifica se o tipo de resposta é Success e o valor está correto
         assertEquals(successResponse, response.response)
     }
 
@@ -24,7 +23,6 @@ class MPResponseTest {
 
         val response = MPResponse.Error(errorResponse)
 
-        // Verifica se o tipo de resposta é Error e se a MPErrorResponse está correta
         assertEquals(errorResponse, response.errorResponse)
         assertEquals(errorCode, response.errorResponse.code)
         assertEquals(errorMessage, response.errorResponse.message)
