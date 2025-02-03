@@ -4,7 +4,7 @@ import org.junit.Assert.assertEquals
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import org.junit.Test
 
-class ResultTest {
+internal class ResultTest {
 
     @Test
     fun `test Result Success`() {

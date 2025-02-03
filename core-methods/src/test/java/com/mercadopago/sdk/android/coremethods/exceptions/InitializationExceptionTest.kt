@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.exceptions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class InitializationExceptionTest {
+internal class InitializationExceptionTest {
 
     @Test
     fun `test default InitializationException message`() {

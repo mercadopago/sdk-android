@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BuyerIdentificationTest {
+internal class BuyerIdentificationTest {
 
     @Test
     fun `test BuyerIdentification creation`() {

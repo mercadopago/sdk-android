@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ResultErrorTest {
+internal class ResultErrorTest {
 
     @Test
     fun `test ResultError creation with default values`() {

@@ -7,7 +7,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class CardTokenFieldsTest {
+internal class CardTokenFieldsTest {
 
     @Test
     fun `test CardTokenFields creation with default values`() {

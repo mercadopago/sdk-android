@@ -8,7 +8,7 @@ internal data class CardTokenBodyRequest(
     @SerializedName("esc")
     val esc: String? = null,
     @SerializedName("requireEsc")
-    val requireEsc: Boolean = true,
+    val requireEsc: Boolean = false,
     @SerializedName("card_number")
     val cardNumber: String? = null,
     @SerializedName("security_code")

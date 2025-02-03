@@ -12,7 +12,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
-class GenerateCardTokenUseCaseTest {
+internal class GenerateCardTokenUseCaseTest {
 
     private val repository: CoreMethodsRepository = mock()
     private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository)
