@@ -9,8 +9,4 @@ sealed class Result<out A, out B> {
     data class Error<B> constructor(
         val error: B
     ) : Result<Nothing, B>()
-
-    data class Failure constructor(
-        val throwable: Throwable
-    ) : Result<Nothing, Nothing>()
 }

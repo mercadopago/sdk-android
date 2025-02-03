@@ -20,7 +20,7 @@ internal class CoreMethodsRemoteDataSourceImplTest {
     private val remoteDataSource = CoreMethodsRemoteDataSourceImpl(service)
 
     @Test
-    fun `test generateCardToken calls service and returns success`() = runBlocking{
+    fun `test generateCardToken calls service and returns success`() = runBlocking {
         // Cria uma instância de CardTokenBodyRequest
         val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 

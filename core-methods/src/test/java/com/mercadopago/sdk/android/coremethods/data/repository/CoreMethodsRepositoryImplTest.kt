@@ -4,8 +4,8 @@ import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
 import com.mercadopago.sdk.android.core.data.remote.utils.MPResponse
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethodsRemoteDataSource
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.domain.model.CardTokenFields
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -13,7 +13,6 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import kotlin.test.Test
-import kotlin.test.assertNotNull
 
 internal class CoreMethodsRepositoryImplTest {
 
@@ -54,22 +53,5 @@ internal class CoreMethodsRepositoryImplTest {
         assertTrue(result is Result.Error)
         assertEquals("Bad Request", (result as Result.Error).error.message)
         assertEquals("400", result.error.code)
-    }
-
-    @Test
-    fun `test generateCardToken returns Failure on exception`() = runBlocking {
-        // Cria um CardTokenFields de teste
-        val cardTokenFields = CardTokenFields(cardId = "card_123")
-
-        // Faz com que a função do mock lance uma exceção
-        whenever(dataSource.generateCardToken(any())).thenThrow(RuntimeException("Network Error"))
-
-        // Chama o método
-        val result = repository.generateCardToken(cardTokenFields)
-
-        // Verifica se o resultado é uma falha
-        assertTrue(result is Result.Failure)
-        assertNotNull((result as Result.Failure).throwable)
-        assertEquals("Network Error", result.throwable.message)
     }
 }

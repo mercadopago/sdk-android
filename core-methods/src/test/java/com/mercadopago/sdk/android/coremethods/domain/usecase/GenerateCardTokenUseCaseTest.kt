@@ -3,9 +3,9 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import org.junit.Assert.assertEquals
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito.mock

@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase.utils
 
-import org.junit.Assert.assertEquals
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class ResultTest {
@@ -22,14 +22,5 @@ internal class ResultTest {
 
         // Verificando se o resultado é do tipo Error e se o erro está correto
         assertEquals(errorData, (result).error)
-    }
-
-    @Test
-    fun `test Result Failure`() {
-        val throwable = Throwable("An error occurred")
-        val result = Result.Failure(throwable)
-
-        // Verificando se o resultado é do tipo Failure e se o throwable está correto
-        assertEquals(throwable, (result).throwable)
     }
 }

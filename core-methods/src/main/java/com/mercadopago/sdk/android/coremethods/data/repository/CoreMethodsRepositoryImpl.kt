@@ -15,19 +15,14 @@ internal class CoreMethodsRepositoryImpl(
 ) : CoreMethodsRepository {
 
     override suspend fun generateCardToken(cardTokenFields: CardTokenFields): Result<CardToken, ResultError> {
-        return try {
-            val response = dataSource.generateCardToken(cardTokenFields.toCardTokenRequest())
-            when (response) {
-                is MPResponse.Success -> {
-                    Result.Success(CardToken(response.response.id.orEmpty()))
-                }
-
-                is MPResponse.Error -> {
-                    Result.Error(response.errorResponse.toResultError())
-                }
+        return when (val response = dataSource.generateCardToken(cardTokenFields.toCardTokenRequest())) {
+            is MPResponse.Success -> {
+                Result.Success(CardToken(response.response.id.orEmpty()))
             }
-        } catch (e: Exception) {
-            Result.Failure(e)
+
+            is MPResponse.Error -> {
+                Result.Error(response.errorResponse.toResultError())
+            }
         }
     }
 }

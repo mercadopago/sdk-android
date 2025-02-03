@@ -38,9 +38,6 @@ class PaymentScreenViewModel(
 
                 is Result.Error -> {
                 }
-
-                is Result.Failure -> {
-                }
             }
         }
     }

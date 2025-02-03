@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.core.data
 
-
 import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
 import org.junit.Assert.assertEquals
 import org.junit.Test
