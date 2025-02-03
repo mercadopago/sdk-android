@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
 internal data class CardTokenFields(
     val cardId: String? = null,
     val esc: String? = null,
-    val requireEsc: Boolean = true,
+    val requireEsc: Boolean = false,
     val cardNumber: String? = null,
     val securityCode: String? = null,
     val expirationMonth: Int? = null,

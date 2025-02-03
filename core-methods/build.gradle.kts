@@ -73,4 +73,6 @@ dependencies {
     testImplementation(libs.cashapp.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation (libs.koin.test)
+    testImplementation (libs.mockito.kotlin)
 }

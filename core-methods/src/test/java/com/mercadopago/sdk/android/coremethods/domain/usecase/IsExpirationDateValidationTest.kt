@@ -1,12 +1,11 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdatefield
+package com.mercadopago.sdk.android.coremethods.domain.usecase
 
-import com.mercadopago.sdk.android.coremethods.domain.usecase.IsExpirationDateValidUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Calendar
 import java.util.Locale
 
-internal class ExpirationDateValidationTest {
+internal class IsExpirationDateValidationTest {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR) % 100
     val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
 
