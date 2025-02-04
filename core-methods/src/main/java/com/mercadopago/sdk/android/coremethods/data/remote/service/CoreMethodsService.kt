@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.service
 
+import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
 import com.mercadopago.sdk.android.core.data.remote.utils.MPResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
@@ -10,5 +11,5 @@ internal interface CoreMethodsService {
     @POST("v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
-    ): MPResponse<CardTokenResponse>
+    ): MPResponse<CardTokenResponse, MPErrorResponse>
 }

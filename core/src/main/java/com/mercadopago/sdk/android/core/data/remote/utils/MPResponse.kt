@@ -8,13 +8,14 @@ import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
  * @param A is a generic parameter thats can be any type of class
  * @see MPErrorResponse
  */
-sealed class MPResponse<out A> {
 
-    data class Success<out A>(
+sealed class MPResponse<out A, out B> {
+
+    data class Success<A> constructor(
         val response: A
-    ) : MPResponse<A>()
+    ) : MPResponse<A, Nothing>()
 
-    data class Error(
-        val errorResponse: MPErrorResponse
-    ) : MPResponse<Nothing>()
+    data class Error<B> constructor(
+        val errorResponse: B
+    ) : MPResponse<Nothing, B>()
 }

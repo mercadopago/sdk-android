@@ -1,10 +1,12 @@
 package com.mercadopago.sdk.android.core.utils.interceptor
 
+import androidx.annotation.RestrictTo
 import okhttp3.Interceptor
 import okhttp3.Response
 
 private const val PUBLIC_KEY = "public_key"
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class PublicKeyInterceptor(
     private val publicKey: String,
 ) : Interceptor {
