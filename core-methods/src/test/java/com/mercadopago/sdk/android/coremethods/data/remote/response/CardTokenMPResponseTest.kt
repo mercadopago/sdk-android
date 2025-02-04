@@ -5,7 +5,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import kotlin.test.Test
 
-internal class CardTokenResponseTest {
+internal class CardTokenMPResponseTest {
     @Test
     fun `test CardTokenResponse creation with default values`() {
         val cardTokenResponse = CardTokenResponse()

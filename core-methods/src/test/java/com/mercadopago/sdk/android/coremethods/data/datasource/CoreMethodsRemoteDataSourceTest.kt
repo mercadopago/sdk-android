@@ -31,7 +31,7 @@ internal class CoreMethodsRemoteDataSourceTest {
         val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
         assertTrue(result is MPResponse.Success)
-        assertEquals("token_id", (result as MPResponse.Success).response.id)
+        assertEquals("token_id", (result as MPResponse.Success).response.token)
     }
 
     @Test

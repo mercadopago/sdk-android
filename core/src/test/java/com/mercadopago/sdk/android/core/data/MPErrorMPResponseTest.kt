@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class MPErrorResponseTest {
+class MPErrorMPResponseTest {
     @Test
     fun `test MPErrorResponse creation`() {
         val code = "404"

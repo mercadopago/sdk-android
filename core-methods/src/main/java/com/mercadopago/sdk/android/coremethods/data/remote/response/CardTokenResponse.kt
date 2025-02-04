@@ -23,9 +23,9 @@ internal data class CardTokenResponse(
     val expirationMonth: Int? = null,
     @SerializedName("expiration_year")
     val expirationYear: Int? = null,
-    @SerializedName("firstSixDigits")
+    @SerializedName("first_six_digits")
     val firstSixDigits: String? = null,
-    @SerializedName("lastFourDigits")
+    @SerializedName("last_four_digits")
     val lastFourDigits: String? = null,
     @SerializedName("liveMode")
     val liveMode: String? = null,

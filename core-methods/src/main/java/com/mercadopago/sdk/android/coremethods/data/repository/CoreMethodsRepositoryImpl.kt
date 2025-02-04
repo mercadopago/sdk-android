@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.coremethods.data.repository
 
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethodsRemoteDataSource
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toCardTokenRequest
-import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toResult
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.CardTokenFields
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -14,6 +13,6 @@ internal class CoreMethodsRepositoryImpl(
 ) : CoreMethodsRepository {
 
     override suspend fun generateCardToken(cardTokenFields: CardTokenFields): Result<CardToken, ResultError> {
-        return dataSource.generateCardToken(cardTokenFields.toCardTokenRequest()).toResult()
+        return dataSource.generateCardToken(cardTokenFields.toCardTokenRequest())
     }
 }

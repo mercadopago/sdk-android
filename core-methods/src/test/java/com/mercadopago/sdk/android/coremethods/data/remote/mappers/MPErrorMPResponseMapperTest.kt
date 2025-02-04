@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
 import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
-internal class MPErrorResponseMapperTest {
+internal class MPErrorMPResponseMapperTest {
 
     @Test
     fun `test toResultError conversion`() {
