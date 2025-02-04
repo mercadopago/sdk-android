@@ -34,9 +34,11 @@ class PaymentScreenViewModel(
 
             when (result) {
                 is Result.Success -> {
+                    print(result.data.token)
                 }
 
                 is Result.Error -> {
+                    print(result.error.message)
                 }
             }
         }

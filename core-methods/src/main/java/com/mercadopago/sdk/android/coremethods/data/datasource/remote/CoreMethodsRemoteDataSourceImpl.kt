@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
-import com.google.gson.GsonBuilder
+import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toResultError
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
@@ -17,20 +17,14 @@ internal class CoreMethodsRemoteDataSourceImpl(
         val result = service.createToken(cardTokenRequest)
         return when (result.isSuccessful) {
             true -> {
-                Result.Success(CardToken(result.body()?.id ?: ""))
+                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
+                val id = body.id ?: return Result.Error(ResultError(message = "no token identification"))
+                Result.Success(CardToken(id))
             }
 
             false -> {
-                val errorBody = result.errorBody()?.string()
-                val gson = GsonBuilder().create()
-
                 Result.Error(
-                    error = errorBody?.let {
-                        gson.fromJson(it, ResultError::class.java)
-                    } ?: ResultError(
-                        code = "UNKNOWN_ERROR",
-                        message = "Ocorreu um erro desconhecido"
-                    )
+                    error = result.errorBody().toResultError()
                 )
             }
         }
