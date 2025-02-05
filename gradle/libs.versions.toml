@@ -13,7 +13,6 @@ appcompat = "1.7.0"
 material = "1.12.0"
 detekt = "1.23.7"
 kotlinKover = "0.9.0"
-mockitoKotlin = "5.4.0"
 paparazzi = "1.3.5"
 showkase = "1.0.3"
 googleKsp = "2.0.21-1.0.25"
@@ -28,6 +27,7 @@ okhttp = "4.9.3"
 loggingInterceptor = "4.9.3"
 retrofit = "2.11.0"
 lifecycleViewmodelCompose = "2.8.7"
+mockk = "1.12.0"
 
 
 [libraries]
@@ -51,7 +51,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 showkase = { group = "com.airbnb.android", name = "showkase", version.ref = "showkase" }
 showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotation", version.ref = "showkase" }
 showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
@@ -68,6 +67,7 @@ squareup-retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+kotlin-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -4,17 +4,16 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
 
 internal class GenerateCardTokenUseCaseTest {
 
-    private val repository: CoreMethodsRepository = mock()
+    private val repository: CoreMethodsRepository = mockk()
     private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository)
 
     @Test
@@ -26,7 +25,7 @@ internal class GenerateCardTokenUseCaseTest {
         val expectedResult = Result.Success(expectedCardToken)
 
         // Mock the repository behavior
-        whenever(repository.generateCardToken(any())).thenReturn(expectedResult)
+        coEvery { repository.generateCardToken(any()) } returns (expectedResult)
 
         // Call the use case
         val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
@@ -45,7 +44,7 @@ internal class GenerateCardTokenUseCaseTest {
         val expectedResult = Result.Error(expectedError)
 
         // Mock the repository behavior
-        whenever(repository.generateCardToken(any())).thenReturn(expectedResult)
+        coEvery { repository.generateCardToken(any()) } returns (expectedResult)
 
         // Call the use case
         val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)

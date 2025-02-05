@@ -11,6 +11,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
     private val service: CoreMethodsService
 ) : CoreMethodsRemoteDataSource {
 
+    @Suppress("ReturnCount")
     override suspend fun generateCardToken(
         cardTokenRequest: CardTokenBodyRequest
     ): Result<CardToken, ResultError> {

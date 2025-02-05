@@ -1,22 +1,25 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource
 
-import com.mercadopago.sdk.android.core.data.remote.response.MPErrorResponse
-import com.mercadopago.sdk.android.core.data.remote.utils.MPResponse
+import com.google.gson.Gson
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethodsRemoteDataSourceImpl
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
+import retrofit2.Response
 import kotlin.test.Test
 
 internal class CoreMethodsRemoteDataSourceTest {
 
-    private val service: CoreMethodsService = mock()
+    private val service: CoreMethodsService = mockk()
     private val remoteDataSource = CoreMethodsRemoteDataSourceImpl(service)
 
     @Test
@@ -24,29 +27,37 @@ internal class CoreMethodsRemoteDataSourceTest {
         val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 
         val cardTokenResponse = CardTokenResponse(id = "token_id")
-        val mpResponse: MPResponse<CardTokenResponse> = MPResponse.Success(cardTokenResponse)
+        val mpResponse: Response<CardTokenResponse> = Response.success(cardTokenResponse)
 
-        whenever(service.createToken(any())).thenReturn(mpResponse)
+        coEvery { service.createToken(any()) } returns mpResponse
 
         val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-        assertTrue(result is MPResponse.Success)
-        assertEquals("token_id", (result as MPResponse.Success).response.token)
+        assertTrue(result is Result.Success)
+        assertEquals("token_id", (result as Result.Success).data.token)
     }
 
     @Test
     fun `test generateCardToken calls service and returns error`() = runBlocking {
         val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 
-        val errorResponse = MPErrorResponse(code = "400", message = "Bad Request")
-        val mpResponse: MPResponse<CardTokenResponse> = MPResponse.Error(errorResponse)
+        val errorBody = ResultError(code = "400", message = "Bad Request")
 
-        whenever(service.createToken(any())).thenReturn(mpResponse)
+        val gson = Gson()
+        val jsonErrorBody = gson.toJson(errorBody)
+        val responseBody: ResponseBody = ResponseBody.create(
+            "application/json".toMediaTypeOrNull(),
+            jsonErrorBody
+        )
+
+        val mpResponse: Response<CardTokenResponse> = Response.error(400, responseBody)
+
+        coEvery { service.createToken(any()) } returns mpResponse
 
         val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-        assertTrue(result is MPResponse.Error)
-        assertEquals("Bad Request", (result as MPResponse.Error).errorResponse.message)
-        assertEquals("400", result.errorResponse.code)
+        assertTrue(result is Result.Error)
+        assertEquals("Bad Request", (result as Result.Error).error.message)
+        assertEquals("400", result.error.code)
     }
 }

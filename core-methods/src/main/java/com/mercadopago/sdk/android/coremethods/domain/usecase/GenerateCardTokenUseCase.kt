@@ -24,7 +24,7 @@ internal class GenerateCardTokenUseCase(
             CardTokenFields(
                 cardNumber = cardNumber,
                 expirationMonth = expirationMonth,
-                expirationYear = 23,
+                expirationYear = expirationYear,
                 securityCode = securityCode
             )
         )

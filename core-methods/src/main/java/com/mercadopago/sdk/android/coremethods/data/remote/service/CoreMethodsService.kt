@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.service
 
-
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import retrofit2.Response
