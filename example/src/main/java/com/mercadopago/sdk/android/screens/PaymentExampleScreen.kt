@@ -13,22 +13,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mercadopago.sdk.android.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -40,16 +40,44 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.extensions.addBorder
+import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
+import com.mercadopago.sdk.android.presentation.state.CardNumberTextFieldState
+import com.mercadopago.sdk.android.presentation.state.ExpirationDateState
+import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
+import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 
 @Composable
-fun PaymentExampleScreen() {
-    PaymentExampleScreenContent()
+fun PaymentExampleScreen(
+    viewModel: PaymentScreenViewModel = viewModel()
+) {
+    val viewState by viewModel.viewState.collectAsState()
+    val cardNumberState = rememberPCIFieldState()
+    val expirationDateState = rememberPCIFieldState()
+    val securityCodeState = rememberPCIFieldState()
+
+    PaymentExampleScreenContent(
+        viewState = viewState,
+        cardNumberState = cardNumberState,
+        expirationDateState = expirationDateState,
+        securityCodeState = securityCodeState,
+        onExpirationDateEvent = viewModel::onExpirationDateEvent,
+        onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
+        onCardNumberEvent = viewModel::onCardNumberEvent
+    )
 }
 
 @Composable
+@Suppress("LongParameterList")
 fun PaymentExampleScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewState: PaymentScreenViewState,
+    cardNumberState: PCIFieldState,
+    expirationDateState: PCIFieldState,
+    securityCodeState: PCIFieldState,
+    onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit,
+    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit,
+    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         Box(
@@ -59,19 +87,48 @@ fun PaymentExampleScreenContent(
         ) {
             Column {
                 Spacer(Modifier.height(16.dp))
-                CardNumberTextField(
+                CardNumberTextFieldExample(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
+                    state = cardNumberState,
+                    cardNumberState = viewState.cardNumberState,
+                    onCardNumberEvent = onCardNumberEvent
                 )
                 Spacer(Modifier.height(16.dp))
                 Row(modifier = Modifier.padding(horizontal = 16.dp)) {
                     ExpirationDateExample(
-                        Modifier.weight(1f)
+                        Modifier.weight(1f),
+                        state = expirationDateState,
+                        expirationDateState = viewState.expirationDateState,
+                        onExpirationDateEvent = onExpirationDateEvent
                     )
                     Spacer(Modifier.width(16.dp))
                     SecurityCodeExample(
-                        Modifier.weight(1f)
+                        Modifier.weight(1f),
+                        state = securityCodeState,
+                        securityCodeState = viewState.secureCodeState,
+                        onSecurityCodeEvent = onSecurityCodeEvent
+                    )
+                }
+                Spacer(Modifier.size(16.dp))
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = {
+                        PaymentScreenViewModel().generateToken(
+                            cardNumberState = cardNumberState,
+                            expirationDateState = expirationDateState,
+                            securityCodeState = securityCodeState
+                        )
+                    },
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Text(
+                        text = "Pay",
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             }
@@ -79,33 +136,13 @@ fun PaymentExampleScreenContent(
     }
 }
 
-data class SecurityCodeState(
-    var isFocused: Boolean = false,
-    var filled: Boolean = false,
-    var length: Int = 0,
-)
-
-data class ExpirationDateState(
-    var isFocused: Boolean = false,
-    var filled: Boolean = false,
-    var length: Int = 0,
-    var error: Boolean = false
-)
-
-data class CardNumberTextFieldState(
-    var isFocused: Boolean = false,
-    var filled: Boolean = false,
-    var length: Int = 0,
-    val isValid: Boolean = false,
-    val lastFourDigits: String = "",
-    val cardBin: String? = null,
-)
-
 @Composable
-@Suppress("LongMethod")
-fun SecurityCodeExample(modifier: Modifier = Modifier) {
-    var secureCodeState by remember { mutableStateOf(SecurityCodeState()) }
-    val state: PCIFieldState = rememberPCIFieldState()
+fun SecurityCodeExample(
+    modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    securityCodeState: SecurityCodeState,
+    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = "Security code",
@@ -119,27 +156,7 @@ fun SecurityCodeExample(modifier: Modifier = Modifier) {
         ) {
             SecurityCodeTextField(
                 state = state,
-                onEvent = { securityCodeFieldEvent ->
-                    when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.OnFocusChanged -> {
-                            secureCodeState = secureCodeState.copy(
-                                isFocused = securityCodeFieldEvent.isFocused
-                            )
-                        }
-
-                        is SecurityCodeFieldEvent.OnLengthChanged -> {
-                            secureCodeState = secureCodeState.copy(
-                                length = securityCodeFieldEvent.length
-                            )
-                        }
-
-                        is SecurityCodeFieldEvent.OnInputFilled -> {
-                            secureCodeState = secureCodeState.copy(
-                                filled = securityCodeFieldEvent.isFilled
-                            )
-                        }
-                    }
-                },
+                onEvent = onSecurityCodeEvent,
                 securityCodeSize = 3,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
@@ -148,13 +165,13 @@ fun SecurityCodeExample(modifier: Modifier = Modifier) {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .addBorder(
-                                isFocused = secureCodeState.isFocused,
+                                isFocused = securityCodeState.isFocused,
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
-                            if (secureCodeState.length == 0) {
+                            if (securityCodeState.length == 0) {
                                 Text(
                                     text = "123",
                                     color = MaterialTheme.colorScheme.outline,
@@ -177,10 +194,12 @@ fun SecurityCodeExample(modifier: Modifier = Modifier) {
 }
 
 @Composable
-@Suppress("LongMethod")
-fun ExpirationDateExample(modifier: Modifier = Modifier) {
-    val state: PCIFieldState = rememberPCIFieldState()
-    var expirationDateState by remember { mutableStateOf(ExpirationDateState()) }
+fun ExpirationDateExample(
+    modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    expirationDateState: ExpirationDateState,
+    onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit
+) {
     Column(modifier = modifier) {
         Text(
             text = "Expiration Date",
@@ -196,40 +215,14 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
                 dateFormat = ExpirationCodeDateFormat.LongFormat,
-                onEvent = { expirationDateEvent ->
-                    when (expirationDateEvent) {
-                        is ExpirationDateFieldEvent.OnInputFilled -> {
-                            expirationDateState = expirationDateState.copy(
-                                filled = expirationDateEvent.isFilled
-                            )
-                        }
-
-                        is ExpirationDateFieldEvent.IsValid -> {
-                            expirationDateState = expirationDateState.copy(
-                                error = !expirationDateEvent.isValid
-                            )
-                        }
-
-                        is ExpirationDateFieldEvent.OnFocusChanged -> {
-                            expirationDateState = expirationDateState.copy(
-                                isFocused = expirationDateEvent.isFocused
-                            )
-                        }
-
-                        is ExpirationDateFieldEvent.OnLengthChanged -> {
-                            expirationDateState = expirationDateState.copy(
-                                length = expirationDateEvent.length
-                            )
-                        }
-                    }
-                },
+                onEvent = onExpirationDateEvent,
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .addBorder(
                                 isFocused = expirationDateState.isFocused,
-                                isError = expirationDateState.error
+                                isError = expirationDateState.valid
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),
@@ -252,11 +245,12 @@ fun ExpirationDateExample(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CardNumberTextField(
+fun CardNumberTextFieldExample(
     modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    cardNumberState: CardNumberTextFieldState,
+    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
 ) {
-    val state = rememberPCIFieldState()
-    var fieldState by remember { mutableStateOf(CardNumberTextFieldState()) }
     Column(modifier = modifier) {
         Text(
             text = "Card Number",
@@ -264,39 +258,20 @@ fun CardNumberTextField(
         Spacer(Modifier.height(4.dp))
         CardNumberTextField(
             state = state,
-            onEvent = { event ->
-                fieldState = when (event) {
-                    is CardNumberTextFieldEvent.OnFocusChanged -> {
-                        fieldState.copy(isFocused = event.isFocused)
-                    }
-                    is CardNumberTextFieldEvent.OnLengthChanged -> {
-                        fieldState.copy(length = event.length)
-                    }
-                    is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
-                        fieldState.copy(lastFourDigits = event.lastFourDigits)
-                    }
-                    is CardNumberTextFieldEvent.IsValid -> {
-                        fieldState.copy(isValid = event.isValid)
-                    }
-                    is CardNumberTextFieldEvent.OnBinChanged -> {
-                        fieldState.copy(cardBin = event.cardBin)
-                    }
-                    else -> fieldState
-                }
-            },
+            onEvent = onCardNumberEvent,
             decorationBox = { innerTextField ->
                 // Customize the input with relevant information like borders, icons, colors and more
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .addBorder(
-                            isFocused = fieldState.isFocused,
+                            isFocused = cardNumberState.isFocused,
                         )
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
                 ) {
                     Box {
-                        if (fieldState.length == 0) {
+                        if (cardNumberState.length == 0) {
                             Text(
                                 text = "4444 4444 4444 4444",
                                 color = MaterialTheme.colorScheme.outline,
@@ -312,7 +287,7 @@ fun CardNumberTextField(
     }
 }
 
-@Preview(name = "PaymentScreen Example", showBackground = true)
+@Preview(name = "Payment Screen Example", showBackground = true)
 @Composable
 fun PaymentExampleScreenPreview() {
     ExampleTheme {
@@ -320,26 +295,26 @@ fun PaymentExampleScreenPreview() {
     }
 }
 
-@Preview(name = "Empty Security Field", showBackground = true)
-@Composable
-fun SecurityCodeExamplePreview() {
-    ExampleTheme {
-        SecurityCodeExample()
-    }
-}
-
-@Preview(name = "Empty Expiration Date Field", showBackground = true)
-@Composable
-fun ExpirationDatePreview() {
-    ExampleTheme {
-        ExpirationDateExample()
-    }
-}
-
-@Preview(name = "Empty Card Number Field", showBackground = true)
-@Composable
-fun CardNumberPreview() {
-    ExampleTheme {
-        CardNumberTextField()
-    }
-}
+// @Preview(name = "Empty Security Field", showBackground = true)
+// @Composable
+// fun SecurityCodeExamplePreview() {
+//    ExampleTheme {
+//        SecurityCodeExample()
+//    }
+// }
+//
+// @Preview(name = "Empty Expiration Date Field", showBackground = true)
+// @Composable
+// fun ExpirationDatePreview() {
+//    ExampleTheme {
+//        ExpirationDateExample()
+//    }
+// }
+//
+// @Preview(name = "Empty Card Number Field", showBackground = true)
+// @Composable
+// fun CardNumberPreview() {
+//    ExampleTheme {
+//        CardNumberTextField()
+//    }
+// }

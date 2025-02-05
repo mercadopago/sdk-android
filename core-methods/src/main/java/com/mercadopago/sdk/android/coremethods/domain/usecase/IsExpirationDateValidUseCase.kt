@@ -20,7 +20,7 @@ internal class IsExpirationDateValidUseCase {
                 val firstSegment = expirationDate.take(INT_TWO).toInt()
                 val lastSegmentDate = expirationDate.takeLast(INT_TWO).toInt()
                 val year = Calendar.getInstance().get(Calendar.YEAR).takeLast(INT_TWO)
-                val month = Calendar.getInstance().get(Calendar.MONTH)
+                val month = Calendar.getInstance().get(Calendar.MONTH) + INT_ONE
 
                 when (lastSegmentDate >= year) {
                     true -> {

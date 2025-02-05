@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)
     implementation(libs.androidx.annotation)
+    implementation(project(":core"))
 
     androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)
@@ -72,4 +73,6 @@ dependencies {
     testImplementation(libs.cashapp.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.kotlin.mockk)
 }
