@@ -1,18 +1,18 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.mappers
 
-import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
-import com.mercadopago.sdk.android.coremethods.domain.model.CardTokenFields
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import kotlin.test.Test
 
-internal class CardTokenFieldsMapperTest {
+internal class GenerateCardTokenParamsMapperTest {
     @Test
     fun `test toCardTokenRequest conversion`() {
         val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
 
-        val cardTokenFields = CardTokenFields(
+        val generateCardTokenParams = GenerateCardTokenParams(
             cardId = "card_123",
             esc = "esc_value",
             requireEsc = false,
@@ -23,7 +23,7 @@ internal class CardTokenFieldsMapperTest {
             buyerIdentification = buyerIdentification
         )
 
-        val cardTokenRequest = cardTokenFields.toCardTokenRequest()
+        val cardTokenRequest = generateCardTokenParams.toRequest()
 
         assertEquals("card_123", cardTokenRequest.cardId)
         assertEquals("esc_value", cardTokenRequest.esc)

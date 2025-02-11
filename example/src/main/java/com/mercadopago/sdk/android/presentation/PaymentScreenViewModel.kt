@@ -44,6 +44,29 @@ class PaymentScreenViewModel(
         }
     }
 
+    fun getInstallment(
+        bin: String,
+        amount: Long
+    ) {
+        viewModelScope.launch {
+            val result = coreMethods.getInstallments(
+                bin = bin,
+                amount = amount
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    print(result.data)
+                }
+
+                is Result.Error -> {
+                    print(result.error.message)
+                }
+            }
+        }
+
+    }
+
     fun onExpirationDateEvent(event: ExpirationDateFieldEvent) {
         when (event) {
             is ExpirationDateFieldEvent.OnInputFilled -> {
@@ -147,6 +170,11 @@ class PaymentScreenViewModel(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         cardBin = event.cardBin
                     )
+                )
+
+                getInstallment(
+                    bin = event.cardBin.orEmpty(),
+                    amount = 1000,
                 )
             }
         }

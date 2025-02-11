@@ -64,6 +64,7 @@ dependencies {
     kspDebug(libs.showkase.processor)
     implementation(libs.androidx.annotation)
     implementation(project(":core"))
+    implementation(project(":analytics"))
 
     androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)

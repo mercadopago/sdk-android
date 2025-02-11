@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.coremethods.di.repository.provideRepositoryMo
 import com.mercadopago.sdk.android.coremethods.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.coremethods.di.usecases.provideUseCaseModule
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import org.koin.core.Koin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
@@ -37,6 +38,10 @@ internal class CoreMethodsModulesProvider(
     }
 
     internal fun provideGenerateCardTokenUseCase(): GenerateCardTokenUseCase {
+        return isolatedKoin.get()
+    }
+
+    internal fun provideGetInstallmentUseCase(): GetInstallmentsUseCase {
         return isolatedKoin.get()
     }
 }

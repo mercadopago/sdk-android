@@ -1,32 +1,32 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase.model
 
-import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
-import com.mercadopago.sdk.android.coremethods.domain.model.CardTokenFields
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-internal class CardTokenFieldsTest {
+internal class GenerateCardTokenParamsTest {
 
     @Test
     fun `test CardTokenFields creation with default values`() {
-        val cardTokenFields = CardTokenFields()
+        val generateCardTokenParams = GenerateCardTokenParams()
 
-        assertNull(cardTokenFields.cardId)
-        assertNull(cardTokenFields.esc)
-        assertFalse(cardTokenFields.requireEsc)
-        assertNull(cardTokenFields.cardNumber)
-        assertNull(cardTokenFields.securityCode)
-        assertNull(cardTokenFields.expirationMonth)
-        assertNull(cardTokenFields.expirationYear)
-        assertNull(cardTokenFields.buyerIdentification)
+        assertNull(generateCardTokenParams.cardId)
+        assertNull(generateCardTokenParams.esc)
+        assertFalse(generateCardTokenParams.requireEsc)
+        assertNull(generateCardTokenParams.cardNumber)
+        assertNull(generateCardTokenParams.securityCode)
+        assertNull(generateCardTokenParams.expirationMonth)
+        assertNull(generateCardTokenParams.expirationYear)
+        assertNull(generateCardTokenParams.buyerIdentification)
     }
 
     @Test
     fun `test CardTokenFields creation with specified values`() {
         val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
-        val cardTokenFields = CardTokenFields(
+        val generateCardTokenParams = GenerateCardTokenParams(
             cardId = "card_123",
             esc = "esc_value",
             requireEsc = false,
@@ -37,20 +37,20 @@ internal class CardTokenFieldsTest {
             buyerIdentification = buyerIdentification
         )
 
-        assertEquals("card_123", cardTokenFields.cardId)
-        assertEquals("esc_value", cardTokenFields.esc)
-        assertFalse(cardTokenFields.requireEsc)
-        assertEquals("4111111111111111", cardTokenFields.cardNumber)
-        assertEquals("123", cardTokenFields.securityCode)
-        assertEquals(12, cardTokenFields.expirationMonth)
-        assertEquals(2025, cardTokenFields.expirationYear)
-        assertEquals(buyerIdentification, cardTokenFields.buyerIdentification)
+        assertEquals("card_123", generateCardTokenParams.cardId)
+        assertEquals("esc_value", generateCardTokenParams.esc)
+        assertFalse(generateCardTokenParams.requireEsc)
+        assertEquals("4111111111111111", generateCardTokenParams.cardNumber)
+        assertEquals("123", generateCardTokenParams.securityCode)
+        assertEquals(12, generateCardTokenParams.expirationMonth)
+        assertEquals(2025, generateCardTokenParams.expirationYear)
+        assertEquals(buyerIdentification, generateCardTokenParams.buyerIdentification)
     }
 
     @Test
     fun `test CardTokenFields equality`() {
         val buyerIdentification = BuyerIdentification(name = "Jane Doe", number = "987654321", type = "CNPJ")
-        val cardTokenFields1 = CardTokenFields(
+        val generateCardTokenParams1 = GenerateCardTokenParams(
             cardId = "card_456",
             esc = null,
             requireEsc = true,
@@ -60,7 +60,7 @@ internal class CardTokenFieldsTest {
             expirationYear = 2024,
             buyerIdentification = buyerIdentification
         )
-        val cardTokenFields2 = CardTokenFields(
+        val generateCardTokenParams2 = GenerateCardTokenParams(
             cardId = "card_456",
             esc = null,
             requireEsc = true,
@@ -71,6 +71,6 @@ internal class CardTokenFieldsTest {
             buyerIdentification = buyerIdentification
         )
 
-        assertEquals(cardTokenFields1, cardTokenFields2)
+        assertEquals(generateCardTokenParams1, generateCardTokenParams2)
     }
 }
