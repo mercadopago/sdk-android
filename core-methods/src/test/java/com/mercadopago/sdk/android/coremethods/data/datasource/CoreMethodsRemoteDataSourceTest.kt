@@ -18,46 +18,47 @@ import retrofit2.Response
 import kotlin.test.Test
 
 internal class CoreMethodsRemoteDataSourceTest {
-
     private val service: CoreMethodsService = mockk()
     private val remoteDataSource = CoreMethodsRemoteDataSourceImpl(service)
 
     @Test
-    fun `test generateCardToken calls service and returns success`() = runBlocking {
-        val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
+    fun `test generateCardToken calls service and returns success`() =
+        runBlocking {
+            val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 
-        val cardTokenResponse = CardTokenResponse(id = "token_id")
-        val mpResponse: Response<CardTokenResponse> = Response.success(cardTokenResponse)
+            val cardTokenResponse = CardTokenResponse(id = "token_id")
+            val mpResponse: Response<CardTokenResponse> = Response.success(cardTokenResponse)
 
-        coEvery { service.createToken(any()) } returns mpResponse
+            coEvery { service.createToken(any()) } returns mpResponse
 
-        val result = remoteDataSource.generateCardToken(cardTokenRequest)
+            val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-        assertTrue(result is Result.Success)
-        assertEquals("token_id", (result as Result.Success).data.token)
-    }
+            assertTrue(result is Result.Success)
+            assertEquals("token_id", (result as Result.Success).data.token)
+        }
 
     @Test
-    fun `test generateCardToken calls service and returns error`() = runBlocking {
-        val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
+    fun `test generateCardToken calls service and returns error`() =
+        runBlocking {
+            val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 
-        val errorBody = ResultError(code = "400", message = "Bad Request")
+            val errorBody = ResultError(code = "400", message = "Bad Request")
 
-        val gson = Gson()
-        val jsonErrorBody = gson.toJson(errorBody)
-        val responseBody: ResponseBody = ResponseBody.create(
-            "application/json".toMediaTypeOrNull(),
-            jsonErrorBody
-        )
+            val gson = Gson()
+            val jsonErrorBody = gson.toJson(errorBody)
+            val responseBody: ResponseBody = ResponseBody.create(
+                "application/json".toMediaTypeOrNull(),
+                jsonErrorBody,
+            )
 
-        val mpResponse: Response<CardTokenResponse> = Response.error(400, responseBody)
+            val mpResponse: Response<CardTokenResponse> = Response.error(400, responseBody)
 
-        coEvery { service.createToken(any()) } returns mpResponse
+            coEvery { service.createToken(any()) } returns mpResponse
 
-        val result = remoteDataSource.generateCardToken(cardTokenRequest)
+            val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-        assertTrue(result is Result.Error)
-        assertEquals("Bad Request", (result as Result.Error).error.message)
-        assertEquals("400", result.error.code)
-    }
+            assertTrue(result is Result.Error)
+            assertEquals("Bad Request", (result as Result.Error).error.message)
+            assertEquals("400", result.error.code)
+        }
 }

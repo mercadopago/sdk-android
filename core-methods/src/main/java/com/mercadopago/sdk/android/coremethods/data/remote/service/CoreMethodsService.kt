@@ -18,7 +18,7 @@ internal interface CoreMethodsService {
     suspend fun getInstallments(
         @Query("product_id") productId: String?,
         @Query("bin") bin: Int?,
-        @Query("processing_mode") processingMode: String? = "aggregator",
+        @Query("processing_mode") processingMode: String?,
         @Query("amount") amount: Long?,
     ): Response<InstallmentsResponse>
 }

@@ -8,7 +8,6 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 internal class GenerateCardTokenParamsTest {
-
     @Test
     fun `test CardTokenFields creation with default values`() {
         val generateCardTokenParams = GenerateCardTokenParams()
@@ -34,7 +33,7 @@ internal class GenerateCardTokenParamsTest {
             securityCode = "123",
             expirationMonth = 12,
             expirationYear = 2025,
-            buyerIdentification = buyerIdentification
+            buyerIdentification = buyerIdentification,
         )
 
         assertEquals("card_123", generateCardTokenParams.cardId)
@@ -58,7 +57,7 @@ internal class GenerateCardTokenParamsTest {
             securityCode = "456",
             expirationMonth = 11,
             expirationYear = 2024,
-            buyerIdentification = buyerIdentification
+            buyerIdentification = buyerIdentification,
         )
         val generateCardTokenParams2 = GenerateCardTokenParams(
             cardId = "card_456",
@@ -68,7 +67,7 @@ internal class GenerateCardTokenParamsTest {
             securityCode = "456",
             expirationMonth = 11,
             expirationYear = 2024,
-            buyerIdentification = buyerIdentification
+            buyerIdentification = buyerIdentification,
         )
 
         assertEquals(generateCardTokenParams1, generateCardTokenParams2)

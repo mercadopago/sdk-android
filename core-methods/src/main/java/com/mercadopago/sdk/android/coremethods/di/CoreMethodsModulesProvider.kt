@@ -15,12 +15,11 @@ import org.koin.core.module.Module
 internal const val PUBLIC_API_URL = "https://api.mercadopago.com/"
 
 internal class CoreMethodsModulesProvider(
-    private val publicKey: String
+    private val publicKey: String,
 ) : CoreKoinModuleProvider {
-
     private val isolatedKoin: Koin = CoreKoinFactory.createKoinApp(
         provider = this,
-        loggerLevel = Level.DEBUG
+        loggerLevel = Level.DEBUG,
     )
 
     init {
@@ -33,7 +32,7 @@ internal class CoreMethodsModulesProvider(
             provideNetworkModule(publicKey = publicKey, baseUrl = PUBLIC_API_URL),
             provideDataSourceModule(),
             provideRepositoryModule(),
-            provideUseCaseModule()
+            provideUseCaseModule(),
         )
     }
 

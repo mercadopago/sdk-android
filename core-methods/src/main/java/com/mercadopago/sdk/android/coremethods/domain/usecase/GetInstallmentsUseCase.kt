@@ -7,17 +7,20 @@ import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepo
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class GetInstallmentsUseCase(
-    private val repository: CoreMethodsRepository
+    private val repository: CoreMethodsRepository,
 ) {
     suspend operator fun invoke(
-        bin: String?,
-        amount: Long?
+        bin: String,
+        amount: Long,
+        processingMode: String,
     ): Result<Installment, ResultError> {
         return repository.getInstallment(
             GetInstallmentParams(
-                bin = bin?.toIntOrNull(),
-                amount = amount
-            )
+                productId = "",
+                bin = bin.toIntOrNull(),
+                amount = amount,
+                processingMode = processingMode,
+            ),
         )
     }
 }

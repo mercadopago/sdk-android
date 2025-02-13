@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class BuyerIdentificationTest {
-
     @Test
     fun `test BuyerIdentification creation`() {
         val name = "John Doe"

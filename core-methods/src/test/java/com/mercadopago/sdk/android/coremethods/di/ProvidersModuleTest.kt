@@ -18,7 +18,6 @@ import org.koin.java.KoinJavaComponent.inject
 import org.koin.test.KoinTest
 
 internal class ProvidersModuleTest : KoinTest {
-
     @Before
     fun start() {
         // Inicia o Koin com o módulo
@@ -29,7 +28,7 @@ internal class ProvidersModuleTest : KoinTest {
                     provideDataSourceModule(),
                     provideRepositoryModule(),
                     provideUseCaseModule(),
-                )
+                ),
             )
         }
     }

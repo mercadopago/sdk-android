@@ -5,8 +5,9 @@ import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethod
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun provideDataSourceModule(): Module = module {
-    factory<CoreMethodsRemoteDataSource> {
-        CoreMethodsRemoteDataSourceImpl(get())
+internal fun provideDataSourceModule(): Module =
+    module {
+        factory<CoreMethodsRemoteDataSource> {
+            CoreMethodsRemoteDataSourceImpl(get())
+        }
     }
-}

@@ -14,12 +14,12 @@ internal fun GenerateCardTokenParams.toRequest() =
         securityCode = securityCode,
         expirationMonth = expirationMonth,
         expirationYear = expirationYear,
-        buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest()
+        buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest(),
     )
 
 internal fun BuyerIdentification.toBuyerIdentificationRequest() =
     BuyerIdentificationBodyRequest(
         name = name,
         number = number,
-        type = type
+        type = type,
     )

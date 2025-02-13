@@ -35,7 +35,6 @@ import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.InstallmentsState
 
-
 @Composable
 fun InstallmentListDropDownField(
     state: InstallmentsState,
@@ -110,10 +109,7 @@ fun InstallmentDropDown(
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxHeight()
         ) {
-            Text(
-                text = state.selectedInstallment?.value ?: "Choose option",
-                modifier = Modifier.weight(8f)
-            )
+            Text(text = state.selectedInstallment?.value ?: "Choose option")
             ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = expanded,
                 modifier.weight(1f)
@@ -136,8 +132,11 @@ fun InstallmentDropDown(
                     },
                     modifier = Modifier
                         .background(
-                            color = if (selected) MaterialTheme.colorScheme.primary
-                            else Color.Unspecified
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                Color.Unspecified
+                            }
                         ),
                     onClick = {
                         expanded = false

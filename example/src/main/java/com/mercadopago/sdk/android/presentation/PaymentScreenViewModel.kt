@@ -71,7 +71,6 @@ class PaymentScreenViewModel(
                 }
             }
         }
-
     }
 
     fun onExpirationDateEvent(event: ExpirationDateFieldEvent) {

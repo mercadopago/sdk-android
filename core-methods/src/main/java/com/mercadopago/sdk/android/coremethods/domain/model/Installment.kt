@@ -7,12 +7,12 @@ data class Installment(
     val processingMode: String? = null,
     val merchantAccountId: String? = null,
     val payerCost: List<PayerCost>? = null,
-    val agreements: List<Agreements>? = null
+    val agreements: List<Agreements>? = null,
 )
 
 data class Issuer(
-    val id: String?,
-    val thumbnail: String?
+    val id: String? = null,
+    val thumbnail: String? = null,
 )
 
 data class PayerCost(
@@ -26,20 +26,25 @@ data class PayerCost(
     val discountRate: Float? = null,
     val reimbursementRate: Float? = null,
     val labels: List<String>? = null,
-    val paymentMethodOptionId: String? = null
+    val paymentMethodOptionId: String? = null,
 )
 
 data class Agreements(
     val merchantAccount: List<MerchantAccount>? = null,
-    val timeFrame: TimeFrame? = null
+    val timeFrame: TimeFrame? = null,
 )
 
 data class MerchantAccount(
     val id: String? = null,
-    val paymentMethodOptionId: String? = null
+    val paymentMethodOptionId: String? = null,
 )
 
 data class TimeFrame(
     val startDate: String? = null,
-    val endDate: String? = null
+    val endDate: String? = null,
 )
+
+enum class ProcessingMode(val mode: String) {
+    Aggregator("aggregator"),
+    Gateway("gateway"),
+}

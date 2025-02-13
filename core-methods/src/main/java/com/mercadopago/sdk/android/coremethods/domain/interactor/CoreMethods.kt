@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.analytics.provideMetricInstallmen
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.exceptions.InitializationException
@@ -12,9 +13,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 
 class CoreMethods internal constructor(
     private val coreMethodsProvider: CoreMethodsModulesProvider,
-    private val analytics: MPAnalytics
+    private val analytics: MPAnalytics,
 ) {
-
     companion object {
         @Volatile
         private var instance: CoreMethods? = null
@@ -23,13 +23,11 @@ class CoreMethods internal constructor(
             return instance ?: throw InitializationException()
         }
 
-        fun initialize(
-            publicKey: String,
-        ) {
+        fun initialize(publicKey: String) {
             MPAnalytics.initialize("", "", "")
             instance = CoreMethods(
                 coreMethodsProvider = CoreMethodsModulesProvider(publicKey),
-                analytics = MPAnalytics.getInstance()
+                analytics = MPAnalytics.getInstance(),
             )
         }
     }
@@ -42,18 +40,30 @@ class CoreMethods internal constructor(
         return coreMethodsProvider.provideGenerateCardTokenUseCase().invoke(
             cardNumber = cardNumberState.input,
             expirationDate = expirationDateState.input,
-            securityCode = securityCodeState.input
+            securityCode = securityCodeState.input,
         )
     }
 
     suspend fun getInstallments(
         bin: String,
-        amount: Long
+        amount: Long,
+        processingMode: ProcessingMode = ProcessingMode.Aggregator,
     ): Result<Installment, ResultError> {
-        analytics.trackMetric(provideMetricInstallmentFetch(isDeveloping = false))
-        return coreMethodsProvider.provideGetInstallmentUseCase().invoke(
+        val result = coreMethodsProvider.provideGetInstallmentUseCase().invoke(
             bin = bin,
-            amount = amount
+            amount = amount,
+            processingMode = processingMode.mode,
         )
+
+        when (result) {
+            is Result.Error -> {
+                analytics.trackMetric(provideMetricInstallmentFetch(isDeveloping = false))
+            }
+
+            is Result.Success -> {
+                analytics.trackMetric(provideMetricInstallmentFetch(isDeveloping = false))
+            }
+        }
+        return result
     }
 }

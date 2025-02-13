@@ -20,7 +20,7 @@ internal class GenerateCardTokenParamsMapperTest {
             securityCode = "123",
             expirationMonth = 12,
             expirationYear = 2025,
-            buyerIdentification = buyerIdentification
+            buyerIdentification = buyerIdentification,
         )
 
         val cardTokenRequest = generateCardTokenParams.toRequest()

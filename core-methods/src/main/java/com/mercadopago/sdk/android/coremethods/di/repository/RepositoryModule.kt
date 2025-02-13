@@ -5,8 +5,9 @@ import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepo
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun provideRepositoryModule(): Module = module {
-    factory<CoreMethodsRepository> {
-        CoreMethodsRepositoryImpl(get())
+internal fun provideRepositoryModule(): Module =
+    module {
+        factory<CoreMethodsRepository> {
+            CoreMethodsRepositoryImpl(get())
+        }
     }
-}

@@ -8,5 +8,5 @@ internal fun GetInstallmentParams.toRequest() =
         productId = this.productId,
         bin = this.bin,
         processingMode = this.processingMode,
-        amount = this.amount
+        amount = this.amount,
     )

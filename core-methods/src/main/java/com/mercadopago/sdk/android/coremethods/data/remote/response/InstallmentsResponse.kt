@@ -8,25 +8,25 @@ internal data class InstallmentsResponse(
     @SerializedName("payment_type_id")
     val paymentTypeId: String? = null,
     @SerializedName("issuer")
-    val issuer: Issuer? = null,
+    val issuer: IssuerResponse? = null,
     @SerializedName("processing_mode")
     val processingMode: String? = null,
     @SerializedName("merchant_account_id")
     val merchantAccountId: String? = null,
     @SerializedName("payer_costs")
-    val payerCost: List<PayerCost>? = null,
+    val payerCost: List<PayerCostResponse>? = null,
     @SerializedName("agreements")
-    val agreements: List<Agreements>? = null
+    val agreements: List<AgreementsResponse>? = null,
 )
 
-internal data class Issuer(
+internal data class IssuerResponse(
     @SerializedName("id")
-    val id: String?,
+    val id: String? = null,
     @SerializedName("thumbnail")
-    val thumbnail: String?
+    val thumbnail: String? = null,
 )
 
-internal data class PayerCost(
+internal data class PayerCostResponse(
     @SerializedName("installments")
     val instalments: Int? = null,
     @SerializedName("installment_amount")
@@ -48,26 +48,26 @@ internal data class PayerCost(
     @SerializedName("labels")
     val labels: List<String>? = null,
     @SerializedName("payment_method_option_id")
-    val paymentMethodOptionId: String? = null
+    val paymentMethodOptionId: String? = null,
 )
 
-internal data class Agreements(
+internal data class AgreementsResponse(
     @SerializedName("merchant_accounts")
-    val merchantAccount: List<MerchantAccount>? = null,
+    val merchantAccount: List<MerchantAccountResponse>? = null,
     @SerializedName("time_frame")
-    val timeFrame: TimeFrame? = null
+    val timeFrame: TimeFrameResponse? = null,
 )
 
-internal data class MerchantAccount(
+internal data class MerchantAccountResponse(
     @SerializedName("id")
     val id: String? = null,
     @SerializedName("payment_method_option_id")
-    val paymentMethodOptionId: String? = null
+    val paymentMethodOptionId: String? = null,
 )
 
-internal data class TimeFrame(
+internal data class TimeFrameResponse(
     @SerializedName("start_date")
     val startDate: String? = null,
     @SerializedName("end_date")
-    val endDate: String? = null
+    val endDate: String? = null,
 )

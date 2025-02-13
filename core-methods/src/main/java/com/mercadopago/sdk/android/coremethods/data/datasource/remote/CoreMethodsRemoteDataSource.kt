@@ -9,5 +9,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRemoteDataSource {
     suspend fun generateCardToken(cardTokenRequest: CardTokenBodyRequest): Result<CardToken, ResultError>
+
     suspend fun getInstallments(installmentsRequest: InstallmentsRequest): Result<Installment, ResultError>
 }

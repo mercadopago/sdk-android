@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class ResultErrorTest {
-
     @Test
     fun `test ResultError creation with default values`() {
         val resultError = ResultError()
