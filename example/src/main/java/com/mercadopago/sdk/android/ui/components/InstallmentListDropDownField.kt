@@ -109,7 +109,10 @@ fun InstallmentDropDown(
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxHeight()
         ) {
-            Text(text = state.selectedInstallment?.value ?: "Choose option")
+            Text(
+                text = state.selectedInstallment?.value ?: "Choose option",
+                modifier = Modifier.weight(8f)
+            )
             ExposedDropdownMenuDefaults.TrailingIcon(
                 expanded = expanded,
                 modifier.weight(1f)
