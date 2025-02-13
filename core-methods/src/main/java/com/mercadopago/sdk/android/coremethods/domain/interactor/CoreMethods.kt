@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.provideMetricInstallmentFetch
+import com.mercadopago.sdk.android.coremethods.analytics.provideMetricInstallmentFetchError
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
@@ -69,11 +70,21 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                analytics.trackMetric(provideMetricInstallmentFetch(isDeveloping = false))
+                analytics.trackMetric(
+                    provideMetricInstallmentFetchError(
+                        code = result.error.code,
+                        message = result.error.message
+                    )
+                )
             }
 
             is Result.Success -> {
-                analytics.trackMetric(provideMetricInstallmentFetch(isDeveloping = false))
+                analytics.trackMetric(
+                    provideMetricInstallmentFetch(
+                        paymentType = result.data.paymentTypeId.orEmpty(),
+                        merchantAccountId = result.data.merchantAccountId.orEmpty()
+                    )
+                )
             }
         }
         return result
