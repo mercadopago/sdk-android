@@ -44,6 +44,18 @@ class CoreMethods internal constructor(
         )
     }
 
+    /**
+     * Get installment list call.
+     * This return a [Result.Success] of [Installment] data model or a [Result.Error] of [ResultError]
+     *
+     * This is a suspend function and should be called only from a coroutine or another suspend function
+     * @param bin the credit card bin
+     * @param amount order item amount
+     * @param processingMode the processing mode ([ProcessingMode.Aggregator] or [ProcessingMode.Gateway])
+     * @see ProcessingMode
+     * @see Result
+     * @see ResultError
+     */
     suspend fun getInstallments(
         bin: String,
         amount: Long,
