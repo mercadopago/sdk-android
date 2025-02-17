@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.analytics
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import junit.framework.TestCase.assertNotNull
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Before
@@ -13,10 +14,11 @@ internal class MPAnalyticsTest {
     private val sessionId = "session"
     private val siteId = "site"
     private val version = "1.0"
+    private val getSiteIdFlow = flowOf<String>()
 
     @Before
     fun setup() {
-        MPAnalytics.initialize(sessionId, siteId, version)
+        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
     }
 
     @Test
@@ -38,18 +40,6 @@ internal class MPAnalyticsTest {
     }
 
     @Test
-    fun `test siteId is correctly set`() {
-        val analyticsInstance = MPAnalytics.getInstance()
-        val siteIdProperty = MPAnalytics::class.java.declaredFields
-            .first { it.name == "siteId" }
-
-        siteIdProperty.isAccessible = true
-        val actualSiteId = siteIdProperty.get(analyticsInstance)
-
-        assertEquals(siteId, actualSiteId)
-    }
-
-    @Test
     fun `test version is correctly set`() {
         val analyticsInstance = MPAnalytics.getInstance()
         val versionProperty = MPAnalytics::class.java.declaredFields
@@ -64,7 +54,7 @@ internal class MPAnalyticsTest {
     @Test
     fun `test getInstance throws exception before initialization`() {
         // Reset Analytics instance to simulate being uninitialized
-        MPAnalytics.initialize(sessionId, siteId, version)
+        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
 
         // Reinitialize with a new instance, and then reset to null to throw exception
         MPAnalytics::class.java.getDeclaredField("instance").apply {
