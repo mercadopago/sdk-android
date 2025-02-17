@@ -8,7 +8,7 @@ import org.koin.dsl.module
 
 class CoreKoinFactoryTest {
 
-    private class TestModuleProvider : CoreKoinModuleProvider {
+    private class TestModuleProvider(override val koinApp: Koin) : CoreKoinModuleProvider {
         override fun provideModules(): List<Module> {
             return listOf(module { /* Definitions for testing */ })
         }
