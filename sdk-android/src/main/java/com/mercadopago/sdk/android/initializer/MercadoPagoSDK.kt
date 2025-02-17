@@ -41,8 +41,8 @@ class MercadoPagoSDK private constructor(
         /**
          * Initializes the Mercado Pago SDK. This should be called before any other SDK method.
          * Call it inside the application class only once for your application.
-         * @param context: The application context.
-         * @param publicKey: The public key of your Mercado Pago account.
+         * @param context The application context.
+         * @param publicKey The public key of your Mercado Pago account.
          * Please store this key safely on a secure place outside your app.
          * Read here for more info:
          * @see [Credentials](https://www.mercadopago.com/developers/en/docs/your-integrations/credentials)
