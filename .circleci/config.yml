@@ -11,7 +11,7 @@ executors:
 
 jobs:
   build:
-    circleci_ip_ranges: false
+    circleci_ip_ranges: true
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
@@ -74,25 +74,25 @@ jobs:
           command: ./gradlew dependencies
 
       # PRE TEST
-#      - run:
-#          name: KLint Format
-#          command: ./gradlew ktlintFormat
-#
-#      # TEST STEP
-#      - run:
-#          name: Run Detekt
-#          command: ./gradlew detekt
-#      - run:
-#          name: Run KLint Check
-#          command: ./gradlew ktlintCheck
-#      - run:
-#          name: Run Code Coverage
-#          command: ./gradlew koverXmlReportDebug
-#      - run:
-#          name: Run Screenshot Tests
-#          command: ./gradlew verifyPaparazziDebug
-#      - store_test_results:
-#          path: core-methods/build/reports/kover/reportDebug.xml
+      - run:
+          name: KLint Format
+          command: ./gradlew ktlintFormat
+
+      # TEST STEP
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run KLint Check
+          command: ./gradlew ktlintCheck
+      - run:
+          name: Run Code Coverage
+          command: ./gradlew koverXmlReportDebug
+      #      - run:
+      #          name: Run Screenshot Tests
+      #          command: ./gradlew verifyPaparazziDebug
+      - store_test_results:
+          path: core-methods/build/reports/kover/reportDebug.xml
 
       # BUILD STEP
       - run:
