@@ -11,6 +11,7 @@ executors:
 
 jobs:
   build:
+    circleci_ip_ranges: true
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
