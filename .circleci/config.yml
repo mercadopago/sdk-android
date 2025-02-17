@@ -96,7 +96,7 @@ jobs:
       # BUILD STEP
       - run:
           name: Build the app
-          command: ./gradlew assemble --stacktrace
+          command: ./gradlew assemble --no-daemon --stacktrace
       - run:
           name: Archive APK
           command: |
