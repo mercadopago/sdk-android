@@ -8,10 +8,11 @@ plugins {
 
 android {
     namespace = "com.mercadopago.sdk.android.coremethods"
-    compileSdk = 35
+    compileSdk = MercadoPagoSDKConfigs.compileSdk
 
     defaultConfig {
-        minSdk = 21
+        minSdk = MercadoPagoSDKConfigs.minSdk
+        version = CoreMethodsSDKConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -24,8 +25,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
     }
     testOptions {
         unitTests {
@@ -36,7 +37,7 @@ android {
         compose = true
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
     }
 }
 
@@ -49,7 +50,8 @@ ksp {
 }
 
 dependencies {
-
+    implementation(projects.core)
+    implementation(projects.sdkAndroid)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -63,7 +65,6 @@ dependencies {
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)
     implementation(libs.androidx.annotation)
-    implementation(project(":core"))
 
     androidTestImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)

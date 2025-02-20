@@ -20,9 +20,12 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "mercado-pago-android"
 include(":example")
 include(":core-methods")
 include(":showkase")
 include(":analytics")
 include(":core")
+include(":sdk-android")

@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.analytics.domain.interactor
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.utils.KoverIgnore
+import kotlinx.coroutines.flow.Flow
 
 /** Core analytics implementation for the MercadoPago SDK.
  *
@@ -14,13 +15,15 @@ import com.mercadopago.sdk.android.analytics.utils.KoverIgnore
  *  This class have to be initialized first with [initialize] method
  *  then get a instance by [getInstance]
  * @param sessionId session identification of this analytics instance
- * @param siteId site Id of the seller
- * @param version this application SDK version
+ * @param publicKey the public key used to initialize the SDK.
+ * @param version this application SDK version.
+ * @param getSiteIdFlow a flow that emits the current siteId.
  * */
 class MPAnalytics internal constructor(
     private val sessionId: String,
-    private val siteId: String,
-    private val version: String
+    private val publicKey: String,
+    private val version: String,
+    private val getSiteIdFlow: Flow<String>,
 ) {
 
     companion object {
@@ -33,13 +36,15 @@ class MPAnalytics internal constructor(
 
         fun initialize(
             sessionId: String,
-            siteId: String,
-            version: String
+            publicKey: String,
+            version: String,
+            getSiteIdFlow: Flow<String>,
         ) {
             instance = MPAnalytics(
                 sessionId,
-                siteId,
-                version
+                publicKey,
+                version,
+                getSiteIdFlow,
             )
         }
     }

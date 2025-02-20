@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.mercadopago.sdk.android"
-    compileSdk = 35
+    compileSdk = MercadoPagoSDKConfigs.compileSdk
 
     defaultConfig {
         applicationId = "com.mercadopago.sdk.android"
-        minSdk = 21
-        targetSdk = 35
+        minSdk = MercadoPagoSDKConfigs.minSdk
+        targetSdk = MercadoPagoSDKConfigs.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -26,11 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
     }
     buildFeatures {
         compose = true
@@ -43,7 +43,12 @@ kover.reports.filters.excludes {
 }
 
 dependencies {
-    implementation(project(":core-methods"))
+    implementation(projects.sdkAndroid)
+    implementation(projects.coreMethods)
+    api(platform(libs.koin.bom))
+    api(libs.koin.core)
+    api(libs.koin.android)
+    api(libs.koin.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

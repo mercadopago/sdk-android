@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.mercadopago.sdk.android.core"
-    compileSdk = 34
+    compileSdk = MercadoPagoSDKConfigs.compileSdk
 
     defaultConfig {
-        minSdk = 21
+        minSdk = MercadoPagoSDKConfigs.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -24,11 +24,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
@@ -39,6 +42,7 @@ dependencies {
     implementation(libs.material)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
+    api(libs.koin.android)
     api(libs.squareup.retrofit)
     api(libs.okhttp)
     api(libs.logging.interceptor)

@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.mercadopago.sdk.android.analytics"
-    compileSdk = 34
+    compileSdk = MercadoPagoSDKConfigs.compileSdk
 
     defaultConfig {
-        minSdk = 21
+        minSdk = MercadoPagoSDKConfigs.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -24,11 +24,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
     }
 }
 
