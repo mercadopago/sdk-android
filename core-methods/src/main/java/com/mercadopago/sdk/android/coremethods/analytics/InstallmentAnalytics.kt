@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
-import org.koin.core.logger.MESSAGE
 
 internal fun provideMetricInstallmentFetch(
     paymentType: String? = null,

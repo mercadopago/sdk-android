@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.di.repository.provideRepositoryMo
 import com.mercadopago.sdk.android.coremethods.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.coremethods.di.usecases.provideUseCaseModule
 import org.junit.Test
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.KoinTest
@@ -26,9 +27,9 @@ internal class ProvidersModuleTest : KoinTest {
         )
     }
 
+    @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideModules then provides GenerateCardTokenUseCase`() {
-
         val koin = koinApplication {
             modules(modules)
         }

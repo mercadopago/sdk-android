@@ -91,6 +91,7 @@ fun InstallmentListDropDownField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Suppress("MagicNumber")
 fun InstallmentDropDown(
     state: InstallmentsState,
     onSelect: (Installment) -> Unit,
