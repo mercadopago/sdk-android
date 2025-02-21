@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mercadopago.sdk.android.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -48,10 +47,11 @@ import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.ui.components.InstallmentListDropDownField
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PaymentExampleScreen(
-    viewModel: PaymentScreenViewModel = viewModel()
+    viewModel: PaymentScreenViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val cardNumberState = rememberPCIFieldState()

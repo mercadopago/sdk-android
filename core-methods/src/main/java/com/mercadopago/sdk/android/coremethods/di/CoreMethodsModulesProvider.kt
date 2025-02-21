@@ -6,41 +6,23 @@ import com.mercadopago.sdk.android.coremethods.di.datasource.provideDataSourceMo
 import com.mercadopago.sdk.android.coremethods.di.repository.provideRepositoryModule
 import com.mercadopago.sdk.android.coremethods.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.coremethods.di.usecases.provideUseCaseModule
-import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.initializer.MercadoPagoKoinComponent
 import org.koin.core.Koin
-import org.koin.core.logger.Level
 import org.koin.core.module.Module
 
-internal const val PUBLIC_API_URL = "https://api.mercadopago.com/"
+internal class CoreMethodsModulesProvider : CoreKoinModuleProvider, MercadoPagoKoinComponent {
 
-internal class CoreMethodsModulesProvider(
-    private val publicKey: String,
-) : CoreKoinModuleProvider {
-    private val isolatedKoin: Koin = CoreKoinFactory.createKoinApp(
-        provider = this,
-        loggerLevel = Level.DEBUG,
+    override val koinApp: Koin = CoreKoinFactory.setKoinModules(
+        koin = getKoin(),
+        modules = provideModules(),
     )
-
-    init {
-        // Load modules
-        isolatedKoin.loadModules(provideModules())
-    }
 
     override fun provideModules(): List<Module> {
         return listOf(
-            provideNetworkModule(publicKey = publicKey, baseUrl = PUBLIC_API_URL),
+            provideNetworkModule(),
             provideDataSourceModule(),
             provideRepositoryModule(),
             provideUseCaseModule(),
         )
-    }
-
-    internal fun provideGenerateCardTokenUseCase(): GenerateCardTokenUseCase {
-        return isolatedKoin.get()
-    }
-
-    internal fun provideGetInstallmentUseCase(): GetInstallmentsUseCase {
-        return isolatedKoin.get()
     }
 }
