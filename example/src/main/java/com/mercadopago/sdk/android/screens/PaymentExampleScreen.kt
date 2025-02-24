@@ -40,10 +40,12 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
+import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.CardNumberTextFieldState
 import com.mercadopago.sdk.android.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.ui.components.InstallmentListDropDownField
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -63,12 +65,13 @@ fun PaymentExampleScreen(
         securityCodeState = securityCodeState,
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
-        onCardNumberEvent = viewModel::onCardNumberEvent
+        onCardNumberEvent = viewModel::onCardNumberEvent,
+        onSelectedInstallment = viewModel::onInstallmentSelected
     )
 }
 
 @Composable
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "LongMethod")
 fun PaymentExampleScreenContent(
     modifier: Modifier = Modifier,
     viewState: PaymentScreenViewState,
@@ -77,7 +80,8 @@ fun PaymentExampleScreenContent(
     securityCodeState: PCIFieldState,
     onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit,
     onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit,
-    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
+    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit,
+    onSelectedInstallment: (Installment) -> Unit,
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         Box(
@@ -111,6 +115,10 @@ fun PaymentExampleScreenContent(
                         onSecurityCodeEvent = onSecurityCodeEvent
                     )
                 }
+                InstallmentListDropDownField(
+                    state = viewState.installmentsState,
+                    onSelectedInstallment = onSelectedInstallment
+                )
                 Spacer(Modifier.size(16.dp))
                 Button(
                     shape = MaterialTheme.shapes.small,

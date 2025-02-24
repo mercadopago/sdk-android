@@ -12,45 +12,46 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class GenerateCardTokenUseCaseTest {
-
     private val repository: CoreMethodsRepository = mockk()
     private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository)
 
     @Test
-    fun `test invoke returns Result Success with valid data`() = runBlocking {
-        val cardNumber = "4111111111111111"
-        val expirationDate = "12/25"
-        val securityCode = "123"
-        val expectedCardToken = CardToken("sampleToken")
-        val expectedResult = Result.Success(expectedCardToken)
+    fun `test invoke returns Result Success with valid data`() =
+        runBlocking {
+            val cardNumber = "4111111111111111"
+            val expirationDate = "12/25"
+            val securityCode = "123"
+            val expectedCardToken = CardToken("sampleToken")
+            val expectedResult = Result.Success(expectedCardToken)
 
-        // Mock the repository behavior
-        coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            // Mock the repository behavior
+            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
 
-        // Call the use case
-        val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
+            // Call the use case
+            val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
 
-        // Verify the result
-        assertTrue(result is Result.Success)
-        assertEquals(expectedCardToken, (result as Result.Success).data)
-    }
+            // Verify the result
+            assertTrue(result is Result.Success)
+            assertEquals(expectedCardToken, (result as Result.Success).data)
+        }
 
     @Test
-    fun `test invoke returns Result Error on failure`() = runBlocking {
-        val cardNumber = "4111111111111111"
-        val expirationDate = "12/25"
-        val securityCode = "123"
-        val expectedError = ResultError("Some error")
-        val expectedResult = Result.Error(expectedError)
+    fun `test invoke returns Result Error on failure`() =
+        runBlocking {
+            val cardNumber = "4111111111111111"
+            val expirationDate = "12/25"
+            val securityCode = "123"
+            val expectedError = ResultError("Some error")
+            val expectedResult = Result.Error(expectedError)
 
-        // Mock the repository behavior
-        coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            // Mock the repository behavior
+            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
 
-        // Call the use case
-        val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
+            // Call the use case
+            val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
 
-        // Verify the result
-        assertTrue(result is Result.Error)
-        assertEquals(expectedError, (result as Result.Error).error)
-    }
+            // Verify the result
+            assertTrue(result is Result.Error)
+            assertEquals(expectedError, (result as Result.Error).error)
+        }
 }

@@ -1,6 +1,6 @@
-package com.mercadopago.sdk.android.coremethods.domain.model
+package com.mercadopago.sdk.android.coremethods.domain.model.params
 
-internal data class CardTokenFields(
+internal data class GenerateCardTokenParams(
     val cardId: String? = null,
     val esc: String? = null,
     val requireEsc: Boolean = false,

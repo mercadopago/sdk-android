@@ -39,12 +39,12 @@ internal data class CardHolderResponse(
     @SerializedName("identification")
     val identification: IdentificationResponse? = null,
     @SerializedName("name")
-    val name: String? = null
+    val name: String? = null,
 )
 
 internal data class IdentificationResponse(
     @SerializedName("number")
     val number: String? = null,
     @SerializedName("type")
-    val type: String? = null
+    val type: String? = null,
 )

@@ -1,9 +1,12 @@
 package com.mercadopago.sdk.android.coremethods.di.usecases
 
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun provideUseCaseModule(): Module = module {
-    factory { GenerateCardTokenUseCase(get()) }
-}
+internal fun provideUseCaseModule(): Module =
+    module {
+        factory { GenerateCardTokenUseCase(get()) }
+        factory { GetInstallmentsUseCase(get()) }
+    }

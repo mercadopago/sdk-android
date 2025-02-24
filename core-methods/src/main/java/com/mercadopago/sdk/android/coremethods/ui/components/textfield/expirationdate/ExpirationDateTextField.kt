@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.coremethods.domain.usecase.IsExpirationDateValidUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsExpirationDateValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField

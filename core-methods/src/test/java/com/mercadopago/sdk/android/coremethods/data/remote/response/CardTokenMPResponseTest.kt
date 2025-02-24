@@ -47,7 +47,7 @@ internal class CardTokenMPResponseTest {
             lastFourDigits = "1111",
             liveMode = "true",
             cardholder = cardHolderResponse,
-            esc = "esc_value"
+            esc = "esc_value",
         )
 
         assertEquals("token_123", cardTokenResponse.id)

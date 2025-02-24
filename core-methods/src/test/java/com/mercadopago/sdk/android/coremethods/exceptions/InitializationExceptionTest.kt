@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class InitializationExceptionTest {
-
     @Test
     fun `test default InitializationException message`() {
         val exception = InitializationException()

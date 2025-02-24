@@ -6,7 +6,6 @@ import org.junit.Assert.assertNull
 import kotlin.test.Test
 
 internal class CardTokenBodyRequestTest {
-
     @Test
     fun `test CardTokenBodyRequest creation with default values`() {
         val cardTokenBodyRequest = CardTokenBodyRequest()
@@ -32,7 +31,7 @@ internal class CardTokenBodyRequestTest {
             securityCode = "123",
             expirationMonth = 12,
             expirationYear = 2025,
-            buyerIdentification = buyerIdentification
+            buyerIdentification = buyerIdentification,
         )
 
         assertEquals("card_123", cardTokenBodyRequest.cardId)
@@ -61,11 +60,11 @@ internal class CardTokenBodyRequestTest {
 
         val cardTokenBodyRequest1 = CardTokenBodyRequest(
             cardId = "card_001",
-            buyerIdentification = buyerIdentification1
+            buyerIdentification = buyerIdentification1,
         )
         val cardTokenBodyRequest2 = CardTokenBodyRequest(
             cardId = "card_001",
-            buyerIdentification = buyerIdentification2
+            buyerIdentification = buyerIdentification2,
         )
 
         assertEquals(cardTokenBodyRequest1, cardTokenBodyRequest2)

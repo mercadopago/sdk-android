@@ -10,6 +10,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expiratio
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import com.mercadopago.sdk.android.mappers.toInstallmentModel
+import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +39,33 @@ class PaymentScreenViewModel(
             when (result) {
                 is Result.Success -> {
                     print(result.data.token)
+                }
+
+                is Result.Error -> {
+                    print(result.error.message)
+                }
+            }
+        }
+    }
+
+    fun getInstallment(
+        bin: String,
+        amount: Long
+    ) {
+        viewModelScope.launch {
+            val result = coreMethods.getInstallments(
+                bin = bin,
+                amount = amount
+            )
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+                        installmentsState = _viewState.value.installmentsState.copy(
+                            showList = true,
+                            installments = result.data.payerCost?.toInstallmentModel().orEmpty(),
+                        )
+                    )
                 }
 
                 is Result.Error -> {
@@ -150,7 +179,20 @@ class PaymentScreenViewModel(
                         cardBin = event.cardBin
                     )
                 )
+
+                getInstallment(
+                    bin = event.cardBin.orEmpty(),
+                    amount = 1000,
+                )
             }
         }
+    }
+
+    fun onInstallmentSelected(value: Installment) {
+        _viewState.value = _viewState.value.copy(
+            installmentsState = _viewState.value.installmentsState.copy(
+                selectedInstallment = value
+            )
+        )
     }
 }
