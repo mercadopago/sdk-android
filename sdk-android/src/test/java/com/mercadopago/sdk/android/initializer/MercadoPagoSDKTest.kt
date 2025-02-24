@@ -18,10 +18,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.verify
 import io.mockk.verifyOrder
-import kotlin.test.Test
-import kotlin.test.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +30,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.koin.core.Koin
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
 internal class MercadoPagoSDKTest {
 
@@ -42,6 +41,7 @@ internal class MercadoPagoSDKTest {
     private val getSiteIdUseCase = mockk<GetSiteIdUseCase>(relaxed = true)
     private val setSiteIdUseCase = mockk<SetSiteIdUseCase>(relaxed = true)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = UnconfinedTestDispatcher()
 

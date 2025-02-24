@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.initializer.coroutines
 
-import kotlin.test.assertNotNull
 import org.junit.Test
+import kotlin.test.assertNotNull
 
 internal class SdkCoroutineProviderTest {
 
