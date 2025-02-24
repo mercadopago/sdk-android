@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.data.repository
 import app.cash.turbine.test
 import com.mercadopago.sdk.android.data.local.datasource.SdkInitializationLocalDataSource
 import com.mercadopago.sdk.android.data.remote.datasource.SdkInitializationRemoteDataSource
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.model.SiteId
 import io.mockk.every
 import io.mockk.mockk
@@ -102,13 +103,14 @@ internal class SdkInitializationRepositoryTest {
     fun `when setSiteId is called with success Then emit success`() = runTest {
         // Given
         val publicKey = "public_key"
-        val siteId = SiteId("123")
+        val countryCode = CountryCode.ARG
+        val siteId = SiteId("MLA")
         every {
             sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
         } returns flowOf(Unit)
 
         // When
-        val result = repository.setSiteId(publicKey, siteId)
+        val result = repository.setSiteId(publicKey, countryCode)
 
         // Then
         result.test {

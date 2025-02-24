@@ -47,6 +47,7 @@ dependencies {
     testImplementation(libs.koin.test.junit4)
     testImplementation(libs.kotlin.mockk)
     testImplementation(libs.cashapp.turbine)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
     testImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
