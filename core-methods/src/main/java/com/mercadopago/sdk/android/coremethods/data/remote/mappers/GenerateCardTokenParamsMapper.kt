@@ -2,10 +2,10 @@ package com.mercadopago.sdk.android.coremethods.data.remote.mappers
 
 import com.mercadopago.sdk.android.coremethods.data.remote.request.BuyerIdentificationBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
-import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
-import com.mercadopago.sdk.android.coremethods.domain.model.CardTokenFields
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 
-internal fun CardTokenFields.toCardTokenRequest() =
+internal fun GenerateCardTokenParams.toRequest() =
     CardTokenBodyRequest(
         cardId = this.cardId,
         esc = this.esc,
@@ -14,12 +14,12 @@ internal fun CardTokenFields.toCardTokenRequest() =
         securityCode = securityCode,
         expirationMonth = expirationMonth,
         expirationYear = expirationYear,
-        buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest()
+        buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest(),
     )
 
 internal fun BuyerIdentification.toBuyerIdentificationRequest() =
     BuyerIdentificationBodyRequest(
         name = name,
         number = number,
-        type = type
+        type = type,
     )

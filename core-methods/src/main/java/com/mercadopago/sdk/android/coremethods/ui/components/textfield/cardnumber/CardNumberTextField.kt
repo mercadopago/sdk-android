@@ -17,7 +17,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.coremethods.domain.usecase.IsCardNumberValidUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField

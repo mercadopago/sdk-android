@@ -14,6 +14,6 @@ internal fun ResponseBody?.toResultError(): ResultError {
         gson.fromJson(it, ResultError::class.java)
     } ?: ResultError(
         code = UNKNOWN_ERROR,
-        message = UNKNOWN_ERROR
+        message = UNKNOWN_ERROR,
     )
 }

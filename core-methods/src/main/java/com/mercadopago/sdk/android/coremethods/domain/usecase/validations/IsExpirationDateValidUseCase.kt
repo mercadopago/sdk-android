@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase
+package com.mercadopago.sdk.android.coremethods.domain.usecase.validations
 
 import com.mercadopago.sdk.android.coremethods.extensions.between
 import com.mercadopago.sdk.android.coremethods.extensions.takeLast

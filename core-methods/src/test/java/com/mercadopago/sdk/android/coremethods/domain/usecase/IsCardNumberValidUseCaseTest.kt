@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

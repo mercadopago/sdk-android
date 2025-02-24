@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class ResultTest {
-
     @Test
     fun `test Result Success`() {
         val successData = "Success Data"
