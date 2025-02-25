@@ -15,7 +15,7 @@ jobs:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
-    resource_class: large
+    resource_class: xlarge
     steps:
       # PRE SETUP
       - run:
