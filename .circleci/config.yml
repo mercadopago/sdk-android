@@ -19,9 +19,6 @@ jobs:
     steps:
       # PRE SETUP
       - run:
-          name: Set Secrets File
-          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
-      - run:
           name: Install Git LFS
           command: |
             curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
@@ -29,6 +26,9 @@ jobs:
             git lfs install --skip-smudge
       - checkout
       - run: git lfs fetch --all
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
       - run:
           name: Check JDK exists
           command: javac -version
