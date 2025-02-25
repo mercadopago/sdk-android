@@ -43,7 +43,9 @@ class MercadoPagoSDK private constructor(
          * @param context The application context.
          * @param publicKey The public key of your Mercado Pago account.
          * Please store this key safely on a secure place outside your app.
-         * @param countryCode The country code of your Mercado Pago account. It uses the ISO 3166-1 alpha-3 standard.
+         * @param countryCode The country code associated with the [publicKey] of your Mercado Pago account.
+         * It uses the ISO 3166-1 alpha-3 standard. The [countryCode] needs to match
+         * the country code of the [publicKey] being used.
          * Use the [CountryCode] enum.
          * @see
          * <a href="https://www.mercadopago.com/developers/en/docs/your-integrations/credentials"
