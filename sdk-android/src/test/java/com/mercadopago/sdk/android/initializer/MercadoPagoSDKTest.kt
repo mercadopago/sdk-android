@@ -12,6 +12,7 @@ import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
+import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
 import io.mockk.every
@@ -184,6 +185,40 @@ internal class MercadoPagoSDKTest {
             setSiteIdUseCase(publicKey, countryCode)
             fetchSiteIdUseCase(publicKey)
             mpAnalytics.trackMetric(sdkInitializerEvent)
+        }
+    }
+
+    @Test
+    fun `when public Key is empty Then throw exception`() = runTest {
+        // Given
+        val publicKey = ""
+
+        // When
+        val initialization = flow {
+            emit(
+                MercadoPagoSDK.initialize(
+                    context = context,
+                    publicKey = publicKey,
+                    countryCode = CountryCode.ARG,
+                )
+            )
+        }
+        val instance = flow {
+            emit(
+                MercadoPagoSDK.initialize(
+                    context = context,
+                    publicKey = publicKey,
+                    countryCode = CountryCode.ARG,
+                )
+            )
+        }
+
+        // Then
+        initialization.test {
+            awaitError() is EmptyPublicKeyException
+        }
+        instance.test {
+            awaitError() is SDKNotInitializedException
         }
     }
 

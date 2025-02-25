@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
+import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -42,6 +43,7 @@ class MercadoPagoSDK private constructor(
          * Call it inside the application class only once for your application.
          * @param context The application context.
          * @param publicKey The public key of your Mercado Pago account.
+         * Must not be empty.
          * Please store this key safely on a secure place outside your app.
          * @param countryCode The country code associated with the [publicKey] of your Mercado Pago account.
          * It uses the ISO 3166-1 alpha-3 standard. The [countryCode] needs to match
@@ -58,6 +60,9 @@ class MercadoPagoSDK private constructor(
         ) {
             if (sdkInstance != null) {
                 throw SDKAlreadyInitializedException()
+            }
+            if (publicKey.isEmpty()) {
+                throw EmptyPublicKeyException()
             }
             val modulesProvider = MercadoPagoSdkModulesProvider(
                 publicKey = publicKey,
