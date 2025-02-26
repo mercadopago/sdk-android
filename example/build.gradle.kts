@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,6 +12,12 @@ android {
     namespace = "com.mercadopago.sdk.android"
     compileSdk = MercadoPagoSDKConfigs.compileSdk
 
+    val secretPropertiesFile = rootProject.file("secrets.properties")
+    val secretProperties = Properties()
+    runCatching {
+        secretProperties.load(FileInputStream(secretPropertiesFile))
+    }
+
     defaultConfig {
         applicationId = "com.mercadopago.sdk.android"
         minSdk = MercadoPagoSDKConfigs.minSdk
@@ -17,6 +26,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField(
+            "String",
+            "PUBLIC_KEY",
+            secretProperties.getProperty("publicKey.default", "\"\""),
+        )
     }
 
     buildTypes {
@@ -34,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

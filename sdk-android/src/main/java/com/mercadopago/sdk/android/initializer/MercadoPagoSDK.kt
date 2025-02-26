@@ -6,19 +6,19 @@ import android.content.Context
 import android.util.Log
 import com.mercadopago.sdk.android.BuildConfig
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
-import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.usecase.FetchSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
-import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
-import com.mercadopago.sdk.android.initializer.analytics.buildSdkInitializerEventData
+import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
+import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
+import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
+import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
@@ -43,29 +43,41 @@ class MercadoPagoSDK private constructor(
          * Call it inside the application class only once for your application.
          * @param context The application context.
          * @param publicKey The public key of your Mercado Pago account.
+         * Must not be empty.
          * Please store this key safely on a secure place outside your app.
-         * Read here for more info:
-         * @see [Credentials](https://www.mercadopago.com/developers/en/docs/your-integrations/credentials)
+         * @param countryCode The country code associated with the [publicKey] of your Mercado Pago account.
+         * It uses the ISO 3166-1 alpha-3 standard. The [countryCode] needs to match
+         * the country code of the [publicKey] being used.
+         * Use the [CountryCode] enum.
+         * @see
+         * <a href="https://www.mercadopago.com/developers/en/docs/your-integrations/credentials"
+         * >Credentials Documentation</a>
          */
         fun initialize(
             context: Context,
             publicKey: String,
+            countryCode: CountryCode,
         ) {
             if (sdkInstance != null) {
                 throw SDKAlreadyInitializedException()
             }
-            GlobalScope.launch(Dispatchers.IO) {
-                val modulesProvider = MercadoPagoSdkModulesProvider(
-                    publicKey = publicKey,
-                    context = context,
-                )
+            if (publicKey.isEmpty()) {
+                throw EmptyPublicKeyException()
+            }
+            val modulesProvider = MercadoPagoSdkModulesProvider(
+                publicKey = publicKey,
+                context = context,
+            )
+            SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val fetchSiteIdUseCase = modulesProvider.koinApp.get<FetchSiteIdUseCase>()
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
+                val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
                 val sessionId = UUID.randomUUID().toString()
                 sdkInstance = MercadoPagoSDK(
                     koin = modulesProvider.koinApp,
                     sessionId = sessionId,
                 )
+                setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 MPAnalytics.initialize(
                     sessionId = sessionId,
                     publicKey = publicKey,
@@ -78,22 +90,17 @@ class MercadoPagoSDK private constructor(
                     .catch { error ->
                         Log.d(TAG, "Error initializing SDK: ${error.message}", error)
                         MPAnalytics.getInstance().trackMetric(
-                            Metric(
-                                type = TrackType.EVENT,
-                                path = SDK_NATIVE_PATH,
-                                data = buildSdkInitializerEventData(context),
+                            SdkInitializerAnalytics.buildSdkInitializerEvent(
+                                context = context,
+                                isError = true,
                             )
                         )
                     }
                     .collect { siteId ->
-                        MPAnalytics.getInstance().trackMetric(
-                            Metric(
-                                type = TrackType.EVENT,
-                                path = SDK_NATIVE_PATH,
-                                data = buildSdkInitializerEventData(context),
-                            )
-                        )
                         Log.d(TAG, "Initialized SDK")
+                        MPAnalytics.getInstance().trackMetric(
+                            SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+                        )
                     }
             }
         }
@@ -105,6 +112,10 @@ class MercadoPagoSDK private constructor(
          */
         fun getInstance(): MercadoPagoSDK {
             return sdkInstance ?: throw SDKNotInitializedException()
+        }
+
+        internal fun clearInstance() {
+            sdkInstance = null
         }
     }
 }
