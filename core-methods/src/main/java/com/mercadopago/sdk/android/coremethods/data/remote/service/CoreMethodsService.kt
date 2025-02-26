@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.data.remote.service
 
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
+import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -21,4 +22,7 @@ internal interface CoreMethodsService {
         @Query("processing_mode") processingMode: String?,
         @Query("amount") amount: Long?,
     ): Response<InstallmentsResponse>
+
+    @POST("v1/identification_types")
+    suspend fun getIdentificationTypes(): Response<List<IdentificationTypesResponse>>
 }

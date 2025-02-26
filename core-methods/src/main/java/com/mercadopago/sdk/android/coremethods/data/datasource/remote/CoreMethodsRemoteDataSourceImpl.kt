@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBody
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationTypes
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -14,8 +15,8 @@ internal class CoreMethodsRemoteDataSourceImpl(
     private val service: CoreMethodsService,
 ) : CoreMethodsRemoteDataSource {
     @Suppress("ReturnCount")
-    override suspend fun generateCardToken(cardTokenRequest: CardTokenBodyRequest): Result<CardToken, ResultError> {
-        val result = service.createToken(cardTokenRequest)
+    override suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError> {
+        val result = service.createToken(request)
         return when (result.isSuccessful) {
             true -> {
                 val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
@@ -32,7 +33,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getInstallments(installmentsRequest: InstallmentsRequest): Result<Installment, ResultError> {
+    override suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError> {
         return Result.Success(
             Installment(
                 payerCost = listOf(
@@ -97,5 +98,9 @@ internal class CoreMethodsRemoteDataSourceImpl(
 //                )
 //            }
 //        }
+    }
+
+    override suspend fun getIdentificationTypes(): Result<List<IdentificationTypes>, ResultError> {
+        TODO("Not yet implemented")
     }
 }

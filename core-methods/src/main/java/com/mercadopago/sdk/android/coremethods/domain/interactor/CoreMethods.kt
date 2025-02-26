@@ -4,10 +4,12 @@ import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.provideMetricInstallmentFetch
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationTypes
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -69,6 +71,22 @@ class CoreMethods internal constructor(
                         merchantAccountId = result.data.merchantAccountId.orEmpty(),
                     )
                 )
+            }
+        }
+        return result
+    }
+
+    /**
+     *
+     */
+    suspend fun getIdentificationTypes(): Result<List<IdentificationTypes>, ResultError> {
+        val result = koin.get<GetIdentificationTypesUseCase>().invoke()
+
+        when (result) {
+            is Result.Error -> {
+            }
+
+            is Result.Success -> {
             }
         }
         return result

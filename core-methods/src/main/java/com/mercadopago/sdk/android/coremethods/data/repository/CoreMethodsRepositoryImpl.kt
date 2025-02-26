@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.coremethods.data.repository
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethodsRemoteDataSource
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toRequest
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationTypes
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
@@ -19,5 +20,9 @@ internal class CoreMethodsRepositoryImpl(
 
     override suspend fun getInstallment(params: GetInstallmentParams): Result<Installment, ResultError> {
         return dataSource.getInstallments(params.toRequest())
+    }
+
+    override suspend fun getIdentificationTypes(): Result<List<IdentificationTypes>, ResultError> {
+        return dataSource.getIdentificationTypes()
     }
 }
