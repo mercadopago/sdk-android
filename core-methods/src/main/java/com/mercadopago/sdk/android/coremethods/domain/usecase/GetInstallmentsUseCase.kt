@@ -16,7 +16,7 @@ internal class GetInstallmentsUseCase(
     ): Result<Installment, ResultError> {
         return repository.getInstallment(
             GetInstallmentParams(
-                productId = "",
+                productId = "CHQBUNESFQCVF58JFECG",
                 bin = bin.toIntOrNull(),
                 amount = amount,
                 processingMode = processingMode,

@@ -14,7 +14,7 @@ class MainApplication : Application() {
         super.onCreate()
         MercadoPagoSDK.initialize(
             context = this,
-            publicKey = "TEST-e4bcdfb3-7a4f-45f6-9cbf-625428f2fcec",
+            publicKey = "APP_USR-1d1ce135-5976-4838-938e-64d5ec7198d4",
         )
         startKoin {
             androidContext(this@MainApplication)

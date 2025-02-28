@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.data.repository
 
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.CoreMethodsRemoteDataSource
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
@@ -72,6 +73,32 @@ internal class CoreMethodsRepositoryTest {
             coEvery { dataSource.getInstallments(any()) } returns response
 
             val result = repository.getInstallment(installmentParams)
+
+            assertTrue(result is Result.Error)
+            assertEquals("Bad Request", (result as Result.Error).error.message)
+            assertEquals("400", result.error.code)
+        }
+
+    @Test
+    fun `test getIdentificationTypes returns Success`() =
+        runBlocking {
+            val response = Result.Success(listOf(IdentificationType(id = "0", name = "rg", type = "rg", minLength = 10, maxLength = 10)))
+            coEvery { dataSource.getIdentificationTypes() } returns response
+
+            val result = repository.getIdentificationTypes()
+
+            assertTrue(result is Result.Success)
+            assertEquals("rg", (result as Result.Success).data.first().type)
+        }
+
+    @Test
+    fun `test getIdentificationTypes returns Error`() =
+        runBlocking {
+            val errorResponse = ResultError(code = "400", message = "Bad Request")
+            val response: Result<List<IdentificationType>, ResultError> = Result.Error(errorResponse)
+            coEvery { dataSource.getIdentificationTypes() } returns response
+
+            val result = repository.getIdentificationTypes()
 
             assertTrue(result is Result.Error)
             assertEquals("Bad Request", (result as Result.Error).error.message)

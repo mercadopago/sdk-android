@@ -1,10 +1,13 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
-import com.mercadopago.sdk.android.coremethods.analytics.provideMetricInstallmentFetch
+import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallSuccess
+import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallSuccess
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
-import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationTypes
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -20,6 +23,20 @@ class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
 
+    /**
+     * Generate Card Token call.
+     *
+     * This return a [Result.Success] of [CardToken] data model or a [Result.Error] of [ResultError]
+     * This uses the [PCIFieldState] for pass the values of the card in a secure way
+     * This is a suspend function and should be called only from a coroutine or another suspend functionC
+     * @param cardNumberState [PCIFieldState] of the card number text field
+     * @param expirationDateState [PCIFieldState] of the expiration date text field
+     * @param securityCodeState [PCIFieldState]  of the security code text field
+     * @see PCIFieldState
+     * @see CardToken
+     * @see Result
+     * @see ResultError
+     */
     suspend fun generateCardToken(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
@@ -34,12 +51,13 @@ class CoreMethods internal constructor(
 
     /**
      * Get installment list call.
-     * This return a [Result.Success] of [Installment] data model or a [Result.Error] of [ResultError]
      *
-     * This is a suspend function and should be called only from a coroutine or another suspend function
+     * This return a [Result.Success] of [Installment] data model or a [Result.Error] of [ResultError]
+     * This is a suspend function and should be called only from a coroutine or another suspend functionC
      * @param bin the credit card bin
      * @param amount order item amount
      * @param processingMode the processing mode ([ProcessingMode.Aggregator] or [ProcessingMode.Gateway])
+     * @see Installment
      * @see ProcessingMode
      * @see Result
      * @see ResultError
@@ -58,15 +76,16 @@ class CoreMethods internal constructor(
         when (result) {
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
-                    provideMetricInstallmentFetch(
-                        error = result.error.code
+                    metricInstallmentsCallError(
+                        code = result.error.code,
+                        message = result.error.message
                     )
                 )
             }
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    provideMetricInstallmentFetch(
+                    metricInstallmentsCallSuccess(
                         paymentType = result.data.paymentTypeId.orEmpty(),
                         merchantAccountId = result.data.merchantAccountId.orEmpty(),
                     )
@@ -77,16 +96,31 @@ class CoreMethods internal constructor(
     }
 
     /**
+     * Get identification types call.
      *
+     * This return a [Result.Success] of [IdentificationType] data model or a [Result.Error] of [ResultError]
+     * This is a suspend function and should be called only from a coroutine or another suspend functionC
+     * @see IdentificationType
+     * @see Result
+     * @see ResultError
      */
-    suspend fun getIdentificationTypes(): Result<List<IdentificationTypes>, ResultError> {
+    suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
 
         when (result) {
             is Result.Error -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricIdentificationCallError(
+                        code = result.error.code,
+                        message = result.error.message
+                    )
+                )
             }
 
             is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricIdentificationCallSuccess()
+                )
             }
         }
         return result

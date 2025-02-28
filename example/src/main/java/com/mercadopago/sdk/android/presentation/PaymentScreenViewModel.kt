@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
@@ -23,6 +24,10 @@ class PaymentScreenViewModel(
 
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
+
+    init {
+        getIdentificationTypes()
+    }
 
     fun generateToken(
         cardNumberState: PCIFieldState,
@@ -64,6 +69,27 @@ class PaymentScreenViewModel(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
                             installments = result.data.payerCost?.toInstallmentModel().orEmpty(),
+                        )
+                    )
+                }
+
+                is Result.Error -> {
+                    print(result.error.message)
+                }
+            }
+        }
+    }
+
+    fun getIdentificationTypes() {
+        viewModelScope.launch {
+            val result = coreMethods.getIdentificationTypes()
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+                        identificationState = _viewState.value.identificationState.copy(
+                            identificationList = result.data,
+                            selectedIdentification = result.data.firstOrNull(),
                         )
                     )
                 }
@@ -192,6 +218,22 @@ class PaymentScreenViewModel(
         _viewState.value = _viewState.value.copy(
             installmentsState = _viewState.value.installmentsState.copy(
                 selectedInstallment = value
+            )
+        )
+    }
+
+    fun onIdentificationTypeValueChanged(value: String) {
+        _viewState.value = _viewState.value.copy(
+            identificationState = _viewState.value.identificationState.copy(
+                identificationValue = value
+            )
+        )
+    }
+
+    fun onIdentificationTypeChanged(identificationType: IdentificationType) {
+        _viewState.value = _viewState.value.copy(
+            identificationState = _viewState.value.identificationState.copy(
+                selectedIdentification = identificationType,
             )
         )
     }

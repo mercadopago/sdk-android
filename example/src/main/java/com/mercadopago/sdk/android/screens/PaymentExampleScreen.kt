@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.R
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationCodeDateFormat
@@ -45,6 +46,7 @@ import com.mercadopago.sdk.android.presentation.state.CardNumberTextFieldState
 import com.mercadopago.sdk.android.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.ui.components.IdentificationTypeSelectorField
 import com.mercadopago.sdk.android.ui.components.InstallmentListDropDownField
 import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 import org.koin.androidx.compose.koinViewModel
@@ -66,6 +68,8 @@ fun PaymentExampleScreen(
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardNumberEvent = viewModel::onCardNumberEvent,
+        onSelectIdentification = viewModel::onIdentificationTypeChanged,
+        onIdentificationTypeChanged = viewModel::onIdentificationTypeValueChanged,
         onSelectedInstallment = viewModel::onInstallmentSelected
     )
 }
@@ -81,6 +85,8 @@ fun PaymentExampleScreenContent(
     onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit,
     onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit,
     onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit,
+    onSelectIdentification: (IdentificationType) -> Unit,
+    onIdentificationTypeChanged: (String) -> Unit,
     onSelectedInstallment: (Installment) -> Unit,
 ) {
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
@@ -115,6 +121,13 @@ fun PaymentExampleScreenContent(
                         onSecurityCodeEvent = onSecurityCodeEvent
                     )
                 }
+                Spacer(Modifier.size(16.dp))
+                IdentificationTypeSelectorField(
+                    state = viewState.identificationState,
+                    onSelectIdentification = onSelectIdentification,
+                    onIdentificationTypeChanged = onIdentificationTypeChanged
+                )
+                Spacer(Modifier.size(16.dp))
                 InstallmentListDropDownField(
                     state = viewState.installmentsState,
                     onSelectedInstallment = onSelectedInstallment

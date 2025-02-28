@@ -9,13 +9,16 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Query
 
+private const val BRICKS_API = "cho-off/beta"
+private const val VERSION = "v1"
+
 internal interface CoreMethodsService {
-    @POST("v1/card_tokens")
+    @POST("/v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
     ): Response<CardTokenResponse>
 
-    @POST("v1/payment_methods/installments")
+    @POST("$BRICKS_API/$VERSION/installments")
     suspend fun getInstallments(
         @Query("product_id") productId: String?,
         @Query("bin") bin: Int?,
@@ -23,6 +26,6 @@ internal interface CoreMethodsService {
         @Query("amount") amount: Long?,
     ): Response<InstallmentsResponse>
 
-    @POST("v1/identification_types")
+    @POST("$BRICKS_API/$VERSION/identification_types")
     suspend fun getIdentificationTypes(): Response<List<IdentificationTypesResponse>>
 }
