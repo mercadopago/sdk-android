@@ -15,7 +15,7 @@ jobs:
     executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
-    resource_class: large
+    resource_class: xlarge
     steps:
       # PRE SETUP
       - run:
@@ -26,6 +26,9 @@ jobs:
             git lfs install --skip-smudge
       - checkout
       - run: git lfs fetch --all
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
       - run:
           name: Check JDK exists
           command: javac -version

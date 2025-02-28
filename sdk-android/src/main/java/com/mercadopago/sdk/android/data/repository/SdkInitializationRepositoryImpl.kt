@@ -1,7 +1,9 @@
 package com.mercadopago.sdk.android.data.repository
 
 import com.mercadopago.sdk.android.data.local.datasource.SdkInitializationLocalDataSource
+import com.mercadopago.sdk.android.data.local.mapper.toSiteId
 import com.mercadopago.sdk.android.data.remote.datasource.SdkInitializationRemoteDataSource
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.model.SiteId
 import com.mercadopago.sdk.android.domain.repository.SdkInitializationRepository
 import kotlinx.coroutines.FlowPreview
@@ -39,7 +41,7 @@ internal class SdkInitializationRepositoryImpl(
         return sdkInitializationLocalDataSource.getSiteId(publicKey)
     }
 
-    override fun setSiteId(publicKey: String, siteId: SiteId): Flow<Unit> {
-        return sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
+    override fun setSiteId(publicKey: String, countryCode: CountryCode): Flow<Unit> {
+        return sdkInitializationLocalDataSource.setSiteId(publicKey, SiteId(countryCode.toSiteId()))
     }
 }

@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android
 
 import android.app.Application
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
 import org.koin.android.ext.koin.androidContext
@@ -14,7 +15,8 @@ class MainApplication : Application() {
         super.onCreate()
         MercadoPagoSDK.initialize(
             context = this,
-            publicKey = "APP_USR-1d1ce135-5976-4838-938e-64d5ec7198d4",
+            publicKey = BuildConfig.PUBLIC_KEY,
+            countryCode = CountryCode.ARG,
         )
         startKoin {
             androidContext(this@MainApplication)
