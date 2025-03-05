@@ -63,5 +63,5 @@ val PreviewIdentificationTypes = listOf(
         name = "CNPJ",
         minLength = 11,
         maxLength = 11,
-    )
+    ),
 )

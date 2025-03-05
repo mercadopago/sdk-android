@@ -82,7 +82,9 @@ internal class CoreMethodsRepositoryTest {
     @Test
     fun `test getIdentificationTypes returns Success`() =
         runBlocking {
-            val response = Result.Success(listOf(IdentificationType(id = "0", name = "rg", type = "rg", minLength = 10, maxLength = 10)))
+            val response = Result.Success(
+                listOf(IdentificationType(id = "0", name = "rg", type = "rg", minLength = 10, maxLength = 10)),
+            )
             coEvery { dataSource.getIdentificationTypes() } returns response
 
             val result = repository.getIdentificationTypes()

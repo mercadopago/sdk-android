@@ -1,9 +1,8 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase.utils
+package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.mockk

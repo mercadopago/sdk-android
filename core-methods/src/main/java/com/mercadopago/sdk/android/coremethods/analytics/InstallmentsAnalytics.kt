@@ -7,22 +7,24 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 
 internal fun metricInstallmentsCallSuccess(
     paymentType: String? = null,
-    merchantAccountId: String? = null
+    merchantAccountId: String? = null,
 ) = Metric(
     path = "/sdk-native/core-methods/installment-list_call",
     type = TrackType.EVENT,
     data = InstallmentAnalyticsData(
         isDeveloping = true,
         paymentType = paymentType,
-        merchantAccountId = merchantAccountId
-    )
+        merchantAccountId = merchantAccountId,
+    ),
 )
 
-
-internal fun metricInstallmentsCallError(code: String, message: String) = Metric(
+internal fun metricInstallmentsCallError(
+    code: String,
+    message: String,
+) = Metric(
     path = "/sdk-native/core-methods/installment-list_call/error",
     type = TrackType.EVENT,
-    data = MetricErrorData(code = code, message = message)
+    data = MetricErrorData(code = code, message = message),
 )
 
 internal data class InstallmentAnalyticsData(
@@ -31,5 +33,5 @@ internal data class InstallmentAnalyticsData(
     @SerializedName("payment_type")
     val paymentType: String?,
     @SerializedName("merchant_account_id")
-    val merchantAccountId: String?
+    val merchantAccountId: String?,
 ) : EventData

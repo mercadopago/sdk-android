@@ -1,12 +1,5 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase.model
+package com.mercadopago.sdk.android.coremethods.domain.model
 
-import com.mercadopago.sdk.android.coremethods.domain.model.Agreements
-import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.Issuer
-import com.mercadopago.sdk.android.coremethods.domain.model.MerchantAccount
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
-import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
-import com.mercadopago.sdk.android.coremethods.domain.model.TimeFrame
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

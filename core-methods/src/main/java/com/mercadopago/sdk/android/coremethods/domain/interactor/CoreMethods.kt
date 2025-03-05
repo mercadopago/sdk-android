@@ -22,7 +22,6 @@ import org.koin.core.Koin
 class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
-
     /**
      * Generate Card Token call.
      *
@@ -78,8 +77,8 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallError(
                         code = result.error.code,
-                        message = result.error.message
-                    )
+                        message = result.error.message,
+                    ),
                 )
             }
 
@@ -88,7 +87,7 @@ class CoreMethods internal constructor(
                     metricInstallmentsCallSuccess(
                         paymentType = result.data.paymentTypeId.orEmpty(),
                         merchantAccountId = result.data.merchantAccountId.orEmpty(),
-                    )
+                    ),
                 )
             }
         }
@@ -112,14 +111,14 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricIdentificationCallError(
                         code = result.error.code,
-                        message = result.error.message
-                    )
+                        message = result.error.message,
+                    ),
                 )
             }
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricIdentificationCallSuccess()
+                    metricIdentificationCallSuccess(),
                 )
             }
         }

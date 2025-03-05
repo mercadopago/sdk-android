@@ -36,6 +36,7 @@ import com.mercadopago.sdk.android.presentation.state.IdentificationState
 import com.mercadopago.sdk.android.ui.components.extensions.getPlaceholder
 import com.mercadopago.sdk.android.ui.components.extensions.getVisualTransformation
 
+@Suppress("LongMethod")
 @Composable
 fun IdentificationTypeSelectorField(
     modifier: Modifier = Modifier,

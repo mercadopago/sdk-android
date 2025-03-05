@@ -1,6 +1,5 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase.utils
+package com.mercadopago.sdk.android.coremethods.domain.utils
 
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

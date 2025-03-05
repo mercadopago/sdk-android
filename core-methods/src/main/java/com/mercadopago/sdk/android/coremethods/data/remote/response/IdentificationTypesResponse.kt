@@ -12,5 +12,5 @@ data class IdentificationTypesResponse(
     @SerializedName("min_length")
     val minLength: Int,
     @SerializedName("max_length")
-    val maxLength: Int
+    val maxLength: Int,
 )
