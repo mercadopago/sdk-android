@@ -15,7 +15,7 @@ internal fun metricGenerateCardTokenCallError(
     code: String,
     message: String,
 ) = Metric(
-    path = "/sdk-native/core-methods/generate-card-token/error",
+    path = "/sdk-native/core-methods/generate-card-token_error",
     type = TrackType.EVENT,
     data = MetricErrorData(code = code, message = message),
 )

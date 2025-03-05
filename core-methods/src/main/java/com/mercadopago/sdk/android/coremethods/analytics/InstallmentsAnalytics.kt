@@ -25,7 +25,7 @@ internal fun metricInstallmentsCallError(
     code: String,
     message: String,
 ) = Metric(
-    path = "/sdk-native/core-methods/installment-list_call/error",
+    path = "/sdk-native/core-methods/installment-list_call_error",
     type = TrackType.EVENT,
     data = MetricErrorData(code = code, message = message),
 )
