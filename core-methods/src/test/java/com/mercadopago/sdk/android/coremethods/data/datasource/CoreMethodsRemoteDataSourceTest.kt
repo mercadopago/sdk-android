@@ -12,6 +12,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import retrofit2.Response
@@ -46,10 +47,7 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val gson = Gson()
             val jsonErrorBody = gson.toJson(errorBody)
-            val responseBody: ResponseBody = ResponseBody.create(
-                "application/json".toMediaTypeOrNull(),
-                jsonErrorBody,
-            )
+            val responseBody: ResponseBody = jsonErrorBody.toResponseBody("application/json".toMediaTypeOrNull())
 
             val mpResponse: Response<CardTokenResponse> = Response.error(400, responseBody)
 

@@ -1,10 +1,30 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
-val PreviewInstallmentList = Installment(
+@KoverIgnore("mock value")
+fun getPreviewIdentificationTypes() = listOf(
+    IdentificationType(
+        id = "CPF",
+        type = "number",
+        name = "CPF",
+        minLength = 11,
+        maxLength = 11,
+    ),
+    IdentificationType(
+        id = "CNPJ",
+        type = "number",
+        name = "CNPJ",
+        minLength = 11,
+        maxLength = 11,
+    ),
+)
+
+@KoverIgnore("mock value")
+fun getPreviewInstallmentList() = Installment(
     payerCost = listOf(
         PayerCost(
             instalments = 1,
@@ -46,22 +66,5 @@ val PreviewInstallmentList = Installment(
             installmentAmount = 67,
             totalAmount = 2200.00f,
         ),
-    ),
-)
-
-val PreviewIdentificationTypes = listOf(
-    IdentificationType(
-        id = "CPF",
-        type = "number",
-        name = "CPF",
-        minLength = 11,
-        maxLength = 11,
-    ),
-    IdentificationType(
-        id = "CNPJ",
-        type = "number",
-        name = "CNPJ",
-        minLength = 11,
-        maxLength = 11,
     ),
 )

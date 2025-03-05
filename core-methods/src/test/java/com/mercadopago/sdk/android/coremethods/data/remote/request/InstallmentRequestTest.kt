@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.data.remote.request
 import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
-class InstallmentRequestTest {
+internal class InstallmentRequestTest {
     @Test
     fun testDefaultValues() {
         val request = InstallmentsRequest()

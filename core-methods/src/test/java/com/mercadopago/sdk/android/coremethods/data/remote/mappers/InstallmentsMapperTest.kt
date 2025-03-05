@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.TimeFrameRes
 import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
-class InstallmentsMapperTest {
+internal class InstallmentsMapperTest {
     @Test
     fun `InstallmentsResponse toModel should convert correctly`() {
         val installmentsResponse = InstallmentsResponse(

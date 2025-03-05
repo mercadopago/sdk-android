@@ -10,7 +10,7 @@ import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class GetInstallmentsUseCaseTest {
+internal class GetInstallmentsUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
     private val getInstallmentsUseCase = GetInstallmentsUseCase(repository)
 

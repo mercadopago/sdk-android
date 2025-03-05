@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.analytics.metricGenerateCardTokenCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricGenerateCardTokenCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallError
@@ -19,9 +21,23 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.core.Koin
 
+/**
+ * CoreMethods class
+ *
+ * This class handlers the core-methods calls.
+ * Use the [MercadoPagoSDK] extension method: [MercadoPagoSDK.coreMethods] to get this class instance.
+ *
+ * Example:
+ * ```
+ * MercadoPagoSDK.getInstance().coreMethods
+ * ```
+ * @see MercadoPagoSDK
+ * @see MercadoPagoSDK.coreMethods
+ */
 class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
+
     /**
      * Generate Card Token call.
      *
@@ -41,11 +57,29 @@ class CoreMethods internal constructor(
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
     ): Result<CardToken, ResultError> {
-        return koin.get<GenerateCardTokenUseCase>().invoke(
+        val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumberState.input,
             expirationDate = expirationDateState.input,
             securityCode = securityCodeState.input,
         )
+
+        when (result) {
+            is Result.Error -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallError(
+                        code = result.error.code,
+                        message = result.error.message
+                    )
+                )
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallSuccess()
+                )
+            }
+        }
+        return result
     }
 
     /**
@@ -137,5 +171,15 @@ class CoreMethods internal constructor(
     }
 }
 
+/**
+ * Mercado Pago SDK - CoreMethods
+ *
+ * Use this to get the instance of CoreMethods and it's methods
+ *
+ * Example:
+ * ```
+ *  val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods
+ * ```
+ */
 val MercadoPagoSDK.coreMethods: CoreMethods
     get() = CoreMethods.getInstance()

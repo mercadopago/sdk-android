@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toResultError
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
@@ -32,6 +33,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
+    @KoverIgnore("mocked installment")
     @Suppress("ReturnCount")
     override suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError> {
 //        val result = service.getInstallments(
@@ -53,9 +55,10 @@ internal class CoreMethodsRemoteDataSourceImpl(
 //            }
 //        }
 
-        return Result.Success(PreviewInstallmentList)
+        return Result.Success(getPreviewInstallmentList())
     }
 
+    @KoverIgnore("mocked identification types")
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
 //        val result = service.getIdentificationTypes()
 //        return when (result.isSuccessful) {
@@ -70,6 +73,6 @@ internal class CoreMethodsRemoteDataSourceImpl(
 //                )
 //            }
 //        }
-        return Result.Success(PreviewIdentificationTypes)
+        return Result.Success(getPreviewIdentificationTypes())
     }
 }

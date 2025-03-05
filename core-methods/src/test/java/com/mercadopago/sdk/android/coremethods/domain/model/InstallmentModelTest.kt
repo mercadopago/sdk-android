@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class InstallmentModelTest {
+internal class InstallmentModelTest {
     @Test
     fun testInstallmentDefaultValues() {
         val installment = Installment()

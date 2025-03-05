@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.analytics.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.utils.KoverIgnore
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import kotlinx.coroutines.flow.Flow
 
 /** Core analytics implementation for the MercadoPago SDK.
