@@ -12,10 +12,9 @@ internal fun metricIdentificationCallSuccess() = Metric(
 
 @KoverIgnore("in development")
 internal fun metricIdentificationCallError(
-    code: String,
-    message: String,
+    error: String
 ) = Metric(
     path = "/sdk-native/core-methods/identification-types_call_error",
     type = TrackType.EVENT,
-    data = MetricErrorData(code = code, message = message),
+    data = MetricErrorData(error = error),
 )

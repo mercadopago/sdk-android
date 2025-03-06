@@ -67,8 +67,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallError(
-                        code = result.error.code,
-                        message = result.error.message
+                        error = result.error.message
                     )
                 )
             }
@@ -110,8 +109,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallError(
-                        code = result.error.code,
-                        message = result.error.message,
+                        error = result.error.message,
                     ),
                 )
             }
@@ -144,8 +142,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricIdentificationCallError(
-                        code = result.error.code,
-                        message = result.error.message,
+                        error = result.error.message,
                     ),
                 )
             }

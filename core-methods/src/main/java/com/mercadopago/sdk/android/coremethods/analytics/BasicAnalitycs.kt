@@ -8,8 +8,6 @@ internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
 @KoverIgnore("in development")
 internal data class MetricErrorData(
-    @SerializedName("error-code")
-    val code: String = UNKNOWN_ERROR,
-    @SerializedName("error-message")
-    val message: String = UNKNOWN_ERROR,
+    @SerializedName("error")
+    val error: String = UNKNOWN_ERROR,
 ) : EventData
