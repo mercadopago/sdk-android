@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Rule
@@ -63,7 +63,7 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.OnFocusChanged -> {
+                        is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused,
                             )
@@ -88,7 +88,7 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(
                 onEvent = { securityCodeFieldEvent ->
                     when (securityCodeFieldEvent) {
-                        is SecurityCodeFieldEvent.OnFocusChanged -> {
+                        is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                             secureCodeState = secureCodeState.copy(
                                 isFocused = securityCodeFieldEvent.isFocused,
                             )

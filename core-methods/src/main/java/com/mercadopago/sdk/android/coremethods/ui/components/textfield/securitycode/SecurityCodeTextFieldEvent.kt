@@ -1,21 +1,21 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 
-interface SecurityCodeFieldEvent {
+interface SecurityCodeTextFieldEvent {
     /**
      * This function informs if the security code field has been filled.
      * @param isFilled: security code field is filled or not
      */
-    data class OnInputFilled(val isFilled: Boolean) : SecurityCodeFieldEvent
+    data class OnInputFilled(val isFilled: Boolean) : SecurityCodeTextFieldEvent
 
     /**
      * This function informs the security code field length.
      * @param length: number of characters typed
      */
-    data class OnLengthChanged(val length: Int) : SecurityCodeFieldEvent
+    data class OnLengthChanged(val length: Int) : SecurityCodeTextFieldEvent
 
     /**
      * This function informs if the security code field has been focused.
      * @param isFocused: security code field is focused or not
      */
-    data class OnFocusChanged(val isFocused: Boolean) : SecurityCodeFieldEvent
+    data class OnFocusChanged(val isFocused: Boolean) : SecurityCodeTextFieldEvent
 }

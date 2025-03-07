@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationCodeDateFormat
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
@@ -20,11 +20,11 @@ internal fun ExpirationDateFieldWithCustomMask() {
     val state: PCIFieldState = rememberPCIFieldState()
     ExpirationDateTextField(
         state = state,
-        onEvent = { securityCodeFieldEvent ->
-            // Handle the security code events
+        onEvent = { _ ->
+            // call viewmodel passing the events to handle the calls
         },
         // Pass the current date format
-        dateFormat = ExpirationCodeDateFormat.ShortFormat,
+        dateFormat = ExpirationDateFormat.ShortFormat,
         decorationBox = { innerTextField ->
             // Adding the inner text inside a box with a border
             Box(

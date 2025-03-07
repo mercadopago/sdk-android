@@ -8,8 +8,8 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.onNodeWithTag
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import junit.framework.TestCase.assertEquals
@@ -20,7 +20,7 @@ internal class ExpirationDateTextFieldRobot(
     fun createExpirationDateField(
         enabled: Boolean = true,
         readOnly: Boolean = false,
-        onEvent: (ExpirationDateFieldEvent) -> Unit = {},
+        onEvent: (ExpirationDateTextFieldEvent) -> Unit = {},
         decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
             @Composable { innerTextField -> innerTextField() },
         stateRestorationTester: StateRestorationTester? = null,

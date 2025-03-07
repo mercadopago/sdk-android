@@ -32,13 +32,13 @@ import com.mercadopago.sdk.android.R
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationCodeDateFormat
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.extensions.addBorder
 import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
 import com.mercadopago.sdk.android.presentation.data.Installment
@@ -82,8 +82,8 @@ fun PaymentExampleScreenContent(
     cardNumberState: PCIFieldState,
     expirationDateState: PCIFieldState,
     securityCodeState: PCIFieldState,
-    onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit,
-    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit,
+    onExpirationDateEvent: (ExpirationDateTextFieldEvent) -> Unit,
+    onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit,
     onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit,
     onSelectIdentification: (IdentificationType) -> Unit,
     onIdentificationTypeChanged: (String) -> Unit,
@@ -162,7 +162,7 @@ fun SecurityCodeExample(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     securityCodeState: SecurityCodeState,
-    onSecurityCodeEvent: (SecurityCodeFieldEvent) -> Unit
+    onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit
 ) {
     Column(modifier = modifier) {
         Text(
@@ -219,7 +219,7 @@ fun ExpirationDateExample(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     expirationDateState: ExpirationDateState,
-    onExpirationDateEvent: (ExpirationDateFieldEvent) -> Unit
+    onExpirationDateEvent: (ExpirationDateTextFieldEvent) -> Unit
 ) {
     Column(modifier = modifier) {
         Text(
@@ -235,7 +235,7 @@ fun ExpirationDateExample(
             ExpirationDateTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
-                dateFormat = ExpirationCodeDateFormat.LongFormat,
+                dateFormat = ExpirationDateFormat.LongFormat,
                 onEvent = onExpirationDateEvent,
                 decorationBox = { innerTextField ->
                     Row(
