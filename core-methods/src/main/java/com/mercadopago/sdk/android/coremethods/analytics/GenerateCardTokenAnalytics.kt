@@ -13,7 +13,7 @@ internal fun metricGenerateCardTokenCallSuccess(
     cardType: CardTokenCardTypeMetric = CardTokenCardTypeMetric.SAVED_CARD,
     issuer: String? = null
 ) = Metric(
-    path = "/sdk-native/core-methods/generate-card-token_call",
+    path = "/sdk-native/core-methods/generate-card-token",
     type = TrackType.EVENT,
     data = GenerateCardAnalyticsData(
         cardFlag,

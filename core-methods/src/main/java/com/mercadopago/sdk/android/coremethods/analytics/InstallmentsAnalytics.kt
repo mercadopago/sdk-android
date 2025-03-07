@@ -11,7 +11,7 @@ internal fun metricInstallmentsCallSuccess(
     paymentType: String? = null,
     merchantAccountId: String? = null,
 ) = Metric(
-    path = "/sdk-native/core-methods/installment-list_call",
+    path = "/sdk-native/core-methods/installments",
     type = TrackType.EVENT,
     data = InstallmentAnalyticsData(
         isDeveloping = true,
@@ -24,7 +24,7 @@ internal fun metricInstallmentsCallSuccess(
 internal fun metricInstallmentsCallError(
     error: String
 ) = Metric(
-    path = "/sdk-native/core-methods/installment-list_call_error",
+    path = "/sdk-native/core-methods/installments_error",
     type = TrackType.EVENT,
     data = MetricErrorData(error = error),
 )

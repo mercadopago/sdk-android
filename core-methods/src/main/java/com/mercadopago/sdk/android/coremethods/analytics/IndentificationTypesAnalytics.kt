@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.core.utils.KoverIgnore
 
 @KoverIgnore("in development")
 internal fun metricIdentificationCallSuccess() = Metric(
-    path = "/sdk-native/core-methods/identification-types_call",
+    path = "/sdk-native/core-methods/identification-types",
     type = TrackType.EVENT,
 )
 
@@ -14,7 +14,7 @@ internal fun metricIdentificationCallSuccess() = Metric(
 internal fun metricIdentificationCallError(
     error: String
 ) = Metric(
-    path = "/sdk-native/core-methods/identification-types_call_error",
+    path = "/sdk-native/core-methods/identification-types_error",
     type = TrackType.EVENT,
     data = MetricErrorData(error = error),
 )
