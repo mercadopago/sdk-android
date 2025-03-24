@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Rule
@@ -64,7 +64,7 @@ internal class ExpirationDateTextFieldTest {
             createExpirationDateField(
                 onEvent = { expirationDateFieldEvent ->
                     when (expirationDateFieldEvent) {
-                        is ExpirationDateFieldEvent.OnFocusChanged -> {
+                        is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateFieldEvent.isFocused,
                             )
@@ -89,7 +89,7 @@ internal class ExpirationDateTextFieldTest {
             createExpirationDateField(
                 onEvent = { expirationDateFieldEvent ->
                     when (expirationDateFieldEvent) {
-                        is ExpirationDateFieldEvent.OnFocusChanged -> {
+                        is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                             expirationDateState = expirationDateState.copy(
                                 isFocused = expirationDateFieldEvent.isFocused,
                             )

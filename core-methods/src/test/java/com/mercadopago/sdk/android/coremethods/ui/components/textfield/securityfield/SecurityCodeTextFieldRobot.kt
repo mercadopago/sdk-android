@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.StateRestorationTester
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.PCIFieldRobot
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 
 internal class SecurityCodeTextFieldRobot(
     composeRule: ComposeContentTestRule,
@@ -16,7 +16,7 @@ internal class SecurityCodeTextFieldRobot(
     fun createSecurityField(
         enabled: Boolean = true,
         readOnly: Boolean = false,
-        onEvent: (SecurityCodeFieldEvent) -> Unit = {},
+        onEvent: (SecurityCodeTextFieldEvent) -> Unit = {},
         decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
             @Composable { innerTextField -> innerTextField() },
         stateRestorationTester: StateRestorationTester? = null,

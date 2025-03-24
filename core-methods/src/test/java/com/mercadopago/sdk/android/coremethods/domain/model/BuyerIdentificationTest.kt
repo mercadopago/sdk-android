@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase.model
+package com.mercadopago.sdk.android.coremethods.domain.model
 
 import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
 import org.junit.Assert.assertEquals

@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsSe
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun provideNetworkModule(): Module = module {
-    single { get<RetrofitServiceFactory>().createService(CoreMethodsService::class.java) }
-}
+internal fun provideNetworkModule(): Module =
+    module {
+        single { get<RetrofitServiceFactory>().createService(CoreMethodsService::class.java) }
+    }

@@ -8,7 +8,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_SIX
  * @property ShortFormat four code digits and date format
  * @property LongFormat six code digits and date format
  */
-enum class ExpirationCodeDateFormat(val digits: Int, val mask: String) {
+enum class ExpirationDateFormat(val digits: Int, val mask: String) {
     ShortFormat(INT_FOUR, "##/##"),
     LongFormat(INT_SIX, "##/####"),
 }

@@ -29,7 +29,7 @@ import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
  * @param modifier Modifier to customize the style and behavior of the field.
  * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
  * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
- * @param dateFormat This changes the max length that the input handle, using the [ExpirationCodeDateFormat] enum class
+ * @param dateFormat This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
  * this have to be align to the visual transformation mask
  * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
  * @param readOnly Controls whether the field is editable or read-only.
@@ -44,8 +44,8 @@ import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 fun ExpirationDateTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
-    onEvent: (ExpirationDateFieldEvent) -> Unit,
-    dateFormat: ExpirationCodeDateFormat = ExpirationCodeDateFormat.ShortFormat,
+    onEvent: (ExpirationDateTextFieldEvent) -> Unit,
+    dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -60,16 +60,16 @@ fun ExpirationDateTextField(
     PCITextField(
         value = state.input,
         onFocusChanged = { isFocused ->
-            onEvent(ExpirationDateFieldEvent.OnFocusChanged(isFocused))
+            onEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused))
         },
         onValueChange = { value ->
             val updatedValue = value.take(dateFormat.digits)
             val inputDigits = updatedValue.filter { it.isDigit() }
             val isValid = isCardNumberValidUseCase(inputDigits, dateFormat.digits)
 
-            onEvent(ExpirationDateFieldEvent.OnLengthChanged(length = updatedValue.length))
-            onEvent(ExpirationDateFieldEvent.OnInputFilled(isFilled = updatedValue.length == dateFormat.digits))
-            onEvent(ExpirationDateFieldEvent.IsValid(isValid))
+            onEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = updatedValue.length))
+            onEvent(ExpirationDateTextFieldEvent.OnInputFilled(isFilled = updatedValue.length == dateFormat.digits))
+            onEvent(ExpirationDateTextFieldEvent.IsValid(isValid))
             state.input = updatedValue
         },
         keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),

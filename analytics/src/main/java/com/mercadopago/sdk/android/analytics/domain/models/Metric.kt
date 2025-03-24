@@ -7,8 +7,8 @@ package com.mercadopago.sdk.android.analytics.domain.models
  *
  * @param type indicates this track [TrackType]
  * @param path indicates this track path
- * @param data indicates this track [EventData]
+ * @param data indicates this track [EventData] can be nullable
  * @see EventData
  * @see TrackType
  * */
-data class Metric(val type: TrackType, val path: String, val data: EventData)
+data class Metric(val type: TrackType, val path: String, val data: EventData? = null)

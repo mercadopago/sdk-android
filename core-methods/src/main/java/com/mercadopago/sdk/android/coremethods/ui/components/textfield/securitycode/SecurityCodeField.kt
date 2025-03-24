@@ -42,7 +42,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 fun SecurityCodeTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
-    onEvent: (SecurityCodeFieldEvent) -> Unit,
+    onEvent: (SecurityCodeTextFieldEvent) -> Unit,
     securityCodeSize: Int = 3,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -58,13 +58,13 @@ fun SecurityCodeTextField(
         value = state.input,
         onValueChange = { value ->
             if (value.length <= securityCodeSize && value.none { !it.isDigit() }) {
-                onEvent(SecurityCodeFieldEvent.OnInputFilled(isFilled = value.length == securityCodeSize))
-                onEvent(SecurityCodeFieldEvent.OnLengthChanged(length = value.length))
+                onEvent(SecurityCodeTextFieldEvent.OnInputFilled(isFilled = value.length == securityCodeSize))
+                onEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }
         },
         onFocusChanged = { isFocused ->
-            onEvent(SecurityCodeFieldEvent.OnFocusChanged(isFocused))
+            onEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused))
         },
         modifier = modifier.testTag(PCITextFieldTestTags.SecurityCode.tag),
         enabled = enabled,

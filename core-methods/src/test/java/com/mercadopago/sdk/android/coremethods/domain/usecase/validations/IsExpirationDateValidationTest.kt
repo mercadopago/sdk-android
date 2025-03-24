@@ -1,6 +1,5 @@
-package com.mercadopago.sdk.android.coremethods.domain.usecase
+package com.mercadopago.sdk.android.coremethods.domain.usecase.validations
 
-import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsExpirationDateValidUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Calendar

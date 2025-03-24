@@ -37,9 +37,9 @@ import com.mercadopago.sdk.android.presentation.state.InstallmentsState
 
 @Composable
 fun InstallmentListDropDownField(
+    modifier: Modifier = Modifier,
     state: InstallmentsState,
     onSelectedInstallment: (Installment) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     var isFocused by remember { mutableStateOf(false) }
 

@@ -19,10 +19,10 @@ internal fun SecurityCodeFieldBasicSample() {
     val state: PCIFieldState = rememberPCIFieldState()
     SecurityCodeTextField(
         state = state,
-        onEvent = { securityCodeFieldEvent ->
-            // Handle the security code events
+        onEvent = { _ ->
+            // call viewmodel passing the events to handle the calls
         },
-        // Pass the securityCode length number
+        // Pass the securityCode length
         securityCodeSize = 3,
     )
 }
@@ -35,10 +35,10 @@ internal fun SecurityCodeFieldDecorationBoxSample() {
     val state: PCIFieldState = rememberPCIFieldState()
     SecurityCodeTextField(
         state = state,
-        onEvent = { securityCodeFieldEvent ->
-            // Handle the security code events
+        onEvent = { _ ->
+            // call viewmodel passing the events to handle the calls
         },
-        // Pass the securityCode length number
+        // Pass the securityCode length
         securityCodeSize = 3,
         decorationBox = { innerTextField ->
             // Adding the inner text inside a box with a border

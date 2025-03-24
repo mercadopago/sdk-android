@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.mappers.toInstallmentModel
 import com.mercadopago.sdk.android.presentation.data.Installment
@@ -23,6 +24,10 @@ class PaymentScreenViewModel(
 
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
+
+    init {
+        getIdentificationTypes()
+    }
 
     fun generateToken(
         cardNumberState: PCIFieldState,
@@ -75,9 +80,30 @@ class PaymentScreenViewModel(
         }
     }
 
-    fun onExpirationDateEvent(event: ExpirationDateFieldEvent) {
+    fun getIdentificationTypes() {
+        viewModelScope.launch {
+            val result = coreMethods.getIdentificationTypes()
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+                        identificationState = _viewState.value.identificationState.copy(
+                            identificationList = result.data,
+                            selectedIdentification = result.data.firstOrNull(),
+                        )
+                    )
+                }
+
+                is Result.Error -> {
+                    print(result.error.message)
+                }
+            }
+        }
+    }
+
+    fun onExpirationDateEvent(event: ExpirationDateTextFieldEvent) {
         when (event) {
-            is ExpirationDateFieldEvent.OnInputFilled -> {
+            is ExpirationDateTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         filled = event.isFilled
@@ -85,7 +111,7 @@ class PaymentScreenViewModel(
                 )
             }
 
-            is ExpirationDateFieldEvent.IsValid -> {
+            is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         valid = !event.isValid
@@ -93,7 +119,7 @@ class PaymentScreenViewModel(
                 )
             }
 
-            is ExpirationDateFieldEvent.OnFocusChanged -> {
+            is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         isFocused = event.isFocused
@@ -101,7 +127,7 @@ class PaymentScreenViewModel(
                 )
             }
 
-            is ExpirationDateFieldEvent.OnLengthChanged -> {
+            is ExpirationDateTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         length = event.length
@@ -111,9 +137,9 @@ class PaymentScreenViewModel(
         }
     }
 
-    fun onSecurityCodeEvent(event: SecurityCodeFieldEvent) {
+    fun onSecurityCodeEvent(event: SecurityCodeTextFieldEvent) {
         when (event) {
-            is SecurityCodeFieldEvent.OnFocusChanged -> {
+            is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         isFocused = event.isFocused
@@ -121,7 +147,7 @@ class PaymentScreenViewModel(
                 )
             }
 
-            is SecurityCodeFieldEvent.OnLengthChanged -> {
+            is SecurityCodeTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         length = event.length
@@ -129,7 +155,7 @@ class PaymentScreenViewModel(
                 )
             }
 
-            is SecurityCodeFieldEvent.OnInputFilled -> {
+            is SecurityCodeTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         filled = event.isFilled
@@ -192,6 +218,22 @@ class PaymentScreenViewModel(
         _viewState.value = _viewState.value.copy(
             installmentsState = _viewState.value.installmentsState.copy(
                 selectedInstallment = value
+            )
+        )
+    }
+
+    fun onIdentificationTypeValueChanged(value: String) {
+        _viewState.value = _viewState.value.copy(
+            identificationState = _viewState.value.identificationState.copy(
+                identificationValue = value
+            )
+        )
+    }
+
+    fun onIdentificationTypeChanged(identificationType: IdentificationType) {
+        _viewState.value = _viewState.value.copy(
+            identificationState = _viewState.value.identificationState.copy(
+                selectedIdentification = identificationType,
             )
         )
     }

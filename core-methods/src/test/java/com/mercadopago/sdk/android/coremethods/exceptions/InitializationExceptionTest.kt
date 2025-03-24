@@ -16,9 +16,7 @@ internal class InitializationExceptionTest {
     @Test
     fun `test custom InitializationException message`() {
         val customMessage = "Custom initialization error message"
-
         val exception = InitializationException(customMessage)
-
         assertEquals(customMessage, exception.message)
     }
 }

@@ -4,22 +4,32 @@ import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 
-internal fun provideMetricInstallmentFetch(
+@KoverIgnore("in development")
+internal fun metricInstallmentsCallSuccess(
     paymentType: String? = null,
     merchantAccountId: String? = null,
-    error: String? = null
 ) = Metric(
-    path = "/sdk-native/core-methods/installment-list_call",
+    path = "/sdk-native/core-methods/installments",
     type = TrackType.EVENT,
     data = InstallmentAnalyticsData(
         isDeveloping = true,
         paymentType = paymentType,
         merchantAccountId = merchantAccountId,
-        error = error
-    )
+    ),
 )
 
+@KoverIgnore("in development")
+internal fun metricInstallmentsCallError(
+    error: String
+) = Metric(
+    path = "/sdk-native/core-methods/installments_error",
+    type = TrackType.EVENT,
+    data = MetricErrorData(error = error),
+)
+
+@KoverIgnore("in development")
 internal data class InstallmentAnalyticsData(
     @SerializedName("is_development")
     val isDeveloping: Boolean,
@@ -27,6 +37,4 @@ internal data class InstallmentAnalyticsData(
     val paymentType: String?,
     @SerializedName("merchant_account_id")
     val merchantAccountId: String?,
-    @SerializedName("error")
-    val error: String?,
 ) : EventData
