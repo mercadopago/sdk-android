@@ -156,10 +156,16 @@ class CoreMethods internal constructor(
         return result
     }
 
+    /**
+     * Companion object for the [CoreMethods] class.
+     */
     companion object {
         @Volatile
         private var instance: CoreMethods? = null
 
+        /**
+         * Get the instance of the [CoreMethods] class to call its methods.
+         */
         fun getInstance(): CoreMethods {
             return instance ?: CoreMethods(
                 koin = CoreMethodsModulesProvider().koinApp,

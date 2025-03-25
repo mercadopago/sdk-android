@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.coremethods.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class IdentificationTypesResponse(
+internal data class IdentificationTypesResponse(
     @SerializedName("id")
     val id: String,
     @SerializedName("name")

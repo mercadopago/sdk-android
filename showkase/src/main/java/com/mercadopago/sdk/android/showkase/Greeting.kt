@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+internal fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier,
@@ -16,7 +16,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(name = "Greeting", group = "Text")
 @Composable
-fun GreetingPreview() {
+internal fun GreetingPreview() {
     MaterialTheme {
         Greeting("Android")
     }

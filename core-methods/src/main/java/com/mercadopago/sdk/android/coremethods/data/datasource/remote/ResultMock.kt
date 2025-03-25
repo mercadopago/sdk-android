@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 @KoverIgnore("mock value")
-fun getPreviewIdentificationTypes() = listOf(
+internal fun getPreviewIdentificationTypes() = listOf(
     IdentificationType(
         id = "CPF",
         type = "number",
@@ -24,7 +24,7 @@ fun getPreviewIdentificationTypes() = listOf(
 )
 
 @KoverIgnore("mock value")
-fun getPreviewInstallmentList() = Installment(
+internal fun getPreviewInstallmentList() = Installment(
     payerCost = listOf(
         PayerCost(
             instalments = 1,

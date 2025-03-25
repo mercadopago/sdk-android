@@ -9,11 +9,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Retrofit Factory
- * Use this class to create a new retrofit service
- * @param publicKey seller public key
+ * Use this class to create a new retrofit service.
+ * @param publicKey The seller's public key.
+ * @param baseUrl The base url of the api.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class RetrofitServiceFactory(private val publicKey: String, private val baseUrl: String) {
+class RetrofitServiceFactory(
+    private val publicKey: String,
+    private val baseUrl: String
+) {
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {

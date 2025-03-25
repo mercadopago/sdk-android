@@ -46,6 +46,12 @@ internal const val MAX_CARD_LENGTH = 19L
  * @param readOnly controls the editable state of the [BasicTextField]. When `true`, the text
  * field can not be modified, however, a user can focus it and copy text from it. Read-only text
  * fields are usually used to display pre-filled forms that user can not edit
+ * @param decorationBox Composable lambda that allows to add decorations around text field, such
+ * as card issuer icon, placeholder, helper messages or similar, and automatically increase the hit target area
+ * of the text field. To allow you to control the placement of the inner text field relative to your
+ * decorations, the text field implementation will pass in a framework-controlled composable
+ * parameter "innerTextField" to the decorationBox lambda you provide. You must call
+ * innerTextField exactly once.
  * @param textStyle Style configuration that applies at character level such as color, font etc.
  * @param keyboardOptions software keyboard options that contains configuration such as
  * [ImeAction]. If you change the [KeyboardType], it will always be updated
@@ -53,18 +59,12 @@ internal const val MAX_CARD_LENGTH = 19L
  * @param keyboardActions when the input service emits an IME action, the corresponding callback
  * is called. Note that this IME action may be different from what you specified in
  * [KeyboardOptions.imeAction].
+ * @param cursorBrush [Brush] to paint cursor with. If [SolidColor] with [Color.Unspecified]
+ * provided, there will be no cursor drawn
  * @param visualTransformation The visual transformation filter for changing the visual
  * representation of the card number. By default, a mask for 16 digits card number is used.
  * You can updated the mask after calling paymentMethods with the bin and setting this value
  * to a new mask using the [MaskVisualTransformation].
- * @param cursorBrush [Brush] to paint cursor with. If [SolidColor] with [Color.Unspecified]
- * provided, there will be no cursor drawn
- * @param decorationBox Composable lambda that allows to add decorations around text field, such
- * as card issuer icon, placeholder, helper messages or similar, and automatically increase the hit target area
- * of the text field. To allow you to control the placement of the inner text field relative to your
- * decorations, the text field implementation will pass in a framework-controlled composable
- * parameter "innerTextField" to the decorationBox lambda you provide. You must call
- * innerTextField exactly once.
  *
  * Samples
  *

@@ -16,6 +16,9 @@ import androidx.compose.runtime.setValue
 class PCIFieldState internal constructor() {
     internal var input: String by mutableStateOf("")
 
+    /**
+     * Companion object to create a new instance of PCIFieldState.
+     */
     companion object {
         internal val Saver: Saver<PCIFieldState, String> = Saver<PCIFieldState, String>(
             save = { it.input },

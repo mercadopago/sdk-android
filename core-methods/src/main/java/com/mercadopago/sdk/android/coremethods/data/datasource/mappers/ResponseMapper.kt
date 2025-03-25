@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import okhttp3.ResponseBody
 
-const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
+internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
 internal fun ResponseBody?.toResultError(): ResultError {
     val errorBody = this?.string()

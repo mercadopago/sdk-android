@@ -1,5 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate
 
+/**
+ * ExpirationDateTextFieldEvent is a sealed class that represents
+ * the events that can be triggered by the expiration date text field.
+ */
 interface ExpirationDateTextFieldEvent {
     /**
      * This function informs if the expiration date field has been focused.

@@ -38,7 +38,7 @@ import com.mercadopago.sdk.android.ui.components.extensions.getVisualTransformat
 
 @Suppress("LongMethod")
 @Composable
-fun IdentificationTypeSelectorField(
+internal fun IdentificationTypeSelectorField(
     modifier: Modifier = Modifier,
     state: IdentificationState,
     onSelectIdentification: (IdentificationType) -> Unit,
@@ -106,7 +106,7 @@ fun IdentificationTypeSelectorField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IdentificationTypeSelectorList(
+internal fun IdentificationTypeSelectorList(
     modifier: Modifier = Modifier,
     state: IdentificationState,
     onSelectIdentification: (IdentificationType) -> Unit

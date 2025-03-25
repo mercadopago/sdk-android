@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Modifier.addBorder(
+internal fun Modifier.addBorder(
     isFocused: Boolean,
     isError: Boolean = false,
 ): Modifier {

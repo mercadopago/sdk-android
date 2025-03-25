@@ -26,14 +26,26 @@ class MPAnalytics internal constructor(
     private val getSiteIdFlow: Flow<String>,
 ) {
 
+    /**
+     * Companion object for the [MPAnalytics] class.
+     */
     companion object {
         @Volatile
         private var instance: MPAnalytics? = null
 
+        /**
+         * Gets the instance of the [MPAnalytics] class.
+         */
         fun getInstance(): MPAnalytics {
             return instance ?: throw AnalyticsInitializationException()
         }
 
+        /** Call this method to initialize the analytics instance.
+         * @param sessionId session identification of this analytics instance
+         * @param publicKey the public key used to initialize the SDK.
+         * @param version this application SDK version.
+         * @param getSiteIdFlow a flow that emits the current siteId.
+         * */
         fun initialize(
             sessionId: String,
             publicKey: String,

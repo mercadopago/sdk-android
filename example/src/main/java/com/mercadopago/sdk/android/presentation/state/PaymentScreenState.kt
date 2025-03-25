@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.presentation.state
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.presentation.data.Installment
 
-data class PaymentScreenViewState(
+internal data class PaymentScreenViewState(
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
     val secureCodeState: SecurityCodeState = SecurityCodeState(),
     val cardNumberState: CardNumberTextFieldState = CardNumberTextFieldState(),
@@ -11,20 +11,20 @@ data class PaymentScreenViewState(
     val identificationState: IdentificationState = IdentificationState(),
 )
 
-data class SecurityCodeState(
+internal data class SecurityCodeState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
 )
 
-data class ExpirationDateState(
+internal data class ExpirationDateState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
     val valid: Boolean = false
 )
 
-data class CardNumberTextFieldState(
+internal data class CardNumberTextFieldState(
     var isFocused: Boolean = false,
     var filled: Boolean = false,
     var length: Int = 0,
@@ -33,13 +33,13 @@ data class CardNumberTextFieldState(
     val cardBin: String? = null,
 )
 
-data class InstallmentsState(
+internal data class InstallmentsState(
     val showList: Boolean = false,
     val installments: List<Installment> = emptyList(),
     val selectedInstallment: Installment? = null
 )
 
-data class IdentificationState(
+internal data class IdentificationState(
     val selectedIdentification: IdentificationType? = null,
     val identificationList: List<IdentificationType> = emptyList(),
     val identificationValue: String = "",

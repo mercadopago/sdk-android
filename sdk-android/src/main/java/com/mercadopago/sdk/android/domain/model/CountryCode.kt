@@ -4,60 +4,98 @@ package com.mercadopago.sdk.android.domain.model
  * The country code of your Mercado Pago account. It uses the ISO 3166-1 alpha-3 standard.
  **/
 enum class CountryCode {
-    // Argentina
+    /**
+     * Argentina
+     */
     ARG,
 
-    // Brazil
+    /**
+     * Brazil
+     */
     BRA,
 
-    // Chile
+    /**
+     * Chile
+     */
     CHL,
 
-    // Colombia
+    /**
+     * Colombia
+     */
     COL,
 
-    // Mexico
+    /**
+     * Mexico
+     */
     MEX,
 
-    // Costa Rica
+    /**
+     * Costa Rica
+     */
     CRI,
 
-    // Peru
+    /**
+     * Peru
+     */
     PER,
 
-    // Ecuador
+    /**
+     * Ecuador
+     */
     ECU,
 
-    // Dominican Republic
+    /**
+     * Dominican Republic
+     */
     DOM,
 
-    // Uruguay
+    /**
+     * Uruguay
+     */
     URY,
 
-    // Venezuela
+    /**
+     * Venezuela
+     */
     VEN,
 
-    // Panama
+    /**
+     * Panama
+     */
     PAN,
 
-    // Bolivia
+    /**
+     * Bolivia
+     */
     BOL,
 
-    // Paraguay
+    /**
+     * Paraguay
+     */
     PRY,
 
-    // Guatemala
+    /**
+     * Guatemala
+     */
     GTM,
 
-    // Honduras
+    /**
+     * Honduras
+     */
     HND,
 
-    // El Salvador
+    /**
+     * El Salvador
+     */
     SLV,
 
-    // Nicaragua
+    /**
+     * Nicaragua
+     */
     NIC,
 
-    // Cuba
+    /**
+     * Cuba
+     */
     CUB
 }
