@@ -1,5 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 
+/**
+ * SecurityCodeTextFieldEvent is a sealed class that represents
+ * the events that can be triggered by the security code text field.
+ */
 interface SecurityCodeTextFieldEvent {
     /**
      * This function informs if the security code field has been filled.

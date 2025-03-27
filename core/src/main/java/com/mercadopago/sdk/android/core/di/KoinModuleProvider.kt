@@ -38,6 +38,7 @@ object CoreKoinFactory {
      * Create a Koin instance in a isolated context
      * @param provider: [CoreKoinModuleProvider] with the module list
      * @param loggerLevel: [Level] logger level
+     * @param context: [Context] application context
      */
     fun createKoinApp(
         provider: CoreKoinModuleProvider,
@@ -59,6 +60,11 @@ object CoreKoinFactory {
         }
     }
 
+    /**
+     * Use to set the Koin modules of an application.
+     * @param koin: [Koin] with the module list
+     * @param modules: [List] of [Module] with the module list
+     */
     fun setKoinModules(
         koin: Koin,
         modules: List<Module>,

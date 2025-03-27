@@ -36,7 +36,7 @@ import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.InstallmentsState
 
 @Composable
-fun InstallmentListDropDownField(
+internal fun InstallmentListDropDownField(
     modifier: Modifier = Modifier,
     state: InstallmentsState,
     onSelectedInstallment: (Installment) -> Unit,
@@ -92,7 +92,7 @@ fun InstallmentListDropDownField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Suppress("MagicNumber")
-fun InstallmentDropDown(
+internal fun InstallmentDropDown(
     state: InstallmentsState,
     onSelect: (Installment) -> Unit,
     modifier: Modifier = Modifier,
@@ -154,7 +154,7 @@ fun InstallmentDropDown(
 
 @Preview
 @Composable
-fun InstallmentListDropDownFieldPreview() {
+internal fun InstallmentListDropDownFieldPreview() {
     MaterialTheme {
         InstallmentListDropDownField(
             state = InstallmentsState(showList = true),

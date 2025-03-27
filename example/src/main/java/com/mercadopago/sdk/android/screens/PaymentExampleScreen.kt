@@ -52,7 +52,7 @@ import com.mercadopago.sdk.android.ui.theme.ExampleTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PaymentExampleScreen(
+internal fun PaymentExampleScreen(
     viewModel: PaymentScreenViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -76,7 +76,7 @@ fun PaymentExampleScreen(
 
 @Composable
 @Suppress("LongParameterList", "LongMethod")
-fun PaymentExampleScreenContent(
+internal fun PaymentExampleScreenContent(
     modifier: Modifier = Modifier,
     viewState: PaymentScreenViewState,
     cardNumberState: PCIFieldState,
@@ -158,7 +158,7 @@ fun PaymentExampleScreenContent(
 }
 
 @Composable
-fun SecurityCodeExample(
+internal fun SecurityCodeExample(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     securityCodeState: SecurityCodeState,
@@ -215,7 +215,7 @@ fun SecurityCodeExample(
 }
 
 @Composable
-fun ExpirationDateExample(
+internal fun ExpirationDateExample(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     expirationDateState: ExpirationDateState,
@@ -266,7 +266,7 @@ fun ExpirationDateExample(
 }
 
 @Composable
-fun CardNumberTextFieldExample(
+internal fun CardNumberTextFieldExample(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     cardNumberState: CardNumberTextFieldState,
@@ -310,7 +310,7 @@ fun CardNumberTextFieldExample(
 
 @Preview(name = "Payment Screen Example", showBackground = true)
 @Composable
-fun PaymentExampleScreenPreview() {
+internal fun PaymentExampleScreenPreview() {
     ExampleTheme {
         PaymentExampleScreen()
     }

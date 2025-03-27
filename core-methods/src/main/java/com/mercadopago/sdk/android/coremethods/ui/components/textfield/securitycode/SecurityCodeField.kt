@@ -83,7 +83,7 @@ fun SecurityCodeTextField(
     showBackground = true,
 )
 @Composable
-fun SecurityCodeEmptyPreview() {
+internal fun SecurityCodeEmptyPreview() {
     val state: PCIFieldState = rememberPCIFieldState()
     SecurityCodeTextField(
         state = state,
@@ -99,7 +99,7 @@ fun SecurityCodeEmptyPreview() {
     showBackground = true,
 )
 @Composable
-fun SecurityCodeFilledPreview() {
+internal fun SecurityCodeFilledPreview() {
     val state: PCIFieldState = rememberPCIFieldState().apply {
         input = "123"
     }

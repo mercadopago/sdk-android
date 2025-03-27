@@ -1,5 +1,15 @@
 import org.gradle.api.JavaVersion
 
+/**
+ * MercadoPagoSDKConfigs object
+ * @property minSdk minimum sdk version
+ * @property compileSdk compile sdk version
+ * @property targetSdk target sdk version
+ * @property jvmTarget jvm target version
+ * @property sourceCompatibility source compatibility
+ * @property targetCompatibility target compatibility
+ * @property versionName sdk version name
+ */
 object MercadoPagoSDKConfigs {
     const val minSdk = 21
     const val compileSdk = 35

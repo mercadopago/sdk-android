@@ -33,14 +33,14 @@ internal fun metricGenerateCardTokenCallError(
 )
 
 @KoverIgnore("in development")
-enum class CardTokenPaymentTypeMetric(val type: String) {
+internal enum class CardTokenPaymentTypeMetric(val type: String) {
     CREDIT(type = "credit"),
     DEBIT(type = "debit"),
     PREPAID(type = "prepaid"),
 }
 
 @KoverIgnore("in development")
-enum class CardTokenCardTypeMetric(val type: String) {
+internal enum class CardTokenCardTypeMetric(val type: String) {
     SAVED_CARD(type = "credit"),
     NOT_SAVED_CARD(type = "debit"),
 }

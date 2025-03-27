@@ -13,6 +13,11 @@ import org.koin.core.module.Module
 
 internal const val PUBLIC_API_URL = "https://api.mercadopago.com/"
 
+/**
+ * The Koin Modules Provider for the SDK.
+ * @param publicKey The publicKey used by the sdk.
+ * @param context The context used by the sdk.
+ */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class MercadoPagoSdkModulesProvider(
     private val publicKey: String,

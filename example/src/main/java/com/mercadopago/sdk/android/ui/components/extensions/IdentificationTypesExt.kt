@@ -4,7 +4,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 
-fun IdentificationType?.getPlaceholder(): String {
+internal fun IdentificationType?.getPlaceholder(): String {
     return when (this?.id) {
         "CPF" -> "999.999.999-99"
         "CNPJ" -> "99.999.999/9999-99"
@@ -13,7 +13,7 @@ fun IdentificationType?.getPlaceholder(): String {
     }
 }
 
-fun IdentificationType?.getVisualTransformation(): VisualTransformation {
+internal fun IdentificationType?.getVisualTransformation(): VisualTransformation {
     return when (this?.id) {
         "CPF" -> MaskVisualTransformation("###.###.###-##")
         "CNPJ" -> MaskVisualTransformation("##.###.###/####-##")

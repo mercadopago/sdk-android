@@ -32,6 +32,9 @@ class MercadoPagoSDK private constructor(
     private val sessionId: String,
 ) {
 
+    /**
+     * Companion object for the [MercadoPagoSDK] class.
+     */
     companion object {
         private const val TAG = "MercadoPagoSDK"
 

@@ -89,7 +89,7 @@ fun ExpirationDateTextField(
     showBackground = true,
 )
 @Composable
-fun ExpirationDateEmptyPreview() {
+internal fun ExpirationDateEmptyPreview() {
     val state: PCIFieldState = rememberPCIFieldState()
     ExpirationDateTextField(
         state = state,
@@ -104,7 +104,7 @@ fun ExpirationDateEmptyPreview() {
     showBackground = true,
 )
 @Composable
-fun ExpirationDateFilledPreview() {
+internal fun ExpirationDateFilledPreview() {
     val state: PCIFieldState = rememberPCIFieldState().apply {
         input = "1225"
     }

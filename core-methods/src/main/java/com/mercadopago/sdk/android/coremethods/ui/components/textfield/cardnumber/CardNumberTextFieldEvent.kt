@@ -1,5 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
 
+/**
+ * CardNumberTextFieldEvent is a sealed class that represents the
+ * events that can be triggered by the card number text field.
+ */
 interface CardNumberTextFieldEvent {
     /**
      * Informs if the card number bin has been filled.
