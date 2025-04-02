@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -17,6 +18,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -75,7 +79,10 @@ fun CardNumberTextField(
     state: PCIFieldState,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
     modifier: Modifier = Modifier,
-    @IntRange(from = MIN_CARD_LENGTH, to = MAX_CARD_LENGTH) maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
+    @IntRange(
+        from = MIN_CARD_LENGTH,
+        to = MAX_CARD_LENGTH
+    ) maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -88,6 +95,14 @@ fun CardNumberTextField(
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
 ) {
     val isCardNumberValidUseCase = remember { IsCardNumberValidUseCase() }
+
+    LaunchedEffect(key1 = true) {
+        MPAnalytics.getInstance().trackMetric(
+            metricPCIFieldInitialization(
+                field = "cardNumber"
+            ),
+        )
+    }
 
     PCITextField(
         value = state.input,
@@ -113,6 +128,13 @@ fun CardNumberTextField(
         },
         onFocusChanged = { isFocused ->
             onEvent(CardNumberTextFieldEvent.OnFocusChanged(isFocused))
+            if (isFocused) {
+                MPAnalytics.getInstance().trackMetric(
+                    metricPCIFieldFocus(
+                        field = "cardNumber"
+                    ),
+                )
+            }
         },
         enabled = enabled,
         readOnly = readOnly,

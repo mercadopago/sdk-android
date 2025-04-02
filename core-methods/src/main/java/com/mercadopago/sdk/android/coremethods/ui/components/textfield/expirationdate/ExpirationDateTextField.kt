@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirati
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -11,6 +12,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsExpirationDateValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -57,10 +61,25 @@ fun ExpirationDateTextField(
 ) {
     val isCardNumberValidUseCase = remember { IsExpirationDateValidUseCase() }
 
+    LaunchedEffect(key1 = true) {
+        MPAnalytics.getInstance().trackMetric(
+            metricPCIFieldInitialization(
+                field = "expirationDate"
+            ),
+        )
+    }
+
     PCITextField(
         value = state.input,
         onFocusChanged = { isFocused ->
             onEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused))
+            if (isFocused) {
+                MPAnalytics.getInstance().trackMetric(
+                    metricPCIFieldFocus(
+                        field = "expirationDate"
+                    ),
+                )
+            }
         },
         onValueChange = { value ->
             val updatedValue = value.take(dateFormat.digits)
