@@ -80,6 +80,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         // return Result.Success(getPreviewIdentificationTypes())
     }
 
+    @KoverIgnore("mocked identification types")
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
         val result = service.getCardIssuers(request.productId, request.bin, request.paymentMethodId)
         return when (result.isSuccessful) {

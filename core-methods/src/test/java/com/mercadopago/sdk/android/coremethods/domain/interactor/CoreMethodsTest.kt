@@ -2,11 +2,13 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
+import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -133,6 +135,36 @@ internal class CoreMethodsTest {
 
         coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
         val result = coreMethods.getIdentificationTypes()
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `getCardIssuers should return success and track success metric`() = runTest {
+        val bin = 12345
+        val productId = "123123"
+        val paymentMethodId = "credit"
+
+        val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
+        val expectedResult = Result.Success(listOf(expectedCardIssuer))
+
+        coEvery { koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId) } returns expectedResult
+        val result = coreMethods.getCardIssuers(productId, bin, paymentMethodId)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `getCardIssuers should return error and track error metric`() = runTest {
+        val bin = 12345
+        val productId = "123123"
+        val paymentMethodId = "credit"
+
+        val expectedError = ResultError("404", "CardIssuer not found")
+        val expectedResult = Result.Error(expectedError)
+
+        coEvery { koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId) } returns expectedResult
+        val result = coreMethods.getCardIssuers(productId, bin, paymentMethodId)
 
         assertEquals(expectedResult, result)
     }
