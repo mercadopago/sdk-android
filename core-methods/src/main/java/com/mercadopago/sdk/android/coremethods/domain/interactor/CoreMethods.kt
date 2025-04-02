@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricGenerateCardTokenCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricGenerateCardTokenCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallError
@@ -8,12 +10,14 @@ import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCal
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallSuccess
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
+import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -153,6 +157,42 @@ class CoreMethods internal constructor(
                 )
             }
         }
+        return result
+    }
+
+    /**
+     * Get card issuer list
+     *
+     * This return a [Result.Success] of [CardIssuer] data model or a [Result.Error] of [ResultError]
+     * This is a suspend function and should be called only from a coroutine or another suspend function
+     *
+     * @param productId: product id
+     * @param bin: the credit card bin
+     * @param paymentMethodId: payment method id
+     */
+    suspend fun getCardIssuers(
+        productId: String,
+        bin: Int,
+        paymentMethodId: String
+    ): Result<List<CardIssuer>, ResultError> {
+        val result = koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId)
+
+        when (result) {
+            is Result.Error -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricCardIssuersCallError(
+                        error = result.error.message,
+                    ),
+                )
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricCardIssuersCallSuccess(),
+                )
+            }
+        }
+
         return result
     }
 
