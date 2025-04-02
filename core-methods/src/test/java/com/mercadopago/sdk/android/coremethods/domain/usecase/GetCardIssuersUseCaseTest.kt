@@ -21,14 +21,11 @@ class GetCardIssuersUseCaseTest {
             val productId = "123123"
             val paymentMethodId = "credit"
 
-            // Setup mock response
-            val expectedResult = Result.Success(listOf(CardIssuer())) // Supondo que você tenha um resultado de sucesso
+            val expectedResult = Result.Success(listOf(CardIssuer()))
             coEvery { repository.getCardIssuers(any()) } returns expectedResult
 
-            // Invoke the use case
             val result = getCardIssuersUseCase(productId, bin, paymentMethodId)
 
-            // Assert that the result is as expected
             assertEquals(expectedResult, result)
         }
 
@@ -39,14 +36,11 @@ class GetCardIssuersUseCaseTest {
             val productId = "123123"
             val paymentMethodId = "credit"
 
-            // Setup mock to return an error
             val expectedErrorResult = Result.Error(ResultError("Repository error"))
             coEvery { repository.getCardIssuers(any()) } returns expectedErrorResult
 
-            // Invoke the use case
             val result = getCardIssuersUseCase(productId, bin, paymentMethodId)
 
-            // Assert that the result is the error that we expect
             assertEquals(expectedErrorResult, result)
         }
 }

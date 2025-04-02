@@ -8,17 +8,14 @@ class GetCardIssuersParamMapperTest {
 
     @Test
     fun `when call GetCardIssuersParams toRequest should correctly map GetCardIssuersParams to CardIssuersRequest`() {
-        // Arrange
         val getCardIssuersParams = GetCardIssuersParams(
             productId = "product_001",
             bin = 123456,
             paymentMethodId = "payment_method_001"
         )
 
-        // Act
         val cardIssuersRequest = getCardIssuersParams.toRequest()
 
-        // Assert
         assertEquals(getCardIssuersParams.productId, cardIssuersRequest.productId)
         assertEquals(getCardIssuersParams.bin, cardIssuersRequest.bin)
         assertEquals(getCardIssuersParams.paymentMethodId, cardIssuersRequest.paymentMethodId)
@@ -26,17 +23,14 @@ class GetCardIssuersParamMapperTest {
 
     @Test
     fun `when call GetCardIssuersParams toRequest should handle null values correctly`() {
-        // Arrange
         val getCardIssuersParams = GetCardIssuersParams(
-            productId = null, // Testando com valor nulo
-            bin = null, // Testando com valor nulo
-            paymentMethodId = null // Testando com valor nulo
+            productId = null,
+            bin = null,
+            paymentMethodId = null
         )
 
-        // Act
         val cardIssuersRequest = getCardIssuersParams.toRequest()
 
-        // Assert
         assertEquals(getCardIssuersParams.productId, cardIssuersRequest.productId)
         assertEquals(getCardIssuersParams.bin, cardIssuersRequest.bin)
         assertEquals(getCardIssuersParams.paymentMethodId, cardIssuersRequest.paymentMethodId)
