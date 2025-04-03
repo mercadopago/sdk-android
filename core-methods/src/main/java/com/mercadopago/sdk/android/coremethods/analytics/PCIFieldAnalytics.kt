@@ -27,6 +27,6 @@ internal fun metricPCIFieldFocus(field: String, frameworkUI: String = FRAMEWORK)
 internal data class MetricPCIFieldData(
     @SerializedName("field")
     val field: String = PCI_FIELD,
-    @SerializedName("frameworkUI")
+    @SerializedName("framework_ui")
     val frameworkUI: String = FRAMEWORK
 ) : EventData
