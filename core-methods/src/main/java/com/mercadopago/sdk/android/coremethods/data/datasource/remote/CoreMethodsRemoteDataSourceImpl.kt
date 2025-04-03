@@ -57,11 +57,10 @@ internal class CoreMethodsRemoteDataSourceImpl(
                 )
             }
         }
-
-        // return Result.Success(getPreviewInstallmentList())
     }
 
     @KoverIgnore("mocked identification types")
+    @Suppress("ReturnCount")
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = service.getIdentificationTypes()
         return when (result.isSuccessful) {
@@ -76,11 +75,10 @@ internal class CoreMethodsRemoteDataSourceImpl(
                 )
             }
         }
-
-        // return Result.Success(getPreviewIdentificationTypes())
     }
 
-    @KoverIgnore("mocked identification types")
+    @KoverIgnore("mocked card issuers")
+    @Suppress("ReturnCount")
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
         val result = service.getCardIssuers(request.productId, request.bin, request.paymentMethodId)
         return when (result.isSuccessful) {
