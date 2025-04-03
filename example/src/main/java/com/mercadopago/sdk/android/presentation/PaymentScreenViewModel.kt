@@ -27,6 +27,7 @@ internal class PaymentScreenViewModel(
 
     init {
         getIdentificationTypes()
+        getCardIssuers(0, "")
     }
 
     fun generateToken(
@@ -101,9 +102,9 @@ internal class PaymentScreenViewModel(
         }
     }
 
-    fun getCardIssuers(productId: String, bin: Int, paymentMethodId: String) {
+    fun getCardIssuers(bin: Int, paymentMethodId: String) {
         viewModelScope.launch {
-            val result = coreMethods.getCardIssuers(productId, bin, paymentMethodId)
+            val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
             when (result) {
                 is Result.Success -> {

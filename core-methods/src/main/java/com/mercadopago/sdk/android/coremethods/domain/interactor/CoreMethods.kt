@@ -166,16 +166,17 @@ class CoreMethods internal constructor(
      * This return a [Result.Success] of [CardIssuer] data model or a [Result.Error] of [ResultError]
      * This is a suspend function and should be called only from a coroutine or another suspend function
      *
-     * @param productId: product id
      * @param bin: the credit card bin
      * @param paymentMethodId: payment method id
      */
     suspend fun getCardIssuers(
-        productId: String,
         bin: Int,
         paymentMethodId: String
     ): Result<List<CardIssuer>, ResultError> {
-        val result = koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId)
+        val result = koin.get<GetCardIssuersUseCase>().invoke(
+            bin = bin,
+            paymentMethodId = paymentMethodId
+        )
 
         when (result) {
             is Result.Error -> {
