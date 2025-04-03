@@ -142,14 +142,13 @@ internal class CoreMethodsTest {
     @Test
     fun `getCardIssuers should return success and track success metric`() = runTest {
         val bin = 12345
-        val productId = "123123"
         val paymentMethodId = "credit"
 
         val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
         val expectedResult = Result.Success(listOf(expectedCardIssuer))
 
-        coEvery { koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId) } returns expectedResult
-        val result = coreMethods.getCardIssuers(productId, bin, paymentMethodId)
+        coEvery { koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId) } returns expectedResult
+        val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
         assertEquals(expectedResult, result)
     }
@@ -157,14 +156,13 @@ internal class CoreMethodsTest {
     @Test
     fun `getCardIssuers should return error and track error metric`() = runTest {
         val bin = 12345
-        val productId = "123123"
         val paymentMethodId = "credit"
 
         val expectedError = ResultError("404", "CardIssuer not found")
         val expectedResult = Result.Error(expectedError)
 
-        coEvery { koin.get<GetCardIssuersUseCase>().invoke(productId, bin, paymentMethodId) } returns expectedResult
-        val result = coreMethods.getCardIssuers(productId, bin, paymentMethodId)
+        coEvery { koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId) } returns expectedResult
+        val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
         assertEquals(expectedResult, result)
     }
