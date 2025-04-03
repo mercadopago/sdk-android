@@ -27,7 +27,6 @@ internal class PaymentScreenViewModel(
 
     init {
         getIdentificationTypes()
-        getCardIssuers(0, "")
     }
 
     fun generateToken(
