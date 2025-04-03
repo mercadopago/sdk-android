@@ -21,6 +21,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
+internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
+
 /**
  * Security code input component.
  *
@@ -61,7 +63,7 @@ fun SecurityCodeTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = "securityCode"
+                field = COMPONENT_NAME_SECURITY_CODE
             ),
         )
     }
@@ -80,7 +82,7 @@ fun SecurityCodeTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = "securityCode"
+                        field = COMPONENT_NAME_SECURITY_CODE
                     ),
                 )
             }

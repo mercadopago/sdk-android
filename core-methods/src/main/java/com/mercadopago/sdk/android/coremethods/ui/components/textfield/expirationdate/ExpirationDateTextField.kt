@@ -24,6 +24,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 
+internal const val COMPONENT_NAME_EXPIRATION_DATE = "expirationDate"
+
 /**
  * Expiration date input component.
  *
@@ -64,7 +66,7 @@ fun ExpirationDateTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = "expirationDate"
+                field = COMPONENT_NAME_EXPIRATION_DATE
             ),
         )
     }
@@ -76,7 +78,7 @@ fun ExpirationDateTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = "expirationDate"
+                        field = COMPONENT_NAME_EXPIRATION_DATE
                     ),
                 )
             }

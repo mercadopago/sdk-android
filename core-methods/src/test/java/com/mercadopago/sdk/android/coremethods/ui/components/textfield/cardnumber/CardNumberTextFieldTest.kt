@@ -26,7 +26,7 @@ internal class CardNumberTextFieldTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Before
-    fun start () {
+    fun start() {
         val sessionId = "session"
         val siteId = "site"
         val version = "1.0"

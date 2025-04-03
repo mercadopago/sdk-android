@@ -30,6 +30,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
+internal const val COMPONENT_NAME_CARD_NUMBER = "cardNumber"
 internal const val BIN_LENGTH = 8
 internal const val DEFAULT_CARD_NUMBER_MAX_LENGTH = 19
 internal const val LAST_DIGITS_LENGTH = 4
@@ -99,7 +100,7 @@ fun CardNumberTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = "cardNumber"
+                field = COMPONENT_NAME_CARD_NUMBER
             ),
         )
     }
@@ -131,7 +132,7 @@ fun CardNumberTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = "cardNumber"
+                        field = COMPONENT_NAME_CARD_NUMBER
                     ),
                 )
             }
