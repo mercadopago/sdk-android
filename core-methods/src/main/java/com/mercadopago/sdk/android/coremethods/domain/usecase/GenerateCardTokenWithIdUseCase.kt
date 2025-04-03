@@ -7,32 +7,29 @@ import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepo
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 
-internal const val EXPIRATION_YEAR_START = "20"
-internal const val EXPIRATION_YEAR_MIN_LENGTH = 2
-
-internal class GenerateCardTokenUseCase(
+internal class GenerateCardTokenWithIdUseCase(
     private val repository: CoreMethodsRepository,
 ) {
     suspend operator fun invoke(
-        cardNumber: String,
+        cardId: String,
         securityCode: String,
-        expirationDate: String,
+        expirationDate: String?,
     ): Result<CardToken, ResultError> {
-        if(cardNumber.isEmpty()) {
-            return Result.Error(ResultError.Validation("cardNumber cannot be empty"))
-        }
-        if(expirationDate.isEmpty()) {
+        var expirationMonth: Int? = null
+        var expirationYear: Int? = null
+        if(cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("cardId cannot be empty"))
         }
-        if(expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
-            return Result.Error(ResultError.Validation("expirationDate cannot be smaller than two"))
+        if (!expirationDate.isNullOrEmpty()) {
+            if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
+                return Result.Error(ResultError.Validation("expirationDate cannot be empty"))
+            }
+            expirationMonth = expirationDate.ifEmpty { "0" }.take(INT_TWO).toInt()
+            expirationYear = (EXPIRATION_YEAR_START + expirationDate.ifEmpty { "0" }.takeLast(INT_TWO)).toInt()
         }
-        val expirationMonth = expirationDate.ifEmpty { "0" }.take(INT_TWO).toInt()
-        val expirationYear =
-            (EXPIRATION_YEAR_START + expirationDate.ifEmpty { "0" }.takeLast(INT_TWO)).toInt()
         return repository.generateCardToken(
             GenerateCardTokenParams(
-                cardNumber = cardNumber,
+                cardId = cardId,
                 expirationMonth = expirationMonth,
                 expirationYear = expirationYear,
                 securityCode = securityCode,

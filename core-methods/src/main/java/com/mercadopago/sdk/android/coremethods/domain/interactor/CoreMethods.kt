@@ -82,6 +82,49 @@ class CoreMethods internal constructor(
     }
 
     /**
+     * Generate Card Token with a cardId call.
+     *
+     * This return a [Result.Success] of [CardToken] data model or a [Result.Error] of [ResultError]
+     * This uses the [PCIFieldState] for pass the values of the card in a secure way
+     * This is a suspend function and should be called only from a coroutine or another suspend functionC
+     * @param cardId [String] The card id of a saved card
+     * @param securityCodeState [PCIFieldState]  of the security code text field
+     * @param expirationDateState [PCIFieldState] of the expiration date text field. This should only be provided if required.
+     * @see PCIFieldState
+     * @see CardToken
+     * @see Result
+     * @see ResultError
+     */
+    suspend fun generateCardToken(
+        cardId: String,
+        securityCodeState: PCIFieldState,
+        expirationDateState: PCIFieldState? = null,
+    ): Result<CardToken, ResultError> {
+        val result = koin.get<GenerateCardTokenUseCase>().invoke(
+            cardNumber = cardId,
+            expirationDate = expirationDateState.input,
+            securityCode = securityCodeState.input,
+        )
+
+        when (result) {
+            is Result.Error -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallError(
+                        error = result.error.message
+                    )
+                )
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallSuccess()
+                )
+            }
+        }
+        return result
+    }
+
+    /**
      * Get installment list call.
      *
      * This return a [Result.Success] of [Installment] data model or a [Result.Error] of [ResultError]
