@@ -4,15 +4,14 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * This class represents the result error of a request.
  * It can have multiple types to be mapped by the caller.
  */
-sealed class ResultError : Exception() {
-
+sealed class ResultError {
     /**
      * Represents an error of a request
      * @param message The error message.
      * @param code The error code.
      */
     data class Request(
-        override val message: String,
+        val message: String,
         val code: Int,
     ) : ResultError()
 
@@ -21,6 +20,6 @@ sealed class ResultError : Exception() {
      * @param message The validation error message.
      */
     data class Validation(
-        override val message: String,
+        val message: String,
     ) : ResultError()
 }

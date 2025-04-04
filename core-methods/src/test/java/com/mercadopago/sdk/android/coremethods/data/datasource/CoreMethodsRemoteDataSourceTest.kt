@@ -43,7 +43,7 @@ internal class CoreMethodsRemoteDataSourceTest {
         runBlocking {
             val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
 
-            val errorBody = ResultError.Request(code = 400, message = "Bad Request")
+            val errorBody = ErrorBody()
 
             val gson = Gson()
             val jsonErrorBody = gson.toJson(errorBody)
@@ -56,7 +56,11 @@ internal class CoreMethodsRemoteDataSourceTest {
             val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
             assertTrue(result is Result.Error)
-            assertEquals("Bad Request", (result as Result.Error).error.message)
-            assertEquals("Bad Request", result.error.message)
+            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
         }
+
+    data class ErrorBody(
+        val code: Int = 400,
+        val message: String = "Bad Request"
+    )
 }

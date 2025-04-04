@@ -45,8 +45,7 @@ internal class CoreMethodsRepositoryTest {
             val result = repository.generateCardToken(generateCardTokenParams)
 
             assertTrue(result is Result.Error)
-            assertEquals("Bad Request", (result as Result.Error).error.message)
-            assertEquals("Bad Request", result.error.message)
+            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
         }
 
     @Test
@@ -75,8 +74,7 @@ internal class CoreMethodsRepositoryTest {
             val result = repository.getInstallment(installmentParams)
 
             assertTrue(result is Result.Error)
-            assertEquals("Bad Request", (result as Result.Error).error.message)
-            assertEquals("Bad Request", result.error.message)
+            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
         }
 
     @Test
@@ -103,7 +101,6 @@ internal class CoreMethodsRepositoryTest {
             val result = repository.getIdentificationTypes()
 
             assertTrue(result is Result.Error)
-            assertEquals("Bad Request", (result as Result.Error).error.message)
-            assertEquals("Bad Request", result.error.message)
+            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
         }
 }

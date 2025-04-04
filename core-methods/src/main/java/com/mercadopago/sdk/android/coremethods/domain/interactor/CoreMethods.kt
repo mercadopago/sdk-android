@@ -65,11 +65,23 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallError(
-                        error = result.error.message!!
-                    )
-                )
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message
+                            )
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message
+                            )
+                        )
+                    }
+                }
             }
 
             is Result.Success -> {
@@ -109,11 +121,23 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallError(
-                        error = result.error.message!!,
-                    )
-                )
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                            )
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                            )
+                        )
+                    }
+                }
             }
 
             is Result.Success -> {
@@ -151,11 +175,23 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                MPAnalytics.getInstance().trackMetric(
-                    metricInstallmentsCallError(
-                        error = result.error.message!!,
-                    ),
-                )
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricInstallmentsCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricInstallmentsCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
             }
 
             is Result.Success -> {
@@ -184,11 +220,23 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                MPAnalytics.getInstance().trackMetric(
-                    metricIdentificationCallError(
-                        error = result.error.message!!,
-                    ),
-                )
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricIdentificationCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricIdentificationCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
             }
 
             is Result.Success -> {

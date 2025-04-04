@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -47,7 +48,15 @@ internal class PaymentScreenViewModel(
                 }
 
                 is Result.Error -> {
-                    print(result.error.message)
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
                 }
             }
         }
@@ -74,7 +83,15 @@ internal class PaymentScreenViewModel(
                 }
 
                 is Result.Error -> {
-                    print(result.error.message)
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
                 }
             }
         }
@@ -95,7 +112,15 @@ internal class PaymentScreenViewModel(
                 }
 
                 is Result.Error -> {
-                    print(result.error.message)
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
                 }
             }
         }
