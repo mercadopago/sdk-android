@@ -67,7 +67,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallError(
-                        error = result.error.message
+                        error = result.error.message!!
                     )
                 )
             }
@@ -89,7 +89,8 @@ class CoreMethods internal constructor(
      * This is a suspend function and should be called only from a coroutine or another suspend functionC
      * @param cardId [String] The card id of a saved card
      * @param securityCodeState [PCIFieldState]  of the security code text field
-     * @param expirationDateState [PCIFieldState] of the expiration date text field. This should only be provided if required.
+     * @param expirationDateState [PCIFieldState] of the expiration date text field.
+     * This should only be provided if required.
      * @see PCIFieldState
      * @see CardToken
      * @see Result
@@ -102,7 +103,7 @@ class CoreMethods internal constructor(
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardId,
-            expirationDate = expirationDateState.input,
+            expirationDate = expirationDateState?.input,
             securityCode = securityCodeState.input,
         )
 
@@ -110,7 +111,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallError(
-                        error = result.error.message
+                        error = result.error.message!!,
                     )
                 )
             }
@@ -152,7 +153,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallError(
-                        error = result.error.message,
+                        error = result.error.message!!,
                     ),
                 )
             }
@@ -185,7 +186,7 @@ class CoreMethods internal constructor(
             is Result.Error -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricIdentificationCallError(
-                        error = result.error.message,
+                        error = result.error.message!!,
                     ),
                 )
             }

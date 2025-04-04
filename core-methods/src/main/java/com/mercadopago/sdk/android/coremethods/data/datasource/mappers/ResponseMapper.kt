@@ -8,6 +8,13 @@ import retrofit2.Response
 
 internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
+internal val EMPTY_BODY_ERROR = Result.Error(
+    ResultError.Request(
+        code = 200,
+        message = "empty body"
+    )
+)
+
 internal fun ResponseBody?.toResultError(): ResultError.Request {
     val errorBody = this?.string()
     val gson = GsonBuilder().create()
@@ -22,7 +29,8 @@ internal fun ResponseBody?.toResultError(): ResultError.Request {
 
 internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {
     return if (isSuccessful) {
-        Result.Success<T>(this.body()!!)
+        val result = this.body() ?: return EMPTY_BODY_ERROR
+        Result.Success<T>(result)
     } else {
         Result.Error<ResultError>(errorBody().toResultError())
     }
@@ -30,10 +38,11 @@ internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {
 
 internal fun <T, R> Result<T, ResultError>.mapSuccess(
     mapper: T.() -> R,
-): Result<R, ResultError>  = when (this) {
+): Result<R, ResultError> = when (this) {
     is Result.Success -> {
         val test: R = mapper(data)
         Result.Success(test)
     }
+
     is Result.Error -> Result.Error(error)
 }

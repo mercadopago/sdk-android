@@ -41,7 +41,7 @@ internal class GenerateCardTokenUseCaseTest {
             val cardNumber = "4111111111111111"
             val expirationDate = "12/25"
             val securityCode = "123"
-            val expectedError = ResultError("Some error")
+            val expectedError = ResultError.Request(code = 400, message = "Some error")
             val expectedResult = Result.Error(expectedError)
 
             // Mock the repository behavior

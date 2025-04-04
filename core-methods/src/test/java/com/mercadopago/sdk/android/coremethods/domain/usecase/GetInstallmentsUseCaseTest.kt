@@ -40,7 +40,7 @@ internal class GetInstallmentsUseCaseTest {
             val processingMode = "gateway"
 
             // Setup mock to return an error
-            val expectedErrorResult = Result.Error(ResultError("Repository error"))
+            val expectedErrorResult = Result.Error(ResultError.Request(code = 400, message = "Repository error"))
             coEvery { repository.getInstallment(any()) } returns expectedErrorResult
 
             // Invoke the use case

@@ -65,7 +65,7 @@ internal class CoreMethodsTest {
         val expirationDateState = PCIFieldState()
         val securityCodeState = PCIFieldState()
 
-        val expectedError = ResultError("400", "Invalid parameters")
+        val expectedError = ResultError.Request(code = 400, message = "Invalid parameters")
         val expectedResult = Result.Error(expectedError)
 
         coEvery { koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any()) } returns expectedResult
@@ -91,7 +91,7 @@ internal class CoreMethodsTest {
     fun `getInstallments should return error and track error metric`() = runTest {
         val bin = "123456"
         val amount = 1000L
-        val expectedError = ResultError("404", "Installments not found")
+        val expectedError = ResultError.Request(code = 404, message = "Installments not found")
         val expectedResult = Result.Error(expectedError)
 
         coEvery { koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any()) } returns expectedResult
@@ -128,7 +128,7 @@ internal class CoreMethodsTest {
 
     @Test
     fun `getIdentificationTypes should track error metric when call fails`() = runTest {
-        val expectedError = ResultError(code = "404", message = "Not Found")
+        val expectedError = ResultError.Request(code = 404, message = "Not Found")
         val expectedResult = Result.Error(expectedError)
 
         coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
