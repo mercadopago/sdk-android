@@ -3,12 +3,15 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumb
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createComposeRule
 import app.cash.turbine.test
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.coremethods.utils.MainDispatcherRule
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,6 +24,15 @@ internal class CardNumberTextFieldTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
+
+    @Before
+    fun start() {
+        val sessionId = "session"
+        val siteId = "site"
+        val version = "1.0"
+        val getSiteIdFlow = flowOf<String>()
+        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
+    }
 
     @Test
     fun `when field is empty Then input should be empty`() =

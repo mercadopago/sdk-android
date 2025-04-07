@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.security
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
@@ -11,11 +12,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
+import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+
+internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
 
 /**
  * Security code input component.
@@ -54,6 +60,14 @@ fun SecurityCodeTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
+    LaunchedEffect(key1 = true) {
+        MPAnalytics.getInstance().trackMetric(
+            metricPCIFieldInitialization(
+                field = COMPONENT_NAME_SECURITY_CODE
+            ),
+        )
+    }
+
     PCITextField(
         value = state.input,
         onValueChange = { value ->
@@ -65,6 +79,13 @@ fun SecurityCodeTextField(
         },
         onFocusChanged = { isFocused ->
             onEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused))
+            if (isFocused) {
+                MPAnalytics.getInstance().trackMetric(
+                    metricPCIFieldFocus(
+                        field = COMPONENT_NAME_SECURITY_CODE
+                    ),
+                )
+            }
         },
         modifier = modifier.testTag(PCITextFieldTestTags.SecurityCode.tag),
         enabled = enabled,
