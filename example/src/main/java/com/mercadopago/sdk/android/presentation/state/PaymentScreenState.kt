@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.presentation.state
 
+import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.presentation.data.Installment
 
@@ -9,6 +10,7 @@ internal data class PaymentScreenViewState(
     val cardNumberState: CardNumberTextFieldState = CardNumberTextFieldState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
     val identificationState: IdentificationState = IdentificationState(),
+    val cardIssuers: List<CardIssuer> = emptyList()
 )
 
 internal data class SecurityCodeState(
@@ -25,6 +27,7 @@ internal data class ExpirationDateState(
 )
 
 internal data class CardNumberTextFieldState(
+    val image: String? = null,
     var isFocused: Boolean = false,
     var filled: Boolean = false,
     var length: Int = 0,
