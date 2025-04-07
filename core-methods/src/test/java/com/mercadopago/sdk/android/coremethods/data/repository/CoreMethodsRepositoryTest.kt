@@ -125,14 +125,13 @@ internal class CoreMethodsRepositoryTest {
     fun `test getCardIssuers returns Error`() =
         runBlocking {
             val params = GetCardIssuersParams()
-            val errorResponse = ResultError(code = "400", message = "Bad Request")
+            val errorResponse = ResultError.Request(code = 400, message = "Bad Request")
             val response: Result<List<CardIssuer>, ResultError> = Result.Error(errorResponse)
             coEvery { dataSource.getCardIssuers(any()) } returns response
 
             val result = repository.getCardIssuers(params)
 
             assertTrue(result is Result.Error)
-            assertEquals("Bad Request", (result as Result.Error).error.message)
-            assertEquals("400", result.error.code)
+            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
         }
 }

@@ -138,7 +138,14 @@ internal class PaymentScreenViewModel(
                 }
 
                 is Result.Error -> {
-                    print(result.error.message)
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
                 }
             }
         }
