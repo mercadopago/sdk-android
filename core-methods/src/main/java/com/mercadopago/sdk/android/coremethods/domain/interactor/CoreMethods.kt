@@ -272,11 +272,23 @@ class CoreMethods internal constructor(
 
         when (result) {
             is Result.Error -> {
-                MPAnalytics.getInstance().trackMetric(
-                    metricCardIssuersCallError(
-                        error = result.error.message,
-                    ),
-                )
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricCardIssuersCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricCardIssuersCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
             }
 
             is Result.Success -> {

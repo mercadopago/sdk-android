@@ -1,10 +1,10 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
-import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.mapper.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
+import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
@@ -40,21 +40,11 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
-    @KoverIgnore("mocked card issuers")
-    @Suppress("ReturnCount")
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
-        val result = service.getCardIssuers(request.productId, request.bin, request.paymentMethodId)
-        return when (result.isSuccessful) {
-            true -> {
-                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
-                Result.Success(body.map { it.toModel() })
-            }
-
-            false -> {
-                Result.Error(
-                    error = result.errorBody().toResultError()
-                )
-            }
-        }
+        return service.getCardIssuers(
+            productId = request.productId,
+            bin = request.bin,
+            paymentMethodId = request.paymentMethodId
+        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 }
