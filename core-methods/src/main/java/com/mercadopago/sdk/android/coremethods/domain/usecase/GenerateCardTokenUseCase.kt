@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 
 internal const val EXPIRATION_YEAR_START = "20"
 internal const val EXPIRATION_YEAR_MIN_LENGTH = 2
+internal const val SECURITY_CODE_MIN_LENGTH = 3
 
 @Suppress("ReturnCount")
 internal class GenerateCardTokenUseCase(
@@ -19,19 +20,27 @@ internal class GenerateCardTokenUseCase(
         securityCode: String,
         expirationDate: String?,
     ): Result<CardToken, ResultError> {
-        val expirationDateIsRequired = expirationDate != null
+        val expirationDateIsNotNull = expirationDate != null
 
         if (cardNumber.isEmpty()) {
             return Result.Error(ResultError.Validation("card id number cannot be empty"))
         }
 
-        if (expirationDateIsRequired) {
+        if (securityCode.isEmpty()) {
+            return Result.Error(ResultError.Validation("security code cannot be empty"))
+        }
+
+        if (securityCode.length < SECURITY_CODE_MIN_LENGTH) {
+            return Result.Error(ResultError.Validation("security code length cannot be smaller than tree"))
+        }
+
+        if (expirationDateIsNotNull) {
             if (expirationDate!!.isEmpty()) {
                 return Result.Error(ResultError.Validation("expiration date cannot be empty"))
             }
 
             if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
-                return Result.Error(ResultError.Validation("expiration date cannot be smaller than two"))
+                return Result.Error(ResultError.Validation("expiration date length cannot be smaller than two"))
             }
         }
 
@@ -41,8 +50,8 @@ internal class GenerateCardTokenUseCase(
         return repository.generateCardToken(
             GenerateCardTokenParams(
                 cardNumber = cardNumber,
-                expirationMonth = expirationMonth,
-                expirationYear = expirationYear,
+                expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
+                expirationYear = if (expirationDateIsNotNull) expirationYear else null,
                 securityCode = securityCode,
             ),
         )
