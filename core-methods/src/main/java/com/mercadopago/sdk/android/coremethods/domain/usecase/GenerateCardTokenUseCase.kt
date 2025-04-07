@@ -17,7 +17,7 @@ internal class GenerateCardTokenUseCase(
 ) {
     suspend operator fun invoke(
         cardNumber: String,
-        securityCode: String,
+        securityCode: String?,
         expirationDate: String?,
     ): Result<CardToken, ResultError> {
         val expirationDateIsNotNull = expirationDate != null
@@ -26,11 +26,7 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("card id number cannot be empty"))
         }
 
-        if (securityCode.isEmpty()) {
-            return Result.Error(ResultError.Validation("security code cannot be empty"))
-        }
-
-        if (securityCode.length < SECURITY_CODE_MIN_LENGTH) {
+        if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
             return Result.Error(ResultError.Validation("security code length cannot be smaller than tree"))
         }
 

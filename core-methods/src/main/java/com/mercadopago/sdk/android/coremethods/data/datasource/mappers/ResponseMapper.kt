@@ -40,8 +40,7 @@ internal fun <T, R> Result<T, ResultError>.mapSuccess(
     mapper: T.() -> R,
 ): Result<R, ResultError> = when (this) {
     is Result.Success -> {
-        val test: R = mapper(data)
-        Result.Success(test)
+        Result.Success(mapper(data))
     }
 
     is Result.Error -> Result.Error(error)
