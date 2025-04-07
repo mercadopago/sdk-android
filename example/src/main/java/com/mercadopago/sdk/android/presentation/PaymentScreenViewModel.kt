@@ -126,6 +126,24 @@ internal class PaymentScreenViewModel(
         }
     }
 
+    fun getCardIssuers(bin: Int, paymentMethodId: String) {
+        viewModelScope.launch {
+            val result = coreMethods.getCardIssuers(bin, paymentMethodId)
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+                        cardIssuers = result.data
+                    )
+                }
+
+                is Result.Error -> {
+                    print(result.error.message)
+                }
+            }
+        }
+    }
+
     fun onExpirationDateEvent(event: ExpirationDateTextFieldEvent) {
         when (event) {
             is ExpirationDateTextFieldEvent.OnInputFilled -> {

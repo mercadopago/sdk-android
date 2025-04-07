@@ -1,7 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
+import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
+import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
@@ -14,4 +16,6 @@ internal interface CoreMethodsRemoteDataSource {
     suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError>
 
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError>
+
+    suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError>
 }
