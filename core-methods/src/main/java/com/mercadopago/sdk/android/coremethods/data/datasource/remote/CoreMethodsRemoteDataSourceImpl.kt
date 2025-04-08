@@ -1,7 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
-import com.mercadopago.sdk.android.core.utils.KoverIgnore
-import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toResultError
+import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
+import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
+import com.mercadopago.sdk.android.coremethods.data.datasource.remote.mapper.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
@@ -17,81 +18,33 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CoreMethodsRemoteDataSourceImpl(
     private val service: CoreMethodsService,
 ) : CoreMethodsRemoteDataSource {
-    @Suppress("ReturnCount")
-    override suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError> {
-        val result = service.createToken(request)
-        return when (result.isSuccessful) {
-            true -> {
-                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
-                val id =
-                    body.id ?: return Result.Error(ResultError(message = "no token identification"))
-                Result.Success(CardToken(id))
-            }
 
-            false -> {
-                Result.Error(
-                    error = result.errorBody().toResultError(),
-                )
-            }
+    override suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError> {
+        return service.createToken(request).toInternalResponse().mapSuccess {
+            this.toModel()
         }
     }
 
-    @KoverIgnore("mocked installment")
-    @Suppress("ReturnCount")
     override suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError> {
-        val result = service.getInstallments(
+        return service.getInstallments(
             productId = request.productId,
             bin = request.bin,
             processingMode = request.processingMode,
             amount = request.amount
-        )
-        return when (result.isSuccessful) {
-            true -> {
-                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
-                Result.Success(body.toModel())
-            }
-
-            false -> {
-                Result.Error(
-                    error = result.errorBody().toResultError()
-                )
-            }
-        }
+        ).toInternalResponse().mapSuccess { this.toModel() }
     }
 
-    @KoverIgnore("mocked identification types")
-    @Suppress("ReturnCount")
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
-        val result = service.getIdentificationTypes()
-        return when (result.isSuccessful) {
-            true -> {
-                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
-                Result.Success(body.map { it.toModel() })
-            }
-
-            false -> {
-                Result.Error(
-                    error = result.errorBody().toResultError()
-                )
-            }
+        return service.getIdentificationTypes().toInternalResponse().mapSuccess {
+            this.map { it.toModel() }
         }
     }
 
-    @KoverIgnore("mocked card issuers")
-    @Suppress("ReturnCount")
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
-        val result = service.getCardIssuers(request.productId, request.bin, request.paymentMethodId)
-        return when (result.isSuccessful) {
-            true -> {
-                val body = result.body() ?: return Result.Error(ResultError(message = "empty body"))
-                Result.Success(body.map { it.toModel() })
-            }
-
-            false -> {
-                Result.Error(
-                    error = result.errorBody().toResultError()
-                )
-            }
-        }
+        return service.getCardIssuers(
+            productId = request.productId,
+            bin = request.bin,
+            paymentMethodId = request.paymentMethodId
+        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 }

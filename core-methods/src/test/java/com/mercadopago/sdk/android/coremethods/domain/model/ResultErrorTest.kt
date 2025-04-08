@@ -6,18 +6,18 @@ import org.junit.Test
 internal class ResultErrorTest {
     @Test
     fun `test ResultError creation with default values`() {
-        val resultError = ResultError()
+        val resultError = ResultError.Request(code = 100, message = "error")
 
-        assertEquals("", resultError.message)
-        assertEquals("", resultError.code)
+        assertEquals("error", resultError.message)
+        assertEquals(100, resultError.code)
     }
 
     @Test
     fun `test ResultError creation with specified values`() {
         val customMessage = "An error occurred"
-        val customCode = "404"
+        val customCode = 404
 
-        val resultError = ResultError(message = customMessage, code = customCode)
+        val resultError = ResultError.Request(message = customMessage, code = customCode)
 
         assertEquals(customMessage, resultError.message)
         assertEquals(customCode, resultError.code)
@@ -26,10 +26,10 @@ internal class ResultErrorTest {
     @Test
     fun `test ResultError equality`() {
         val message = "An error occurred"
-        val code = "400"
+        val code = 400
 
-        val resultError1 = ResultError(message = message, code = code)
-        val resultError2 = ResultError(message = message, code = code)
+        val resultError1 = ResultError.Request(message = message, code = code)
+        val resultError2 = ResultError.Request(message = message, code = code)
 
         // Verifica se as duas instâncias são consideradas iguais
         assertEquals(resultError1, resultError2)
