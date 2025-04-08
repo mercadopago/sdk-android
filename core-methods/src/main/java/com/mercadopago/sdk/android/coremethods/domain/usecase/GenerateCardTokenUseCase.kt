@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
@@ -41,7 +42,8 @@ internal class GenerateCardTokenUseCase(
         }
 
         val expirationMonth = expirationDate?.ifEmpty { "0" }?.take(INT_TWO)?.toInt()
-        val expirationYear = (EXPIRATION_YEAR_START + expirationDate?.ifEmpty { "0" }?.takeLast(INT_TWO)).toInt()
+        val expirationYear =
+            (EXPIRATION_YEAR_START + expirationDate?.ifEmpty { "0" }?.takeLast(INT_TWO)).toInt()
 
         return repository.generateCardToken(
             GenerateCardTokenParams(
@@ -49,6 +51,7 @@ internal class GenerateCardTokenUseCase(
                 expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
                 expirationYear = if (expirationDateIsNotNull) expirationYear else null,
                 securityCode = securityCode,
+                device = DeviceSDK.getInstance()?.infoAsJsonString,
             ),
         )
     }

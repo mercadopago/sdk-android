@@ -19,6 +19,8 @@ internal data class CardTokenBodyRequest(
     val expirationYear: Int? = null,
     @SerializedName("cardholder")
     val buyerIdentification: BuyerIdentificationBodyRequest? = null,
+    @SerializedName("device")
+    val device: String? = null
 )
 
 internal data class BuyerIdentificationBodyRequest(

@@ -1,3 +1,6 @@
+import java.net.URI
+import java.net.URL
+
 pluginManagement {
     repositories {
         google {
@@ -8,6 +11,9 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven {
+            url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
+        }
         gradlePluginPortal()
     }
 }
@@ -17,6 +23,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
+        }
     }
 }
 
