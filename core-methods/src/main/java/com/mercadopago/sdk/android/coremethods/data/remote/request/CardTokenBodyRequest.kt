@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.request
 
 import com.google.gson.annotations.SerializedName
+import com.mercadolibre.android.device.sdk.domain.Device
 
 internal data class CardTokenBodyRequest(
     @SerializedName("cardId")
@@ -20,7 +21,7 @@ internal data class CardTokenBodyRequest(
     @SerializedName("cardholder")
     val buyerIdentification: BuyerIdentificationBodyRequest? = null,
     @SerializedName("device")
-    val device: String? = null
+    val device: Device? = null
 )
 
 internal data class BuyerIdentificationBodyRequest(

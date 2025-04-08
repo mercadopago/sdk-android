@@ -51,7 +51,7 @@ internal class GenerateCardTokenUseCase(
                 expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
                 expirationYear = if (expirationDateIsNotNull) expirationYear else null,
                 securityCode = securityCode,
-                device = DeviceSDK.getInstance()?.infoAsJsonString,
+                device = DeviceSDK.getInstance()?.info,
             ),
         )
     }
