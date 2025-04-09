@@ -142,6 +142,33 @@ internal class PaymentScreenViewModel(
                         is ResultError.Request -> {
                             print((result.error as ResultError.Request).message)
                         }
+
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getPaymentMethods(bin: Int? = null) {
+        viewModelScope.launch {
+            val result = coreMethods.getPaymentMethods(bin = bin)
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+
+                    )
+                }
+
+                is Result.Error -> {
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+
                         is ResultError.Validation -> {
                             print((result.error as ResultError.Validation).message)
                         }

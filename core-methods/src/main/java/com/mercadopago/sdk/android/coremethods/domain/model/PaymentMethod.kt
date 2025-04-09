@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.model
 
 data class PaymentMethod(
-    val financialInstitution: FinancialInstitutionModel? = null,
+    val financialInstitution: List<FinancialInstitutionModel>? = null,
     val payerCost: List<PayerCost>? = null,
     val issuer: Issuer? = null,
     val totalFinancialCost: String? = null,
@@ -20,7 +20,7 @@ data class PaymentMethod(
     val labels: List<String>? = null,
     val siteId: String? = null,
     val processingMode: String? = null,
-    val additionalInfoNeeded: String? = null,
+    val additionalInfoNeeded: List<String>? = null,
     val status: String? = null
 )
 

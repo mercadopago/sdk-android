@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 internal data class PaymentMethodResponse(
     @SerializedName("financial_institutions")
-    val financialInstitution: FinancialInstitutionResponse? = null,
+    val financialInstitution: List<FinancialInstitutionResponse>? = null,
     @SerializedName("payerCost")
     val payerCost: List<PayerCostResponse>? = null,
     @SerializedName("issuer")
@@ -42,7 +42,7 @@ internal data class PaymentMethodResponse(
     @SerializedName("processing_mode")
     val processingMode: String? = null,
     @SerializedName("additional_info_needed")
-    val additionalInfoNeeded: String? = null,
+    val additionalInfoNeeded: List<String>? = null,
     @SerializedName("status")
     val status: String? = null
 )
@@ -63,7 +63,7 @@ internal data class CardResponse(
     val validation: String? = null,
     @SerializedName("security_code")
     val securityCode: SecurityCodeResponse? = null,
-    )
+)
 
 internal data class LengthResponse(
     @SerializedName("min")

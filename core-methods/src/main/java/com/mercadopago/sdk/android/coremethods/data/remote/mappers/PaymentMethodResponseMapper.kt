@@ -13,7 +13,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.SecurityCodeModel
 
 internal fun PaymentMethodResponse.toModel() =
     PaymentMethod(
-        financialInstitution = this.financialInstitution?.toModel(),
+        financialInstitution = this.financialInstitution?.map { it.toModel() },
         payerCost = this.payerCost?.map { it.toModel() },
         issuer = this.issuer?.toModel(),
         totalFinancialCost = this.totalFinancialCost,

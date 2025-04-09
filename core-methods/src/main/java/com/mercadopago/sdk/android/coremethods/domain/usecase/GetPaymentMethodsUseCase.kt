@@ -11,7 +11,7 @@ internal class GetPaymentMethodsUseCase(
 ) {
 
     suspend operator fun invoke(
-        bin: Int,
+        bin: Int?,
     ): Result<List<PaymentMethod>, ResultError> {
         return repository.getPaymentMethods(
             GetPaymentMethodsParams(
