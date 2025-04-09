@@ -9,17 +9,21 @@ import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCal
 import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallSuccess
+import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallSuccess
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -294,6 +298,44 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricCardIssuersCallSuccess(),
+                )
+            }
+        }
+
+        return result
+    }
+
+    suspend fun getPaymentMethods(
+        bin: Int,
+    ): Result<List<PaymentMethod>, ResultError> {
+        val result = koin.get<GetPaymentMethodsUseCase>().invoke(
+            bin = bin,
+        )
+
+        when (result) {
+            is Result.Error -> {
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricPaymentMethodCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricPaymentMethodCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricPaymentMethodCallSuccess(),
                 )
             }
         }

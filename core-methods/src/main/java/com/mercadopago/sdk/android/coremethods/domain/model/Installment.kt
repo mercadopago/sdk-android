@@ -28,6 +28,7 @@ data class Installment(
 data class Issuer(
     val id: String? = null,
     val thumbnail: String? = null,
+    val default: Boolean? = null,
 )
 
 /**

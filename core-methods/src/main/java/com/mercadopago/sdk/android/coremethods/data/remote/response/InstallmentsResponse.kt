@@ -24,6 +24,8 @@ internal data class IssuerResponse(
     val id: String? = null,
     @SerializedName("thumbnail")
     val thumbnail: String? = null,
+    @SerializedName("default")
+    val default: Boolean? = false
 )
 
 internal data class PayerCostResponse(
