@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android
 
 import android.app.Application
-import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
@@ -14,7 +13,6 @@ internal class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DeviceSDK.getInstance().execute(this)
         MercadoPagoSDK.initialize(
             context = this,
             publicKey = BuildConfig.PUBLIC_KEY,

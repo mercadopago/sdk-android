@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.okhttp.mockWebServer)
     implementation(libs.androidx.datastore)
+    implementation(libs.device.sdk)
+
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
