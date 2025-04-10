@@ -17,13 +17,14 @@ internal data class SecurityCodeState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
+    val secureCodeLength: Int = 3
 )
 
 internal data class ExpirationDateState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
-    val valid: Boolean = false
+    val valid: Boolean = true
 )
 
 internal data class CardNumberTextFieldState(

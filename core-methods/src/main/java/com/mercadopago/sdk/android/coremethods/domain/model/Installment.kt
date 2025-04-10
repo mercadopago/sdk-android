@@ -47,7 +47,7 @@ data class Issuer(
  */
 data class PayerCost(
     val instalments: Int? = null,
-    val installmentAmount: Int? = null,
+    val installmentAmount: Float? = null,
     val instalmentsRate: Float? = null,
     val installmentRateCollector: List<String>? = null,
     val totalAmount: Float? = null,

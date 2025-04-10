@@ -10,7 +10,7 @@ internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
 internal val EMPTY_BODY_ERROR = Result.Error(
     ResultError.Request(
-        code = 200,
+        code = "200",
         message = "empty body"
     )
 )
@@ -23,7 +23,7 @@ internal fun ResponseBody?.toResultError(): ResultError.Request {
         gson.fromJson(it, ResultError.Request::class.java)
     } ?: ResultError.Request(
         message = UNKNOWN_ERROR,
-        code = -1,
+        code = UNKNOWN_ERROR,
     )
 }
 

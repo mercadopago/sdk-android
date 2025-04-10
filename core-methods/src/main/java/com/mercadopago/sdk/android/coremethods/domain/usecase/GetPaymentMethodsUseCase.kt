@@ -11,12 +11,12 @@ internal class GetPaymentMethodsUseCase(
 ) {
 
     suspend operator fun invoke(
-        bin: Int?,
+        bin: String,
     ): Result<List<PaymentMethod>, ResultError> {
         return repository.getPaymentMethods(
             GetPaymentMethodsParams(
                 productId = "",
-                bin = bin
+                bin = bin.toIntOrNull()
             ),
         )
     }

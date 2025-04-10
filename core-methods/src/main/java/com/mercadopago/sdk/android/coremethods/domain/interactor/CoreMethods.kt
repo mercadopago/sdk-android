@@ -174,7 +174,7 @@ class CoreMethods internal constructor(
         bin: String,
         amount: Long,
         processingMode: ProcessingMode = ProcessingMode.Aggregator,
-    ): Result<Installment, ResultError> {
+    ): Result<List<Installment>, ResultError> {
         val result = koin.get<GetInstallmentsUseCase>().invoke(
             bin = bin,
             amount = amount,
@@ -205,8 +205,8 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
-                        paymentType = result.data.paymentTypeId.orEmpty(),
-                        merchantAccountId = result.data.merchantAccountId.orEmpty(),
+                        paymentType = result.data[0].paymentTypeId.orEmpty(),
+                        merchantAccountId = result.data[0].merchantAccountId.orEmpty(),
                     ),
                 )
             }
@@ -305,8 +305,16 @@ class CoreMethods internal constructor(
         return result
     }
 
+    /**
+     * Get Payment Methods
+     *
+     * This return a [Result.Success] of [PaymentMethod] list data model or a [Result.Error] of [ResultError]
+     * This is a suspend function and should be called only from a coroutine or another suspend function
+     *
+     * @param bin: the credit card bin
+     */
     suspend fun getPaymentMethods(
-        bin: Int?,
+        bin: String,
     ): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,

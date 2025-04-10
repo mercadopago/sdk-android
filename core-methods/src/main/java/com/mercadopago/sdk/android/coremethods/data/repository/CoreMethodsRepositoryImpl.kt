@@ -23,7 +23,7 @@ internal class CoreMethodsRepositoryImpl(
         return dataSource.generateCardToken(params.toRequest())
     }
 
-    override suspend fun getInstallment(params: GetInstallmentParams): Result<Installment, ResultError> {
+    override suspend fun getInstallment(params: GetInstallmentParams): Result<List<Installment>, ResultError> {
         return dataSource.getInstallments(params.toRequest())
     }
 

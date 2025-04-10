@@ -70,7 +70,7 @@ internal class CoreMethodsTest {
         val expirationDateState = PCIFieldState()
         val securityCodeState = PCIFieldState()
 
-        val expectedError = ResultError.Request(code = 400, message = "Invalid parameters")
+        val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
         val expectedResult = Result.Error(expectedError)
 
         coEvery {
@@ -87,7 +87,7 @@ internal class CoreMethodsTest {
         val bin = "123456"
         val amount = 1000L
         val expectedInstallment =
-            Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id")
+            listOf(Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id"))
         val expectedResult = Result.Success(expectedInstallment)
 
         coEvery {
@@ -102,7 +102,7 @@ internal class CoreMethodsTest {
     fun `getInstallments should return error and track error metric`() = runTest {
         val bin = "123456"
         val amount = 1000L
-        val expectedError = ResultError.Request(code = 404, message = "Installments not found")
+        val expectedError = ResultError.Request(code = "404", message = "Installments not found")
         val expectedResult = Result.Error(expectedError)
 
         coEvery {
@@ -141,7 +141,7 @@ internal class CoreMethodsTest {
 
     @Test
     fun `getIdentificationTypes should track error metric when call fails`() = runTest {
-        val expectedError = ResultError.Request(code = 404, message = "Not Found")
+        val expectedError = ResultError.Request(code = "404", message = "Not Found")
         val expectedResult = Result.Error(expectedError)
 
         coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
@@ -171,7 +171,7 @@ internal class CoreMethodsTest {
         val bin = 12345
         val paymentMethodId = "credit"
 
-        val expectedError = ResultError.Request(code = 404, message = "CardIssuer not found")
+        val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
         val expectedResult = Result.Error(expectedError)
 
         coEvery {

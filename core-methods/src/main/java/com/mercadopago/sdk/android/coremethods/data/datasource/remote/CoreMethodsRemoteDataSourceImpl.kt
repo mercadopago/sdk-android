@@ -27,13 +27,12 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError> {
+    override suspend fun getInstallments(request: InstallmentsRequest): Result<List<Installment>, ResultError> {
         return service.getInstallments(
-            productId = request.productId,
             bin = request.bin,
             processingMode = request.processingMode,
             amount = request.amount
-        ).toInternalResponse().mapSuccess { this.toModel() }
+        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
@@ -44,7 +43,6 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
         return service.getCardIssuers(
-            productId = request.productId,
             bin = request.bin,
             paymentMethodId = request.paymentMethodId
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
@@ -52,7 +50,6 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError> {
         return service.getPaymentMethods(
-            productId = request.productId,
             bin = request.bin
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }

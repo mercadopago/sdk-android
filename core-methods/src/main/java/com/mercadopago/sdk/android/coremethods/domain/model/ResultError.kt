@@ -12,7 +12,7 @@ sealed class ResultError {
      */
     data class Request(
         val message: String,
-        val code: Int,
+        val code: String,
     ) : ResultError()
 
     /**

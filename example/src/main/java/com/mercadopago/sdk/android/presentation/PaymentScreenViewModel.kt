@@ -77,7 +77,7 @@ internal class PaymentScreenViewModel(
                     _viewState.value = _viewState.value.copy(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
-                            installments = result.data.payerCost?.toInstallmentModel().orEmpty(),
+                            installments = result.data[0].payerCost?.toInstallmentModel().orEmpty(),
                         )
                     )
                 }
@@ -133,7 +133,8 @@ internal class PaymentScreenViewModel(
             when (result) {
                 is Result.Success -> {
                     _viewState.value = _viewState.value.copy(
-                        cardIssuers = result.data
+                        cardIssuers = result.data,
+                        cardNumberState = _viewState.value.cardNumberState.copy(image = result.data[0].thumbnail)
                     )
                 }
 
@@ -152,14 +153,20 @@ internal class PaymentScreenViewModel(
         }
     }
 
-    fun getPaymentMethods(bin: Int? = null) {
+    fun getPaymentMethods(bin: String) {
         viewModelScope.launch {
             val result = coreMethods.getPaymentMethods(bin = bin)
 
             when (result) {
                 is Result.Success -> {
                     _viewState.value = _viewState.value.copy(
-
+                        secureCodeState = _viewState.value.secureCodeState.copy(
+                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 3
+                        )
+                    )
+                    getCardIssuers(
+                        bin = result.data[0].card?.bin!!,
+                        paymentMethodId = result.data[0].id!!
                     )
                 }
 
@@ -191,7 +198,7 @@ internal class PaymentScreenViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        valid = !event.isValid
+                        valid = event.isValid
                     )
                 )
             }
@@ -277,15 +284,24 @@ internal class PaymentScreenViewModel(
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
+                if ((event.cardBin?.length ?: 0) < 6) {
+                    _viewState.value =
+                        _viewState.value.copy(
+                            cardNumberState = _viewState.value.cardNumberState.copy(image = null),
+                            installmentsState = _viewState.value.installmentsState.copy(showList = false)
+                        )
+                } else {
+                    getInstallment(
+                        bin = event.cardBin.orEmpty(),
+                        amount = 1000,
+                    )
+                    getPaymentMethods(bin = event.cardBin.orEmpty())
+                }
+
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         cardBin = event.cardBin
                     )
-                )
-
-                getInstallment(
-                    bin = event.cardBin.orEmpty(),
-                    amount = 1000,
                 )
             }
         }

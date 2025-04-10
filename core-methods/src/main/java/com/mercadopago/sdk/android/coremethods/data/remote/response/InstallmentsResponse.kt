@@ -32,7 +32,7 @@ internal data class PayerCostResponse(
     @SerializedName("installments")
     val instalments: Int? = null,
     @SerializedName("installment_amount")
-    val installmentAmount: Int? = null,
+    val installmentAmount: Float? = null,
     @SerializedName("installment_rate")
     val instalmentsRate: Float? = null,
     @SerializedName("installment_rate_collector")
