@@ -13,8 +13,6 @@ internal class IsExpirationDateValidUseCase {
         expirationDate: String,
         maxLength: Int,
     ): Boolean {
-        if (expirationDate.isEmpty()) return false
-
         return when (expirationDate.length) {
             maxLength -> {
                 val firstSegment = expirationDate.take(INT_TWO).toInt()
@@ -22,14 +20,12 @@ internal class IsExpirationDateValidUseCase {
                 val year = Calendar.getInstance().get(Calendar.YEAR).takeLast(INT_TWO)
                 val month = Calendar.getInstance().get(Calendar.MONTH) + INT_ONE
 
-                when (lastSegmentDate >= year) {
-                    true -> {
-                        firstSegment.between(INT_ONE, MAX_MONTH) >= month.between(INT_ONE, MAX_MONTH)
-                    }
-
-                    else -> {
-                        false
-                    }
+                return if (lastSegmentDate > year) {
+                    true
+                } else if (lastSegmentDate == year) {
+                    firstSegment.between(INT_ONE, MAX_MONTH) >= month.between(INT_ONE, MAX_MONTH)
+                } else {
+                    false
                 }
             }
 

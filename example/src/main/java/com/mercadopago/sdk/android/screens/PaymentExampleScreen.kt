@@ -137,6 +137,7 @@ internal fun PaymentExampleScreenContent(
                 )
                 Spacer(Modifier.size(16.dp))
                 Button(
+                    enabled = viewState.formIsValid,
                     shape = MaterialTheme.shapes.small,
                     onClick = {
                         PaymentScreenViewModel().generateToken(
