@@ -24,6 +24,7 @@ data class Installment(
  * Issuer contains details related to the issuer of the payment method.
  * @param id: The ID of the issuer.
  * @param thumbnail: The thumbnail of the issuer.
+ * @param default: it's the default issuer
  */
 data class Issuer(
     val id: String? = null,

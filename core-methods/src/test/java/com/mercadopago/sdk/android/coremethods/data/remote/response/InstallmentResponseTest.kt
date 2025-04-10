@@ -23,7 +23,7 @@ internal class InstallmentResponseTest {
         val payerCostList = listOf(
             PayerCostResponse(
                 instalments = 3,
-                installmentAmount = 1000,
+                installmentAmount = 1000f,
                 instalmentsRate = 1.5f,
                 installmentRateCollector = listOf("Collective 1"),
                 totalAmount = 3000f,

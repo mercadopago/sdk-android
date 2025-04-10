@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+internal const val CARD_NUMBER_BIN_LENGTH = 6
+
+@Suppress("TooManyFunctions")
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
@@ -284,7 +287,7 @@ internal class PaymentScreenViewModel(
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
-                if ((event.cardBin?.length ?: 0) < 6) {
+                if ((event.cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
                     _viewState.value =
                         _viewState.value.copy(
                             cardNumberState = _viewState.value.cardNumberState.copy(image = null),

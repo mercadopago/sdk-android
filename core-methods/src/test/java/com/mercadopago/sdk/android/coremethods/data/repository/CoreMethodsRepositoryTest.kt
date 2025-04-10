@@ -55,7 +55,7 @@ internal class CoreMethodsRepositoryTest {
         runBlocking {
             val installmentParams = GetInstallmentParams(bin = 12345678)
 
-            val response = Result.Success(listOf(Installment(paymentMethodId = "credit")) )
+            val response = Result.Success(listOf(Installment(paymentMethodId = "credit")))
             coEvery { dataSource.getInstallments(any()) } returns response
 
             val result = repository.getInstallment(installmentParams)
