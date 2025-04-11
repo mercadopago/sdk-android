@@ -6,11 +6,13 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import io.mockk.coEvery
@@ -78,6 +80,41 @@ internal class CoreMethodsTest {
         } returns expectedResult
         val result =
             coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `generateCardToken by cardId should return success and track success metric`() = runTest {
+        val expirationDateState = PCIFieldState()
+        val securityCodeState = PCIFieldState()
+
+        val expectedCardToken = CardToken("token_12345")
+
+        val expectedResult = Result.Success(expectedCardToken)
+
+        coEvery {
+            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+        } returns expectedResult
+        val result =
+            coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `generateCardToken by cardId should return error and track error metric`() = runTest {
+        val expirationDateState = PCIFieldState()
+        val securityCodeState = PCIFieldState()
+
+        val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
+        val expectedResult = Result.Error(expectedError)
+
+        coEvery {
+            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+        } returns expectedResult
+        val result =
+            coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
 
         assertEquals(expectedResult, result)
     }
@@ -178,6 +215,36 @@ internal class CoreMethodsTest {
             koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
         } returns expectedResult
         val result = coreMethods.getCardIssuers(bin, paymentMethodId)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `getPaymentMethods should return success and track success metric`() = runTest {
+        val bin = "12345"
+
+        val expectedPaymentMethod = PaymentMethod(status = "active", thumbnail = "www")
+        val expectedResult = Result.Success(listOf(expectedPaymentMethod))
+
+        coEvery {
+            koin.get<GetPaymentMethodsUseCase>().invoke(bin)
+        } returns expectedResult
+        val result = coreMethods.getPaymentMethods(bin)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `getPaymentMethods should return error and track error metric`() = runTest {
+        val bin = "12345"
+
+        val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
+        val expectedResult = Result.Error(expectedError)
+
+        coEvery {
+            koin.get<GetPaymentMethodsUseCase>().invoke(bin)
+        } returns expectedResult
+        val result = coreMethods.getPaymentMethods(bin)
 
         assertEquals(expectedResult, result)
     }

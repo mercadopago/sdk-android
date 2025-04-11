@@ -31,7 +31,33 @@ internal class ResultErrorTest {
         val resultError1 = ResultError.Request(message = message, code = code)
         val resultError2 = ResultError.Request(message = message, code = code)
 
-        // Verifica se as duas instâncias são consideradas iguais
         assertEquals(resultError1, resultError2)
+    }
+
+    @Test
+    fun `Validation should hold the correct message`() {
+        val expectedMessage = "This field is required"
+        val validationError = ResultError.Validation(message = expectedMessage)
+
+        val actualMessage = validationError.message
+
+        assertEquals(expectedMessage, actualMessage)
+    }
+
+    @Test
+    fun `Validation should be equal to another instance with the same message`() {
+        val message = "This field is required"
+        val validationError1 = ResultError.Validation(message = message)
+        val validationError2 = ResultError.Validation(message = message)
+
+        assertEquals(validationError1, validationError2)
+    }
+
+    @Test
+    fun `Validation should not be equal to another result class`() {
+        val validationError = ResultError.Validation(message = "Error")
+        val differentError = ResultError.Validation(message = "Different Error")
+
+        assert(validationError != differentError)
     }
 }
