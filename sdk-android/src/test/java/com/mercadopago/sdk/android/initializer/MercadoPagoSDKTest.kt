@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.initializer
 import android.content.Context
 import android.util.Log
 import app.cash.turbine.test
+import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.domain.model.CountryCode
@@ -42,6 +43,7 @@ internal class MercadoPagoSDKTest {
     private val getSiteIdUseCase = mockk<GetSiteIdUseCase>(relaxed = true)
     private val setSiteIdUseCase = mockk<SetSiteIdUseCase>(relaxed = true)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
+    private val deviceSDK = mockk<DeviceSDK>(relaxed = true)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -55,6 +57,7 @@ internal class MercadoPagoSDKTest {
         mockkObject(SdkCoroutineProvider)
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
+        mockkStatic(DeviceSDK::class)
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
         every { Log.d(any(), any(), any()) } returns 0
@@ -76,6 +79,9 @@ internal class MercadoPagoSDKTest {
         every {
             MPAnalytics.getInstance()
         } returns mpAnalytics
+        every {
+            DeviceSDK.getInstance()
+        } returns deviceSDK
     }
 
     @After

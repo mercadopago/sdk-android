@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.model.params
 
+import com.mercadolibre.android.device.sdk.domain.Device
+
 internal data class GenerateCardTokenParams(
     val cardId: String? = null,
     val esc: String? = null,
@@ -9,6 +11,7 @@ internal data class GenerateCardTokenParams(
     val expirationMonth: Int? = null,
     val expirationYear: Int? = null,
     val buyerIdentification: BuyerIdentification? = null,
+    val device: Device? = null
 )
 
 internal data class BuyerIdentification(
