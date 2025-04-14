@@ -205,8 +205,8 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
-                        paymentType = result.data[0].paymentTypeId.orEmpty(),
-                        merchantAccountId = result.data[0].merchantAccountId.orEmpty(),
+                        paymentType = result.data.getOrNull(0)?.paymentTypeId.orEmpty(),
+                        merchantAccountId = result.data.getOrNull(0)?.merchantAccountId.orEmpty(),
                     ),
                 )
             }
