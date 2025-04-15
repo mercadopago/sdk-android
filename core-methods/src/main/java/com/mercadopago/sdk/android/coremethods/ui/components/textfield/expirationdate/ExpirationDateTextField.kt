@@ -86,11 +86,22 @@ fun ExpirationDateTextField(
         onValueChange = { value ->
             val updatedValue = value.take(dateFormat.digits)
             val inputDigits = updatedValue.filter { it.isDigit() }
-            val isValid = isCardNumberValidUseCase(inputDigits, dateFormat.digits)
+            val isFilled = updatedValue.length == dateFormat.digits
+
+            if (isFilled) {
+                onEvent(
+                    ExpirationDateTextFieldEvent.IsValid(
+                        isCardNumberValidUseCase(
+                            inputDigits,
+                            dateFormat.digits
+                        )
+                    )
+                )
+            }
 
             onEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = updatedValue.length))
-            onEvent(ExpirationDateTextFieldEvent.OnInputFilled(isFilled = updatedValue.length == dateFormat.digits))
-            onEvent(ExpirationDateTextFieldEvent.IsValid(isValid))
+            onEvent(ExpirationDateTextFieldEvent.OnInputFilled(isFilled = isFilled))
+
             state.input = updatedValue
         },
         keyboardOptions = keyboardOptions.copy(keyboardType = KeyboardType.Number),

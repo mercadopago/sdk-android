@@ -130,7 +130,9 @@ internal fun IdentificationTypeSelectorList(
             state.identificationList.forEach { option ->
                 DropdownMenuItem(
                     text = {
-                        Text(text = option.name)
+                        option.name?.let {
+                            Text(text = it)
+                        }
                     },
                     onClick = {
                         expanded = false

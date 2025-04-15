@@ -7,11 +7,13 @@ import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
+import com.mercadopago.sdk.android.coremethods.data.remote.request.PaymentMethodsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -25,13 +27,12 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getInstallments(request: InstallmentsRequest): Result<Installment, ResultError> {
+    override suspend fun getInstallments(request: InstallmentsRequest): Result<List<Installment>, ResultError> {
         return service.getInstallments(
-            productId = request.productId,
             bin = request.bin,
             processingMode = request.processingMode,
             amount = request.amount
-        ).toInternalResponse().mapSuccess { this.toModel() }
+        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
@@ -42,9 +43,14 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
         return service.getCardIssuers(
-            productId = request.productId,
             bin = request.bin,
             paymentMethodId = request.paymentMethodId
+        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
+    }
+
+    override suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError> {
+        return service.getPaymentMethods(
+            bin = request.bin
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 }

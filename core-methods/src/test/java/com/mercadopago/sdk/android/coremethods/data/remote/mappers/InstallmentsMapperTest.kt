@@ -21,7 +21,7 @@ internal class InstallmentsMapperTest {
             payerCost = listOf(
                 PayerCostResponse(
                     instalments = 3,
-                    installmentAmount = 1000,
+                    installmentAmount = 1000f,
                     instalmentsRate = 1.5f,
                     installmentRateCollector = listOf("Collective 1"),
                     totalAmount = 3000f,
@@ -53,7 +53,7 @@ internal class InstallmentsMapperTest {
         assertEquals(1, model.payerCost?.size)
         val payerCostModel = model.payerCost?.first()
         assertEquals(3, payerCostModel?.instalments)
-        assertEquals(1000, payerCostModel?.installmentAmount)
+        assertEquals(1000f, payerCostModel?.installmentAmount)
         assertEquals(1.5f, payerCostModel?.instalmentsRate)
         assertEquals(listOf("Collective 1"), payerCostModel?.installmentRateCollector)
         assertEquals(3000f, payerCostModel?.totalAmount)
@@ -77,7 +77,7 @@ internal class InstallmentsMapperTest {
     fun `PayerCostResponse toModel should convert correctly`() {
         val payerCostResponse = PayerCostResponse(
             instalments = 3,
-            installmentAmount = 1000,
+            installmentAmount = 1000f,
             instalmentsRate = 2.0f,
             installmentRateCollector = listOf("Collector A"),
             totalAmount = 3000f,

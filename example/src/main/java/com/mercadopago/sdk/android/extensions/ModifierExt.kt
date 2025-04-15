@@ -9,11 +9,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun Modifier.addBorder(
     isFocused: Boolean,
-    isError: Boolean = false,
+    isValid: Boolean = true,
 ): Modifier {
     return border(
         width = if (isFocused) 2.dp else 1.dp,
-        color = if (isError) {
+        color = if (!isValid) {
             MaterialTheme.colorScheme.error
         } else if (isFocused) {
             MaterialTheme.colorScheme.primary

@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+internal const val CARD_NUMBER_BIN_LENGTH = 6
+
+@Suppress("TooManyFunctions")
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
@@ -77,7 +80,7 @@ internal class PaymentScreenViewModel(
                     _viewState.value = _viewState.value.copy(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
-                            installments = result.data.payerCost?.toInstallmentModel().orEmpty(),
+                            installments = result.data[0].payerCost?.toInstallmentModel().orEmpty(),
                         )
                     )
                 }
@@ -133,7 +136,8 @@ internal class PaymentScreenViewModel(
             when (result) {
                 is Result.Success -> {
                     _viewState.value = _viewState.value.copy(
-                        cardIssuers = result.data
+                        cardIssuers = result.data,
+                        cardNumberState = _viewState.value.cardNumberState.copy(image = result.data[0].thumbnail)
                     )
                 }
 
@@ -142,6 +146,39 @@ internal class PaymentScreenViewModel(
                         is ResultError.Request -> {
                             print((result.error as ResultError.Request).message)
                         }
+
+                        is ResultError.Validation -> {
+                            print((result.error as ResultError.Validation).message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getPaymentMethods(bin: String) {
+        viewModelScope.launch {
+            val result = coreMethods.getPaymentMethods(bin = bin)
+
+            when (result) {
+                is Result.Success -> {
+                    _viewState.value = _viewState.value.copy(
+                        secureCodeState = _viewState.value.secureCodeState.copy(
+                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 3
+                        )
+                    )
+                    getCardIssuers(
+                        bin = result.data[0].card?.bin!!,
+                        paymentMethodId = result.data[0].id!!
+                    )
+                }
+
+                is Result.Error -> {
+                    when (result.error) {
+                        is ResultError.Request -> {
+                            print((result.error as ResultError.Request).message)
+                        }
+
                         is ResultError.Validation -> {
                             print((result.error as ResultError.Validation).message)
                         }
@@ -164,9 +201,10 @@ internal class PaymentScreenViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        valid = !event.isValid
+                        valid = event.isValid
                     )
                 )
+                onFormChanged()
             }
 
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
@@ -211,6 +249,7 @@ internal class PaymentScreenViewModel(
                         filled = event.isFilled
                     )
                 )
+                onFormChanged()
             }
         }
     }
@@ -247,18 +286,28 @@ internal class PaymentScreenViewModel(
                         isValid = event.isValid
                     )
                 )
+                onFormChanged()
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
+                if ((event.cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
+                    _viewState.value =
+                        _viewState.value.copy(
+                            cardNumberState = _viewState.value.cardNumberState.copy(image = null),
+                            installmentsState = _viewState.value.installmentsState.copy(showList = false)
+                        )
+                } else {
+                    getInstallment(
+                        bin = event.cardBin.orEmpty(),
+                        amount = 1000,
+                    )
+                    getPaymentMethods(bin = event.cardBin.orEmpty())
+                }
+
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         cardBin = event.cardBin
                     )
-                )
-
-                getInstallment(
-                    bin = event.cardBin.orEmpty(),
-                    amount = 1000,
                 )
             }
         }
@@ -285,6 +334,15 @@ internal class PaymentScreenViewModel(
             identificationState = _viewState.value.identificationState.copy(
                 selectedIdentification = identificationType,
             )
+        )
+    }
+
+    fun onFormChanged() {
+        _viewState.value = _viewState.value.copy(
+            formIsValid = _viewState.value.secureCodeState.filled &&
+                _viewState.value.expirationDateState.valid &&
+                _viewState.value.identificationState.identificationValue.isNotEmpty() &&
+                _viewState.value.installmentsState.selectedInstallment != null
         )
     }
 }
