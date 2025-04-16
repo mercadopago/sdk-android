@@ -40,61 +40,62 @@ import kotlin.math.min
  * representation of the card number.
  *
  */
-class CardNumberTextFieldXML @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0
-) : AbstractComposeView(context, attrs, defStyle) {
+class CardNumberTextFieldXML
+    @JvmOverloads
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = 0,
+    ) : AbstractComposeView(context, attrs, defStyle) {
+        lateinit var state: PCIFieldState
 
-    lateinit var state: PCIFieldState
+        var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
+        var readOnly: Boolean = false
+        var textStyle: TextStyle = TextStyle.Default
+        var cursorBrush: Brush = SolidColor(Color.Unspecified)
+        var keyboardOption: KeyboardOptions = KeyboardOptions()
+        var keyboardActions: KeyboardActions = KeyboardActions()
+        var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
 
-    var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
-    var readOnly: Boolean = false
-    var textStyle: TextStyle = TextStyle.Default
-    var cursorBrush: Brush = SolidColor(Color.Unspecified)
-    var keyboardOption: KeyboardOptions = KeyboardOptions()
-    var keyboardActions: KeyboardActions = KeyboardActions()
-    var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
+        var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
+            set(value) {
+                field = min(max(value, 8), DEFAULT_CARD_NUMBER_MAX_LENGTH)
+            }
 
-    var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
-        set(value) {
-            field = min(max(value, 8), DEFAULT_CARD_NUMBER_MAX_LENGTH)
+        init {
+            context.theme.obtainStyledAttributes(attrs, R.styleable.MPCardNumberTextFieldXML, 0, 0)
+                .apply {
+                    try {
+                        maxLength = getInteger(
+                            R.styleable.MPCardNumberTextFieldXML_maxLength,
+                            DEFAULT_CARD_NUMBER_MAX_LENGTH,
+                        )
+                        readOnly = getBoolean(R.styleable.MPCardNumberTextFieldXML_readOnly, false)
+                        val cursorColor = getColor(
+                            R.styleable.MPCardNumberTextFieldXML_cursorColor,
+                            Color.Unspecified.toArgb(),
+                        )
+                        cursorBrush = SolidColor(Color(cursorColor))
+                    } finally {
+                        recycle()
+                    }
+                }
         }
 
-    init {
-        context.theme.obtainStyledAttributes(attrs, R.styleable.MPCardNumberTextFieldXML, 0, 0)
-            .apply {
-                try {
-                    maxLength = getInteger(
-                        R.styleable.MPCardNumberTextFieldXML_maxLength,
-                        DEFAULT_CARD_NUMBER_MAX_LENGTH
-                    )
-                    readOnly = getBoolean(R.styleable.MPCardNumberTextFieldXML_readOnly, false)
-                    val cursorColor = getColor(
-                        R.styleable.MPCardNumberTextFieldXML_cursorColor,
-                        Color.Unspecified.toArgb()
-                    )
-                    cursorBrush = SolidColor(Color(cursorColor))
-                } finally {
-                    recycle()
-                }
-            }
+        @Composable
+        override fun Content() {
+            state = rememberPCIFieldState()
+            CardNumberTextField(
+                state = state,
+                onEvent = onEvent,
+                maxLength = maxLength,
+                enabled = isEnabled,
+                readOnly = readOnly,
+                textStyle = textStyle,
+                keyboardOptions = keyboardOption,
+                keyboardActions = keyboardActions,
+                cursorBrush = cursorBrush,
+                visualTransformation = visualTransformation,
+            )
+        }
     }
-
-    @Composable
-    override fun Content() {
-        state = rememberPCIFieldState()
-        CardNumberTextField(
-            state = state,
-            onEvent = onEvent,
-            maxLength = maxLength,
-            enabled = isEnabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            keyboardOptions = keyboardOption,
-            keyboardActions = keyboardActions,
-            cursorBrush = cursorBrush,
-            visualTransformation = visualTransformation
-        )
-    }
-}

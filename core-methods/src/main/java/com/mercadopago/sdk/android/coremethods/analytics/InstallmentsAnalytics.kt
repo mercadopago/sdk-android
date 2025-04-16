@@ -21,13 +21,12 @@ internal fun metricInstallmentsCallSuccess(
 )
 
 @KoverIgnore("in development")
-internal fun metricInstallmentsCallError(
-    error: String
-) = Metric(
-    path = "/sdk-native/core-methods/installments_error",
-    type = TrackType.EVENT,
-    data = MetricErrorData(error = error),
-)
+internal fun metricInstallmentsCallError(error: String) =
+    Metric(
+        path = "/sdk-native/core-methods/installments_error",
+        type = TrackType.EVENT,
+        data = MetricErrorData(error = error),
+    )
 
 @KoverIgnore("in development")
 internal data class InstallmentAnalyticsData(

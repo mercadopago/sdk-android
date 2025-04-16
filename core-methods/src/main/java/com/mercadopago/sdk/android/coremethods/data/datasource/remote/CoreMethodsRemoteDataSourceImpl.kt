@@ -20,7 +20,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CoreMethodsRemoteDataSourceImpl(
     private val service: CoreMethodsService,
 ) : CoreMethodsRemoteDataSource {
-
     override suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError> {
         return service.createToken(request).toInternalResponse().mapSuccess {
             this.toModel()
@@ -31,7 +30,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         return service.getInstallments(
             bin = request.bin,
             processingMode = request.processingMode,
-            amount = request.amount
+            amount = request.amount,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
@@ -44,13 +43,13 @@ internal class CoreMethodsRemoteDataSourceImpl(
     override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
         return service.getCardIssuers(
             bin = request.bin,
-            paymentMethodId = request.paymentMethodId
+            paymentMethodId = request.paymentMethodId,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
     override suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError> {
         return service.getPaymentMethods(
-            bin = request.bin
+            bin = request.bin,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 }

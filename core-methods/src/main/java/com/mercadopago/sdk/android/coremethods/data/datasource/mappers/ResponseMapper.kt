@@ -11,8 +11,8 @@ internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 internal val EMPTY_BODY_ERROR = Result.Error(
     ResultError.Request(
         code = "200",
-        message = "empty body"
-    )
+        message = "empty body",
+    ),
 )
 
 internal fun ResponseBody?.toResultError(): ResultError.Request {
@@ -36,12 +36,11 @@ internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {
     }
 }
 
-internal fun <T, R> Result<T, ResultError>.mapSuccess(
-    mapper: T.() -> R,
-): Result<R, ResultError> = when (this) {
-    is Result.Success -> {
-        Result.Success(mapper(data))
-    }
+internal fun <T, R> Result<T, ResultError>.mapSuccess(mapper: T.() -> R): Result<R, ResultError> =
+    when (this) {
+        is Result.Success -> {
+            Result.Success(mapper(data))
+        }
 
-    is Result.Error -> Result.Error(error)
-}
+        is Result.Error -> Result.Error(error)
+    }

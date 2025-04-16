@@ -8,7 +8,6 @@ import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
 internal class PaymentMethodsResponseMapperTest {
-
     @Test
     fun `FinancialInstitutionResponse toModel should correctly map to FinancialInstitutionModel`() {
         val response = FinancialInstitutionResponse(id = "inst_001", description = "Institution 1")
@@ -28,7 +27,7 @@ internal class PaymentMethodsResponseMapperTest {
             bin = 41111,
             length = lengthResponse,
             validation = "Luhn",
-            securityCode = securityCodeResponse
+            securityCode = securityCodeResponse,
         )
 
         val model = response.toModel()

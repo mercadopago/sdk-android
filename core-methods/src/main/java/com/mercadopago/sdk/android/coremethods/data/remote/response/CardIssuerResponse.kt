@@ -12,5 +12,5 @@ internal data class CardIssuerResponse(
     @SerializedName("status")
     val status: String? = null,
     @SerializedName("thumbnail")
-    val thumbnail: String? = null
+    val thumbnail: String? = null,
 )

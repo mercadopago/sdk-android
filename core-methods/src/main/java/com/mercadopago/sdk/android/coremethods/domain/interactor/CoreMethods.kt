@@ -45,7 +45,6 @@ import org.koin.core.Koin
 class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
-
     /**
      * Generate Card Token call.
      *
@@ -77,16 +76,16 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
 
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
                 }
@@ -94,7 +93,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -134,7 +133,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
 
@@ -142,7 +141,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
                 }
@@ -150,7 +149,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -267,11 +266,11 @@ class CoreMethods internal constructor(
      */
     suspend fun getCardIssuers(
         bin: Int,
-        paymentMethodId: String
+        paymentMethodId: String,
     ): Result<List<CardIssuer>, ResultError> {
         val result = koin.get<GetCardIssuersUseCase>().invoke(
             bin = bin,
-            paymentMethodId = paymentMethodId
+            paymentMethodId = paymentMethodId,
         )
 
         when (result) {
@@ -313,9 +312,7 @@ class CoreMethods internal constructor(
      *
      * @param bin: the credit card bin
      */
-    suspend fun getPaymentMethods(
-        bin: String,
-    ): Result<List<PaymentMethod>, ResultError> {
+    suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,
         )

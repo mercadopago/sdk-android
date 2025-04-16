@@ -17,7 +17,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class SecurityCodeTextFieldTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

@@ -82,7 +82,7 @@ fun CardNumberTextField(
     modifier: Modifier = Modifier,
     @IntRange(
         from = MIN_CARD_LENGTH,
-        to = MAX_CARD_LENGTH
+        to = MAX_CARD_LENGTH,
     ) maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -100,7 +100,7 @@ fun CardNumberTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = COMPONENT_NAME_CARD_NUMBER
+                field = COMPONENT_NAME_CARD_NUMBER,
             ),
         )
     }
@@ -132,7 +132,7 @@ fun CardNumberTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = COMPONENT_NAME_CARD_NUMBER
+                        field = COMPONENT_NAME_CARD_NUMBER,
                     ),
                 )
             }

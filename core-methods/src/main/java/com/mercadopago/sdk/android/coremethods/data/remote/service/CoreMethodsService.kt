@@ -17,7 +17,6 @@ private const val BRICKS_API = "cho-off/beta"
 private const val VERSION = "v1"
 
 internal interface CoreMethodsService {
-
     @POST("/v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
@@ -44,6 +43,6 @@ internal interface CoreMethodsService {
     @GET("$BRICKS_API/$VERSION/payment_methods")
     suspend fun getPaymentMethods(
         @Query("product_id") productId: String? = PRODUCT_ID,
-        @Query("bin") bin: Int?
+        @Query("bin") bin: Int?,
     ): Response<List<PaymentMethodResponse>>
 }

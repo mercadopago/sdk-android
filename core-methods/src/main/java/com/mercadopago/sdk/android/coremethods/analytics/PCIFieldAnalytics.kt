@@ -10,17 +10,23 @@ internal const val PCI_FIELD = "PCI_FIELD"
 internal const val FRAMEWORK = "Compose"
 
 @KoverIgnore("in development")
-internal fun metricPCIFieldInitialization(field: String, frameworkUI: String = FRAMEWORK) = Metric(
+internal fun metricPCIFieldInitialization(
+    field: String,
+    frameworkUI: String = FRAMEWORK,
+) = Metric(
     path = "/sdk-native/core-methods/pci_field",
     type = TrackType.VIEW,
-    data = MetricPCIFieldData(field, frameworkUI)
+    data = MetricPCIFieldData(field, frameworkUI),
 )
 
 @KoverIgnore("in development")
-internal fun metricPCIFieldFocus(field: String, frameworkUI: String = FRAMEWORK) = Metric(
+internal fun metricPCIFieldFocus(
+    field: String,
+    frameworkUI: String = FRAMEWORK,
+) = Metric(
     path = "/sdk-native/core-methods/pci_field/focus",
     type = TrackType.EVENT,
-    data = MetricPCIFieldData(field, frameworkUI)
+    data = MetricPCIFieldData(field, frameworkUI),
 )
 
 @KoverIgnore("in development")
@@ -28,5 +34,5 @@ internal data class MetricPCIFieldData(
     @SerializedName("field")
     val field: String = PCI_FIELD,
     @SerializedName("framework_ui")
-    val frameworkUI: String = FRAMEWORK
+    val frameworkUI: String = FRAMEWORK,
 ) : EventData

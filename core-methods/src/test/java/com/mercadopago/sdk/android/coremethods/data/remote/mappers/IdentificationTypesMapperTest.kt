@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
 class IdentificationTypesMapperTest {
-
     @Test
     fun `toModel should convert IdentificationTypesResponse to IdentificationType correctly`() {
         // Arrange
@@ -14,7 +13,7 @@ class IdentificationTypesMapperTest {
             name = "document",
             type = "RG",
             minLength = 6,
-            maxLength = 15
+            maxLength = 15,
         )
 
         // Act
@@ -36,7 +35,7 @@ class IdentificationTypesMapperTest {
             name = "document",
             type = "RG",
             minLength = 5,
-            maxLength = 20
+            maxLength = 20,
         )
 
         // Act

@@ -66,7 +66,7 @@ fun ExpirationDateTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = COMPONENT_NAME_EXPIRATION_DATE
+                field = COMPONENT_NAME_EXPIRATION_DATE,
             ),
         )
     }
@@ -78,7 +78,7 @@ fun ExpirationDateTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = COMPONENT_NAME_EXPIRATION_DATE
+                        field = COMPONENT_NAME_EXPIRATION_DATE,
                     ),
                 )
             }
@@ -93,9 +93,9 @@ fun ExpirationDateTextField(
                     ExpirationDateTextFieldEvent.IsValid(
                         isCardNumberValidUseCase(
                             inputDigits,
-                            dateFormat.digits
-                        )
-                    )
+                            dateFormat.digits,
+                        ),
+                    ),
                 )
             }
 

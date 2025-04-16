@@ -11,7 +11,7 @@ internal fun metricGenerateCardTokenCallSuccess(
     cardFlag: String? = null,
     paymentType: CardTokenPaymentTypeMetric = CardTokenPaymentTypeMetric.CREDIT,
     cardType: CardTokenCardTypeMetric = CardTokenCardTypeMetric.SAVED_CARD,
-    issuer: String? = null
+    issuer: String? = null,
 ) = Metric(
     path = "/sdk-native/core-methods/generate-card-token",
     type = TrackType.EVENT,
@@ -19,18 +19,17 @@ internal fun metricGenerateCardTokenCallSuccess(
         cardFlag,
         paymentType.type,
         cardType.type,
-        issuer
-    )
+        issuer,
+    ),
 )
 
 @KoverIgnore("in development")
-internal fun metricGenerateCardTokenCallError(
-    error: String,
-) = Metric(
-    path = "/sdk-native/core-methods/generate-card-token_error",
-    type = TrackType.EVENT,
-    data = MetricErrorData(error = error),
-)
+internal fun metricGenerateCardTokenCallError(error: String) =
+    Metric(
+        path = "/sdk-native/core-methods/generate-card-token_error",
+        type = TrackType.EVENT,
+        data = MetricErrorData(error = error),
+    )
 
 @KoverIgnore("in development")
 internal enum class CardTokenPaymentTypeMetric(val type: String) {

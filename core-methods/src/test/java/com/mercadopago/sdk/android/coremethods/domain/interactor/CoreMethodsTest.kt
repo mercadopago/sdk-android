@@ -27,7 +27,6 @@ import org.koin.core.Koin
 import kotlin.test.Test
 
 internal class CoreMethodsTest {
-
     private val koin: Koin = mockk(relaxed = true)
     private val coreMethods = CoreMethods(koin)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
@@ -48,204 +47,216 @@ internal class CoreMethodsTest {
     }
 
     @Test
-    fun `generateCardToken should return success and track success metric`() = runTest {
-        val cardNumberState = PCIFieldState()
-        val expirationDateState = PCIFieldState()
-        val securityCodeState = PCIFieldState()
+    fun `generateCardToken should return success and track success metric`() =
+        runTest {
+            val cardNumberState = PCIFieldState()
+            val expirationDateState = PCIFieldState()
+            val securityCodeState = PCIFieldState()
 
-        val expectedCardToken = CardToken("token_12345")
+            val expectedCardToken = CardToken("token_12345")
 
-        val expectedResult = Result.Success(expectedCardToken)
+            val expectedResult = Result.Success(expectedCardToken)
 
-        coEvery {
-            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
-        } returns expectedResult
-        val result =
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
+            coEvery {
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+            } returns expectedResult
+            val result =
+                coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
 
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `generateCardToken should return error and track error metric`() = runTest {
-        val cardNumberState = PCIFieldState()
-        val expirationDateState = PCIFieldState()
-        val securityCodeState = PCIFieldState()
-
-        val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
-        val expectedResult = Result.Error(expectedError)
-
-        coEvery {
-            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
-        } returns expectedResult
-        val result =
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `generateCardToken by cardId should return success and track success metric`() = runTest {
-        val expirationDateState = PCIFieldState()
-        val securityCodeState = PCIFieldState()
+    fun `generateCardToken should return error and track error metric`() =
+        runTest {
+            val cardNumberState = PCIFieldState()
+            val expirationDateState = PCIFieldState()
+            val securityCodeState = PCIFieldState()
 
-        val expectedCardToken = CardToken("token_12345")
+            val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedResult = Result.Error(expectedError)
 
-        val expectedResult = Result.Success(expectedCardToken)
+            coEvery {
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+            } returns expectedResult
+            val result =
+                coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
 
-        coEvery {
-            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
-        } returns expectedResult
-        val result =
-            coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
-
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `generateCardToken by cardId should return error and track error metric`() = runTest {
-        val expirationDateState = PCIFieldState()
-        val securityCodeState = PCIFieldState()
-
-        val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
-        val expectedResult = Result.Error(expectedError)
-
-        coEvery {
-            koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
-        } returns expectedResult
-        val result =
-            coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `getInstallments should return success and track success metric`() = runTest {
-        val bin = "123456"
-        val amount = 1000L
-        val expectedInstallment =
-            listOf(Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id"))
-        val expectedResult = Result.Success(expectedInstallment)
+    fun `generateCardToken by cardId should return success and track success metric`() =
+        runTest {
+            val expirationDateState = PCIFieldState()
+            val securityCodeState = PCIFieldState()
 
-        coEvery {
-            koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
-        } returns expectedResult
-        val result = coreMethods.getInstallments(bin, amount)
+            val expectedCardToken = CardToken("token_12345")
 
-        assertEquals(expectedResult, result)
-    }
+            val expectedResult = Result.Success(expectedCardToken)
 
-    @Test
-    fun `getInstallments should return error and track error metric`() = runTest {
-        val bin = "123456"
-        val amount = 1000L
-        val expectedError = ResultError.Request(code = "404", message = "Installments not found")
-        val expectedResult = Result.Error(expectedError)
+            coEvery {
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+            } returns expectedResult
+            val result =
+                coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
 
-        coEvery {
-            koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
-        } returns expectedResult
-        val result = coreMethods.getInstallments(bin, amount)
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `getIdentificationTypes should track success metric when call is successful`() = runTest {
-        val expectedTypes = listOf(
-            IdentificationType(
-                id = "id_1",
-                name = "document",
-                type = "RG",
-                minLength = 6,
-                maxLength = 15
-            ),
-            IdentificationType(
-                id = "id_2",
-                name = "document",
-                type = "CPF",
-                minLength = 5,
-                maxLength = 20
+    fun `generateCardToken by cardId should return error and track error metric`() =
+        runTest {
+            val expirationDateState = PCIFieldState()
+            val securityCodeState = PCIFieldState()
+
+            val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedResult = Result.Error(expectedError)
+
+            coEvery {
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+            } returns expectedResult
+            val result =
+                coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getInstallments should return success and track success metric`() =
+        runTest {
+            val bin = "123456"
+            val amount = 1000L
+            val expectedInstallment =
+                listOf(Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id"))
+            val expectedResult = Result.Success(expectedInstallment)
+
+            coEvery {
+                koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
+            } returns expectedResult
+            val result = coreMethods.getInstallments(bin, amount)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getInstallments should return error and track error metric`() =
+        runTest {
+            val bin = "123456"
+            val amount = 1000L
+            val expectedError = ResultError.Request(code = "404", message = "Installments not found")
+            val expectedResult = Result.Error(expectedError)
+
+            coEvery {
+                koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
+            } returns expectedResult
+            val result = coreMethods.getInstallments(bin, amount)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getIdentificationTypes should track success metric when call is successful`() =
+        runTest {
+            val expectedTypes = listOf(
+                IdentificationType(
+                    id = "id_1",
+                    name = "document",
+                    type = "RG",
+                    minLength = 6,
+                    maxLength = 15,
+                ),
+                IdentificationType(
+                    id = "id_2",
+                    name = "document",
+                    type = "CPF",
+                    minLength = 5,
+                    maxLength = 20,
+                ),
             )
-        )
-        val expectedResult = Result.Success(expectedTypes)
+            val expectedResult = Result.Success(expectedTypes)
 
-        coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
-        val result = coreMethods.getIdentificationTypes()
+            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
+            val result = coreMethods.getIdentificationTypes()
 
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `getIdentificationTypes should track error metric when call fails`() = runTest {
-        val expectedError = ResultError.Request(code = "404", message = "Not Found")
-        val expectedResult = Result.Error(expectedError)
-
-        coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
-        val result = coreMethods.getIdentificationTypes()
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `getCardIssuers should return success and track success metric`() = runTest {
-        val bin = 12345
-        val paymentMethodId = "credit"
+    fun `getIdentificationTypes should track error metric when call fails`() =
+        runTest {
+            val expectedError = ResultError.Request(code = "404", message = "Not Found")
+            val expectedResult = Result.Error(expectedError)
 
-        val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
-        val expectedResult = Result.Success(listOf(expectedCardIssuer))
+            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
+            val result = coreMethods.getIdentificationTypes()
 
-        coEvery {
-            koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
-        } returns expectedResult
-        val result = coreMethods.getCardIssuers(bin, paymentMethodId)
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `getCardIssuers should return error and track error metric`() = runTest {
-        val bin = 12345
-        val paymentMethodId = "credit"
+    fun `getCardIssuers should return success and track success metric`() =
+        runTest {
+            val bin = 12345
+            val paymentMethodId = "credit"
 
-        val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
-        val expectedResult = Result.Error(expectedError)
+            val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
+            val expectedResult = Result.Success(listOf(expectedCardIssuer))
 
-        coEvery {
-            koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
-        } returns expectedResult
-        val result = coreMethods.getCardIssuers(bin, paymentMethodId)
+            coEvery {
+                koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
+            } returns expectedResult
+            val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
-        assertEquals(expectedResult, result)
-    }
-
-    @Test
-    fun `getPaymentMethods should return success and track success metric`() = runTest {
-        val bin = "12345"
-
-        val expectedPaymentMethod = PaymentMethod(status = "active", thumbnail = "www")
-        val expectedResult = Result.Success(listOf(expectedPaymentMethod))
-
-        coEvery {
-            koin.get<GetPaymentMethodsUseCase>().invoke(bin)
-        } returns expectedResult
-        val result = coreMethods.getPaymentMethods(bin)
-
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
 
     @Test
-    fun `getPaymentMethods should return error and track error metric`() = runTest {
-        val bin = "12345"
+    fun `getCardIssuers should return error and track error metric`() =
+        runTest {
+            val bin = 12345
+            val paymentMethodId = "credit"
 
-        val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
-        val expectedResult = Result.Error(expectedError)
+            val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedResult = Result.Error(expectedError)
 
-        coEvery {
-            koin.get<GetPaymentMethodsUseCase>().invoke(bin)
-        } returns expectedResult
-        val result = coreMethods.getPaymentMethods(bin)
+            coEvery {
+                koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
+            } returns expectedResult
+            val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
-        assertEquals(expectedResult, result)
-    }
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getPaymentMethods should return success and track success metric`() =
+        runTest {
+            val bin = "12345"
+
+            val expectedPaymentMethod = PaymentMethod(status = "active", thumbnail = "www")
+            val expectedResult = Result.Success(listOf(expectedPaymentMethod))
+
+            coEvery {
+                koin.get<GetPaymentMethodsUseCase>().invoke(bin)
+            } returns expectedResult
+            val result = coreMethods.getPaymentMethods(bin)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getPaymentMethods should return error and track error metric`() =
+        runTest {
+            val bin = "12345"
+
+            val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedResult = Result.Error(expectedError)
+
+            coEvery {
+                koin.get<GetPaymentMethodsUseCase>().invoke(bin)
+            } returns expectedResult
+            val result = coreMethods.getPaymentMethods(bin)
+
+            assertEquals(expectedResult, result)
+        }
 }

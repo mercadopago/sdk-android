@@ -13,5 +13,5 @@ data class CardIssuer(
     val merchantAccountId: String? = null,
     val processingMode: String? = null,
     val status: String? = null,
-    val thumbnail: String? = null
+    val thumbnail: String? = null,
 )
