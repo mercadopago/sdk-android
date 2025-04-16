@@ -38,15 +38,15 @@ import kotlin.math.min
  * @param cursorBrush [Brush] to paint cursor with.
  * @param visualTransformation The visual transformation filter for changing the visual
  * representation of the card number.
- *
  */
+@Suppress("OutdatedDocumentation")
 class CardNumberTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-    lateinit var state: PCIFieldState
 
+    lateinit var state: PCIFieldState
     var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
     var readOnly: Boolean = false
     var textStyle: TextStyle = TextStyle.Default
@@ -65,7 +65,7 @@ class CardNumberTextFieldXML @JvmOverloads constructor(
             attrs,
             R.styleable.MPCardNumberTextFieldXML,
             0,
-            0
+            0,
         ).apply {
             try {
                 maxLength = getInteger(

@@ -18,8 +18,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 /**
  * Security code input XML component.
  *
- * This component allows users to enter a card security code.
- *
  * @property state A [PCIFieldState] object that contains and manages the input data for the security field.
  * @property onEvent A callback triggered in response to field events, such as focus changes or value changes.
  * @property securityCodeSize Length limit for the security code to be entered (default is 3).
@@ -29,18 +27,19 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @property cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
  * @property visualTransformation Allows for visual transformations to be applied to the text.
  */
+@Suppress("OutdatedDocumentation")
 class SecurityCodeFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-    lateinit var state: PCIFieldState
 
-    lateinit var onEvent: (SecurityCodeTextFieldEvent) -> Unit
+    lateinit var state: PCIFieldState
+    var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
     var securityCodeSize: Int = MIN_LENGTH
     var readOnly: Boolean = false
     var textStyle: TextStyle = TextStyle.Default
-    var keyboardOption: KeyboardOptions = KeyboardOptions()
+    var keyboardOptions: KeyboardOptions = KeyboardOptions()
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
     var visualTransformation: VisualTransformation = VisualTransformation.None
 
@@ -49,7 +48,7 @@ class SecurityCodeFieldXML @JvmOverloads constructor(
             attrs,
             R.styleable.MPSecurityFieldTextFieldXML,
             0,
-            0
+            0,
         ).apply {
             try {
                 securityCodeSize = getInteger(
@@ -79,7 +78,7 @@ class SecurityCodeFieldXML @JvmOverloads constructor(
             enabled = isEnabled,
             readOnly = readOnly,
             textStyle = textStyle,
-            keyboardOptions = keyboardOption,
+            keyboardOptions = keyboardOptions,
             cursorBrush = cursorBrush,
             visualTransformation = visualTransformation,
         )

@@ -21,24 +21,25 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * This component allows users to enter a card expiration date.
  * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
  *
- * @param modifier Modifier to customize the style and behavior of the field.
- * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
- * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
+ * @param modifier Modifier to customize the style and behavior of the field
+ * @param state A [PCIFieldState] object that contains and manages the input data for the security field
+ * @param onEvent A callback triggered in response to field events, such as focus changes or value changes
  * @param dateFormat This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
  * this have to be align to the visual transformation mask
- * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
- * @param readOnly Controls whether the field is editable or read-only.
- * @param textStyle Text style to be applied to the field's content.
- * @param keyboardOptions The keyboard options to be applied to the field.
- * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+ * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction
+ * @param readOnly Controls whether the field is editable or read-only
+ * @param textStyle Text style to be applied to the field's content
+ * @param keyboardOptions The keyboard options to be applied to the field
+ * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance
  */
+@Suppress("OutdatedDocumentation")
 class ExpirationDateTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-    lateinit var state: PCIFieldState
 
+    lateinit var state: PCIFieldState
     var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
     var readOnly: Boolean = false
     var textStyle: TextStyle = TextStyle.Default
@@ -51,7 +52,7 @@ class ExpirationDateTextFieldXML @JvmOverloads constructor(
             attrs,
             R.styleable.MPExpirationDateTextFieldXML,
             0,
-            0
+            0,
         ).apply {
             try {
                 readOnly = getBoolean(R.styleable.MPExpirationDateTextFieldXML_readOnly, false)
