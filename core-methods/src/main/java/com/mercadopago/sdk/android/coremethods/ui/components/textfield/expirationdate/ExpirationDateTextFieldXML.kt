@@ -32,50 +32,52 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param keyboardOptions The keyboard options to be applied to the field.
  * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
  */
-class ExpirationDateTextFieldXML
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0,
-    ) : AbstractComposeView(context, attrs, defStyle) {
-        lateinit var state: PCIFieldState
+class ExpirationDateTextFieldXML @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+) : AbstractComposeView(context, attrs, defStyle) {
+    lateinit var state: PCIFieldState
 
-        var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
-        var readOnly: Boolean = false
-        var textStyle: TextStyle = TextStyle.Default
-        var cursorBrush: Brush = SolidColor(Color.Unspecified)
-        var keyboardOption: KeyboardOptions = KeyboardOptions()
-        var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
+    var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
+    var readOnly: Boolean = false
+    var textStyle: TextStyle = TextStyle.Default
+    var cursorBrush: Brush = SolidColor(Color.Unspecified)
+    var keyboardOption: KeyboardOptions = KeyboardOptions()
+    var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
 
-        init {
-            context.theme.obtainStyledAttributes(attrs, R.styleable.MPExpirationDateTextFieldXML, 0, 0)
-                .apply {
-                    try {
-                        readOnly = getBoolean(R.styleable.MPExpirationDateTextFieldXML_readOnly, false)
-                        val cursorColor = getColor(
-                            R.styleable.MPExpirationDateTextFieldXML_cursorColor,
-                            Color.Unspecified.toArgb(),
-                        )
-                        cursorBrush = SolidColor(Color(cursorColor))
-                    } finally {
-                        recycle()
-                    }
-                }
-        }
-
-        @Composable
-        override fun Content() {
-            state = rememberPCIFieldState()
-            ExpirationDateTextField(
-                state = state,
-                onEvent = onEvent,
-                enabled = isEnabled,
-                readOnly = readOnly,
-                textStyle = textStyle,
-                keyboardOptions = keyboardOption,
-                cursorBrush = cursorBrush,
-                dateFormat = dateFormat,
-            )
+    init {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.MPExpirationDateTextFieldXML,
+            0,
+            0
+        ).apply {
+            try {
+                readOnly = getBoolean(R.styleable.MPExpirationDateTextFieldXML_readOnly, false)
+                val cursorColor = getColor(
+                    R.styleable.MPExpirationDateTextFieldXML_cursorColor,
+                    Color.Unspecified.toArgb(),
+                )
+                cursorBrush = SolidColor(Color(cursorColor))
+            } finally {
+                recycle()
+            }
         }
     }
+
+    @Composable
+    override fun Content() {
+        state = rememberPCIFieldState()
+        ExpirationDateTextField(
+            state = state,
+            onEvent = onEvent,
+            enabled = isEnabled,
+            readOnly = readOnly,
+            textStyle = textStyle,
+            keyboardOptions = keyboardOption,
+            cursorBrush = cursorBrush,
+            dateFormat = dateFormat,
+        )
+    }
+}
