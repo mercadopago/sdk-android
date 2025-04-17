@@ -22,7 +22,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @param attrs [AttributeSet] for this view
  * @param defStyle def style
  */
-class SecureCodeTextFieldXML @JvmOverloads constructor(
+class SecureCodeTextFieldXML
+@JvmOverloads
+constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
