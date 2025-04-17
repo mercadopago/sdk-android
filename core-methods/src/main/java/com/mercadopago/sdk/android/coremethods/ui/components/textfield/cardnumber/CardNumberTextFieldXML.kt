@@ -24,15 +24,16 @@ import kotlin.math.min
  *
  * This PCI handles user input of card numbers.
  *
- * @param state
- * @param onEvent
- * @param readOnly
- * @param textStyle
- * @param cursorBrush [Brush]
- * @param keyboardOptions
- * @param keyboardActions
- * @param visualTransformation
- * @param maxLength
+ * @param state The [PCIFieldState] of the component. It makes the field PCI and holds the card number value.
+ * @param onEvent Callback for the [CardNumberTextFieldEvent].
+ * @param readOnly controls the editable state of the [BasicTextField].
+ * @param textStyle Style configuration that applies at character level such as color, font etc.
+ * @param cursorBrush [Brush] to paint cursor with.
+ * @param keyboardOptions software keyboard options that contains configuration such as [ImeAction].
+ * @param keyboardActions when the input service emits an IME action, the corresponding callback
+ * @param visualTransformation The visual transformation filter for changing the visual
+ * representation of the card number.
+ * @param maxLength It will ensure the users have the right amount of numbers after the bin is completed.
  */
 @Suppress("OutdatedDocumentation")
 class CardNumberTextFieldXML @JvmOverloads constructor(
