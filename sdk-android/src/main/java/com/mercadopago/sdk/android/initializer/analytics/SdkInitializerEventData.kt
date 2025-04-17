@@ -12,6 +12,7 @@ import java.util.Locale
 
 private const val MIN_SDK_23 = "23"
 private const val MAVEN = "MAVEN"
+private const val INITIALIZE_PATH = "/initialize"
 
 /**
  * Path for the native SDK analytics route
@@ -26,7 +27,7 @@ internal object SdkInitializerAnalytics {
         errorType: String? = null,
     ) = Metric(
         type = TrackType.EVENT,
-        path = "$SDK_NATIVE_PATH/initialize",
+        path = "$SDK_NATIVE_PATH$INITIALIZE_PATH",
         data = SdkInitializerEventData(
             minVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.applicationInfo.minSdkVersion.toString()

@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitServiceFactory(
     private val publicKey: String?,
     private val baseUrl: String,
-    private val logLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY
+    private val logLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY,
 ) {
 
     private val okHttpClient: OkHttpClient by lazy {

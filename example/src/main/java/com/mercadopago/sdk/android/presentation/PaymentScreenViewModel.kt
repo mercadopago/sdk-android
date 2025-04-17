@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.mappers.toInstallmentModel
 import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
+import java.math.BigDecimal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -64,12 +65,12 @@ internal class PaymentScreenViewModel(
 
     fun getInstallment(
         bin: String,
-        amount: Long
+        amount: BigDecimal
     ) {
         viewModelScope.launch {
             val result = coreMethods.getInstallments(
                 bin = bin,
-                amount = amount
+                amount = amount,
             )
 
             when (result) {
@@ -258,7 +259,7 @@ internal class PaymentScreenViewModel(
 
                 getInstallment(
                     bin = event.cardBin.orEmpty(),
-                    amount = 1000,
+                    amount = 1000.0.toBigDecimal(),
                 )
             }
         }

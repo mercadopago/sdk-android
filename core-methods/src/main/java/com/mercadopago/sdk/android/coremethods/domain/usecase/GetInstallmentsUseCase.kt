@@ -5,13 +5,14 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import java.math.BigDecimal
 
 internal class GetInstallmentsUseCase(
     private val repository: CoreMethodsRepository,
 ) {
     suspend operator fun invoke(
         bin: String,
-        amount: Long,
+        amount: BigDecimal,
         processingMode: String,
     ): Result<Installment, ResultError> {
         return repository.getInstallment(

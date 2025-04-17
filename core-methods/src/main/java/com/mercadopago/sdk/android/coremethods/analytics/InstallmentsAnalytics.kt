@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.coremethods.analytics.CoreMethodsAnalyticsConstants.CORE_METHODS_PATH
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
+import java.math.BigDecimal
 
 private const val INSTALLMENTS_PATH = "/installments"
 
@@ -15,6 +16,7 @@ private const val INSTALLMENTS_PATH = "/installments"
 internal fun metricInstallmentsCallSuccess(
     paymentType: String? = null,
     merchantAccountId: String? = null,
+    transactionAmount: BigDecimal,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$INSTALLMENTS_PATH",
     type = TrackType.EVENT,
@@ -22,6 +24,7 @@ internal fun metricInstallmentsCallSuccess(
         isDeveloping = true,
         paymentType = paymentType,
         merchantAccountId = merchantAccountId,
+        transactionAmount = transactionAmount,
     ),
 )
 
@@ -42,4 +45,6 @@ internal data class InstallmentAnalyticsData(
     val paymentType: String?,
     @SerializedName("merchant_account_id")
     val merchantAccountId: String?,
+    @SerializedName("transaction_amount")
+    val transactionAmount: BigDecimal?,
 ) : CoreMethodsEventData()

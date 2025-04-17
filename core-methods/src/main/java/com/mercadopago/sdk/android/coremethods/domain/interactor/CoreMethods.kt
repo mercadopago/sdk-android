@@ -23,6 +23,7 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUse
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import java.math.BigDecimal
 import org.koin.core.Koin
 
 /**
@@ -168,7 +169,7 @@ class CoreMethods internal constructor(
      */
     suspend fun getInstallments(
         bin: String,
-        amount: Long,
+        amount: BigDecimal,
         processingMode: ProcessingMode = ProcessingMode.Aggregator,
     ): Result<Installment, ResultError> {
         val result = koin.get<GetInstallmentsUseCase>().invoke(
@@ -203,6 +204,7 @@ class CoreMethods internal constructor(
                     metricInstallmentsCallSuccess(
                         paymentType = result.data.paymentTypeId.orEmpty(),
                         merchantAccountId = result.data.merchantAccountId.orEmpty(),
+                        transactionAmount = amount,
                     ),
                 )
             }
@@ -245,7 +247,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricIdentificationCallSuccess(),
+                    metricIdentificationCallSuccess(result.data.map { identificationType -> identificationType.name }),
                 )
             }
         }

@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.CardIssuerRe
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
+import java.math.BigDecimal
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -26,7 +27,7 @@ internal interface CoreMethodsService {
         @Query("product_id") productId: String?,
         @Query("bin") bin: Int?,
         @Query("processing_mode") processingMode: String?,
-        @Query("amount") amount: Long?,
+        @Query("amount") amount: BigDecimal?,
     ): Response<InstallmentsResponse>
 
     @GET("$BRICKS_API/$VERSION/identification_types")

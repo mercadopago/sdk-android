@@ -6,6 +6,8 @@ import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
+import com.mercadopago.sdk.android.core.utils.isDebugApp
+import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +78,9 @@ class MPAnalytics internal constructor(
         CoroutineScope(Dispatchers.IO).launch {
             trackMetricUseCase(metric)
                 .catch {
-                    Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
+                    if (isDebugApp() && isSameLibraryGroup(koin.get())) {
+                        Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
+                    }
                 }.firstOrNull()
         }
     }
