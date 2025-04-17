@@ -16,6 +16,11 @@ object AnalyticsConstants {
     const val FOCUS_PATH = "/focus"
 
     /**
+     * Used for error events
+     */
+    const val ERROR_PATH = "/error"
+
+    /**
      * Builds a [MetricErrorData] object containing error information.
      *
      * This function simplifies the creation of [MetricErrorData] instances by taking an error string as input and
@@ -41,4 +46,4 @@ object AnalyticsConstants {
 data class MetricErrorData(
     @SerializedName("error_type")
     val errorType: String,
-) : EventData()
+) : EventData

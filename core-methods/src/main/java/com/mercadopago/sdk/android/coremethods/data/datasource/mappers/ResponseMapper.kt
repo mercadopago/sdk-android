@@ -19,12 +19,14 @@ internal fun ResponseBody?.toResultError(): ResultError.Request {
     val errorBody = this?.string()
     val gson = GsonBuilder().create()
 
-    return errorBody?.let {
-        gson.fromJson(it, ResultError.Request::class.java)
-    } ?: ResultError.Request(
-        message = UNKNOWN_ERROR,
-        code = -1,
-    )
+    return try {
+        gson.fromJson(errorBody, ResultError.Request::class.java)
+    } catch (_: Exception) {
+        ResultError.Request(
+            message = UNKNOWN_ERROR,
+            code = -1,
+        )
+    }
 }
 
 internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {

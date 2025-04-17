@@ -22,6 +22,7 @@ internal fun provideDataSourceModule(): Module = module {
         AnalyticsRemoteDataSourceImpl(
             context = androidContext(),
             service = get(),
+            gson = get(),
         )
     }
     factory<AnalyticsLocalDataSource> {

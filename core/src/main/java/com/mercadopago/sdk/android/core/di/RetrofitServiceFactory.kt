@@ -12,16 +12,18 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Use this class to create a new retrofit service.
  * @param publicKey The seller's public key.
  * @param baseUrl The base url of the api.
+ * @param logLevel The log level of the api.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RetrofitServiceFactory(
     private val publicKey: String?,
-    private val baseUrl: String
+    private val baseUrl: String,
+    private val logLevel: HttpLoggingInterceptor.Level = HttpLoggingInterceptor.Level.BODY
 ) {
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = logLevel
         }
         OkHttpClient.Builder().apply {
             if (publicKey != null) {

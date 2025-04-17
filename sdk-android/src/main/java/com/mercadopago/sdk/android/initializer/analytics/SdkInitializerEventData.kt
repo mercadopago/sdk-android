@@ -7,9 +7,10 @@ import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.core.BuildConfig
+import com.mercadopago.sdk.android.core.utils.isDebugApp
 import java.util.Locale
 
-private const val UNKNOWN = "UNKNOWN"
+private const val MIN_SDK_23 = "23"
 private const val MAVEN = "MAVEN"
 
 /**
@@ -30,12 +31,13 @@ internal object SdkInitializerAnalytics {
             minVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.applicationInfo.minSdkVersion.toString()
             } else {
-                UNKNOWN
+                MIN_SDK_23
             },
             distribution = MAVEN,
             errorType = errorType,
             publicKey = publicKey,
             sdkVersion = BuildConfig.SdkVersion,
+            developerMode = isDebugApp(),
         ),
     )
 }
@@ -53,4 +55,6 @@ internal class SdkInitializerEventData(
     val minVersion: String,
     @SerializedName("sdk_version")
     val sdkVersion: String,
-) : EventData()
+    @SerializedName("developer_mode")
+    val developerMode: Boolean,
+) : EventData

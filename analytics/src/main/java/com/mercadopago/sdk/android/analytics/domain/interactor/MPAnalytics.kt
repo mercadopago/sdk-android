@@ -14,6 +14,11 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
 
+/**
+ * Tag used for logging analytics events.
+ */
+const val MP_ANALYTICS_TAG = "MPAnalytics"
+
 /** Core analytics implementation for the MercadoPago SDK.
  *
  * This class is responsible for:
@@ -71,7 +76,7 @@ class MPAnalytics internal constructor(
         CoroutineScope(Dispatchers.IO).launch {
             trackMetricUseCase(metric)
                 .catch {
-                    Log.e("MPAnalytics", "Error while tracking metric", it)
+                    Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
                 }.firstOrNull()
         }
     }

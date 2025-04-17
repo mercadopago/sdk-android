@@ -1,32 +1,24 @@
 package com.mercadopago.sdk.android.core.utils
 
+import com.mercadopago.sdk.android.core.exception.NetworkException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Response
 
 /**
- * Maps a Retrofit [Response] to a Kotlin [Result].
- * If the response is successful, the [Result] will contain the response body.
- * If the response is not successful, the [Result] will contain an exception with the error body.
- * @return a [Result] containing the response body or an exception.
+ * Transforms a [Flow] of [Response] objects into a [Flow] of the response body, handling success and errors.
+ *
+ * This function simplifies working with network responses by extracting the body in case of success,
+ * and throwing a [NetworkException] with the error message in case of failure.
+ *
+ * @return A [Flow] emitting the response body of successful responses, or `null` if the body is null.
+ * If the response is not successful, a [NetworkException] is thrown.
+ * @throws NetworkException if the response is not successful, containing the error message.
  */
-fun <T> Response<T>.toKotlinResponse(): Result<T> {
-    return if (isSuccessful) {
-        Result.success(this.body()!!)
+fun <T> Flow<Response<T>>.mapToFlow(): Flow<T?> = map { response ->
+    if (response.isSuccessful) {
+        response.body()
     } else {
-        Result.failure(Exception(errorBody()?.string() ?: "Error"))
-    }
-}
-
-/**
- * Maps a success result to a new data type using a mapper function.
- * @param mapper a function that maps the success data type to a new data type.
- * @return a [Result] containing the mapped data or an exception.
- */
-fun <T, R> Result<T>.mapSuccess(
-    mapper: T.() -> R,
-): Result<R> {
-    return if (isSuccess) {
-        Result.success(mapper(getOrThrow()))
-    } else {
-        Result.failure(exceptionOrNull() ?: Exception("Error"))
+        throw NetworkException(response.errorBody()?.string() ?: "Error")
     }
 }

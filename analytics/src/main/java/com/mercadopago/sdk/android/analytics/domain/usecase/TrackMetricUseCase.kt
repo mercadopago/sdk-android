@@ -8,7 +8,7 @@ internal class TrackMetricUseCase(
     private val analyticsRepository: AnalyticsRepository,
 ) {
 
-    suspend operator fun invoke(metric: Metric): Flow<Unit> {
+    operator fun invoke(metric: Metric): Flow<Unit> {
         return analyticsRepository.trackMetric(metric)
     }
 }

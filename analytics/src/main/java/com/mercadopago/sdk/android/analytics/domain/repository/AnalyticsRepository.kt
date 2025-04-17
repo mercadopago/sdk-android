@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface AnalyticsRepository {
 
-    suspend fun trackMetric(metric: Metric): Flow<Unit>
+    fun trackMetric(metric: Metric): Flow<Unit>
 }
