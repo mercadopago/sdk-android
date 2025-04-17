@@ -13,36 +13,55 @@ import androidx.compose.ui.text.TextStyle
 import com.mercadopago.sdk.android.coremethods.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 
 /**
  * Expiration date input XML component wrapper in xml.
  *
  * This component allows users to enter a card expiration date.
  * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
- *
- * @param modifier Modifier to customize the style and behavior of the field
- * @param state A [PCIFieldState] object that contains and manages the input data for the security field
- * @param onEvent A callback triggered in response to field events, such as focus changes or value changes
- * @param dateFormat This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
- * this have to be align to the visual transformation mask
- * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction
- * @param readOnly Controls whether the field is editable or read-only
- * @param textStyle Text style to be applied to the field's content
- * @param keyboardOptions The keyboard options to be applied to the field
- * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance
+ * @param context xml context
+ * @param attrs [AttributeSet] for this view
+ * @param defStyle def style
  */
 class ExpirationDateTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
+    /**
+     * A [PCIFieldState] object that contains and manages the input data for the expiration date
+     */
     lateinit var state: PCIFieldState
+
+    /**
+     * A callback triggered in response to field events, such as focus changes or value changes
+     */
     var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
+
+    /**
+     * Controls whether the field is editable or read-only
+     */
     var readOnly: Boolean = false
+
+    /**
+     * Text style to be applied to the field's content
+     */
     var textStyle: TextStyle = TextStyle.Default
+
+    /**
+     * Brush applied to the text field's cursor, allowing customization of the cursor's appearance
+     */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
+
+    /**
+     * The keyboard options to be applied to the field
+     */
     var keyboardOption: KeyboardOptions = KeyboardOptions()
+
+    /**
+     * This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
+     * this have to be align to the visual transformation mask
+     */
     var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
 
     init {

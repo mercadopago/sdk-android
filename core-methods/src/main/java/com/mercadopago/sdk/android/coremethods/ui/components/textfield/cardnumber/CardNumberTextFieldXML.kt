@@ -22,33 +22,58 @@ import kotlin.math.min
 /**
  * Card Number input XML component wrapper in xml.
  *
- * This PCI handles user input of card numbers.
- *
- * @param state The [PCIFieldState] of the component. It makes the field PCI and holds the card number value.
- * @param onEvent Callback for the [CardNumberTextFieldEvent].
- * @param readOnly controls the editable state of the [BasicTextField].
- * @param textStyle Style configuration that applies at character level such as color, font etc.
- * @param cursorBrush [Brush] to paint cursor with.
- * @param keyboardOptions software keyboard options that contains configuration such as [ImeAction].
- * @param keyboardActions when the input service emits an IME action, the corresponding callback
- * @param visualTransformation The visual transformation filter for changing the visual
- * representation of the card number.
- * @param maxLength It will ensure the users have the right amount of numbers after the bin is completed.
+ * @param context xml context
+ * @param attrs [AttributeSet] for this view
+ * @param defStyle def style
  */
 class CardNumberTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
+    /**
+     * The [PCIFieldState] of the component. It makes the field PCI and holds the card number value.
+     */
     lateinit var state: PCIFieldState
+
+    /**
+     * Callback for the [CardNumberTextFieldEvent].
+     */
     var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
+
+    /**
+     * Controls the editable state of the [BasicTextField].
+     */
     var readOnly: Boolean = false
+
+    /**
+     * Style configuration that applies at character level such as color, font etc.
+     */
     var textStyle: TextStyle = TextStyle.Default
+
+    /**
+     * [Brush] to paint cursor with.
+     */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
+
+    /**
+     * Software keyboard options that contains configuration such as [ImeAction].
+     */
     var keyboardOption: KeyboardOptions = KeyboardOptions()
+
+    /**
+     * When the input service emits an IME action, the corresponding callback
+     */
     var keyboardActions: KeyboardActions = KeyboardActions()
+
+    /**
+     * The visual transformation filter for changing the visual representation of the card number.
+     */
     var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
 
+    /**
+     * It will ensure the users have the right amount of numbers after the bin is completed.
+     */
     var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
         set(value) {
             field = min(max(value, 8), DEFAULT_CARD_NUMBER_MAX_LENGTH)

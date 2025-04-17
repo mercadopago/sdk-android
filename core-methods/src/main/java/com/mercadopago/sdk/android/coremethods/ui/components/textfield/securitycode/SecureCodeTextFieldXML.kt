@@ -18,27 +18,53 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 /**
  * Security code input XML component.
  *
- * @property state A [PCIFieldState] object that contains and manages the input data for the security field.
- * @property onEvent A callback triggered in response to field events, such as focus changes or value changes.
- * @property securityCodeSize Length limit for the security code to be entered (default is 3).
- * @property readOnly Controls whether the field is editable or read-only.
- * @property textStyle Text style to be applied to the field's content.
- * @property keyboardOptions Keyboard options that influence the behavior of the input field.
- * @property cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
- * @property visualTransformation Allows for visual transformations to be applied to the text.
+ * @param context xml context
+ * @param attrs [AttributeSet] for this view
+ * @param defStyle def style
  */
 class SecureCodeTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
+    /**
+     * A [PCIFieldState] object that contains and manages the input data for the security field.
+     */
     lateinit var state: PCIFieldState
+
+    /**
+     * A callback triggered in response to field events, such as focus changes or value changes.
+     */
     var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
+
+    /**
+     * Length limit for the security code to be entered (default is 3).
+     */
     var securityCodeSize: Int = MIN_LENGTH
+
+    /**
+     * Controls whether the field is editable or read-only.
+     */
     var readOnly: Boolean = false
+
+    /**
+     * Text style to be applied to the field's content.
+     */
     var textStyle: TextStyle = TextStyle.Default
+
+    /**
+     * Keyboard options that influence the behavior of the input field.
+     */
     var keyboardOptions: KeyboardOptions = KeyboardOptions()
+
+    /**
+     * Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+     */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
+
+    /**
+     * Allows for visual transformations to be applied to the text, such as masking characters.
+     */
     var visualTransformation: VisualTransformation = VisualTransformation.None
 
     init {
