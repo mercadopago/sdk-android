@@ -32,13 +32,11 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param keyboardOptions The keyboard options to be applied to the field
  * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance
  */
-@Suppress("OutdatedDocumentation")
 class ExpirationDateTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-
     lateinit var state: PCIFieldState
     var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
     var readOnly: Boolean = false

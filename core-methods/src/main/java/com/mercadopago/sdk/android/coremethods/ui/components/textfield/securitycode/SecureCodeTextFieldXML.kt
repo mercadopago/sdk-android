@@ -27,13 +27,11 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @property cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
  * @property visualTransformation Allows for visual transformations to be applied to the text.
  */
-@Suppress("OutdatedDocumentation")
-class SecurityCodeFieldXML @JvmOverloads constructor(
+class SecureCodeTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-
     lateinit var state: PCIFieldState
     var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
     var securityCodeSize: Int = MIN_LENGTH

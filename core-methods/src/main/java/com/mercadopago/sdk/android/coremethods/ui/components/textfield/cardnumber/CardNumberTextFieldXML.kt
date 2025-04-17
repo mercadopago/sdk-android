@@ -35,13 +35,11 @@ import kotlin.math.min
  * representation of the card number.
  * @param maxLength It will ensure the users have the right amount of numbers after the bin is completed.
  */
-@Suppress("OutdatedDocumentation")
 class CardNumberTextFieldXML @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
-
     lateinit var state: PCIFieldState
     var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
     var readOnly: Boolean = false
