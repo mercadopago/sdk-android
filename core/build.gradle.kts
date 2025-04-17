@@ -12,6 +12,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfigs.versionName}\"")
     }
 
     buildTypes {

@@ -1,12 +1,15 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
+import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
+import com.mercadopago.sdk.android.coremethods.analytics.CoreMethodsAnalyticsConstants.CORE_METHODS_PATH
+import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 @KoverIgnore("in development")
 internal fun metricIdentificationCallSuccess() = Metric(
-    path = "/sdk-native/core-methods/identification-types",
+    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH/identification-types",
     type = TrackType.EVENT,
 )
 
@@ -14,7 +17,7 @@ internal fun metricIdentificationCallSuccess() = Metric(
 internal fun metricIdentificationCallError(
     error: String
 ) = Metric(
-    path = "/sdk-native/core-methods/identification-types_error",
+    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH/identification-types_error",
     type = TrackType.EVENT,
-    data = MetricErrorData(error = error),
+    data = AnalyticsConstants.buildErrorData(error = error),
 )

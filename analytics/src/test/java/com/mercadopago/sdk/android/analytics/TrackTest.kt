@@ -1,10 +1,10 @@
 package com.mercadopago.sdk.android.analytics
 
-import com.mercadopago.sdk.android.analytics.data.remote.models.AnalyticsRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.ApplicationRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.DeviceRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.TrackRequest
-import com.mercadopago.sdk.android.analytics.data.remote.models.UserRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.request.AnalyticsRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.request.ApplicationRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.request.DeviceRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.request.TrackRequest
+import com.mercadopago.sdk.android.analytics.data.remote.models.request.UserRequest
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import org.junit.Test

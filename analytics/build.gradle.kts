@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
 
+    implementation(libs.androidx.datastore)
+
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

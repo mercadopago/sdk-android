@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RetrofitServiceFactory(
-    private val publicKey: String,
+    private val publicKey: String?,
     private val baseUrl: String
 ) {
 
@@ -23,10 +23,12 @@ class RetrofitServiceFactory(
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-        OkHttpClient.Builder()
-            .addInterceptor(PublicKeyInterceptor(publicKey))
-            .addInterceptor(loggingInterceptor)
-            .build()
+        OkHttpClient.Builder().apply {
+            if (publicKey != null) {
+                addInterceptor(PublicKeyInterceptor(publicKey))
+            }
+            addInterceptor(loggingInterceptor)
+        }.build()
     }
 
     private val retrofit: Retrofit by lazy {
