@@ -15,10 +15,10 @@ import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.mappers.toInstallmentModel
 import com.mercadopago.sdk.android.presentation.data.Installment
 import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
-import java.math.BigDecimal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,

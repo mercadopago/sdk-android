@@ -5,12 +5,12 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.CardIssuerRe
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
-import java.math.BigDecimal
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import java.math.BigDecimal
 
 private const val BRICKS_API = "cho-off/beta"
 private const val VERSION = "v1"

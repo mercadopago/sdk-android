@@ -23,8 +23,8 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUse
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
-import java.math.BigDecimal
 import org.koin.core.Koin
+import java.math.BigDecimal
 
 /**
  * CoreMethods class
