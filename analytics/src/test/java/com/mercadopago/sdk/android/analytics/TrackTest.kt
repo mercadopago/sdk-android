@@ -13,29 +13,57 @@ internal class TrackTest {
 
     @Test
     fun `test User data class`() {
-        val user = UserRequest(uid = "user123")
+        val user = UserRequest(
+            uid = "user123",
+            sessionId = "sessionId"
+        )
         assertEquals("user123", user.uid)
+        assertEquals("sessionId", user.sessionId)
     }
 
     @Test
     fun `test Application data class`() {
-        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
+        val application = ApplicationRequest(
+            business = "MyApp",
+            siteId = "MLB",
+            version = "1.0.0",
+            appName = "MercadoPago",
+        )
         assertEquals("MyApp", application.business)
         assertEquals("MLB", application.siteId)
         assertEquals("1.0.0", application.version)
+        assertEquals("MercadoPago", application.appName)
     }
 
     @Test
     fun `test Device data class`() {
-        val device = DeviceRequest(platform = "Android")
+        val device = DeviceRequest(
+            platform = "Android",
+            connectivityType = "wifi",
+            osVersion = "31",
+        )
         assertEquals("Android", device.platform)
+        assertEquals("wifi", device.connectivityType)
+        assertEquals("31", device.osVersion)
     }
 
     @Test
     fun `test Track data class`() {
-        val user = UserRequest(uid = "user123")
-        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
-        val device = DeviceRequest(platform = "Android")
+        val user = UserRequest(
+            uid = "user123",
+            sessionId = "sessionId",
+        )
+        val application = ApplicationRequest(
+            business = "MyApp",
+            siteId = "MLB",
+            version = "1.0.0",
+            appName = "MercadoPago",
+        )
+        val device = DeviceRequest(
+            platform = "Android",
+            connectivityType = "wifi",
+            osVersion = "31",
+        )
         val eventData = MockEventData("")
         val track = TrackRequest(
             path = "payment/credit_card",
@@ -56,13 +84,28 @@ internal class TrackTest {
         assertEquals(application, track.application)
         assertEquals(device, track.device)
         assertNotNull(track.eventData)
+        assertEquals("MercadoPago", track.application.appName)
+        assertEquals("wifi", track.device.connectivityType)
+        assertEquals("31", track.device.osVersion)
     }
 
     @Test
     fun `test AnalyticsRequest data class`() {
-        val user = UserRequest(uid = "user123")
-        val application = ApplicationRequest(business = "MyApp", siteId = "MLB", version = "1.0.0")
-        val device = DeviceRequest(platform = "Android")
+        val user = UserRequest(
+            uid = "user123",
+            sessionId = "sessionId",
+        )
+        val application = ApplicationRequest(
+            business = "MyApp",
+            siteId = "MLB",
+            version = "1.0.0",
+            appName = "MercadoPago",
+        )
+        val device = DeviceRequest(
+            platform = "Android",
+            connectivityType = "wifi",
+            osVersion = "31",
+        )
         val eventData = MockEventData("")
         val track = TrackRequest(
             path = "payment/credit_card",
@@ -78,5 +121,8 @@ internal class TrackTest {
         val analyticsRequest = AnalyticsRequest(tracks = listOf(track))
         assertEquals(1, analyticsRequest.tracks.size)
         assertEquals(track, analyticsRequest.tracks[0])
+        assertEquals("MercadoPago", track.application.appName)
+        assertEquals("wifi", track.device.connectivityType)
+        assertEquals("31", track.device.osVersion)
     }
 }

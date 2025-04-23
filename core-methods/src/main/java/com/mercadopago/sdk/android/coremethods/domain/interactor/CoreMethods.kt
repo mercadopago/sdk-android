@@ -207,7 +207,6 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
                         paymentType = result.data.getOrNull(0)?.paymentTypeId.orEmpty(),
-                        merchantAccountId = result.data.getOrNull(0)?.merchantAccountId.orEmpty(),
                         transactionAmount = amount,
                     ),
                 )
@@ -299,7 +298,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricCardIssuersCallSuccess(),
+                    metricCardIssuersCallSuccess(
+                        issuers = result.data.mapNotNull { it.id },
+                    ),
                 )
             }
         }
@@ -345,7 +346,10 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricPaymentMethodCallSuccess(),
+                    metricPaymentMethodCallSuccess(
+                        issuer = result.data.firstOrNull()?.issuer?.id.orEmpty(),
+                        cardBrand = result.data.firstOrNull()?.paymentTypeId.orEmpty(),
+                    ),
                 )
             }
         }
