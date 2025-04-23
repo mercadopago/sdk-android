@@ -5,6 +5,8 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.CardIssuerRe
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
+import com.mercadopago.sdk.android.coremethods.data.remote.response.PaymentMethodResponse
+import com.mercadopago.sdk.android.coremethods.data.remote.utils.PRODUCT_ID
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -24,19 +26,25 @@ internal interface CoreMethodsService {
 
     @GET("$BRICKS_API/$VERSION/installments")
     suspend fun getInstallments(
-        @Query("product_id") productId: String?,
+        @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("bin") bin: Int?,
         @Query("processing_mode") processingMode: String?,
         @Query("amount") amount: BigDecimal?,
-    ): Response<InstallmentsResponse>
+    ): Response<List<InstallmentsResponse>>
 
     @GET("$BRICKS_API/$VERSION/identification_types")
     suspend fun getIdentificationTypes(): Response<List<IdentificationTypesResponse>>
 
     @GET("$BRICKS_API/$VERSION/card_issuers")
     suspend fun getCardIssuers(
-        @Query("product_id") productId: String?,
+        @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("bin") bin: Int?,
         @Query("payment_method_id") paymentMethodId: String?,
     ): Response<List<CardIssuerResponse>>
+
+    @GET("$BRICKS_API/$VERSION/payment_methods")
+    suspend fun getPaymentMethods(
+        @Query("product_id") productId: String? = PRODUCT_ID,
+        @Query("bin") bin: Int?
+    ): Response<List<PaymentMethodResponse>>
 }

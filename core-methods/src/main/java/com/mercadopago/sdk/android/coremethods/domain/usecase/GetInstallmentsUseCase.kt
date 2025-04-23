@@ -14,7 +14,7 @@ internal class GetInstallmentsUseCase(
         bin: String,
         amount: BigDecimal,
         processingMode: String,
-    ): Result<Installment, ResultError> {
+    ): Result<List<Installment>, ResultError> {
         return repository.getInstallment(
             GetInstallmentParams(
                 productId = "",

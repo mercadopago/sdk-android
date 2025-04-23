@@ -24,10 +24,12 @@ data class Installment(
  * Issuer contains details related to the issuer of the payment method.
  * @param id: The ID of the issuer.
  * @param thumbnail: The thumbnail of the issuer.
+ * @param default: it's the default issuer
  */
 data class Issuer(
     val id: String? = null,
     val thumbnail: String? = null,
+    val default: Boolean? = null,
 )
 
 /**
@@ -46,7 +48,7 @@ data class Issuer(
  */
 data class PayerCost(
     val instalments: Int? = null,
-    val installmentAmount: Int? = null,
+    val installmentAmount: Float? = null,
     val instalmentsRate: Float? = null,
     val installmentRateCollector: List<String>? = null,
     val totalAmount: Float? = null,

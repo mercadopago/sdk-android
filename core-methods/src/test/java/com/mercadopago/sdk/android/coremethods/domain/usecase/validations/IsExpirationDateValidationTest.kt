@@ -44,7 +44,7 @@ internal class IsExpirationDateValidationTest {
 
     @Test
     fun `when pass a expiration date with wrong month Then return is not valid`() {
-        val expirationDate = String.format(Locale.getDefault(), "%02d%02d", currentMonth + 2, currentYear)
+        val expirationDate = String.format(Locale.getDefault(), "%02d%02d", currentMonth - 2, currentYear)
         val length = 4
 
         val expirationDateValidUseCase = IsExpirationDateValidUseCase()

@@ -9,17 +9,21 @@ import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCal
 import com.mercadopago.sdk.android.coremethods.analytics.metricIdentificationCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallSuccess
+import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallError
+import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallSuccess
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -171,7 +175,7 @@ class CoreMethods internal constructor(
         bin: String,
         amount: BigDecimal,
         processingMode: ProcessingMode = ProcessingMode.Aggregator,
-    ): Result<Installment, ResultError> {
+    ): Result<List<Installment>, ResultError> {
         val result = koin.get<GetInstallmentsUseCase>().invoke(
             bin = bin,
             amount = amount,
@@ -202,8 +206,8 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
-                        paymentType = result.data.paymentTypeId.orEmpty(),
-                        merchantAccountId = result.data.merchantAccountId.orEmpty(),
+                        paymentType = result.data.getOrNull(0)?.paymentTypeId.orEmpty(),
+                        merchantAccountId = result.data.getOrNull(0)?.merchantAccountId.orEmpty(),
                         transactionAmount = amount,
                     ),
                 )
@@ -296,6 +300,52 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricCardIssuersCallSuccess(),
+                )
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * Get Payment Methods
+     *
+     * This return a [Result.Success] of [PaymentMethod] list data model or a [Result.Error] of [ResultError]
+     * This is a suspend function and should be called only from a coroutine or another suspend function
+     *
+     * @param bin: the credit card bin
+     */
+    suspend fun getPaymentMethods(
+        bin: String,
+    ): Result<List<PaymentMethod>, ResultError> {
+        val result = koin.get<GetPaymentMethodsUseCase>().invoke(
+            bin = bin,
+        )
+
+        when (result) {
+            is Result.Error -> {
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricPaymentMethodCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricPaymentMethodCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricPaymentMethodCallSuccess(),
                 )
             }
         }

@@ -1,8 +1,6 @@
 package com.mercadopago.sdk.android.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
@@ -31,13 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.mercadopago.sdk.android.R
-import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -105,7 +99,6 @@ internal fun PaymentExampleScreenContent(
                 .padding(paddingValues)
         ) {
             Column {
-                CheckoutHeader(viewState.cardIssuers)
                 Spacer(Modifier.height(16.dp))
                 CardNumberTextFieldExample(
                     modifier = Modifier
@@ -144,6 +137,7 @@ internal fun PaymentExampleScreenContent(
                 )
                 Spacer(Modifier.size(16.dp))
                 Button(
+                    enabled = viewState.formIsValid,
                     shape = MaterialTheme.shapes.small,
                     onClick = {
                         PaymentScreenViewModel().generateToken(
@@ -188,7 +182,7 @@ internal fun SecurityCodeExample(
             SecurityCodeTextField(
                 state = state,
                 onEvent = onSecurityCodeEvent,
-                securityCodeSize = 3,
+                securityCodeSize = securityCodeState.secureCodeLength,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
                     // Customize the input with relevant information like borders, icons, colors and more
@@ -253,7 +247,7 @@ internal fun ExpirationDateExample(
                         modifier = Modifier
                             .addBorder(
                                 isFocused = expirationDateState.isFocused,
-                                isError = expirationDateState.valid
+                                isValid = expirationDateState.valid
                             )
                             .height(OutlinedTextFieldDefaults.MinHeight)
                             .padding(horizontal = 16.dp),
@@ -301,6 +295,18 @@ internal fun CardNumberTextFieldExample(
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
                 ) {
+                    // Displaying the issuer image to the user when the bin is changed
+                    if (cardNumberState.image != null) {
+                        val context = LocalContext.current
+                        AsyncImage(
+                            model = ImageRequest.Builder(context)
+                                .data(cardNumberState.image)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                    }
                     Box {
                         if (cardNumberState.length == 0) {
                             Text(
@@ -318,62 +324,6 @@ internal fun CardNumberTextFieldExample(
     }
 }
 
-@Composable
-@Suppress("UndocumentedPublicFunction")
-fun CheckoutHeader(
-    cardIssuer: List<CardIssuer>,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = "Credit or debit card",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(horizontal = 16.dp),
-        ) {
-            items(cardIssuer.size) { item ->
-                PaymentMethodThumbnailItem(
-                    url = cardIssuer[item].thumbnail ?: "",
-                    description = cardIssuer[item].id ?: "",
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-    }
-}
-
-@Composable
-@Suppress("UndocumentedPublicFunction")
-fun PaymentMethodThumbnailItem(
-    url: String,
-    description: String,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    AsyncImage(
-        model = ImageRequest.Builder(context)
-            .data(url)
-            .build(),
-        contentDescription = description,
-        modifier = modifier
-            .size(
-                width = 38.dp,
-                height = 28.dp,
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(4.dp)
-            )
-            .padding(horizontal = 4.dp),
-    )
-}
-
 @Preview(name = "Payment Screen Example", showBackground = true)
 @Composable
 internal fun PaymentExampleScreenPreview() {
@@ -381,27 +331,3 @@ internal fun PaymentExampleScreenPreview() {
         PaymentExampleScreen()
     }
 }
-
-// @Preview(name = "Empty Security Field", showBackground = true)
-// @Composable
-// fun SecurityCodeExamplePreview() {
-//    ExampleTheme {
-//        SecurityCodeExample()
-//    }
-// }
-//
-// @Preview(name = "Empty Expiration Date Field", showBackground = true)
-// @Composable
-// fun ExpirationDatePreview() {
-//    ExampleTheme {
-//        ExpirationDateExample()
-//    }
-// }
-//
-// @Preview(name = "Empty Card Number Field", showBackground = true)
-// @Composable
-// fun CardNumberPreview() {
-//    ExampleTheme {
-//        CardNumberTextField()
-//    }
-// }

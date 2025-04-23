@@ -9,9 +9,9 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param maxLength: The maximum length of the identification type.
  */
 data class IdentificationType(
-    val id: String,
-    val name: String,
-    val type: String,
-    val minLength: Int,
-    val maxLength: Int,
+    val id: String? = null,
+    val name: String? = null,
+    val type: String? = null,
+    val minLength: Int? = null,
+    val maxLength: Int? = null,
 )
