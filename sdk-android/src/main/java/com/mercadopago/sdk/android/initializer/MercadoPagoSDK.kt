@@ -5,7 +5,6 @@ package com.mercadopago.sdk.android.initializer
 import android.content.Context
 import android.util.Log
 import com.mercadolibre.android.device.sdk.DeviceSDK
-import com.mercadopago.sdk.android.BuildConfig
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
