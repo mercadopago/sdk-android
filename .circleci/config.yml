@@ -97,19 +97,6 @@ jobs:
       - store_test_results:
           path: core-methods/build/reports/kover/reportDebug.xml
 
-#      - run:
-#          name: Update Dokka Documentation
-#          command: ./gradlew core-methods/dokkaHtml
-#
-#      - run:
-#          name: Upload Dokka Documentation
-#          command: |
-#            cd core-methods/build/dokka/html
-#            git add.
-#            filters:
-#              branches:
-#                only: master
-
       # BUILD STEP
       - run:
           name: Build the app

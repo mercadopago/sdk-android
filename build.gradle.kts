@@ -28,6 +28,11 @@ tasks.withType(Detekt::class).configureEach {
 allprojects {
     apply(plugin = "org.jetbrains.kotlinx.kover")
     apply(plugin = "org.jetbrains.dokka")
+
+    tasks.dokkaHtml {
+        outputDirectory.set(layout.buildDirectory.dir("../../.documentation"))
+    }
+
     kover {
         reports {
             filters {
