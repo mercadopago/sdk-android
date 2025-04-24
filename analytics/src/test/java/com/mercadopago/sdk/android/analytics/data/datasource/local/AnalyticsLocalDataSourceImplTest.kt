@@ -10,10 +10,13 @@ import com.mercadopago.sdk.android.analytics.data.local.model.SessionId
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import java.util.Calendar
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration.Companion.minutes
 
 internal class AnalyticsLocalDataSourceImplTest {
 
@@ -24,31 +27,77 @@ internal class AnalyticsLocalDataSourceImplTest {
         gson = gson,
     )
 
-//    @Test
-//    fun `when getSessionId is called with valid session Then return sessionId`() = runTest {
-//        // Given
-//        val sessionId = SessionId(sessionId = "123", lastUpdate = 123)
-//        val sessionJson = "session"
-//        val fakeCalendar = Calendar.getInstance().apply {
-//            set(2023, Calendar.DECEMBER, 25)
-//        }
-//        mockkStatic(Calendar::class)
-//        every { Calendar.getInstance() } returns fakeCalendar
-//        every {
-//            gson.fromJson(sessionJson, SessionId::class.java)
-//        } returns sessionId
-//
-//        // When
-//        val result = dataSource.getSessionId()
-//
-//        // Then
-//        result.test {
-//            assertEquals(sessionId, awaitItem())
-//        }
-//    }
+    @Test
+    fun `when getSessionId is called with valid session Then return sessionId`() = runTest {
+        // Given
+        val currentTimeMilli = Calendar.getInstance().timeInMillis
+        val sessionId = SessionId(sessionId = "123", lastUpdate = currentTimeMilli)
+        val sessionJson = "session"
+        val calendar = mockk<Calendar>()
+        mockkStatic(Calendar::class)
+        every { dataStore.data } returns flowOf(
+            preferencesOf(
+                stringPreferencesKey(SESSION_ID_PREFERENCE_KEY) to sessionJson
+            )
+        )
+        every { Calendar.getInstance() } returns calendar
+        every {
+            calendar.timeInMillis
+        } returns currentTimeMilli
+        every {
+            gson.fromJson(sessionJson, SessionId::class.java)
+        } returns sessionId
+
+        // When
+        val result = dataSource.getSessionId()
+
+        // Then
+        result.test {
+            assertEquals(sessionId, awaitItem())
+            awaitComplete()
+        }
+    }
 
     @Test
     fun `when getSessionId is called with invalid session Then generate new session`() = runTest {
+        // Given
+        val currentTimeMilli = Calendar.getInstance().timeInMillis
+        val pastTimeMilli = currentTimeMilli - 31.minutes.inWholeMinutes
+        val sessionId = SessionId(sessionId = "123", lastUpdate = pastTimeMilli)
+        val sessionJson = "session"
+        val calendar = mockk<Calendar>()
+        val preferences = preferencesOf(
+            stringPreferencesKey(SESSION_ID_PREFERENCE_KEY) to sessionId.toString()
+        )
+        coEvery {
+            dataStore.updateData { (any()) }
+        } returns preferences
+        mockkStatic(Calendar::class)
+        every { dataStore.data } returns flowOf(
+            preferencesOf(
+                stringPreferencesKey(SESSION_ID_PREFERENCE_KEY) to sessionJson
+            )
+        )
+        every { Calendar.getInstance() } returns calendar
+        every {
+            calendar.timeInMillis
+        } returns currentTimeMilli
+        every {
+            gson.fromJson(sessionJson, SessionId::class.java)
+        } returns sessionId
+
+        // When
+        val result = dataSource.getSessionId()
+
+        // Then
+        result.test {
+            assertEquals(currentTimeMilli, awaitItem().lastUpdate)
+            awaitComplete()
+            assertEquals(sessionId.toString(), preferences[stringPreferencesKey(SESSION_ID_PREFERENCE_KEY)])
+        }
+        coEvery {
+            dataStore.updateData { any() }
+        }
     }
 
     @Test

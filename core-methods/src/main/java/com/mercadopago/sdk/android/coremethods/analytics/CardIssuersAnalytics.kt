@@ -13,24 +13,22 @@ import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 private const val ISSUERS_PATH = "/issuers"
 
 @KoverIgnore("in development")
-internal fun metricCardIssuersCallSuccess(
-    issuers: List<String>,
-) = Metric(
-    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH",
-    type = TrackType.EVENT,
-    data = CardIssuersAnalyticsEventData(
-        issuers = issuers,
-    ),
-)
+internal fun metricCardIssuersCallSuccess(issuers: List<String>) =
+    Metric(
+        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH",
+        type = TrackType.EVENT,
+        data = CardIssuersAnalyticsEventData(
+            issuers = issuers,
+        ),
+    )
 
 @KoverIgnore("in development")
-internal fun metricCardIssuersCallError(
-    error: String
-) = Metric(
-    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH$ERROR_PATH",
-    type = TrackType.EVENT,
-    data = AnalyticsConstants.buildErrorData(error),
-)
+internal fun metricCardIssuersCallError(error: String) =
+    Metric(
+        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH$ERROR_PATH",
+        type = TrackType.EVENT,
+        data = AnalyticsConstants.buildErrorData(error),
+    )
 
 internal data class CardIssuersAnalyticsEventData(
     @SerializedName("issuers")

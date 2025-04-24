@@ -13,14 +13,20 @@ private const val PCI_FIELD_PATH = "/pci_field"
 private const val COMPOSE_FRAMEWORK = "Compose"
 
 @KoverIgnore("in development")
-internal fun metricPCIFieldInitialization(field: String, frameworkUI: String = COMPOSE_FRAMEWORK) = Metric(
+internal fun metricPCIFieldInitialization(
+    field: String,
+    frameworkUI: String = COMPOSE_FRAMEWORK,
+) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$PCI_FIELD_PATH",
     type = TrackType.VIEW,
     data = MetricPCIFieldData(field, frameworkUI),
 )
 
 @KoverIgnore("in development")
-internal fun metricPCIFieldFocus(field: String, frameworkUI: String = COMPOSE_FRAMEWORK) = Metric(
+internal fun metricPCIFieldFocus(
+    field: String,
+    frameworkUI: String = COMPOSE_FRAMEWORK,
+) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$FOCUS_PATH",
     type = TrackType.EVENT,
     data = MetricPCIFieldData(field, frameworkUI),

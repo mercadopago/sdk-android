@@ -19,7 +19,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ExpirationDateTextFieldTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 

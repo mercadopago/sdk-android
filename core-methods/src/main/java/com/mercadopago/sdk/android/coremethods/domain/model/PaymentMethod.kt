@@ -46,7 +46,7 @@ data class PaymentMethod(
     val siteId: String? = null,
     val processingMode: String? = null,
     val additionalInfoNeeded: List<String>? = null,
-    val status: String? = null
+    val status: String? = null,
 )
 
 /**
@@ -57,7 +57,7 @@ data class PaymentMethod(
  */
 data class FinancialInstitutionModel(
     val id: String?,
-    val description: String
+    val description: String,
 )
 
 /**
@@ -72,7 +72,7 @@ data class CardModel(
     val bin: Int? = null,
     val length: LengthModel? = null,
     val validation: String? = null,
-    val securityCode: SecurityCodeModel? = null
+    val securityCode: SecurityCodeModel? = null,
 )
 
 /**
@@ -83,7 +83,7 @@ data class CardModel(
  */
 data class LengthModel(
     val min: Int? = null,
-    val max: Int? = null
+    val max: Int? = null,
 )
 
 /**
@@ -96,5 +96,5 @@ data class LengthModel(
 data class SecurityCodeModel(
     val mode: String? = null,
     val location: String? = null,
-    val length: Int? = null
+    val length: Int? = null,
 )

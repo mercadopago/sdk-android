@@ -14,7 +14,8 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfigs.versionName}\"")
-        buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadolibre.com/\"")
+        buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
+        buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
     }
 
     buildTypes {

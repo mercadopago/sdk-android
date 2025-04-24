@@ -41,7 +41,7 @@ internal fun IssuerResponse.toModel() =
     Issuer(
         id = this.id,
         thumbnail = this.thumbnail,
-        default = this.default
+        default = this.default,
     )
 
 internal fun AgreementsResponse.toModel() =

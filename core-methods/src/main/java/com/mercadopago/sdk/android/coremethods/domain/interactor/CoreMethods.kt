@@ -46,7 +46,6 @@ import java.math.BigDecimal
 class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
-
     /**
      * Generate Card Token call.
      *
@@ -78,16 +77,16 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
 
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
                 }
@@ -95,7 +94,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -135,7 +134,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
 
@@ -143,7 +142,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
                 }
@@ -151,7 +150,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -251,7 +250,7 @@ class CoreMethods internal constructor(
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricIdentificationCallSuccess(
-                        result.data.mapNotNull { identificationType -> identificationType.name }
+                        result.data.mapNotNull { identificationType -> identificationType.name },
                     ),
                 )
             }
@@ -270,11 +269,11 @@ class CoreMethods internal constructor(
      */
     suspend fun getCardIssuers(
         bin: Int,
-        paymentMethodId: String
+        paymentMethodId: String,
     ): Result<List<CardIssuer>, ResultError> {
         val result = koin.get<GetCardIssuersUseCase>().invoke(
             bin = bin,
-            paymentMethodId = paymentMethodId
+            paymentMethodId = paymentMethodId,
         )
 
         when (result) {
@@ -318,9 +317,7 @@ class CoreMethods internal constructor(
      *
      * @param bin: the credit card bin
      */
-    suspend fun getPaymentMethods(
-        bin: String,
-    ): Result<List<PaymentMethod>, ResultError> {
+    suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,
         )
@@ -350,7 +347,7 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricPaymentMethodCallSuccess(
                         issuer = result.data.firstOrNull()?.issuer?.id.orEmpty(),
-                        cardBrand = result.data.firstOrNull()?.paymentTypeId.orEmpty(),
+                        cardBrand = result.data.firstOrNull()?.id.orEmpty(),
                     ),
                 )
             }

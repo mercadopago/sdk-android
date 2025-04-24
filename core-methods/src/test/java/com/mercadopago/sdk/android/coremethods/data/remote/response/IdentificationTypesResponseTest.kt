@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
 internal class IdentificationTypesResponseTest {
-
     @Test
     fun `should create IdentificationTypesResponse with correct properties`() {
         val id = "000"
@@ -18,7 +17,7 @@ internal class IdentificationTypesResponseTest {
             name = name,
             type = type,
             minLength = minLength,
-            maxLength = maxLength
+            maxLength = maxLength,
         )
 
         // Assert
@@ -36,7 +35,7 @@ internal class IdentificationTypesResponseTest {
             name = "default_name",
             type = "default_type",
             minLength = 0,
-            maxLength = 0
+            maxLength = 0,
         )
 
         assertEquals("default_id", response.id)

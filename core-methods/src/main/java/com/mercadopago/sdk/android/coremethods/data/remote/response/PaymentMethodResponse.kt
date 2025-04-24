@@ -44,14 +44,14 @@ internal data class PaymentMethodResponse(
     @SerializedName("additional_info_needed")
     val additionalInfoNeeded: List<String>? = null,
     @SerializedName("status")
-    val status: String? = null
+    val status: String? = null,
 )
 
 internal data class FinancialInstitutionResponse(
     @SerializedName("id")
     val id: String?,
     @SerializedName("description")
-    val description: String
+    val description: String,
 )
 
 internal data class CardResponse(
@@ -69,7 +69,7 @@ internal data class LengthResponse(
     @SerializedName("min")
     val min: Int? = null,
     @SerializedName("max")
-    val max: Int? = null
+    val max: Int? = null,
 )
 
 internal data class SecurityCodeResponse(
@@ -78,5 +78,5 @@ internal data class SecurityCodeResponse(
     @SerializedName("location")
     val location: String? = null,
     @SerializedName("length")
-    val length: Int? = null
+    val length: Int? = null,
 )

@@ -13,22 +13,20 @@ import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 private const val IDENTIFICATION_TYPES_PATH = "/identification_types"
 
 @KoverIgnore("in development")
-internal fun metricIdentificationCallSuccess(
-    identificationTypes: List<String>,
-) = Metric(
-    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH",
-    type = TrackType.EVENT,
-    data = IdentificationTypesEventData(identificationTypes),
-)
+internal fun metricIdentificationCallSuccess(identificationTypes: List<String>) =
+    Metric(
+        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH",
+        type = TrackType.EVENT,
+        data = IdentificationTypesEventData(identificationTypes),
+    )
 
 @KoverIgnore("in development")
-internal fun metricIdentificationCallError(
-    error: String
-) = Metric(
-    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH$ERROR_PATH",
-    type = TrackType.EVENT,
-    data = AnalyticsConstants.buildErrorData(error = error),
-)
+internal fun metricIdentificationCallError(error: String) =
+    Metric(
+        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH$ERROR_PATH",
+        type = TrackType.EVENT,
+        data = AnalyticsConstants.buildErrorData(error = error),
+    )
 
 internal data class IdentificationTypesEventData(
     @SerializedName("document_types")

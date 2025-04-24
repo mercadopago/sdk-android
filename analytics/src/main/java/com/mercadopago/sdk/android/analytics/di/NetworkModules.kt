@@ -17,7 +17,7 @@ internal fun provideNetworkModule() = module {
     single(named(ANALYTICS_SERVICE_FACTORY)) {
         RetrofitServiceFactory(
             publicKey = null,
-            baseUrl = BuildConfig.MERCADO_PAGO_API_URL,
+            baseUrl = BuildConfig.MERCADO_LIBRE_API_URL,
         )
     }
 }

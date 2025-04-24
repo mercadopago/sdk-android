@@ -11,7 +11,7 @@ internal data class GenerateCardTokenParams(
     val expirationMonth: Int? = null,
     val expirationYear: Int? = null,
     val buyerIdentification: BuyerIdentification? = null,
-    val device: Device? = null
+    val device: Device? = null,
 )
 
 internal data class BuyerIdentification(

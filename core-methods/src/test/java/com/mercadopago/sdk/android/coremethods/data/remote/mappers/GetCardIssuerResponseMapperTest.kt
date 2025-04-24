@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
 internal class GetCardIssuerResponseMapperTest {
-
     @Test
     fun `when call CardIssuerResponse toModel should correctly map CardIssuerResponse to CardIssuer`() {
         val cardIssuerResponse = CardIssuerResponse(
@@ -13,7 +12,7 @@ internal class GetCardIssuerResponseMapperTest {
             merchantAccountId = "merchant_account_001",
             processingMode = "gateway",
             status = "active",
-            thumbnail = "http://example.com/thumbnail.png"
+            thumbnail = "http://example.com/thumbnail.png",
         )
 
         val cardIssuer = cardIssuerResponse.toModel()
@@ -32,7 +31,7 @@ internal class GetCardIssuerResponseMapperTest {
             merchantAccountId = null,
             processingMode = "aggregator",
             status = "inactive",
-            thumbnail = null
+            thumbnail = null,
         )
 
         val cardIssuer = cardIssuerResponse.toModel()
