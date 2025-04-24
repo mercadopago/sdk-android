@@ -30,7 +30,7 @@ internal class SdkInitializationLocalDataSourceTest {
         val siteId = SiteId("123")
         val publicKey = "public_key"
         val encryptedPublicKeyBytes = "encrypted_public_key".toByteArray()
-        val encryptedPublicKey = encryptedPublicKeyBytes.toString()
+        val encryptedPublicKey = encryptedPublicKeyBytes.joinToString("") { FORMAT_MODE.format(it) }
         every {
             messageDigest.digest(publicKey.toByteArray())
         } returns encryptedPublicKeyBytes
