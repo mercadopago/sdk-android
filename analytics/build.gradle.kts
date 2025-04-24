@@ -37,14 +37,19 @@ dependencies {
     implementation(projects.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
 
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
 
     implementation(libs.androidx.datastore)
 
-    implementation(libs.material)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.mockk)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
+    testImplementation(libs.cashapp.turbine)
+    testImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

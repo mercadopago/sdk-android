@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.analytics.domain.interactor
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -31,6 +32,7 @@ const val MP_ANALYTICS_TAG = "MPAnalytics"
  *  This class have to be initialized first with [initialize] method
  *  then get a instance by [getInstance]
  * */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class MPAnalytics internal constructor(
     private val koin: Koin,
 ) {
@@ -45,6 +47,7 @@ class MPAnalytics internal constructor(
         /**
          * Gets the instance of the [MPAnalytics] class.
          */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun getInstance(): MPAnalytics {
             return instance ?: throw AnalyticsInitializationException()
         }
@@ -53,6 +56,7 @@ class MPAnalytics internal constructor(
          * @param context application context.
          * @param getSiteIdFlow a flow that emits the current siteId.
          * */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun initialize(
             context: Context,
             getSiteIdFlow: Flow<String>,
@@ -73,6 +77,7 @@ class MPAnalytics internal constructor(
      * 2. Builds the payload with all required data
      * 4. Sends the data (currently just prints to console)
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     fun trackMetric(metric: Metric) {
         val trackMetricUseCase = koin.get<TrackMetricUseCase>()
         CoroutineScope(Dispatchers.IO).launch {

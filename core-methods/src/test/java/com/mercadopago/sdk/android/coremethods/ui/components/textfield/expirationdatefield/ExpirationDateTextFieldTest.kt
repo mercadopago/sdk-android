@@ -6,9 +6,11 @@ import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +31,8 @@ internal class ExpirationDateTextFieldTest {
 
     @Before
     fun start() {
-        val sessionId = "session"
-        val siteId = "site"
-        val version = "1.0"
-        val getSiteIdFlow = flowOf<String>()
-        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
+        mockkObject(MPAnalytics.Companion)
+        every { MPAnalytics.getInstance() } returns mockk<MPAnalytics>(relaxed = true)
     }
 
     @Test

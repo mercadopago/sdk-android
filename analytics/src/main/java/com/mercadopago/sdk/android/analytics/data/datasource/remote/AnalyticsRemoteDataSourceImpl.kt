@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.analytics.data.remote.models.request.Analytic
 import com.mercadopago.sdk.android.analytics.data.remote.service.AnalyticsService
 import com.mercadopago.sdk.android.analytics.domain.interactor.MP_ANALYTICS_TAG
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
 import com.mercadopago.sdk.android.core.utils.mapToFlow
@@ -49,6 +50,7 @@ internal class AnalyticsRemoteDataSourceImpl(
             .mapToFlow().map { }
     }
 
+    @KoverIgnore("Only for test usage")
     private fun validateTrack(metricRequest: AnalyticsRequest): Flow<Unit> = flow<Unit> {
         val track = metricRequest.tracks.firstOrNull()
         val response = service.validateMetric(track)

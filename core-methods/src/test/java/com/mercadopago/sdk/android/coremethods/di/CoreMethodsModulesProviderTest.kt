@@ -16,6 +16,7 @@ import org.koin.test.verify.verify
 import kotlin.test.Test
 
 internal class CoreMethodsModulesProviderTest : KoinTest {
+
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideModules is called Then modules should be verified`() {

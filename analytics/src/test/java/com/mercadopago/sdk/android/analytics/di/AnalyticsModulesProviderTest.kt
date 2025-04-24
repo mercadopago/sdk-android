@@ -1,16 +1,15 @@
 package com.mercadopago.sdk.android.analytics.di
 
-import android.content.Context
-import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import android.app.Application
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
-import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import kotlinx.coroutines.flow.Flow
 import org.junit.Test
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
-import org.koin.dsl.module
 import org.koin.test.check.checkModules
 import org.koin.test.verify.verify
 
@@ -20,23 +19,20 @@ internal class AnalyticsModulesProviderTest {
     @Test
     fun `when provideModules is called Then modules should be verified`() {
         // Given
-        mockkObject(MPAnalytics.Companion)
-        every { MPAnalytics.getInstance() } returns mockk<MPAnalytics>(relaxed = true)
         mockkObject(CoreKoinFactory)
-        every { CoreKoinFactory.setKoinModules(any(), any()) } returns mockk()
+        val context = mockk<Application>()
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
-        val modulesProvider = AnalyticsModulesProvider()
-        val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
-            publicKey = "public_key",
-            context = mockk<Context>(),
+        val modulesProvider = AnalyticsModulesProvider(
+            context = context,
+            getSiteIdFlow = mockk<Flow<String>>(),
         )
 
         // When
-        val module = module {
-            includes(modulesProvider.provideModules())
-            includes(mercadoPagoSdkModulesProvider.provideModules())
-        }
+        val module = modulesProvider
+            .provideModules()
+            .toModule()
         val koin = koinApplication {
+            androidContext(context)
             modules(module)
         }
 

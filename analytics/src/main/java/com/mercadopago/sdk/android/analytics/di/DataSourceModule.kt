@@ -10,7 +10,6 @@ import com.mercadopago.sdk.android.analytics.data.datasource.local.AnalyticsLoca
 import com.mercadopago.sdk.android.analytics.data.datasource.remote.AnalyticsRemoteDataSource
 import com.mercadopago.sdk.android.analytics.data.datasource.remote.AnalyticsRemoteDataSourceImpl
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -20,8 +19,8 @@ private const val ANALYTICS_DATA_STORE = "ANALYTICS_DATA_STORE"
 internal fun provideDataSourceModule(): Module = module {
     factory<AnalyticsRemoteDataSource> {
         AnalyticsRemoteDataSourceImpl(
-            context = androidContext(),
             service = get(),
+            context = androidApplication(),
             gson = get(),
         )
     }

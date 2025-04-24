@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.di
 
 import android.content.Context
 import androidx.annotation.RestrictTo
+import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.core.di.CoreKoinModuleProvider
 import com.mercadopago.sdk.android.di.datasource.provideDataSourceModule
@@ -10,8 +11,6 @@ import com.mercadopago.sdk.android.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.di.usecases.provideUseCaseModule
 import org.koin.core.Koin
 import org.koin.core.module.Module
-
-internal const val PUBLIC_API_URL = "https://api.mercadopago.com/"
 
 /**
  * The Koin Modules Provider for the SDK.
@@ -32,7 +31,7 @@ class MercadoPagoSdkModulesProvider(
     override fun provideModules(): List<Module> = listOf(
         provideNetworkModule(
             publicKey = publicKey,
-            baseUrl = PUBLIC_API_URL,
+            baseUrl = BuildConfig.MERCADO_PAGO_API_URL,
         ),
         provideDataSourceModule(),
         provideRepositoryModule(),

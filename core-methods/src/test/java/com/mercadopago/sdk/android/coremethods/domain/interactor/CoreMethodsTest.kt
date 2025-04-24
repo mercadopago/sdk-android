@@ -122,7 +122,7 @@ internal class CoreMethodsTest {
     @Test
     fun `getInstallments should return success and track success metric`() = runTest {
         val bin = "123456"
-        val amount = 1000L
+        val amount = 1000.0.toBigDecimal()
         val expectedInstallment =
             listOf(Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id"))
         val expectedResult = Result.Success(expectedInstallment)
@@ -138,7 +138,7 @@ internal class CoreMethodsTest {
     @Test
     fun `getInstallments should return error and track error metric`() = runTest {
         val bin = "123456"
-        val amount = 1000L
+        val amount = 1000.0.toBigDecimal()
         val expectedError = ResultError.Request(code = "404", message = "Installments not found")
         val expectedResult = Result.Error(expectedError)
 

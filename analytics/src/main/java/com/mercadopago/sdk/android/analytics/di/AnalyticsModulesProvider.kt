@@ -17,12 +17,10 @@ internal class AnalyticsModulesProvider(
         context = context,
     )
 
-    override fun provideModules(): List<Module> {
-        return listOf(
-            provideNetworkModule(),
-            provideDataSourceModule(),
-            provideRepositoryModule(getSiteIdFlow),
-            provideUseCaseModule(),
-        )
-    }
+    override fun provideModules(): List<Module> = listOf(
+        provideNetworkModule(),
+        provideDataSourceModule(),
+        provideRepositoryModule(getSiteIdFlow),
+        provideUseCaseModule(),
+    )
 }

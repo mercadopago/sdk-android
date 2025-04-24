@@ -43,7 +43,7 @@ internal fun Metric.toRequest(
                 business = BUSINESS,
                 siteId = siteId,
                 version = BuildConfig.SdkVersion,
-                appName = context.applicationInfo.packageName,
+                appName = context.applicationInfo?.packageName.orEmpty(),
             ),
             device = DeviceRequest(
                 platform = PLATFORM,

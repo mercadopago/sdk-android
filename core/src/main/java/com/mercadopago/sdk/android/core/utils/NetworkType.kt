@@ -14,6 +14,7 @@ private const val NETWORK_4G = 19
  * @return The current network type.
  */
 @Suppress("ReturnCount")
+@KoverIgnore("Network Behaviour")
 fun checkNetworkType(context: Context): NetworkType {
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
@@ -70,6 +71,7 @@ fun checkNetworkType(context: Context): NetworkType {
  *
  * @property text The string representation of the network type.
  */
+@KoverIgnore("Network Behaviour")
 enum class NetworkType(val text: String) {
     /**
      *  Wifi connection type.

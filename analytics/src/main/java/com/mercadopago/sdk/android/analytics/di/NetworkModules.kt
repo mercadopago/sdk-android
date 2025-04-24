@@ -1,11 +1,8 @@
 package com.mercadopago.sdk.android.analytics.di
 
 import com.mercadopago.sdk.android.analytics.data.remote.service.AnalyticsService
+import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.di.RetrofitServiceFactory
-import com.mercadopago.sdk.android.core.utils.isDebugApp
-import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
-import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -20,12 +17,7 @@ internal fun provideNetworkModule() = module {
     single(named(ANALYTICS_SERVICE_FACTORY)) {
         RetrofitServiceFactory(
             publicKey = null,
-            baseUrl = "https://api.mercadolibre.com/",
-            logLevel = if (isDebugApp() && isSameLibraryGroup(androidContext())) {
-                HttpLoggingInterceptor.Level.BODY
-            } else {
-                HttpLoggingInterceptor.Level.NONE
-            }
+            baseUrl = BuildConfig.MERCADO_PAGO_API_URL,
         )
     }
 }

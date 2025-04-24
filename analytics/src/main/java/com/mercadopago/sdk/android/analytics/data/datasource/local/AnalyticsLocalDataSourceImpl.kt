@@ -14,8 +14,8 @@ import java.util.Calendar
 import java.util.UUID
 import kotlin.time.Duration.Companion.minutes
 
-private const val SESSION_ID = "session_id"
-private const val UID = "uid"
+internal const val SESSION_ID_PREFERENCE_KEY = "session_id"
+internal const val UID_PREFERENCE_KEY = "uid"
 
 internal class AnalyticsLocalDataSourceImpl(
     private val dataStore: DataStore<Preferences>,
@@ -26,7 +26,7 @@ internal class AnalyticsLocalDataSourceImpl(
         return dataStore.data.map { preferences ->
             val sessionId = try {
                 gson.fromJson(
-                    preferences[stringPreferencesKey(SESSION_ID)],
+                    preferences[stringPreferencesKey(SESSION_ID_PREFERENCE_KEY)],
                     SessionId::class.java,
                 )
             } catch (_: Exception) {
@@ -51,7 +51,7 @@ internal class AnalyticsLocalDataSourceImpl(
 
     override fun getUid(): Flow<String> {
         return dataStore.data.map { preferences ->
-            preferences[stringPreferencesKey(UID)].orEmpty().takeIf {
+            preferences[stringPreferencesKey(UID_PREFERENCE_KEY)].orEmpty().takeIf {
                 it.isNotEmpty()
             } ?: UUID.randomUUID().toString().also { newUid ->
                 setUid(newUid.toString()).firstOrNull()
@@ -62,7 +62,7 @@ internal class AnalyticsLocalDataSourceImpl(
     override fun setSessionId(sessionId: SessionId): Flow<Unit> {
         return flow {
             dataStore.edit { preferences ->
-                preferences[stringPreferencesKey(SESSION_ID)] = gson.toJson(sessionId)
+                preferences[stringPreferencesKey(SESSION_ID_PREFERENCE_KEY)] = gson.toJson(sessionId)
             }
             emit(Unit)
         }
@@ -71,7 +71,7 @@ internal class AnalyticsLocalDataSourceImpl(
     override fun setUid(uid: String): Flow<Unit> {
         return flow {
             dataStore.edit { preferences ->
-                preferences[stringPreferencesKey(UID)] = uid
+                preferences[stringPreferencesKey(UID_PREFERENCE_KEY)] = uid
             }
             emit(Unit)
         }

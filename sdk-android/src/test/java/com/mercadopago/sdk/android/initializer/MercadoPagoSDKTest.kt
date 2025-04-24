@@ -98,9 +98,9 @@ internal class MercadoPagoSDKTest {
         every {
             fetchSiteIdUseCase(publicKey)
         } returns flowOf(siteId)
-        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
-            SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+            SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         } returns sdkInitializerEvent
 
         // When
@@ -130,10 +130,10 @@ internal class MercadoPagoSDKTest {
         } returns flow { throw exception }
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(
             context = context,
-            isError = true,
+            publicKey = publicKey,
         )
         every {
-            SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+            SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         } returns sdkInitializerEvent
 
         // When
@@ -162,9 +162,9 @@ internal class MercadoPagoSDKTest {
         every {
             fetchSiteIdUseCase(publicKey)
         } returns flowOf(siteId)
-        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
-            SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+            SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         } returns sdkInitializerEvent
 
         // When

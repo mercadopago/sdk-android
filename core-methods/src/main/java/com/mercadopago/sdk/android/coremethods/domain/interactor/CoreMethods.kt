@@ -250,7 +250,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricIdentificationCallSuccess(result.data.mapNotNull { identificationType -> identificationType.name }),
+                    metricIdentificationCallSuccess(
+                        result.data.mapNotNull { identificationType -> identificationType.name }
+                    ),
                 )
             }
         }

@@ -17,5 +17,6 @@ fun isDebugApp(): Boolean =
  * @param context The application context.
  * @return `true` if the application's package name contains `LIBRARY_GROUP`, `false` otherwise.
  */
+@KoverIgnore("System Behaviour")
 fun isSameLibraryGroup(context: Context): Boolean =
-    context.applicationInfo.packageName.contains(LIBRARY_GROUP)
+    context.applicationInfo?.packageName?.contains(LIBRARY_GROUP) == true
