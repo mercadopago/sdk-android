@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn java.lang.invoke.StringConcatFactory
+-keep public class com.mercadopago.sdk.android.initializer.** { *; }
+-keep public class com.mercadopago.sdk.android.domain.model.** { *; }
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+-keep class * {
+    @com.google.gson.annotations.SerializedName *;
+}

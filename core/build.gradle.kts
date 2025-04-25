@@ -1,4 +1,3 @@
-import com.mercadopago.sdk.android.AnalyticsSDKConfig
 import com.mercadopago.sdk.android.CoreSDKConfig
 
 plugins {
