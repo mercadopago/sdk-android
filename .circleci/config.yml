@@ -10,7 +10,7 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  build:
+  build-test:
     circleci_ip_ranges: true
     executor: android-executor
     docker:
@@ -123,6 +123,7 @@ jobs:
           path: ~/circleci-artifacts
           destination: apk
 
+
   docs-deploy:
     docker:
       - image: cimg/node:16.17
@@ -149,13 +150,13 @@ jobs:
           command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist core-methods/build/dokka/html
 
 workflows:
-  version: 2
+  version: 3
   build:
     jobs:
-      - build
+      - build-test
       - docs-deploy:
-        requires:
-        - build
-        filters:
-          branches:
-            only: main
+          requires:
+            - build-test
+          filters:
+            branches:
+              only: main
