@@ -21,7 +21,7 @@ internal data class CardTokenBodyRequest(
     @SerializedName("cardholder")
     val buyerIdentification: BuyerIdentificationBodyRequest? = null,
     @SerializedName("device")
-    val device: Device? = null
+    val device: Device? = null,
 )
 
 internal data class BuyerIdentificationBodyRequest(

@@ -6,9 +6,11 @@ import app.cash.turbine.test
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.coremethods.utils.MainDispatcherRule
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -27,11 +29,8 @@ internal class CardNumberTextFieldTest {
 
     @Before
     fun start() {
-        val sessionId = "session"
-        val siteId = "site"
-        val version = "1.0"
-        val getSiteIdFlow = flowOf<String>()
-        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
+        mockkObject(MPAnalytics.Companion)
+        every { MPAnalytics.getInstance() } returns mockk<MPAnalytics>(relaxed = true)
     }
 
     @Test

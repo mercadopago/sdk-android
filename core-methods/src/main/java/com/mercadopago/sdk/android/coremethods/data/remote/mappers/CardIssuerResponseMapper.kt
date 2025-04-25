@@ -9,5 +9,5 @@ internal fun CardIssuerResponse.toModel() =
         merchantAccountId = this.merchantAccountId,
         processingMode = this.processingMode,
         status = this.status,
-        thumbnail = this.thumbnail
+        thumbnail = this.thumbnail,
     )

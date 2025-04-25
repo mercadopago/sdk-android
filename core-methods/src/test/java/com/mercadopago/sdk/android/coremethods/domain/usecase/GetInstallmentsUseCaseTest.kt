@@ -18,7 +18,7 @@ internal class GetInstallmentsUseCaseTest {
     fun `invoke should call repository with correct parameters`() =
         runBlocking {
             val bin = "123456"
-            val amount = 1000L
+            val amount = 1000.0.toBigDecimal()
             val processingMode = "gateway"
 
             // Setup mock response
@@ -36,7 +36,7 @@ internal class GetInstallmentsUseCaseTest {
     fun `invoke should return error when repository fails`() =
         runBlocking {
             val bin = "123456"
-            val amount = 1000L
+            val amount = 1000.0.toBigDecimal()
             val processingMode = "gateway"
 
             // Setup mock to return an error

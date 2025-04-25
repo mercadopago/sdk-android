@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
+import com.mercadopago.sdk.android.core.utils.isDebugApp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,18 +16,24 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class RetrofitServiceFactory(
-    private val publicKey: String,
-    private val baseUrl: String
+    private val publicKey: String?,
+    private val baseUrl: String,
 ) {
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = if (isDebugApp()) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
-        OkHttpClient.Builder()
-            .addInterceptor(PublicKeyInterceptor(publicKey))
-            .addInterceptor(loggingInterceptor)
-            .build()
+        OkHttpClient.Builder().apply {
+            if (publicKey != null) {
+                addInterceptor(PublicKeyInterceptor(publicKey))
+            }
+            addInterceptor(loggingInterceptor)
+        }.build()
     }
 
     private val retrofit: Retrofit by lazy {
