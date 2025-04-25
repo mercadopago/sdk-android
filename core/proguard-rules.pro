@@ -19,10 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep public class com.mercadopago.sdk.android.core.di.** { *; }
--keep public class com.mercadopago.sdk.android.core.utils.** { *; }
--keep public class com.mercadopago.sdk.android.core.exception.** { *; }
 -dontwarn java.lang.invoke.StringConcatFactory
+# Keep all public classes
+-keep public class ** {
+    public *;  # Keep all public fields and methods
+}
+# Alternative for any public members (classes, fields, methods):
+-keepclassmembers public class ** {
+    public *;  # Keep all public fields and methods in any public class
+}
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }

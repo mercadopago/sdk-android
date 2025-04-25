@@ -43,7 +43,7 @@ object CoreKoinFactory {
     fun createKoinApp(
         provider: CoreKoinModuleProvider,
         context: Context,
-        loggerLevel: Level = if (isDebugApp()) {
+        loggerLevel: Level = if (isDebugApp(context)) {
             Level.DEBUG
         } else {
             Level.NONE

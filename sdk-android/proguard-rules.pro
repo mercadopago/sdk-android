@@ -20,8 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontwarn java.lang.invoke.StringConcatFactory
--keep public class com.mercadopago.sdk.android.initializer.** { *; }
--keep public class com.mercadopago.sdk.android.domain.model.** { *; }
+# Keep all public classes
+-keep public class ** {
+    public *;  # Keep all public fields and methods
+}
+# Alternative for any public members (classes, fields, methods):
+-keepclassmembers public class ** {
+    public *;  # Keep all public fields and methods in any public class
+}
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }

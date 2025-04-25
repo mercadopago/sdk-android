@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
+import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
 import com.mercadopago.sdk.android.core.utils.isDebugApp
 import okhttp3.OkHttpClient
@@ -22,7 +23,7 @@ class RetrofitServiceFactory(
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = if (isDebugApp()) {
+            level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
             } else {
                 HttpLoggingInterceptor.Level.NONE

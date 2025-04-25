@@ -38,7 +38,7 @@ internal object SdkInitializerAnalytics {
             errorType = errorType,
             publicKey = publicKey,
             sdkVersion = BuildConfig.SdkVersion,
-            developerMode = isDebugApp(),
+            developerMode = isDebugApp(context),
         ),
     )
 }

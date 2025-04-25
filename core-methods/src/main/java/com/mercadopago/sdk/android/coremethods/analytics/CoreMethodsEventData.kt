@@ -6,5 +6,5 @@ import com.mercadopago.sdk.android.core.utils.isDebugApp
 
 internal open class CoreMethodsEventData(
     @SerializedName("is_development")
-    val isDevelopment: Boolean = isDebugApp(),
+    val isDevelopment: Boolean,
 ) : EventData
