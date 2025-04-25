@@ -1,26 +1,43 @@
+import com.mercadopago.sdk.android.AnalyticsSDKConfig
+import com.mercadopago.sdk.android.CoreSDKConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id(MercadoPagoSDKConfig.MAVEN_PUBLISH)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>(MercadoPagoSDKConfig.RELEASE) {
+            groupId = MercadoPagoSDKConfig.GROUP_ID
+            artifactId = CoreSDKConfig.ARTIFACT_ID
+            version = CoreSDKConfig.VERSION_NAME
+            afterEvaluate {
+                from(components[MercadoPagoSDKConfig.RELEASE])
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.mercadopago.sdk.android.core"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfigs.minSdk
+        minSdk = MercadoPagoSDKConfig.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfigs.versionName}\"")
+        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.versionName}\"")
         buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
         buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -28,11 +45,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
     buildFeatures {
         buildConfig = true

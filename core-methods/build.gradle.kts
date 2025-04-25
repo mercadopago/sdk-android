@@ -7,15 +7,29 @@ plugins {
     alias(libs.plugins.klint)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
+    id(MercadoPagoSDKConfig.MAVEN_PUBLISH)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>(MercadoPagoSDKConfig.RELEASE) {
+            groupId = MercadoPagoSDKConfig.GROUP_ID
+            artifactId = CoreMethodsSDKConfig.ARTIFACT_ID
+            version = CoreMethodsSDKConfig.VERSION_NAME
+            afterEvaluate {
+                from(components[MercadoPagoSDKConfig.RELEASE])
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.mercadopago.sdk.android.coremethods"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfigs.minSdk
-        version = CoreMethodsSDKConfig.versionName
+        minSdk = MercadoPagoSDKConfig.minSdk
+        version = CoreMethodsSDKConfig.VERSION_NAME
 
         val secretPropertiesFile = rootProject.file("secrets.properties")
         val secretProperties = Properties()
@@ -35,13 +49,13 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     testOptions {
         unitTests {
@@ -53,7 +67,7 @@ android {
         buildConfig = true
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
 }
 
@@ -67,7 +81,7 @@ ksp {
 
 dependencies {
     implementation(projects.core)
-    implementation(projects.sdkAndroid)
+    api(projects.sdkAndroid)
     implementation(projects.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

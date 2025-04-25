@@ -4,5 +4,6 @@
  */
 object CoreMethodsSDKConfig {
 
-    const val versionName = "0.1"
+    const val ARTIFACT_ID = "core-methods"
+    const val VERSION_NAME = "0.0.1"
 }

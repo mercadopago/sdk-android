@@ -14,7 +14,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import java.math.BigDecimal
 
-private const val BRICKS_API = "cho-off/beta"
+private const val BRICKS_API = "cho-off"
 private const val VERSION = "v1"
 
 internal interface CoreMethodsService {

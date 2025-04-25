@@ -10,7 +10,7 @@ import org.gradle.api.JavaVersion
  * @property targetCompatibility target compatibility
  * @property versionName sdk version name
  */
-object MercadoPagoSDKConfigs {
+object MercadoPagoSDKConfig {
     const val minSdk = 23
     const val compileSdk = 35
     const val targetSdk = 35
@@ -20,4 +20,8 @@ object MercadoPagoSDKConfigs {
 
     // SDK Android
     const val versionName = "0.0.1"
+    const val RELEASE = "release"
+    const val MAVEN_PUBLISH = "maven-publish"
+    const val GROUP_ID = "com.mercadopago.android.sdk"
+    const val ARTIFACT_ID = "sdk-android"
 }
