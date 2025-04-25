@@ -81,6 +81,10 @@ jobs:
           name: KLint Format
           command: ./gradlew ktlintFormat
 
+      - run:
+          name: Persist
+          command: ls
+
       # TEST STEP
       - run:
           name: Run Detekt
