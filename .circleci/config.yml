@@ -81,10 +81,6 @@ jobs:
           name: KLint Format
           command: ./gradlew ktlintFormat
 
-      - run:
-          name: Persist
-          command: ls
-
       # TEST STEP
       - run:
           name: Run Detekt
@@ -100,6 +96,14 @@ jobs:
       #          command: ./gradlew verifyPaparazziDebug
       - store_test_results:
           path: core-methods/build/reports/kover/reportDebug.xml
+
+      # DOCUMENTATION STEP
+      - run:
+          name: Update Dokka Documentation
+          command: ./gradlew core-methods/dokkaHtml
+      - persist_to_workspace:
+          root: core-methods/build/dokka
+          paths: html
 
       # BUILD STEP
       - run:
@@ -119,8 +123,39 @@ jobs:
           path: ~/circleci-artifacts
           destination: apk
 
+  docs-deploy:
+    docker:
+      - image: cimg/node:16.17
+    steps:
+      - checkout
+      - attach_workspace:
+          at: core-methods/build/dokka
+      - run:
+          name: Disable Jekyll for GitHub Pages
+          command: touch core-methods/build/dokka/html/.nojekyll
+      - run:
+          name: Install gh-pages tool
+          command: npm install gh-pages@3.2.3 --silent
+#      - add_ssh_keys:
+#        fingerprints:
+#          - ""
+      - run:
+          name: Configure Git for deployment
+          command: |
+            git config --global user.email "carlos.vspaixao@gmail.com"
+            git config --global user.name "capaixao"
+      - run:
+          name: Deploy documentation to GitHub Pages
+          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist core-methods/build/dokka/html
+
 workflows:
   version: 2
   build:
     jobs:
       - build
+      - docs-deploy:
+        requires:
+        - build
+        filters:
+          branches:
+            only: main
