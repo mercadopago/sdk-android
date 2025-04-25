@@ -100,7 +100,8 @@ jobs:
       # DOCUMENTATION STEP
       - run:
           name: Update Dokka Documentation
-          command: ./gradlew core-methods/dokkaHtml
+          command: ./gradlew :core-methods:dokkaHtml
+
       - persist_to_workspace:
           root: core-methods/build/dokka
           paths: html
