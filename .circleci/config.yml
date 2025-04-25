@@ -129,7 +129,15 @@ jobs:
     docker:
       - image: cimg/node:16.17
     steps:
+      # PRE SETUP
+      - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
       - checkout
+      - run: git lfs fetch --all
       - attach_workspace:
           at: core-methods/build/dokka
       - run:
