@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<SmellBaseline>
-  <ManuallySuppressedIssues></ManuallySuppressedIssues>
-  <CurrentIssues>
-    <ID>WildcardImport:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
-  </CurrentIssues>
-</SmellBaseline>

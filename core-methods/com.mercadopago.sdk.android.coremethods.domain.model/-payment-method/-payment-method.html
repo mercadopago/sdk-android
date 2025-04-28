@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PaymentMethod</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+    <nav class="navigation theme-dark" id="navigation-wrapper">
+            <a class="library-name--link" href="../../../index.html">
+                    core-methods
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+0.1        </div>
+        <div class="navigation-controls">
+        <div class="filter-section filter-section_loading" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active=""
+                        data-filter=":core-methods:dokkaHtml/release">androidJvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
+                    <div class="dropdown--header"><span>Platform filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":core-methods:dokkaHtml/release"
+                                       data-filter=":core-methods:dokkaHtml/release"/>
+                                <span class="checkbox--icon"></span>
+                                androidJvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </div>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                        data-role="dropdown-listbox">
+                        <div class="dropdown--header">
+                            <span>
+                                    core-methods
+                            </span>
+                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar--inner" id="sideMenu"></div>
+                    </ul>
+                    <div class="dropdown--overlay"></div>
+                </div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageIds="core-methods::com.mercadopago.sdk.android.coremethods.domain.model/PaymentMethod/PaymentMethod/#kotlin.collections.List[com.mercadopago.sdk.android.coremethods.domain.model.FinancialInstitutionModel]?#kotlin.collections.List[com.mercadopago.sdk.android.coremethods.domain.model.PayerCost]?#com.mercadopago.sdk.android.coremethods.domain.model.Issuer?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#kotlin.String?#com.mercadopago.sdk.android.coremethods.domain.model.CardModel?#kotlin.String?#kotlin.collections.List[kotlin.Int]?#kotlin.String?#kotlin.String?#kotlin.collections.List[com.mercadopago.sdk.android.coremethods.domain.model.Agreements]?#kotlin.collections.List[kotlin.String]?#kotlin.String?#kotlin.String?#kotlin.collections.List[kotlin.String]?#kotlin.String?/PointingToDeclaration//16321846">
+  <div class="breadcrumbs"><a href="../../../index.html">core-methods</a><span class="delimiter">/</span><a href="../index.html">com.mercadopago.sdk.android.coremethods.domain.model</a><span class="delimiter">/</span><a href="index.html">PaymentMethod</a><span class="delimiter">/</span><span class="current">PaymentMethod</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Payment</span><wbr></wbr><span><span>Method</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">financialInstitution<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-financial-institution-model/index.html">FinancialInstitutionModel</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">payerCost<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-payer-cost/index.html">PayerCost</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">issuer<span class="token operator">: </span><a href="../-issuer/index.html">Issuer</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">totalFinancialCost<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">minAccreditationDays<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">maxAccreditationDays<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">merchantAccountId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">paymentTypeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">accreditationTime<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">card<span class="token operator">: </span><a href="../-card-model/index.html">CardModel</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">thumbnail<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">bins<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">marketplace<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">deferredCapture<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">agreements<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../-agreements/index.html">Agreements</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">labels<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">siteId<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">processingMode<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">additionalInfoNeeded<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>financial</span><wbr></wbr><span><span>Institution</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of financial institutions associated with the payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>payer</span><wbr></wbr><span><span>Cost</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of costs associated with the payer for this payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>issuer</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The issuer of the payment method, which may be an entity or financial institution.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>total</span><wbr></wbr><span>Financial</span><wbr></wbr><span><span>Cost</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The total cost incurred for using the payment method, as a string.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>min</span><wbr></wbr><span>Accreditation</span><wbr></wbr><span><span>Days</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The minimum number of days required for accreditation, as a string.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>max</span><wbr></wbr><span>Accreditation</span><wbr></wbr><span><span>Days</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The maximum number of days required for accreditation, as a string.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>merchant</span><wbr></wbr><span>Account</span><wbr></wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><p class="paragraph">An identifier for the merchant account associated with this payment method, as a string.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>id</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A unique identifier for this payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>payment</span><wbr></wbr><span>Type</span><wbr></wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The type of payment associated with this method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>accreditation</span><wbr></wbr><span><span>Time</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The time required for accreditation, as a string.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>card</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The card details associated with the payment method, if applicable.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>thumbnail</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A thumbnail image URL representing the payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>bins</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of bank identification numbers (BINs) associated with this payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>marketplace</span></span></u></div></span></div><div><div class="title"><p class="paragraph">An identifier for the marketplace this payment method is available in.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>deferred</span><wbr></wbr><span><span>Capture</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Indicates if the capture of money is deferred.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>agreements</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of agreements applicable to this payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>labels</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of labels that provide additional information about the payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>site</span><wbr></wbr><span><span>Id</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The identifier for the site in which this payment method is used.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>processing</span><wbr></wbr><span><span>Mode</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The mode of processing for the payment.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>additional</span><wbr></wbr><span>Info</span><wbr></wbr><span><span>Needed</span></span></u></div></span></div><div><div class="title"><p class="paragraph">A list of additional information required for processing this payment method.</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtml/release" data-filterable-set=":core-methods:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>status</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The current status of the payment method.</p></div></div></div></div></div></div></div>
+</div>
+    <div class="footer">
+        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+        <span>© 2025 Copyright</span>
+        <span class="pull-right">
+            <span>Generated by </span>
+            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                <span>dokka</span>
+            </a>
+        </span>
+    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
