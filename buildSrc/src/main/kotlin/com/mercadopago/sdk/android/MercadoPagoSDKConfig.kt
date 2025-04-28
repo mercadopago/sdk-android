@@ -9,6 +9,10 @@ import org.gradle.api.JavaVersion
  * @property sourceCompatibility source compatibility
  * @property targetCompatibility target compatibility
  * @property versionName sdk version name
+ * @property RELEASE release
+ * @property MAVEN_PUBLISH maven publish
+ * @property GROUP_ID group id
+ * @property ARTIFACT_ID artifact id
  */
 object MercadoPagoSDKConfig {
     const val minSdk = 23

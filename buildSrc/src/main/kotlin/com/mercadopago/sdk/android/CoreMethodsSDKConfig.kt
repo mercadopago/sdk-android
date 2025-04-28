@@ -1,6 +1,7 @@
 /**
  * CoreMethodsSDKConfig
- * @param versionName: sdk version name
+ * @property ARTIFACT_ID artifact id
+ * @property VERSION_NAME version name
  */
 object CoreMethodsSDKConfig {
 
