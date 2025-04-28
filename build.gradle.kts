@@ -47,6 +47,7 @@ allprojects {
                         "*.*\$*Preview\$*",
                         "*.*\$*Sample\$*",
                         "*.*\$*KoverIgnore\$*",
+                        "*Exception*",
                     )
                     packages(
                         "com.airbnb.android.showkase*",

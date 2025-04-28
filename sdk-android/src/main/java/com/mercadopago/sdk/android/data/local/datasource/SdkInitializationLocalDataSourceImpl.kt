@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.security.MessageDigest
 
+internal const val FORMAT_MODE = "%02x"
+
 internal class SdkInitializationLocalDataSourceImpl(
     private val dataStore: DataStore<Preferences>,
     private val messageDigest: MessageDigest,
@@ -32,6 +34,6 @@ internal class SdkInitializationLocalDataSourceImpl(
     }
 
     private fun encrypt(publicKey: String): String {
-        return messageDigest.digest(publicKey.toByteArray()).toString()
+        return messageDigest.digest(publicKey.toByteArray()).joinToString("") { FORMAT_MODE.format(it) }
     }
 }

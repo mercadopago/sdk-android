@@ -37,17 +37,17 @@ object CoreKoinFactory {
     /**
      * Create a Koin instance in a isolated context
      * @param provider: [CoreKoinModuleProvider] with the module list
-     * @param loggerLevel: [Level] logger level
      * @param context: [Context] application context
+     * @param loggerLevel: [Level] logger level
      */
     fun createKoinApp(
         provider: CoreKoinModuleProvider,
+        context: Context,
         loggerLevel: Level = if (isDebugApp()) {
             Level.DEBUG
         } else {
             Level.NONE
         },
-        context: Context,
     ): Koin {
         return koinApplication {
             androidContext(context)

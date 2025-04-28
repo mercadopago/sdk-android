@@ -1,69 +1,105 @@
 package com.mercadopago.sdk.android.analytics
 
-import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
+import android.content.Context
+import android.util.Log
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
+import com.mercadopago.sdk.android.core.di.CoreKoinFactory
+import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.verify
 import junit.framework.TestCase.assertNotNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.koin.core.Koin
 
 internal class MPAnalyticsTest {
 
-    private val sessionId = "session"
-    private val siteId = "site"
-    private val version = "1.0"
-    private val getSiteIdFlow = flowOf<String>()
+    private val context = mockk<Context>(relaxed = true)
+    private val koin = mockk<Koin>(relaxed = true)
+    private val trackMetricUseCase = mockk<TrackMetricUseCase>(relaxed = true)
 
     @Before
     fun setup() {
-        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
+        mockkObject(CoreKoinFactory)
+        mockkStatic(Log::class)
+        every {
+            CoreKoinFactory.createKoinApp(any(), any(), any())
+        } returns koin
+        every { Log.e(any(), any(), any()) } returns 0
+        every {
+            koin.get<TrackMetricUseCase>()
+        } returns trackMetricUseCase
     }
 
     @Test
-    fun `test initialize Analytics`() {
-        val analytics = MPAnalytics.getInstance()
-        assertNotNull(analytics)
+    fun `when initialize is called Then sdkInstance is not null`() = runTest {
+        // Given
+        val getSiteIdFlow = flowOf("MLA")
+
+        // When
+        MPAnalytics.initialize(
+            context = context,
+            getSiteIdFlow = getSiteIdFlow,
+        )
+
+        // Then
+        assertNotNull(MPAnalytics.getInstance())
     }
 
     @Test
-    fun `test sessionId is correctly set`() {
-        val analyticsInstance = MPAnalytics.getInstance()
-        val sessionIdProperty = MPAnalytics::class.java.declaredFields
-            .first { it.name == "sessionId" }
+    fun `when track metric is called with success then expect no events`() = runTest {
+        // Given
+        val getSiteIdFlow = flowOf("MLA")
+        val metric = mockMetric()
 
-        sessionIdProperty.isAccessible = true // Make private property accessible
-        val actualSessionId = sessionIdProperty.get(analyticsInstance)
+        // When
+        MPAnalytics.initialize(
+            context = context,
+            getSiteIdFlow = getSiteIdFlow,
+        )
+        MPAnalytics.getInstance().trackMetric(metric)
 
-        assertEquals(sessionId, actualSessionId)
-    }
-
-    @Test
-    fun `test version is correctly set`() {
-        val analyticsInstance = MPAnalytics.getInstance()
-        val versionProperty = MPAnalytics::class.java.declaredFields
-            .first { it.name == "version" }
-
-        versionProperty.isAccessible = true
-        val actualVersion = versionProperty.get(analyticsInstance)
-
-        assertEquals(version, actualVersion)
-    }
-
-    @Test
-    fun `test getInstance throws exception before initialization`() {
-        // Reset Analytics instance to simulate being uninitialized
-        MPAnalytics.initialize(sessionId, siteId, version, getSiteIdFlow)
-
-        // Reinitialize with a new instance, and then reset to null to throw exception
-        MPAnalytics::class.java.getDeclaredField("instance").apply {
-            isAccessible = true
-            set(null, null)
+        // Then
+        assertNotNull(MPAnalytics.getInstance())
+        verify {
+            trackMetricUseCase(metric)
         }
+    }
 
-        assertThrows(AnalyticsInitializationException::class.java) {
-            MPAnalytics.getInstance()
+    @Test
+    fun `when track metric is called with error then expect log`() = runTest {
+        // Given
+        val getSiteIdFlow = flowOf("MLA")
+        val metric = mockMetric()
+        mockkStatic("com.mercadopago.sdk.android.core.utils.DebugKt")
+        every {
+            trackMetricUseCase(metric)
+        } returns flow { throw IllegalArgumentException() }
+        every {
+            koin.get<Context>()
+        } returns context
+        every {
+            isSameLibraryGroup(context)
+        } returns true
+
+        // When
+        MPAnalytics.initialize(
+            context = context,
+            getSiteIdFlow = getSiteIdFlow,
+        )
+        MPAnalytics.getInstance().trackMetric(metric)
+
+        // Then
+        assertNotNull(MPAnalytics.getInstance())
+        verify {
+            trackMetricUseCase(metric)
         }
     }
 }
