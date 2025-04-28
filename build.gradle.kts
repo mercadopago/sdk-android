@@ -30,7 +30,7 @@ allprojects {
     apply(plugin = "org.jetbrains.dokka")
 
     tasks.dokkaHtml {
-        // outputDirectory.set(rootDir.resolve(".documentation"))
+        outputDirectory.set(rootDir.resolve(".documentation"))
     }
 
     kover {
