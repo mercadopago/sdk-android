@@ -22,6 +22,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
 internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
+internal const val MIN_LENGTH = 3
 
 /**
  * Security code input component.
@@ -49,7 +50,7 @@ fun SecurityCodeTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
-    securityCodeSize: Int = 3,
+    securityCodeSize: Int = MIN_LENGTH,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -110,7 +111,7 @@ internal fun SecurityCodeEmptyPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = 3,
+        securityCodeSize = MIN_LENGTH,
     )
 }
 
@@ -128,6 +129,6 @@ internal fun SecurityCodeFilledPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = 3,
+        securityCodeSize = MIN_LENGTH,
     )
 }
