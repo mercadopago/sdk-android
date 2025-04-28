@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mercadopago.sdk.android"
+    namespace = "com.mercadopago.sdk.android.example"
     compileSdk = MercadoPagoSDKConfig.compileSdk
 
     val secretPropertiesFile = rootProject.file("secrets.properties")
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.mercadopago.sdk.android"
+        applicationId = "com.mercadopago.sdk.android.example"
         minSdk = MercadoPagoSDKConfig.minSdk
         targetSdk = MercadoPagoSDKConfig.targetSdk
         versionCode = 1

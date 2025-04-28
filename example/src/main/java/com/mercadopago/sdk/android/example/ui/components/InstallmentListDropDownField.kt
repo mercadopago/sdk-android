@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.ui.components
+package com.mercadopago.sdk.android.example.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,9 +31,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.extensions.addBorder
-import com.mercadopago.sdk.android.presentation.data.Installment
-import com.mercadopago.sdk.android.presentation.state.InstallmentsState
+import com.mercadopago.sdk.android.example.extensions.addBorder
+import com.mercadopago.sdk.android.example.presentation.data.Installment
+import com.mercadopago.sdk.android.example.presentation.state.InstallmentsState
 
 @Composable
 internal fun InstallmentListDropDownField(

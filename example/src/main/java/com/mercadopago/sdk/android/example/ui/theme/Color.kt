@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.ui.theme
+package com.mercadopago.sdk.android.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

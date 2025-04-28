@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.presentation
+package com.mercadopago.sdk.android.example.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,10 +11,10 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumbe
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.example.mappers.toInstallmentModel
+import com.mercadopago.sdk.android.example.presentation.data.Installment
+import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
-import com.mercadopago.sdk.android.mappers.toInstallmentModel
-import com.mercadopago.sdk.android.presentation.data.Installment
-import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

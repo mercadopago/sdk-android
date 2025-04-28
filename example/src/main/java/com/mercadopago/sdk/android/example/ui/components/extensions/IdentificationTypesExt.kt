@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.ui.components.extensions
+package com.mercadopago.sdk.android.example.ui.components.extensions
 
 import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
