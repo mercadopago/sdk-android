@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -13,6 +16,18 @@ android {
     defaultConfig {
         minSdk = MercadoPagoSDKConfigs.minSdk
         version = CoreMethodsSDKConfig.versionName
+
+        val secretPropertiesFile = rootProject.file("secrets.properties")
+        val secretProperties = Properties()
+        runCatching {
+            secretProperties.load(FileInputStream(secretPropertiesFile))
+        }
+
+        buildConfigField(
+            "String",
+            "CORE_METHODS_PRODUCT_ID",
+            secretProperties.getProperty("coreMethods.productId", "\"\""),
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -35,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfigs.jvmTarget

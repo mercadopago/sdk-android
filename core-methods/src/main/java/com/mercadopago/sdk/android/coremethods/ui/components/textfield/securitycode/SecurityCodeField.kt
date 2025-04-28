@@ -63,7 +63,7 @@ fun SecurityCodeTextField(
     LaunchedEffect(key1 = true) {
         MPAnalytics.getInstance().trackMetric(
             metricPCIFieldInitialization(
-                field = COMPONENT_NAME_SECURITY_CODE
+                field = COMPONENT_NAME_SECURITY_CODE,
             ),
         )
     }
@@ -82,7 +82,7 @@ fun SecurityCodeTextField(
             if (isFocused) {
                 MPAnalytics.getInstance().trackMetric(
                     metricPCIFieldFocus(
-                        field = COMPONENT_NAME_SECURITY_CODE
+                        field = COMPONENT_NAME_SECURITY_CODE,
                     ),
                 )
             }

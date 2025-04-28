@@ -33,13 +33,13 @@ internal fun PaymentMethodResponse.toModel() =
         siteId = this.siteId,
         processingMode = this.processingMode,
         additionalInfoNeeded = this.additionalInfoNeeded,
-        status = this.status
+        status = this.status,
     )
 
 internal fun FinancialInstitutionResponse.toModel() =
     FinancialInstitutionModel(
         id = this.id,
-        description = this.description
+        description = this.description,
     )
 
 internal fun CardResponse.toModel() =
@@ -47,18 +47,18 @@ internal fun CardResponse.toModel() =
         bin = this.bin,
         length = this.length?.toModel(),
         validation = this.validation,
-        securityCode = this.securityCode?.toModel()
+        securityCode = this.securityCode?.toModel(),
     )
 
 internal fun LengthResponse.toModel() =
     LengthModel(
         min = this.min,
-        max = this.max
+        max = this.max,
     )
 
 internal fun SecurityCodeResponse.toModel() =
     SecurityCodeModel(
         mode = this.mode,
         location = this.location,
-        length = this.length
+        length = this.length,
     )

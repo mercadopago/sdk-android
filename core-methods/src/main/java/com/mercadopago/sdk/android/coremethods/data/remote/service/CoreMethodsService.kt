@@ -12,12 +12,12 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
+import java.math.BigDecimal
 
 private const val BRICKS_API = "cho-off/beta"
 private const val VERSION = "v1"
 
 internal interface CoreMethodsService {
-
     @POST("/v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
@@ -28,7 +28,7 @@ internal interface CoreMethodsService {
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("bin") bin: Int?,
         @Query("processing_mode") processingMode: String?,
-        @Query("amount") amount: Long?,
+        @Query("amount") amount: BigDecimal?,
     ): Response<List<InstallmentsResponse>>
 
     @GET("$BRICKS_API/$VERSION/identification_types")
@@ -44,6 +44,6 @@ internal interface CoreMethodsService {
     @GET("$BRICKS_API/$VERSION/payment_methods")
     suspend fun getPaymentMethods(
         @Query("product_id") productId: String? = PRODUCT_ID,
-        @Query("bin") bin: Int?
+        @Query("bin") bin: Int?,
     ): Response<List<PaymentMethodResponse>>
 }

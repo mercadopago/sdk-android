@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.analytics.data.remote.models
+package com.mercadopago.sdk.android.analytics.data.remote.models.request
 
 import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
@@ -29,19 +29,27 @@ internal data class TrackRequest(
 
 internal data class UserRequest(
     @SerializedName("uid")
-    val uid: String
+    val uid: String,
+    @SerializedName("melidata_session_id")
+    val sessionId: String,
 )
 
 internal data class ApplicationRequest(
     @SerializedName("business")
     val business: String,
     @SerializedName("site_id")
-    val siteId: String,
+    val siteId: String?,
     @SerializedName("version")
-    val version: String
+    val version: String,
+    @SerializedName("app_name")
+    val appName: String,
 )
 
 internal data class DeviceRequest(
     @SerializedName("platform")
-    val platform: String
+    val platform: String,
+    @SerializedName("connectivity_type")
+    val connectivityType: String,
+    @SerializedName("os_version")
+    val osVersion: String,
 )

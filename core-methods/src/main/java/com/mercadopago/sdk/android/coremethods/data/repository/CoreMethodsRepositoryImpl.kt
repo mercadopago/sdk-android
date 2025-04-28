@@ -18,7 +18,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CoreMethodsRepositoryImpl(
     private val dataSource: CoreMethodsRemoteDataSource,
 ) : CoreMethodsRepository {
-
     override suspend fun generateCardToken(params: GenerateCardTokenParams): Result<CardToken, ResultError> {
         return dataSource.generateCardToken(params.toRequest())
     }

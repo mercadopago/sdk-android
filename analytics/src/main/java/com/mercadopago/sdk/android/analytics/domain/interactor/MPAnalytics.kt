@@ -1,9 +1,26 @@
 package com.mercadopago.sdk.android.analytics.domain.interactor
 
+import android.content.Context
+import android.util.Log
+import androidx.annotation.RestrictTo
+import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.core.utils.KoverIgnore
+import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
+import com.mercadopago.sdk.android.core.utils.isDebugApp
+import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import org.koin.core.Koin
+
+/**
+ * Tag used for logging analytics events.
+ */
+const val MP_ANALYTICS_TAG = "MPAnalytics"
 
 /** Core analytics implementation for the MercadoPago SDK.
  *
@@ -14,16 +31,10 @@ import kotlinx.coroutines.flow.Flow
  *
  *  This class have to be initialized first with [initialize] method
  *  then get a instance by [getInstance]
- * @param sessionId session identification of this analytics instance
- * @param publicKey the public key used to initialize the SDK.
- * @param version this application SDK version.
- * @param getSiteIdFlow a flow that emits the current siteId.
  * */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class MPAnalytics internal constructor(
-    private val sessionId: String,
-    private val publicKey: String,
-    private val version: String,
-    private val getSiteIdFlow: Flow<String>,
+    private val koin: Koin,
 ) {
 
     /**
@@ -36,27 +47,26 @@ class MPAnalytics internal constructor(
         /**
          * Gets the instance of the [MPAnalytics] class.
          */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun getInstance(): MPAnalytics {
             return instance ?: throw AnalyticsInitializationException()
         }
 
         /** Call this method to initialize the analytics instance.
-         * @param sessionId session identification of this analytics instance
-         * @param publicKey the public key used to initialize the SDK.
-         * @param version this application SDK version.
+         * @param context application context.
          * @param getSiteIdFlow a flow that emits the current siteId.
          * */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun initialize(
-            sessionId: String,
-            publicKey: String,
-            version: String,
+            context: Context,
             getSiteIdFlow: Flow<String>,
         ) {
+            val modulesProvider = AnalyticsModulesProvider(
+                getSiteIdFlow = getSiteIdFlow,
+                context = context,
+            )
             instance = MPAnalytics(
-                sessionId,
-                publicKey,
-                version,
-                getSiteIdFlow,
+                koin = modulesProvider.koinApp,
             )
         }
     }
@@ -66,9 +76,17 @@ class MPAnalytics internal constructor(
      * 1. Collects user information
      * 2. Builds the payload with all required data
      * 4. Sends the data (currently just prints to console)
-     *
-     * - Note: Actual data sending implementation should be added in the future */
-    @KoverIgnore("implementation should be added in the future")
-    @Suppress("EmptyFunctionBlock", "UnusedParameter")
-    fun trackMetric(metric: Metric) { }
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    fun trackMetric(metric: Metric) {
+        val trackMetricUseCase = koin.get<TrackMetricUseCase>()
+        CoroutineScope(Dispatchers.IO).launch {
+            trackMetricUseCase(metric)
+                .catch {
+                    if (isDebugApp() && isSameLibraryGroup(koin.get())) {
+                        Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
+                    }
+                }.firstOrNull()
+        }
+    }
 }

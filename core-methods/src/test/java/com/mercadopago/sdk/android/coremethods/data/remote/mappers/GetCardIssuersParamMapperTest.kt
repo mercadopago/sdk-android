@@ -5,13 +5,12 @@ import org.junit.Assert.assertEquals
 import kotlin.test.Test
 
 class GetCardIssuersParamMapperTest {
-
     @Test
     fun `when call GetCardIssuersParams toRequest should correctly map GetCardIssuersParams to CardIssuersRequest`() {
         val getCardIssuersParams = GetCardIssuersParams(
             productId = "product_001",
             bin = 123456,
-            paymentMethodId = "payment_method_001"
+            paymentMethodId = "payment_method_001",
         )
 
         val cardIssuersRequest = getCardIssuersParams.toRequest()
@@ -26,7 +25,7 @@ class GetCardIssuersParamMapperTest {
         val getCardIssuersParams = GetCardIssuersParams(
             productId = null,
             bin = null,
-            paymentMethodId = null
+            paymentMethodId = null,
         )
 
         val cardIssuersRequest = getCardIssuersParams.toRequest()

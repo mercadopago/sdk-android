@@ -28,6 +28,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.core.Koin
+import java.math.BigDecimal
 
 /**
  * CoreMethods class
@@ -45,7 +46,6 @@ import org.koin.core.Koin
 class CoreMethods internal constructor(
     private val koin: Koin,
 ) {
-
     /**
      * Generate Card Token call.
      *
@@ -77,16 +77,16 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
 
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
-                                error = result.error.message
-                            )
+                                error = result.error.message,
+                            ),
                         )
                     }
                 }
@@ -94,7 +94,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -134,7 +134,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
 
@@ -142,7 +142,7 @@ class CoreMethods internal constructor(
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
-                            )
+                            ),
                         )
                     }
                 }
@@ -150,7 +150,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess()
+                    metricGenerateCardTokenCallSuccess(),
                 )
             }
         }
@@ -172,7 +172,7 @@ class CoreMethods internal constructor(
      */
     suspend fun getInstallments(
         bin: String,
-        amount: Long,
+        amount: BigDecimal,
         processingMode: ProcessingMode = ProcessingMode.Aggregator,
     ): Result<List<Installment>, ResultError> {
         val result = koin.get<GetInstallmentsUseCase>().invoke(
@@ -206,7 +206,7 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
                         paymentType = result.data.getOrNull(0)?.paymentTypeId.orEmpty(),
-                        merchantAccountId = result.data.getOrNull(0)?.merchantAccountId.orEmpty(),
+                        transactionAmount = amount,
                     ),
                 )
             }
@@ -249,7 +249,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricIdentificationCallSuccess(),
+                    metricIdentificationCallSuccess(
+                        result.data.mapNotNull { identificationType -> identificationType.name },
+                    ),
                 )
             }
         }
@@ -267,11 +269,11 @@ class CoreMethods internal constructor(
      */
     suspend fun getCardIssuers(
         bin: Int,
-        paymentMethodId: String
+        paymentMethodId: String,
     ): Result<List<CardIssuer>, ResultError> {
         val result = koin.get<GetCardIssuersUseCase>().invoke(
             bin = bin,
-            paymentMethodId = paymentMethodId
+            paymentMethodId = paymentMethodId,
         )
 
         when (result) {
@@ -297,7 +299,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricCardIssuersCallSuccess(),
+                    metricCardIssuersCallSuccess(
+                        issuers = result.data.mapNotNull { it.id },
+                    ),
                 )
             }
         }
@@ -313,9 +317,7 @@ class CoreMethods internal constructor(
      *
      * @param bin: the credit card bin
      */
-    suspend fun getPaymentMethods(
-        bin: String,
-    ): Result<List<PaymentMethod>, ResultError> {
+    suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,
         )
@@ -343,7 +345,10 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricPaymentMethodCallSuccess(),
+                    metricPaymentMethodCallSuccess(
+                        issuer = result.data.firstOrNull()?.issuer?.id.orEmpty(),
+                        cardBrand = result.data.firstOrNull()?.id.orEmpty(),
+                    ),
                 )
             }
         }

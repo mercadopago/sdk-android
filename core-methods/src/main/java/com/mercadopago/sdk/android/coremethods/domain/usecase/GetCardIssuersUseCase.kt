@@ -17,7 +17,7 @@ internal class GetCardIssuersUseCase(
             GetCardIssuersParams(
                 productId = "",
                 bin = bin,
-                paymentMethodId = paymentMethodId
+                paymentMethodId = paymentMethodId,
             ),
         )
     }

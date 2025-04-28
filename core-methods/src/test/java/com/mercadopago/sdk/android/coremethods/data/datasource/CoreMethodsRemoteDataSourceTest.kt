@@ -66,7 +66,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is Result.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message
+                ((result as Result.Error).error as ResultError.Request).message,
             )
         }
 
@@ -108,7 +108,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is Result.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message
+                ((result as Result.Error).error as ResultError.Request).message,
             )
         }
 
@@ -149,7 +149,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is Result.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message
+                ((result as Result.Error).error as ResultError.Request).message,
             )
         }
 
@@ -191,7 +191,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is Result.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message
+                ((result as Result.Error).error as ResultError.Request).message,
             )
         }
 
@@ -233,12 +233,12 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is Result.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message
+                ((result as Result.Error).error as ResultError.Request).message,
             )
         }
 
     data class ErrorBody(
         val code: Int = 400,
-        val message: String = "Bad Request"
+        val message: String = "Bad Request",
     )
 }

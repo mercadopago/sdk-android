@@ -7,12 +7,12 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 internal fun mockMetric(
     path: String = "test/path",
     trackType: TrackType = TrackType.EVENT,
-    data: EventData
+    data: EventData = mockEventData(),
 ): Metric {
     return Metric(
         path = path,
         type = trackType,
-        data = data
+        data = data,
     )
 }
 

@@ -6,39 +6,56 @@ import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
+import com.mercadopago.sdk.android.core.BuildConfig
+import com.mercadopago.sdk.android.core.utils.isDebugApp
 import java.util.Locale
 
-private const val UNKNOWN = "UNKNOWN"
+private const val MIN_SDK_23 = "23"
 private const val MAVEN = "MAVEN"
-internal const val SDK_NATIVE_PATH = "/sdk-native"
+private const val INITIALIZE_PATH = "/initialize"
+
+/**
+ * Path for the native SDK analytics route
+ */
+const val SDK_NATIVE_PATH = "/checkout_api_native"
 
 internal object SdkInitializerAnalytics {
 
     internal fun buildSdkInitializerEvent(
         context: Context,
-        isError: Boolean = false,
+        publicKey: String,
+        errorType: String? = null,
     ) = Metric(
         type = TrackType.EVENT,
-        path = SDK_NATIVE_PATH,
+        path = "$SDK_NATIVE_PATH$INITIALIZE_PATH",
         data = SdkInitializerEventData(
-            minimumAppVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            minVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.applicationInfo.minSdkVersion.toString()
             } else {
-                UNKNOWN
+                MIN_SDK_23
             },
             distribution = MAVEN,
-            isError = isError,
+            errorType = errorType,
+            publicKey = publicKey,
+            sdkVersion = BuildConfig.SdkVersion,
+            developerMode = isDebugApp(),
         ),
     )
 }
 
 internal class SdkInitializerEventData(
-    @SerializedName("minimum_version_app")
-    val minimumAppVersion: String,
     @SerializedName("distribution")
     val distribution: String,
     @SerializedName("locale")
     val locale: String = Locale.getDefault().toString().replace("_", "-"),
-    @SerializedName("isError")
-    val isError: Boolean = false,
+    @SerializedName("error_type")
+    val errorType: String?,
+    @SerializedName("public_key")
+    val publicKey: String,
+    @SerializedName("min_version")
+    val minVersion: String,
+    @SerializedName("sdk_version")
+    val sdkVersion: String,
+    @SerializedName("developer_mode")
+    val developerMode: Boolean,
 ) : EventData

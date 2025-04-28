@@ -5,7 +5,6 @@ package com.mercadopago.sdk.android.initializer
 import android.content.Context
 import android.util.Log
 import com.mercadolibre.android.device.sdk.DeviceSDK
-import com.mercadopago.sdk.android.BuildConfig
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
@@ -84,9 +83,7 @@ class MercadoPagoSDK private constructor(
                 setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 DeviceSDK.getInstance().execute(context)
                 MPAnalytics.initialize(
-                    sessionId = sessionId,
-                    publicKey = publicKey,
-                    version = BuildConfig.SdkVersion,
+                    context = context,
                     getSiteIdFlow = getSiteIdUseCase(publicKey).map { siteId ->
                         siteId.siteId
                     },
@@ -97,14 +94,18 @@ class MercadoPagoSDK private constructor(
                         MPAnalytics.getInstance().trackMetric(
                             SdkInitializerAnalytics.buildSdkInitializerEvent(
                                 context = context,
-                                isError = true,
+                                publicKey = publicKey,
+                                errorType = "Error initializing SDK: ${error.message}",
                             )
                         )
                     }
                     .collect { siteId ->
                         Log.d(TAG, "Initialized SDK")
                         MPAnalytics.getInstance().trackMetric(
-                            SdkInitializerAnalytics.buildSdkInitializerEvent(context)
+                            SdkInitializerAnalytics.buildSdkInitializerEvent(
+                                context = context,
+                                publicKey = publicKey,
+                            )
                         )
                     }
             }

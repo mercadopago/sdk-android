@@ -7,5 +7,5 @@ internal fun GetCardIssuersParams.toRequest() =
     CardIssuersRequest(
         productId = this.productId,
         bin = this.bin,
-        paymentMethodId = this.paymentMethodId
+        paymentMethodId = this.paymentMethodId,
     )

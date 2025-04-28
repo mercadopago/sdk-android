@@ -13,6 +13,7 @@ enum class ExpirationDateFormat(val digits: Int, val mask: String) {
      * ShortFormat with two digits date format
      */
     ShortFormat(INT_FOUR, "##/##"),
+
     /**
      * LongFormat with four digits date format
      */
