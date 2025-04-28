@@ -271,4 +271,24 @@ internal class CoreMethodsTest {
 
             assertEquals(expectedResult, result)
         }
+
+    @Test
+    fun `generateCardToken with string should return success and track success metric`() =
+        runTest {
+            val cardNumber = "510000000"
+            val expirationDate = "12/25"
+            val securityCode = "123"
+
+            val expectedCardToken = CardToken("token_12345")
+
+            val expectedResult = Result.Success(expectedCardToken)
+
+            coEvery {
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+            } returns expectedResult
+            val result =
+                coreMethods.generateCardToken(cardNumber, expirationDate, securityCode)
+
+            assertEquals(expectedResult, result)
+        }
 }
