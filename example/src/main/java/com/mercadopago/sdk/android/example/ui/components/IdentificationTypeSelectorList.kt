@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.ui.components
+package com.mercadopago.sdk.android.example.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,10 +31,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.extensions.addBorder
-import com.mercadopago.sdk.android.presentation.state.IdentificationState
-import com.mercadopago.sdk.android.ui.components.extensions.getPlaceholder
-import com.mercadopago.sdk.android.ui.components.extensions.getVisualTransformation
+import com.mercadopago.sdk.android.example.extensions.addBorder
+import com.mercadopago.sdk.android.example.presentation.state.IdentificationState
+import com.mercadopago.sdk.android.example.ui.components.extensions.getPlaceholder
+import com.mercadopago.sdk.android.example.ui.components.extensions.getVisualTransformation
 
 @Suppress("LongMethod")
 @Composable

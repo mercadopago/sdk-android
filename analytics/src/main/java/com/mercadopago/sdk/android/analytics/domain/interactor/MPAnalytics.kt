@@ -83,7 +83,7 @@ class MPAnalytics internal constructor(
         CoroutineScope(Dispatchers.IO).launch {
             trackMetricUseCase(metric)
                 .catch {
-                    if (isDebugApp() && isSameLibraryGroup(koin.get())) {
+                    if (isDebugApp(koin.get()) && isSameLibraryGroup(koin.get())) {
                         Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
                     }
                 }.firstOrNull()

@@ -1,14 +1,30 @@
+import com.mercadopago.sdk.android.AnalyticsSDKConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id(MercadoPagoSDKConfig.MAVEN_PUBLISH)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>(MercadoPagoSDKConfig.RELEASE) {
+            groupId = MercadoPagoSDKConfig.GROUP_ID
+            artifactId = AnalyticsSDKConfig.ARTIFACT_ID
+            version = AnalyticsSDKConfig.VERSION_NAME
+            afterEvaluate {
+                from(components[MercadoPagoSDKConfig.RELEASE])
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.mercadopago.sdk.android.analytics"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfigs.minSdk
+        minSdk = MercadoPagoSDKConfig.minSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -16,7 +32,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -24,11 +40,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
 }
 
@@ -42,7 +58,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
 
-    implementation(libs.androidx.datastore)
+    api(libs.androidx.datastore)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.mockk)

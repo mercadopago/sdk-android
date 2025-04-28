@@ -1,12 +1,14 @@
 package com.mercadopago.sdk.android.coremethods.di
 
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -21,6 +23,11 @@ internal class CoreMethodsModulesProviderTest : KoinTest {
     fun `when provideModules is called Then modules should be verified`() {
         // Given
         mockkObject(MercadoPagoSDK.Companion)
+        mockkStatic(ApplicationInfo::class)
+        val context = mockk<Context>()
+        every {
+            context.applicationInfo
+        } returns mockk(relaxed = true)
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         mockkObject(CoreKoinFactory)
         every { CoreKoinFactory.setKoinModules(any(), any()) } returns mockk()
@@ -28,7 +35,7 @@ internal class CoreMethodsModulesProviderTest : KoinTest {
         val modulesProvider = CoreMethodsModulesProvider()
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
-            context = mockk<Context>(),
+            context = context,
         )
 
         // When

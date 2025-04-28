@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.ui.theme
+package com.mercadopago.sdk.android.example.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

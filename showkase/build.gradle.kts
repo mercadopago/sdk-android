@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.mercadopago.sdk.android.showkase"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     defaultConfig {
         applicationId = "com.mercadopago.sdk.android.showkase"
-        minSdk = MercadoPagoSDKConfigs.minSdk
-        targetSdk = MercadoPagoSDKConfigs.targetSdk
+        minSdk = MercadoPagoSDKConfig.minSdk
+        targetSdk = MercadoPagoSDKConfig.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -27,11 +27,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
     buildFeatures {
         compose = true

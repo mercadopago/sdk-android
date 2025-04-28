@@ -44,7 +44,7 @@ import java.math.BigDecimal
  * @see MercadoPagoSDK.coreMethods
  */
 class CoreMethods internal constructor(
-    private val koin: Koin,
+    internal val koin: Koin,
 ) {
     /**
      * Generate Card Token call.

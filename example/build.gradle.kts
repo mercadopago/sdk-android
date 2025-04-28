@@ -9,8 +9,8 @@ plugins {
 }
 
 android {
-    namespace = "com.mercadopago.sdk.android"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    namespace = "com.mercadopago.sdk.android.example"
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     val secretPropertiesFile = rootProject.file("secrets.properties")
     val secretProperties = Properties()
@@ -19,9 +19,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.mercadopago.sdk.android"
-        minSdk = MercadoPagoSDKConfigs.minSdk
-        targetSdk = MercadoPagoSDKConfigs.targetSdk
+        applicationId = "com.mercadopago.sdk.android.example"
+        minSdk = MercadoPagoSDKConfig.minSdk
+        targetSdk = MercadoPagoSDKConfig.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -40,11 +40,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
     buildFeatures {
         compose = true

@@ -1,8 +1,8 @@
-package com.mercadopago.sdk.android.presentation.state
+package com.mercadopago.sdk.android.example.presentation.state
 
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.presentation.data.Installment
+import com.mercadopago.sdk.android.example.presentation.data.Installment
 
 internal data class PaymentScreenViewState(
     val formIsValid: Boolean = false,
