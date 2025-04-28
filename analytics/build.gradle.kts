@@ -58,7 +58,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
 
-    implementation(libs.androidx.datastore)
+    api(libs.androidx.datastore)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.mockk)

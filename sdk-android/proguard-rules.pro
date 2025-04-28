@@ -34,3 +34,4 @@
 -keep class * {
     @com.google.gson.annotations.SerializedName *;
 }
+-keepclassmembers class * { public <init>(...); }

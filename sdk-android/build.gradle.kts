@@ -55,7 +55,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.okhttp.mockWebServer)
-    implementation(libs.androidx.datastore)
+    api(libs.androidx.datastore)
     api(libs.device.sdk)
 
     testImplementation(libs.junit)

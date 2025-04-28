@@ -81,7 +81,7 @@ ksp {
 
 dependencies {
     implementation(projects.core)
-    api(projects.sdkAndroid)
+    implementation(projects.sdkAndroid)
     implementation(projects.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
