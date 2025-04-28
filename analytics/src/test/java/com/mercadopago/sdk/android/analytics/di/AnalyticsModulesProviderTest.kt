@@ -1,10 +1,12 @@
 package com.mercadopago.sdk.android.analytics.di
 
 import android.app.Application
+import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.mockkStatic
 import kotlinx.coroutines.flow.Flow
 import org.junit.Test
 import org.koin.android.ext.koin.androidContext
@@ -20,7 +22,11 @@ internal class AnalyticsModulesProviderTest {
     fun `when provideModules is called Then modules should be verified`() {
         // Given
         mockkObject(CoreKoinFactory)
+        mockkStatic(ApplicationInfo::class)
         val context = mockk<Application>()
+        every {
+            context.applicationInfo
+        } returns mockk(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
         val modulesProvider = AnalyticsModulesProvider(
             context = context,

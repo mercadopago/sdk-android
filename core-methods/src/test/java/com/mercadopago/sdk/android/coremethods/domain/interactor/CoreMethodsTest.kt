@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
+import android.app.Application
+import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
@@ -15,6 +17,7 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUse
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -36,6 +39,15 @@ internal class CoreMethodsTest {
         mockkObject(CoreKoinFactory)
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
+        mockkObject(MercadoPagoSDK.Companion)
+        mockkStatic(ApplicationInfo::class)
+        val context = mockk<Application>()
+        every {
+            context.applicationInfo
+        } returns mockk(relaxed = true)
+        every {
+            MercadoPagoSDK.getInstance()
+        } returns mockk(relaxed = true)
 
         every {
             CoreKoinFactory.createKoinApp(any(), any(), any())
