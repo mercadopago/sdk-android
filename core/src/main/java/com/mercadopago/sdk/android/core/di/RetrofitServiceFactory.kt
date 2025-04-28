@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.core.di
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
-import com.mercadopago.sdk.android.core.utils.isDebugApp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

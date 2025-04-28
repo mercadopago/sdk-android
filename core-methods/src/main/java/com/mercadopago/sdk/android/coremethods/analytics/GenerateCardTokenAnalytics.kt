@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
-import android.content.Context
 import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH

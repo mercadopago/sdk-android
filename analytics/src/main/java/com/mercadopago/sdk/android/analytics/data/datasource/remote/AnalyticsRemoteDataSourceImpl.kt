@@ -10,7 +10,6 @@ import com.mercadopago.sdk.android.analytics.domain.interactor.MP_ANALYTICS_TAG
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
-import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
 import com.mercadopago.sdk.android.core.utils.mapToFlow
 import kotlinx.coroutines.CoroutineDispatcher
