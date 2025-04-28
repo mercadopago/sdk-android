@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.detekt) apply true
     alias(libs.plugins.kotlin.kover) apply true
     alias(libs.plugins.cashapp.paparazzi) apply false
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 tasks.withType(Detekt::class).configureEach {
@@ -26,6 +27,8 @@ tasks.withType(Detekt::class).configureEach {
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlinx.kover")
+    apply(plugin = "org.jetbrains.dokka")
+
     kover {
         reports {
             filters {
