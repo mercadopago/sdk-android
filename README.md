@@ -14,14 +14,40 @@ https://mercadopago.github.io/sdk-android/
 
 ## Install
 
+You need to add this to your settings.build.gradle file.
+```kotlin
+pluginManagement {
+    repositories {
+        // Other dependencies...
+        maven { url = uri("https://artifacts.mercadolibre.com/repository/android-releases") }
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        // Other dependencies...
+        maven {
+            url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
+        }
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
+
 Using toml:
 When using the toml file, create a new definition for the libraries you'll be using
 
 ```
 // Main SDK
-mercadopago-sdk = { group = "com.mercadopago.android.sdk", name = "sdk-android", version.ref = "mercadoPagoSdkVersion" }
+[versions]
+mercadoPagoSdkVersion = "-SNAPSHOT"
+mercadoPagoCoreMethodsVersion = "-SNAPSHOT"
+
+[libraries]
+mercadopago-sdk = { group = "com.github.mercadopago.sdk-android", name = "sdk-android", version.ref = "mercadoPagoSdkVersion" }
 // Core Methods SDK
-mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk", name = "core-methods", version.ref = "mercadoPagoSdkCoreMethodsVersion" }
+mercadopago-sdk-coreMethods = { group = "com.github.mercadopago.sdk-android", name = "core-methods", version.ref = "mercadoPagoCoreMethodsVersion" }
 ```
 
 Call inside the build.gradle file for the module you need
@@ -68,6 +94,9 @@ You can call the SDK with this method. Here is an example with the Core Methods 
     }
 }
 ```
+
+## Sample App
+You can also use our sample app to see how to use the SDK. Clone this repository and build the :example module. Don't forget to change the public key. 
 
 
 ## License
