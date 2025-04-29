@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.extensions
+package com.mercadopago.sdk.android.example.extensions
 
 import androidx.compose.foundation.border
 import androidx.compose.material3.MaterialTheme

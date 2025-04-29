@@ -8,8 +8,8 @@ import com.mercadopago.sdk.android.analytics.data.remote.models.request.Analytic
 import com.mercadopago.sdk.android.analytics.data.remote.service.AnalyticsService
 import com.mercadopago.sdk.android.analytics.domain.interactor.MP_ANALYTICS_TAG
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
-import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
 import com.mercadopago.sdk.android.core.utils.mapToFlow
 import kotlinx.coroutines.CoroutineDispatcher
@@ -70,5 +70,5 @@ internal class AnalyticsRemoteDataSourceImpl(
             Log.e(MP_ANALYTICS_TAG, "Error tracking", it)
         }
 
-    private fun shouldValidateTrack(): Boolean = isDebugApp() && isSameLibraryGroup(context)
+    private fun shouldValidateTrack(): Boolean = BuildConfig.DEBUG && isSameLibraryGroup(context)
 }

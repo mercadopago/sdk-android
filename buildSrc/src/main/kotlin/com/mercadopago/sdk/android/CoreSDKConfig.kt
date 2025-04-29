@@ -1,10 +1,12 @@
+package com.mercadopago.sdk.android
+
 /**
- * CoreMethodsSDKConfig
+ * CoreSDKConfig object
  * @property ARTIFACT_ID artifact id
  * @property VERSION_NAME version name
  */
-object CoreMethodsSDKConfig {
+object CoreSDKConfig {
 
-    const val ARTIFACT_ID = "core-methods"
+    const val ARTIFACT_ID = "core"
     const val VERSION_NAME = "0.0.1"
 }

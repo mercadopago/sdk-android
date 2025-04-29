@@ -44,7 +44,7 @@ import java.math.BigDecimal
  * @see MercadoPagoSDK.coreMethods
  */
 class CoreMethods internal constructor(
-    private val koin: Koin,
+    internal val koin: Koin,
 ) {
     /**
      * Generate Card Token call.
@@ -353,6 +353,60 @@ class CoreMethods internal constructor(
             }
         }
 
+        return result
+    }
+
+    /**
+     * Generate Card Token call.
+     *
+     * This return a [Result.Success] of [CardToken] data model or a [Result.Error] of [ResultError]
+     * This should only be used in cases where PCI is not required.
+     * This is a suspend function and should be called only from a coroutine or another suspend functionC
+     * @param cardNumber [String] of the card number text field
+     * @param expirationDate [String] of the expiration date text field
+     * @param securityCode [String]  of the security code text field
+     * @see CardToken
+     * @see Result
+     * @see ResultError
+     */
+    suspend fun generateCardToken(
+        cardNumber: String,
+        expirationDate: String,
+        securityCode: String?,
+    ): Result<CardToken, ResultError> {
+        val result = koin.get<GenerateCardTokenUseCase>().invoke(
+            cardNumber = cardNumber,
+            expirationDate = expirationDate,
+            securityCode = securityCode,
+        )
+
+        when (result) {
+            is Result.Error -> {
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                            ),
+                        )
+                    }
+                }
+            }
+
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallSuccess(),
+                )
+            }
+        }
         return result
     }
 

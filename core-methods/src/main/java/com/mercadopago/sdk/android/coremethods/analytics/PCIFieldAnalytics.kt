@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.analytics
 
 import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.FOCUS_PATH
+import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
@@ -38,4 +39,4 @@ internal data class MetricPCIFieldData(
     val field: String = PCI_FIELD,
     @SerializedName("framework_ui")
     val frameworkUI: String = COMPOSE_FRAMEWORK,
-) : CoreMethodsEventData()
+) : EventData

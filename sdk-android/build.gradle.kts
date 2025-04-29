@@ -1,16 +1,30 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id(MercadoPagoSDKConfig.MAVEN_PUBLISH)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>(MercadoPagoSDKConfig.RELEASE) {
+            groupId = MercadoPagoSDKConfig.GROUP_ID
+            artifactId = MercadoPagoSDKConfig.ARTIFACT_ID
+            version = MercadoPagoSDKConfig.versionName
+            afterEvaluate {
+                from(components[MercadoPagoSDKConfig.RELEASE])
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.mercadopago.sdk.android"
-    compileSdk = MercadoPagoSDKConfigs.compileSdk
+    compileSdk = MercadoPagoSDKConfig.compileSdk
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfigs.minSdk
-        version = MercadoPagoSDKConfigs.versionName
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfigs.versionName}\"")
+        minSdk = MercadoPagoSDKConfig.minSdk
+        version = MercadoPagoSDKConfig.versionName
+        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.versionName}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -23,11 +37,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfigs.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfigs.targetCompatibility
+        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
+        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfigs.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
     buildFeatures {
         buildConfig = true
@@ -35,14 +49,14 @@ android {
 }
 
 dependencies {
-    implementation(projects.core)
-    implementation(projects.analytics)
+    api(projects.core)
+    api(projects.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.okhttp.mockWebServer)
-    implementation(libs.androidx.datastore)
-    implementation(libs.device.sdk)
+    api(libs.androidx.datastore)
+    api(libs.device.sdk)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)

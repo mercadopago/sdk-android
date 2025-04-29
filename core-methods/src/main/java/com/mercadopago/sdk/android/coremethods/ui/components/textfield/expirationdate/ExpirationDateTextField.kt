@@ -21,7 +21,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 
 internal const val COMPONENT_NAME_EXPIRATION_DATE = "expirationDate"
@@ -33,11 +32,11 @@ internal const val COMPONENT_NAME_EXPIRATION_DATE = "expirationDate"
  * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
  *
  * @param modifier Modifier to customize the style and behavior of the field.
- * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
+ * @param state A [PCIFieldState] object that contains and manages the input data for the expiration date field.
  * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
  * @param dateFormat This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
  * this have to be align to the visual transformation mask
- * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
+ * @param enabled Controls the enabled state of the [ExpirationDateTextField], allowing or preventing user interaction.
  * @param readOnly Controls whether the field is editable or read-only.
  * @param decorationBox A composable that allows the addition of decorative elements around the text field.
  * @param textStyle Text style to be applied to the field's content.

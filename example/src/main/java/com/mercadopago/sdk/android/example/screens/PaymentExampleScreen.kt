@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.screens
+package com.mercadopago.sdk.android.example.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import com.mercadopago.sdk.android.R
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -42,16 +41,17 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
-import com.mercadopago.sdk.android.extensions.addBorder
-import com.mercadopago.sdk.android.presentation.PaymentScreenViewModel
-import com.mercadopago.sdk.android.presentation.data.Installment
-import com.mercadopago.sdk.android.presentation.state.CardNumberTextFieldState
-import com.mercadopago.sdk.android.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.presentation.state.PaymentScreenViewState
-import com.mercadopago.sdk.android.presentation.state.SecurityCodeState
-import com.mercadopago.sdk.android.ui.components.IdentificationTypeSelectorField
-import com.mercadopago.sdk.android.ui.components.InstallmentListDropDownField
-import com.mercadopago.sdk.android.ui.theme.ExampleTheme
+import com.mercadopago.sdk.android.example.R
+import com.mercadopago.sdk.android.example.extensions.addBorder
+import com.mercadopago.sdk.android.example.presentation.PaymentScreenViewModel
+import com.mercadopago.sdk.android.example.presentation.data.Installment
+import com.mercadopago.sdk.android.example.presentation.state.CardNumberTextFieldState
+import com.mercadopago.sdk.android.example.presentation.state.ExpirationDateState
+import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewState
+import com.mercadopago.sdk.android.example.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.example.ui.components.IdentificationTypeSelectorField
+import com.mercadopago.sdk.android.example.ui.components.InstallmentListDropDownField
+import com.mercadopago.sdk.android.example.ui.theme.ExampleTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

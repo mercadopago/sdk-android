@@ -1,6 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
@@ -9,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.detekt) apply true
     alias(libs.plugins.kotlin.kover) apply true
     alias(libs.plugins.cashapp.paparazzi) apply false
+    id("org.jetbrains.dokka") version "2.0.0"
 }
 
 tasks.withType(Detekt::class).configureEach {
@@ -26,6 +26,8 @@ tasks.withType(Detekt::class).configureEach {
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlinx.kover")
+    apply(plugin = "org.jetbrains.dokka")
+
     kover {
         reports {
             filters {
