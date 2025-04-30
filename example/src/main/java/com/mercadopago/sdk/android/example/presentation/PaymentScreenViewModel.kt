@@ -22,7 +22,6 @@ import java.math.BigDecimal
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 
-@Suppress("TooManyFunctions")
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {

@@ -81,7 +81,6 @@ internal fun PaymentExampleScreen(
 }
 
 @Composable
-@Suppress("LongParameterList", "LongMethod")
 internal fun PaymentExampleScreenContent(
     modifier: Modifier = Modifier,
     viewState: PaymentScreenViewState,

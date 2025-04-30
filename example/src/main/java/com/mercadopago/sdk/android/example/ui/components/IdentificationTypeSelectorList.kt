@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -124,7 +125,7 @@ internal fun IdentificationTypeSelectorList(
         ) {
             Label(
                 text = state.selectedIdentification?.name.orEmpty(),
-                modifier = modifier.width(32.dp)
+                modifier = modifier.widthIn(min = 32.dp)
             )
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
         }
