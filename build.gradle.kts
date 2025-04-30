@@ -22,6 +22,7 @@ tasks.withType(Detekt::class).configureEach {
     include("**/*.kts")
     exclude("resources/")
     exclude("**/build/**")
+    exclude("**/example/**")
 }
 
 allprojects {

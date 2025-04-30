@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.security
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldXML
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml.SecurityCodeTextField
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -18,9 +18,9 @@ class SecurityCodeTextFieldXMLTest {
         readOnly: Boolean = false,
         onEvent: (SecurityCodeTextFieldEvent) -> Unit = {},
         securityCodeSize: Int = 3,
-    ): SecurityCodeTextFieldXML {
+    ): SecurityCodeTextField {
         val context: Context = ApplicationProvider.getApplicationContext()
-        return SecurityCodeTextFieldXML(context = context).apply {
+        return SecurityCodeTextField(context = context).apply {
             this.readOnly = readOnly
             this.onEvent = onEvent
             this.securityCodeSize = securityCodeSize

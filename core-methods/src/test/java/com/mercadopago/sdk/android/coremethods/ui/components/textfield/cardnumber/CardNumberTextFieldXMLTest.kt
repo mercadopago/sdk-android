@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumb
 import android.content.Context
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.test.core.app.ApplicationProvider
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.xml.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -19,9 +20,9 @@ internal class CardNumberTextFieldXMLTest {
         readOnly: Boolean = false,
         onEvent: (CardNumberTextFieldEvent) -> Unit = {},
         maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
-    ): CardNumberTextFieldXML {
+    ): CardNumberTextField {
         val context: Context = ApplicationProvider.getApplicationContext()
-        return CardNumberTextFieldXML(context = context).apply {
+        return CardNumberTextField(context = context).apply {
             this.readOnly = readOnly
             this.onEvent = onEvent
             this.visualTransformation = visualTransformation

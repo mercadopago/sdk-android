@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -51,6 +52,8 @@ import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewS
 import com.mercadopago.sdk.android.example.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.example.ui.components.IdentificationTypeSelectorField
 import com.mercadopago.sdk.android.example.ui.components.InstallmentListDropDownField
+import com.mercadopago.sdk.android.example.ui.components.Label
+import com.mercadopago.sdk.android.example.ui.components.PlaceHolder
 import com.mercadopago.sdk.android.example.ui.theme.ExampleTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -149,11 +152,19 @@ internal fun PaymentExampleScreenContent(
                     modifier = Modifier
                         .align(Alignment.End)
                         .fillMaxWidth()
+                        .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
                 ) {
-                    Text(
+                    Icon(
+                        painter = painterResource(R.drawable.ic_padlock_closed),
+                        tint = if (viewState.formIsValid) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline,
+                        contentDescription = null,
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Label(
                         text = "Pay",
-                        style = MaterialTheme.typography.titleMedium,
+                        textColor = if (viewState.formIsValid) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline,
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                     )
                 }
             }
@@ -169,7 +180,7 @@ internal fun SecurityCodeExample(
     onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(
+        Label(
             text = "Security code",
         )
         Spacer(Modifier.height(4.dp))
@@ -182,10 +193,12 @@ internal fun SecurityCodeExample(
             SecurityCodeTextField(
                 state = state,
                 onEvent = onSecurityCodeEvent,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground,
+                ),
                 securityCodeSize = securityCodeState.secureCodeLength,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
-                    // Customize the input with relevant information like borders, icons, colors and more
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -197,9 +210,8 @@ internal fun SecurityCodeExample(
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             if (securityCodeState.length == 0) {
-                                Text(
+                                PlaceHolder(
                                     text = "123",
-                                    color = MaterialTheme.colorScheme.outline,
                                     modifier = Modifier.align(Alignment.CenterStart),
                                 )
                             }
@@ -226,7 +238,7 @@ internal fun ExpirationDateExample(
     onExpirationDateEvent: (ExpirationDateTextFieldEvent) -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(
+        Label(
             text = "Expiration Date",
         )
         Spacer(Modifier.height(4.dp))
@@ -241,6 +253,9 @@ internal fun ExpirationDateExample(
                 state = state,
                 dateFormat = ExpirationDateFormat.LongFormat,
                 onEvent = onExpirationDateEvent,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground,
+                ),
                 decorationBox = { innerTextField ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -254,9 +269,8 @@ internal fun ExpirationDateExample(
                     ) {
                         Box {
                             if (expirationDateState.length == 0) {
-                                Text(
+                                PlaceHolder(
                                     text = "MM/YYYY",
-                                    color = MaterialTheme.colorScheme.outline,
                                     modifier = Modifier.align(Alignment.CenterStart),
                                 )
                             }
@@ -277,15 +291,17 @@ internal fun CardNumberTextFieldExample(
     onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
 ) {
     Column(modifier = modifier) {
-        Text(
+        Label(
             text = "Card Number",
         )
         Spacer(Modifier.height(4.dp))
         CardNumberTextField(
             state = state,
             onEvent = onCardNumberEvent,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+            ),
             decorationBox = { innerTextField ->
-                // Customize the input with relevant information like borders, icons, colors and more
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -309,9 +325,8 @@ internal fun CardNumberTextFieldExample(
                     }
                     Box {
                         if (cardNumberState.length == 0) {
-                            Text(
+                            PlaceHolder(
                                 text = "4444 4444 4444 4444",
-                                color = MaterialTheme.colorScheme.outline,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

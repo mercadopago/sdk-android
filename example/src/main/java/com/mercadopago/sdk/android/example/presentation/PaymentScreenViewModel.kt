@@ -81,7 +81,8 @@ internal class PaymentScreenViewModel(
                     _viewState.value = _viewState.value.copy(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
-                            installments = result.data.getOrNull(0)?.payerCost?.toInstallmentModel().orEmpty(),
+                            installments = result.data.getOrNull(0)?.payerCost?.toInstallmentModel()
+                                .orEmpty(),
                         )
                     )
                 }
@@ -104,7 +105,6 @@ internal class PaymentScreenViewModel(
     fun getIdentificationTypes() {
         viewModelScope.launch {
             val result = coreMethods.getIdentificationTypes()
-
             when (result) {
                 is Result.Success -> {
                     _viewState.value = _viewState.value.copy(
@@ -347,8 +347,7 @@ internal class PaymentScreenViewModel(
         _viewState.value = _viewState.value.copy(
             formIsValid = _viewState.value.secureCodeState.filled &&
                 _viewState.value.expirationDateState.valid &&
-                _viewState.value.identificationState.identificationValue.isNotEmpty() &&
-                _viewState.value.installmentsState.selectedInstallment != null
+                _viewState.value.cardNumberState.isValid
         )
     }
 }
