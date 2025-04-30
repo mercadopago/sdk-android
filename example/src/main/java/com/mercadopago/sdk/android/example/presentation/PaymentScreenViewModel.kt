@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -22,7 +23,6 @@ import java.math.BigDecimal
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 
-@Suppress("TooManyFunctions")
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
@@ -30,25 +30,28 @@ internal class PaymentScreenViewModel(
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
 
-    init {
-        getIdentificationTypes()
-    }
-
     fun generateToken(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification
     ) {
         viewModelScope.launch {
             val result = coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState
+                securityCodeState = securityCodeState,
+                buyerIdentification = buyerIdentification
             )
 
             when (result) {
                 is Result.Success -> {
-                    print(result.data.token)
+                    _viewState.value = _viewState.value.copy(
+                        dialogState = _viewState.value.dialogState.copy(
+                            showDialog = true,
+                            token = result.data.token
+                        )
+                    )
                 }
 
                 is Result.Error -> {
@@ -81,7 +84,8 @@ internal class PaymentScreenViewModel(
                     _viewState.value = _viewState.value.copy(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
-                            installments = result.data.getOrNull(0)?.payerCost?.toInstallmentModel().orEmpty(),
+                            installments = result.data.getOrNull(0)?.payerCost?.toInstallmentModel()
+                                .orEmpty(),
                         )
                     )
                 }
@@ -104,7 +108,6 @@ internal class PaymentScreenViewModel(
     fun getIdentificationTypes() {
         viewModelScope.launch {
             val result = coreMethods.getIdentificationTypes()
-
             when (result) {
                 is Result.Success -> {
                     _viewState.value = _viewState.value.copy(
@@ -205,7 +208,6 @@ internal class PaymentScreenViewModel(
                         valid = event.isValid
                     )
                 )
-                onFormChanged()
             }
 
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
@@ -250,7 +252,6 @@ internal class PaymentScreenViewModel(
                         filled = event.isFilled
                     )
                 )
-                onFormChanged()
             }
         }
     }
@@ -287,7 +288,6 @@ internal class PaymentScreenViewModel(
                         isValid = event.isValid
                     )
                 )
-                onFormChanged()
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
@@ -343,12 +343,20 @@ internal class PaymentScreenViewModel(
         )
     }
 
-    fun onFormChanged() {
+    fun onCardHolderNameChanged(value: String) {
         _viewState.value = _viewState.value.copy(
-            formIsValid = _viewState.value.secureCodeState.filled &&
-                _viewState.value.expirationDateState.valid &&
-                _viewState.value.identificationState.identificationValue.isNotEmpty() &&
-                _viewState.value.installmentsState.selectedInstallment != null
+            identificationState = _viewState.value.identificationState.copy(
+                identificationNameValue = value
+            )
+        )
+    }
+
+    fun onDialogStateChanged(showDialog: Boolean) {
+        _viewState.value = _viewState.value.copy(
+            dialogState = _viewState.value.dialogState.copy(
+                showDialog = showDialog,
+                token = ""
+            ),
         )
     }
 }

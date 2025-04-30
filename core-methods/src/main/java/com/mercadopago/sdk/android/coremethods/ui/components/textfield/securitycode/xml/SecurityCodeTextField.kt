@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,6 +14,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.MIN_LENGTH
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 
 /**
  * Security code input XML component.
@@ -22,7 +25,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @param attrs [AttributeSet] for this view
  * @param defStyle def style
  */
-class SecurityCodeTextFieldXML(
+class SecurityCodeTextField(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,

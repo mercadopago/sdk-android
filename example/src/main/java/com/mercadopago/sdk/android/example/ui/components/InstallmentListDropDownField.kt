@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.BasicTextField
@@ -19,7 +20,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.example.extensions.addBorder
 import com.mercadopago.sdk.android.example.presentation.data.Installment
@@ -49,9 +50,8 @@ internal fun InstallmentListDropDownField(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
+            Label(
                 text = "Select the number of installments",
-                style = MaterialTheme.typography.titleMedium,
             )
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -91,7 +91,6 @@ internal fun InstallmentListDropDownField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Suppress("MagicNumber")
 internal fun InstallmentDropDown(
     state: InstallmentsState,
     onSelect: (Installment) -> Unit,
@@ -110,7 +109,7 @@ internal fun InstallmentDropDown(
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxHeight()
         ) {
-            Text(
+            Label(
                 text = state.selectedInstallment?.value ?: "Choose option",
                 modifier = Modifier.weight(8f)
             )
@@ -123,23 +122,24 @@ internal fun InstallmentDropDown(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.height(300.dp)
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.onPrimary)
         ) {
             state.installments.forEach { installment ->
                 val selected = installment.value == state.selectedInstallment?.value
                 DropdownMenuItem(
                     text = {
-                        Text(
+                        Label(
                             text = installment.value,
-                            color = if (selected) Color.White else Color.Unspecified
+                            textColor = if (selected) Color.White else Color.Unspecified
                         )
                     },
                     modifier = Modifier
+                        .heightIn(Dp.Unspecified, 300.dp)
                         .background(
                             color = if (selected) {
                                 MaterialTheme.colorScheme.primary
                             } else {
-                                Color.Unspecified
+                                MaterialTheme.colorScheme.onPrimary
                             }
                         ),
                     onClick = {

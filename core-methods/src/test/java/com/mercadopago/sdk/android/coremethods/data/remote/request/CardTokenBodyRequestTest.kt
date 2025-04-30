@@ -22,7 +22,14 @@ internal class CardTokenBodyRequestTest {
 
     @Test
     fun `test CardTokenBodyRequest creation with specified values`() {
-        val buyerIdentification = BuyerIdentificationBodyRequest(name = "John Doe", number = "123456789", type = "CPF")
+        val buyerIdentification =
+            BuyerIdentificationBodyRequest(
+                name = "John Doe",
+                identification = BuyerDocumentIdentificationBodyRequest(
+                    number = "987654321",
+                    type = "CNPJ"
+                )
+            )
         val cardTokenBodyRequest = CardTokenBodyRequest(
             cardId = "card_123",
             esc = "esc_value",
@@ -46,17 +53,35 @@ internal class CardTokenBodyRequestTest {
 
     @Test
     fun `test BuyerIdentificationBodyRequest creation`() {
-        val buyerIdentification = BuyerIdentificationBodyRequest(name = "Jane Doe", number = "987654321", type = "CNPJ")
+        val buyerIdentification = BuyerIdentificationBodyRequest(
+            name = "Jane Doe",
+            identification = BuyerDocumentIdentificationBodyRequest(
+                number = "987654321",
+                type = "CNPJ"
+            )
+        )
 
         assertEquals("Jane Doe", buyerIdentification.name)
-        assertEquals("987654321", buyerIdentification.number)
-        assertEquals("CNPJ", buyerIdentification.type)
+        assertEquals("987654321", buyerIdentification.identification?.number)
+        assertEquals("CNPJ", buyerIdentification.identification?.type)
     }
 
     @Test
     fun `test equality of CardTokenBodyRequest instances`() {
-        val buyerIdentification1 = BuyerIdentificationBodyRequest(name = "John Doe", number = "123456789", type = "CPF")
-        val buyerIdentification2 = BuyerIdentificationBodyRequest(name = "John Doe", number = "123456789", type = "CPF")
+        val buyerIdentification1 = BuyerIdentificationBodyRequest(
+            name = "John Doe",
+            identification = BuyerDocumentIdentificationBodyRequest(
+                number = "987654321",
+                type = "CNPJ"
+            )
+        )
+        val buyerIdentification2 = BuyerIdentificationBodyRequest(
+            name = "John Doe",
+            identification = BuyerDocumentIdentificationBodyRequest(
+                number = "987654321",
+                type = "CNPJ"
+            )
+        )
 
         val cardTokenBodyRequest1 = CardTokenBodyRequest(
             cardId = "card_001",

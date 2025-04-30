@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
@@ -17,7 +18,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,13 +46,15 @@ internal fun IdentificationTypeSelectorField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        Text(
+        Label(
             text = "Cardholder ID",
-            style = MaterialTheme.typography.titleMedium,
         )
         Spacer(Modifier.height(4.dp))
         BasicTextField(
             value = state.identificationValue,
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+            ),
             onValueChange = { value ->
                 if (value.length <= (state.selectedIdentification?.maxLength ?: 0)) {
                     onIdentificationTypeChanged(value)
@@ -84,7 +86,7 @@ internal fun IdentificationTypeSelectorField(
                     Spacer(modifier = Modifier.width(4.dp))
                     Box(Modifier.fillMaxWidth()) {
                         if (state.identificationValue.isEmpty()) {
-                            Text(
+                            PlaceHolder(
                                 text = state.selectedIdentification.getPlaceholder(),
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -121,8 +123,9 @@ internal fun IdentificationTypeSelectorList(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable),
         ) {
-            Text(
+            Label(
                 text = state.selectedIdentification?.name.orEmpty(),
+                modifier = modifier.widthIn(min = 32.dp)
             )
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
         }
@@ -131,7 +134,7 @@ internal fun IdentificationTypeSelectorList(
                 DropdownMenuItem(
                     text = {
                         option.name?.let {
-                            Text(text = it)
+                            Label(text = it)
                         }
                     },
                     onClick = {

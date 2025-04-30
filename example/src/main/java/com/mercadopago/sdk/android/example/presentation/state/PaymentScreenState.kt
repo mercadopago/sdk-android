@@ -5,13 +5,13 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.example.presentation.data.Installment
 
 internal data class PaymentScreenViewState(
-    val formIsValid: Boolean = false,
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
     val secureCodeState: SecurityCodeState = SecurityCodeState(),
     val cardNumberState: CardNumberTextFieldState = CardNumberTextFieldState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
     val identificationState: IdentificationState = IdentificationState(),
-    val cardIssuers: List<CardIssuer> = emptyList()
+    val cardIssuers: List<CardIssuer> = emptyList(),
+    val dialogState: CardTokenState = CardTokenState()
 )
 
 internal data class SecurityCodeState(
@@ -48,4 +48,10 @@ internal data class IdentificationState(
     val selectedIdentification: IdentificationType? = null,
     val identificationList: List<IdentificationType> = emptyList(),
     val identificationValue: String = "",
+    val identificationNameValue: String = "",
+)
+
+internal data class CardTokenState (
+    val showDialog: Boolean = false,
+    val token: String = ""
 )

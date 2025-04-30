@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.xml
 
 import android.content.Context
 import android.util.AttributeSet
@@ -11,6 +11,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.text.TextStyle
 import com.mercadopago.sdk.android.coremethods.R
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
@@ -23,7 +26,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @param attrs [AttributeSet] for this view
  * @param defStyle def style
  */
-class ExpirationDateTextFieldXML(
+class ExpirationDateTextField(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,

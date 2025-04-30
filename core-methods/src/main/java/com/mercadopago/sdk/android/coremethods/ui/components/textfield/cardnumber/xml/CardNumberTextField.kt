@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.xml
 
 import android.content.Context
 import android.util.AttributeSet
@@ -13,6 +13,9 @@ import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.R
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.DEFAULT_CARD_NUMBER_MAX_LENGTH
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
@@ -26,7 +29,7 @@ import kotlin.math.min
  * @param attrs [AttributeSet] for this view
  * @param defStyle def style
  */
-class CardNumberTextFieldXML(
+class CardNumberTextField(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,

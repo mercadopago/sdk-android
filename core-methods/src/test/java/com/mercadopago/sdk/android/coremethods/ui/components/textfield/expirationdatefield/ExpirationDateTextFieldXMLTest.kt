@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldXML
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.xml.ExpirationDateTextField
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -19,9 +19,9 @@ internal class ExpirationDateTextFieldXMLTest {
         readOnly: Boolean = false,
         onEvent: (ExpirationDateTextFieldEvent) -> Unit = {},
         dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat,
-    ): ExpirationDateTextFieldXML {
+    ): ExpirationDateTextField {
         val context: Context = ApplicationProvider.getApplicationContext()
-        return ExpirationDateTextFieldXML(context = context).apply {
+        return ExpirationDateTextField(context = context).apply {
             this.readOnly = readOnly
             this.onEvent = onEvent
             this.dateFormat = dateFormat

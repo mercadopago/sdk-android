@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.model
 
-import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -24,7 +24,7 @@ internal class GenerateCardTokenParamsTest {
 
     @Test
     fun `test CardTokenFields creation with specified values`() {
-        val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
+        val buyerIdentification = BuyerIdentificationParam(name = "John Doe", number = "123456789", type = "CPF")
         val generateCardTokenParams = GenerateCardTokenParams(
             cardId = "card_123",
             esc = "esc_value",
@@ -48,7 +48,7 @@ internal class GenerateCardTokenParamsTest {
 
     @Test
     fun `test CardTokenFields equality`() {
-        val buyerIdentification = BuyerIdentification(name = "Jane Doe", number = "987654321", type = "CNPJ")
+        val buyerIdentification = BuyerIdentificationParam(name = "Jane Doe", number = "987654321", type = "CNPJ")
         val generateCardTokenParams1 = GenerateCardTokenParams(
             cardId = "card_456",
             esc = null,

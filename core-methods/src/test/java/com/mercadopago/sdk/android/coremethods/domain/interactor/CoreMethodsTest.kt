@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -64,16 +65,26 @@ internal class CoreMethodsTest {
             val cardNumberState = PCIFieldState()
             val expirationDateState = PCIFieldState()
             val securityCodeState = PCIFieldState()
+            val buyerIdentification = BuyerIdentification(
+                name = "APRO",
+                number = "012345678909",
+                type = "CPF"
+            )
 
             val expectedCardToken = CardToken("token_12345")
 
             val expectedResult = Result.Success(expectedCardToken)
 
             coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
-                coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
+                coreMethods.generateCardToken(
+                    cardNumberState,
+                    expirationDateState,
+                    securityCodeState,
+                    buyerIdentification
+                )
 
             assertEquals(expectedResult, result)
         }
@@ -84,15 +95,25 @@ internal class CoreMethodsTest {
             val cardNumberState = PCIFieldState()
             val expirationDateState = PCIFieldState()
             val securityCodeState = PCIFieldState()
+            val buyerIdentification = BuyerIdentification(
+                name = "",
+                number = "",
+                type = ""
+            )
 
             val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
             val expectedResult = Result.Error(expectedError)
 
             coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
-                coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState)
+                coreMethods.generateCardToken(
+                    cardNumberState,
+                    expirationDateState,
+                    securityCodeState,
+                    buyerIdentification
+                )
 
             assertEquals(expectedResult, result)
         }
@@ -102,16 +123,26 @@ internal class CoreMethodsTest {
         runTest {
             val expirationDateState = PCIFieldState()
             val securityCodeState = PCIFieldState()
+            val buyerIdentification = BuyerIdentification(
+                name = "",
+                number = "",
+                type = ""
+            )
 
             val expectedCardToken = CardToken("token_12345")
 
             val expectedResult = Result.Success(expectedCardToken)
 
             coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
-                coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
+                coreMethods.generateCardToken(
+                    "id",
+                    expirationDateState,
+                    securityCodeState,
+                    buyerIdentification
+                )
 
             assertEquals(expectedResult, result)
         }
@@ -121,15 +152,25 @@ internal class CoreMethodsTest {
         runTest {
             val expirationDateState = PCIFieldState()
             val securityCodeState = PCIFieldState()
+            val buyerIdentification = BuyerIdentification(
+                name = "",
+                number = "",
+                type = ""
+            )
 
             val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
             val expectedResult = Result.Error(expectedError)
 
             coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
-                coreMethods.generateCardToken("id", expirationDateState, securityCodeState)
+                coreMethods.generateCardToken(
+                    "id",
+                    expirationDateState,
+                    securityCodeState,
+                    buyerIdentification
+                )
 
             assertEquals(expectedResult, result)
         }
@@ -140,7 +181,12 @@ internal class CoreMethodsTest {
             val bin = "123456"
             val amount = 1000.0.toBigDecimal()
             val expectedInstallment =
-                listOf(Installment(paymentTypeId = "credit_card", merchantAccountId = "merchant_id"))
+                listOf(
+                    Installment(
+                        paymentTypeId = "credit_card",
+                        merchantAccountId = "merchant_id"
+                    )
+                )
             val expectedResult = Result.Success(expectedInstallment)
 
             coEvery {
@@ -156,7 +202,8 @@ internal class CoreMethodsTest {
         runTest {
             val bin = "123456"
             val amount = 1000.0.toBigDecimal()
-            val expectedError = ResultError.Request(code = "404", message = "Installments not found")
+            val expectedError =
+                ResultError.Request(code = "404", message = "Installments not found")
             val expectedResult = Result.Error(expectedError)
 
             coEvery {
@@ -278,16 +325,26 @@ internal class CoreMethodsTest {
             val cardNumber = "510000000"
             val expirationDate = "12/25"
             val securityCode = "123"
+            val buyerIdentification = BuyerIdentification(
+                name = "",
+                number = "",
+                type = ""
+            )
 
             val expectedCardToken = CardToken("token_12345")
 
             val expectedResult = Result.Success(expectedCardToken)
 
             coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any())
+                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
-                coreMethods.generateCardToken(cardNumber, expirationDate, securityCode)
+                coreMethods.generateCardToken(
+                    cardNumber,
+                    expirationDate,
+                    securityCode,
+                    buyerIdentification
+                )
 
             assertEquals(expectedResult, result)
         }
