@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.example.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -138,33 +141,43 @@ internal fun PaymentExampleScreenContent(
                     onSelectedInstallment = onSelectedInstallment
                 )
                 Spacer(Modifier.size(16.dp))
-                Button(
-                    enabled = viewState.formIsValid,
-                    shape = MaterialTheme.shapes.small,
-                    onClick = {
-                        PaymentScreenViewModel().generateToken(
-                            cardNumberState = cardNumberState,
-                            expirationDateState = expirationDateState,
-                            securityCodeState = securityCodeState
-                        )
-                    },
+
+                Box(
                     modifier = Modifier
                         .align(Alignment.End)
                         .fillMaxWidth()
-                        .height(OutlinedTextFieldDefaults.MinHeight)
-                        .padding(horizontal = 16.dp),
+                        .height(80.dp)
+                        .background(color = MaterialTheme.colorScheme.secondary),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_padlock_closed),
-                        tint = if (viewState.formIsValid) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline,
-                        contentDescription = null,
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Label(
-                        text = "Pay",
-                        textColor = if (viewState.formIsValid) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline,
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                    )
+                    Button(
+                        shape = MaterialTheme.shapes.small,
+                        onClick = {
+                            PaymentScreenViewModel().generateToken(
+                                cardNumberState = cardNumberState,
+                                expirationDateState = expirationDateState,
+                                securityCodeState = securityCodeState
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_padlock_closed),
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                contentDescription = null,
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Label(
+                                text = "Pay",
+                                textColor = MaterialTheme.colorScheme.onPrimary,
+                                textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                            )
+                        }
+                    }
                 }
             }
         }

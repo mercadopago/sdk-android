@@ -27,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
     background = Color(0xFFFFFFFF),
     onBackground = Color(0xFF1A1A1A),
     onSurfaceVariant = Color(0xFF737373),
-    secondary = Color(0xFFD0BCFF),
+    secondary = Color(0xFFFFE600),
     tertiary = Color(0xFFD0BCFF),
     outline = Color(0xFFBFBFBF),
 )

@@ -46,6 +46,7 @@ internal class PaymentScreenViewModel(
             )
 
             when (result) {
+
                 is Result.Success -> {
                     print(result.data.token)
                 }
@@ -204,7 +205,6 @@ internal class PaymentScreenViewModel(
                         valid = event.isValid
                     )
                 )
-                onFormChanged()
             }
 
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
@@ -249,7 +249,6 @@ internal class PaymentScreenViewModel(
                         filled = event.isFilled
                     )
                 )
-                onFormChanged()
             }
         }
     }
@@ -286,7 +285,6 @@ internal class PaymentScreenViewModel(
                         isValid = event.isValid
                     )
                 )
-                onFormChanged()
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
@@ -339,14 +337,6 @@ internal class PaymentScreenViewModel(
             identificationState = _viewState.value.identificationState.copy(
                 selectedIdentification = identificationType,
             )
-        )
-    }
-
-    fun onFormChanged() {
-        _viewState.value = _viewState.value.copy(
-            formIsValid = _viewState.value.secureCodeState.filled &&
-                _viewState.value.expirationDateState.valid &&
-                _viewState.value.cardNumberState.isValid
         )
     }
 }
