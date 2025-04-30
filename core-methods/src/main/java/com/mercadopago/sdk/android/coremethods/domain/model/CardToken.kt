@@ -10,9 +10,13 @@ data class CardToken(
 
 /**
  * Buyer Identification
- * @param name: is the buyer identification name
- * @param number: is the buyer identification number
- * @param type: is the buyer identification type
+ * @param name is the buyer identification name (To test different payment results, fill
+ * in the desired status in the cardholder's name, example: APRO, OTHE, CONT)
+ * @param number is the buyer cardholder identification number
+ * @param type is the buyer cardholder identification type
+ * @see
+ * <a href="https://www.mercadopago.com.br/developers/en/docs/checkout-api/
+ * additional-content/your-integrations/test/cards">Test cards</a>
  */
 data class BuyerIdentification(
     val name: String?,

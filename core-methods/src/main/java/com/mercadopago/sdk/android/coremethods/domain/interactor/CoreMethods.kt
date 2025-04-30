@@ -67,7 +67,7 @@ class CoreMethods internal constructor(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
-        buyerIdentification: BuyerIdentification? = null
+        buyerIdentification: BuyerIdentification
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumberState.input,
@@ -127,7 +127,7 @@ class CoreMethods internal constructor(
         cardId: String,
         securityCodeState: PCIFieldState,
         expirationDateState: PCIFieldState? = null,
-        buyerIdentification: BuyerIdentification? = null
+        buyerIdentification: BuyerIdentification
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardId,
@@ -384,7 +384,7 @@ class CoreMethods internal constructor(
         cardNumber: String,
         expirationDate: String,
         securityCode: String?,
-        buyerIdentification: BuyerIdentification? = null
+        buyerIdentification: BuyerIdentification
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumber,

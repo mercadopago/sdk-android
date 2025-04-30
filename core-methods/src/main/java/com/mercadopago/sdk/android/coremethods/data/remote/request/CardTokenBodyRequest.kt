@@ -26,14 +26,14 @@ internal data class CardTokenBodyRequest(
 
 internal data class BuyerIdentificationBodyRequest(
     @SerializedName("name")
-    val name: String?,
+    val name: String? = null,
     @SerializedName("identification")
-    val identification: BuyerDocumentIdentificationBodyRequest?
+    val identification: BuyerDocumentIdentificationBodyRequest? = null
 )
 
 internal data class BuyerDocumentIdentificationBodyRequest(
     @SerializedName("number")
-    val number: String?,
+    val number: String? = null,
     @SerializedName("type")
-    val type: String?,
+    val type: String? = null,
 )

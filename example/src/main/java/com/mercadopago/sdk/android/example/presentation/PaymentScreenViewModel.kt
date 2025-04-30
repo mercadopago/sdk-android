@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -29,26 +30,28 @@ internal class PaymentScreenViewModel(
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
 
-    init {
-        getIdentificationTypes()
-    }
-
     fun generateToken(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification
     ) {
         viewModelScope.launch {
             val result = coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState
+                securityCodeState = securityCodeState,
+                buyerIdentification = buyerIdentification
             )
 
             when (result) {
-
                 is Result.Success -> {
-                    print(result.data.token)
+                    _viewState.value = _viewState.value.copy(
+                        dialogState = _viewState.value.dialogState.copy(
+                            showDialog = true,
+                            token = result.data.token
+                        )
+                    )
                 }
 
                 is Result.Error -> {
@@ -337,6 +340,23 @@ internal class PaymentScreenViewModel(
             identificationState = _viewState.value.identificationState.copy(
                 selectedIdentification = identificationType,
             )
+        )
+    }
+
+    fun onCardHolderNameChanged(value: String) {
+        _viewState.value = _viewState.value.copy(
+            identificationState = _viewState.value.identificationState.copy(
+                identificationNameValue = value
+            )
+        )
+    }
+
+    fun onDialogStateChanged(showDialog: Boolean) {
+        _viewState.value = _viewState.value.copy(
+            dialogState = _viewState.value.dialogState.copy(
+                showDialog = showDialog,
+                token = ""
+            ),
         )
     }
 }

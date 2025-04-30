@@ -10,7 +10,8 @@ internal data class PaymentScreenViewState(
     val cardNumberState: CardNumberTextFieldState = CardNumberTextFieldState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
     val identificationState: IdentificationState = IdentificationState(),
-    val cardIssuers: List<CardIssuer> = emptyList()
+    val cardIssuers: List<CardIssuer> = emptyList(),
+    val dialogState: CardTokenState = CardTokenState()
 )
 
 internal data class SecurityCodeState(
@@ -47,4 +48,10 @@ internal data class IdentificationState(
     val selectedIdentification: IdentificationType? = null,
     val identificationList: List<IdentificationType> = emptyList(),
     val identificationValue: String = "",
+    val identificationNameValue: String = "",
+)
+
+internal data class CardTokenState (
+    val showDialog: Boolean = false,
+    val token: String = ""
 )

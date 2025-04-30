@@ -35,8 +35,8 @@ internal class GenerateCardTokenParamsMapperTest {
 
         assertNotNull(cardTokenRequest.buyerIdentification)
         assertEquals("John Doe", cardTokenRequest.buyerIdentification?.name)
-        assertEquals("123456789", cardTokenRequest.buyerIdentification?.number)
-        assertEquals("CPF", cardTokenRequest.buyerIdentification?.type)
+        assertEquals("123456789", cardTokenRequest.buyerIdentification?.identification?.number)
+        assertEquals("CPF", cardTokenRequest.buyerIdentification?.identification?.type)
     }
 
     @Test
@@ -46,7 +46,7 @@ internal class GenerateCardTokenParamsMapperTest {
         val buyerIdentificationRequest = buyerIdentification.toBuyerIdentificationRequest()
 
         assertEquals("Jane Doe", buyerIdentificationRequest.name)
-        assertEquals("987654321", buyerIdentificationRequest.number)
-        assertEquals("CNPJ", buyerIdentificationRequest.type)
+        assertEquals("987654321", buyerIdentificationRequest.identification?.number)
+        assertEquals("CNPJ", buyerIdentificationRequest.identification?.type)
     }
 }

@@ -1,8 +1,6 @@
 package com.mercadopago.sdk.android.example.screens
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,13 +14,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -51,8 +51,10 @@ import com.mercadopago.sdk.android.example.presentation.PaymentScreenViewModel
 import com.mercadopago.sdk.android.example.presentation.data.Installment
 import com.mercadopago.sdk.android.example.presentation.state.CardNumberTextFieldState
 import com.mercadopago.sdk.android.example.presentation.state.ExpirationDateState
+import com.mercadopago.sdk.android.example.presentation.state.IdentificationState
 import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.example.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.example.ui.components.CardTokenDialog
 import com.mercadopago.sdk.android.example.ui.components.IdentificationTypeSelectorField
 import com.mercadopago.sdk.android.example.ui.components.InstallmentListDropDownField
 import com.mercadopago.sdk.android.example.ui.components.Label
@@ -69,6 +71,10 @@ internal fun PaymentExampleScreen(
     val expirationDateState = rememberPCIFieldState()
     val securityCodeState = rememberPCIFieldState()
 
+    LaunchedEffect(key1 = true) {
+        viewModel.getIdentificationTypes()
+    }
+
     PaymentExampleScreenContent(
         viewState = viewState,
         cardNumberState = cardNumberState,
@@ -79,7 +85,9 @@ internal fun PaymentExampleScreen(
         onCardNumberEvent = viewModel::onCardNumberEvent,
         onSelectIdentification = viewModel::onIdentificationTypeChanged,
         onIdentificationTypeChanged = viewModel::onIdentificationTypeValueChanged,
-        onSelectedInstallment = viewModel::onInstallmentSelected
+        onSelectedInstallment = viewModel::onInstallmentSelected,
+        onCardHolderNameChanged = viewModel::onCardHolderNameChanged,
+        onDialogStateChange = viewModel::onDialogStateChanged
     )
 }
 
@@ -96,7 +104,16 @@ internal fun PaymentExampleScreenContent(
     onSelectIdentification: (IdentificationType) -> Unit,
     onIdentificationTypeChanged: (String) -> Unit,
     onSelectedInstallment: (Installment) -> Unit,
+    onCardHolderNameChanged: (String) -> Unit,
+    onDialogStateChange: (Boolean) -> Unit,
 ) {
+    if (viewState.dialogState.showDialog) {
+        CardTokenDialog(
+            token = viewState.dialogState.token,
+            onDismiss = { onDialogStateChange(false) },
+        )
+    }
+
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
         Box(
             Modifier
@@ -129,6 +146,11 @@ internal fun PaymentExampleScreenContent(
                         onSecurityCodeEvent = onSecurityCodeEvent
                     )
                 }
+                IdentificationName(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    identificationState = viewState.identificationState,
+                    onCardHolderNameChanged = onCardHolderNameChanged
+                )
                 Spacer(Modifier.size(16.dp))
                 IdentificationTypeSelectorField(
                     state = viewState.identificationState,
@@ -142,41 +164,39 @@ internal fun PaymentExampleScreenContent(
                 )
                 Spacer(Modifier.size(16.dp))
 
-                Box(
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = {
+                        PaymentScreenViewModel().generateToken(
+                            cardNumberState = cardNumberState,
+                            expirationDateState = expirationDateState,
+                            securityCodeState = securityCodeState,
+                            buyerIdentification = BuyerIdentification(
+                                name = viewState.identificationState.identificationNameValue,
+                                number = viewState.identificationState.identificationValue,
+                                type = viewState.identificationState.selectedIdentification?.name
+                            )
+                        )
+                    },
                     modifier = Modifier
                         .align(Alignment.End)
                         .fillMaxWidth()
-                        .height(80.dp)
-                        .background(color = MaterialTheme.colorScheme.secondary),
-                    contentAlignment = Alignment.Center
+                        .padding(horizontal = 16.dp),
                 ) {
-                    Button(
-                        shape = MaterialTheme.shapes.small,
-                        onClick = {
-                            PaymentScreenViewModel().generateToken(
-                                cardNumberState = cardNumberState,
-                                expirationDateState = expirationDateState,
-                                securityCodeState = securityCodeState
-                            )
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp),
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_padlock_closed),
-                                tint = MaterialTheme.colorScheme.onPrimary,
-                                contentDescription = null,
-                            )
-                            Spacer(Modifier.width(4.dp))
-                            Label(
-                                text = "Pay",
-                                textColor = MaterialTheme.colorScheme.onPrimary,
-                                textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            )
-                        }
+                        Icon(
+                            painter = painterResource(R.drawable.ic_padlock_closed),
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            contentDescription = null,
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Label(
+                            text = "Pay",
+                            textColor = MaterialTheme.colorScheme.onPrimary,
+                            textStyle = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                        )
                     }
                 }
             }
@@ -263,7 +283,7 @@ internal fun ExpirationDateExample(
             ExpirationDateTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = state,
-                dateFormat = ExpirationDateFormat.LongFormat,
+                dateFormat = ExpirationDateFormat.ShortFormat,
                 onEvent = onExpirationDateEvent,
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
@@ -346,6 +366,31 @@ internal fun CardNumberTextFieldExample(
                     }
                 }
             },
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+internal fun IdentificationName(
+    modifier: Modifier = Modifier,
+    identificationState: IdentificationState,
+    onCardHolderNameChanged: (String) -> Unit
+) {
+    Column(modifier = modifier) {
+        Spacer(Modifier.height(8.dp))
+        Label(text = "Cardholder's name as it appears on the card")
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = identificationState.identificationNameValue,
+            placeholder = {
+                PlaceHolder(text = "María López")
+            },
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+            ),
+            onValueChange = onCardHolderNameChanged,
+            shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth(),
         )
     }

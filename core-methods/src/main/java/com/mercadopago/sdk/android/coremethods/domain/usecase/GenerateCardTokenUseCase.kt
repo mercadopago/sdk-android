@@ -54,11 +54,11 @@ internal class GenerateCardTokenUseCase(
                 expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
                 expirationYear = if (expirationDateIsNotNull) expirationYear else null,
                 securityCode = securityCode,
-                buyerIdentification = buyerIdentification?.let {
+                buyerIdentification = buyerIdentification?.let { buyer ->
                     BuyerIdentificationParam(
-                        name = buyerIdentification.name,
-                        number = buyerIdentification.number,
-                        type = buyerIdentification.type
+                        name = buyer.name,
+                        number = buyer.number,
+                        type = buyer.type
                     )
                 },
                 device = DeviceSDK.getInstance()?.info,
