@@ -26,9 +26,9 @@ internal data class CardTokenBodyRequest(
 
 internal data class BuyerIdentificationBodyRequest(
     @SerializedName("name")
-    val name: String,
+    val name: String?,
     @SerializedName("number")
-    val number: String,
+    val number: String?,
     @SerializedName("type")
-    val type: String,
+    val type: String?,
 )

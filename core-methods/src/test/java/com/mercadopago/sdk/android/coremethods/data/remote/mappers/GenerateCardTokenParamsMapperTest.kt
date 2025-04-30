@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.mappers
 
-import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -10,7 +10,7 @@ import kotlin.test.Test
 internal class GenerateCardTokenParamsMapperTest {
     @Test
     fun `test toCardTokenRequest conversion`() {
-        val buyerIdentification = BuyerIdentification(name = "John Doe", number = "123456789", type = "CPF")
+        val buyerIdentification = BuyerIdentificationParam(name = "John Doe", number = "123456789", type = "CPF")
 
         val generateCardTokenParams = GenerateCardTokenParams(
             cardId = "card_123",
@@ -41,7 +41,7 @@ internal class GenerateCardTokenParamsMapperTest {
 
     @Test
     fun `test toBuyerIdentificationRequest conversion`() {
-        val buyerIdentification = BuyerIdentification(name = "Jane Doe", number = "987654321", type = "CNPJ")
+        val buyerIdentification = BuyerIdentificationParam(name = "Jane Doe", number = "987654321", type = "CNPJ")
 
         val buyerIdentificationRequest = buyerIdentification.toBuyerIdentificationRequest()
 

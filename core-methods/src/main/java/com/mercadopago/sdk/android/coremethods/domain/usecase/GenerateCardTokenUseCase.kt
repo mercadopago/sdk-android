@@ -1,8 +1,10 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadolibre.android.device.sdk.DeviceSDK
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -20,6 +22,7 @@ internal class GenerateCardTokenUseCase(
         cardNumber: String,
         securityCode: String?,
         expirationDate: String?,
+        buyerIdentification: BuyerIdentification? = null
     ): Result<CardToken, ResultError> {
         val expirationDateIsNotNull = expirationDate != null
 
@@ -51,6 +54,13 @@ internal class GenerateCardTokenUseCase(
                 expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
                 expirationYear = if (expirationDateIsNotNull) expirationYear else null,
                 securityCode = securityCode,
+                buyerIdentification = buyerIdentification?.let {
+                    BuyerIdentificationParam(
+                        name = buyerIdentification.name,
+                        number = buyerIdentification.number,
+                        type = buyerIdentification.type
+                    )
+                },
                 device = DeviceSDK.getInstance()?.info,
             ),
         )

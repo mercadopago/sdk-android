@@ -12,6 +12,7 @@ import com.mercadopago.sdk.android.coremethods.analytics.metricInstallmentsCallS
 import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricPaymentMethodCallSuccess
 import com.mercadopago.sdk.android.coremethods.di.CoreMethodsModulesProvider
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -55,6 +56,8 @@ class CoreMethods internal constructor(
      * @param cardNumberState [PCIFieldState] of the card number text field
      * @param expirationDateState [PCIFieldState] of the expiration date text field
      * @param securityCodeState [PCIFieldState]  of the security code text field
+     * @param buyerIdentification [BuyerIdentification] data class that`s handle the buyer identification
+     * name, number and type
      * @see PCIFieldState
      * @see CardToken
      * @see Result
@@ -64,11 +67,13 @@ class CoreMethods internal constructor(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification? = null
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumberState.input,
             expirationDate = expirationDateState.input,
             securityCode = securityCodeState.input,
+            buyerIdentification = buyerIdentification
         )
 
         when (result) {
@@ -111,6 +116,8 @@ class CoreMethods internal constructor(
      * @param securityCodeState [PCIFieldState]  of the security code text field
      * @param expirationDateState [PCIFieldState] of the expiration date text field.
      * This should only be provided if required.
+     * @param buyerIdentification [BuyerIdentification] data class that`s handle the buyer identification
+     * name, number and type
      * @see PCIFieldState
      * @see CardToken
      * @see Result
@@ -120,11 +127,13 @@ class CoreMethods internal constructor(
         cardId: String,
         securityCodeState: PCIFieldState,
         expirationDateState: PCIFieldState? = null,
+        buyerIdentification: BuyerIdentification? = null
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardId,
             expirationDate = expirationDateState?.input,
             securityCode = securityCodeState.input,
+            buyerIdentification = buyerIdentification
         )
 
         when (result) {
@@ -365,6 +374,8 @@ class CoreMethods internal constructor(
      * @param cardNumber [String] of the card number text field
      * @param expirationDate [String] of the expiration date text field
      * @param securityCode [String]  of the security code text field
+     * @param buyerIdentification [BuyerIdentification] data class that`s handle the buyer identification
+     * name, number and type
      * @see CardToken
      * @see Result
      * @see ResultError
@@ -373,11 +384,13 @@ class CoreMethods internal constructor(
         cardNumber: String,
         expirationDate: String,
         securityCode: String?,
+        buyerIdentification: BuyerIdentification? = null
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumber,
             expirationDate = expirationDate,
             securityCode = securityCode,
+            buyerIdentification = buyerIdentification
         )
 
         when (result) {

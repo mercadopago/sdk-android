@@ -10,12 +10,12 @@ internal data class GenerateCardTokenParams(
     val securityCode: String? = null,
     val expirationMonth: Int? = null,
     val expirationYear: Int? = null,
-    val buyerIdentification: BuyerIdentification? = null,
+    val buyerIdentification: BuyerIdentificationParam? = null,
     val device: Device? = null,
 )
 
-internal data class BuyerIdentification(
-    val name: String,
-    val number: String,
-    val type: String,
+internal data class BuyerIdentificationParam(
+    val name: String?,
+    val number: String?,
+    val type: String?,
 )
