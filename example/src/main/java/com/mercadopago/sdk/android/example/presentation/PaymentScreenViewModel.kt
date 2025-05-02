@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.example.mappers.toInstallmentModel
 import com.mercadopago.sdk.android.example.presentation.data.Installment
+import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenDialogState
 import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,24 +35,22 @@ internal class PaymentScreenViewModel(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
-        buyerIdentification: BuyerIdentification
     ) {
         viewModelScope.launch {
             val result = coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
                 securityCodeState = securityCodeState,
-                buyerIdentification = buyerIdentification
+                buyerIdentification = BuyerIdentification(
+                    name = viewState.value.identificationState.identificationNameValue,
+                    number = viewState.value.identificationState.identificationValue,
+                    type = viewState.value.identificationState.selectedIdentification?.name
+                )
             )
 
             when (result) {
                 is Result.Success -> {
-                    _viewState.value = _viewState.value.copy(
-                        dialogState = _viewState.value.dialogState.copy(
-                            showDialog = true,
-                            token = result.data.token
-                        )
-                    )
+                    onDialogStateChanged(PaymentScreenDialogState.CardToken(token = result.data.token))
                 }
 
                 is Result.Error -> {
@@ -351,12 +350,7 @@ internal class PaymentScreenViewModel(
         )
     }
 
-    fun onDialogStateChanged(showDialog: Boolean) {
-        _viewState.value = _viewState.value.copy(
-            dialogState = _viewState.value.dialogState.copy(
-                showDialog = showDialog,
-                token = ""
-            ),
-        )
+    fun onDialogStateChanged(dialogState: PaymentScreenDialogState) {
+        _viewState.value = _viewState.value.copy(dialogState = dialogState)
     }
 }

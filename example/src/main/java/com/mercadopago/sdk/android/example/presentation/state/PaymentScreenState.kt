@@ -11,7 +11,7 @@ internal data class PaymentScreenViewState(
     val installmentsState: InstallmentsState = InstallmentsState(),
     val identificationState: IdentificationState = IdentificationState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
-    val dialogState: CardTokenState = CardTokenState()
+    val dialogState: PaymentScreenDialogState = PaymentScreenDialogState.Hidden,
 )
 
 internal data class SecurityCodeState(
@@ -51,7 +51,9 @@ internal data class IdentificationState(
     val identificationNameValue: String = "",
 )
 
-internal data class CardTokenState (
-    val showDialog: Boolean = false,
-    val token: String = ""
-)
+internal sealed interface PaymentScreenDialogState {
+
+    data object Hidden : PaymentScreenDialogState
+
+    data class CardToken(val token: String) : PaymentScreenDialogState
+}
