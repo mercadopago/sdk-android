@@ -103,8 +103,9 @@ jobs:
           command: ./gradlew dokkaHtmlMultiModule
 
       - persist_to_workspace:
-          root: build/dokka
-          paths: htmlMultiModule
+          root: build/dokka/htmlMultiModule
+          paths:
+            - html
 
       # BUILD STEP
       - run:
