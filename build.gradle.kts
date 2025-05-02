@@ -27,8 +27,6 @@ tasks.withType(Detekt::class).configureEach {
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlinx.kover")
-    apply(plugin = "org.jetbrains.dokka")
-
     kover {
         reports {
             filters {

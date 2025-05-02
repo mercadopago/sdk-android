@@ -69,6 +69,7 @@ android {
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.jvmTarget
     }
+    apply(plugin = "org.jetbrains.dokka")
 }
 
 kover.reports.filters.excludes {
