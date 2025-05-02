@@ -1,1 +1,0 @@
-sourceset_dependencies='{":core-methods:dokkaHtml/debug":[],":core-methods:dokkaHtml/main":[],":core-methods:dokkaHtml/release":[]}'
