@@ -103,9 +103,9 @@ jobs:
           command: ./gradlew dokkaHtmlMultiModule
 
       - persist_to_workspace:
-          root: build/dokka/htmlMultiModule
+          root: build/dokka/
           paths:
-            - html
+            - htmlMultiModule
 
       # BUILD STEP
       - run:
@@ -139,7 +139,7 @@ jobs:
       - checkout
       - run: git lfs fetch --all
       - attach_workspace:
-          at: build/dokka/htmlMultiModule
+          at: build/dokka/
       - run:
           name: Disable Jekyll for GitHub Pages
           command: touch build/dokka/htmlMultiModule/.nojekyll
