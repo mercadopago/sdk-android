@@ -52,6 +52,7 @@ import com.mercadopago.sdk.android.example.presentation.data.Installment
 import com.mercadopago.sdk.android.example.presentation.state.CardNumberTextFieldState
 import com.mercadopago.sdk.android.example.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.example.presentation.state.IdentificationState
+import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenDialogState
 import com.mercadopago.sdk.android.example.presentation.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.example.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.example.ui.components.CardTokenDialog
@@ -80,6 +81,13 @@ internal fun PaymentExampleScreen(
         cardNumberState = cardNumberState,
         expirationDateState = expirationDateState,
         securityCodeState = securityCodeState,
+        onGenerateCardToken = {
+            viewModel.generateToken(
+                cardNumberState = cardNumberState,
+                expirationDateState = expirationDateState,
+                securityCodeState = securityCodeState,
+            )
+        },
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardNumberEvent = viewModel::onCardNumberEvent,
@@ -98,6 +106,7 @@ internal fun PaymentExampleScreenContent(
     cardNumberState: PCIFieldState,
     expirationDateState: PCIFieldState,
     securityCodeState: PCIFieldState,
+    onGenerateCardToken: () -> Unit,
     onExpirationDateEvent: (ExpirationDateTextFieldEvent) -> Unit,
     onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit,
     onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit,
@@ -105,13 +114,14 @@ internal fun PaymentExampleScreenContent(
     onIdentificationTypeChanged: (String) -> Unit,
     onSelectedInstallment: (Installment) -> Unit,
     onCardHolderNameChanged: (String) -> Unit,
-    onDialogStateChange: (Boolean) -> Unit,
+    onDialogStateChange: (PaymentScreenDialogState) -> Unit,
 ) {
-    if (viewState.dialogState.showDialog) {
-        CardTokenDialog(
+    when (viewState.dialogState) {
+        is PaymentScreenDialogState.CardToken -> CardTokenDialog(
             token = viewState.dialogState.token,
-            onDismiss = { onDialogStateChange(false) },
+            onDismiss = { onDialogStateChange(PaymentScreenDialogState.Hidden) },
         )
+        PaymentScreenDialogState.Hidden -> Unit
     }
 
     Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
@@ -166,18 +176,7 @@ internal fun PaymentExampleScreenContent(
 
                 Button(
                     shape = MaterialTheme.shapes.small,
-                    onClick = {
-                        PaymentScreenViewModel().generateToken(
-                            cardNumberState = cardNumberState,
-                            expirationDateState = expirationDateState,
-                            securityCodeState = securityCodeState,
-                            buyerIdentification = BuyerIdentification(
-                                name = viewState.identificationState.identificationNameValue,
-                                number = viewState.identificationState.identificationValue,
-                                type = viewState.identificationState.selectedIdentification?.name
-                            )
-                        )
-                    },
+                    onClick = onGenerateCardToken,
                     modifier = Modifier
                         .align(Alignment.End)
                         .fillMaxWidth()
