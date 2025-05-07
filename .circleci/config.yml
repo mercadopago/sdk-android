@@ -143,7 +143,7 @@ jobs:
   app-publication:
     executor: android-executor
     docker:
-      - image: circleci/android:latest
+      - image: cimg/openjdk:17.0.13
     steps:
       - run:
           name: Install Git LFS
