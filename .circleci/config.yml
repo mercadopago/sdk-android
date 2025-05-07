@@ -107,24 +107,6 @@ jobs:
           paths:
             - htmlMultiModule
 
-      # BUILD STEP
-      - run:
-          name: Build the app
-          command: ./gradlew assemble --stacktrace
-      - run:
-          name: Archive APK
-          command: |
-            mkdir -p ~/circleci-artifacts
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/
-      - run:
-          name: Archive .AAR
-          command: |
-            mkdir -p ~/circleci-artifacts
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/
-      - store_artifacts:
-          path: ~/circleci-artifacts
-          destination: apk
-
   docs-deploy:
     executor: android-executor
     docker:
@@ -158,6 +140,58 @@ jobs:
           name: Deploy documentation to GitHub Pages
           command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist build/dokka/htmlMultiModule
 
+  app-publication:
+    executor: android-executor
+    docker:
+      - image: circleci/android:latest
+    steps:
+      - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
+      - checkout
+      - run: git lfs fetch --all
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - run:
+          name: Setup JDK
+          command: sdkmanager "platform-tools" "platforms;android-29"
+      - run:
+          name: Environment setup
+          command: |
+            echo 'export ANDROID_HOME=$HOME/android-sdk-linux' >> $BASH_ENV
+            echo 'export PATH=$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH' >> $BASH_ENV
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - restore_cache:
+          keys:
+            - jars-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+            - jars-
+      - run:
+          name: Assemble APK
+          command: ./gradlew assembleRelease
+      - store_artifacts:
+          path: app/build/outputs/apk/release
+      - run:
+          name: Install Firebase CLI
+          command: curl -sL https://firebase.tools | bash
+      - run:
+          name: Install Firebase CLI
+          command: curl -sL https://firebase.tools | bash
+      - run:
+          name: Deploy to Firebase App Distribution
+          command: |
+            firebase appdistribution:distribute app/build/outputs/apk/release/app-release.apk \
+            --app 1234567890 \
+            --groups "testers" \
+            --token ${FIREBASE_TOKEN}
+
 workflows:
   version: 2
   build:
@@ -169,3 +203,6 @@ workflows:
           filters:
             branches:
               only: main
+      - app-publication:
+          requires:
+            - build-test
