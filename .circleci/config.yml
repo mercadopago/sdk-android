@@ -121,9 +121,9 @@ jobs:
           destination: apk
 
       - persist_to_workspace:
-          root: ~/circleci-artifacts
+          root: example/build/outputs/apk
           paths:
-            - example/build/outputs/apk/debug
+            - debug
 
   docs-deploy:
     executor: android-executor
@@ -172,7 +172,7 @@ jobs:
       - checkout
       - run: git lfs fetch --all
       - attach_workspace:
-          at: circleci-artifacts
+          at: example/build/outputs/apk
       - run:
           name: Install Firebase CLI
           command: curl -sL https://firebase.tools | bash
