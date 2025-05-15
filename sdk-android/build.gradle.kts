@@ -15,6 +15,13 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = MercadoPagoSDKConfig.NEXUS_NAME
+            credentials(PasswordCredentials::class)
+            url = uri(MercadoPagoSDKConfig.NEXUS_URL)
+        }
+    }
 }
 
 android {
