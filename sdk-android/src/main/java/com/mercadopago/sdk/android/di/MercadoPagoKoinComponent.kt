@@ -1,6 +1,7 @@
-package com.mercadopago.sdk.android.initializer
+package com.mercadopago.sdk.android.di
 
 import androidx.annotation.RestrictTo
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 
@@ -11,5 +12,5 @@ import org.koin.core.component.KoinComponent
 interface MercadoPagoKoinComponent : KoinComponent {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    override fun getKoin(): Koin = MercadoPagoSDK.getInstance().koin
+    override fun getKoin(): Koin = MercadoPagoSDK.Companion.getInstance().koin
 }
