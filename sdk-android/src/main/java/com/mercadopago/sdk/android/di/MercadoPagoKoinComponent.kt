@@ -12,5 +12,5 @@ import org.koin.core.component.KoinComponent
 interface MercadoPagoKoinComponent : KoinComponent {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    override fun getKoin(): Koin = MercadoPagoSDK.Companion.getInstance().koin
+    override fun getKoin(): Koin = MercadoPagoSDK.getInstance().koin
 }
