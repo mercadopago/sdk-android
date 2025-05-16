@@ -27,8 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -116,11 +118,16 @@ internal fun PaymentExampleScreenContent(
     onCardHolderNameChanged: (String) -> Unit,
     onDialogStateChange: (PaymentScreenDialogState) -> Unit,
 ) {
+    val clipboardManager = LocalClipboardManager.current
     when (viewState.dialogState) {
         is PaymentScreenDialogState.CardToken -> CardTokenDialog(
             token = viewState.dialogState.token,
-            onDismiss = { onDialogStateChange(PaymentScreenDialogState.Hidden) },
+            onDismiss = {
+                onDialogStateChange(PaymentScreenDialogState.Hidden)
+                clipboardManager.setText(AnnotatedString(viewState.dialogState.token))
+            },
         )
+
         PaymentScreenDialogState.Hidden -> Unit
     }
 
