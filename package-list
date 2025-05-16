@@ -5,7 +5,6 @@ module:core-methods
 com.mercadopago.sdk.android.coremethods.domain.interactor
 com.mercadopago.sdk.android.coremethods.domain.model
 com.mercadopago.sdk.android.coremethods.domain.utils
-com.mercadopago.sdk.android.coremethods.ui.components.samples
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.xml
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate
