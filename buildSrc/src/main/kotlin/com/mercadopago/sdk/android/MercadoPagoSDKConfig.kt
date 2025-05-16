@@ -11,13 +11,8 @@ import org.gradle.api.JavaVersion
  * @property DOKKA_IGNORE_PACKAGES packages to ignore in dokka documentation
  * @property DOKKA_HTML html tag for dokka
  * @property DOKKA_DIR dokka directory
- * @property versionName sdk version name
- * @property NEXUS_NAME nexus repository reference name
- * @property NEXUS_URL nexus repository url
- * @property RELEASE release
- * @property MAVEN_PUBLISH maven publish
- * @property GROUP_ID group id
  * @property ARTIFACT_ID artifact id
+ * @property versionName sdk version name
  */
 object MercadoPagoSDKConfig {
     const val minSdk = 23
@@ -32,12 +27,9 @@ object MercadoPagoSDKConfig {
     const val DOKKA_HTML = "dokkaHtml"
     const val DOKKA_DIR = "dokka"
 
+    // Maven
+    const val ARTIFACT_ID = "sdk-android"
+
     // SDK Android
     const val versionName = "0.0.1"
-    const val NEXUS_NAME = "sdkAndroid"
-    const val NEXUS_URL = "https://artifacts.mercadolibre.com/repository/android-releases/"
-    const val RELEASE = "release"
-    const val MAVEN_PUBLISH = "maven-publish"
-    const val GROUP_ID = "com.mercadopago.android.sdk"
-    const val ARTIFACT_ID = "sdk-android"
 }

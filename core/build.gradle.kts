@@ -3,25 +3,28 @@ import com.mercadopago.sdk.android.CoreSDKConfig
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id(MercadoPagoSDKConfig.MAVEN_PUBLISH)
+    id(MavenConfig.MAVEN_PUBLISH)
 }
 
 publishing {
     publications {
-        register<MavenPublication>(MercadoPagoSDKConfig.RELEASE) {
-            groupId = MercadoPagoSDKConfig.GROUP_ID
+        register<MavenPublication>(MavenConfig.RELEASE) {
+            groupId = MavenConfig.GROUP_ID
             artifactId = CoreSDKConfig.ARTIFACT_ID
             version = CoreSDKConfig.VERSION_NAME
             afterEvaluate {
-                from(components[MercadoPagoSDKConfig.RELEASE])
+                from(components[MavenConfig.RELEASE])
             }
         }
     }
     repositories {
         maven {
-            name = MercadoPagoSDKConfig.NEXUS_NAME
-            credentials(PasswordCredentials::class)
-            url = uri(MercadoPagoSDKConfig.NEXUS_URL)
+            name = MavenConfig.NEXUS_NAME
+            credentials {
+                username = System.getenv(MavenConfig.USERNAME)
+                password = System.getenv(MavenConfig.PASSWORD)
+            }
+            url = uri(MavenConfig.NEXUS_URL)
         }
     }
 }
