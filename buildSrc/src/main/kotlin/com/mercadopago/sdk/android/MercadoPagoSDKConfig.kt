@@ -8,6 +8,9 @@ import org.gradle.api.JavaVersion
  * @property jvmTarget jvm target version
  * @property sourceCompatibility source compatibility
  * @property targetCompatibility target compatibility
+ * @property DOKKA_IGNORE_PACKAGES packages to ignore in dokka documentation
+ * @property DOKKA_HTML html tag for dokka
+ * @property DOKKA_DIR dokka directory
  * @property versionName sdk version name
  * @property NEXUS_NAME nexus repository reference name
  * @property NEXUS_URL nexus repository url
@@ -23,6 +26,11 @@ object MercadoPagoSDKConfig {
     const val jvmTarget = "11"
     val sourceCompatibility = JavaVersion.VERSION_11
     val targetCompatibility = JavaVersion.VERSION_11
+
+    // Dokka
+    const val DOKKA_IGNORE_PACKAGES = ".*\\.internal.*|.*\\.di.*|.*\\.analytics.*"
+    const val DOKKA_HTML = "dokkaHtml"
+    const val DOKKA_DIR = "dokka"
 
     // SDK Android
     const val versionName = "0.0.1"

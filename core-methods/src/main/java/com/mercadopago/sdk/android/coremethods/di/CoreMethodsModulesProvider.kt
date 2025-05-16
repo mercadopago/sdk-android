@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.coremethods.di.datasource.provideDataSourceMo
 import com.mercadopago.sdk.android.coremethods.di.repository.provideRepositoryModule
 import com.mercadopago.sdk.android.coremethods.di.services.provideNetworkModule
 import com.mercadopago.sdk.android.coremethods.di.usecases.provideUseCaseModule
-import com.mercadopago.sdk.android.initializer.MercadoPagoKoinComponent
+import com.mercadopago.sdk.android.di.MercadoPagoKoinComponent
 import org.koin.core.Koin
 import org.koin.core.module.Module
 

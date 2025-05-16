@@ -366,6 +366,7 @@ class CoreMethods internal constructor(
     }
 
     /**
+     * @suppress
      * Generate Card Token call.
      *
      * This return a [Result.Success] of [CardToken] data model or a [Result.Error] of [ResultError]
