@@ -32,36 +32,72 @@ import org.koin.core.Koin
 import java.math.BigDecimal
 
 /**
- * CoreMethods class
- *
- * This class handlers the core-methods calls.
- * Use the [MercadoPagoSDK] extension method: [MercadoPagoSDK.coreMethods] to get this class instance.
+ * CoreMethods is the main class responsible for handling all core payment-related operations in the MercadoPago SDK.
+ * It provides methods for card tokenization, installment calculations, and payment method management.
+ * This class ensures secure handling of sensitive card data through PCI-compliant field states.
  *
  * Example:
+ * ```kotlin
+ * // Get CoreMethods instance
+ * val coreMethods = MercadoPagoSDK.getInstance().coreMethods
+ *
+ * // Generate card token
+ * val result = coreMethods.generateCardToken(
+ *     cardNumberState = cardNumberPCIState,
+ *     expirationDateState = expirationPCIState,
+ *     securityCodeState = securityCodePCIState,
+ *     buyerIdentification = buyerHolder
+ * )
  * ```
- * MercadoPagoSDK.getInstance().coreMethods
- * ```
+ *
  * @see MercadoPagoSDK
  * @see MercadoPagoSDK.coreMethods
+ *
  */
 class CoreMethods internal constructor(
     internal val koin: Koin,
 ) {
     /**
-     * Generate Card Token call.
+     * Generates a secure card token from the provided card details.
+     * This method handles the tokenization of card information in a PCI-compliant manner,
+     * ensuring sensitive data is never exposed in the application.
+     * The method returns a Result type that can be either Success with a CardToken or Error with details.
      *
-     * This return a [Result.Success] of [CardToken] data model or a [Result.Error] of [ResultError]
-     * This uses the [PCIFieldState] for pass the values of the card in a secure way
-     * This is a suspend function and should be called only from a coroutine or another suspend functionC
-     * @param cardNumberState [PCIFieldState] of the card number text field
-     * @param expirationDateState [PCIFieldState] of the expiration date text field
-     * @param securityCodeState [PCIFieldState]  of the security code text field
-     * @param buyerIdentification [BuyerIdentification] data class that`s handle the buyer identification
-     * name, number and type
+     * @param cardNumberState PCI-compliant state containing the card number
+     * @param expirationDateState PCI-compliant state containing the card expiration date
+     * @param securityCodeState PCI-compliant state containing the card security code
+     * @param buyerIdentification Buyer identification information including name and document
+     * @return Result<CardToken, ResultError> Success with token or Error with details
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.generateCardToken(
+     *     cardNumberState = cardNumberField,
+     *     expirationDateState = expirationField,
+     *     securityCodeState = securityCodeField,
+     *     buyerIdentification = BuyerIdentification(
+     *         name = "John Doe",
+     *         number = "12345678",
+     *         type = "CPF"
+     *     )
+     * )
+     *
+     * when (result) {
+     *     is Result.Success -> {
+     *         val token = result.data.token
+     *         // Use token for payment processing
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     *
      * @see PCIFieldState
      * @see CardToken
      * @see Result
      * @see ResultError
+     *
      */
     suspend fun generateCardToken(
         cardNumberState: PCIFieldState,
@@ -167,17 +203,40 @@ class CoreMethods internal constructor(
     }
 
     /**
-     * Get installment list call.
+     * Retrieves available installment options for a given card and amount.
+     * This method calculates all possible installment plans based on the card's BIN,
+     * transaction amount, and processing mode.
+     * The result includes detailed information about each installment option including rates and fees.
      *
-     * This return a [Result.Success] of [Installment] data model or a [Result.Error] of [ResultError]
-     * This is a suspend function and should be called only from a coroutine or another suspend functionC
-     * @param bin the credit card bin
-     * @param amount order item amount
-     * @param processingMode the processing mode ([ProcessingMode.Aggregator] or [ProcessingMode.Gateway])
+     * @param bin The first 6 digits of the card number (BIN)
+     * @param amount The total transaction amount
+     * @param processingMode The payment processing mode (Aggregator or Gateway)
+     * @return Result<List<Installment>, ResultError> Success with installment options or Error with details
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.getInstallments(
+     *     bin = "411111",
+     *     amount = BigDecimal("100.00"),
+     *     processingMode = ProcessingMode.Aggregator
+     * )
+     *
+     * when (result) {
+     *     is Result.Success -> {
+     *         val installments = result.data
+     *         // Display installment options to user
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     *
      * @see Installment
      * @see ProcessingMode
      * @see Result
      * @see ResultError
+     *
      */
     suspend fun getInstallments(
         bin: String,
@@ -224,13 +283,32 @@ class CoreMethods internal constructor(
     }
 
     /**
-     * Get identification types call.
+     * Retrieves the list of available identification types for the current country.
+     * This method helps identify which types of identification documents (CPF, CNPJ, DNI, etc.)
+     * are accepted for payment processing in the current market.
+     * The result includes validation rules for each identification type.
      *
-     * This return a [Result.Success] of [IdentificationType] data model or a [Result.Error] of [ResultError]
-     * This is a suspend function and should be called only from a coroutine or another suspend functionC
+     * @return Result<List<IdentificationType>, ResultError> Success with identification types or Error with details
+     *
+     * Example:
+     * ```
+     * val result = coreMethods.getIdentificationTypes()
+     *
+     * when (result) {
+     *     is Result.Success -> {
+     *         val identificationTypes = result.data
+     *         // Display available identification types to user
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     *
      * @see IdentificationType
      * @see Result
      * @see ResultError
+     *
      */
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
@@ -268,13 +346,37 @@ class CoreMethods internal constructor(
     }
 
     /**
-     * Get card issuer list
+     * Retrieves the list of available card issuers for a given card BIN and payment method.
+     * This method helps identify which banks or financial institutions can process the card
+     * based on its first digits and the selected payment method.
+     * The result includes issuer details such as ID, name, and processing capabilities.
      *
-     * This return a [Result.Success] of [CardIssuer] data model or a [Result.Error] of [ResultError]
-     * This is a suspend function and should be called only from a coroutine or another suspend function
+     * @param bin The first 6 digits of the card number (BIN)
+     * @param paymentMethodId The ID of the payment method to check issuers for
+     * @return Result<List<CardIssuer>, ResultError> Success with issuer list or Error with details
      *
-     * @param bin: the credit card bin
-     * @param paymentMethodId: payment method id
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.getCardIssuers(
+     *     bin = "411111",
+     *     paymentMethodId = "visa"
+     * )
+     *
+     * when (result) {
+     *     is Result.Success -> {
+     *         val issuers = result.data
+     *         // Display available issuers to user
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     *
+     * @see CardIssuer
+     * @see Result
+     * @see ResultError
+     *
      */
     suspend fun getCardIssuers(
         bin: Int,
@@ -319,12 +421,36 @@ class CoreMethods internal constructor(
     }
 
     /**
-     * Get Payment Methods
+     * Retrieves the list of available payment methods for a given card BIN.
+     * This method helps identify which payment methods (credit card, debit card, etc.)
+     * can be used based on the card's first digits.
+     * The result includes detailed information about each payment method including fees,
+     * processing times, and required fields.
      *
-     * This return a [Result.Success] of [PaymentMethod] list data model or a [Result.Error] of [ResultError]
-     * This is a suspend function and should be called only from a coroutine or another suspend function
+     * @param bin The first 6 digits of the card number (BIN)
+     * @return Result<List<PaymentMethod>, ResultError> Success with payment method list or Error with details
      *
-     * @param bin: the credit card bin
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.getPaymentMethods(
+     *     bin = "411111"
+     * )
+     *
+     * when (result) {
+     *     is Result.Success -> {
+     *         val paymentMethods = result.data
+     *         // Display available payment methods to user
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     *
+     * @see PaymentMethod
+     * @see Result
+     * @see ResultError
+     *
      */
     suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(

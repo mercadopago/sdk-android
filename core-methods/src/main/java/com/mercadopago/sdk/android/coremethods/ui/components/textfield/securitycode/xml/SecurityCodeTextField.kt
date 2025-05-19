@@ -19,11 +19,50 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 
 /**
- * Security code input XML component.
+ * A PCI-compliant XML view component for entering card security codes (CVV).
+ * This component provides a secure input field that handles card security codes with
+ * automatic formatting and validation.
  *
- * @param context xml context
- * @param attrs [AttributeSet] for this view
- * @param defStyle def style
+ * The component supports customizable security code lengths (typically 3 or 4 digits)
+ * and provides real-time feedback through events for validation and input state changes.
+ *
+ * Example:
+ * ```xml
+ * <com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml.SecurityCodeTextField
+ *     android:id="@+id/securityCodeField"
+ *     android:layout_width="match_parent"
+ *     android:layout_height="wrap_content"
+ *     app:securityCodeSize="3"
+ *     app:cursorColor="@color/primary"
+ *     app:readOnly="false" />
+ * ```
+ *
+ * ```kotlin
+ * // Configure the security code field
+ * securityCodeField.apply {
+ *     onEvent = { event ->
+ *         when (event) {
+ *             is SecurityCodeTextFieldEvent.OnInputFilled -> {
+ *                 if (event.isFilled) {
+ *                     // Handle complete input
+ *                 }
+ *             }
+ *         }
+ *     }
+ *     securityCodeSize = 3
+ *     textStyle = TextStyle(
+ *         color = Color.Black,
+ *         fontSize = 16.sp
+ *     )
+ * }
+ * ```
+ *
+ * @see SecurityCodeTextFieldEvent
+ * @see PCIFieldState
+ *
+ * @param context The context in which the view is running
+ * @param attrs The attributes of the XML tag that is inflating the view
+ * @param defStyle The default style to apply to this view
  */
 class SecurityCodeTextField(
     context: Context,
@@ -31,42 +70,53 @@ class SecurityCodeTextField(
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
     /**
-     * A [PCIFieldState] object that contains and manages the input data for the security field.
+     * The state holder for the security code input field.
+     * This property manages the input value and ensures PCI compliance.
      */
     lateinit var state: PCIFieldState
 
     /**
-     * A callback triggered in response to field events, such as focus changes or value changes.
+     * Callback for handling security code field events.
+     * This callback is triggered for various events like focus changes,
+     * input completion, and length changes.
      */
     var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
 
     /**
-     * Length limit for the security code to be entered (default is 3).
+     * The maximum number of digits allowed in the security code.
+     * This value determines the length of the security code input
+     * (typically 3 for most cards, 4 for American Express).
      */
     var securityCodeSize: Int = MIN_LENGTH
 
     /**
-     * Controls whether the field is editable or read-only.
+     * Whether the field is read-only.
+     * When true, the field can be focused but not edited,
+     * useful for displaying pre-filled values.
      */
     var readOnly: Boolean = false
 
     /**
-     * Text style to be applied to the field's content.
+     * The text style to be applied to the security code input.
+     * This includes properties like color, font size, and font family.
      */
     var textStyle: TextStyle = TextStyle.Default
 
     /**
-     * Keyboard options that influence the behavior of the input field.
+     * Configuration for the software keyboard.
+     * This includes options like keyboard type and IME actions.
      */
     var keyboardOptions: KeyboardOptions = KeyboardOptions()
 
     /**
-     * Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+     * The brush used to paint the text cursor.
+     * This allows customization of the cursor's appearance.
      */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
     /**
-     * Allows for visual transformations to be applied to the text, such as masking characters.
+     * Visual transformation to be applied to the security code input.
+     * This can be used to mask or format the input display.
      */
     var visualTransformation: VisualTransformation = VisualTransformation.None
 
