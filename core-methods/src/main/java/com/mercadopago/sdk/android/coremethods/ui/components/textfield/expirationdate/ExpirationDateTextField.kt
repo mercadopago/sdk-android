@@ -26,22 +26,27 @@ import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 internal const val COMPONENT_NAME_EXPIRATION_DATE = "expirationDate"
 
 /**
- * Expiration date input component.
+ * A PCI-compliant text field component for entering card expiration dates.
+ * This component provides a secure input field that handles card expiration dates with
+ * automatic formatting and validation.
  *
- * This component allows users to enter a card expiration date.
- * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
+ * The component supports both short (MM/YY) and long (MM/YYYY) date formats, automatically
+ * formats the input with the appropriate separator, and validates the date against
+ * current date and format rules.
  *
- * @param modifier Modifier to customize the style and behavior of the field.
- * @param state A [PCIFieldState] object that contains and manages the input data for the expiration date field.
- * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
- * @param dateFormat This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
- * this have to be align to the visual transformation mask
- * @param enabled Controls the enabled state of the [ExpirationDateTextField], allowing or preventing user interaction.
- * @param readOnly Controls whether the field is editable or read-only.
- * @param decorationBox A composable that allows the addition of decorative elements around the text field.
- * @param textStyle Text style to be applied to the field's content.
- * @param keyboardOptions The keyboard options to be applied to the field.
- * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
+ * @see ExpirationDateFormat
+ * @see ExpirationDateTextFieldEvent
+ *
+ * @param modifier Optional modifier for customizing the field's appearance and behavior
+ * @param state The [PCIFieldState] that manages the expiration date input value
+ * @param onEvent Callback for handling [ExpirationDateTextFieldEvent]s triggered during input
+ * @param dateFormat The format to use for the expiration date (short or long)
+ * @param enabled Whether the field is enabled for input
+ * @param readOnly Whether the field is read-only (can be focused but not edited)
+ * @param decorationBox Composable for customizing the field's visual appearance
+ * @param textStyle Style configuration for the field's typography
+ * @param keyboardOptions Configuration for the software keyboard
+ * @param cursorBrush Brush for painting the text cursor
  *
  * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.ExpirationDateFieldWithCustomMask
  */

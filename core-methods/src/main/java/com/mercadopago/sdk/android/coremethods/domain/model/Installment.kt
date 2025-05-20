@@ -1,14 +1,42 @@
 package com.mercadopago.sdk.android.coremethods.domain.model
 
 /**
- * Installment contains details related to one or more installments.
- * @param paymentMethodId: The ID of the payment method.
- * @param paymentTypeId: The ID of the payment type.
- * @param issuer: The issuer of the payment method.
- * @param processingMode: The processing mode of the payment method.
- * @param merchantAccountId: The ID of the merchant account.
- * @param payerCost: The list of payer costs.
- * @param agreements: The list of agreements.
+ * Represents installment options and payment details for a specific payment method.
+ * This class contains comprehensive information about available installment plans,
+ * including costs, rates, and processing details for a payment method.
+ * It helps merchants and users understand the total cost and payment options.
+ *
+ * @param paymentMethodId Unique identifier for the payment method (e.g., "visa", "master")
+ * @param paymentTypeId Type of payment (e.g., "credit_card", "debit_card")
+ * @param issuer Information about the card issuer or financial institution
+ * @param processingMode Mode of payment processing (e.g., "aggregator", "gateway")
+ * @param merchantAccountId Unique identifier for the merchant's account
+ * @param payerCost List of available installment options with their costs
+ * @param agreements List of agreements and terms for the payment method
+ *
+ * Example:
+ * ```kotlin
+ * val installment = Installment(
+ *     paymentMethodId = "visa",
+ *     paymentTypeId = "credit_card",
+ *     issuer = Issuer(
+ *         id = "123",
+ *         thumbnail = "https://example.com/visa.png"
+ *     ),
+ *     payerCost = listOf(
+ *         PayerCost(
+ *             instalments = 1,
+ *             installmentAmount = 100.0f,
+ *             totalAmount = 100.0f
+ *         )
+ *     )
+ * )
+ * ```
+ *
+ * @see Issuer
+ * @see PayerCost
+ * @see Agreements
+ * @see ProcessingMode
  */
 data class Installment(
     val paymentMethodId: String? = null,
@@ -21,10 +49,22 @@ data class Installment(
 )
 
 /**
- * Issuer contains details related to the issuer of the payment method.
- * @param id: The ID of the issuer.
- * @param thumbnail: The thumbnail of the issuer.
- * @param default: it's the default issuer
+ * Represents information about the card issuer or financial institution.
+ * This class contains details about the entity that issues the payment method,
+ * including its identification and visual representation.
+ *
+ * @param id Unique identifier for the issuer
+ * @param thumbnail URL to the issuer's logo or icon
+ * @param default Indicates if this is the default issuer for the payment method
+ *
+ * Example:
+ * ```kotlin
+ * val issuer = Issuer(
+ *     id = "123",
+ *     thumbnail = "https://example.com/visa.png",
+ *     default = true
+ * )
+ * ```
  */
 data class Issuer(
     val id: String? = null,
@@ -33,18 +73,32 @@ data class Issuer(
 )
 
 /**
- * PayerCost contains details related to the payer cost.
- * @param instalments: The number of instalments.
- * @param installmentAmount: The amount of the installment.
- * @param instalmentsRate: The rate of the instalments.
- * @param installmentRateCollector: The collector of the instalments rate.
- * @param totalAmount: The total amount.
- * @param minAllowedAmount: The minimum allowed amount.
- * @param maxAllowedAmount: The maximum allowed amount.
- * @param discountRate: The discount rate.
- * @param reimbursementRate: The reimbursement rate.
- * @param labels: The list of labels.
- * @param paymentMethodOptionId: The ID of the payment method option.
+ * Represents detailed cost information for an installment plan.
+ * This class contains all financial details related to an installment option,
+ * including rates, amounts, and payment terms.
+ *
+ * @param instalments Number of installments in this plan
+ * @param installmentAmount Amount to be paid in each installment
+ * @param instalmentsRate Interest rate applied to the installments
+ * @param installmentRateCollector List of entities collecting the installment rates
+ * @param totalAmount Total amount to be paid including all fees
+ * @param minAllowedAmount Minimum amount allowed for this installment plan
+ * @param maxAllowedAmount Maximum amount allowed for this installment plan
+ * @param discountRate Discount rate applied to the total amount
+ * @param reimbursementRate Rate for reimbursement if applicable
+ * @param labels Additional labels or tags for this installment plan
+ * @param paymentMethodOptionId Unique identifier for this payment option
+ *
+ * Example:
+ * ```kotlin
+ * val payerCost = PayerCost(
+ *     instalments = 3,
+ *     installmentAmount = 33.33f,
+ *     totalAmount = 100.0f,
+ *     instalmentsRate = 0.0f,
+ *     labels = listOf("interest_free")
+ * )
+ * ```
  */
 data class PayerCost(
     val instalments: Int? = null,
@@ -61,9 +115,28 @@ data class PayerCost(
 )
 
 /**
- * Agreements contains details related to the agreements.
- * @param merchantAccount: The list of merchant accounts.
- * @param timeFrame: The time frame.
+ * Represents agreements and terms for a payment method.
+ * This class contains information about merchant accounts and time frames
+ * associated with the payment method's agreements.
+ *
+ * @param merchantAccount List of merchant accounts associated with the agreement
+ * @param timeFrame Time period during which the agreement is valid
+ *
+ * Example:
+ * ```kotlin
+ * val agreements = Agreements(
+ *     merchantAccount = listOf(
+ *         MerchantAccount(id = "123", paymentMethodOptionId = "visa")
+ *     ),
+ *     timeFrame = TimeFrame(
+ *         startDate = "2024-01-01",
+ *         endDate = "2024-12-31"
+ *     )
+ * )
+ * ```
+ *
+ * @see MerchantAccount
+ * @see TimeFrame
  */
 data class Agreements(
     val merchantAccount: List<MerchantAccount>? = null,
@@ -71,9 +144,20 @@ data class Agreements(
 )
 
 /**
- * MerchantAccount contains details related to the merchant account.
- * @param id: The ID of the merchant account.
- * @param paymentMethodOptionId: The ID of the payment method option.
+ * Represents a merchant account associated with a payment method.
+ * This class contains identification information for a merchant's
+ * payment processing account.
+ *
+ * @param id Unique identifier for the merchant account
+ * @param paymentMethodOptionId Identifier for the payment method option
+ *
+ * Example:
+ * ```kotlin
+ * val merchantAccount = MerchantAccount(
+ *     id = "123",
+ *     paymentMethodOptionId = "visa"
+ * )
+ * ```
  */
 data class MerchantAccount(
     val id: String? = null,
@@ -81,9 +165,20 @@ data class MerchantAccount(
 )
 
 /**
- * TimeFrame contains details related to the time frame.
- * @param startDate: The start date.
- * @param endDate: The end date.
+ * Represents a time period for an agreement or promotion.
+ * This class defines the validity period for payment method agreements,
+ * promotions, or special conditions.
+ *
+ * @param startDate Start date of the time period (ISO format)
+ * @param endDate End date of the time period (ISO format)
+ *
+ * Example:
+ * ```kotlin
+ * val timeFrame = TimeFrame(
+ *     startDate = "2024-01-01",
+ *     endDate = "2024-12-31"
+ * )
+ * ```
  */
 data class TimeFrame(
     val startDate: String? = null,
@@ -91,17 +186,31 @@ data class TimeFrame(
 )
 
 /**
- * ProcessingMode contains the processing mode of the payment method.
- * @param mode: The processing mode.
+ * Defines the processing modes available for payment methods.
+ * This enum represents different ways in which payments can be processed,
+ * affecting how transactions are handled and settled.
+ *
+ * @param mode String representation of the processing mode
+ *
+ * Example:
+ * ```kotlin
+ * val processingMode = ProcessingMode.Aggregator
+ * // or
+ * val processingMode = ProcessingMode.Gateway
+ * ```
  */
 enum class ProcessingMode(val mode: String) {
     /**
      * Aggregator processing mode.
+     * In this mode, the payment processor aggregates transactions
+     * from multiple merchants before processing them.
      */
     Aggregator("aggregator"),
 
     /**
      * Gateway processing mode.
+     * In this mode, the payment processor acts as a direct gateway
+     * between the merchant and the payment network.
      */
     Gateway("gateway"),
 }

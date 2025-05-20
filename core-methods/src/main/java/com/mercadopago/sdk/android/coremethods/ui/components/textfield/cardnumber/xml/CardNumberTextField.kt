@@ -23,11 +23,61 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Card Number input XML component wrapper in xml.
+ * A PCI-compliant XML view component for entering credit/debit card numbers.
  *
- * @param context xml context
- * @param attrs [AttributeSet] for this view
- * @param defStyle def style
+ * This component provides a secure input field for card numbers with automatic formatting
+ * and validation. It supports various card number formats (8-19 digits) and automatically
+ * detects card types based on BIN (Bank Identification Number).
+ *
+ * Features:
+ * - PCI-compliant input handling
+ * - Automatic card number formatting
+ * - BIN detection and card type identification
+ * - Real-time validation using Luhn algorithm
+ * - Customizable appearance and behavior
+ *
+ * Example XML usage:
+ * ```xml
+ * <com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.xml.CardNumberTextField
+ *     android:id="@+id/cardNumberField"
+ *     android:layout_width="match_parent"
+ *     android:layout_height="wrap_content"
+ *     app:maxLength="16"
+ *     app:readOnly="false"
+ *     app:cursorColor="@color/primary" />
+ * ```
+ *
+ * Example Kotlin usage:
+ * ```kotlin
+ * val cardNumberField = findViewById<CardNumberTextField>(R.id.cardNumberField)
+ *
+ * // Configure the field
+ * cardNumberField.maxLength = 16 // For standard credit cards
+ * cardNumberField.textStyle = TextStyle(
+ *     color = Color.Black,
+ *     fontSize = 16.sp
+ * )
+ *
+ * // Handle events
+ * cardNumberField.onEvent = { event ->
+ *     when (event) {
+ *         is CardNumberTextFieldEvent.OnBinChanged -> {
+ *             // Handle BIN change and detect card type
+ *             val cardType = detectCardType(event.cardBin)
+ *             updateCardIssuerIcon(cardType)
+ *         }
+ *         is CardNumberTextFieldEvent.IsValid -> {
+ *             if (event.isValid) {
+ *                 // Enable next step
+ *             }
+ *         }
+ *     }
+ * }
+ * ```
+ *
+ * @param context The context in which the view is running
+ * @param attrs The attributes of the XML tag that is inflating the view
+ * @param defStyle The default style to apply to this view
  */
 class CardNumberTextField(
     context: Context,
@@ -35,47 +85,58 @@ class CardNumberTextField(
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
     /**
-     * The [PCIFieldState] of the component. It makes the field PCI and holds the card number value.
+     * The state holder that manages the card number input value and PCI compliance.
+     * This state is automatically initialized when the view is created and persists
+     * across configuration changes.
      */
     lateinit var state: PCIFieldState
 
     /**
-     * Callback for the [CardNumberTextFieldEvent].
+     * Callback triggered for field events (BIN changes, validation, input completion).
+     * Use this to handle user interactions and update the UI accordingly.
      */
     var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
 
     /**
-     * Controls the editable state of the [BasicTextField].
+     * Controls whether the field is editable or read-only.
+     * When true, the field can be focused but not edited.
      */
     var readOnly: Boolean = false
 
     /**
-     * Style configuration that applies at character level such as color, font etc.
+     * Text style applied to the card number input.
+     * Use this to customize the appearance of the input text.
      */
     var textStyle: TextStyle = TextStyle.Default
 
     /**
-     * [Brush] to paint cursor with.
+     * Brush applied to customize the text cursor appearance.
+     * Default is unspecified color.
      */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
     /**
-     * Software keyboard options that contains configuration such as [ImeAction].
+     * Configuration for the software keyboard.
+     * Use this to customize keyboard behavior and appearance.
      */
     var keyboardOption: KeyboardOptions = KeyboardOptions()
 
     /**
-     * When the input service emits an IME action, the corresponding callback
+     * Callbacks for keyboard action events.
+     * Use this to handle keyboard actions like "Done" or "Next".
      */
     var keyboardActions: KeyboardActions = KeyboardActions()
 
     /**
-     * The visual transformation filter for changing the visual representation of the card number.
+     * Visual transformation for formatting the card number display.
+     * Default is card number mask with spaces between groups.
      */
     var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
 
     /**
-     * It will ensure the users have the right amount of numbers after the bin is completed.
+     * Maximum length of the card number input.
+     * This value is clamped between 8 and 19 digits to ensure valid card number lengths.
+     * The actual length may be adjusted after BIN detection.
      */
     var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
         set(value) {

@@ -1,12 +1,32 @@
 package com.mercadopago.sdk.android.coremethods.domain.model
 
 /**
- * Card Issuer
- * @param id: issuer id
- * @param merchantAccountId: merchant account id
- * @param processingMode: processing mode
- * @param status: actual status
- * @param thumbnail: issuer thumbnail (48x48)
+ * Represents a card issuer entity in the payment processing system.
+ * This class contains information about the financial institution that issued
+ * the payment card, including its identification, processing details, and visual
+ * representation.
+ *
+ * @param id The unique identifier of the card issuer
+ * @param merchantAccountId The identifier of the merchant's account with this issuer
+ * @param processingMode The processing mode used by this issuer (e.g., "aggregator", "gateway")
+ * @param status The current status of the issuer in the system
+ * @param thumbnail URL to the issuer's logo image (48x48 pixels)
+ *
+ * Example:
+ * ```kotlin
+ * // Create a card issuer instance
+ * val issuer = CardIssuer(
+ *     id = "issuer id",
+ *     merchantAccountId = "merchant id",
+ *     processingMode = "aggregator",
+ *     status = "active",
+ *     thumbnail = "https://example.com/issuer-logo.png"
+ * )
+ *
+ * // Display issuer information
+ * displayIssuerLogo(issuer.thumbnail)
+ * processPayment(issuer.id, issuer.processingMode)
+ * ```
  */
 data class CardIssuer(
     val id: String? = null,
