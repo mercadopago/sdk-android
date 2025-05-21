@@ -5,6 +5,5 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMet
 
 internal fun GetPaymentMethodsParams.toRequest() =
     PaymentMethodsRequest(
-        productId = this.productId,
         bin = this.bin,
     )

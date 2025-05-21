@@ -379,7 +379,7 @@ class CoreMethods internal constructor(
      *
      */
     suspend fun getCardIssuers(
-        bin: Int,
+        bin: String,
         paymentMethodId: String,
     ): Result<List<CardIssuer>, ResultError> {
         val result = koin.get<GetCardIssuersUseCase>().invoke(

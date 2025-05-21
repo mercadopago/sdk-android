@@ -24,12 +24,20 @@ import java.math.BigDecimal
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 
+/**
+ * This is a checkout view model example that`s implements core methods and some secure field events
+ */
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
+
+    // This call is not mandatory and will don`t work with some Public Key and CountryCode
+    init {
+        getIdentificationTypes()
+    }
 
     fun generateToken(
         cardNumberState: PCIFieldState,
@@ -132,7 +140,7 @@ internal class PaymentScreenViewModel(
         }
     }
 
-    fun getCardIssuers(bin: Int, paymentMethodId: String) {
+    fun getCardIssuers(bin: String, paymentMethodId: String) {
         viewModelScope.launch {
             val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
@@ -171,7 +179,7 @@ internal class PaymentScreenViewModel(
                         )
                     )
                     getCardIssuers(
-                        bin = result.data[0].card?.bin!!,
+                        bin = bin,
                         paymentMethodId = result.data[0].id!!
                     )
                 }
@@ -204,7 +212,8 @@ internal class PaymentScreenViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        valid = event.isValid
+                        isValid = event.isValid,
+                        error = Pair(!event.isValid, "Invalid expiration date")
                     )
                 )
             }
@@ -212,7 +221,7 @@ internal class PaymentScreenViewModel(
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        isFocused = event.isFocused
+                        isFocused = event.isFocused,
                     )
                 )
             }
@@ -232,7 +241,12 @@ internal class PaymentScreenViewModel(
             is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
-                        isFocused = event.isFocused
+                        isFocused = event.isFocused,
+                        error = Pair(
+                            !_viewState.value.secureCodeState.filled
+                                && _viewState.value.secureCodeState.isFocused,
+                            "Please, fill the security code"
+                        )
                     )
                 )
             }
@@ -248,7 +262,8 @@ internal class PaymentScreenViewModel(
             is SecurityCodeTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
-                        filled = event.isFilled
+                        filled = event.isFilled,
+                        error = Pair(false, "")
                     )
                 )
             }
@@ -260,7 +275,7 @@ internal class PaymentScreenViewModel(
             is CardNumberTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        isFocused = event.isFocused
+                        isFocused = event.isFocused,
                     )
                 )
             }
@@ -276,7 +291,7 @@ internal class PaymentScreenViewModel(
             is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        lastFourDigits = event.lastFourDigits
+                        lastFourDigits = event.lastFourDigits,
                     )
                 )
             }
@@ -284,7 +299,8 @@ internal class PaymentScreenViewModel(
             is CardNumberTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        isValid = event.isValid
+                        isValid = event.isValid,
+                        error = Pair(!event.isValid, "Invalid card number")
                     )
                 )
             }
@@ -293,7 +309,9 @@ internal class PaymentScreenViewModel(
                 if ((event.cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
                     _viewState.value =
                         _viewState.value.copy(
-                            cardNumberState = _viewState.value.cardNumberState.copy(image = null),
+                            cardNumberState = _viewState.value.cardNumberState.copy(
+                                image = null
+                            ),
                             installmentsState = _viewState.value.installmentsState.copy(showList = false)
                         )
                 } else {

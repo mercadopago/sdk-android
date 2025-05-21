@@ -18,6 +18,8 @@ internal data class SecurityCodeState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
+    val error: Pair<Boolean, String> = Pair(false, ""),
+    val isValid: Boolean = false,
     val secureCodeLength: Int = 3
 )
 
@@ -25,14 +27,15 @@ internal data class ExpirationDateState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
-    val valid: Boolean = true
+    val error: Pair<Boolean, String> = Pair(false, ""),
+    val isValid: Boolean = false
 )
 
 internal data class CardNumberTextFieldState(
     val image: String? = null,
     var isFocused: Boolean = false,
-    var filled: Boolean = false,
     var length: Int = 0,
+    val error: Pair<Boolean, String> = Pair(false, ""),
     val isValid: Boolean = false,
     val lastFourDigits: String = "",
     val cardBin: String? = null,

@@ -17,7 +17,7 @@ class GetCardIssuersUseCaseTest {
     @Test
     fun `invoke should call repository with correct parameters`() =
         runBlocking {
-            val bin = 12345
+            val bin = "12345"
             val paymentMethodId = "credit"
 
             val expectedResult = Result.Success(listOf(CardIssuer()))
@@ -31,7 +31,7 @@ class GetCardIssuersUseCaseTest {
     @Test
     fun `invoke should return error when repository fails`() =
         runBlocking {
-            val bin = 12345
+            val bin = "12345"
             val paymentMethodId = "credit"
 
             val expectedErrorResult = Result.Error(ResultError.Request(code = "400", message = "Repository error"))
