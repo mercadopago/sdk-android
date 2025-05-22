@@ -27,6 +27,17 @@ import java.math.BigDecimal
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 internal const val DEFAULT_MAX_CARD_LENGTH = 19
+private const val CARD_LENGTH_8_MASK = "#### ####"
+private const val CARD_LENGTH_9_MASK = "#### #####"
+private const val CARD_LENGTH_10_MASK = "#### ######"
+private const val CARD_LENGTH_11_MASK = "#### #### ###"
+private const val CARD_LENGTH_12_MASK = "#### #### ####"
+private const val CARD_LENGTH_13_MASK = "#### ###### ###"
+private const val CARD_LENGTH_14_MASK = "#### ###### ####"
+private const val CARD_LENGTH_15_MASK = "#### ###### #####"
+private const val CARD_LENGTH_17_MASK = "#### #### #### #####"
+private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
+internal const val DEFAULT_CARD_MASK = "#### #### #### ####"
 
 internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
@@ -467,18 +478,18 @@ internal class PaymentScreenViewModel(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 maxLength = cardLength,
                 mask = when (cardLength) {
-                    8 -> "#### ####"
-                    9 -> "#### #####"
-                    10 -> "#### ######"
-                    11 -> "#### #### ###"
-                    12 -> "#### #### ####"
-                    13 -> "#### ###### ###"
-                    14 -> "#### ###### ####"
-                    15 -> "#### ###### #####"
-                    16 -> "#### #### #### ####"
-                    17 -> "#### #### #### #####"
-                    19 -> "#### #### #### #### ###"
-                    else -> "#### #### #### ####"
+                    8 -> CARD_LENGTH_8_MASK
+                    9 -> CARD_LENGTH_9_MASK
+                    10 -> CARD_LENGTH_10_MASK
+                    11 -> CARD_LENGTH_11_MASK
+                    12 -> CARD_LENGTH_12_MASK
+                    13 -> CARD_LENGTH_13_MASK
+                    14 -> CARD_LENGTH_14_MASK
+                    15 -> CARD_LENGTH_15_MASK
+                    16 -> DEFAULT_CARD_MASK
+                    17 -> CARD_LENGTH_17_MASK
+                    19 -> CARD_LENGTH_19_MASK
+                    else -> DEFAULT_CARD_MASK
                 }
             )
         )

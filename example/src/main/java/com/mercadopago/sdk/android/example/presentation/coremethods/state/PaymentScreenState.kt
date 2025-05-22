@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.example.presentation.coremethods.state
 
-import androidx.annotation.StringRes
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.example.data.model.Installment
+import com.mercadopago.sdk.android.example.presentation.coremethods.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.example.presentation.coremethods.DEFAULT_MAX_CARD_LENGTH
 
 internal data class PaymentScreenViewState(
@@ -36,7 +36,7 @@ internal data class CardNumberTextFieldState(
     var filled: Boolean = false,
     var length: Int = 0,
     var maxLength: Int = DEFAULT_MAX_CARD_LENGTH,
-    var mask: String = "#### #### #### ####",
+    var mask: String = DEFAULT_CARD_MASK,
     val isError: Boolean = false,
     val isValid: Boolean = false,
     val lastFourDigits: String = "",

@@ -17,6 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.example.R
 import com.mercadopago.sdk.android.example.navigation.SampleDestination
+import com.mercadopago.sdk.android.example.navigation.SampleFeaturesNavigationList
 import com.mercadopago.sdk.android.example.navigation.isRoute
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 
@@ -54,11 +55,9 @@ private fun TopBar(
         title = {
             Text(
                 text = stringResource(
-                    id = when {
-                        SampleDestination.SDKInstance.isRoute(destination) -> R.string.sdk_instance_feature_title
-                        SampleDestination.CoreMethods.isRoute(destination) -> R.string.core_methods_feature_title
-                        else -> R.string.app_name
-                    },
+                    id = SampleFeaturesNavigationList.find {
+                        it.destination.isRoute(destination)
+                    }?.title ?: R.string.app_name,
                 )
             )
         },

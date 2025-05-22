@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.di
 
 import android.app.Application
-import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -10,6 +9,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
@@ -17,7 +17,6 @@ import org.koin.test.KoinTest
 import org.koin.test.check.checkModules
 import org.koin.test.verify.verify
 import kotlin.test.Test
-import org.koin.android.ext.koin.androidContext
 
 internal class CoreMethodsModulesProviderTest : KoinTest {
     @OptIn(KoinExperimentalAPI::class)

@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.di
 
 import android.app.Application
-import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import io.mockk.every
