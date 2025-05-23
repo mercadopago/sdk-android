@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.di
 
-import android.content.Context
+import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import io.mockk.every
@@ -8,6 +8,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import org.junit.Test
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.test.KoinTest
@@ -22,10 +23,13 @@ internal class MercadoPagoSdkModulesProviderTest : KoinTest {
         // Given
         mockkObject(CoreKoinFactory)
         mockkStatic(ApplicationInfo::class)
-        val context = mockk<Context>()
+        val context = mockk<Application>()
         every {
             context.applicationInfo
         } returns mockk(relaxed = true)
+        every {
+            context.applicationContext
+        } returns context
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
         val modulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
@@ -37,6 +41,7 @@ internal class MercadoPagoSdkModulesProviderTest : KoinTest {
             .provideModules()
             .toModule()
         val koin = koinApplication {
+            androidContext(context)
             modules(module)
         }
 

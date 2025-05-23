@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.analytics.di
 
+import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.analytics.data.datasource.local.AnalyticsLocalDataSource
 import com.mercadopago.sdk.android.analytics.data.datasource.local.AnalyticsLocalDataSourceImpl
@@ -15,6 +15,10 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 private const val ANALYTICS_DATA_STORE = "ANALYTICS_DATA_STORE"
+
+private val Context.analyticsDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = ANALYTICS_DATA_STORE
+)
 
 internal fun provideDataSourceModule(): Module = module {
     factory<AnalyticsRemoteDataSource> {
@@ -31,9 +35,7 @@ internal fun provideDataSourceModule(): Module = module {
         )
     }
     single<DataStore<Preferences>>(named(ANALYTICS_DATA_STORE)) {
-        PreferenceDataStoreFactory.create {
-            androidApplication().preferencesDataStoreFile(ANALYTICS_DATA_STORE)
-        }
+        androidApplication().analyticsDataStore
     }
     factory {
         GsonBuilder()
