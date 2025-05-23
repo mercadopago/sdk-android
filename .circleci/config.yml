@@ -179,7 +179,7 @@ jobs:
           command: |
             TAG="v1.0.0"
             APK_PATH=app/build/outputs/apk/release/app-release.apk
-            echo $GITHUB_TOKEN | gh a   uth login --with-token
+            echo $GITHUB_TOKEN | gh auth login --with-token
             gh release create $TAG $APK_PATH --title "Test App $TAG" --notes "Release automático pelo CircleCI"
 
 workflows:
@@ -196,3 +196,7 @@ workflows:
       - app-publication:
           requires:
             - build-test
+            - docs-deploy
+          filters:
+            branches:
+              only: main
