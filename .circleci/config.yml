@@ -128,7 +128,7 @@ jobs:
   docs-deploy:
     executor: android-executor
     docker:
-      - image: cimg/node:16.17
+      - image: circleci/android:api-33
     steps:
       - run:
           name: Install Git LFS
@@ -173,19 +173,14 @@ jobs:
       - run: git lfs fetch --all
       - attach_workspace:
           at: example/build/outputs/apk
+      - run: sudo apt-get update && sudo apt-get install -y gh
       - run:
-          name: Install Firebase CLI
-          command: curl -sL https://firebase.tools | bash
-      - run:
-          name: Install Firebase CLI
-          command: curl -sL https://firebase.tools | bash
-      - run:
-          name: Deploy to Firebase App Distribution
+          name: Criar Release e subir APK no GitHub
           command: |
-            firebase appdistribution:distribute app/build/outputs/apk/release/app-release.apk \
-            --app 1234567890 \
-            --groups "testers" \
-            --token ${FIREBASE_TOKEN}
+            TAG="v1.0.0"
+            APK_PATH=app/build/outputs/apk/release/app-release.apk
+            echo $GITHUB_TOKEN | gh a   uth login --with-token
+            gh release create $TAG $APK_PATH --title "Test App $TAG" --notes "Release automático pelo CircleCI"
 
 workflows:
   version: 2
