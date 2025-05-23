@@ -4,6 +4,7 @@ package com.mercadopago.sdk.android.initializer
 
 import android.content.Context
 import android.util.Log
+import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -29,6 +30,8 @@ import java.util.UUID
  */
 class MercadoPagoSDK private constructor(
     internal val koin: Koin,
+    internal val publicKey: String,
+    internal val countryCode: CountryCode,
     private val sessionId: String,
 ) {
 
@@ -40,6 +43,12 @@ class MercadoPagoSDK private constructor(
 
         @Volatile
         private var sdkInstance: MercadoPagoSDK? = null
+
+        /**
+         * Check if the Mercado Pago SDK is initialized.
+         */
+        val isInitialized: Boolean
+            get() = sdkInstance != null
 
         /**
          * Initializes the Mercado Pago SDK. This should be called before any other SDK method.
@@ -79,6 +88,8 @@ class MercadoPagoSDK private constructor(
                 sdkInstance = MercadoPagoSDK(
                     koin = modulesProvider.koinApp,
                     sessionId = sessionId,
+                    publicKey = publicKey,
+                    countryCode = countryCode,
                 )
                 setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 DeviceSDK.getInstance().execute(context)
@@ -120,8 +131,33 @@ class MercadoPagoSDK private constructor(
             return sdkInstance ?: throw SDKNotInitializedException()
         }
 
-        internal fun clearInstance() {
-            sdkInstance = null
+        /**
+         * @suppress
+         * Only for internal usage. DO NOT USE IN PRODUCTION.
+         * Clear the current instance of the MercadoPagoSDK for testing purposes.
+         */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        fun clearInstance() {
+            SdkCoroutineProvider.provideSDKCoroutineScope().launch {
+                sdkInstance?.koin?.close()
+                sdkInstance = null
+            }
         }
+
+        /**
+         * @suppress
+         * Check the current public key
+         */
+        val publicKey: String?
+            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+            get() = sdkInstance?.publicKey
+
+        /**
+         * @suppress
+         * Check the current country code
+         */
+        val countryCode: CountryCode?
+            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+            get() = sdkInstance?.countryCode
     }
 }
