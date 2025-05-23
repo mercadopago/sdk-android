@@ -25,25 +25,62 @@ internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
 internal const val MIN_LENGTH = 3
 
 /**
- * Security code input component.
+ * A PCI-compliant security code input component for entering card CVV/CVC codes.
  *
- * This component allows users to enter a card security code.
- * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
+ * This component provides a secure input field for card security codes, with automatic formatting
+ * and validation. It supports both 3-digit (CVV) and 4-digit (CVC) security codes, with real-time
+ * feedback through events for validation and input state changes.
  *
- * @param modifier Modifier to customize the style and behavior of the field.
- * @param state A [PCIFieldState] object that contains and manages the input data for the security field.
- * @param onEvent A callback triggered in response to field events, such as focus changes or value changes.
- * @param securityCodeSize Length limit for the security code to be entered (default is 3).
- * @param enabled Controls the enabled state of the [SecurityCodeTextField], allowing or preventing user interaction.
- * @param readOnly Controls whether the field is editable or read-only.
- * @param decorationBox A composable that allows the addition of decorative elements around the text field.
- * @param textStyle Text style to be applied to the field's content.
- * @param keyboardOptions Keyboard options that influence the behavior of the input field.
- * @param cursorBrush Brush applied to the text field's cursor, allowing customization of the cursor's appearance.
- * @param visualTransformation Allows for visual transformations to be applied to the text, such as masking characters.
+ * The component integrates with [PCIFieldState] for secure input management and provides events
+ * through [SecurityCodeTextFieldEvent] for handling focus changes, input completion, and length changes.
  *
- * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldBasicSample
- * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.SecurityCodeFieldDecorationBoxSample
+ * Features:
+ * - PCI-compliant input handling
+ * - Automatic digit validation
+ * - Configurable security code length
+ * - Real-time input state feedback
+ * - Customizable appearance and behavior
+ *
+ * Example usage:
+ * ```kotlin
+ * val state = rememberPCIFieldState()
+ *
+ * SecurityCodeTextField(
+ *     state = state,
+ *     onEvent = { event ->
+ *         when (event) {
+ *             is SecurityCodeTextFieldEvent.OnInputFilled -> {
+ *                 // Handle input completion
+ *             }
+ *             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
+ *                 // Update progress indicator
+ *             }
+ *             is SecurityCodeTextFieldEvent.OnFocusChanged -> {
+ *                 // Show/hide security code hint
+ *             }
+ *         }
+ *     },
+ *     securityCodeSize = 3, // For 3-digit CVV
+ *     textStyle = MaterialTheme.typography.bodyLarge,
+ *     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+ * )
+ * ```
+ *
+ * @param modifier Modifier to customize the style and behavior of the field
+ * @param state A [PCIFieldState] object that manages the secure input data
+ * @param onEvent Callback triggered for field events (focus changes, input completion, length changes)
+ * @param securityCodeSize Maximum number of digits allowed (typically 3 or 4)
+ * @param enabled Controls whether the field is interactive
+ * @param readOnly Controls whether the field is editable
+ * @param decorationBox Composable for adding decorative elements around the text field
+ * @param textStyle Text style applied to the input content
+ * @param keyboardOptions Configuration for the software keyboard
+ * @param cursorBrush Brush applied to customize the cursor appearance
+ * @param visualTransformation Visual transformations applied to the input text
+ *
+ * @see PCIFieldState
+ * @see SecurityCodeTextFieldEvent
+ * @see PCITextField
  */
 @Composable
 fun SecurityCodeTextField(

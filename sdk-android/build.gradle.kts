@@ -15,6 +15,13 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = MercadoPagoSDKConfig.NEXUS_NAME
+            credentials(PasswordCredentials::class)
+            url = uri(MercadoPagoSDKConfig.NEXUS_URL)
+        }
+    }
 }
 
 android {
@@ -47,6 +54,18 @@ android {
         buildConfig = true
     }
     apply(plugin = "org.jetbrains.dokka")
+}
+
+tasks.named(MercadoPagoSDKConfig.DOKKA_HTML, org.jetbrains.dokka.gradle.DokkaTask::class).configure {
+    outputDirectory.set(layout.buildDirectory.dir(MercadoPagoSDKConfig.DOKKA_DIR))
+    dokkaSourceSets {
+        configureEach {
+            perPackageOption {
+                matchingRegex.set(MercadoPagoSDKConfig.DOKKA_IGNORE_PACKAGES)
+                suppress.set(true)
+            }
+        }
+    }
 }
 
 dependencies {

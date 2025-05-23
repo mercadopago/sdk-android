@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.samples
 
 import androidx.compose.runtime.Composable
+import com.mercadopago.sdk.android.core.sample.Sampled
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 

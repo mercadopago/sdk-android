@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.ui.components.samples
+package com.mercadopago.sdk.android.core.sample
 
 import androidx.annotation.RestrictTo
 

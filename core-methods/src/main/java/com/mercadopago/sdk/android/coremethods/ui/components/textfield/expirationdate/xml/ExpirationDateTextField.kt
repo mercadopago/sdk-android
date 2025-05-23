@@ -18,13 +18,60 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 
 /**
- * Expiration date input XML component wrapper in xml.
+ * A PCI-compliant XML view component for entering card expiration dates.
  *
- * This component allows users to enter a card expiration date.
- * It integrates the [PCIFieldState] that manages the entry and provides information of state of the field.
- * @param context xml context
- * @param attrs [AttributeSet] for this view
- * @param defStyle def style
+ * This component provides a secure input field for card expiration dates with automatic formatting
+ * and validation. It supports both short (MM/YY) and long (MM/YYYY) date formats, with real-time
+ * feedback through events for validation and input state changes.
+ *
+ * Features:
+ * - PCI-compliant input handling
+ * - Automatic date formatting
+ * - Support for short and long date formats
+ * - Real-time validation
+ * - Customizable appearance
+ *
+ * Example XML usage:
+ * ```xml
+ * <com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.xml.ExpirationDateTextField
+ *     android:id="@+id/expirationDateField"
+ *     android:layout_width="match_parent"
+ *     android:layout_height="wrap_content"
+ *     app:readOnly="false"
+ *     app:cursorColor="@color/primary" />
+ * ```
+ *
+ * Example Kotlin usage:
+ * ```kotlin
+ * val expirationDateField = findViewById<ExpirationDateTextField>(R.id.expirationDateField)
+ *
+ * // Configure the field
+ * expirationDateField.dateFormat = ExpirationDateFormat.ShortFormat
+ * expirationDateField.textStyle = TextStyle(
+ *     color = Color.Black,
+ *     fontSize = 16.sp
+ * )
+ *
+ * // Handle events
+ * expirationDateField.onEvent = { event ->
+ *     when (event) {
+ *         is ExpirationDateTextFieldEvent.IsValid -> {
+ *             if (event.isValid) {
+ *                 // Enable next step
+ *             }
+ *         }
+ *         is ExpirationDateTextFieldEvent.OnInputFilled -> {
+ *             if (event.isFilled) {
+ *                 // Handle complete input
+ *             }
+ *         }
+ *     }
+ * }
+ * ```
+ *
+ * @param context The context in which the view is running
+ * @param attrs The attributes of the XML tag that is inflating the view
+ * @param defStyle The default style to apply to this view
  */
 class ExpirationDateTextField(
     context: Context,
@@ -32,38 +79,47 @@ class ExpirationDateTextField(
     defStyle: Int = 0,
 ) : AbstractComposeView(context, attrs, defStyle) {
     /**
-     * A [PCIFieldState] object that contains and manages the input data for the expiration date
+     * The state holder that manages the expiration date input value and PCI compliance.
+     * This state is automatically initialized when the view is created and persists
+     * across configuration changes.
      */
     lateinit var state: PCIFieldState
 
     /**
-     * A callback triggered in response to field events, such as focus changes or value changes
+     * Callback triggered for field events (focus changes, input completion, validation).
+     * Use this to handle user interactions and update the UI accordingly.
      */
     var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
 
     /**
-     * Controls whether the field is editable or read-only
+     * Controls whether the field is editable or read-only.
+     * When true, the field can be focused but not edited.
      */
     var readOnly: Boolean = false
 
     /**
-     * Text style to be applied to the field's content
+     * Text style applied to the expiration date input.
+     * Use this to customize the appearance of the input text.
      */
     var textStyle: TextStyle = TextStyle.Default
 
     /**
-     * Brush applied to the text field's cursor, allowing customization of the cursor's appearance
+     * Brush applied to customize the text cursor appearance.
+     * Default is unspecified color.
      */
     var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
     /**
-     * The keyboard options to be applied to the field
+     * Configuration for the software keyboard.
+     * Use this to customize keyboard behavior and appearance.
      */
     var keyboardOption: KeyboardOptions = KeyboardOptions()
 
     /**
-     * This changes the max length that the input handle, using the [ExpirationDateFormat] enum class
-     * this have to be align to the visual transformation mask
+     * The format to use for the expiration date input.
+     * This determines the input length and display format:
+     * - ShortFormat: MM/YY (4 digits)
+     * - LongFormat: MM/YYYY (6 digits)
      */
     var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
 

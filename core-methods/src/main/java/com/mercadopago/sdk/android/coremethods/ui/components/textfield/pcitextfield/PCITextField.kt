@@ -22,28 +22,52 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 
 /**
- * This class holds the input data of secure fields, safeguarding it against exposure
- * and helping maintain a PCI Compliant environment.
- * @param value The current value of the field. It should use the value from the PCIFieldState.
- * @param onValueChange The callback that is triggered when the value of the field changes.
- * This should update the value of the PCIFieldState.
- * @param onFocusChanged The callback that is triggered when the focus of the field changes.
- * @param modifier The modifier to be applied to the field.
- * @param decorationBox The decoration box to be applied to the field. This will be passed by the integrators.
- * @param textStyle The text style to be applied to the field.
- * @param enabled controls the enabled state of the [PCITextField]. When `false`, the text
- * field will be neither editable nor focusable, the input of the text field will not be selectable
- * @param readOnly controls the editable state of the [PCITextField]. When `true`, the text
- * field can not be modified, however, a user can focus it and copy text from it. Read-only text
- * fields are usually used to display pre-filled forms that user can not edit
- * @param keyboardOptions The keyboard options to be applied to the field.
- * @param keyboardActions when the input service emits an IME action, the corresponding callback
- * is called. Note that this IME action may be different from what you specified in
- * [KeyboardOptions.imeAction].
- * @param cursorBrush The cursor brush to be applied to the field.
- * @param visualTransformation The visual transformation to be applied to the field.
+ * A PCI-compliant text field component for handling sensitive payment information.
+ * This composable provides a secure input field that safeguards sensitive data against exposure
+ * and helps maintain PCI compliance in payment forms.
  *
- * @sample com.mercadopago.sdk.android.coremethods.ui.components.samples.PCITextFieldBasicSample
+ * The component wraps Compose's BasicTextField with additional security measures and
+ * PCI compliance features, while maintaining the flexibility to customize its appearance
+ * and behavior through various parameters.
+ *
+ * Example:
+ * ```kotlin
+ * val state = rememberPCIFieldState()
+ * PCITextField(
+ *     value = state.input,
+ *     onValueChange = { value ->
+ *         state.input = value
+ *     },
+ *     onFocusChanged = { isFocused ->
+ *         // Handle focus changes
+ *     },
+ *     decorationBox = { innerTextField ->
+ *         // Custom decoration with border and padding
+ *         Box(
+ *             modifier = Modifier
+ *                 .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+ *                 .padding(8.dp)
+ *         ) {
+ *             innerTextField()
+ *         }
+ *     }
+ * )
+ * ```
+ *
+ * @see PCIFieldState
+ *
+ * @param value The current value of the field, typically from PCIFieldState
+ * @param onValueChange Callback triggered when the field's value changes
+ * @param onFocusChanged Callback triggered when the field's focus state changes
+ * @param modifier Optional modifier for customizing the field's appearance and behavior
+ * @param decorationBox Composable for customizing the field's visual appearance
+ * @param textStyle Style configuration for the field's typography
+ * @param enabled Whether the field is enabled for input
+ * @param readOnly Whether the field is read-only (can be focused but not edited)
+ * @param keyboardOptions Configuration for the software keyboard
+ * @param keyboardActions Callbacks for keyboard action events
+ * @param cursorBrush Brush for painting the text cursor
+ * @param visualTransformation Visual transformation for formatting the input display
  */
 @Composable
 internal fun PCITextField(

@@ -8,8 +8,32 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ONE
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
 import kotlin.math.absoluteValue
 
-/** Creates a visual transformation that masks the input of a field. It helps
- * with many input types like card numbers, dates...
+/**
+ * A visual transformation that applies a mask pattern to text input.
+ * This class helps format various types of input like card numbers, dates, and phone numbers
+ * by inserting special characters at predefined positions while maintaining the original input.
+ *
+ * The mask pattern uses '#' to represent input characters and any other character as a
+ * literal that will be inserted at that position. The transformation preserves the original
+ * input value while displaying it with the specified formatting.
+ *
+ * Example:
+ * ```kotlin
+ * // Create a mask for a card number (#### #### #### ####)
+ * val cardNumberMask = MaskVisualTransformation("#### #### #### ####")
+ *
+ * // Apply the mask to a text field
+ * TextField(
+ *     value = text,
+ *     onValueChange = { text = it },
+ *     visualTransformation = cardNumberMask
+ * )
+ *
+ * // Input: "4111111111111111"
+ * // Display: "4111 1111 1111 1111"
+ * ```
+ *
+ * @param mask The pattern to apply, using '#' for input characters and other characters as literals
  */
 class MaskVisualTransformation(
     private val mask: String,
@@ -49,6 +73,15 @@ class MaskVisualTransformation(
         }
 }
 
+/**
+ * Default mask patterns for common input types.
+ * This object provides pre-defined mask patterns for frequently used input formats
+ * in the payment form.
+ */
 internal object MaskVisualTransformationDefaults {
+    /**
+     * Default mask for card numbers (#### #### #### ####).
+     * This mask formats card numbers with spaces after every 4 digits.
+     */
     val CardNumber = MaskVisualTransformation("#### #### #### ####")
 }

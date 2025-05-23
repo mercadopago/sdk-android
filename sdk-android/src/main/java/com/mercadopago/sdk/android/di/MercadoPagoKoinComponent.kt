@@ -1,6 +1,7 @@
-package com.mercadopago.sdk.android.initializer
+package com.mercadopago.sdk.android.di
 
 import androidx.annotation.RestrictTo
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 
