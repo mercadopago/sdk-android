@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Mercado Pago SDK</string>
+    <string name="sdk_instance_feature_title">SDK Instance</string>
+    <string name="sdk_instance_feature_description">Initialize Mercado Pago\'s SDK with a public key to use the features.</string>
+    <string name="core_methods_feature_title">Core Methods</string>
+    <string name="core_methods_feature_description">Core methods provides APIs for you to create a fully customizable checkout experience. Use this demo to learn more about the core methods and how to use them.</string>
+    <string name="sdk_not_initialized_title">SDK not initialized</string>
+    <string name="sdk_not_initialized_description">Please initialize the SDK before using this feature</string>
+    <string name="empty_public_key_error_title">Empty public key</string>
+    <string name="empty_public_key_error_description">The public key cannot be empty</string>
+    <string name="ok">Ok</string>
+    <string name="autofill_public_key">Autofill Public Key</string>
 </resources>

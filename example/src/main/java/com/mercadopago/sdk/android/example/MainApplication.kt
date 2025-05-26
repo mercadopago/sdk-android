@@ -2,7 +2,9 @@ package com.mercadopago.sdk.android.example
 
 import android.app.Application
 import com.mercadopago.sdk.android.domain.model.CountryCode
-import com.mercadopago.sdk.android.example.presentation.PaymentScreenViewModel
+import com.mercadopago.sdk.android.example.di.providePresentationModule
+import com.mercadopago.sdk.android.example.presentation.coremethods.PaymentScreenViewModel
+import com.mercadopago.sdk.android.example.presentation.sdkinitializer.SdkInitializerViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -13,19 +15,23 @@ internal class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        MercadoPagoSDK.Companion.initialize(
-            context = this,
-            publicKey = BuildConfig.PUBLIC_KEY,
-            countryCode = CountryCode.ARG,
-        )
+        if (BuildConfig.PUBLIC_KEY.isNotEmpty()) {
+            MercadoPagoSDK.initialize(
+                context = this,
+                publicKey = BuildConfig.PUBLIC_KEY,
+                countryCode = CountryCode.ARG,
+            )
+        }
+        initializeKoin()
+    }
+
+    private fun initializeKoin() {
         startKoin {
             androidContext(this@MainApplication)
             modules(
                 modules = listOf(
-                    module {
-                        viewModel { PaymentScreenViewModel() }
-                    }
-                )
+                    providePresentationModule(this@MainApplication),
+                ),
             )
         }
     }
