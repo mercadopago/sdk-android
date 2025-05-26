@@ -20,7 +20,6 @@ pluginManagement {
     repositories {
         // Other dependencies...
         maven { url = uri("https://artifacts.mercadolibre.com/repository/android-releases") }
-        maven { url = uri("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
@@ -30,39 +29,37 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
         }
-        maven { url = uri("https://jitpack.io") }
     }
 }
 ```
 
 Using toml:
-When using the toml file, create a new definition for the libraries you'll be using
+Add the following definitions to your `libs.versions.toml` file to declare the SDK dependencies. We recommend using our Bill of Materials (BOM) to ensure consistent versioning across all SDK modules and avoid dependency conflicts:
 
 ```
 // Main SDK
 [versions]
-mercadoPagoSdkVersion = "-SNAPSHOT"
-mercadoPagoCoreMethodsVersion = "-SNAPSHOT"
+mercadoPagoSdkBomVersion = "latest-bom-version"
 
 [libraries]
-mercadopago-sdk = { group = "com.github.mercadopago.sdk-android", name = "sdk-android", version.ref = "mercadoPagoSdkVersion" }
+mercadopago-sdk.bom = { group = "com.mercadopago.android.sdk-android", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
 // Core Methods SDK
-mercadopago-sdk-coreMethods = { group = "com.github.mercadopago.sdk-android", name = "core-methods", version.ref = "mercadoPagoCoreMethodsVersion" }
+mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk-android", name = "core-methods" }
 ```
 
 Call inside the build.gradle file for the module you need
 ```kts
-implementation(libs.mercadopago.sdk)
+implementation(platform(libs.mercadopago.sdk.bom))
 implementation(libs.mercadopago.sdk.coreMethods)
 ```
 
 ## Usage
 1. Initialize the SDK
-To initialize the SDK, you'll need a public key for your Mercado Pago developer account. This can be obtained from the developer panel. Use the main application from your app 
+To initialize the SDK, you'll need a public key for your Mercado Pago developer account. This can be obtained from the developer panel. Use the main application from your app
 ```kotlin
  MercadoPagoSDK.initialize(
     context = this,
-    publicKey = "... write the public key here. This should be stored in a non-VCS file.",
+    publicKey = BuildConfig.PUBLIC_KEY, // Ensure that this key is securely managed and not hardcoded. It should not be stored in a Git file.
     countryCode = // use the country code for that public key,
 )
 ```
@@ -96,10 +93,9 @@ You can call the SDK with this method. Here is an example with the Core Methods 
 ```
 
 ## Sample App
-You can also use our sample app to see how to use the SDK. Clone this repository and build the :example module. Don't forget to change the public key. 
+You can also use our sample app to see how to use the SDK. Clone this repository and build the :example module. Don't forget to change the public key.
 
 
 ## License
 
 [Apache License Version 2.0](https://github.com/mercadopago/sdk-android/blob/main/LICENSE.md)
-
