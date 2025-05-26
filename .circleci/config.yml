@@ -168,22 +168,16 @@ jobs:
       - run:
           name: Check Release Conditions
           command: |
-            # Check if this is a merge from a release branch
-            if git log --oneline -1 | grep -q "Merge pull request.*from.*release/"; then
-              echo "This is a merge from a release branch. Proceeding with publish."
+            # Check if BomConfig.VERSION_NAME has changed
+            git fetch origin main
+            VERSION_CHANGED=$(git diff origin/main...HEAD -- buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt | grep '+.*VERSION_NAME' || true)
+            
+            if [ ! -z "$VERSION_CHANGED" ]; then
+              echo "BomConfig.VERSION_NAME has changed. Proceeding with publish."
               echo "export SHOULD_PUBLISH=true" >> $BASH_ENV
             else
-              # Check if BomConfig.VERSION_NAME has changed
-              git fetch origin main
-              VERSION_CHANGED=$(git diff origin/main...HEAD -- buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt | grep '+.*VERSION_NAME' || true)
-
-              if [ ! -z "$VERSION_CHANGED" ]; then
-                echo "BomConfig.VERSION_NAME has changed. Proceeding with publish."
-                echo "export SHOULD_PUBLISH=true" >> $BASH_ENV
-              else
-                echo "No version change detected and not a release branch merge. Skipping publish."
-                echo "export SHOULD_PUBLISH=false" >> $BASH_ENV
-              fi
+              echo "No version change detected. Skipping publish."
+              echo "export SHOULD_PUBLISH=false" >> $BASH_ENV
             fi
       - run:
           name: Publish to Maven if Conditions Met
