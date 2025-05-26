@@ -256,7 +256,7 @@ internal class CoreMethodsTest {
     @Test
     fun `getCardIssuers should return success and track success metric`() =
         runTest {
-            val bin = 12345
+            val bin = "12345"
             val paymentMethodId = "credit"
 
             val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
@@ -273,7 +273,7 @@ internal class CoreMethodsTest {
     @Test
     fun `getCardIssuers should return error and track error metric`() =
         runTest {
-            val bin = 12345
+            val bin = "12345"
             val paymentMethodId = "credit"
 
             val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")

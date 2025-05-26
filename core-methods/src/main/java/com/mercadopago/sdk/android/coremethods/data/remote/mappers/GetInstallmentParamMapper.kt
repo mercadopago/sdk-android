@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmen
 
 internal fun GetInstallmentParams.toRequest() =
     InstallmentsRequest(
-        productId = this.productId,
         bin = this.bin,
         processingMode = this.processingMode,
         amount = this.amount,

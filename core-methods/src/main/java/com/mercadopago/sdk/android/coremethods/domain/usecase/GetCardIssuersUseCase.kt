@@ -10,13 +10,12 @@ internal class GetCardIssuersUseCase(
     private val repository: CoreMethodsRepository,
 ) {
     suspend operator fun invoke(
-        bin: Int,
+        bin: String,
         paymentMethodId: String,
     ): Result<List<CardIssuer>, ResultError> {
         return repository.getCardIssuers(
             GetCardIssuersParams(
-                productId = "",
-                bin = bin,
+                bin = bin.toIntOrNull(),
                 paymentMethodId = paymentMethodId,
             ),
         )

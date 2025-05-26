@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuer
 
 internal fun GetCardIssuersParams.toRequest() =
     CardIssuersRequest(
-        productId = this.productId,
         bin = this.bin,
         paymentMethodId = this.paymentMethodId,
     )

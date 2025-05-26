@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.example.data.model.Installment
 import com.mercadopago.sdk.android.example.presentation.coremethods.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.example.presentation.coremethods.DEFAULT_MAX_CARD_LENGTH
+import java.lang.Error
 
 internal data class PaymentScreenViewState(
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
@@ -20,6 +21,7 @@ internal data class SecurityCodeState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
+    val error: Pair<Boolean, String> = Pair(false, ""),
     val secureCodeLength: Int = 3
 )
 
@@ -27,6 +29,7 @@ internal data class ExpirationDateState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val length: Int = 0,
+    val error: Pair<Boolean, String> = Pair(false, ""),
     val valid: Boolean = true
 )
 
@@ -37,7 +40,7 @@ internal data class CardNumberTextFieldState(
     var length: Int = 0,
     var maxLength: Int = DEFAULT_MAX_CARD_LENGTH,
     var mask: String = DEFAULT_CARD_MASK,
-    val isError: Boolean = false,
+    val error: Pair<Boolean, String> = Pair(false, ""),
     val isValid: Boolean = false,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
