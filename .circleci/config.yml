@@ -196,7 +196,3 @@ workflows:
       - app-publication:
           requires:
             - build-test
-            - docs-deploy
-          filters:
-            branches:
-              only: main
