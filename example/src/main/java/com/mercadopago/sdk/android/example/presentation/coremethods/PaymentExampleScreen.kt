@@ -66,6 +66,10 @@ import com.mercadopago.sdk.android.example.presentation.components.Label
 import com.mercadopago.sdk.android.example.presentation.components.PlaceHolder
 import com.mercadopago.sdk.android.example.presentation.logs.DebugLogsScreen
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
+import com.mercadopago.sdk.android.example.ui.components.IdentificationName
+import com.mercadopago.sdk.android.example.ui.components.fields.CardNumberTextFieldExample
+import com.mercadopago.sdk.android.example.ui.components.fields.ExpirationDateTextFieldExample
+import com.mercadopago.sdk.android.example.ui.components.fields.SecurityCodeTextFieldExample
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -131,6 +135,7 @@ internal fun PaymentExampleScreenContent(
                 clipboardManager.setText(AnnotatedString(viewState.dialogState.token))
             },
         )
+
         is PaymentScreenDialogState.Error -> AlertDialog(
             title = viewState.dialogState.title,
             description = viewState.dialogState.description,
@@ -165,14 +170,14 @@ internal fun PaymentExampleScreenContent(
                     )
                     Spacer(Modifier.height(16.dp))
                     Row(modifier = Modifier.padding(horizontal = 16.dp)) {
-                        ExpirationDateExample(
+                        ExpirationDateTextFieldExample(
                             Modifier.weight(1f),
                             state = expirationDateState,
                             expirationDateState = viewState.expirationDateState,
                             onExpirationDateEvent = onExpirationDateEvent
                         )
                         Spacer(Modifier.width(16.dp))
-                        SecurityCodeExample(
+                        SecurityCodeTextFieldExample(
                             Modifier.weight(1f),
                             state = securityCodeState,
                             securityCodeState = viewState.secureCodeState,
@@ -224,201 +229,6 @@ internal fun PaymentExampleScreenContent(
                 }
             }
         }
-    }
-}
-
-@Composable
-internal fun SecurityCodeExample(
-    modifier: Modifier = Modifier,
-    state: PCIFieldState,
-    securityCodeState: SecurityCodeState,
-    onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit
-) {
-    Column(modifier = modifier) {
-        Label(
-            text = "Security code",
-        )
-        Spacer(Modifier.height(4.dp))
-        CompositionLocalProvider(
-            LocalTextSelectionColors provides TextSelectionColors(
-                MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.tertiaryContainer
-            )
-        ) {
-            SecurityCodeTextField(
-                state = state,
-                onEvent = onSecurityCodeEvent,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-                securityCodeSize = securityCodeState.secureCodeLength,
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                decorationBox = { innerTextField ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .addBorder(
-                                isFocused = securityCodeState.isFocused,
-                            )
-                            .height(OutlinedTextFieldDefaults.MinHeight)
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        Box(modifier = Modifier.weight(1f)) {
-                            if (securityCodeState.length == 0) {
-                                PlaceHolder(
-                                    text = "123",
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                )
-                            }
-                            innerTextField()
-                        }
-                        Spacer(Modifier.width(4.dp))
-                        Image(
-                            painter = painterResource(R.drawable.ic_security_code),
-                            contentDescription = null,
-                            modifier = Modifier.size(34.dp),
-                        )
-                    }
-                }
-            )
-        }
-    }
-}
-
-@Composable
-internal fun ExpirationDateExample(
-    modifier: Modifier = Modifier,
-    state: PCIFieldState,
-    expirationDateState: ExpirationDateState,
-    onExpirationDateEvent: (ExpirationDateTextFieldEvent) -> Unit
-) {
-    Column(modifier = modifier) {
-        Label(
-            text = "Expiration Date",
-        )
-        Spacer(Modifier.height(4.dp))
-        CompositionLocalProvider(
-            LocalTextSelectionColors provides TextSelectionColors(
-                MaterialTheme.colorScheme.primary,
-                MaterialTheme.colorScheme.tertiaryContainer
-            )
-        ) {
-            ExpirationDateTextField(
-                modifier = Modifier.fillMaxWidth(),
-                state = state,
-                dateFormat = ExpirationDateFormat.ShortFormat,
-                onEvent = onExpirationDateEvent,
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-                decorationBox = { innerTextField ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .addBorder(
-                                isFocused = expirationDateState.isFocused,
-                                isValid = expirationDateState.valid
-                            )
-                            .height(OutlinedTextFieldDefaults.MinHeight)
-                            .padding(horizontal = 16.dp),
-                    ) {
-                        Box {
-                            if (expirationDateState.length == 0) {
-                                PlaceHolder(
-                                    text = "MM/YY",
-                                    modifier = Modifier.align(Alignment.CenterStart),
-                                )
-                            }
-                            innerTextField()
-                        }
-                    }
-                }
-            )
-        }
-    }
-}
-
-@Composable
-internal fun CardNumberTextFieldExample(
-    modifier: Modifier = Modifier,
-    state: PCIFieldState,
-    cardNumberState: CardNumberTextFieldState,
-    onCardNumberEvent: (CardNumberTextFieldEvent) -> Unit
-) {
-    Column(modifier = modifier) {
-        Label(
-            text = "Card Number",
-        )
-        Spacer(Modifier.height(4.dp))
-        CardNumberTextField(
-            state = state,
-            onEvent = onCardNumberEvent,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onBackground,
-            ),
-            maxLength = cardNumberState.maxLength,
-            visualTransformation = MaskVisualTransformation(cardNumberState.mask),
-            decorationBox = { innerTextField ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .addBorder(
-                            isFocused = cardNumberState.isFocused,
-                            isValid = cardNumberState.isError.not(),
-                        )
-                        .height(OutlinedTextFieldDefaults.MinHeight)
-                        .padding(horizontal = 16.dp),
-                ) {
-                    // Displaying the issuer image to the user when the bin is changed
-                    if (cardNumberState.image != null) {
-                        val context = LocalContext.current
-                        AsyncImage(
-                            model = ImageRequest.Builder(context)
-                                .data(cardNumberState.image)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Spacer(Modifier.width(4.dp))
-                    }
-                    Box {
-                        if (cardNumberState.length == 0) {
-                            PlaceHolder(
-                                text = "4444 4444 4444 4444",
-                                modifier = Modifier.align(Alignment.CenterStart),
-                            )
-                        }
-                        innerTextField()
-                    }
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
-    }
-}
-
-@Composable
-internal fun IdentificationName(
-    modifier: Modifier = Modifier,
-    identificationState: IdentificationState,
-    onCardHolderNameChanged: (String) -> Unit
-) {
-    Column(modifier = modifier) {
-        Spacer(Modifier.height(8.dp))
-        Label(text = "Cardholder's name as it appears on the card")
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = identificationState.identificationNameValue,
-            placeholder = {
-                PlaceHolder(text = "María López")
-            },
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onBackground,
-            ),
-            onValueChange = onCardHolderNameChanged,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 

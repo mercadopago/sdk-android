@@ -21,9 +21,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expiratio
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.example.extensions.addBorder
-import com.mercadopago.sdk.android.example.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.example.ui.components.Label
-import com.mercadopago.sdk.android.example.ui.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.components.Label
+import com.mercadopago.sdk.android.example.presentation.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.coremethods.state.ExpirationDateState
 
 @Composable
 internal fun ExpirationDateTextFieldExample(

@@ -9,7 +9,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.example.presentation.state.IdentificationState
+import com.mercadopago.sdk.android.example.presentation.components.Label
+import com.mercadopago.sdk.android.example.presentation.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.coremethods.state.IdentificationState
 
 @Composable
 internal fun IdentificationName(

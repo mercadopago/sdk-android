@@ -22,9 +22,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumbe
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.example.extensions.addBorder
-import com.mercadopago.sdk.android.example.presentation.state.CardNumberTextFieldState
-import com.mercadopago.sdk.android.example.ui.components.Label
-import com.mercadopago.sdk.android.example.ui.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.components.Label
+import com.mercadopago.sdk.android.example.presentation.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.coremethods.state.CardNumberTextFieldState
 
 /**
  * This is a example of implementation of the card number secure field

@@ -25,9 +25,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.example.R
 import com.mercadopago.sdk.android.example.extensions.addBorder
-import com.mercadopago.sdk.android.example.presentation.state.SecurityCodeState
-import com.mercadopago.sdk.android.example.ui.components.Label
-import com.mercadopago.sdk.android.example.ui.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.components.Label
+import com.mercadopago.sdk.android.example.presentation.components.PlaceHolder
+import com.mercadopago.sdk.android.example.presentation.coremethods.state.SecurityCodeState
 
 
 @Composable

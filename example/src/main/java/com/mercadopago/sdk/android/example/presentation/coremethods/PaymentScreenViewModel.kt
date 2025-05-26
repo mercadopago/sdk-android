@@ -57,7 +57,14 @@ internal class PaymentScreenViewModel(
     ) {
         viewModelScope.launch {
             if (viewState.value.cardNumberState.length != viewState.value.cardNumberState.maxLength) {
-                _viewState.value = _viewState.value.copy(cardNumberState = _viewState.value.cardNumberState.copy(isError = true))
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        error = Pair(
+                            true,
+                            "Please, fill the card number"
+                        )
+                    )
+                )
                 return@launch
             }
             val result = coreMethods.generateCardToken(
@@ -206,7 +213,7 @@ internal class PaymentScreenViewModel(
         }
     }
 
-    fun getCardIssuers(bin: Int, paymentMethodId: String) {
+    fun getCardIssuers(bin: String, paymentMethodId: String) {
         viewModelScope.launch {
             val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
@@ -264,10 +271,12 @@ internal class PaymentScreenViewModel(
 
                     )
                     getCardIssuers(
-                        bin = bin.toInt(),
+                        bin = bin,
                         paymentMethodId = result.data[0].id!!
                     )
-                    updateCardMaskState(result.data.firstOrNull()?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH)
+                    updateCardMaskState(
+                        result.data.firstOrNull()?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH
+                    )
                 }
 
                 is Result.Error -> {
@@ -311,7 +320,8 @@ internal class PaymentScreenViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        valid = event.isValid
+                        valid = event.isValid,
+                        error = Pair(!event.isValid, "Invalid expiration date")
                     )
                 )
             }
@@ -344,7 +354,12 @@ internal class PaymentScreenViewModel(
             is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
-                        isFocused = event.isFocused
+                        isFocused = event.isFocused,
+                        error = Pair(
+                            !_viewState.value.secureCodeState.filled
+                                && _viewState.value.secureCodeState.isFocused,
+                            "Please, fill the security code"
+                        )
                     )
                 )
             }
@@ -360,7 +375,8 @@ internal class PaymentScreenViewModel(
             is SecurityCodeTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
-                        filled = event.isFilled
+                        filled = event.isFilled,
+                        error = Pair(false, "")
                     )
                 )
             }
@@ -385,8 +401,7 @@ internal class PaymentScreenViewModel(
             is CardNumberTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        length = event.length,
-                        isError = false,
+                        length = event.length
                     )
                 )
             }
@@ -402,7 +417,8 @@ internal class PaymentScreenViewModel(
             is CardNumberTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        isValid = event.isValid
+                        isValid = event.isValid,
+                        error = Pair(!event.isValid, "Invalid card number")
                     )
                 )
             }
