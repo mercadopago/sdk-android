@@ -157,28 +157,58 @@ jobs:
       - run:
           name: Deploy documentation to GitHub Pages
           command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist build/dokka/htmlMultiModule
-  create-release:
+
+  publish-maven:
     circleci_ip_ranges: true
     executor: android-executor
+    docker:
+      - image: cimg/openjdk:17.0.13
     steps:
+      - checkout
       - run:
-          name: Publish to Maven
+          name: Check Release Conditions
           command: |
-            echo "mavenUsername=${MAVEN_USERNAME}" >> $HOME/.gradle/gradle.properties
-            echo "mavenPassword=${MAVEN_PASSWORD}" >> $HOME/.gradle/gradle.properties
-            ./gradlew publish
+            # Check if this is a merge from a release branch
+            if git log --oneline -1 | grep -q "Merge pull request.*from.*release/"; then
+              echo "This is a merge from a release branch. Proceeding with publish."
+              echo "export SHOULD_PUBLISH=true" >> $BASH_ENV
+            else
+              # Check if BomConfig.VERSION_NAME has changed
+              git fetch origin main
+              VERSION_CHANGED=$(git diff origin/main...HEAD -- buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt | grep '+.*VERSION_NAME' || true)
+
+              if [ ! -z "$VERSION_CHANGED" ]; then
+                echo "BomConfig.VERSION_NAME has changed. Proceeding with publish."
+                echo "export SHOULD_PUBLISH=true" >> $BASH_ENV
+              else
+                echo "No version change detected and not a release branch merge. Skipping publish."
+                echo "export SHOULD_PUBLISH=false" >> $BASH_ENV
+              fi
+            fi
+      - run:
+          name: Publish to Maven if Conditions Met
+          command: |
+            if [ "$SHOULD_PUBLISH" = "true" ]; then
+              echo "Publishing to Maven..."
+              ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
+              ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
+              ./gradlew publish
+            else
+              echo "Skipping Maven publish as no release conditions were met"
+            fi
+
 workflows:
   version: 2
   build:
     jobs:
       - build-test
-      - create-release:
+      - docs-deploy:
           requires:
             - build-test
           filters:
             branches:
-              only: release/*
-      - docs-deploy:
+              only: main
+      - publish-maven:
           requires:
             - build-test
           filters:
