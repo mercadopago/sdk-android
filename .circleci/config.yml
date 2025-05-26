@@ -178,7 +178,7 @@ jobs:
           name: Criar Release e subir APK no GitHub
           command: |
             TAG="v1.0.0"
-            APK_PATH=app/build/outputs/apk/release/app-release.apk
+            APK_PATH=example/build/outputs/apk/debug/example-debug.apk
             echo $GITHUB_VAR_TOKEN | gh auth login --with-token
             gh release create $TAG $APK_PATH --title "Test App $TAG" --notes "Release automático pelo CircleCI"
 
