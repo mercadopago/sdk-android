@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
+    id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin
 }
 
 android {
@@ -16,6 +17,12 @@ android {
     val secretProperties = Properties()
     runCatching {
         secretProperties.load(FileInputStream(secretPropertiesFile))
+    }
+    val publicKeyListString = try {
+        secretProperties.getProperty("publicKey.list", "")
+            .replace("\"", "\\\"")
+    } catch (_: Exception) {
+        ""
     }
 
     defaultConfig {
@@ -30,6 +37,11 @@ android {
             "String",
             "PUBLIC_KEY",
             secretProperties.getProperty("publicKey.default", "\"\""),
+        )
+        buildConfigField(
+            "String",
+            "DEFAULT_PUBLIC_KEY_LIST",
+            "\"$publicKeyListString\"",
         )
     }
 
@@ -49,6 +61,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    lint {
+        disable += "NullSafeMutableLiveData"
     }
 }
 
@@ -75,6 +90,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     debugImplementation(libs.showkase)
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)

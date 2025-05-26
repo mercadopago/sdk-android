@@ -27,6 +27,9 @@ internal class AnalyticsModulesProviderTest {
         every {
             context.applicationInfo
         } returns mockk(relaxed = true)
+        every {
+            context.applicationContext
+        } returns mockk(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
         val modulesProvider = AnalyticsModulesProvider(
             context = context,
