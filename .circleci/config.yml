@@ -164,65 +164,64 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
+      # PRE SETUP
       - run:
-        # PRE SETUP
-        - run:
-            name: Install Git LFS
-            command: |
-              curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-              sudo apt-get install git-lfs
-              git lfs install --skip-smudge
-        - checkout
-        - run: git lfs fetch --all
-        - run:
-            name: Set Secrets File
-            command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
-        - run:
-            name: Check JDK exists
-            command: javac -version
-        - run:
-            name: Download Platform Tools
-            command: |
-              cd ..
-              mkdir android-sdk
-              cd android-sdk
-              wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-              unzip platform-tools-latest-linux.zip
-        - run:
-            name: Download Commandline Tools
-            command: |
-              cd ..
-              cd android-sdk
-              mkdir cmdline-tools
-              cd cmdline-tools
-              wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-              unzip commandlinetools-linux-11076708_latest.zip
-              mv cmdline-tools latest
-        - run:
-            name: Set up Android Home
-            command: |
-              echo '
-              export ANDROID_HOME=$HOME/android-sdk
-              export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-              export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
-              source $BASH_ENV
-        - run:
-            name: Verify Android Home
-            command: echo $ANDROID_HOME
-        - run:
-            name: Accept SDK licenses
-            command: |
-              yes | sdkmanager --licenses || exit 0
-              yes | sdkmanager --update || exit 0
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
+      - checkout
+      - run: git lfs fetch --all
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - run:
+          name: Check JDK exists
+          command: javac -version
+      - run:
+          name: Download Platform Tools
+          command: |
+            cd ..
+            mkdir android-sdk
+            cd android-sdk
+            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+            unzip platform-tools-latest-linux.zip
+      - run:
+          name: Download Commandline Tools
+          command: |
+            cd ..
+            cd android-sdk
+            mkdir cmdline-tools
+            cd cmdline-tools
+            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip commandlinetools-linux-11076708_latest.zip
+            mv cmdline-tools latest
+      - run:
+          name: Set up Android Home
+          command: |
+            echo '
+            export ANDROID_HOME=$HOME/android-sdk
+            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Verify Android Home
+          command: echo $ANDROID_HOME
+      - run:
+          name: Accept SDK licenses
+          command: |
+            yes | sdkmanager --licenses || exit 0
+            yes | sdkmanager --update || exit 0
 
-        # SETUP STEP
-        - run:
-            name: Check Java Version
-            command: java -version
-
-        - run:
-            name: Install Dependencies
-            command: ./gradlew dependencies
+      # SETUP STEP
+      - run:
+          name: Check Java Version
+          command: java -version
+      - run:
+          name: Install Dependencies
+          command: ./gradlew dependencies
+      - run:
           name: Validate Version
           command: |
             TAG_VERSION=$(git describe --tags --abbrev=0 | sed 's/^v\.//')
