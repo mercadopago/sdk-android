@@ -10,7 +10,7 @@ executors:
     working_directory: ~/repo
 
 jobs:
-  build-test:
+  android-checkout-setup:
     circleci_ip_ranges: true
     executor: android-executor
     docker:
@@ -75,7 +75,14 @@ jobs:
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
-
+  build-test:
+    circleci_ip_ranges: true
+    executor: android-executor
+    docker:
+      - image: cimg/openjdk:17.0.13
+    resource_class: xlarge
+    steps:
+      - android-checkout-setup
       # PRE TEST
       - run:
           name: KLint Format
@@ -164,7 +171,7 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
+      - android-checkout-setup
       - run:
           name: Validate Version
           command: |
