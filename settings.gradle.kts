@@ -28,10 +28,11 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "mercado-pago-android"
+rootProject.name = "mercado-pago-sdk-android"
 include(":example")
 include(":core-methods")
 include(":showkase")
 include(":analytics")
 include(":core")
 include(":sdk-android")
+include(":sdk-android-bom")
