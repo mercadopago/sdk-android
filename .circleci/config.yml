@@ -229,22 +229,29 @@ jobs:
             for MODULE in "${MODULES[@]}"; do
               VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
               ARTIFACT_URL="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk/$MODULE/$VERSION/"
-            if curl -sfI "$ARTIFACT_URL" > /dev/null; then
-              echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
-            else
-              echo "Publishing $MODULE:$VERSION ..."
-              ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
-              any_published=1
-            fi
+              if curl -sfI "$ARTIFACT_URL" > /dev/null; then
+                echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
+              else
+                echo "Publishing $MODULE:$VERSION ..."
+                ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
+                any_published=1
+              fi
             done
 
             if [[ $any_published -eq 0 ]]; then
-              echo "No modules needed to be published. Exiting CI execution."
-              exit 0
+              echo "No modules needed to be published. Skipping release creation."
+              circleci-agent step halt
+            else
+              echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
             fi
       - run:
           name: Create GitHub Release
           command: |
+            if [[ "${SHOULD_CREATE_RELEASE}" != "true" ]]; then
+              echo "Skipping release creation as no modules were published"
+              exit 0
+            fi
+
             # Install GitHub CLI
             type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
             curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -274,6 +281,7 @@ jobs:
             else
               git log --pretty=format:"* %s" ${BOM_VERSION} >> release_notes.md
             fi
+
             # Create GitHub release
             gh release create ${BOM_VERSION} \
               --title "Release ${BOM_VERSION}" \
