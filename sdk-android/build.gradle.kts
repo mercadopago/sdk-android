@@ -9,7 +9,7 @@ publishing {
         register<MavenPublication>(MavenConfig.RELEASE) {
             groupId = MavenConfig.GROUP_ID
             artifactId = MercadoPagoSDKConfig.ARTIFACT_ID
-            version = MercadoPagoSDKConfig.versionName
+            version = MercadoPagoSDKConfig.VERSION_NAME
             afterEvaluate {
                 from(components[MavenConfig.RELEASE])
             }
@@ -29,12 +29,12 @@ publishing {
 
 android {
     namespace = "com.mercadopago.sdk.android"
-    compileSdk = MercadoPagoSDKConfig.compileSdk
+    compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfig.minSdk
-        version = MercadoPagoSDKConfig.versionName
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.versionName}\"")
+        minSdk = MercadoPagoSDKConfig.MIN_SDK
+        version = MercadoPagoSDKConfig.VERSION_NAME
+        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.VERSION_NAME}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -51,7 +51,7 @@ android {
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
     }
     buildFeatures {
         buildConfig = true

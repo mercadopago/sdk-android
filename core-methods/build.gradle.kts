@@ -35,10 +35,10 @@ publishing {
 
 android {
     namespace = "com.mercadopago.sdk.android.coremethods"
-    compileSdk = MercadoPagoSDKConfig.compileSdk
+    compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfig.minSdk
+        minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreMethodsSDKConfig.VERSION_NAME
 
         val secretPropertiesFile = rootProject.file("secrets.properties")
@@ -77,7 +77,7 @@ android {
         buildConfig = true
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
     }
     apply(plugin = "org.jetbrains.dokka")
 }

@@ -39,3 +39,5 @@ publishing {
         }
     }
 }
+
+version = BomConfig.VERSION_NAME

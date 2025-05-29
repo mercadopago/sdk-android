@@ -222,29 +222,26 @@ jobs:
           name: Install Dependencies
           command: ./gradlew dependencies
       - run:
-          name: Validate Version
-          command: |
-            TAG_VERSION=$(git describe --tags --abbrev=0 | sed 's/^v\.//')
-            echo "Tag version: $TAG_VERSION"
-
-            # Extract version from BomConfig.kt and save to ENV variable
-            CONFIG_VERSION=$(grep 'VERSION_NAME' buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt | cut -d '"' -f2 | tr -cd '0-9.')
-            echo "Config version: $CONFIG_VERSION"
-            echo "CONFIG_VERSION=$CONFIG_VERSION" >> $BASH_ENV  # Save CONFIG_VERSION
-
-            # Compare versions
-            if [ "$TAG_VERSION" == "$CONFIG_VERSION" ]; then
-              echo "Versions are the same. Skipping release."
-              exit 1
-            fi
-            echo "Versions are different. Creating release."
-      - run:
           name: Publish to Maven
           command: |
-            echo "Publishing to Maven..."
-            ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
-            ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
-            ./gradlew publish
+            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
+            any_published=0
+            for MODULE in "${MODULES[@]}"; do
+              VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
+              ARTIFACT_URL="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk/$MODULE/$VERSION/"
+            if curl -sfI "$ARTIFACT_URL" > /dev/null; then
+              echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
+            else
+              echo "Publishing $MODULE:$VERSION ..."
+              ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
+              any_published=1
+            fi
+            done
+
+            if [[ $any_published -eq 0 ]]; then
+              echo "No modules needed to be published. Exiting CI execution."
+              exit 0
+            fi
       - run:
           name: Create GitHub Release
           command: |
@@ -256,23 +253,30 @@ jobs:
               && sudo apt update \
               && sudo apt install gh -y
 
-            # Use CONFIG_VERSION from ENV
-            echo "Release Notes for ${CONFIG_VERSION}" > release_notes.md
+            BOM_VERSION=$(./gradlew -q ":sdk-android-bom:properties" | grep "^version:" | awk '{print $2}')
+            echo "Release Notes for ${BOM_VERSION}" > release_notes.md
             echo "---" >> release_notes.md
             echo "## What's Changed" >> release_notes.md
+
+            if git rev-parse "refs/tags/${BOM_VERSION}" >/dev/null 2>&1; then
+              echo "Tag ${BOM_VERSION} already exists. Skipping tag creation."
+            else
+              git tag "${BOM_VERSION}"
+              git push origin "${BOM_VERSION}"
+              echo "Tag ${BOM_VERSION} created and pushed."
+            fi
 
             # Get commits since last tag
             git fetch --tags
             LAST_TAG=$(git describe --tags --abbrev=0 ${CIRCLE_TAG}^ 2>/dev/null || echo "")
             if [ ! -z "$LAST_TAG" ]; then
-              git log --pretty=format:"* %s" ${LAST_TAG}..${CONFIG_VERSION} >> release_notes.md
+              git log --pretty=format:"* %s" ${LAST_TAG}..${BOM_VERSION} >> release_notes.md
             else
-              git log --pretty=format:"* %s" ${CONFIG_VERSION} >> release_notes.md
+              git log --pretty=format:"* %s" ${BOM_VERSION} >> release_notes.md
             fi
             # Create GitHub release
-            echo "$GITHUB_TOKEN" | gh auth login --with-token
-            gh release create ${CONFIG_VERSION} \
-              --title "Release ${CONFIG_VERSION}" \
+            gh release create ${BOM_VERSION} \
+              --title "Release ${BOM_VERSION}" \
               --notes-file release_notes.md
 workflows:
   version: 2
@@ -288,3 +292,6 @@ workflows:
       - publish-maven:
           requires:
             - build-test
+          filters:
+            branches:
+              only: main
