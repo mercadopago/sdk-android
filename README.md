@@ -42,9 +42,9 @@ Add the following definitions to your `libs.versions.toml` file to declare the S
 mercadoPagoSdkBomVersion = "latest-bom-version"
 
 [libraries]
-mercadopago-sdk.bom = { group = "com.mercadopago.android.sdk-android", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
+mercadopago-sdk.bom = { group = "com.mercadopago.android.sdk", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
 // Core Methods SDK
-mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk-android", name = "core-methods" }
+mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk", name = "core-methods" }
 ```
 
 Call inside the build.gradle file for the module you need
