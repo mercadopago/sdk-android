@@ -235,7 +235,10 @@ jobs:
                 echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
               else
                 echo "Publishing $MODULE:$VERSION ..."
-                ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
+                ./gradlew ":$MODULE:publish" || {
+                  echo "Publish failed for $MODULE"
+                  exit 1
+                }
                 any_published=1
               fi
             done
