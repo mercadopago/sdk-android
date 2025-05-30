@@ -224,6 +224,8 @@ jobs:
       - run:
           name: Publish to Maven
           command: |
+            ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
+            ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
             MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
             any_published=0
             for MODULE in "${MODULES[@]}"; do
@@ -233,7 +235,10 @@ jobs:
                 echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
               else
                 echo "Publishing $MODULE:$VERSION ..."
-                ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
+                ./gradlew ":$MODULE:publish" || {
+                  echo "Publish failed for $MODULE"
+                  exit 1
+                }
                 any_published=1
               fi
             done
@@ -244,48 +249,6 @@ jobs:
             else
               echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
             fi
-      - run:
-          name: Create GitHub Release
-          command: |
-            if [[ "${SHOULD_CREATE_RELEASE}" != "true" ]]; then
-              echo "Skipping release creation as no modules were published"
-              exit 0
-            fi
-
-            # Install GitHub CLI
-            type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-              && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-              && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-              && sudo apt update \
-              && sudo apt install gh -y
-
-            BOM_VERSION=$(./gradlew -q ":sdk-android-bom:properties" | grep "^version:" | awk '{print $2}')
-            echo "Release Notes for ${BOM_VERSION}" > release_notes.md
-            echo "---" >> release_notes.md
-            echo "## What's Changed" >> release_notes.md
-
-            if git rev-parse "refs/tags/${BOM_VERSION}" >/dev/null 2>&1; then
-              echo "Tag ${BOM_VERSION} already exists. Skipping tag creation."
-            else
-              git tag "${BOM_VERSION}"
-              git push origin "${BOM_VERSION}"
-              echo "Tag ${BOM_VERSION} created and pushed."
-            fi
-
-            # Get commits since last tag
-            git fetch --tags
-            LAST_TAG=$(git describe --tags --abbrev=0 ${CIRCLE_TAG}^ 2>/dev/null || echo "")
-            if [ ! -z "$LAST_TAG" ]; then
-              git log --pretty=format:"* %s" ${LAST_TAG}..${BOM_VERSION} >> release_notes.md
-            else
-              git log --pretty=format:"* %s" ${BOM_VERSION} >> release_notes.md
-            fi
-
-            # Create GitHub release
-            gh release create ${BOM_VERSION} \
-              --title "Release ${BOM_VERSION}" \
-              --notes-file release_notes.md
 workflows:
   version: 2
   build:
