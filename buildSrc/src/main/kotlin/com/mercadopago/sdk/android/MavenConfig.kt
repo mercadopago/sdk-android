@@ -16,6 +16,6 @@ object MavenConfig {
     const val MAVEN_PUBLISH = "maven-publish"
     const val NEXUS_NAME = "sdkAndroid"
     const val NEXUS_URL = "https://artifacts.mercadolibre.com/repository/android-releases/"
-    const val USERNAME = "ORG_GRADLE_PROJECT_sdkAndroidUsername"
-    const val PASSWORD = "ORG_GRADLE_PROJECT_sdkAndroidPassword"
+    const val USERNAME = "MAVEN_USERNAME"
+    const val PASSWORD = "MAVEN_PASSWORD"
 }
