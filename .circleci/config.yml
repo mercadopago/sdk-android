@@ -224,6 +224,8 @@ jobs:
       - run:
           name: Publish to Maven
           command: |
+            echo "export ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)" >> $BASH_ENV
+            echo "export ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)" >> $BASH_ENV
             MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
             any_published=0
             for MODULE in "${MODULES[@]}"; do
