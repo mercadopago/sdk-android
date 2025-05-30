@@ -252,7 +252,6 @@ workflows:
     jobs:
       - build-test
       - docs-deploy:
-          circleci_ip_ranges: true
           requires:
             - build-test
           filters:
