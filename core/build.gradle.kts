@@ -31,15 +31,16 @@ publishing {
 
 android {
     namespace = "com.mercadopago.sdk.android.core"
-    compileSdk = MercadoPagoSDKConfig.compileSdk
+    compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfig.minSdk
+        minSdk = MercadoPagoSDKConfig.MIN_SDK
+        version = CoreSDKConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.versionName}\"")
+        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.VERSION_NAME}\"")
         buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
         buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
     }
@@ -58,7 +59,7 @@ android {
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
     }
     buildFeatures {
         buildConfig = true

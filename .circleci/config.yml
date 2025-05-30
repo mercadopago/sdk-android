@@ -164,33 +164,128 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     steps:
-      - checkout
+      # PRE SETUP
       - run:
-          name: Check Release Conditions
+          name: Install Git LFS
           command: |
-            # Check if BomConfig.VERSION_NAME has changed
-            git fetch origin main
-            VERSION_CHANGED=$(git diff origin/main...HEAD -- buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt | grep '+.*VERSION_NAME' || true)
-            
-            if [ ! -z "$VERSION_CHANGED" ]; then
-              echo "BomConfig.VERSION_NAME has changed. Proceeding with publish."
-              echo "export SHOULD_PUBLISH=true" >> $BASH_ENV
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
+      - checkout
+      - run: git lfs fetch --all
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - run:
+          name: Check JDK exists
+          command: javac -version
+      - run:
+          name: Download Platform Tools
+          command: |
+            cd ..
+            mkdir android-sdk
+            cd android-sdk
+            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+            unzip platform-tools-latest-linux.zip
+      - run:
+          name: Download Commandline Tools
+          command: |
+            cd ..
+            cd android-sdk
+            mkdir cmdline-tools
+            cd cmdline-tools
+            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip commandlinetools-linux-11076708_latest.zip
+            mv cmdline-tools latest
+      - run:
+          name: Set up Android Home
+          command: |
+            echo '
+            export ANDROID_HOME=$HOME/android-sdk
+            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Verify Android Home
+          command: echo $ANDROID_HOME
+      - run:
+          name: Accept SDK licenses
+          command: |
+            yes | sdkmanager --licenses || exit 0
+            yes | sdkmanager --update || exit 0
+
+      # SETUP STEP
+      - run:
+          name: Check Java Version
+          command: java -version
+      - run:
+          name: Install Dependencies
+          command: ./gradlew dependencies
+      - run:
+          name: Publish to Maven
+          command: |
+            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
+            any_published=0
+            for MODULE in "${MODULES[@]}"; do
+              VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
+              ARTIFACT_URL="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk/$MODULE/$VERSION/"
+              if curl -sfI "$ARTIFACT_URL" > /dev/null; then
+                echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
+              else
+                echo "Publishing $MODULE:$VERSION ..."
+                ./gradlew ":$MODULE:publish" || echo "Publish failed for $MODULE"
+                any_published=1
+              fi
+            done
+
+            if [[ $any_published -eq 0 ]]; then
+              echo "No modules needed to be published. Skipping release creation."
+              circleci-agent step halt
             else
-              echo "No version change detected. Skipping publish."
-              echo "export SHOULD_PUBLISH=false" >> $BASH_ENV
+              echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
             fi
       - run:
-          name: Publish to Maven if Conditions Met
+          name: Create GitHub Release
           command: |
-            if [ "$SHOULD_PUBLISH" = "true" ]; then
-              echo "Publishing to Maven..."
-              ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
-              ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
-              ./gradlew publish
-            else
-              echo "Skipping Maven publish as no release conditions were met"
+            if [[ "${SHOULD_CREATE_RELEASE}" != "true" ]]; then
+              echo "Skipping release creation as no modules were published"
+              exit 0
             fi
 
+            # Install GitHub CLI
+            type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+              && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+              && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+              && sudo apt update \
+              && sudo apt install gh -y
+
+            BOM_VERSION=$(./gradlew -q ":sdk-android-bom:properties" | grep "^version:" | awk '{print $2}')
+            echo "Release Notes for ${BOM_VERSION}" > release_notes.md
+            echo "---" >> release_notes.md
+            echo "## What's Changed" >> release_notes.md
+
+            if git rev-parse "refs/tags/${BOM_VERSION}" >/dev/null 2>&1; then
+              echo "Tag ${BOM_VERSION} already exists. Skipping tag creation."
+            else
+              git tag "${BOM_VERSION}"
+              git push origin "${BOM_VERSION}"
+              echo "Tag ${BOM_VERSION} created and pushed."
+            fi
+
+            # Get commits since last tag
+            git fetch --tags
+            LAST_TAG=$(git describe --tags --abbrev=0 ${CIRCLE_TAG}^ 2>/dev/null || echo "")
+            if [ ! -z "$LAST_TAG" ]; then
+              git log --pretty=format:"* %s" ${LAST_TAG}..${BOM_VERSION} >> release_notes.md
+            else
+              git log --pretty=format:"* %s" ${BOM_VERSION} >> release_notes.md
+            fi
+
+            # Create GitHub release
+            gh release create ${BOM_VERSION} \
+              --title "Release ${BOM_VERSION}" \
+              --notes-file release_notes.md
 workflows:
   version: 2
   build:

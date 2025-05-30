@@ -31,10 +31,11 @@ publishing {
 
 android {
     namespace = "com.mercadopago.sdk.android.analytics"
-    compileSdk = MercadoPagoSDKConfig.compileSdk
+    compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
-        minSdk = MercadoPagoSDKConfig.minSdk
+        minSdk = MercadoPagoSDKConfig.MIN_SDK
+        version = AnalyticsSDKConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -54,7 +55,7 @@ android {
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.jvmTarget
+        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
     }
 }
 

@@ -80,17 +80,17 @@ class MercadoPagoSDK private constructor(
                 publicKey = publicKey,
                 context = context,
             )
+            val sessionId = UUID.randomUUID().toString()
+            sdkInstance = MercadoPagoSDK(
+                koin = modulesProvider.koinApp,
+                sessionId = sessionId,
+                publicKey = publicKey,
+                countryCode = countryCode,
+            )
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val fetchSiteIdUseCase = modulesProvider.koinApp.get<FetchSiteIdUseCase>()
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
                 val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
-                val sessionId = UUID.randomUUID().toString()
-                sdkInstance = MercadoPagoSDK(
-                    koin = modulesProvider.koinApp,
-                    sessionId = sessionId,
-                    publicKey = publicKey,
-                    countryCode = countryCode,
-                )
                 setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 DeviceSDK.getInstance().execute(context)
                 MPAnalytics.initialize(
