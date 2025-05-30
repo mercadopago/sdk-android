@@ -260,3 +260,6 @@ workflows:
       - publish-maven:
           requires:
             - build-test
+          filters:
+            branches:
+              only: main
