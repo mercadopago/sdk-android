@@ -6,6 +6,6 @@ package com.mercadopago.sdk.android
  * @property VERSION_NAME version name
  */
 object CheckoutSDKConfig {
-    const val ARTIFACT_ID = "core-methods"
+    const val ARTIFACT_ID = "checkout"
     const val VERSION_NAME = "0.0.1"
 }
