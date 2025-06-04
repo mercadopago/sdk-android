@@ -11,22 +11,6 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param processingMode The processing mode used by this issuer (e.g., "aggregator", "gateway")
  * @param status The current status of the issuer in the system
  * @param thumbnail URL to the issuer's logo image (48x48 pixels)
- *
- * Example:
- * ```kotlin
- * // Create a card issuer instance
- * val issuer = CardIssuer(
- *     id = "issuer id",
- *     merchantAccountId = "merchant id",
- *     processingMode = "aggregator",
- *     status = "active",
- *     thumbnail = "https://example.com/issuer-logo.png"
- * )
- *
- * // Display issuer information
- * displayIssuerLogo(issuer.thumbnail)
- * processPayment(issuer.id, issuer.processingMode)
- * ```
  */
 data class CardIssuer(
     val id: String? = null,

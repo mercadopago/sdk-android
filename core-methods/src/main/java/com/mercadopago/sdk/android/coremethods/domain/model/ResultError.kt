@@ -8,17 +8,6 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  *
  * Example:
  * ```kotlin
- * // Request error
- * val requestError = ResultError.Request(
- *     message = "Network error",
- *     code = "NETWORK_ERROR"
- * )
- *
- * // Validation error
- * val validationError = ResultError.Validation(
- *     message = "Invalid card number"
- * )
- *
  * // Handle errors
  * when (error) {
  *     is ResultError.Request -> {
@@ -44,7 +33,7 @@ sealed class ResultError {
      *
      * Example:
      * ```kotlin
-     * val error = ResultError.Request(
+     * ResultError.Request(
      *     message = "Failed to connect to server",
      *     code = "CONNECTION_ERROR"
      * )
@@ -64,7 +53,7 @@ sealed class ResultError {
      *
      * Example:
      * ```kotlin
-     * val error = ResultError.Validation(
+     * ResultError.Validation(
      *     message = "Card number must be 16 digits"
      * )
      * ```

@@ -28,22 +28,6 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param additionalInfoNeeded List of additional information required for processing
  * @param status Current status of the payment method
  *
- * Example:
- * ```kotlin
- * val paymentMethod = PaymentMethod(
- *     id = "visa",
- *     paymentTypeId = "credit_card",
- *     card = CardModel(
- *         bin = 411111,
- *         length = LengthModel(min = 16, max = 16),
- *         securityCode = SecurityCodeModel(
- *             mode = "mandatory",
- *             length = 3
- *         )
- *     )
- * )
- * ```
- *
  * @see FinancialInstitutionModel
  * @see CardModel
  * @see PayerCost
@@ -81,14 +65,6 @@ data class PaymentMethod(
  *
  * @param id Unique identifier for the financial institution
  * @param description Human-readable name or description of the institution
- *
- * Example:
- * ```kotlin
- * val institution = FinancialInstitutionModel(
- *     id = "123",
- *     description = "Example Bank"
- * )
- * ```
  */
 data class FinancialInstitutionModel(
     val id: String?,
@@ -105,19 +81,6 @@ data class FinancialInstitutionModel(
  * @param length Card number length requirements
  * @param validation Validation method to be used for the card
  * @param securityCode Security code (CVV) requirements
- *
- * Example:
- * ```kotlin
- * val card = CardModel(
- *     bin = 411111,
- *     length = LengthModel(min = 16, max = 16),
- *     validation = "standard",
- *     securityCode = SecurityCodeModel(
- *         mode = "mandatory",
- *         length = 3
- *     )
- * )
- * ```
  *
  * @see LengthModel
  * @see SecurityCodeModel
@@ -136,14 +99,6 @@ data class CardModel(
  *
  * @param min Minimum allowed length for the card number
  * @param max Maximum allowed length for the card number
- *
- * Example:
- * ```kotlin
- * val length = LengthModel(
- *     min = 16,
- *     max = 16
- * )
- * ```
  */
 data class LengthModel(
     val min: Int? = null,
@@ -158,15 +113,6 @@ data class LengthModel(
  * @param mode How the security code should be handled (e.g., "mandatory", "optional")
  * @param location Where the security code is located on the card (e.g., "back", "front")
  * @param length Required length of the security code
- *
- * Example:
- * ```kotlin
- * val securityCode = SecurityCodeModel(
- *     mode = "mandatory",
- *     location = "back",
- *     length = 3
- * )
- * ```
  */
 data class SecurityCodeModel(
     val mode: String? = null,

@@ -11,18 +11,6 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param type The category or classification of the identification type
  * @param minLength The minimum number of characters required for this identification type
  * @param maxLength The maximum number of characters allowed for this identification type
- *
- * Example:
- * ```kotlin
- * // Create an identification type for CPF (Brazilian tax ID)
- * val cpfType = IdentificationType(
- *     id = "CPF",
- *     name = "CPF",
- *     type = "number",
- *     minLength = 11,
- *     maxLength = 11
- * )
- * ```
  */
 data class IdentificationType(
     val id: String? = null,
