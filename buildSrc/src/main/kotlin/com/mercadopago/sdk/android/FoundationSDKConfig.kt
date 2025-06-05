@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android
 
 /**
- * FoundationSDK COnfig
+ * FoundationSDK Config
  * @property ARTIFACT_ID artifact id
  * @property VERSION_NAME version name
  */
