@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
@@ -35,7 +35,7 @@ class GetCardIssuersUseCaseTest {
             val paymentMethodId = "credit"
 
             val expectedErrorMPResult = MPResult.Error(
-                MPResultError.Request(code = "400", message = "Repository error")
+                MPError.Request(code = "400", message = "Repository error")
             )
             coEvery { repository.getCardIssuers(any()) } returns expectedErrorMPResult
 

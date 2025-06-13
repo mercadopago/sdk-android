@@ -7,7 +7,7 @@ import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -90,30 +90,30 @@ internal class PaymentScreenViewModel(
 
                 is MPResult.Error -> {
                     when (result.error) {
-                        is MPResultError.Request -> {
+                        is MPError.Request -> {
                             LogHelper.log(
                                 message = "generateToken - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Request).message,
+                                response = (result.error as MPError.Request).message,
                             )
                             _viewState.value = _viewState.value.copy(
                                 dialogState = PaymentScreenDialogState.Error(
                                     title = "Generate Token Error",
-                                    description = (result.error as MPResultError.Request).message,
+                                    description = (result.error as MPError.Request).message,
                                 ),
                             )
                         }
 
-                        is MPResultError.Validation -> {
+                        is MPError.Validation -> {
                             LogHelper.log(
                                 message = "generateToken - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Validation).message,
+                                response = (result.error as MPError.Validation).message,
                             )
                             _viewState.value = _viewState.value.copy(
                                 dialogState = PaymentScreenDialogState.Error(
                                     title = "Generate Token Error",
-                                    description = (result.error as MPResultError.Validation).message,
+                                    description = (result.error as MPError.Validation).message,
                                 ),
                             )
                         }
@@ -151,19 +151,19 @@ internal class PaymentScreenViewModel(
 
                 is MPResult.Error -> {
                     when (result.error) {
-                        is MPResultError.Request -> {
+                        is MPError.Request -> {
                             LogHelper.log(
                                 message = "getInstallment - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Request).message,
+                                response = (result.error as MPError.Request).message,
                             )
                         }
 
-                        is MPResultError.Validation -> {
+                        is MPError.Validation -> {
                             LogHelper.log(
                                 message = "getInstallment - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Validation).message,
+                                response = (result.error as MPError.Validation).message,
                             )
                         }
                     }
@@ -192,19 +192,19 @@ internal class PaymentScreenViewModel(
 
                 is MPResult.Error -> {
                     when (result.error) {
-                        is MPResultError.Request -> {
+                        is MPError.Request -> {
                             LogHelper.log(
                                 message = "getIdentificationTypes - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Request).message,
+                                response = (result.error as MPError.Request).message,
                             )
                         }
 
-                        is MPResultError.Validation -> {
+                        is MPError.Validation -> {
                             LogHelper.log(
                                 message = "getIdentificationTypes - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Validation).message,
+                                response = (result.error as MPError.Validation).message,
                             )
                         }
                     }
@@ -232,19 +232,19 @@ internal class PaymentScreenViewModel(
 
                 is MPResult.Error -> {
                     when (result.error) {
-                        is MPResultError.Request -> {
+                        is MPError.Request -> {
                             LogHelper.log(
                                 message = "getCardIssuers - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Request).message,
+                                response = (result.error as MPError.Request).message,
                             )
                         }
 
-                        is MPResultError.Validation -> {
+                        is MPError.Validation -> {
                             LogHelper.log(
                                 message = "getPaymentMethods - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Validation).message,
+                                response = (result.error as MPError.Validation).message,
                             )
                         }
                     }
@@ -281,19 +281,19 @@ internal class PaymentScreenViewModel(
 
                 is MPResult.Error -> {
                     when (result.error) {
-                        is MPResultError.Request -> {
+                        is MPError.Request -> {
                             LogHelper.log(
                                 message = "getPaymentMethods - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Request).message,
+                                response = (result.error as MPError.Request).message,
                             )
                         }
 
-                        is MPResultError.Validation -> {
+                        is MPError.Validation -> {
                             LogHelper.log(
                                 message = "getPaymentMethods - Error",
                                 type = LogType.Network,
-                                response = (result.error as MPResultError.Validation).message,
+                                response = (result.error as MPError.Validation).message,
                             )
                         }
                     }

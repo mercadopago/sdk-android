@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
@@ -41,7 +41,7 @@ internal class GenerateCardTokenUseCaseTest {
             val cardNumber = "4111111111111111"
             val expirationDate = "12/25"
             val securityCode = "123"
-            val expectedError = MPResultError.Request(code = "400", message = "Some error")
+            val expectedError = MPError.Request(code = "400", message = "Some error")
             val expectedMPResult = MPResult.Error(expectedError)
 
             // Mock the repository behavior

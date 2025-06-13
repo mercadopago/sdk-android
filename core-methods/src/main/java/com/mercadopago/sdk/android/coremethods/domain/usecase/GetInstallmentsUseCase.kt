@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
@@ -14,7 +14,7 @@ internal class GetInstallmentsUseCase(
         bin: String,
         amount: BigDecimal,
         processingMode: String,
-    ): MPResult<List<Installment>, MPResultError> {
+    ): MPResult<List<Installment>, MPError> {
         return repository.getInstallment(
             GetInstallmentParams(
                 bin = bin.toIntOrNull(),

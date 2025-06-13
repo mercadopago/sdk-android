@@ -13,7 +13,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 
@@ -23,7 +23,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun generateCardToken(
         request: CardTokenBodyRequest
-    ): MPResult<CardToken, MPResultError> {
+    ): MPResult<CardToken, MPError> {
         return service.createToken(request).toInternalResponse().mapSuccess {
             this.toModel()
         }
@@ -31,7 +31,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getInstallments(
         request: InstallmentsRequest
-    ): MPResult<List<Installment>, MPResultError> {
+    ): MPResult<List<Installment>, MPError> {
         return service.getInstallments(
             bin = request.bin,
             processingMode = request.processingMode,
@@ -39,7 +39,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
-    override suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPResultError> {
+    override suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPError> {
         return service.getIdentificationTypes().toInternalResponse().mapSuccess {
             this.map { it.toModel() }
         }
@@ -47,7 +47,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getCardIssuers(
         request: CardIssuersRequest
-    ): MPResult<List<CardIssuer>, MPResultError> {
+    ): MPResult<List<CardIssuer>, MPError> {
         return service.getCardIssuers(
             bin = request.bin,
             paymentMethodId = request.paymentMethodId,
@@ -56,7 +56,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
 
     override suspend fun getPaymentMethods(
         request: PaymentMethodsRequest
-    ): MPResult<List<PaymentMethod>, MPResultError> {
+    ): MPResult<List<PaymentMethod>, MPError> {
         return service.getPaymentMethods(
             bin = request.bin,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }

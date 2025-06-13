@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuersParams
@@ -20,29 +20,29 @@ internal class CoreMethodsRepositoryImpl(
 ) : CoreMethodsRepository {
     override suspend fun generateCardToken(
         params: GenerateCardTokenParams
-    ): MPResult<CardToken, MPResultError> {
+    ): MPResult<CardToken, MPError> {
         return dataSource.generateCardToken(params.toRequest())
     }
 
     override suspend fun getInstallment(
         params: GetInstallmentParams
-    ): MPResult<List<Installment>, MPResultError> {
+    ): MPResult<List<Installment>, MPError> {
         return dataSource.getInstallments(params.toRequest())
     }
 
-    override suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPResultError> {
+    override suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPError> {
         return dataSource.getIdentificationTypes()
     }
 
     override suspend fun getCardIssuers(
         params: GetCardIssuersParams
-    ): MPResult<List<CardIssuer>, MPResultError> {
+    ): MPResult<List<CardIssuer>, MPError> {
         return dataSource.getCardIssuers(params.toRequest())
     }
 
     override suspend fun getPaymentMethods(
         params: GetPaymentMethodsParams
-    ): MPResult<List<PaymentMethod>, MPResultError> {
+    ): MPResult<List<PaymentMethod>, MPError> {
         return dataSource.getPaymentMethods(params.toRequest())
     }
 }

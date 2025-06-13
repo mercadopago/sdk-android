@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.Identificati
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.PaymentMethodResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -66,7 +66,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as MPResult.Error).error as MPResultError.Request).message,
+                ((result as MPResult.Error).error as MPError.Request).message,
             )
         }
 
@@ -108,7 +108,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as MPResult.Error).error as MPResultError.Request).message,
+                ((result as MPResult.Error).error as MPError.Request).message,
             )
         }
 
@@ -149,7 +149,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as MPResult.Error).error as MPResultError.Request).message,
+                ((result as MPResult.Error).error as MPError.Request).message,
             )
         }
 
@@ -191,7 +191,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as MPResult.Error).error as MPResultError.Request).message,
+                ((result as MPResult.Error).error as MPError.Request).message,
             )
         }
 
@@ -233,7 +233,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as MPResult.Error).error as MPResultError.Request).message,
+                ((result as MPResult.Error).error as MPError.Request).message,
             )
         }
 

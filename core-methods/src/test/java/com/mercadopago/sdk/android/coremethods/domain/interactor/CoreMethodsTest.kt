@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
@@ -101,7 +101,7 @@ internal class CoreMethodsTest {
                 type = ""
             )
 
-            val expectedError = MPResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedError = MPError.Request(code = "400", message = "Invalid parameters")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
@@ -158,7 +158,7 @@ internal class CoreMethodsTest {
                 type = ""
             )
 
-            val expectedError = MPResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedError = MPError.Request(code = "400", message = "Invalid parameters")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
@@ -203,7 +203,7 @@ internal class CoreMethodsTest {
             val bin = "123456"
             val amount = 1000.0.toBigDecimal()
             val expectedError =
-                MPResultError.Request(code = "404", message = "Installments not found")
+                MPError.Request(code = "404", message = "Installments not found")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
@@ -244,7 +244,7 @@ internal class CoreMethodsTest {
     @Test
     fun `getIdentificationTypes should track error metric when call fails`() =
         runTest {
-            val expectedError = MPResultError.Request(code = "404", message = "Not Found")
+            val expectedError = MPError.Request(code = "404", message = "Not Found")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedMPResult
@@ -276,7 +276,7 @@ internal class CoreMethodsTest {
             val bin = "12345"
             val paymentMethodId = "credit"
 
-            val expectedError = MPResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedError = MPError.Request(code = "404", message = "CardIssuer not found")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
@@ -308,7 +308,7 @@ internal class CoreMethodsTest {
         runTest {
             val bin = "12345"
 
-            val expectedError = MPResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedError = MPError.Request(code = "404", message = "CardIssuer not found")
             val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {

@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
-import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
@@ -23,24 +23,24 @@ internal class GenerateCardTokenUseCase(
         securityCode: String?,
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null
-    ): MPResult<CardToken, MPResultError> {
+    ): MPResult<CardToken, MPError> {
         val expirationDateIsNotNull = expirationDate != null
 
         if (cardNumber.isEmpty()) {
-            return MPResult.Error(MPResultError.Validation("card id number cannot be empty"))
+            return MPResult.Error(MPError.Validation("card id number cannot be empty"))
         }
 
         if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
-            return MPResult.Error(MPResultError.Validation("security code length cannot be smaller than tree"))
+            return MPResult.Error(MPError.Validation("security code length cannot be smaller than tree"))
         }
 
         if (expirationDateIsNotNull) {
             if (expirationDate!!.isEmpty()) {
-                return MPResult.Error(MPResultError.Validation("expiration date cannot be empty"))
+                return MPResult.Error(MPError.Validation("expiration date cannot be empty"))
             }
 
             if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
-                return MPResult.Error(MPResultError.Validation("expiration date length cannot be smaller than two"))
+                return MPResult.Error(MPError.Validation("expiration date length cannot be smaller than two"))
             }
         }
 
