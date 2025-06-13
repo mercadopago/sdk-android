@@ -1,8 +1,11 @@
-import com.mercadopago.sdk.android.AnalyticsSDKConfig
+import com.mercadopago.sdk.android.CheckoutSDKConfig
 
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.klint)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
 }
 
@@ -10,8 +13,8 @@ publishing {
     publications {
         register<MavenPublication>(MavenConfig.RELEASE) {
             groupId = MavenConfig.GROUP_ID
-            artifactId = AnalyticsSDKConfig.ARTIFACT_ID
-            version = AnalyticsSDKConfig.VERSION_NAME
+            artifactId = CheckoutSDKConfig.ARTIFACT_ID
+            version = CheckoutSDKConfig.VERSION_NAME
             afterEvaluate {
                 from(components[MavenConfig.RELEASE])
             }
@@ -30,12 +33,12 @@ publishing {
 }
 
 android {
-    namespace = "com.mercadopago.sdk.android.analytics"
+    namespace = "com.mercadopago.android.sdk.checkout"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
-        version = AnalyticsSDKConfig.VERSION_NAME
+        version = CoreMethodsSDKConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -50,6 +53,10 @@ android {
             )
         }
     }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     compileOptions {
         sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
@@ -59,24 +66,31 @@ android {
     }
 }
 
+ksp {
+    arg("skipPrivatePreviews", "true")
+}
+
 dependencies {
 
     implementation(projects.core)
+    implementation(projects.sdkAndroid)
+    implementation(projects.analytics)
+    implementation(projects.coreMethods)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-
-    implementation(libs.converter.gson)
-    implementation(libs.converter.kotlinx.serialization)
-
-    api(libs.androidx.datastore)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    debugImplementation(libs.showkase)
+    implementation(libs.showkase.annotation)
+    kspDebug(libs.showkase.processor)
+    implementation(libs.androidx.annotation)
 
     testImplementation(libs.junit)
-    testImplementation(libs.kotlin.mockk)
-    testImplementation(libs.koin.test)
-    testImplementation(libs.koin.test.junit4)
-    testImplementation(libs.cashapp.turbine)
-    testImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
