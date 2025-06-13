@@ -28,7 +28,7 @@ internal data class BuyerIdentificationBodyRequest(
     @SerializedName("name")
     val name: String? = null,
     @SerializedName("identification")
-    val identification: BuyerDocumentIdentificationBodyRequest? = null
+    val identification: BuyerDocumentIdentificationBodyRequest? = null,
 )
 
 internal data class BuyerDocumentIdentificationBodyRequest(

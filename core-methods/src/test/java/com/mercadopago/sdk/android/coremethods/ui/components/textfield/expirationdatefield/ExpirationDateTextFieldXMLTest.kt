@@ -14,7 +14,6 @@ import kotlin.test.Test
 
 @RunWith(RobolectricTestRunner::class)
 internal class ExpirationDateTextFieldXMLTest {
-
     private fun createTextField(
         readOnly: Boolean = false,
         onEvent: (ExpirationDateTextFieldEvent) -> Unit = {},

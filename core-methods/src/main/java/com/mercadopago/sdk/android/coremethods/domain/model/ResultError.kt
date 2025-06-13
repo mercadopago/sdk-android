@@ -10,10 +10,10 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * ```kotlin
  * // Handle errors
  * when (error) {
- *     is MPError.Request -> {
+ *     is ResultError.Request -> {
  *         println("Request failed: ${error.message} (${error.code})")
  *     }
- *     is MPError.Validation -> {
+ *     is ResultError.Validation -> {
  *         println("Validation failed: ${error.message}")
  *     }
  * }
@@ -22,7 +22,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @see Request
  * @see Validation
  */
-sealed class MPError {
+sealed class ResultError {
     /**
      * Represents an error that occurred during a network request or API call.
      * This class contains information about request failures, including
@@ -42,7 +42,7 @@ sealed class MPError {
     data class Request(
         val message: String,
         val code: String,
-    ) : MPError()
+    ) : ResultError()
 
     /**
      * Represents an error that occurred during data validation.
@@ -60,5 +60,5 @@ sealed class MPError {
      */
     data class Validation(
         val message: String,
-    ) : MPError()
+    ) : ResultError()
 }

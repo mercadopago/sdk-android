@@ -43,5 +43,5 @@ data class CardToken(
 data class BuyerIdentification(
     val name: String,
     val number: String? = null,
-    val type: String? = null
+    val type: String? = null,
 )

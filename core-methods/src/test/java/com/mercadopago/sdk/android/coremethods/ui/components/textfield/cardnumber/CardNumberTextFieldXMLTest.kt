@@ -14,7 +14,6 @@ import kotlin.test.Test
 
 @RunWith(RobolectricTestRunner::class)
 internal class CardNumberTextFieldXMLTest {
-
     private fun createTextField(
         visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
         readOnly: Boolean = false,

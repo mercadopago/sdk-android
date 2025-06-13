@@ -25,5 +25,5 @@ internal fun BuyerIdentificationParam.toBuyerIdentificationRequest() =
         identification = BuyerDocumentIdentificationBodyRequest(
             number = number,
             type = type,
-        )
+        ),
     )

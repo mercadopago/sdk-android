@@ -8,18 +8,18 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.MPError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRemoteDataSource {
-    suspend fun generateCardToken(request: CardTokenBodyRequest): MPResult<CardToken, MPError>
+    suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError>
 
-    suspend fun getInstallments(request: InstallmentsRequest): MPResult<List<Installment>, MPError>
+    suspend fun getInstallments(request: InstallmentsRequest): Result<List<Installment>, ResultError>
 
-    suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPError>
+    suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError>
 
-    suspend fun getCardIssuers(request: CardIssuersRequest): MPResult<List<CardIssuer>, MPError>
+    suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError>
 
-    suspend fun getPaymentMethods(request: PaymentMethodsRequest): MPResult<List<PaymentMethod>, MPError>
+    suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError>
 }

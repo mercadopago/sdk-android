@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.MPError
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -20,12 +20,12 @@ class GetCardIssuersUseCaseTest {
             val bin = "12345"
             val paymentMethodId = "credit"
 
-            val expectedMPResult = MPResult.Success(listOf(CardIssuer()))
-            coEvery { repository.getCardIssuers(any()) } returns expectedMPResult
+            val expectedResult = Result.Success(listOf(CardIssuer()))
+            coEvery { repository.getCardIssuers(any()) } returns expectedResult
 
             val result = getCardIssuersUseCase(bin, paymentMethodId)
 
-            assertEquals(expectedMPResult, result)
+            assertEquals(expectedResult, result)
         }
 
     @Test
@@ -34,13 +34,13 @@ class GetCardIssuersUseCaseTest {
             val bin = "12345"
             val paymentMethodId = "credit"
 
-            val expectedErrorMPResult = MPResult.Error(
-                MPError.Request(code = "400", message = "Repository error")
+            val expectedErrorResult = Result.Error(
+                ResultError.Request(code = "400", message = "Repository error"),
             )
-            coEvery { repository.getCardIssuers(any()) } returns expectedErrorMPResult
+            coEvery { repository.getCardIssuers(any()) } returns expectedErrorResult
 
             val result = getCardIssuersUseCase(bin, paymentMethodId)
 
-            assertEquals(expectedErrorMPResult, result)
+            assertEquals(expectedErrorResult, result)
         }
 }
