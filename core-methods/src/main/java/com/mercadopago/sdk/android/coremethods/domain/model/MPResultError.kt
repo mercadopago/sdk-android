@@ -22,7 +22,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @see Request
  * @see Validation
  */
-sealed class ResultError {
+sealed class MPResultError {
     /**
      * Represents an error that occurred during a network request or API call.
      * This class contains information about request failures, including
@@ -42,7 +42,7 @@ sealed class ResultError {
     data class Request(
         val message: String,
         val code: String,
-    ) : ResultError()
+    ) : MPResultError()
 
     /**
      * Represents an error that occurred during data validation.
@@ -60,5 +60,5 @@ sealed class ResultError {
      */
     data class Validation(
         val message: String,
-    ) : ResultError()
+    ) : MPResultError()
 }

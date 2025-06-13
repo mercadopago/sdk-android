@@ -5,13 +5,13 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuersParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMethodsParams
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -28,13 +28,13 @@ internal class CoreMethodsRepositoryTest {
         runBlocking {
             val generateCardTokenParams = GenerateCardTokenParams(cardId = "card_123")
 
-            val response = Result.Success(CardToken(token = "token_id"))
+            val response = MPResult.Success(CardToken(token = "token_id"))
             coEvery { dataSource.generateCardToken(any()) } returns response
 
             val result = repository.generateCardToken(generateCardTokenParams)
 
-            assertTrue(result is Result.Success)
-            assertEquals("token_id", (result as Result.Success).data.token)
+            assertTrue(result is MPResult.Success)
+            assertEquals("token_id", (result as MPResult.Success).data.token)
         }
 
     @Test
@@ -42,14 +42,14 @@ internal class CoreMethodsRepositoryTest {
         runBlocking {
             val generateCardTokenParams = GenerateCardTokenParams(cardId = "card_123")
 
-            val errorResponse = ResultError.Request(code = "400", message = "Bad Request")
-            val response: Result<CardToken, ResultError> = Result.Error(errorResponse)
+            val errorResponse = MPResultError.Request(code = "400", message = "Bad Request")
+            val response: MPResult<CardToken, MPResultError> = MPResult.Error(errorResponse)
             coEvery { dataSource.generateCardToken(any()) } returns response
 
             val result = repository.generateCardToken(generateCardTokenParams)
 
-            assertTrue(result is Result.Error)
-            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
+            assertTrue(result is MPResult.Error)
+            assertEquals("Bad Request", ((result as MPResult.Error).error as MPResultError.Request).message)
         }
 
     @Test
@@ -57,13 +57,13 @@ internal class CoreMethodsRepositoryTest {
         runBlocking {
             val installmentParams = GetInstallmentParams(bin = 12345678)
 
-            val response = Result.Success(listOf(Installment(paymentMethodId = "credit")))
+            val response = MPResult.Success(listOf(Installment(paymentMethodId = "credit")))
             coEvery { dataSource.getInstallments(any()) } returns response
 
             val result = repository.getInstallment(installmentParams)
 
-            assertTrue(result is Result.Success)
-            assertEquals("credit", (result as Result.Success).data[0].paymentMethodId)
+            assertTrue(result is MPResult.Success)
+            assertEquals("credit", (result as MPResult.Success).data[0].paymentMethodId)
         }
 
     @Test
@@ -71,98 +71,98 @@ internal class CoreMethodsRepositoryTest {
         runBlocking {
             val installmentParams = GetInstallmentParams(bin = 12345678)
 
-            val errorResponse = ResultError.Request(code = "400", message = "Bad Request")
-            val response: Result<List<Installment>, ResultError> = Result.Error(errorResponse)
+            val errorResponse = MPResultError.Request(code = "400", message = "Bad Request")
+            val response: MPResult<List<Installment>, MPResultError> = MPResult.Error(errorResponse)
             coEvery { dataSource.getInstallments(any()) } returns response
 
             val result = repository.getInstallment(installmentParams)
 
-            assertTrue(result is Result.Error)
-            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
+            assertTrue(result is MPResult.Error)
+            assertEquals("Bad Request", ((result as MPResult.Error).error as MPResultError.Request).message)
         }
 
     @Test
     fun `test getIdentificationTypes returns Success`() =
         runBlocking {
-            val response = Result.Success(
+            val response = MPResult.Success(
                 listOf(IdentificationType(id = "0", name = "rg", type = "rg", minLength = 10, maxLength = 10)),
             )
             coEvery { dataSource.getIdentificationTypes() } returns response
 
             val result = repository.getIdentificationTypes()
 
-            assertTrue(result is Result.Success)
-            assertEquals("rg", (result as Result.Success).data.first().type)
+            assertTrue(result is MPResult.Success)
+            assertEquals("rg", (result as MPResult.Success).data.first().type)
         }
 
     @Test
     fun `test getIdentificationTypes returns Error`() =
         runBlocking {
-            val errorResponse = ResultError.Request(code = "400", message = "Bad Request")
-            val response: Result<List<IdentificationType>, ResultError> = Result.Error(errorResponse)
+            val errorResponse = MPResultError.Request(code = "400", message = "Bad Request")
+            val response: MPResult<List<IdentificationType>, MPResultError> = MPResult.Error(errorResponse)
             coEvery { dataSource.getIdentificationTypes() } returns response
 
             val result = repository.getIdentificationTypes()
 
-            assertTrue(result is Result.Error)
-            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
+            assertTrue(result is MPResult.Error)
+            assertEquals("Bad Request", ((result as MPResult.Error).error as MPResultError.Request).message)
         }
 
     @Test
     fun `test getCardIssuers returns Success`() =
         runBlocking {
             val params = GetCardIssuersParams()
-            val response = Result.Success(
+            val response = MPResult.Success(
                 listOf(CardIssuer(thumbnail = "www")),
             )
             coEvery { dataSource.getCardIssuers(any()) } returns response
 
             val result = repository.getCardIssuers(params)
 
-            assertTrue(result is Result.Success)
-            assertEquals("www", (result as Result.Success).data.first().thumbnail)
+            assertTrue(result is MPResult.Success)
+            assertEquals("www", (result as MPResult.Success).data.first().thumbnail)
         }
 
     @Test
     fun `test getCardIssuers returns Error`() =
         runBlocking {
             val params = GetCardIssuersParams()
-            val errorResponse = ResultError.Request(code = "400", message = "Bad Request")
-            val response: Result<List<CardIssuer>, ResultError> = Result.Error(errorResponse)
+            val errorResponse = MPResultError.Request(code = "400", message = "Bad Request")
+            val response: MPResult<List<CardIssuer>, MPResultError> = MPResult.Error(errorResponse)
             coEvery { dataSource.getCardIssuers(any()) } returns response
 
             val result = repository.getCardIssuers(params)
 
-            assertTrue(result is Result.Error)
-            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
+            assertTrue(result is MPResult.Error)
+            assertEquals("Bad Request", ((result as MPResult.Error).error as MPResultError.Request).message)
         }
 
     @Test
     fun `test getPaymentMethods returns Success`() =
         runBlocking {
             val params = GetPaymentMethodsParams()
-            val response = Result.Success(
+            val response = MPResult.Success(
                 listOf(PaymentMethod(thumbnail = "www")),
             )
             coEvery { dataSource.getPaymentMethods(any()) } returns response
 
             val result = repository.getPaymentMethods(params)
 
-            assertTrue(result is Result.Success)
-            assertEquals("www", (result as Result.Success).data.first().thumbnail)
+            assertTrue(result is MPResult.Success)
+            assertEquals("www", (result as MPResult.Success).data.first().thumbnail)
         }
 
     @Test
     fun `test getPaymentMethods returns Error`() =
         runBlocking {
             val params = GetPaymentMethodsParams()
-            val errorResponse = ResultError.Request(code = "400", message = "Bad Request")
-            val response: Result<List<PaymentMethod>, ResultError> = Result.Error(errorResponse)
+            val errorResponse = MPResultError.Request(code = "400", message = "Bad Request")
+            val response: MPResult<List<PaymentMethod>, MPResultError> = MPResult.Error(errorResponse)
             coEvery { dataSource.getPaymentMethods(any()) } returns response
 
             val result = repository.getPaymentMethods(params)
 
-            assertTrue(result is Result.Error)
-            assertEquals("Bad Request", ((result as Result.Error).error as ResultError.Request).message)
+            assertTrue(result is MPResult.Error)
+            assertEquals("Bad Request", ((result as MPResult.Error).error as MPResultError.Request).message)
         }
 }

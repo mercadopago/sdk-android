@@ -3,13 +3,13 @@ package com.mercadopago.sdk.android.coremethods.domain.model
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-internal class ResultErrorTest {
+internal class MPResultErrorTest {
     @Test
     fun `test ResultError creation with default values`() {
-        val resultError = ResultError.Request(code = "100", message = "error")
+        val result = MPResultError.Request(code = "100", message = "error")
 
-        assertEquals("error", resultError.message)
-        assertEquals("100", resultError.code)
+        assertEquals("error", result.message)
+        assertEquals("100", result.code)
     }
 
     @Test
@@ -17,10 +17,10 @@ internal class ResultErrorTest {
         val customMessage = "An error occurred"
         val customCode = "404"
 
-        val resultError = ResultError.Request(message = customMessage, code = customCode)
+        val result = MPResultError.Request(message = customMessage, code = customCode)
 
-        assertEquals(customMessage, resultError.message)
-        assertEquals(customCode, resultError.code)
+        assertEquals(customMessage, result.message)
+        assertEquals(customCode, result.code)
     }
 
     @Test
@@ -28,16 +28,16 @@ internal class ResultErrorTest {
         val message = "An error occurred"
         val code = "400"
 
-        val resultError1 = ResultError.Request(message = message, code = code)
-        val resultError2 = ResultError.Request(message = message, code = code)
+        val result1 = MPResultError.Request(message = message, code = code)
+        val result2 = MPResultError.Request(message = message, code = code)
 
-        assertEquals(resultError1, resultError2)
+        assertEquals(result1, result2)
     }
 
     @Test
     fun `Validation should hold the correct message`() {
         val expectedMessage = "This field is required"
-        val validationError = ResultError.Validation(message = expectedMessage)
+        val validationError = MPResultError.Validation(message = expectedMessage)
 
         val actualMessage = validationError.message
 
@@ -47,16 +47,16 @@ internal class ResultErrorTest {
     @Test
     fun `Validation should be equal to another instance with the same message`() {
         val message = "This field is required"
-        val validationError1 = ResultError.Validation(message = message)
-        val validationError2 = ResultError.Validation(message = message)
+        val validationError1 = MPResultError.Validation(message = message)
+        val validationError2 = MPResultError.Validation(message = message)
 
         assertEquals(validationError1, validationError2)
     }
 
     @Test
     fun `Validation should not be equal to another result class`() {
-        val validationError = ResultError.Validation(message = "Error")
-        val differentError = ResultError.Validation(message = "Different Error")
+        val validationError = MPResultError.Validation(message = "Error")
+        val differentError = MPResultError.Validation(message = "Different Error")
 
         assert(validationError != differentError)
     }

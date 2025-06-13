@@ -3,11 +3,11 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 
 internal const val EXPIRATION_YEAR_START = "20"
@@ -23,24 +23,24 @@ internal class GenerateCardTokenUseCase(
         securityCode: String?,
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null
-    ): Result<CardToken, ResultError> {
+    ): MPResult<CardToken, MPResultError> {
         val expirationDateIsNotNull = expirationDate != null
 
         if (cardNumber.isEmpty()) {
-            return Result.Error(ResultError.Validation("card id number cannot be empty"))
+            return MPResult.Error(MPResultError.Validation("card id number cannot be empty"))
         }
 
         if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
-            return Result.Error(ResultError.Validation("security code length cannot be smaller than tree"))
+            return MPResult.Error(MPResultError.Validation("security code length cannot be smaller than tree"))
         }
 
         if (expirationDateIsNotNull) {
             if (expirationDate!!.isEmpty()) {
-                return Result.Error(ResultError.Validation("expiration date cannot be empty"))
+                return MPResult.Error(MPResultError.Validation("expiration date cannot be empty"))
             }
 
             if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
-                return Result.Error(ResultError.Validation("expiration date length cannot be smaller than two"))
+                return MPResult.Error(MPResultError.Validation("expiration date length cannot be smaller than two"))
             }
         }
 

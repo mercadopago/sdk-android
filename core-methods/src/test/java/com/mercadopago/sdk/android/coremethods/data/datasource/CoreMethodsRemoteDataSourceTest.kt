@@ -12,8 +12,8 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.Identificati
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.PaymentMethodResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -41,8 +41,8 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-            assertTrue(result is Result.Success)
-            assertEquals("token_id", (result as Result.Success).data.token)
+            assertTrue(result is MPResult.Success)
+            assertEquals("token_id", (result as MPResult.Success).data.token)
         }
 
     @Test
@@ -63,10 +63,10 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
-            assertTrue(result is Result.Error)
+            assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message,
+                ((result as MPResult.Error).error as MPResultError.Request).message,
             )
         }
 
@@ -83,8 +83,8 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getInstallments(installmentsRequest)
 
-            assertTrue(result is Result.Success)
-            assertEquals("payment", (result as Result.Success).data[0].paymentMethodId)
+            assertTrue(result is MPResult.Success)
+            assertEquals("payment", (result as MPResult.Success).data[0].paymentMethodId)
         }
 
     @Test
@@ -105,10 +105,10 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getInstallments(installmentsRequest)
 
-            assertTrue(result is Result.Error)
+            assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message,
+                ((result as MPResult.Error).error as MPResultError.Request).message,
             )
         }
 
@@ -123,8 +123,8 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getIdentificationTypes()
 
-            assertTrue(result is Result.Success)
-            assertEquals("identification", (result as Result.Success).data[0].id)
+            assertTrue(result is MPResult.Success)
+            assertEquals("identification", (result as MPResult.Success).data[0].id)
         }
 
     @Test
@@ -146,10 +146,10 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getIdentificationTypes()
 
-            assertTrue(result is Result.Error)
+            assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message,
+                ((result as MPResult.Error).error as MPResultError.Request).message,
             )
         }
 
@@ -166,8 +166,8 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getCardIssuers(request)
 
-            assertTrue(result is Result.Success)
-            assertEquals("01", (result as Result.Success).data[0].id)
+            assertTrue(result is MPResult.Success)
+            assertEquals("01", (result as MPResult.Success).data[0].id)
         }
 
     @Test
@@ -188,10 +188,10 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getCardIssuers(request)
 
-            assertTrue(result is Result.Error)
+            assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message,
+                ((result as MPResult.Error).error as MPResultError.Request).message,
             )
         }
 
@@ -208,8 +208,8 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getPaymentMethods(request)
 
-            assertTrue(result is Result.Success)
-            assertEquals("01", (result as Result.Success).data[0].id)
+            assertTrue(result is MPResult.Success)
+            assertEquals("01", (result as MPResult.Success).data[0].id)
         }
 
     @Test
@@ -230,10 +230,10 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val result = remoteDataSource.getPaymentMethods(request)
 
-            assertTrue(result is Result.Error)
+            assertTrue(result is MPResult.Error)
             assertEquals(
                 "Bad Request",
-                ((result as Result.Error).error as ResultError.Request).message,
+                ((result as MPResult.Error).error as MPResultError.Request).message,
             )
         }
 

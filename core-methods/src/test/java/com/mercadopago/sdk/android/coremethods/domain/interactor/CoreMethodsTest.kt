@@ -9,14 +9,14 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.coEvery
@@ -73,11 +73,11 @@ internal class CoreMethodsTest {
 
             val expectedCardToken = CardToken("token_12345")
 
-            val expectedResult = Result.Success(expectedCardToken)
+            val expectedMPResult = MPResult.Success(expectedCardToken)
 
             coEvery {
                 koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result =
                 coreMethods.generateCardToken(
                     cardNumberState,
@@ -86,7 +86,7 @@ internal class CoreMethodsTest {
                     buyerIdentification
                 )
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -101,12 +101,12 @@ internal class CoreMethodsTest {
                 type = ""
             )
 
-            val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
                 koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result =
                 coreMethods.generateCardToken(
                     cardNumberState,
@@ -115,7 +115,7 @@ internal class CoreMethodsTest {
                     buyerIdentification
                 )
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -131,11 +131,11 @@ internal class CoreMethodsTest {
 
             val expectedCardToken = CardToken("token_12345")
 
-            val expectedResult = Result.Success(expectedCardToken)
+            val expectedMPResult = MPResult.Success(expectedCardToken)
 
             coEvery {
                 koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result =
                 coreMethods.generateCardToken(
                     "id",
@@ -144,7 +144,7 @@ internal class CoreMethodsTest {
                     buyerIdentification
                 )
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -158,12 +158,12 @@ internal class CoreMethodsTest {
                 type = ""
             )
 
-            val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "400", message = "Invalid parameters")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
                 koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result =
                 coreMethods.generateCardToken(
                     "id",
@@ -172,7 +172,7 @@ internal class CoreMethodsTest {
                     buyerIdentification
                 )
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -187,14 +187,14 @@ internal class CoreMethodsTest {
                         merchantAccountId = "merchant_id"
                     )
                 )
-            val expectedResult = Result.Success(expectedInstallment)
+            val expectedMPResult = MPResult.Success(expectedInstallment)
 
             coEvery {
                 koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getInstallments(bin, amount)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -203,15 +203,15 @@ internal class CoreMethodsTest {
             val bin = "123456"
             val amount = 1000.0.toBigDecimal()
             val expectedError =
-                ResultError.Request(code = "404", message = "Installments not found")
-            val expectedResult = Result.Error(expectedError)
+                MPResultError.Request(code = "404", message = "Installments not found")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
                 koin.get<GetInstallmentsUseCase>().invoke(bin, amount, any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getInstallments(bin, amount)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -233,24 +233,24 @@ internal class CoreMethodsTest {
                     maxLength = 20,
                 ),
             )
-            val expectedResult = Result.Success(expectedTypes)
+            val expectedMPResult = MPResult.Success(expectedTypes)
 
-            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
+            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedMPResult
             val result = coreMethods.getIdentificationTypes()
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
     fun `getIdentificationTypes should track error metric when call fails`() =
         runTest {
-            val expectedError = ResultError.Request(code = "404", message = "Not Found")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "404", message = "Not Found")
+            val expectedMPResult = MPResult.Error(expectedError)
 
-            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedResult
+            coEvery { koin.get<GetIdentificationTypesUseCase>().invoke() } returns expectedMPResult
             val result = coreMethods.getIdentificationTypes()
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -260,14 +260,14 @@ internal class CoreMethodsTest {
             val paymentMethodId = "credit"
 
             val expectedCardIssuer = CardIssuer(status = "active", thumbnail = "www")
-            val expectedResult = Result.Success(listOf(expectedCardIssuer))
+            val expectedMPResult = MPResult.Success(listOf(expectedCardIssuer))
 
             coEvery {
                 koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -276,15 +276,15 @@ internal class CoreMethodsTest {
             val bin = "12345"
             val paymentMethodId = "credit"
 
-            val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
                 koin.get<GetCardIssuersUseCase>().invoke(bin, paymentMethodId)
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getCardIssuers(bin, paymentMethodId)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -293,14 +293,14 @@ internal class CoreMethodsTest {
             val bin = "12345"
 
             val expectedPaymentMethod = PaymentMethod(status = "active", thumbnail = "www")
-            val expectedResult = Result.Success(listOf(expectedPaymentMethod))
+            val expectedMPResult = MPResult.Success(listOf(expectedPaymentMethod))
 
             coEvery {
                 koin.get<GetPaymentMethodsUseCase>().invoke(bin)
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getPaymentMethods(bin)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -308,15 +308,15 @@ internal class CoreMethodsTest {
         runTest {
             val bin = "12345"
 
-            val expectedError = ResultError.Request(code = "404", message = "CardIssuer not found")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "404", message = "CardIssuer not found")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             coEvery {
                 koin.get<GetPaymentMethodsUseCase>().invoke(bin)
-            } returns expectedResult
+            } returns expectedMPResult
             val result = coreMethods.getPaymentMethods(bin)
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -333,11 +333,11 @@ internal class CoreMethodsTest {
 
             val expectedCardToken = CardToken("token_12345")
 
-            val expectedResult = Result.Success(expectedCardToken)
+            val expectedMPResult = MPResult.Success(expectedCardToken)
 
             coEvery {
                 koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
+            } returns expectedMPResult
             val result =
                 coreMethods.generateCardToken(
                     cardNumber,
@@ -346,6 +346,6 @@ internal class CoreMethodsTest {
                     buyerIdentification
                 )
 
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 }

@@ -77,7 +77,7 @@ data class FinancialInstitutionModel(
  * length requirements, and security code specifications.
  * It is used to validate card information before processing.
  *
- * @param bin Bank Identification Number (first 6 digits of card)
+ * @param bin Bank Identification Number (first 8 digits of card)
  * @param length Card number length requirements
  * @param validation Validation method to be used for the card
  * @param securityCode Security code (CVV) requirements

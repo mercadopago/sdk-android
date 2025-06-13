@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -22,14 +22,16 @@ internal class GetInstallmentsUseCaseTest {
             val processingMode = "gateway"
 
             // Setup mock response
-            val expectedResult = Result.Success(listOf(Installment())) // Supondo que você tenha um resultado de sucesso
-            coEvery { repository.getInstallment(any()) } returns expectedResult
+            val expectedMPResult = MPResult.Success(
+                listOf(Installment())
+            ) // Supondo que você tenha um resultado de sucesso
+            coEvery { repository.getInstallment(any()) } returns expectedMPResult
 
             // Invoke the use case
             val result = getInstallmentsUseCase(bin, amount, processingMode)
 
             // Assert that the result is as expected
-            assertEquals(expectedResult, result)
+            assertEquals(expectedMPResult, result)
         }
 
     @Test
@@ -40,13 +42,15 @@ internal class GetInstallmentsUseCaseTest {
             val processingMode = "gateway"
 
             // Setup mock to return an error
-            val expectedErrorResult = Result.Error(ResultError.Request(code = "400", message = "Repository error"))
-            coEvery { repository.getInstallment(any()) } returns expectedErrorResult
+            val expectedErrorMPResult = MPResult.Error(
+                MPResultError.Request(code = "400", message = "Repository error")
+            )
+            coEvery { repository.getInstallment(any()) } returns expectedErrorMPResult
 
             // Invoke the use case
             val result = getInstallmentsUseCase(bin, amount, processingMode)
 
             // Assert that the result is the error that we expect
-            assertEquals(expectedErrorResult, result)
+            assertEquals(expectedErrorMPResult, result)
         }
 }

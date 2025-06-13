@@ -17,15 +17,15 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.core.Koin
@@ -58,7 +58,7 @@ class CoreMethods internal constructor(
      * @param expirationDateState [PCIFieldState] containing the card expiration date
      * @param securityCodeState [PCIFieldState]containing the card security code
      * @param buyerIdentification [BuyerIdentification] information including name and document
-     * @return [Result]: On Success [CardToken], On Error[ResultError]
+     * @return [MPResult]: On Success [CardToken], On Error[MPResultError]
      *
      * Example:
      * ```kotlin
@@ -74,11 +74,11 @@ class CoreMethods internal constructor(
      * )
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val token = result.data.token
      *         // Use token for payment processing
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
@@ -86,8 +86,8 @@ class CoreMethods internal constructor(
      *
      * @see PCIFieldState
      * @see CardToken
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      *
      */
     suspend fun generateCardToken(
@@ -95,7 +95,7 @@ class CoreMethods internal constructor(
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification
-    ): Result<CardToken, ResultError> {
+    ): MPResult<CardToken, MPResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumberState.input,
             expirationDate = expirationDateState.input,
@@ -104,9 +104,9 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -114,7 +114,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -124,7 +124,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallSuccess(),
                 )
@@ -141,7 +141,7 @@ class CoreMethods internal constructor(
      * @param securityCodeState [PCIFieldState]containing the card security code
      * @param expirationDateState [PCIFieldState] containing the card expiration date
      * @param buyerIdentification [BuyerIdentification] information including name and document
-     * @return [Result]: On Success  [CardToken], On Error [ResultError]
+     * @return [MPResult]: On Success  [CardToken], On Error [MPResultError]
      * name, number and type
      *
      * Example:
@@ -158,11 +158,11 @@ class CoreMethods internal constructor(
      * )
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val token = result.data.token
      *         // Use token for payment processing
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
@@ -170,15 +170,15 @@ class CoreMethods internal constructor(
      *
      * @see PCIFieldState
      * @see CardToken
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      */
     suspend fun generateCardToken(
         cardId: String,
         securityCodeState: PCIFieldState,
         expirationDateState: PCIFieldState? = null,
         buyerIdentification: BuyerIdentification
-    ): Result<CardToken, ResultError> {
+    ): MPResult<CardToken, MPResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardId,
             expirationDate = expirationDateState?.input,
@@ -187,9 +187,9 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -197,7 +197,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -207,7 +207,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallSuccess(),
                 )
@@ -221,10 +221,10 @@ class CoreMethods internal constructor(
      * This method calculates all possible installment plans based on the card's BIN,
      * transaction amount, and processing mode.
      *
-     * @param bin The first 6 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
+     * @param bin The first 8 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
      * @param amount [BigDecimal] The total transaction amount
      * @param processingMode [ProcessingMode] of the payment (Aggregator or Gateway)
-     * @return [Result]: On Success a list of  [Installment], On error [ResultError]
+     * @return [MPResult]: On Success a list of  [Installment], On error [MPResultError]
      *
      * Example:
      * ```kotlin
@@ -235,11 +235,11 @@ class CoreMethods internal constructor(
      * )
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val installments = result.data
      *         // Display installment options to user
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
@@ -247,14 +247,14 @@ class CoreMethods internal constructor(
      *
      * @see Installment
      * @see ProcessingMode
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      */
     suspend fun getInstallments(
         bin: String,
         amount: BigDecimal,
         processingMode: ProcessingMode = ProcessingMode.Aggregator,
-    ): Result<List<Installment>, ResultError> {
+    ): MPResult<List<Installment>, MPResultError> {
         val result = koin.get<GetInstallmentsUseCase>().invoke(
             bin = bin,
             amount = amount,
@@ -262,9 +262,9 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricInstallmentsCallError(
                                 error = result.error.message,
@@ -272,7 +272,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricInstallmentsCallError(
                                 error = result.error.message,
@@ -282,7 +282,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricInstallmentsCallSuccess(
                         paymentType = result.data.getOrNull(0)?.paymentTypeId.orEmpty(),
@@ -299,35 +299,35 @@ class CoreMethods internal constructor(
      * This method helps identify which types of identification documents (CPF, CNPJ, DNI, etc.)
      * are accepted for payment processing in the current market.
      *
-     * @return [Result]: On Success a list of [IdentificationType], On Error [ResultError]
+     * @return [MPResult]: On Success a list of [IdentificationType], On Error [MPResultError]
      *
      * Example:
      * ```
      * val result = coreMethods.getIdentificationTypes()
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val identificationTypes = result.data
      *         // Display available identification types to user
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
      * ```
      *
      * @see IdentificationType
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      *
      */
-    suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
+    suspend fun getIdentificationTypes(): MPResult<List<IdentificationType>, MPResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricIdentificationCallError(
                                 error = result.error.message,
@@ -335,7 +335,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricIdentificationCallError(
                                 error = result.error.message,
@@ -345,7 +345,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricIdentificationCallSuccess(
                         result.data.mapNotNull { identificationType -> identificationType.name },
@@ -361,9 +361,9 @@ class CoreMethods internal constructor(
      * This method helps identify which banks or financial institutions can process the card
      * based on its first digits and the selected payment method.
      *
-     * @param bin The first 6 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
+     * @param bin The first 8 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
      * @param paymentMethodId The ID of the payment method to check issuers for
-     * @return [Result]: On Success a list of [CardIssuer], On Error [ResultError]
+     * @return [MPResult]: On Success a list of [CardIssuer], On Error [MPResultError]
      *
      * Example:
      * ```kotlin
@@ -373,34 +373,34 @@ class CoreMethods internal constructor(
      * )
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val issuers = result.data
      *         // Display available issuers to user
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
      * ```
      *
      * @see CardIssuer
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      *
      */
     suspend fun getCardIssuers(
         bin: String,
         paymentMethodId: String,
-    ): Result<List<CardIssuer>, ResultError> {
+    ): MPResult<List<CardIssuer>, MPResultError> {
         val result = koin.get<GetCardIssuersUseCase>().invoke(
             bin = bin,
             paymentMethodId = paymentMethodId,
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricCardIssuersCallError(
                                 error = result.error.message,
@@ -408,7 +408,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricCardIssuersCallError(
                                 error = result.error.message,
@@ -418,7 +418,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricCardIssuersCallSuccess(
                         issuers = result.data.mapNotNull { it.id },
@@ -435,8 +435,8 @@ class CoreMethods internal constructor(
      * This method helps identify which payment methods (credit card, debit card, etc.)
      * can be used based on the card's first digits.
      *
-     * @param bin The first 6 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
-     * @return [Result] On Success a list of [PaymentMethod], On Error [ResultError]
+     * @param bin The first 8 digits of the card number from [CardNumberTextFieldEvent].OnBinChanged value
+     * @return [MPResult] On Success a list of [PaymentMethod], On Error [MPResultError]
      *
      * Example:
      * ```kotlin
@@ -445,30 +445,30 @@ class CoreMethods internal constructor(
      * )
      *
      * when (result) {
-     *     is Result.Success -> {
+     *     is MPResult.Success -> {
      *         val paymentMethods = result.data
      *         // Display available payment methods to user
      *     }
-     *     is Result.Error -> {
+     *     is MPResult.Error -> {
      *         // Handle error
      *     }
      * }
      * ```
      *
      * @see PaymentMethod
-     * @see Result
-     * @see ResultError
+     * @see MPResult
+     * @see MPResultError
      *
      */
-    suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
+    suspend fun getPaymentMethods(bin: String): MPResult<List<PaymentMethod>, MPResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricPaymentMethodCallError(
                                 error = result.error.message,
@@ -476,7 +476,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricPaymentMethodCallError(
                                 error = result.error.message,
@@ -486,7 +486,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricPaymentMethodCallSuccess(
                         issuer = result.data.firstOrNull()?.issuer?.id.orEmpty(),
@@ -510,14 +510,14 @@ class CoreMethods internal constructor(
      * @param expirationDate [String] of the expiration date text field
      * @param securityCode [String]  of the security code text field
      * @param buyerIdentification [BuyerIdentification] data class that`s handle the buyer identification
-     * @return [Result]: On Success [CardToken], On Error [ResultError]
+     * @return [MPResult]: On Success [CardToken], On Error [MPResultError]
      */
     suspend fun generateCardToken(
         cardNumber: String,
         expirationDate: String,
         securityCode: String?,
         buyerIdentification: BuyerIdentification
-    ): Result<CardToken, ResultError> {
+    ): MPResult<CardToken, MPResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
             cardNumber = cardNumber,
             expirationDate = expirationDate,
@@ -526,9 +526,9 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
+            is MPResult.Error -> {
                 when (result.error) {
-                    is ResultError.Request -> {
+                    is MPResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -536,7 +536,7 @@ class CoreMethods internal constructor(
                         )
                     }
 
-                    is ResultError.Validation -> {
+                    is MPResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
                                 error = result.error.message,
@@ -546,7 +546,7 @@ class CoreMethods internal constructor(
                 }
             }
 
-            is Result.Success -> {
+            is MPResult.Success -> {
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallSuccess(),
                 )

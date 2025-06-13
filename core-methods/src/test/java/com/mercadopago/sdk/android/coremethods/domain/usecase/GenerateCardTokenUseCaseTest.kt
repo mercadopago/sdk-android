@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.MPResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.MPResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -22,17 +22,17 @@ internal class GenerateCardTokenUseCaseTest {
             val expirationDate = "12/25"
             val securityCode = "123"
             val expectedCardToken = CardToken("sampleToken")
-            val expectedResult = Result.Success(expectedCardToken)
+            val expectedMPResult = MPResult.Success(expectedCardToken)
 
             // Mock the repository behavior
-            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            coEvery { repository.generateCardToken(any()) } returns (expectedMPResult)
 
             // Call the use case
             val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
 
             // Verify the result
-            assertTrue(result is Result.Success)
-            assertEquals(expectedCardToken, (result as Result.Success).data)
+            assertTrue(result is MPResult.Success)
+            assertEquals(expectedCardToken, (result as MPResult.Success).data)
         }
 
     @Test
@@ -41,17 +41,17 @@ internal class GenerateCardTokenUseCaseTest {
             val cardNumber = "4111111111111111"
             val expirationDate = "12/25"
             val securityCode = "123"
-            val expectedError = ResultError.Request(code = "400", message = "Some error")
-            val expectedResult = Result.Error(expectedError)
+            val expectedError = MPResultError.Request(code = "400", message = "Some error")
+            val expectedMPResult = MPResult.Error(expectedError)
 
             // Mock the repository behavior
-            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            coEvery { repository.generateCardToken(any()) } returns (expectedMPResult)
 
             // Call the use case
             val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
 
             // Verify the result
-            assertTrue(result is Result.Error)
-            assertEquals(expectedError, (result as Result.Error).error)
+            assertTrue(result is MPResult.Error)
+            assertEquals(expectedError, (result as MPResult.Error).error)
         }
 }
