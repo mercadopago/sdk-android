@@ -65,7 +65,7 @@ internal fun SampleSDKFeaturesList(
     LazyColumn(
         modifier = modifier,
     ) {
-        items(SampleFeaturesNavigationList) { feature ->
+        items(SampleFeaturesNavigationList.filter { it.isEnabled }) { feature ->
             FeatureItem(
                 feature = feature,
                 onFeatureClick = onFeatureClick,

@@ -63,6 +63,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
+        allWarningsAsErrors = false
+        freeCompilerArgs += listOf(
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+        )
     }
 }
 
