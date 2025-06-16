@@ -21,10 +21,12 @@ import org.koin.core.Koin
  * Controller class responsible for managing the checkout flow and theme configuration.
  * This class handles launching the checkout flow and managing theme preferences.
  *
- * @property context [Context] The context used for launching the flow
- * @property theme [MercadoPagoThemeProviderScheme] The theme scheme to be applied to the checkout flow
- * @property appearance [MercadoPagoThemeAppearance] The appearance mode (light/dark/system) for the checkout flow
- * @property koin [Koin] The Koin instance used for dependency injection.
+ * @param context [Context] The context used for launching the flow
+ * @param theme [MercadoPagoThemeProviderScheme] The theme scheme to be applied to the checkout flow
+ * @param appearance [MercadoPagoThemeAppearance] The appearance mode (light/dark/system) for the checkout flow
+ * @param koin [Koin] The Koin instance used for dependency injection.
+ *
+ * @constructor internal constructor for [CheckoutController]. Use [CheckoutController.create] instead.
  */
 @Stable
 class CheckoutController internal constructor(

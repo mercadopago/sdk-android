@@ -1,3 +1,5 @@
+@file:Suppress("MaximumLineLength")
+
 package com.mercadopago.sdk.android.checkout.data.preferences
 
 import androidx.compose.ui.graphics.Color

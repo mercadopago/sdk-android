@@ -11,11 +11,11 @@ plugins {
     id("org.jetbrains.dokka") version "2.0.0"
 }
 
-tasks.withType(Detekt::class).configureEach {
+tasks.withType<Detekt>().configureEach {
     parallel = true
     buildUponDefaultConfig = true
     autoCorrect = true
-    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
     baseline = file("$rootDir/config/detekt/baseline.xml")
     setSource(files(projectDir))
     include("**/*.kt")
@@ -23,6 +23,12 @@ tasks.withType(Detekt::class).configureEach {
     exclude("resources/")
     exclude("**/build/**")
     exclude("**/example/**")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        sarif.required.set(true)
+        md.required.set(true)
+    }
 }
 
 allprojects {
