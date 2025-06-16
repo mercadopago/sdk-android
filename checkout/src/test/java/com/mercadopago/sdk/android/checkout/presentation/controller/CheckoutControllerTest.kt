@@ -14,7 +14,6 @@ import org.koin.core.Koin
 import kotlin.test.assertNotNull
 
 internal class CheckoutControllerTest {
-
     private val context = mockk<Context>(relaxed = true)
     private val koin = mockk<Koin>()
     private val checkoutThemePreferences = mockk<CheckoutThemePreferences>(relaxed = true)

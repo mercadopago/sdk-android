@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProviderSche
 import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
 
 internal class CheckoutThemePreferencesImpl : CheckoutThemePreferences {
-
     private var theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default
     private var appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System
 

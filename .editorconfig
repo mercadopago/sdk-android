@@ -11,3 +11,5 @@ ktlint_standard_import-ordering = enabled
 ktlint_enum_entry_name_casing = upper_cases
 insert_final_newline = true
 standard:function-type-modifier-spacing = true\
+[**/test/**.kt]
+max_line_length = off

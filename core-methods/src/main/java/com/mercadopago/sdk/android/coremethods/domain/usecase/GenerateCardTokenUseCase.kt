@@ -22,7 +22,7 @@ internal class GenerateCardTokenUseCase(
         cardNumber: String,
         securityCode: String?,
         expirationDate: String?,
-        buyerIdentification: BuyerIdentification? = null
+        buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
         val expirationDateIsNotNull = expirationDate != null
 
@@ -58,7 +58,7 @@ internal class GenerateCardTokenUseCase(
                     BuyerIdentificationParam(
                         name = buyer.name,
                         number = buyer.number,
-                        type = buyer.type
+                        type = buyer.type,
                     )
                 },
                 device = DeviceSDK.getInstance()?.info,

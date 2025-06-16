@@ -17,7 +17,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
 private val DefaultLightRadius = MercadoPagoRadius(
     xxs = 4.dp,
     xs = 6.dp,
-    s = 16.dp
+    s = 16.dp,
 )
 
 private val DefaultLightColors = MercadoPagoColor(
@@ -62,7 +62,7 @@ private val DefaultLightSpacing = MercadoPagoSpacing(
     m = 16.dp,
     l = 20.dp,
     xl = 24.dp,
-    xxl = 32.dp
+    xxl = 32.dp,
 )
 
 private val DefaultLightShape = MercadoPagoShape(
@@ -78,6 +78,6 @@ internal val MercadoPagoDefaultLightTheme = MercadoPagoThemeProvider(
     shape = DefaultLightShape,
     outline = MercadoPagoOutline(
         xxs = 1.dp,
-        xs = 2.dp
+        xs = 2.dp,
     ),
 )

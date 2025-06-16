@@ -27,8 +27,8 @@ internal class CardTokenBodyRequestTest {
                 name = "John Doe",
                 identification = BuyerDocumentIdentificationBodyRequest(
                     number = "987654321",
-                    type = "CNPJ"
-                )
+                    type = "CNPJ",
+                ),
             )
         val cardTokenBodyRequest = CardTokenBodyRequest(
             cardId = "card_123",
@@ -57,8 +57,8 @@ internal class CardTokenBodyRequestTest {
             name = "Jane Doe",
             identification = BuyerDocumentIdentificationBodyRequest(
                 number = "987654321",
-                type = "CNPJ"
-            )
+                type = "CNPJ",
+            ),
         )
 
         assertEquals("Jane Doe", buyerIdentification.name)
@@ -72,15 +72,15 @@ internal class CardTokenBodyRequestTest {
             name = "John Doe",
             identification = BuyerDocumentIdentificationBodyRequest(
                 number = "987654321",
-                type = "CNPJ"
-            )
+                type = "CNPJ",
+            ),
         )
         val buyerIdentification2 = BuyerIdentificationBodyRequest(
             name = "John Doe",
             identification = BuyerDocumentIdentificationBodyRequest(
                 number = "987654321",
-                type = "CNPJ"
-            )
+                type = "CNPJ",
+            ),
         )
 
         val cardTokenBodyRequest1 = CardTokenBodyRequest(

@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class CheckoutThemePreferencesTest {
-
     private val checkoutThemePreferences: CheckoutThemePreferences = CheckoutThemePreferencesImpl()
 
     @Test

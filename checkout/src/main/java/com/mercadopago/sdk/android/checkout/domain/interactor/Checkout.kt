@@ -6,7 +6,6 @@ import org.koin.core.Koin
 internal class Checkout internal constructor(
     internal val koin: Koin,
 ) {
-
     companion object {
         @Volatile
         private var instance: Checkout? = null

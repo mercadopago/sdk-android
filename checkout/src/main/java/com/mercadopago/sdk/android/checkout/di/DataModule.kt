@@ -4,8 +4,9 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import org.koin.dsl.module
 
-internal fun provideDataModule() = module {
-    single<CheckoutThemePreferences> {
-        CheckoutThemePreferencesImpl()
+internal fun provideDataModule() =
+    module {
+        single<CheckoutThemePreferences> {
+            CheckoutThemePreferencesImpl()
+        }
     }
-}

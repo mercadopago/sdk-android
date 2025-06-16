@@ -68,7 +68,7 @@ internal class CoreMethodsTest {
             val buyerIdentification = BuyerIdentification(
                 name = "APRO",
                 number = "012345678909",
-                type = "CPF"
+                type = "CPF",
             )
 
             val expectedCardToken = CardToken("token_12345")
@@ -83,7 +83,7 @@ internal class CoreMethodsTest {
                     cardNumberState,
                     expirationDateState,
                     securityCodeState,
-                    buyerIdentification
+                    buyerIdentification,
                 )
 
             assertEquals(expectedResult, result)
@@ -98,7 +98,7 @@ internal class CoreMethodsTest {
             val buyerIdentification = BuyerIdentification(
                 name = "",
                 number = "",
-                type = ""
+                type = "",
             )
 
             val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
@@ -112,7 +112,7 @@ internal class CoreMethodsTest {
                     cardNumberState,
                     expirationDateState,
                     securityCodeState,
-                    buyerIdentification
+                    buyerIdentification,
                 )
 
             assertEquals(expectedResult, result)
@@ -126,7 +126,7 @@ internal class CoreMethodsTest {
             val buyerIdentification = BuyerIdentification(
                 name = "",
                 number = "",
-                type = ""
+                type = "",
             )
 
             val expectedCardToken = CardToken("token_12345")
@@ -141,7 +141,7 @@ internal class CoreMethodsTest {
                     "id",
                     expirationDateState,
                     securityCodeState,
-                    buyerIdentification
+                    buyerIdentification,
                 )
 
             assertEquals(expectedResult, result)
@@ -155,7 +155,7 @@ internal class CoreMethodsTest {
             val buyerIdentification = BuyerIdentification(
                 name = "",
                 number = "",
-                type = ""
+                type = "",
             )
 
             val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
@@ -169,7 +169,7 @@ internal class CoreMethodsTest {
                     "id",
                     expirationDateState,
                     securityCodeState,
-                    buyerIdentification
+                    buyerIdentification,
                 )
 
             assertEquals(expectedResult, result)
@@ -184,8 +184,8 @@ internal class CoreMethodsTest {
                 listOf(
                     Installment(
                         paymentTypeId = "credit_card",
-                        merchantAccountId = "merchant_id"
-                    )
+                        merchantAccountId = "merchant_id",
+                    ),
                 )
             val expectedResult = Result.Success(expectedInstallment)
 
@@ -328,7 +328,7 @@ internal class CoreMethodsTest {
             val buyerIdentification = BuyerIdentification(
                 name = "",
                 number = "",
-                type = ""
+                type = "",
             )
 
             val expectedCardToken = CardToken("token_12345")
@@ -343,7 +343,7 @@ internal class CoreMethodsTest {
                     cardNumber,
                     expirationDate,
                     securityCode,
-                    buyerIdentification
+                    buyerIdentification,
                 )
 
             assertEquals(expectedResult, result)

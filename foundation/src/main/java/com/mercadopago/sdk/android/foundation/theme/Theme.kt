@@ -83,7 +83,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
         outline = MercadoPagoOutline(
             xxs = 0.dp,
             xs = 0.dp,
-        )
+        ),
     )
 }
 
@@ -94,7 +94,6 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object MercadoPagoTheme {
-
     /**
      * Gets the current color configuration from the theme.
      */
@@ -131,7 +130,7 @@ object MercadoPagoTheme {
 fun MercadoPagoTheme(
     theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val themeScheme = when (appearance) {
         MercadoPagoThemeAppearance.System -> if (isSystemInDarkTheme()) {
@@ -144,6 +143,6 @@ fun MercadoPagoTheme(
     }
     CompositionLocalProvider(
         LocalMercadoPagoTheme provides themeScheme,
-        content = content
+        content = content,
     )
 }

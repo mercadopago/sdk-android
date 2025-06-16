@@ -22,5 +22,5 @@ data class MercadoPagoSpacing(
     val m: Dp,
     val l: Dp,
     val xl: Dp,
-    val xxl: Dp
+    val xxl: Dp,
 )

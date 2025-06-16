@@ -33,7 +33,6 @@ class CheckoutController internal constructor(
     private val appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     private val koin: Koin = Checkout.getInstance().koin,
 ) {
-
     /**
      * Launches the checkout flow in a bottom sheet with the configured theme
      * preferences and starting the checkout flow.
@@ -64,11 +63,12 @@ class CheckoutController internal constructor(
             context: Context,
             theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
             appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
-        ): CheckoutController = CheckoutController(
-            context = context,
-            theme = theme,
-            appearance = appearance,
-        )
+        ): CheckoutController =
+            CheckoutController(
+                context = context,
+                theme = theme,
+                appearance = appearance,
+            )
     }
 }
 

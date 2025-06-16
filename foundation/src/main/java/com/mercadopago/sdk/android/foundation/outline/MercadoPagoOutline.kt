@@ -12,5 +12,5 @@ import androidx.compose.ui.unit.Dp
  */
 data class MercadoPagoOutline(
     val xxs: Dp,
-    val xs: Dp
+    val xs: Dp,
 )

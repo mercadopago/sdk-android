@@ -8,12 +8,14 @@ enum class MercadoPagoThemeAppearance {
      * The system appearance mode, which follows the user's system settings
      **/
     System,
+
     /**
      * Force the light appearance mode, regardless of the system settings
      **/
     Light,
+
     /**
      * Force the dark appearance mode, regardless of the system settings
      **/
-    Dark
+    Dark,
 }

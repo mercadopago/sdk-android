@@ -9,7 +9,6 @@ import com.mercadopago.sdk.android.checkout.presentation.controller.CheckoutBott
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 internal class CheckoutActivity : ComponentActivity() {
-
     private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance().koin.inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
