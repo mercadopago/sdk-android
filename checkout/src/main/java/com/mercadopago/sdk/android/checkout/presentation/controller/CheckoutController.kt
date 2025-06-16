@@ -35,7 +35,8 @@ class CheckoutController internal constructor(
 ) {
 
     /**
-     * Launches the checkout flow in a bottom sheet with the configured theme preferences and starting the checkout flow.
+     * Launches the checkout flow in a bottom sheet with the configured theme
+     * preferences and starting the checkout flow.
      */
     fun launchBottomSheet() {
         koin.get<CheckoutThemePreferences>().apply {

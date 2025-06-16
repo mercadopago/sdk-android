@@ -19,7 +19,7 @@ internal fun CheckoutExampleScreen(
     val checkout = rememberCheckout()
 
     CheckoutExampleScreen(
-        onOpenCheckoutClicked = checkout::launch,
+        onOpenCheckoutClicked = checkout::launchBottomSheet,
         modifier = modifier,
     )
 }
