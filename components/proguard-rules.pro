@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontwarn java.lang.invoke.StringConcatFactory
+# Keep all public classes
+-keep public class ** {
+    public *;  # Keep all public fields and methods
+}
+# Alternative for any public members (classes, fields, methods):
+-keepclassmembers public class ** {
+    public *;  # Keep all public fields and methods in any public class
+}
