@@ -64,7 +64,7 @@ data class MercadoPagoBodyTypography(
     val extraSmallSemibold: TextStyle,
 )
 
-val ProximaNovaFontFamily = FontFamily(
+internal val ProximaNovaFontFamily = FontFamily(
     Font(R.font.proxima_nova_thin, FontWeight.Thin, FontStyle.Normal),
     Font(R.font.proxima_nova_thin_italic, FontWeight.Thin, FontStyle.Italic),
     Font(R.font.proxima_nova_light, FontWeight.Light, FontStyle.Normal),
@@ -152,7 +152,7 @@ internal val MercadoPagoProximaNovaTypography = MercadoPagoTypography(
 
 @Preview(name = "Proxima Nova Title Typography", group = TYPOGRAPHY_GROUP)
 @Composable
-fun TitleTypographyPreview() {
+internal fun TitleTypographyPreview() {
     MercadoPagoTheme {
         Box(
             modifier = Modifier
@@ -169,7 +169,7 @@ fun TitleTypographyPreview() {
 
 @Preview(name = "Proxima Nova Body Typography", group = TYPOGRAPHY_GROUP)
 @Composable
-fun BodyTypographyPreview() {
+internal fun BodyTypographyPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
