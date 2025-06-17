@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.color.BackgroundColor
 import com.mercadopago.sdk.android.foundation.color.FeedbackColor
@@ -18,6 +19,9 @@ import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
 import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTitleTypography
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
 
 /**
  * @suppress
@@ -84,6 +88,18 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
             xxs = 0.dp,
             xs = 0.dp,
         ),
+        typography = MercadoPagoTypography(
+            title = MercadoPagoTitleTypography(
+                smallSemibold = TextStyle.Default,
+            ),
+            body = MercadoPagoBodyTypography(
+                mediumSemibold = TextStyle.Default,
+                mediumRegular = TextStyle.Default,
+                smallSemibold = TextStyle.Default,
+                smallRegular = TextStyle.Default,
+                extraSmallSemibold = TextStyle.Default,
+            ),
+        ),
     )
 }
 
@@ -114,6 +130,13 @@ object MercadoPagoTheme {
     val shape: MercadoPagoShape
         @Composable
         get() = LocalMercadoPagoTheme.current.shape
+
+    /**
+     * Gets the current typography configuration from the theme.
+     */
+    val typography: MercadoPagoTypography
+        @Composable
+        get() = LocalMercadoPagoTheme.current.typography
 }
 
 /**

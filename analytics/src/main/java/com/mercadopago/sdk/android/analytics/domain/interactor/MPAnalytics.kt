@@ -52,6 +52,14 @@ class MPAnalytics internal constructor(
             return instance ?: throw AnalyticsInitializationException()
         }
 
+        /**
+         * Tries to get the instance of the [MPAnalytics] class.
+         */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        fun tryGetInstance(): MPAnalytics? {
+            return instance
+        }
+
         /** Call this method to initialize the analytics instance.
          * @param context application context.
          * @param getSiteIdFlow a flow that emits the current siteId.

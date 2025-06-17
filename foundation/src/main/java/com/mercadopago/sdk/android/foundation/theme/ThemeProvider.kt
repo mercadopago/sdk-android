@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
 
 /**
  * Represents a complete theme configuration for MercadoPago UI components.
@@ -16,6 +17,7 @@ import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
  * @property shape The shape configuration for the theme
  * @property radius The border radius configuration for the theme
  * @property outline The outline configuration for the theme
+ * @property typography The typography configuration for the theme
  */
 data class MercadoPagoThemeProvider(
     val color: MercadoPagoColor,
@@ -23,6 +25,7 @@ data class MercadoPagoThemeProvider(
     val shape: MercadoPagoShape,
     val radius: MercadoPagoRadius,
     val outline: MercadoPagoOutline,
+    val typography: MercadoPagoTypography,
 )
 
 /**

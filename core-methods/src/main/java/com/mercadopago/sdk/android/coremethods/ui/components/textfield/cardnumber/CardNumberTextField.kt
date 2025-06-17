@@ -83,7 +83,7 @@ fun CardNumberTextField(
     val isCardNumberValidUseCase = remember { IsCardNumberValidUseCase() }
 
     LaunchedEffect(key1 = true) {
-        MPAnalytics.getInstance().trackMetric(
+        MPAnalytics.tryGetInstance()?.trackMetric(
             metricPCIFieldInitialization(
                 field = COMPONENT_NAME_CARD_NUMBER,
             ),
