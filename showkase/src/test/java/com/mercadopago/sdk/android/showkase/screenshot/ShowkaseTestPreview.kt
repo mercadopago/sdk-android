@@ -2,8 +2,8 @@ package com.mercadopago.sdk.android.showkase.screenshot
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,7 +46,7 @@ class ShowkaseColorTestPreview(
     override fun Content() {
         Box(
             modifier = Modifier
-                .height(250.dp)
+                .size(50.dp)
                 .background(showkaseBrowserColor.color)
         )
     }
