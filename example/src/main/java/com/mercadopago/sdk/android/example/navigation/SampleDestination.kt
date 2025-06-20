@@ -13,6 +13,9 @@ internal sealed interface SampleDestination {
 
     @Serializable
     object CoreMethods : SampleDestination
+
+    @Serializable
+    object Checkout : SampleDestination
 }
 
 internal fun SampleDestination.isRoute(route: String?): Boolean {

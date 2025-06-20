@@ -68,7 +68,7 @@ fun ExpirationDateTextField(
     val isCardNumberValidUseCase = remember { IsExpirationDateValidUseCase() }
 
     LaunchedEffect(key1 = true) {
-        MPAnalytics.getInstance().trackMetric(
+        MPAnalytics.tryGetInstance()?.trackMetric(
             metricPCIFieldInitialization(
                 field = COMPONENT_NAME_EXPIRATION_DATE,
             ),

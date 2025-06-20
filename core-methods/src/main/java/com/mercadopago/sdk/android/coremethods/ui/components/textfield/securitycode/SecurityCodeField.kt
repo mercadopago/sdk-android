@@ -99,7 +99,7 @@ fun SecurityCodeTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     LaunchedEffect(key1 = true) {
-        MPAnalytics.getInstance().trackMetric(
+        MPAnalytics.tryGetInstance()?.trackMetric(
             metricPCIFieldInitialization(
                 field = COMPONENT_NAME_SECURITY_CODE,
             ),

@@ -49,7 +49,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -63,6 +63,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
+        allWarningsAsErrors = false
+        freeCompilerArgs += listOf(
+            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+        )
     }
 }
 
@@ -81,6 +85,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    debugImplementation(libs.showkase)
+    implementation(libs.showkase.annotation)
+    kspDebug(libs.showkase.processor)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -13,7 +13,6 @@ import kotlin.test.Test
 
 @RunWith(RobolectricTestRunner::class)
 class SecurityCodeTextFieldXMLTest {
-
     private fun createTextField(
         readOnly: Boolean = false,
         onEvent: (SecurityCodeTextFieldEvent) -> Unit = {},

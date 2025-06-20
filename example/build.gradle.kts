@@ -74,6 +74,8 @@ kover.reports.filters.excludes {
 
 dependencies {
     implementation(projects.sdkAndroid)
+    implementation(projects.foundation)
+    implementation(projects.checkout)
     implementation(projects.coreMethods)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
