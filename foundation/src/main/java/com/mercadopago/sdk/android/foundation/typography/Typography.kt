@@ -80,7 +80,7 @@ internal val ProximaNovaFontFamily = FontFamily(
     Font(R.font.proxima_nova_extra_bold, FontWeight.ExtraBold, FontStyle.Normal),
     Font(R.font.proxima_nova_extra_bold_italic, FontWeight.ExtraBold, FontStyle.Italic),
     Font(R.font.proxima_nova_black, FontWeight.Black, FontStyle.Normal),
-    Font(R.font.proxima_nova_black_italic, FontWeight.Black, FontStyle.Italic)
+    Font(R.font.proxima_nova_black_italic, FontWeight.Black, FontStyle.Italic),
 )
 
 @ShowkaseTypography(name = "Title Small Semibold", group = TYPOGRAPHY_TITLE_GROUP)
@@ -89,7 +89,7 @@ internal val ProximaNovaTitleSmallSemibold = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 20.sp,
     lineHeight = 24.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 @ShowkaseTypography(name = "Body Small Regular", group = TYPOGRAPHY_BODY_GROUP)
@@ -98,7 +98,7 @@ internal val ProximaNovaBodySmallRegular = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 14.sp,
     lineHeight = 20.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 @ShowkaseTypography(name = "Body Small Semibold", group = TYPOGRAPHY_BODY_GROUP)
@@ -107,7 +107,7 @@ internal val ProximaNovaBodySmallSemibold = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,
     lineHeight = 20.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 @ShowkaseTypography(name = "Body Extra Small Semibold", group = TYPOGRAPHY_BODY_GROUP)
@@ -116,7 +116,7 @@ internal val ProximaNovaBodyExtraSmallSemibold = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 12.sp,
     lineHeight = 16.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 @ShowkaseTypography(name = "Body Medium Regular", group = TYPOGRAPHY_BODY_GROUP)
@@ -125,7 +125,7 @@ internal val ProximaNovaBodyMediumRegular = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 16.sp,
     lineHeight = 20.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 @ShowkaseTypography(name = "Body Medium Semibold", group = TYPOGRAPHY_BODY_GROUP)
@@ -134,7 +134,7 @@ internal val ProximaNovaMediumSemibold = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 16.sp,
     lineHeight = 24.sp,
-    letterSpacing = 0.sp
+    letterSpacing = 0.sp,
 )
 
 internal val MercadoPagoProximaNovaTypography = MercadoPagoTypography(
@@ -157,7 +157,7 @@ internal fun TitleTypographyPreview() {
         Box(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             Text(
                 text = "Title Small Semibold",
@@ -174,7 +174,7 @@ internal fun BodyTypographyPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             Text(
                 text = "Body Small Regular",

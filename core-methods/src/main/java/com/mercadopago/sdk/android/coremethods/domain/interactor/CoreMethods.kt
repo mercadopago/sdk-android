@@ -561,9 +561,13 @@ class CoreMethods internal constructor(
          * Get the instance of the [CoreMethods] class to call its methods.
          */
         fun getInstance(): CoreMethods {
-            return instance ?: CoreMethods(
-                koin = CoreMethodsModulesProvider().koinApp,
-            )
+            return instance ?: synchronized(this) {
+                instance ?: CoreMethods(
+                    koin = CoreMethodsModulesProvider().koinApp,
+                ).also {
+                    instance = it
+                }
+            }
         }
     }
 }
