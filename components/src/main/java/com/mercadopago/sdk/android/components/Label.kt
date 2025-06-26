@@ -1,4 +1,4 @@
-package com.mercadopago.android.sdk.components
+package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
