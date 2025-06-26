@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
+import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallSuccess
@@ -568,6 +569,16 @@ class CoreMethods internal constructor(
                     instance = it
                 }
             }
+        }
+
+        /**
+         * @suppress
+         * Only for internal usage. DO NOT USE IN PRODUCTION.
+         * Clear the current instance of the CoreMethods for testing purposes.
+         */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        fun clearInstance() {
+            instance = null
         }
     }
 }
