@@ -33,7 +33,7 @@ publishing {
 }
 
 android {
-    namespace = "com.mercadopago.android.sdk.components"
+    namespace = "com.mercadopago.sdk.android.components"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
