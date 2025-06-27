@@ -6,10 +6,10 @@ import org.junit.Test
 internal class ResultErrorTest {
     @Test
     fun `test ResultError creation with default values`() {
-        val resultError = ResultError.Request(code = "100", message = "error")
+        val result = ResultError.Request(code = "100", message = "error")
 
-        assertEquals("error", resultError.message)
-        assertEquals("100", resultError.code)
+        assertEquals("error", result.message)
+        assertEquals("100", result.code)
     }
 
     @Test
@@ -17,10 +17,10 @@ internal class ResultErrorTest {
         val customMessage = "An error occurred"
         val customCode = "404"
 
-        val resultError = ResultError.Request(message = customMessage, code = customCode)
+        val result = ResultError.Request(message = customMessage, code = customCode)
 
-        assertEquals(customMessage, resultError.message)
-        assertEquals(customCode, resultError.code)
+        assertEquals(customMessage, result.message)
+        assertEquals(customCode, result.code)
     }
 
     @Test
@@ -28,10 +28,10 @@ internal class ResultErrorTest {
         val message = "An error occurred"
         val code = "400"
 
-        val resultError1 = ResultError.Request(message = message, code = code)
-        val resultError2 = ResultError.Request(message = message, code = code)
+        val result1 = ResultError.Request(message = message, code = code)
+        val result2 = ResultError.Request(message = message, code = code)
 
-        assertEquals(resultError1, resultError2)
+        assertEquals(result1, result2)
     }
 
     @Test

@@ -32,7 +32,9 @@ class GetPaymentMethodUseCaseTest {
         runBlocking {
             val bin = "12345"
 
-            val expectedErrorResult = Result.Error(ResultError.Request(code = "400", message = "Repository error"))
+            val expectedErrorResult = Result.Error(
+                ResultError.Request(code = "400", message = "Repository error"),
+            )
             coEvery { repository.getPaymentMethods(any()) } returns expectedErrorResult
 
             val result = useCase(bin)

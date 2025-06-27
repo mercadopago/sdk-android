@@ -14,25 +14,6 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param payerCost List of available installment options with their costs
  * @param agreements List of agreements and terms for the payment method
  *
- * Example:
- * ```kotlin
- * val installment = Installment(
- *     paymentMethodId = "visa",
- *     paymentTypeId = "credit_card",
- *     issuer = Issuer(
- *         id = "123",
- *         thumbnail = "https://example.com/visa.png"
- *     ),
- *     payerCost = listOf(
- *         PayerCost(
- *             instalments = 1,
- *             installmentAmount = 100.0f,
- *             totalAmount = 100.0f
- *         )
- *     )
- * )
- * ```
- *
  * @see Issuer
  * @see PayerCost
  * @see Agreements
@@ -56,15 +37,6 @@ data class Installment(
  * @param id Unique identifier for the issuer
  * @param thumbnail URL to the issuer's logo or icon
  * @param default Indicates if this is the default issuer for the payment method
- *
- * Example:
- * ```kotlin
- * val issuer = Issuer(
- *     id = "123",
- *     thumbnail = "https://example.com/visa.png",
- *     default = true
- * )
- * ```
  */
 data class Issuer(
     val id: String? = null,
@@ -88,17 +60,6 @@ data class Issuer(
  * @param reimbursementRate Rate for reimbursement if applicable
  * @param labels Additional labels or tags for this installment plan
  * @param paymentMethodOptionId Unique identifier for this payment option
- *
- * Example:
- * ```kotlin
- * val payerCost = PayerCost(
- *     instalments = 3,
- *     installmentAmount = 33.33f,
- *     totalAmount = 100.0f,
- *     instalmentsRate = 0.0f,
- *     labels = listOf("interest_free")
- * )
- * ```
  */
 data class PayerCost(
     val instalments: Int? = null,
@@ -122,19 +83,6 @@ data class PayerCost(
  * @param merchantAccount List of merchant accounts associated with the agreement
  * @param timeFrame Time period during which the agreement is valid
  *
- * Example:
- * ```kotlin
- * val agreements = Agreements(
- *     merchantAccount = listOf(
- *         MerchantAccount(id = "123", paymentMethodOptionId = "visa")
- *     ),
- *     timeFrame = TimeFrame(
- *         startDate = "2024-01-01",
- *         endDate = "2024-12-31"
- *     )
- * )
- * ```
- *
  * @see MerchantAccount
  * @see TimeFrame
  */
@@ -150,14 +98,6 @@ data class Agreements(
  *
  * @param id Unique identifier for the merchant account
  * @param paymentMethodOptionId Identifier for the payment method option
- *
- * Example:
- * ```kotlin
- * val merchantAccount = MerchantAccount(
- *     id = "123",
- *     paymentMethodOptionId = "visa"
- * )
- * ```
  */
 data class MerchantAccount(
     val id: String? = null,
@@ -171,14 +111,6 @@ data class MerchantAccount(
  *
  * @param startDate Start date of the time period (ISO format)
  * @param endDate End date of the time period (ISO format)
- *
- * Example:
- * ```kotlin
- * val timeFrame = TimeFrame(
- *     startDate = "2024-01-01",
- *     endDate = "2024-12-31"
- * )
- * ```
  */
 data class TimeFrame(
     val startDate: String? = null,
@@ -191,13 +123,6 @@ data class TimeFrame(
  * affecting how transactions are handled and settled.
  *
  * @param mode String representation of the processing mode
- *
- * Example:
- * ```kotlin
- * val processingMode = ProcessingMode.Aggregator
- * // or
- * val processingMode = ProcessingMode.Gateway
- * ```
  */
 enum class ProcessingMode(val mode: String) {
     /**

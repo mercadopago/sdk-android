@@ -14,11 +14,11 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumb
  */
 interface CardNumberTextFieldEvent {
     /**
-     * Event triggered when the card BIN (first 6 digits) changes.
+     * Event triggered when the card BIN (first 8 digits) changes.
      * This event is fired whenever the user types or deletes digits in the BIN portion
      * of the card number, allowing for real-time card type detection.
      *
-     * @param cardBin The first 6 digits of the card number, or null if deleted
+     * @param cardBin The first 8 digits of the card number, or null if deleted
      *
      * Example:
      * ```kotlin

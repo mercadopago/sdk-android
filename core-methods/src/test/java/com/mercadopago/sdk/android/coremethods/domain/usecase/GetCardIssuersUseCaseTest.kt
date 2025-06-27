@@ -34,7 +34,9 @@ class GetCardIssuersUseCaseTest {
             val bin = "12345"
             val paymentMethodId = "credit"
 
-            val expectedErrorResult = Result.Error(ResultError.Request(code = "400", message = "Repository error"))
+            val expectedErrorResult = Result.Error(
+                ResultError.Request(code = "400", message = "Repository error"),
+            )
             coEvery { repository.getCardIssuers(any()) } returns expectedErrorResult
 
             val result = getCardIssuersUseCase(bin, paymentMethodId)
