@@ -85,8 +85,8 @@ enum class MPTextStyle {
  * This component is used to build others components
  * handling the text implementation
  *
- * @param modifier: label modifier
  * @param text: label text
+ * @param modifier: label modifier
  * @param labelTextStyle: text style, must be using
  * @param labelColorType: type of label color
  * @param enabled: Boolean indicates if the component its enabled
