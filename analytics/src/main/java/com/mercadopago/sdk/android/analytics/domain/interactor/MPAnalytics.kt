@@ -65,6 +65,7 @@ class MPAnalytics internal constructor(
          * @param getSiteIdFlow a flow that emits the current siteId.
          * */
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        @Synchronized
         fun initialize(
             context: Context,
             getSiteIdFlow: Flow<String>,
