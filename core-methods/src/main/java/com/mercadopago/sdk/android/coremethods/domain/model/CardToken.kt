@@ -6,9 +6,59 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * which is used to process payments without handling sensitive card data directly.
  *
  * @param token The secure token representing the card, generated after successful tokenization
+ * @param publicKey This app public Key
+ * @param firstSixDigits First card six digits
+ * @param expirationMonth Card expiration Month
+ * @param expirationYear Card expiration year
+ * @param lastFourDigits Last four digits of the card
+ * @param cardHolder Card holder
+ * @param status Card status
+ * @param dateCreated Date of creation of this token
+ * @param dateLastUpdated Date of creation of this token
+ * @param dateDue Date of creation of this token
+ * @param luhnValidation Card number has passed luhn Validation
+ * @param liveMode This is live mode
+ * @param requireEsc This require esc
+ * @param cardNumberLength Card number length
+ * @param securityCodeLength  Card security code length
+ * @param truncCardNumber Thunc Card Number
  */
 data class CardToken(
     val token: String,
+    val publicKey: String? = null,
+    val firstSixDigits: String? = null,
+    val expirationMonth: Int? = null,
+    val expirationYear: Int? = null,
+    val lastFourDigits: String? = null,
+    val cardHolder: CardHolder? = null,
+    val status: String? = null,
+    val dateCreated: String? = null,
+    val dateLastUpdated: String? = null,
+    val dateDue: String? = null,
+    val luhnValidation: Boolean? = null,
+    val liveMode: Boolean? = null,
+    val requireEsc: Boolean? = null,
+    val cardNumberLength: Int? = null,
+    val securityCodeLength: Int? = null,
+    val truncCardNumber: String? = null,
+)
+
+/**
+ * CardHolder class
+ * @param identification [Identification] type of this card holder
+ * @param name: value of this identification
+ */
+data class CardHolder(
+    val identification: Identification? = null,
+    val name: String? = null
+)
+
+/**
+ * Identification class
+ * @param type The type of the identification
+ */
+data class Identification(
+    val type: String? = null
 )
 
 @Suppress("MaxLineLength")
