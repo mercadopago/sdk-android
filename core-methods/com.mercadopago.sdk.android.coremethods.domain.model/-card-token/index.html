@@ -94,24 +94,24 @@
   <div class="breadcrumbs"><a href="../../index.html">core-methods</a><span class="delimiter">/</span><a href="../index.html">com.mercadopago.sdk.android.coremethods.domain.model</a><span class="delimiter">/</span><span class="current">CardToken</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Card</span><wbr><span><span>Token</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">CardToken</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>token<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">Represents a tokenized card for secure payment processing. This class contains the token generated after successful card tokenization, which is used to process payments without handling sensitive card data directly.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>token</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The secure token representing the card, generated after successful tokenization</p></div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">CardToken</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>token<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>publicKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>firstSixDigits<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expirationMonth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>expirationYear<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>lastFourDigits<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cardHolder<span class="token operator">: </span><a href="../-card-holder/index.html">CardHolder</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dateCreated<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dateLastUpdated<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dateDue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>luhnValidation<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>liveMode<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requireEsc<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cardNumberLength<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>securityCodeLength<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>truncCardNumber<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><p class="paragraph">Represents a tokenized card for secure payment processing. This class contains the token generated after successful card tokenization, which is used to process payments without handling sensitive card data directly.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>token</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The secure token representing the card, generated after successful tokenization</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>public</span><wbr><span><span>Key</span></span></u></div></span></div><div><div class="title"><p class="paragraph">This app public Key</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>first</span><wbr><span>Six</span><wbr><span><span>Digits</span></span></u></div></span></div><div><div class="title"><p class="paragraph">First card six digits</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>expiration</span><wbr><span><span>Month</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card expiration Month</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>expiration</span><wbr><span><span>Year</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card expiration year</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>last</span><wbr><span>Four</span><wbr><span><span>Digits</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Last four digits of the card</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>card</span><wbr><span><span>Holder</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card holder</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>status</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card status</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>date</span><wbr><span><span>Created</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Date of creation of this token</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>date</span><wbr><span>Last</span><wbr><span><span>Updated</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Date of creation of this token</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>date</span><wbr><span><span>Due</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Date of creation of this token</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>luhn</span><wbr><span><span>Validation</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card number has passed luhn Validation</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>live</span><wbr><span><span>Mode</span></span></u></div></span></div><div><div class="title"><p class="paragraph">This is live mode</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>require</span><wbr><span><span>Esc</span></span></u></div></span></div><div><div class="title"><p class="paragraph">This require esc</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>card</span><wbr><span>Number</span><wbr><span><span>Length</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card number length</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>security</span><wbr><span>Code</span><wbr><span><span>Length</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Card security code length</p></div></div></div></div><div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>trunc</span><wbr><span>Card</span><wbr><span><span>Number</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Thunc Card Number</p></div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
         <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="1085937383%2FConstructors%2F190940751" anchor-label="CardToken" id="1085937383%2FConstructors%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+        <div class="table"><a data-name="-81317726%2FConstructors%2F190940751" anchor-label="CardToken" id="-81317726%2FConstructors%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-card-token.html"><span>Card</span><wbr><span><span>Token</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1085937383%2FConstructors%2F190940751"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-81317726%2FConstructors%2F190940751"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">publicKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">firstSixDigits<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">expirationMonth<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">expirationYear<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">lastFourDigits<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cardHolder<span class="token operator">: </span><a href="../-card-holder/index.html">CardHolder</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">status<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">dateCreated<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">dateLastUpdated<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">dateDue<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">luhnValidation<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">liveMode<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">requireEsc<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">cardNumberLength<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">securityCodeLength<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">truncCardNumber<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
                 </div>
               </div>
             </div>
@@ -120,7 +120,232 @@
       </div>
       <div data-togglable="PROPERTY">
         <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-1707881875%2FProperties%2F190940751" anchor-label="token" id="-1707881875%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+        <div class="table"><a data-name="-478465672%2FProperties%2F190940751" anchor-label="cardHolder" id="-478465672%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="card-holder.html"><span>card</span><wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-478465672%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="card-holder.html">cardHolder</a><span class="token operator">: </span><a href="../-card-holder/index.html">CardHolder</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1119675317%2FProperties%2F190940751" anchor-label="cardNumberLength" id="1119675317%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="card-number-length.html"><span>card</span><wbr><span>Number</span><wbr><span><span>Length</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1119675317%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="card-number-length.html">cardNumberLength</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2111630996%2FProperties%2F190940751" anchor-label="dateCreated" id="-2111630996%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="date-created.html"><span>date</span><wbr><span><span>Created</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2111630996%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="date-created.html">dateCreated</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1130941600%2FProperties%2F190940751" anchor-label="dateDue" id="-1130941600%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="date-due.html"><span>date</span><wbr><span><span>Due</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1130941600%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="date-due.html">dateDue</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-488608209%2FProperties%2F190940751" anchor-label="dateLastUpdated" id="-488608209%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="date-last-updated.html"><span>date</span><wbr><span>Last</span><wbr><span><span>Updated</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-488608209%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="date-last-updated.html">dateLastUpdated</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-992634091%2FProperties%2F190940751" anchor-label="expirationMonth" id="-992634091%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expiration-month.html"><span>expiration</span><wbr><span><span>Month</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-992634091%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="expiration-month.html">expirationMonth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1832256840%2FProperties%2F190940751" anchor-label="expirationYear" id="1832256840%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="expiration-year.html"><span>expiration</span><wbr><span><span>Year</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1832256840%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="expiration-year.html">expirationYear</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-21869892%2FProperties%2F190940751" anchor-label="firstSixDigits" id="-21869892%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="first-six-digits.html"><span>first</span><wbr><span>Six</span><wbr><span><span>Digits</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-21869892%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="first-six-digits.html">firstSixDigits</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="462195890%2FProperties%2F190940751" anchor-label="lastFourDigits" id="462195890%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="last-four-digits.html"><span>last</span><wbr><span>Four</span><wbr><span><span>Digits</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="462195890%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="last-four-digits.html">lastFourDigits</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="158404293%2FProperties%2F190940751" anchor-label="liveMode" id="158404293%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="live-mode.html"><span>live</span><wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="158404293%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="live-mode.html">liveMode</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1933239764%2FProperties%2F190940751" anchor-label="luhnValidation" id="-1933239764%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="luhn-validation.html"><span>luhn</span><wbr><span><span>Validation</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1933239764%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="luhn-validation.html">luhnValidation</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-183330992%2FProperties%2F190940751" anchor-label="publicKey" id="-183330992%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="public-key.html"><span>public</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-183330992%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="public-key.html">publicKey</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-599409916%2FProperties%2F190940751" anchor-label="requireEsc" id="-599409916%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="require-esc.html"><span>require</span><wbr><span><span>Esc</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-599409916%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="require-esc.html">requireEsc</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1084412767%2FProperties%2F190940751" anchor-label="securityCodeLength" id="-1084412767%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="security-code-length.html"><span>security</span><wbr><span>Code</span><wbr><span><span>Length</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1084412767%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="security-code-length.html">securityCodeLength</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="141505186%2FProperties%2F190940751" anchor-label="status" id="141505186%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="status.html"><span><span>status</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="141505186%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="status.html">status</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1707881875%2FProperties%2F190940751" anchor-label="token" id="-1707881875%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
           <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
@@ -131,6 +356,21 @@
               <div>
                 <div class="title">
                   <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="token.html">token</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="917803361%2FProperties%2F190940751" anchor-label="truncCardNumber" id="917803361%2FProperties%2F190940751" data-filterable-set=":core-methods:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":core-methods:dokkaHtmlPartial/release" data-filterable-set=":core-methods:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="trunc-card-number.html"><span>trunc</span><wbr><span>Card</span><wbr><span><span>Number</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="917803361%2FProperties%2F190940751"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":core-methods:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="trunc-card-number.html">truncCardNumber</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
                 </div>
               </div>
             </div>
