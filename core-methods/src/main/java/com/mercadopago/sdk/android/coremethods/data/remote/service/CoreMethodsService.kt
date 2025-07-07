@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.utils.PRODUCT_ID
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 import java.math.BigDecimal
@@ -21,6 +22,7 @@ internal interface CoreMethodsService {
     @POST("/v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
+        @Header("X-Product-id") productId: String? = PRODUCT_ID
     ): Response<CardTokenResponse>
 
     @GET("$BRICKS_API/$VERSION/installments")

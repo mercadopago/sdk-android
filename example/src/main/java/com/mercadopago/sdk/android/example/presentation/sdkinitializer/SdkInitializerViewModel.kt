@@ -2,6 +2,8 @@ package com.mercadopago.sdk.android.example.presentation.sdkinitializer
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.example.BuildConfig
 import com.mercadopago.sdk.android.example.domain.model.PublicKey
@@ -60,6 +62,8 @@ internal class SdkInitializerViewModel(
 
     fun onDestroySdkInstanceClick() {
         MercadoPagoSDK.clearInstance()
+        CoreMethods.clearInstance()
+        Checkout.clearInstance()
         _viewState.value = _viewState.value.copy(
             sdkState = SdkState(
                 isInitialized = false,

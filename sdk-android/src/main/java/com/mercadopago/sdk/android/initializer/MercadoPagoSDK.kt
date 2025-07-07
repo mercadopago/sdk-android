@@ -65,6 +65,7 @@ class MercadoPagoSDK private constructor(
          * <a href="https://www.mercadopago.com/developers/en/docs/your-integrations/credentials"
          * >Credentials Documentation</a>
          */
+        @Synchronized
         fun initialize(
             context: Context,
             publicKey: String,

@@ -35,7 +35,7 @@ internal class CardTokenMPResponseTest {
         val cardTokenResponse = CardTokenResponse(
             id = "token_123",
             publicKey = "public_key_123",
-            luhnValidation = "VALID",
+            luhnValidation = true,
             status = "approved",
             dateUsed = "2023-01-01",
             cardNumberLength = 16,
@@ -45,14 +45,14 @@ internal class CardTokenMPResponseTest {
             expirationYear = 2025,
             firstSixDigits = "411111",
             lastFourDigits = "1111",
-            liveMode = "true",
+            liveMode = true,
             cardholder = cardHolderResponse,
             esc = "esc_value",
         )
 
         assertEquals("token_123", cardTokenResponse.id)
         assertEquals("public_key_123", cardTokenResponse.publicKey)
-        assertEquals("VALID", cardTokenResponse.luhnValidation)
+        assertEquals(true, cardTokenResponse.luhnValidation)
         assertEquals("approved", cardTokenResponse.status)
         assertEquals("2023-01-01", cardTokenResponse.dateUsed)
         assertEquals(16, cardTokenResponse.cardNumberLength)
@@ -62,7 +62,7 @@ internal class CardTokenMPResponseTest {
         assertEquals(2025, cardTokenResponse.expirationYear)
         assertEquals("411111", cardTokenResponse.firstSixDigits)
         assertEquals("1111", cardTokenResponse.lastFourDigits)
-        assertEquals("true", cardTokenResponse.liveMode)
+        assertEquals(true, cardTokenResponse.liveMode)
         assertNotNull(cardTokenResponse.cardholder)
         assertEquals("John Doe", cardTokenResponse.cardholder?.name)
         assertEquals("123456789", cardTokenResponse.cardholder?.identification?.number)

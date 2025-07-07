@@ -8,11 +8,17 @@ internal data class CardTokenResponse(
     @SerializedName("public_key")
     val publicKey: String? = null,
     @SerializedName("luhnValidation")
-    val luhnValidation: String? = null,
+    val luhnValidation: Boolean? = null,
     @SerializedName("status")
     val status: String? = null,
     @SerializedName("dateUsed")
     val dateUsed: String? = null,
+    @SerializedName("date_created")
+    val dateCreated: String? = null,
+    @SerializedName("date_last_updated")
+    val dateLastUpdated: String? = null,
+    @SerializedName("date_due")
+    val dateDue: String? = null,
     @SerializedName("cardNumberLength")
     val cardNumberLength: Int? = null,
     @SerializedName("truncCardNumber")
@@ -28,7 +34,9 @@ internal data class CardTokenResponse(
     @SerializedName("last_four_digits")
     val lastFourDigits: String? = null,
     @SerializedName("liveMode")
-    val liveMode: String? = null,
+    val liveMode: Boolean? = null,
+    @SerializedName("require_esc")
+    val requireEsc: Boolean? = null,
     @SerializedName("cardholder")
     val cardholder: CardHolderResponse? = null,
     @SerializedName("esc")

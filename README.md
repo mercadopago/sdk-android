@@ -1,5 +1,6 @@
 # Mercado Pago SDK Android
 
+![Sonatype Nexus (Repository)](https://img.shields.io/nexus/android-releases/com.mercadopago.android.sdk/sdk-android-bom?server=https%3A%2F%2Fartifacts.mercadolibre.com&logo=mercadopago&logoColor=%23000000&logoSize=auto&label=SDK%20BOM%20Version&labelColor=%23ffe600&color=%2302bcff&link=https%3A%2F%2Fartifacts.mercadolibre.com%2F%23browse%2Fbrowse%3Aandroid-releases%3Acom%252Fmercadopago%252Fandroid%252Fsdk%252Fsdk-android-bom)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 A mobile SDK whose main objective is to facilitate the integration of Mercado Pago payment solutions on your app, allowing a secure flow within the security standards for sensitive data transfer.
@@ -42,7 +43,7 @@ Add the following definitions to your `libs.versions.toml` file to declare the S
 mercadoPagoSdkBomVersion = "latest-bom-version"
 
 [libraries]
-mercadopago-sdk.bom = { group = "com.mercadopago.android.sdk", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
+mercadopago-sdk-bom = { group = "com.mercadopago.android.sdk", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
 // Core Methods SDK
 mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk", name = "core-methods" }
 ```
