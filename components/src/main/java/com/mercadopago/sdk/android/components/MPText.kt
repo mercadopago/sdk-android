@@ -87,19 +87,19 @@ enum class MPTextStyle {
  *
  * @param text: label text
  * @param modifier: label modifier
- * @param labelTextStyle: text style, must be using
- * @param labelColorType: type of label color
+ * @param textStyle: text style, must be using
+ * @param colorType: type of label color
  * @param enabled: Boolean indicates if the component its enabled
  */
 @Composable
 fun MPText(
     text: String,
     modifier: Modifier = Modifier,
-    labelTextStyle: MPTextStyle = MPTextStyle.Title,
-    labelColorType: MPTextColorType = MPTextColorType.Primary,
+    textStyle: MPTextStyle = MPTextStyle.Title,
+    colorType: MPTextColorType = MPTextColorType.Primary,
     enabled: Boolean = true,
 ) {
-    val color = when (labelColorType) {
+    val color = when (colorType) {
         MPTextColorType.Primary -> {
             MercadoPagoTheme.color.text.primary
         }
@@ -121,7 +121,7 @@ fun MPText(
         }
     }
 
-    val style = when (labelTextStyle) {
+    val style = when (textStyle) {
         MPTextStyle.Title -> {
             MercadoPagoTheme.typography.title.smallSemibold
         }
@@ -157,7 +157,7 @@ fun MPText(
 
 @Preview(name = "Text Tittle Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelTittlePreview() {
+internal fun TextTittlePreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -166,33 +166,33 @@ internal fun LabelTittlePreview() {
         ) {
             MPText(
                 text = "My Tittle Primary Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My Tittle Secondary Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My Tittle Accent Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My Tittle Inverted Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My Tittle Negative Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My Tittle Disabled Text",
-                labelTextStyle = MPTextStyle.Title,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
@@ -201,7 +201,7 @@ internal fun LabelTittlePreview() {
 
 @Preview(name = "Text BodyMediumSemiBold Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelBodyMediumSemiBoldPreview() {
+internal fun TextBodyMediumSemiBoldPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -210,33 +210,33 @@ internal fun LabelBodyMediumSemiBoldPreview() {
         ) {
             MPText(
                 text = "My BodyMediumSemiBold Primary Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My BodyMediumSemiBold Secondary Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My BodyMediumSemiBold Accent Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My BodyMediumSemiBold Inverted Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My BodyMediumSemiBold Negative Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My BodyMediumSemiBold Disabled Text",
-                labelTextStyle = MPTextStyle.BodyMediumSemiBold,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
@@ -245,7 +245,7 @@ internal fun LabelBodyMediumSemiBoldPreview() {
 
 @Preview(name = "Text BodyMediumRegular Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelBodyMediumRegularPreview() {
+internal fun TextBodyMediumRegularPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -254,33 +254,33 @@ internal fun LabelBodyMediumRegularPreview() {
         ) {
             MPText(
                 text = "My BodyMediumRegular Primary Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My BodyMediumRegular Secondary Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My BodyMediumRegular Accent Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My BodyMediumRegular Inverted Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My BodyMediumRegular Negative Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My BodyMediumRegular Disabled Text",
-                labelTextStyle = MPTextStyle.BodyMediumRegular,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
@@ -289,7 +289,7 @@ internal fun LabelBodyMediumRegularPreview() {
 
 @Preview(name = "Text BodySmallSemiBold Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelBodySmallSemiBoldPreview() {
+internal fun TextBodySmallSemiBoldPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -298,33 +298,33 @@ internal fun LabelBodySmallSemiBoldPreview() {
         ) {
             MPText(
                 text = "My BodySmallSemiBold Primary Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My BodySmallSemiBold Secondary Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My BodySmallSemiBold Accent Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My BodySmallSemiBold Inverted Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My BodySmallSemiBold Negative Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My BodySmallSemiBold Disabled Text",
-                labelTextStyle = MPTextStyle.BodySmallSemiBold,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
@@ -333,7 +333,7 @@ internal fun LabelBodySmallSemiBoldPreview() {
 
 @Preview(name = "Text BodySmallRegular Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelBodySmallRegularPreview() {
+internal fun TextBodySmallRegularPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -342,33 +342,33 @@ internal fun LabelBodySmallRegularPreview() {
         ) {
             MPText(
                 text = "My BodySmallRegular Primary Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My BodySmallRegular Secondary Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My BodySmallRegular Accent Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My BodySmallRegular Inverted Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My BodySmallRegular Negative Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My BodySmallRegular Disabled Text",
-                labelTextStyle = MPTextStyle.BodySmallRegular,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
@@ -377,7 +377,7 @@ internal fun LabelBodySmallRegularPreview() {
 
 @Preview(name = "Text BodyExtraSmallSemiBold Text", group = TEXT_GROUP)
 @Composable
-internal fun LabelBodyExtraSmallSemiBoldPreview() {
+internal fun TextBodyExtraSmallSemiBoldPreview() {
     MercadoPagoTheme {
         Column(
             modifier = Modifier
@@ -386,33 +386,33 @@ internal fun LabelBodyExtraSmallSemiBoldPreview() {
         ) {
             MPText(
                 text = "My BodyExtraSmallSemiBold Primary Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Primary
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Primary
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Secondary Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Secondary
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Secondary
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Accent Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Accent
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Accent
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Inverted Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Inverted
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Inverted
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Negative Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Negative
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Negative
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Disabled Text",
-                labelTextStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                labelColorType = MPTextColorType.Primary,
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Primary,
                 enabled = false
             )
         }
