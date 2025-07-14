@@ -33,7 +33,7 @@ publishing {
 }
 
 android {
-    namespace = "com.mercadopago.android.sdk.foundation"
+    namespace = "com.mercadopago.sdk.android.foundation"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
@@ -46,7 +46,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

@@ -33,7 +33,7 @@ publishing {
 }
 
 android {
-    namespace = "com.mercadopago.android.sdk.components"
+    namespace = "com.mercadopago.sdk.android.components"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
@@ -85,7 +85,7 @@ dependencies {
     debugImplementation(libs.showkase)
     implementation(libs.showkase.annotation)
     kspDebug(libs.showkase.processor)
-    implementation(libs.androidx.annotation)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

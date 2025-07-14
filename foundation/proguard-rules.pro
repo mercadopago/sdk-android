@@ -28,3 +28,5 @@
 -keepclassmembers public class ** {
     public *;  # Keep all public fields and methods in any public class
 }
+-keepnames class com.mercadopago.sdk.android.foundation.** { *; }
+-keep class com.mercadopago.sdk.android.foundation.** { *; }

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseTypography
-import com.mercadopago.android.sdk.foundation.R
+import com.mercadopago.sdk.android.foundation.R
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val TYPOGRAPHY_GROUP = "Typography"
