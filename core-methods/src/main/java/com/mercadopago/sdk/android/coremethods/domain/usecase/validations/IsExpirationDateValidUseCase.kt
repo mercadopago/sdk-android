@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase.validations
 
-import com.mercadopago.sdk.android.coremethods.extensions.between
 import com.mercadopago.sdk.android.coremethods.extensions.takeLast
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ONE
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
@@ -9,29 +8,31 @@ import java.util.Calendar
 private const val MAX_MONTH = 12
 
 internal class IsExpirationDateValidUseCase {
+    @Suppress("ReturnCount")
     operator fun invoke(
         expirationDate: String,
         maxLength: Int,
     ): Boolean {
         return when (expirationDate.length) {
             maxLength -> {
-                val firstSegment = expirationDate.take(INT_TWO).toInt()
-                val lastSegmentDate = expirationDate.takeLast(INT_TWO).toInt()
-                val year = Calendar.getInstance().get(Calendar.YEAR).takeLast(INT_TWO)
-                val month = Calendar.getInstance().get(Calendar.MONTH) + INT_ONE
+                val month = expirationDate.take(INT_TWO).toIntOrNull() ?: return false
+                val year = expirationDate.takeLast(INT_TWO).toIntOrNull() ?: return false
+                val calendar = Calendar.getInstance()
+                val currentYear = calendar.get(Calendar.YEAR).takeLast(INT_TWO)
+                val currentMonth = calendar.get(Calendar.MONTH) + INT_ONE
 
-                return if (lastSegmentDate > year) {
-                    true
-                } else if (lastSegmentDate == year) {
-                    firstSegment.between(INT_ONE, MAX_MONTH) >= month.between(INT_ONE, MAX_MONTH)
-                } else {
-                    false
+                if (month !in INT_ONE..MAX_MONTH) {
+                    return false
+                }
+
+                return when {
+                    year > currentYear -> true
+                    year == currentYear -> month >= currentMonth
+                    else -> false
                 }
             }
 
-            else -> {
-                false
-            }
+            else -> false
         }
     }
 }
