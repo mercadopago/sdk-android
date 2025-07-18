@@ -1,3 +1,5 @@
+import com.mercadopago.sdk.android.BomConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -34,7 +36,7 @@ android {
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = MercadoPagoSDKConfig.VERSION_NAME
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.VERSION_NAME}\"")
+        buildConfigField("String", "SdkVersion", "\"${BomConfig.VERSION_NAME}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

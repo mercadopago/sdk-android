@@ -62,7 +62,7 @@ internal class AnalyticsLocalDataSourceImplTest {
     fun `when getSessionId is called with invalid session Then generate new session`() = runTest {
         // Given
         val currentTimeMilli = Calendar.getInstance().timeInMillis
-        val pastTimeMilli = currentTimeMilli - 31.minutes.inWholeMinutes
+        val pastTimeMilli = currentTimeMilli - 31.minutes.inWholeMilliseconds
         val sessionId = SessionId(sessionId = "123", lastUpdate = pastTimeMilli)
         val sessionJson = "session"
         val calendar = mockk<Calendar>()
