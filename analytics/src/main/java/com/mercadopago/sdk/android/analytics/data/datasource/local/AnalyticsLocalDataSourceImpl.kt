@@ -35,7 +35,7 @@ internal class AnalyticsLocalDataSourceImpl(
                     lastUpdate = Calendar.getInstance().timeInMillis,
                 )
             }
-            val thirtyMinutesInMillis: Long = 30.minutes.inWholeMinutes
+            val thirtyMinutesInMillis: Long = 30.minutes.inWholeMilliseconds
             if (Calendar.getInstance().timeInMillis - (sessionId?.lastUpdate ?: 0L) > thirtyMinutesInMillis) {
                 val newSessionId = SessionId(
                     sessionId = UUID.randomUUID().toString(),

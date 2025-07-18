@@ -8,5 +8,5 @@ package com.mercadopago.sdk.android
 object BomConfig {
 
     const val ARTIFACT_ID = "sdk-android-bom"
-    const val VERSION_NAME = "0.0.4"
+    const val VERSION_NAME = "0.0.5"
 }
