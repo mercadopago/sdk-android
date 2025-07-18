@@ -1,3 +1,4 @@
+import com.mercadopago.sdk.android.BomConfig
 import com.mercadopago.sdk.android.CoreSDKConfig
 
 plugins {
@@ -40,7 +41,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "SdkVersion", "\"${MercadoPagoSDKConfig.VERSION_NAME}\"")
+        buildConfigField("String", "SdkVersion", "\"${BomConfig.VERSION_NAME}\"")
         buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
         buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
     }
