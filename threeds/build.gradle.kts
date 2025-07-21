@@ -66,7 +66,6 @@ android {
     }
 }
 
-
 ksp {
     arg("skipPrivatePreviews", "true")
 }

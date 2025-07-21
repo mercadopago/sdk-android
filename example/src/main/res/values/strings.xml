@@ -12,4 +12,5 @@
     <string name="autofill_public_key">Autofill Public Key</string>
     <string name="checkout_feature_title">Checkout</string>
     <string name="checkout_feature_description">The Checkout feature offers a seamless payment experience without requiring any component building. You can leverage one of the default themes or customize your own to create a complete payment solution.</string>
+    <string name="payment_button_text">Pay</string>
 </resources>
