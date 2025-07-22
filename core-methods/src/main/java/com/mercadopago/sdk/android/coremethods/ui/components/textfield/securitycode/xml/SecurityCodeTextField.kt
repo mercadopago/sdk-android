@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml
 
+// ktlint-disable annotation
+
 import android.content.Context
 import android.util.AttributeSet
 import androidx.compose.foundation.text.KeyboardOptions
@@ -64,7 +66,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-// ktlint-disable annotation
 class SecurityCodeTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
