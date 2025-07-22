@@ -79,11 +79,13 @@ import kotlin.math.min
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
+// ktlint-disable annotation
 class CardNumberTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
+    // ktlint-enable annotation
     /**
      * The state holder that manages the card number input value and PCI compliance.
      * This state is automatically initialized when the view is created and persists

@@ -64,11 +64,13 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
+// ktlint-disable annotation
 class SecurityCodeTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
+    // ktlint-enable annotation
     /**
      * The state holder for the security code input field.
      * This property manages the input value and ensures PCI compliance.
