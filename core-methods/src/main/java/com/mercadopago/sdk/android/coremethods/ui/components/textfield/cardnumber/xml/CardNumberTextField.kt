@@ -79,108 +79,110 @@ import kotlin.math.min
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-class CardNumberTextField @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0,
-) : AbstractComposeView(context, attrs, defStyle) {
-    /**
-     * The state holder that manages the card number input value and PCI compliance.
-     * This state is automatically initialized when the view is created and persists
-     * across configuration changes.
-     */
-    lateinit var state: PCIFieldState
+class CardNumberTextField
+    @JvmOverloads
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = 0,
+    ) : AbstractComposeView(context, attrs, defStyle) {
+        /**
+         * The state holder that manages the card number input value and PCI compliance.
+         * This state is automatically initialized when the view is created and persists
+         * across configuration changes.
+         */
+        lateinit var state: PCIFieldState
 
-    /**
-     * Callback triggered for field events (BIN changes, validation, input completion).
-     * Use this to handle user interactions and update the UI accordingly.
-     */
-    var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
+        /**
+         * Callback triggered for field events (BIN changes, validation, input completion).
+         * Use this to handle user interactions and update the UI accordingly.
+         */
+        var onEvent: (CardNumberTextFieldEvent) -> Unit = { }
 
-    /**
-     * Controls whether the field is editable or read-only.
-     * When true, the field can be focused but not edited.
-     */
-    var readOnly: Boolean = false
+        /**
+         * Controls whether the field is editable or read-only.
+         * When true, the field can be focused but not edited.
+         */
+        var readOnly: Boolean = false
 
-    /**
-     * Text style applied to the card number input.
-     * Use this to customize the appearance of the input text.
-     */
-    var textStyle: TextStyle = TextStyle.Default
+        /**
+         * Text style applied to the card number input.
+         * Use this to customize the appearance of the input text.
+         */
+        var textStyle: TextStyle = TextStyle.Default
 
-    /**
-     * Brush applied to customize the text cursor appearance.
-     * Default is unspecified color.
-     */
-    var cursorBrush: Brush = SolidColor(Color.Unspecified)
+        /**
+         * Brush applied to customize the text cursor appearance.
+         * Default is unspecified color.
+         */
+        var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
-    /**
-     * Configuration for the software keyboard.
-     * Use this to customize keyboard behavior and appearance.
-     */
-    var keyboardOption: KeyboardOptions = KeyboardOptions()
+        /**
+         * Configuration for the software keyboard.
+         * Use this to customize keyboard behavior and appearance.
+         */
+        var keyboardOption: KeyboardOptions = KeyboardOptions()
 
-    /**
-     * Callbacks for keyboard action events.
-     * Use this to handle keyboard actions like "Done" or "Next".
-     */
-    var keyboardActions: KeyboardActions = KeyboardActions()
+        /**
+         * Callbacks for keyboard action events.
+         * Use this to handle keyboard actions like "Done" or "Next".
+         */
+        var keyboardActions: KeyboardActions = KeyboardActions()
 
-    /**
-     * Visual transformation for formatting the card number display.
-     * Default is card number mask with spaces between groups.
-     */
-    var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
+        /**
+         * Visual transformation for formatting the card number display.
+         * Default is card number mask with spaces between groups.
+         */
+        var visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber
 
-    /**
-     * Maximum length of the card number input.
-     * This value is clamped between 8 and 19 digits to ensure valid card number lengths.
-     * The actual length may be adjusted after BIN detection.
-     */
-    var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
-        set(value) {
-            field = min(max(value, 8), DEFAULT_CARD_NUMBER_MAX_LENGTH)
-        }
+        /**
+         * Maximum length of the card number input.
+         * This value is clamped between 8 and 19 digits to ensure valid card number lengths.
+         * The actual length may be adjusted after BIN detection.
+         */
+        var maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH
+            set(value) {
+                field = min(max(value, 8), DEFAULT_CARD_NUMBER_MAX_LENGTH)
+            }
 
-    init {
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.MPCardNumberTextFieldXML,
-            0,
-            0,
-        ).apply {
-            try {
-                maxLength = getInteger(
-                    R.styleable.MPCardNumberTextFieldXML_maxLength,
-                    DEFAULT_CARD_NUMBER_MAX_LENGTH,
-                )
-                readOnly = getBoolean(R.styleable.MPCardNumberTextFieldXML_readOnly, false)
-                val cursorColor = getColor(
-                    R.styleable.MPCardNumberTextFieldXML_cursorColor,
-                    Color.Unspecified.toArgb(),
-                )
-                cursorBrush = SolidColor(Color(cursorColor))
-            } finally {
-                recycle()
+        init {
+            context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.MPCardNumberTextFieldXML,
+                0,
+                0,
+            ).apply {
+                try {
+                    maxLength = getInteger(
+                        R.styleable.MPCardNumberTextFieldXML_maxLength,
+                        DEFAULT_CARD_NUMBER_MAX_LENGTH,
+                    )
+                    readOnly = getBoolean(R.styleable.MPCardNumberTextFieldXML_readOnly, false)
+                    val cursorColor = getColor(
+                        R.styleable.MPCardNumberTextFieldXML_cursorColor,
+                        Color.Unspecified.toArgb(),
+                    )
+                    cursorBrush = SolidColor(Color(cursorColor))
+                } finally {
+                    recycle()
+                }
             }
         }
-    }
 
-    @Composable
-    override fun Content() {
-        state = rememberPCIFieldState()
-        CardNumberTextField(
-            state = state,
-            onEvent = onEvent,
-            maxLength = maxLength,
-            enabled = isEnabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            keyboardOptions = keyboardOption,
-            keyboardActions = keyboardActions,
-            cursorBrush = cursorBrush,
-            visualTransformation = visualTransformation,
-        )
+        @Composable
+        override fun Content() {
+            state = rememberPCIFieldState()
+            CardNumberTextField(
+                state = state,
+                onEvent = onEvent,
+                maxLength = maxLength,
+                enabled = isEnabled,
+                readOnly = readOnly,
+                textStyle = textStyle,
+                keyboardOptions = keyboardOption,
+                keyboardActions = keyboardActions,
+                cursorBrush = cursorBrush,
+                visualTransformation = visualTransformation,
+            )
+        }
     }
-}

@@ -25,14 +25,13 @@ internal fun CardTokenResponse.toModel() =
         requireEsc = this.requireEsc,
         cardNumberLength = this.cardNumberLength,
         securityCodeLength = this.securityCodeLength,
-        truncCardNumber = this.truncCardNumber
+        truncCardNumber = this.truncCardNumber,
     )
 
 internal fun CardHolderResponse.toModel() =
     CardHolder(
         identification = this.identification?.toModel(),
-        name = this.name
+        name = this.name,
     )
 
-internal fun IdentificationResponse.toModel() =
-    Identification(this.type)
+internal fun IdentificationResponse.toModel() = Identification(this.type)
