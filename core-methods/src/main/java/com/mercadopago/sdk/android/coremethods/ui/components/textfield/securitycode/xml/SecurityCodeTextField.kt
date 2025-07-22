@@ -64,102 +64,100 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-class SecurityCodeTextField
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0,
-    ) : AbstractComposeView(context, attrs, defStyle) {
-        /**
-         * The state holder for the security code input field.
-         * This property manages the input value and ensures PCI compliance.
-         */
-        lateinit var state: PCIFieldState
+class SecurityCodeTextField @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+) : AbstractComposeView(context, attrs, defStyle) {
+    /**
+     * The state holder for the security code input field.
+     * This property manages the input value and ensures PCI compliance.
+     */
+    lateinit var state: PCIFieldState
 
-        /**
-         * Callback for handling security code field events.
-         * This callback is triggered for various events like focus changes,
-         * input completion, and length changes.
-         */
-        var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
+    /**
+     * Callback for handling security code field events.
+     * This callback is triggered for various events like focus changes,
+     * input completion, and length changes.
+     */
+    var onEvent: (SecurityCodeTextFieldEvent) -> Unit = {}
 
-        /**
-         * The maximum number of digits allowed in the security code.
-         * This value determines the length of the security code input
-         * (typically 3 for most cards, 4 for American Express).
-         */
-        var securityCodeSize: Int = MIN_LENGTH
+    /**
+     * The maximum number of digits allowed in the security code.
+     * This value determines the length of the security code input
+     * (typically 3 for most cards, 4 for American Express).
+     */
+    var securityCodeSize: Int = MIN_LENGTH
 
-        /**
-         * Whether the field is read-only.
-         * When true, the field can be focused but not edited,
-         * useful for displaying pre-filled values.
-         */
-        var readOnly: Boolean = false
+    /**
+     * Whether the field is read-only.
+     * When true, the field can be focused but not edited,
+     * useful for displaying pre-filled values.
+     */
+    var readOnly: Boolean = false
 
-        /**
-         * The text style to be applied to the security code input.
-         * This includes properties like color, font size, and font family.
-         */
-        var textStyle: TextStyle = TextStyle.Default
+    /**
+     * The text style to be applied to the security code input.
+     * This includes properties like color, font size, and font family.
+     */
+    var textStyle: TextStyle = TextStyle.Default
 
-        /**
-         * Configuration for the software keyboard.
-         * This includes options like keyboard type and IME actions.
-         */
-        var keyboardOptions: KeyboardOptions = KeyboardOptions()
+    /**
+     * Configuration for the software keyboard.
+     * This includes options like keyboard type and IME actions.
+     */
+    var keyboardOptions: KeyboardOptions = KeyboardOptions()
 
-        /**
-         * The brush used to paint the text cursor.
-         * This allows customization of the cursor's appearance.
-         */
-        var cursorBrush: Brush = SolidColor(Color.Unspecified)
+    /**
+     * The brush used to paint the text cursor.
+     * This allows customization of the cursor's appearance.
+     */
+    var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
-        /**
-         * Visual transformation to be applied to the security code input.
-         * This can be used to mask or format the input display.
-         */
-        var visualTransformation: VisualTransformation = VisualTransformation.None
+    /**
+     * Visual transformation to be applied to the security code input.
+     * This can be used to mask or format the input display.
+     */
+    var visualTransformation: VisualTransformation = VisualTransformation.None
 
-        init {
-            context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.MPSecurityFieldTextFieldXML,
-                0,
-                0,
-            ).apply {
-                try {
-                    securityCodeSize = getInteger(
-                        R.styleable.MPSecurityFieldTextFieldXML_securityCodeSize,
-                        MIN_LENGTH,
-                    )
+    init {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.MPSecurityFieldTextFieldXML,
+            0,
+            0,
+        ).apply {
+            try {
+                securityCodeSize = getInteger(
+                    R.styleable.MPSecurityFieldTextFieldXML_securityCodeSize,
+                    MIN_LENGTH,
+                )
 
-                    readOnly = getBoolean(R.styleable.MPSecurityFieldTextFieldXML_readOnly, false)
-                    val cursorColor = getColor(
-                        R.styleable.MPSecurityFieldTextFieldXML_cursorColor,
-                        Color.Unspecified.toArgb(),
-                    )
-                    cursorBrush = SolidColor(Color(cursorColor))
-                } finally {
-                    recycle()
-                }
+                readOnly = getBoolean(R.styleable.MPSecurityFieldTextFieldXML_readOnly, false)
+                val cursorColor = getColor(
+                    R.styleable.MPSecurityFieldTextFieldXML_cursorColor,
+                    Color.Unspecified.toArgb(),
+                )
+                cursorBrush = SolidColor(Color(cursorColor))
+            } finally {
+                recycle()
             }
         }
-
-        @Composable
-        override fun Content() {
-            state = rememberPCIFieldState()
-            SecurityCodeTextField(
-                state = state,
-                onEvent = onEvent,
-                securityCodeSize = securityCodeSize,
-                enabled = isEnabled,
-                readOnly = readOnly,
-                textStyle = textStyle,
-                keyboardOptions = keyboardOptions,
-                cursorBrush = cursorBrush,
-                visualTransformation = visualTransformation,
-            )
-        }
     }
+
+    @Composable
+    override fun Content() {
+        state = rememberPCIFieldState()
+        SecurityCodeTextField(
+            state = state,
+            onEvent = onEvent,
+            securityCodeSize = securityCodeSize,
+            enabled = isEnabled,
+            readOnly = readOnly,
+            textStyle = textStyle,
+            keyboardOptions = keyboardOptions,
+            cursorBrush = cursorBrush,
+            visualTransformation = visualTransformation,
+        )
+    }
+}

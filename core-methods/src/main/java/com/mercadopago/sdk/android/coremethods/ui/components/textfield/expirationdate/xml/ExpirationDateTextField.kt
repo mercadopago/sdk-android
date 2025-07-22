@@ -73,90 +73,88 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-class ExpirationDateTextField
-    @JvmOverloads
-    constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0,
-    ) : AbstractComposeView(context, attrs, defStyle) {
-        /**
-         * The state holder that manages the expiration date input value and PCI compliance.
-         * This state is automatically initialized when the view is created and persists
-         * across configuration changes.
-         */
-        lateinit var state: PCIFieldState
+class ExpirationDateTextField @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+) : AbstractComposeView(context, attrs, defStyle) {
+    /**
+     * The state holder that manages the expiration date input value and PCI compliance.
+     * This state is automatically initialized when the view is created and persists
+     * across configuration changes.
+     */
+    lateinit var state: PCIFieldState
 
-        /**
-         * Callback triggered for field events (focus changes, input completion, validation).
-         * Use this to handle user interactions and update the UI accordingly.
-         */
-        var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
+    /**
+     * Callback triggered for field events (focus changes, input completion, validation).
+     * Use this to handle user interactions and update the UI accordingly.
+     */
+    var onEvent: (ExpirationDateTextFieldEvent) -> Unit = {}
 
-        /**
-         * Controls whether the field is editable or read-only.
-         * When true, the field can be focused but not edited.
-         */
-        var readOnly: Boolean = false
+    /**
+     * Controls whether the field is editable or read-only.
+     * When true, the field can be focused but not edited.
+     */
+    var readOnly: Boolean = false
 
-        /**
-         * Text style applied to the expiration date input.
-         * Use this to customize the appearance of the input text.
-         */
-        var textStyle: TextStyle = TextStyle.Default
+    /**
+     * Text style applied to the expiration date input.
+     * Use this to customize the appearance of the input text.
+     */
+    var textStyle: TextStyle = TextStyle.Default
 
-        /**
-         * Brush applied to customize the text cursor appearance.
-         * Default is unspecified color.
-         */
-        var cursorBrush: Brush = SolidColor(Color.Unspecified)
+    /**
+     * Brush applied to customize the text cursor appearance.
+     * Default is unspecified color.
+     */
+    var cursorBrush: Brush = SolidColor(Color.Unspecified)
 
-        /**
-         * Configuration for the software keyboard.
-         * Use this to customize keyboard behavior and appearance.
-         */
-        var keyboardOption: KeyboardOptions = KeyboardOptions()
+    /**
+     * Configuration for the software keyboard.
+     * Use this to customize keyboard behavior and appearance.
+     */
+    var keyboardOption: KeyboardOptions = KeyboardOptions()
 
-        /**
-         * The format to use for the expiration date input.
-         * This determines the input length and display format:
-         * - ShortFormat: MM/YY (4 digits)
-         * - LongFormat: MM/YYYY (6 digits)
-         */
-        var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
+    /**
+     * The format to use for the expiration date input.
+     * This determines the input length and display format:
+     * - ShortFormat: MM/YY (4 digits)
+     * - LongFormat: MM/YYYY (6 digits)
+     */
+    var dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat
 
-        init {
-            context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.MPExpirationDateTextFieldXML,
-                0,
-                0,
-            ).apply {
-                try {
-                    readOnly = getBoolean(R.styleable.MPExpirationDateTextFieldXML_readOnly, false)
-                    val cursorColor = getColor(
-                        R.styleable.MPExpirationDateTextFieldXML_cursorColor,
-                        Color.Unspecified.toArgb(),
-                    )
-                    cursorBrush = SolidColor(Color(cursorColor))
-                } finally {
-                    recycle()
-                }
+    init {
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.MPExpirationDateTextFieldXML,
+            0,
+            0,
+        ).apply {
+            try {
+                readOnly = getBoolean(R.styleable.MPExpirationDateTextFieldXML_readOnly, false)
+                val cursorColor = getColor(
+                    R.styleable.MPExpirationDateTextFieldXML_cursorColor,
+                    Color.Unspecified.toArgb(),
+                )
+                cursorBrush = SolidColor(Color(cursorColor))
+            } finally {
+                recycle()
             }
         }
-
-        @Composable
-        override fun Content() {
-            state = rememberPCIFieldState()
-            ExpirationDateTextField(
-                state = state,
-                onEvent = onEvent,
-                enabled = isEnabled,
-                readOnly = readOnly,
-                textStyle = textStyle,
-                keyboardOptions = keyboardOption,
-                cursorBrush = cursorBrush,
-                dateFormat = dateFormat,
-            )
-        }
     }
+
+    @Composable
+    override fun Content() {
+        state = rememberPCIFieldState()
+        ExpirationDateTextField(
+            state = state,
+            onEvent = onEvent,
+            enabled = isEnabled,
+            readOnly = readOnly,
+            textStyle = textStyle,
+            keyboardOptions = keyboardOption,
+            cursorBrush = cursorBrush,
+            dateFormat = dateFormat,
+        )
+    }
+}
