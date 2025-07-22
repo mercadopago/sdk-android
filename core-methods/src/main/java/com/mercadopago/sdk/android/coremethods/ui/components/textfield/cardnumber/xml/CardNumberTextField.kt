@@ -82,7 +82,7 @@ import kotlin.math.min
 class CardNumberTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0,
+    defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
     /**
      * The state holder that manages the card number input value and PCI compliance.

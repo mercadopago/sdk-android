@@ -76,7 +76,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 class ExpirationDateTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0,
+    defStyle: Int = 0
 ) : AbstractComposeView(context, attrs, defStyle) {
     /**
      * The state holder that manages the expiration date input value and PCI compliance.
