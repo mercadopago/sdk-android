@@ -79,7 +79,7 @@ import kotlin.math.min
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-@Suppress("ktlint:annotation-wrapping")
+@Suppress("ktlint:standard:annotation")
 class CardNumberTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

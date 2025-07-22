@@ -73,7 +73,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
  * @param attrs The attributes of the XML tag that is inflating the view
  * @param defStyle The default style to apply to this view
  */
-@Suppress("ktlint:annotation-wrapping")
+@Suppress("ktlint:standard:annotation")
 class ExpirationDateTextField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
