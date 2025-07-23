@@ -73,9 +73,21 @@ ksp {
 
 dependencies {
 
+    api(projects.core)
+    implementation(projects.sdkAndroid)
+    api(projects.analytics)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.okhttp.mockWebServer)
+    api(libs.androidx.datastore)
+    implementation(libs.androidx.annotation)
+    api(libs.device.sdk)
+
+
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
