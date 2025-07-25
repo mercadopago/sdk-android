@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.threeds.domain.usecase
 
 import android.app.Activity
+import android.util.Log
 import com.mercadopago.sdk.android.threeds.data.model.ThreeDSBody
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
@@ -9,6 +10,8 @@ import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import java.io.IOException
+import java.security.GeneralSecurityException
 
 /**
  * Use case for orchestrating the complete 3DS challenge flow.
@@ -18,6 +21,10 @@ internal class RequestChallengeUseCase(
     private val authenticateUseCase: AuthenticateUseCase,
     private val threeDSSDKAdapter: ThreeDSSDKAdapter,
 ) {
+
+    companion object {
+        private const val TAG = "RequestChallengeUseCase"
+    }
 
     /**
      * Executes the complete 3DS challenge flow.
@@ -76,15 +83,23 @@ internal class RequestChallengeUseCase(
                     )
                 }
             }
-        } catch (exception: Exception) {
-            delegate.onError(MPThreeDSChallengeError.fromException(exception))
+        } catch (networkException: IOException) {
+            delegate.onError(MPThreeDSChallengeError.fromException(networkException))
+        } catch (securityException: GeneralSecurityException) {
+            delegate.onError(MPThreeDSChallengeError.fromException(securityException))
+        } catch (illegalStateException: IllegalStateException) {
+            delegate.onError(MPThreeDSChallengeError.fromException(illegalStateException))
         } finally {
             // Clean up transaction resources
-            transactionId?.let {
+            transactionId?.let { id ->
                 try {
-                    threeDSSDKAdapter.cleanUpTransaction(it)
-                } catch (e: Exception) {
+                    threeDSSDKAdapter.cleanUpTransaction(id)
+                } catch (cleanupException: IOException) {
                     // Log cleanup error but don't propagate it
+                    Log.w(TAG, "Failed to cleanup transaction $id", cleanupException)
+                } catch (cleanupException: IllegalStateException) {
+                    // Log cleanup error but don't propagate it
+                    Log.w(TAG, "Failed to cleanup transaction $id", cleanupException)
                 }
             }
         }

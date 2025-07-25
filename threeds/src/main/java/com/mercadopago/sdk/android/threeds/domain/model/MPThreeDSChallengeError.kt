@@ -6,15 +6,26 @@ package com.mercadopago.sdk.android.threeds.domain.model
  * @param code Error code from the 3DS SDK or backend
  * @param message Human-readable error message
  * @param details Additional error details if available
+ * @param cause The underlying cause of the error
  */
 data class MPThreeDSChallengeError(
     val code: String,
     val message: String,
     val details: String? = null,
+    /** The underlying cause of the error */
     val cause: Throwable? = null,
 ) : Exception(message, cause) {
 
+    /**
+     * Companion object providing factory methods for creating error instances.
+     */
     companion object {
+        /**
+         * Creates an error from a generic exception.
+         *
+         * @param exception The exception to convert
+         * @return A MPThreeDSChallengeError instance
+         */
         fun fromException(exception: Throwable): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "UNKNOWN_ERROR",
@@ -23,6 +34,12 @@ data class MPThreeDSChallengeError(
             )
         }
 
+        /**
+         * Creates an authentication failed error.
+         *
+         * @param reason The reason for authentication failure
+         * @return A MPThreeDSChallengeError instance
+         */
         fun authenticationFailed(reason: String): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "AUTHENTICATION_FAILED",
@@ -30,6 +47,12 @@ data class MPThreeDSChallengeError(
             )
         }
 
+        /**
+         * Creates a challenge failed error.
+         *
+         * @param reason The reason for challenge failure
+         * @return A MPThreeDSChallengeError instance
+         */
         fun challengeFailed(reason: String): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "CHALLENGE_FAILED",

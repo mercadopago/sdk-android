@@ -66,7 +66,6 @@ android {
     }
 }
 
-
 ksp {
     arg("skipPrivatePreviews", "true")
 }
@@ -83,7 +82,6 @@ dependencies {
     api(libs.androidx.datastore)
     implementation(libs.androidx.annotation)
     api(libs.device.sdk)
-
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)

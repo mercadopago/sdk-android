@@ -47,9 +47,10 @@ class MPThreeDS internal constructor(
     internal val koin: Koin,
 ) {
 
+    /**
+     * Companion object containing static methods for initialization and instance management.
+     */
     companion object {
-        private const val TAG = "MPThreeDS"
-
         @Volatile
         private var instance: MPThreeDS? = null
 
@@ -63,7 +64,7 @@ class MPThreeDS internal constructor(
          * Initializes the MPThreeDS module. This should be called before any other 3DS method.
          * Call it inside the application class only once for your application.
          *
-         * @param context The application context.
+         * @param context The application context
          */
         @Synchronized
         fun initialize(context: Context) {
