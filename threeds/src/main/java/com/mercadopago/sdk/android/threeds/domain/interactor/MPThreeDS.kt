@@ -1,8 +1,6 @@
 package com.mercadopago.sdk.android.threeds.domain.interactor
 
 import android.app.Activity
-import android.content.Context
-import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
@@ -64,15 +62,14 @@ class MPThreeDS internal constructor(
          * Initializes the MPThreeDS module. This should be called before any other 3DS method.
          * Call it inside the application class only once for your application.
          *
-         * @param context The application context
          */
         @Synchronized
-        fun initialize(context: Context) {
+        fun initialize() {
             if (instance != null) {
                 throw MPThreeDSAlreadyInitializedException()
             }
 
-            val modulesProvider = MPThreeDSModulesProvider(context)
+            val modulesProvider = MPThreeDSModulesProvider()
             instance = MPThreeDS(koin = modulesProvider.koinApp)
         }
 
@@ -84,17 +81,6 @@ class MPThreeDS internal constructor(
          */
         fun getInstance(): MPThreeDS {
             return instance ?: throw MPThreeDSNotInitializedException()
-        }
-
-        /**
-         * @suppress
-         * Only for internal usage. DO NOT USE IN PRODUCTION.
-         * Clear the current instance of the MPThreeDS for testing purposes.
-         */
-        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-        fun clearInstance() {
-            instance?.koin?.close()
-            instance = null
         }
     }
 

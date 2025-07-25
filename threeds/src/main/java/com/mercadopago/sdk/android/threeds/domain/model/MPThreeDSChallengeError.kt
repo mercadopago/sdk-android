@@ -10,10 +10,10 @@ package com.mercadopago.sdk.android.threeds.domain.model
  */
 data class MPThreeDSChallengeError(
     val code: String,
-    val message: String,
+    override val message: String,
     val details: String? = null,
     /** The underlying cause of the error */
-    val cause: Throwable? = null,
+    override val cause: Throwable? = null,
 ) : Exception(message, cause) {
 
     /**

@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.threeds.di
 
-import android.content.Context
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.core.di.CoreKoinModuleProvider
 import com.mercadopago.sdk.android.di.MercadoPagoKoinComponent
@@ -28,18 +27,16 @@ import org.koin.core.module.Module
  * @see CoreKoinModuleProvider
  * @see MercadoPagoKoinComponent
  */
-internal class MPThreeDSModulesProvider(
-    private val context: Context,
-) : CoreKoinModuleProvider, MercadoPagoKoinComponent {
+internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoinComponent {
 
     /**
      * The Koin application instance with all required modules.
      * This property provides access to the configured Koin instance
      * that contains all the dependency injection modules for 3DS functionality.
      */
-    override val koinApp: Koin = CoreKoinFactory.createKoinApp(
-        provider = this,
-        context = context,
+    override val koinApp: Koin = CoreKoinFactory.setKoinModules(
+        koin = getKoin(),
+        modules = provideModules(),
     )
 
     override fun provideModules(): List<Module> {
