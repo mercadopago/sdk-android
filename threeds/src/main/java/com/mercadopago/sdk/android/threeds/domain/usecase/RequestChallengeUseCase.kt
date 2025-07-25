@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.threeds.domain.usecase
 
 import android.app.Activity
-import android.util.Log
 import com.mercadopago.sdk.android.threeds.data.model.ThreeDSBody
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
@@ -22,10 +21,6 @@ internal class RequestChallengeUseCase(
     private val threeDSSDKAdapter: ThreeDSSDKAdapter,
 ) {
 
-    companion object {
-        private const val TAG = "RequestChallengeUseCase"
-    }
-
     /**
      * Executes the complete 3DS challenge flow.
      *
@@ -40,17 +35,18 @@ internal class RequestChallengeUseCase(
         directoryServer: MPThreeDSDirectoryServer,
         delegate: MPThreeDSChallengeDelegate,
     ) {
-        var transactionId: String? = null
-
         try {
-            // Step 1: Create transaction
-            transactionId = threeDSSDKAdapter.createTransaction(directoryServer)
+            // Step 1: Init the adapter instance
+            threeDSSDKAdapter.initialize()
 
-            // Step 2: Get authentication request parameters
-            val authRequestParams = threeDSSDKAdapter.getAuthenticationRequestParameters(transactionId)
+            // Step 2: Create transaction
+            threeDSSDKAdapter.createTransaction(directoryServer)
 
-            // Step 3: Create request body and authenticate with backend
-            val threeDSBody = ThreeDSBody.create(cardToken, authRequestParams)
+            // Step 3: Get authentication request parameters
+            val authRequestParams = threeDSSDKAdapter.getAuthenticationRequestParameters()
+
+            // Step 4: Create request body and authenticate with backend
+            val threeDSBody = ThreeDSBody.create(cardToken, authRequestParams!!)
             val authResponse = authenticateUseCase(threeDSBody)
                 .catch { error ->
                     delegate.onError(MPThreeDSChallengeError.fromException(error))
@@ -58,22 +54,23 @@ internal class RequestChallengeUseCase(
                 }
                 .first()
 
-            // Step 4: Check authentication response
+            // Step 5: Check authentication response
             when (authResponse.response) {
                 "CHALLENGE" -> {
                     // Step 5: Perform challenge if required
-                    threeDSSDKAdapter.doChallenge(activity, transactionId, authResponse, delegate)
+                    threeDSSDKAdapter.doChallenge(activity, authResponse, delegate)
                 }
+
                 "AUTHORIZED" -> {
                     // Authentication successful without challenge
                     delegate.onSuccess(
                         MPThreeDSAuthenticated(
                             authenticationResponse = authResponse,
                             challengeCompleted = false,
-                            transactionId = transactionId
                         )
                     )
                 }
+
                 else -> {
                     // Authentication failed
                     delegate.onError(
@@ -89,19 +86,6 @@ internal class RequestChallengeUseCase(
             delegate.onError(MPThreeDSChallengeError.fromException(securityException))
         } catch (illegalStateException: IllegalStateException) {
             delegate.onError(MPThreeDSChallengeError.fromException(illegalStateException))
-        } finally {
-            // Clean up transaction resources
-            transactionId?.let { id ->
-                try {
-                    threeDSSDKAdapter.cleanUpTransaction(id)
-                } catch (cleanupException: IOException) {
-                    // Log cleanup error but don't propagate it
-                    Log.w(TAG, "Failed to cleanup transaction $id", cleanupException)
-                } catch (cleanupException: IllegalStateException) {
-                    // Log cleanup error but don't propagate it
-                    Log.w(TAG, "Failed to cleanup transaction $id", cleanupException)
-                }
-            }
         }
     }
 }

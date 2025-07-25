@@ -27,4 +27,8 @@ interface MPThreeDSChallengeDelegate {
      * Called when the user cancels the 3DS challenge.
      */
     fun onCancel()
+    /**
+     * Called when timedOut the 3DS challenge.
+     */
+    fun onTimedOut()
 }

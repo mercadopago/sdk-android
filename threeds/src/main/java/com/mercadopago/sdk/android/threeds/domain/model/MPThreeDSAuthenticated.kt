@@ -6,10 +6,8 @@ package com.mercadopago.sdk.android.threeds.domain.model
  *
  * @param authenticationResponse The response from the MercadoPago backend
  * @param challengeCompleted Whether a challenge was completed
- * @param transactionId The transaction ID for this authentication
  */
 data class MPThreeDSAuthenticated(
     val authenticationResponse: MPThreeDSAuthenticationResponse,
     val challengeCompleted: Boolean = false,
-    val transactionId: String,
 )

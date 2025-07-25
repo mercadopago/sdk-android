@@ -6,17 +6,22 @@ package com.mercadopago.sdk.android.threeds.domain.model
  *
  * @param directoryServerID The unique identifier for the directory server
  * @param messageVersion The 3DS message version supported by the directory server
+ * @param paymentMethodId The payment method id
  */
-enum class MPThreeDSDirectoryServer(
+internal enum class MPThreeDSDirectoryServer(
     /** The unique identifier for the directory server */
     val directoryServerID: String,
     /** The 3DS message version supported by the directory server */
-    val messageVersion: String
+    val messageVersion: String,
+    /** The paymentMethods ID*/
+    val paymentMethodId: String? = null,
 ) {
     /** VISA directory server */
     VISA("A000000003", "2.1.0"),
+
     /** Mastercard directory server */
     MASTERCARD("A000000004", "2.1.0"),
+
     /** American Express directory server */
     AMEX("A000000025", "2.1.0")
 }

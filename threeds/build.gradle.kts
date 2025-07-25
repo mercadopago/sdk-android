@@ -68,6 +68,8 @@ ksp {
 
 dependencies {
 
+    implementation(files("../libs/uSDK-MC-android-6.6.71.aar"))
+
     api(projects.core)
     implementation(projects.sdkAndroid)
     api(projects.analytics)

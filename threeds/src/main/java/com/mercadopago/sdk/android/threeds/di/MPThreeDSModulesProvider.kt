@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.threeds.di
 
+import android.content.Context
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.core.di.CoreKoinModuleProvider
 import com.mercadopago.sdk.android.di.MercadoPagoKoinComponent
@@ -24,10 +25,13 @@ import org.koin.core.module.Module
  * 4. Use cases for 3DS authentication flows
  * 5. Adapters for 3DS SDK integration
  *
+ * @param context The application context needed for uSDK initialization
  * @see CoreKoinModuleProvider
  * @see MercadoPagoKoinComponent
  */
-internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoinComponent {
+internal class MPThreeDSModulesProvider(
+    private val context: Context
+) : CoreKoinModuleProvider, MercadoPagoKoinComponent {
 
     /**
      * The Koin application instance with all required modules.
@@ -45,7 +49,7 @@ internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoi
             provideDataSourceModule(),
             provideRepositoryModule(),
             provideUseCaseModule(),
-            provideAdaptersModule(),
+            provideAdaptersModule(context),
         )
     }
 }

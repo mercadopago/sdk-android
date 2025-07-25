@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.threeds.domain.interactor
 
 import android.app.Activity
+import android.content.Context
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
@@ -14,14 +15,14 @@ import org.koin.core.Koin
 
 /**
  * Mercado Pago ThreeDS SDK. This class holds logic to initialize the 3DS module and
- * perform 3DS authentication challenges.
+ * perform 3DS authentication challenges using the uSDK (Universal SDK) for 3DS authentication.
  *
  * Usage:
  * ```kotlin
- * // Initialize in Application class
+ * // Initialize in Application class with context for uSDK integration
  * MPThreeDS.initialize(context)
  *
- * // Use in your activity
+ * // Use in your activity (initialization is async, ensure it's complete)
  * val threeDS = MPThreeDS.getInstance()
  * threeDS.requestChallenge(
  *     activity = this,
@@ -40,6 +41,9 @@ import org.koin.core.Koin
  *     }
  * )
  * ```
+ *
+ * Note: The new initialization method with Context enables proper uSDK integration
+ * with suspended initialization for optimal performance and stability.
  */
 class MPThreeDS internal constructor(
     internal val koin: Koin,
@@ -53,23 +57,31 @@ class MPThreeDS internal constructor(
         private var instance: MPThreeDS? = null
 
         /**
-         * Check if the MPThreeDS is initialized.
-         */
-        val isInitialized: Boolean
-            get() = instance != null
-
-        /**
-         * Initializes the MPThreeDS module. This should be called before any other 3DS method.
+         * Initializes the MPThreeDS module asynchronously. This should be called before any other 3DS method.
          * Call it inside the application class only once for your application.
          *
+         * This method performs suspended initialization which is required for proper uSDK setup.
+         *
+         * @param context The application context
          */
-        @Synchronized
-        fun initialize() {
+        fun initialize(context: Context) {
+            CoroutineScope(Dispatchers.Default).launch {
+                suspendInitialize(context)
+            }
+        }
+
+        /**
+         * Suspended initialization of the MPThreeDS module.
+         * This method handles the asynchronous setup required by the uSDK.
+         *
+         * @param context The application context
+         */
+        private suspend fun suspendInitialize(context: Context) {
             if (instance != null) {
                 throw MPThreeDSAlreadyInitializedException()
             }
 
-            val modulesProvider = MPThreeDSModulesProvider()
+            val modulesProvider = MPThreeDSModulesProvider(context)
             instance = MPThreeDS(koin = modulesProvider.koinApp)
         }
 
@@ -94,16 +106,21 @@ class MPThreeDS internal constructor(
      *
      * @param activity The activity context for displaying the challenge UI
      * @param cardToken The card token to authenticate
-     * @param directoryServer The directory server to use (determines card brand)
      * @param delegate Callback for receiving authentication results
      */
     fun requestChallenge(
         activity: Activity,
         cardToken: String,
-        directoryServer: MPThreeDSDirectoryServer,
         delegate: MPThreeDSChallengeDelegate,
     ) {
         val requestChallengeUseCase = koin.get<RequestChallengeUseCase>()
+
+        val directoryServer = when ("") {
+            "visa" -> MPThreeDSDirectoryServer.VISA
+            "mastercard", "master" -> MPThreeDSDirectoryServer.MASTERCARD
+            "amex", "american_express" -> MPThreeDSDirectoryServer.AMEX
+            else -> MPThreeDSDirectoryServer.VISA
+        }
 
         // Execute the challenge flow in a coroutine
         CoroutineScope(Dispatchers.Main).launch {
@@ -114,28 +131,5 @@ class MPThreeDS internal constructor(
                 delegate = delegate
             )
         }
-    }
-
-    /**
-     * Requests a 3DS challenge for the provided card token with automatic directory server detection.
-     * The directory server will be determined based on the card's BIN.
-     *
-     * @param activity The activity context for displaying the challenge UI
-     * @param cardToken The card token to authenticate
-     * @param delegate Callback for receiving authentication results
-     */
-    fun requestChallenge(
-        activity: Activity,
-        cardToken: String,
-        delegate: MPThreeDSChallengeDelegate,
-    ) {
-        // For now, default to VISA. In a real implementation, this would analyze the card BIN
-        // to determine the appropriate directory server
-        requestChallenge(
-            activity = activity,
-            cardToken = cardToken,
-            directoryServer = MPThreeDSDirectoryServer.VISA,
-            delegate = delegate
-        )
     }
 }
