@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.threeds.domain.interactor.MPThreeDS
  * threeDS.requestChallenge(
  *     activity = this,
  *     cardToken = "your_card_token",
+ *     paymentMethodId = "your_payment_method_id",
  *     delegate = myDelegate
  * )
  * ```

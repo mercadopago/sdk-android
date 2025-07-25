@@ -6,7 +6,6 @@ import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSNotInitializedException
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
 import com.mercadopago.sdk.android.threeds.domain.usecase.RequestChallengeUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +22,11 @@ import org.koin.core.Koin
  * MPThreeDS.initialize(context)
  *
  * // Use in your activity (initialization is async, ensure it's complete)
- * val threeDS = MPThreeDS.getInstance()
+ * val threeDS = MercadoPagoSDK.getInstance().threeDS
  * threeDS.requestChallenge(
  *     activity = this,
  *     cardToken = "your_card_token",
- *     directoryServer = MPThreeDSDirectoryServer.VISA,
+ *     paymentMethodId = "your_payment_method_id",
  *     delegate = object : MPThreeDSChallengeDelegate {
  *         override fun onSuccess(result: MPThreeDSAuthenticated) {
  *             // Handle success
@@ -69,12 +68,6 @@ class MPThreeDS internal constructor(
             }
         }
 
-        /**
-         * Suspended initialization of the MPThreeDS module.
-         * This method handles the asynchronous setup required by the uSDK.
-         *
-         * @param context The application context
-         */
         private suspend fun suspendInitialize(context: Context) {
             if (instance != null) {
                 throw MPThreeDSAlreadyInitializedException()
@@ -105,7 +98,7 @@ class MPThreeDS internal constructor(
      *
      * @param activity The activity context for displaying the challenge UI
      * @param cardToken The card token to authenticate
-     * @param paymentMethodId: PaymentMethod of this transaction
+     * @param paymentMethodId: Payment method identification of your transaction
      * @param delegate Callback for receiving authentication results
      */
     fun requestChallenge(
@@ -116,19 +109,12 @@ class MPThreeDS internal constructor(
     ) {
         val requestChallengeUseCase = koin.get<RequestChallengeUseCase>()
 
-        val directoryServer = when (paymentMethodId) {
-            "visa", "debvisa" -> MPThreeDSDirectoryServer.VISA
-            "mastercard", "master" -> MPThreeDSDirectoryServer.MASTERCARD
-            "amex", "american_express" -> MPThreeDSDirectoryServer.AMEX
-            else -> MPThreeDSDirectoryServer.MASTERCARD
-        }
-
         // Execute the challenge flow in a coroutine
         CoroutineScope(Dispatchers.Main).launch {
             requestChallengeUseCase(
                 activity = activity,
                 cardToken = cardToken,
-                directoryServer = directoryServer,
+                paymentMethodId = paymentMethodId,
                 delegate = delegate,
             )
         }

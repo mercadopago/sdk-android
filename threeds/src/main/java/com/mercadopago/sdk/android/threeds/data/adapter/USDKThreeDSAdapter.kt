@@ -10,10 +10,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationResponse
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
-import com.mercadopago.sdk.android.threeds.domain.model.ThreeDSAuthRequestParameters
+import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthRequestParameters
 import com.usdk.android.UsdkThreeDS2ServiceImpl
 import org.emvco.threeds.core.ChallengeParameters
 import org.emvco.threeds.core.ChallengeStatusReceiver
@@ -38,7 +38,7 @@ import kotlin.coroutines.suspendCoroutine
  * - Challenge flow execution
  * - Resource cleanup
  */
-const val TIMEOUT = 10
+const val TIMEOUT = 10 //TODO: puxar de um local de configuração
 internal class USDKThreeDSAdapter(
     private val context: Context,
 ) : ThreeDSSDKAdapter {
@@ -118,7 +118,7 @@ internal class USDKThreeDSAdapter(
 
     override suspend fun doChallenge(
         activity: Activity,
-        authenticationResponse: MPThreeDSAuthenticationResponse,
+        authenticationResponse: MPThreeDSAuthenticationModel,
         delegate: MPThreeDSChallengeDelegate,
     ) {
         val threeDSChallengeParameters = ChallengeParameters().apply {

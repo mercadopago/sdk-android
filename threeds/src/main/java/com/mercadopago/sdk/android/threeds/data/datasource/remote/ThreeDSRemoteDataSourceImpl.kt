@@ -1,29 +1,30 @@
 package com.mercadopago.sdk.android.threeds.data.datasource.remote
 
-import com.mercadopago.sdk.android.threeds.data.model.ThreeDSBody
+import com.mercadopago.sdk.android.threeds.data.datasource.mappers.toModel
+import com.mercadopago.sdk.android.threeds.data.remote.mappers.toRequest
+import com.mercadopago.sdk.android.threeds.data.remote.request.ThreeDSAuthenticationRequest
 import com.mercadopago.sdk.android.threeds.data.remote.service.ThreeDSService
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationResponse
+import com.mercadopago.sdk.android.threeds.data.remote.response.MPThreeDSAuthenticationResponse
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 
-/**
- * Implementation of ThreeDSRemoteDataSource using Retrofit service.
- */
 @Suppress("MagicNumber")
 internal class ThreeDSRemoteDataSourceImpl(
     private val threeDSService: ThreeDSService,
 ) : ThreeDSRemoteDataSource {
-    override fun authenticate(body: ThreeDSBody): Flow<MPThreeDSAuthenticationResponse> =
+    override fun authenticate(request: ThreeDSAuthenticationRequest): Flow<MPThreeDSAuthenticationModel> =
         flow {
             try {
-                emit(threeDSService.authenticate(body))
+                emit(threeDSService.authenticate(request).toModel())
             } catch (httpException: HttpException) {
                 when (httpException.code()) {
                     404 -> {
                         // Endpoint not available - emit a mock response for development
                         // In production, this should be a proper error
-                        emit(createMockAuthenticationResponse())
+                        emit(createMockAuthenticationResponse().toModel())
                     }
                     else -> {
                         throw httpException

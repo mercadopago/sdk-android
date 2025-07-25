@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.threeds.domain.usecase
 
 import android.app.Activity
-import com.mercadopago.sdk.android.threeds.data.model.ThreeDSBody
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
@@ -25,36 +24,45 @@ internal class RequestChallengeUseCase(
      *
      * @param activity The activity context for displaying challenge UI
      * @param cardToken The card token to authenticate
-     * @param directoryServer The directory server to use (determines card brand)
+     * @param paymentMethodId The paymentMethods Id
      * @param delegate Callback for receiving results
      */
     suspend operator fun invoke(
         activity: Activity,
         cardToken: String,
-        directoryServer: MPThreeDSDirectoryServer,
+        paymentMethodId: String,
         delegate: MPThreeDSChallengeDelegate,
     ) {
         try {
             // Step 1: Init the adapter instance
             threeDSSDKAdapter.initialize()
 
+
             // Step 2: Create transaction
-            threeDSSDKAdapter.createTransaction(directoryServer)
+            threeDSSDKAdapter.createTransaction(
+                directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(
+                    paymentMethodId
+                )
+            )
 
-            // Step 3: Get authentication request parameters
-            val authRequestParams = threeDSSDKAdapter.getAuthenticationRequestParameters()
-
-            // Step 4: Create request body and authenticate with backend
-            val threeDSBody = ThreeDSBody.create(cardToken, authRequestParams!!)
-            val authResponse = authenticateUseCase(threeDSBody)
-                .catch { error ->
+            // Step 3: Create request body and authenticate with backend
+            val authResponse = threeDSSDKAdapter.getAuthenticationRequestParameters()?.let {
+                authenticateUseCase(
+                    token = cardToken,
+                    sdkAppId = it.sdkAppId,
+                    sdkEncData = it.deviceData,
+                    sdkEphemPubKey = it.sdkEphemeralPublicKey,
+                    sdkMaxTimeout = "10",
+                    sdkReferenceNumber = it.sdkReferenceNumber,
+                    sdkTransId = it.sdkTransactionId
+                ).catch { error ->
                     delegate.onError(MPThreeDSChallengeError.fromException(error))
                     return@catch
-                }
-                .first()
+                }.first()
+            }
 
-            // Step 5: Check authentication response
-            when (authResponse.response) {
+            // Step 4: Check authentication response
+            when (authResponse?.response) {
                 "CHALLENGE" -> {
                     // Step 5: Perform challenge if required
                     threeDSSDKAdapter.doChallenge(activity, authResponse, delegate)
@@ -74,7 +82,7 @@ internal class RequestChallengeUseCase(
                     // Authentication failed
                     delegate.onError(
                         MPThreeDSChallengeError.authenticationFailed(
-                            "Authentication response: ${authResponse.response}",
+                            "Authentication response: ${authResponse?.response}",
                         ),
                     )
                 }

@@ -2,9 +2,9 @@ package com.mercadopago.sdk.android.threeds.domain.adapter
 
 import android.app.Activity
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationResponse
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
-import com.mercadopago.sdk.android.threeds.domain.model.ThreeDSAuthRequestParameters
+import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthRequestParameters
 
 /**
  * Interface that abstracts the 3DS SDK implementation.
@@ -38,7 +38,7 @@ internal interface ThreeDSSDKAdapter {
      */
     suspend fun doChallenge(
         activity: Activity,
-        authenticationResponse: MPThreeDSAuthenticationResponse,
+        authenticationResponse: MPThreeDSAuthenticationModel,
         delegate: MPThreeDSChallengeDelegate,
     )
 }

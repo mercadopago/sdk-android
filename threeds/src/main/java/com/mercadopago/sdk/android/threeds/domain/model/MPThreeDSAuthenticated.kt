@@ -8,6 +8,6 @@ package com.mercadopago.sdk.android.threeds.domain.model
  * @param challengeCompleted Whether a challenge was completed
  */
 data class MPThreeDSAuthenticated(
-    val authenticationResponse: MPThreeDSAuthenticationResponse,
+    val authenticationResponse: MPThreeDSAuthenticationModel,
     val challengeCompleted: Boolean = false,
 )
