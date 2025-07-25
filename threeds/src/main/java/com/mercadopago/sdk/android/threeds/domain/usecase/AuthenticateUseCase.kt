@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 internal class AuthenticateUseCase(
     private val repository: ThreeDSRepository,
 ) {
-
     /**
      * Authenticates a card token using 3DS authentication.
      *

@@ -9,7 +9,6 @@ import retrofit2.http.POST
  * Retrofit service interface for 3DS authentication API calls.
  */
 internal interface ThreeDSService {
-
     /**
      * Authenticates a card token using 3DS authentication.
      *
@@ -17,5 +16,7 @@ internal interface ThreeDSService {
      * @return The authentication response from MercadoPago backend
      */
     @POST("v1/card_tokens/threeds/authenticate")
-    suspend fun authenticate(@Body body: ThreeDSBody): MPThreeDSAuthenticationResponse
+    suspend fun authenticate(
+        @Body body: ThreeDSBody,
+    ): MPThreeDSAuthenticationResponse
 }

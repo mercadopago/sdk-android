@@ -20,7 +20,6 @@ internal class RequestChallengeUseCase(
     private val authenticateUseCase: AuthenticateUseCase,
     private val threeDSSDKAdapter: ThreeDSSDKAdapter,
 ) {
-
     /**
      * Executes the complete 3DS challenge flow.
      *
@@ -67,7 +66,7 @@ internal class RequestChallengeUseCase(
                         MPThreeDSAuthenticated(
                             authenticationResponse = authResponse,
                             challengeCompleted = false,
-                        )
+                        ),
                     )
                 }
 
@@ -75,8 +74,8 @@ internal class RequestChallengeUseCase(
                     // Authentication failed
                     delegate.onError(
                         MPThreeDSChallengeError.authenticationFailed(
-                            "Authentication response: ${authResponse.response}"
-                        )
+                            "Authentication response: ${authResponse.response}",
+                        ),
                     )
                 }
             }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
  * Interface for remote data source operations related to 3DS authentication.
  */
 internal interface ThreeDSRemoteDataSource {
-
     /**
      * Authenticates a card token using 3DS authentication.
      *

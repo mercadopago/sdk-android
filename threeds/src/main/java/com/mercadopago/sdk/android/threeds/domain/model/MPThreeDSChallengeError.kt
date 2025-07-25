@@ -15,7 +15,6 @@ data class MPThreeDSChallengeError(
     /** The underlying cause of the error */
     override val cause: Throwable? = null,
 ) : Exception(message, cause) {
-
     /**
      * Companion object providing factory methods for creating error instances.
      */
@@ -30,7 +29,7 @@ data class MPThreeDSChallengeError(
             return MPThreeDSChallengeError(
                 code = "UNKNOWN_ERROR",
                 message = exception.message ?: "Unknown error occurred",
-                cause = exception
+                cause = exception,
             )
         }
 
@@ -43,7 +42,7 @@ data class MPThreeDSChallengeError(
         fun authenticationFailed(reason: String): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "AUTHENTICATION_FAILED",
-                message = "3DS Authentication failed: $reason"
+                message = "3DS Authentication failed: $reason",
             )
         }
 
@@ -56,7 +55,7 @@ data class MPThreeDSChallengeError(
         fun challengeFailed(reason: String): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "CHALLENGE_FAILED",
-                message = "3DS Challenge failed: $reason"
+                message = "3DS Challenge failed: $reason",
             )
         }
     }

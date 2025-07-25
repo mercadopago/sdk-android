@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.threeds.domain.model.ThreeDSAuthRequestParame
  * Different vendors can implement this interface to integrate their 3DS SDK.
  */
 internal interface ThreeDSSDKAdapter {
-
     suspend fun initialize()
 
     /**
@@ -40,6 +39,6 @@ internal interface ThreeDSSDKAdapter {
     suspend fun doChallenge(
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationResponse,
-        delegate: MPThreeDSChallengeDelegate
+        delegate: MPThreeDSChallengeDelegate,
     )
 }

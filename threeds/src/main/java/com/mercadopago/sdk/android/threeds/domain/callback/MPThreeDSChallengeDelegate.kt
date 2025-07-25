@@ -8,7 +8,6 @@ import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
  * Implement this interface to receive callbacks during the 3DS authentication process.
  */
 interface MPThreeDSChallengeDelegate {
-
     /**
      * Called when the 3DS authentication completes successfully.
      *
@@ -27,6 +26,7 @@ interface MPThreeDSChallengeDelegate {
      * Called when the user cancels the 3DS challenge.
      */
     fun onCancel()
+
     /**
      * Called when timedOut the 3DS challenge.
      */

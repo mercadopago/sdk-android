@@ -48,7 +48,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -71,10 +71,10 @@ dependencies {
     implementation(files("../libs/uSDK-MC-android-6.6.71.aar"))
 
     // 3DS SDK dependencies
-    implementation ("com.google.code.gson:gson:2.8.1")
-    implementation ("com.google.android.gms:play-services-location:21.3.0")
-    implementation ("com.google.android.gms:play-services-ads-identifier:18.2.0")
-    implementation ("com.google.android.gms:play-services-auth-api-phone:18.2.0")
+    implementation("com.google.code.gson:gson:2.8.1")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
+    implementation("com.google.android.gms:play-services-auth-api-phone:18.2.0")
     implementation("com.android.support:support-v4:28.0.0")
 
     api(projects.core)

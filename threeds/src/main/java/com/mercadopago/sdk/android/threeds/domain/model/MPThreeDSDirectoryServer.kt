@@ -20,5 +20,5 @@ internal enum class MPThreeDSDirectoryServer(
     MASTERCARD("A000000004", "2.1.0"),
 
     /** American Express directory server */
-    AMEX("A000000025", "2.1.0")
+    AMEX("A000000025", "2.1.0"),
 }

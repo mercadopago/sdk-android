@@ -48,7 +48,6 @@ import org.koin.core.Koin
 class MPThreeDS internal constructor(
     internal val koin: Koin,
 ) {
-
     /**
      * Companion object containing static methods for initialization and instance management.
      */
@@ -106,8 +105,8 @@ class MPThreeDS internal constructor(
      *
      * @param activity The activity context for displaying the challenge UI
      * @param cardToken The card token to authenticate
-     * @param delegate Callback for receiving authentication results
      * @param paymentMethodId: PaymentMethod of this transaction
+     * @param delegate Callback for receiving authentication results
      */
     fun requestChallenge(
         activity: Activity,
@@ -118,7 +117,7 @@ class MPThreeDS internal constructor(
         val requestChallengeUseCase = koin.get<RequestChallengeUseCase>()
 
         val directoryServer = when (paymentMethodId) {
-            "visa", "debvisa"-> MPThreeDSDirectoryServer.VISA
+            "visa", "debvisa" -> MPThreeDSDirectoryServer.VISA
             "mastercard", "master" -> MPThreeDSDirectoryServer.MASTERCARD
             "amex", "american_express" -> MPThreeDSDirectoryServer.AMEX
             else -> MPThreeDSDirectoryServer.MASTERCARD
@@ -130,7 +129,7 @@ class MPThreeDS internal constructor(
                 activity = activity,
                 cardToken = cardToken,
                 directoryServer = directoryServer,
-                delegate = delegate
+                delegate = delegate,
             )
         }
     }

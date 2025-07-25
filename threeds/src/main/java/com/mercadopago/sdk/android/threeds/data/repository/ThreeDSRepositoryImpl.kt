@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 internal class ThreeDSRepositoryImpl(
     private val remoteDataSource: ThreeDSRemoteDataSource,
 ) : ThreeDSRepository {
-
     override fun authenticate(body: ThreeDSBody): Flow<MPThreeDSAuthenticationResponse> {
         return remoteDataSource.authenticate(body)
     }

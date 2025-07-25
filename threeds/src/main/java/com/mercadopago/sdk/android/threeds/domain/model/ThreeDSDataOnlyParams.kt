@@ -19,5 +19,5 @@ data class ThreeDSDataOnlyParams(
     /** The SDK transaction ID */
     val sdkTransactionID: String,
     /** The 3DS message version */
-    val messageVersion: String
+    val messageVersion: String,
 )

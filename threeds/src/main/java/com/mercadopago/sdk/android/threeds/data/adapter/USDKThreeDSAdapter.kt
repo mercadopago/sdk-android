@@ -38,11 +38,10 @@ import kotlin.coroutines.suspendCoroutine
  * - Challenge flow execution
  * - Resource cleanup
  */
-
+const val TIMEOUT = 10
 internal class USDKThreeDSAdapter(
-    private val context: Context
+    private val context: Context,
 ) : ThreeDSSDKAdapter {
-
     @Volatile
     private var threeDSService: ThreeDS2Service? = null
 
@@ -59,23 +58,26 @@ internal class USDKThreeDSAdapter(
         threeDSService = suspendCoroutine { continuation ->
             val service: ThreeDS2Service = UsdkThreeDS2ServiceImpl()
             val listener: BroadcastReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
+                override fun onReceive(
+                    context: Context,
+                    intent: Intent,
+                ) {
                     LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
                     if (!intent.getBooleanExtra(
                             UsdkThreeDS2ServiceImpl.INITIALIZATION_ACTION_EXTRA_SUCCESS,
-                            false
+                            false,
                         )
                     ) {
                         val code = intent.getStringExtra(
-                            UsdkThreeDS2ServiceImpl.INITIALIZATION_ACTION_EXTRA_ERROR_CODE
+                            UsdkThreeDS2ServiceImpl.INITIALIZATION_ACTION_EXTRA_ERROR_CODE,
                         )
                         val type = intent.getStringExtra(
-                            UsdkThreeDS2ServiceImpl.INITIALIZATION_ACTION_EXTRA_ERROR_TYPE
+                            UsdkThreeDS2ServiceImpl.INITIALIZATION_ACTION_EXTRA_ERROR_TYPE,
                         )
 
                         Log.e(
                             "ThreeDSWrapper",
-                            "Failed to initialize SDK, code: $code, type: $type"
+                            "Failed to initialize SDK, code: $code, type: $type",
                         )
 
                         continuation.resume(null)
@@ -88,7 +90,7 @@ internal class USDKThreeDSAdapter(
 
             LocalBroadcastManager.getInstance(context).registerReceiver(
                 listener,
-                IntentFilter(UsdkThreeDS2ServiceImpl.INTENT_INITIALIZATION_ACTION)
+                IntentFilter(UsdkThreeDS2ServiceImpl.INTENT_INITIALIZATION_ACTION),
             )
 
             service.initialize(context, ConfigParameters(), null, null)
@@ -98,7 +100,7 @@ internal class USDKThreeDSAdapter(
     override suspend fun createTransaction(directoryServer: MPThreeDSDirectoryServer) {
         transaction = threeDSService?.createTransaction(
             directoryServer.directoryServerID,
-            directoryServer.messageVersion
+            directoryServer.messageVersion,
         )
     }
 
@@ -117,7 +119,7 @@ internal class USDKThreeDSAdapter(
     override suspend fun doChallenge(
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationResponse,
-        delegate: MPThreeDSChallengeDelegate
+        delegate: MPThreeDSChallengeDelegate,
     ) {
         val threeDSChallengeParameters = ChallengeParameters().apply {
             this.set3DSServerTransactionID(authenticationResponse.threeDSServerTransID)
@@ -131,14 +133,13 @@ internal class USDKThreeDSAdapter(
                 activity,
                 threeDSChallengeParameters,
                 object : ChallengeStatusReceiver {
-
                     override fun completed(event: CompletionEvent?) {
                         event?.let {
                             delegate.onSuccess(
                                 result = MPThreeDSAuthenticated(
                                     authenticationResponse = authenticationResponse,
                                     challengeCompleted = it.transactionStatus == "TRUE",
-                                )
+                                ),
                             )
                         }
                     }
@@ -150,7 +151,7 @@ internal class USDKThreeDSAdapter(
                                     code = it.errorMessage.errorCode ?: "",
                                     message = it.errorMessage.errorDescription ?: "",
                                     details = it.errorMessage.errorDetails ?: "",
-                                )
+                                ),
                             )
                         }
                     }
@@ -161,7 +162,7 @@ internal class USDKThreeDSAdapter(
                                 error = MPThreeDSChallengeError(
                                     code = it.errorCode ?: "",
                                     message = it.errorMessage ?: "",
-                                )
+                                ),
                             )
                         }
                     }
@@ -174,11 +175,11 @@ internal class USDKThreeDSAdapter(
                         delegate.onTimedOut()
                     }
                 },
-                10
+                TIMEOUT,
             )
         } catch (e: InvalidInputException) {
             Exception(
-                "[3DS] Error trying to do the challenge - Message: ${e.message} - Localized Message: ${e.localizedMessage}"
+                "[3DS] Error trying to do the challenge - Message: ${e.message}",
             )
         }
     }

@@ -30,9 +30,8 @@ import org.koin.core.module.Module
  * @see MercadoPagoKoinComponent
  */
 internal class MPThreeDSModulesProvider(
-    private val context: Context
+    private val context: Context,
 ) : CoreKoinModuleProvider, MercadoPagoKoinComponent {
-
     /**
      * The Koin application instance with all required modules.
      * This property provides access to the configured Koin instance
