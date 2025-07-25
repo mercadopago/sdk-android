@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.klint)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
 }
@@ -60,9 +59,6 @@ android {
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
         allWarningsAsErrors = false
-        freeCompilerArgs += listOf(
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-        )
     }
 }
 
