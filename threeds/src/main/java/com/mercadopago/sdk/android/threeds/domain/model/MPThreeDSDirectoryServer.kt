@@ -6,15 +6,12 @@ package com.mercadopago.sdk.android.threeds.domain.model
  *
  * @param directoryServerID The unique identifier for the directory server
  * @param messageVersion The 3DS message version supported by the directory server
- * @param paymentMethodId The payment method id
  */
 internal enum class MPThreeDSDirectoryServer(
     /** The unique identifier for the directory server */
     val directoryServerID: String,
     /** The 3DS message version supported by the directory server */
     val messageVersion: String,
-    /** The paymentMethods ID*/
-    val paymentMethodId: String? = null,
 ) {
     /** VISA directory server */
     VISA("A000000003", "2.1.0"),

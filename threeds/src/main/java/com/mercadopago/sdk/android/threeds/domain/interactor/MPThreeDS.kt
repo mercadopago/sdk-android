@@ -107,19 +107,21 @@ class MPThreeDS internal constructor(
      * @param activity The activity context for displaying the challenge UI
      * @param cardToken The card token to authenticate
      * @param delegate Callback for receiving authentication results
+     * @param paymentMethodId: PaymentMethod of this transaction
      */
     fun requestChallenge(
         activity: Activity,
         cardToken: String,
+        paymentMethodId: String,
         delegate: MPThreeDSChallengeDelegate,
     ) {
         val requestChallengeUseCase = koin.get<RequestChallengeUseCase>()
 
-        val directoryServer = when ("") {
-            "visa" -> MPThreeDSDirectoryServer.VISA
+        val directoryServer = when (paymentMethodId) {
+            "visa", "debvisa"-> MPThreeDSDirectoryServer.VISA
             "mastercard", "master" -> MPThreeDSDirectoryServer.MASTERCARD
             "amex", "american_express" -> MPThreeDSDirectoryServer.AMEX
-            else -> MPThreeDSDirectoryServer.VISA
+            else -> MPThreeDSDirectoryServer.MASTERCARD
         }
 
         // Execute the challenge flow in a coroutine

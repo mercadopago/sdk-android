@@ -97,7 +97,7 @@ internal class USDKThreeDSAdapter(
 
     override suspend fun createTransaction(directoryServer: MPThreeDSDirectoryServer) {
         transaction = threeDSService?.createTransaction(
-            directoryServer.paymentMethodId ?: directoryServer.directoryServerID,
+            directoryServer.directoryServerID,
             directoryServer.messageVersion
         )
     }
