@@ -63,12 +63,6 @@ class MPThreeDS internal constructor(
          * @param context The application context
          */
         fun initialize(context: Context) {
-            CoroutineScope(Dispatchers.Default).launch {
-                suspendInitialize(context)
-            }
-        }
-
-        private suspend fun suspendInitialize(context: Context) {
             if (instance != null) {
                 throw MPThreeDSAlreadyInitializedException()
             }

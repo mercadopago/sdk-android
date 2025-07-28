@@ -1,12 +1,10 @@
 package com.mercadopago.sdk.android.threeds.data.datasource.remote
 
 import com.mercadopago.sdk.android.threeds.data.datasource.mappers.toModel
-import com.mercadopago.sdk.android.threeds.data.remote.mappers.toRequest
 import com.mercadopago.sdk.android.threeds.data.remote.request.ThreeDSAuthenticationRequest
 import com.mercadopago.sdk.android.threeds.data.remote.service.ThreeDSService
 import com.mercadopago.sdk.android.threeds.data.remote.response.MPThreeDSAuthenticationResponse
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
