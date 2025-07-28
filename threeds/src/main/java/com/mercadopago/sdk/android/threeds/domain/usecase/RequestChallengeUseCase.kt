@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.threeds.domain.mappers.toChallengeModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
+import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import java.io.IOException
@@ -27,6 +28,7 @@ internal class RequestChallengeUseCase(
      * @param cardToken The card token to authenticate
      * @param paymentMethodId The paymentMethods Id
      * @param delegate Callback for receiving results
+     * @param timeout Challenge time out limit
      */
     suspend operator fun invoke(
         activity: Activity,
@@ -39,7 +41,6 @@ internal class RequestChallengeUseCase(
             // Step 1: Init the adapter instance
             threeDSSDKAdapter.initialize()
 
-
             // Step 2: Create transaction
             threeDSSDKAdapter.createTransaction(
                 directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(
@@ -50,13 +51,15 @@ internal class RequestChallengeUseCase(
             // Step 3: Create request body and authenticate with backend
             val authResponse = threeDSSDKAdapter.getAuthenticationRequestParameters()?.let {
                 authenticateUseCase(
-                    token = cardToken,
-                    sdkAppId = it.sdkAppId,
-                    sdkEncData = it.deviceData,
-                    sdkEphemPubKey = it.sdkEphemeralPublicKey,
-                    sdkMaxTimeout = "10",
-                    sdkReferenceNumber = it.sdkReferenceNumber,
-                    sdkTransId = it.sdkTransactionId
+                    ThreeDSAuthenticationParams(
+                        token = cardToken,
+                        sdkAppId = it.sdkAppId,
+                        sdkEncData = it.deviceData,
+                        sdkEphemPubKey = it.sdkEphemeralPublicKey,
+                        sdkMaxTimeout = timeout.toString(),
+                        sdkReferenceNumber = it.sdkReferenceNumber,
+                        sdkTransId = it.sdkTransactionId
+                    )
                 ).catch { error ->
                     delegate.onError(MPThreeDSChallengeError.fromException(error))
                     return@catch

@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.threeds.di.usecases.provideUseCaseModule
 import org.koin.core.Koin
 import org.koin.core.module.Module
 
-
 internal class MPThreeDSModulesProvider(
     private val context: Context,
 ) : CoreKoinModuleProvider, MercadoPagoKoinComponent {

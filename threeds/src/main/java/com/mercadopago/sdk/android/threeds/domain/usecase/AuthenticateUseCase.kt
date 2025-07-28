@@ -9,24 +9,10 @@ internal class AuthenticateUseCase(
     private val repository: ThreeDSRepository,
 ) {
     operator fun invoke(
-        token: String,
-        sdkAppId: String,
-        sdkEncData: String,
-        sdkEphemPubKey: String,
-        sdkMaxTimeout: String,
-        sdkReferenceNumber: String,
-        sdkTransId: String,
+        params: ThreeDSAuthenticationParams
     ): Flow<MPThreeDSAuthenticationModel> {
         return repository.authenticate(
-            ThreeDSAuthenticationParams(
-                token = token,
-                sdkAppId = sdkAppId,
-                sdkEncData = sdkEncData,
-                sdkEphemPubKey = sdkEphemPubKey,
-                sdkMaxTimeout = sdkMaxTimeout,
-                sdkReferenceNumber = sdkReferenceNumber,
-                sdkTransId = sdkTransId
-            )
+            params = params
         )
     }
 }

@@ -35,6 +35,7 @@ internal interface ThreeDSSDKAdapter {
      * @param activity The activity context for displaying the challenge UI
      * @param authenticationResponse The response from MercadoPago backend
      * @param delegate Callback for receiving challenge results
+     * @param timeout Challenge timeout limit
      */
     suspend fun doChallenge(
         activity: Activity,

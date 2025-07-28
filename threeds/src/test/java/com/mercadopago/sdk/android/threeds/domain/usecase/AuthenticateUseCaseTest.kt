@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.threeds.domain.usecase
 
 import app.cash.turbine.test
+import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.threeds.mockThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.mockThreeDSAuthenticationParams
@@ -33,13 +34,15 @@ internal class AuthenticateUseCaseTest {
 
         // When
         val result = useCase(
-            token = token,
-            sdkAppId = sdkAppId,
-            sdkEncData = sdkEncData,
-            sdkEphemPubKey = sdkEphemPubKey,
-            sdkMaxTimeout = sdkMaxTimeout,
-            sdkReferenceNumber = sdkReferenceNumber,
-            sdkTransId = sdkTransId
+            params = ThreeDSAuthenticationParams(
+                token = token,
+                sdkAppId = sdkAppId,
+                sdkEncData = sdkEncData,
+                sdkEphemPubKey = sdkEphemPubKey,
+                sdkMaxTimeout = sdkMaxTimeout,
+                sdkReferenceNumber = sdkReferenceNumber,
+                sdkTransId = sdkTransId,
+            ),
         )
 
         // Then
@@ -49,15 +52,17 @@ internal class AuthenticateUseCaseTest {
         }
 
         verify {
-            repository.authenticate(match { params ->
-                params.token == token &&
-                params.sdkAppId == sdkAppId &&
-                params.sdkEncData == sdkEncData &&
-                params.sdkEphemPubKey == sdkEphemPubKey &&
-                params.sdkMaxTimeout == sdkMaxTimeout &&
-                params.sdkReferenceNumber == sdkReferenceNumber &&
-                params.sdkTransId == sdkTransId
-            })
+            repository.authenticate(
+                match { params ->
+                    params.token == token &&
+                        params.sdkAppId == sdkAppId &&
+                        params.sdkEncData == sdkEncData &&
+                        params.sdkEphemPubKey == sdkEphemPubKey &&
+                        params.sdkMaxTimeout == sdkMaxTimeout &&
+                        params.sdkReferenceNumber == sdkReferenceNumber &&
+                        params.sdkTransId == sdkTransId
+                }
+            )
         }
     }
 
@@ -71,13 +76,15 @@ internal class AuthenticateUseCaseTest {
 
         // When
         val result = useCase(
-            token = mockParams.token,
-            sdkAppId = mockParams.sdkAppId,
-            sdkEncData = mockParams.sdkEncData,
-            sdkEphemPubKey = mockParams.sdkEphemPubKey,
-            sdkMaxTimeout = mockParams.sdkMaxTimeout,
-            sdkReferenceNumber = mockParams.sdkReferenceNumber,
-            sdkTransId = mockParams.sdkTransId
+            params = ThreeDSAuthenticationParams(
+                token = mockParams.token,
+                sdkAppId = mockParams.sdkAppId,
+                sdkEncData = mockParams.sdkEncData,
+                sdkEphemPubKey = mockParams.sdkEphemPubKey,
+                sdkMaxTimeout = mockParams.sdkMaxTimeout,
+                sdkReferenceNumber = mockParams.sdkReferenceNumber,
+                sdkTransId = mockParams.sdkTransId,
+            ),
         )
 
         // Then

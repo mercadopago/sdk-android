@@ -94,6 +94,7 @@ class MPThreeDS internal constructor(
      * @param cardToken The card token to authenticate
      * @param paymentMethodId: Payment method identification of your transaction
      * @param delegate Callback for receiving authentication results
+     * @param timeout (optional) Challenge timeout limit
      */
     fun requestChallenge(
         activity: Activity,

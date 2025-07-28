@@ -12,6 +12,14 @@ data class MPThreeDSAuthenticated(
     val challengeCompleted: Boolean = false,
 )
 
+/**
+ * Represents the challenge authentication response.
+ * @param threeDSServerTransID challenge authentication param.
+ * @param acsReferenceNumber challenge authentication param.
+ * @param dsTransID challenge authentication param.
+ * @param acsTransID challenge authentication param.
+ * @param acsSignedContent challenge authentication param.
+ */
 data class MPThreeDSChallengeModel(
     val threeDSServerTransID: String,
     val acsReferenceNumber: String,
