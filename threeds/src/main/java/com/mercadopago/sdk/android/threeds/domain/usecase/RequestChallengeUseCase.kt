@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.threeds.domain.usecase
 import android.app.Activity
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
+import com.mercadopago.sdk.android.threeds.domain.mappers.toChallengeModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
@@ -32,6 +33,7 @@ internal class RequestChallengeUseCase(
         cardToken: String,
         paymentMethodId: String,
         delegate: MPThreeDSChallengeDelegate,
+        timeout: Int
     ) {
         try {
             // Step 1: Init the adapter instance
@@ -65,14 +67,14 @@ internal class RequestChallengeUseCase(
             when (authResponse?.response) {
                 "CHALLENGE" -> {
                     // Step 5: Perform challenge if required
-                    threeDSSDKAdapter.doChallenge(activity, authResponse, delegate)
+                    threeDSSDKAdapter.doChallenge(activity, authResponse, delegate, timeout)
                 }
 
                 "AUTHORIZED" -> {
                     // Authentication successful without challenge
                     delegate.onSuccess(
                         MPThreeDSAuthenticated(
-                            authenticationResponse = authResponse,
+                            challengeResponse = authResponse.toChallengeModel(),
                             challengeCompleted = false,
                         ),
                     )

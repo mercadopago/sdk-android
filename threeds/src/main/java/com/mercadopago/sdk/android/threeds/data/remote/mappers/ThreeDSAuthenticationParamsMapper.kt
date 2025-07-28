@@ -8,8 +8,8 @@ internal fun ThreeDSAuthenticationParams.toRequest() =
         token = this.token,
         sdkAppId = this.sdkAppId,
         sdkEncData = this.sdkEncData,
-        sdkEphemPubKey= this.sdkEphemPubKey,
-        sdkMaxTimeout= this.sdkMaxTimeout,
-        sdkReferenceNumber= this.sdkReferenceNumber,
-        sdkTransId= this.sdkTransId
+        sdkEphemPubKey = this.sdkEphemPubKey,
+        sdkMaxTimeout = this.sdkMaxTimeout,
+        sdkReferenceNumber = this.sdkReferenceNumber,
+        sdkTransId = this.sdkTransId
     )

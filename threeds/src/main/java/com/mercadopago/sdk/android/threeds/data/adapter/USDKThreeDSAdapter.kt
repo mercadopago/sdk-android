@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSSDKAdapter
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
+import com.mercadopago.sdk.android.threeds.domain.mappers.toChallengeModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
@@ -38,7 +39,6 @@ import kotlin.coroutines.suspendCoroutine
  * - Challenge flow execution
  * - Resource cleanup
  */
-const val TIMEOUT = 10 //TODO: puxar de um local de configuração
 internal class USDKThreeDSAdapter(
     private val context: Context,
 ) : ThreeDSSDKAdapter {
@@ -120,6 +120,7 @@ internal class USDKThreeDSAdapter(
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationModel,
         delegate: MPThreeDSChallengeDelegate,
+        timeout: Int
     ) {
         val threeDSChallengeParameters = ChallengeParameters().apply {
             this.set3DSServerTransactionID(authenticationResponse.threeDSServerTransID)
@@ -137,7 +138,7 @@ internal class USDKThreeDSAdapter(
                         event?.let {
                             delegate.onSuccess(
                                 result = MPThreeDSAuthenticated(
-                                    authenticationResponse = authenticationResponse,
+                                    challengeResponse = authenticationResponse.toChallengeModel(),
                                     challengeCompleted = it.transactionStatus == "TRUE",
                                 ),
                             )
@@ -175,7 +176,7 @@ internal class USDKThreeDSAdapter(
                         delegate.onTimedOut()
                     }
                 },
-                TIMEOUT,
+                timeout,
             )
         } catch (e: InvalidInputException) {
             Exception(

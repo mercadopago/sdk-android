@@ -106,6 +106,7 @@ class MPThreeDS internal constructor(
         cardToken: String,
         paymentMethodId: String,
         delegate: MPThreeDSChallengeDelegate,
+        timeout: Int = 10
     ) {
         val requestChallengeUseCase = koin.get<RequestChallengeUseCase>()
 
@@ -116,6 +117,7 @@ class MPThreeDS internal constructor(
                 cardToken = cardToken,
                 paymentMethodId = paymentMethodId,
                 delegate = delegate,
+                timeout = timeout
             )
         }
     }

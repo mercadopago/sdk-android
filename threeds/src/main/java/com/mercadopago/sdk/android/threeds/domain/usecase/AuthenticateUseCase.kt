@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.threeds.domain.usecase
 
-import com.mercadopago.sdk.android.threeds.data.remote.response.MPThreeDSAuthenticationResponse
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository

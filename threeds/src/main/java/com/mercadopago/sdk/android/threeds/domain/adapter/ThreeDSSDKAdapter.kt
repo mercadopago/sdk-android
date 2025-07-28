@@ -40,5 +40,6 @@ internal interface ThreeDSSDKAdapter {
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationModel,
         delegate: MPThreeDSChallengeDelegate,
+        timeout: Int
     )
 }
