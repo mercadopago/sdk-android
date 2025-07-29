@@ -22,7 +22,7 @@ internal interface CoreMethodsService {
     @POST("/v1/card_tokens")
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
-        @Header("X-Product-id") productId: String? = PRODUCT_ID
+        @Header("X-Product-id") productId: String? = PRODUCT_ID,
     ): Response<CardTokenResponse>
 
     @GET("$BRICKS_API/$VERSION/installments")

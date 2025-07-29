@@ -50,7 +50,7 @@ data class CardToken(
  */
 data class CardHolder(
     val identification: Identification? = null,
-    val name: String? = null
+    val name: String? = null,
 )
 
 /**
@@ -58,7 +58,7 @@ data class CardHolder(
  * @param type The type of the identification
  */
 data class Identification(
-    val type: String? = null
+    val type: String? = null,
 )
 
 @Suppress("MaxLineLength")
