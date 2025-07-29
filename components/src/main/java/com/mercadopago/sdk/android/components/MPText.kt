@@ -41,7 +41,11 @@ enum class MPTextColorType {
     /**
      *  Inverted: Text of the Inverted type
      */
-    Inverted
+    Inverted,
+    /**
+     *  Positive: Text of the Positive type
+     */
+    Positive
 }
 
 /**
@@ -118,6 +122,10 @@ fun MPText(
 
         MPTextColorType.Inverted -> {
             MercadoPagoTheme.color.text.inverted
+        }
+
+        MPTextColorType.Positive -> {
+            MercadoPagoTheme.color.feedback.positive
         }
     }
 
