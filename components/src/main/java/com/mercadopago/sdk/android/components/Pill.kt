@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,23 +24,23 @@ fun Pill(
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .width(48.dp) // TODO: Precisa adicionar um token
             .height(MercadoPagoTheme.spacing.m)
             .background(
                 color = MercadoPagoTheme.color.feedback.positiveSecondary,
                 shape = RoundedCornerShape(MercadoPagoTheme.spacing.m)
-            ),
+            )
+            .padding(horizontal = MercadoPagoTheme.spacing.xs),
     ) {
         // TODO: Precisa adicionar um token de cor positive para texto no figma
         MPText(
             text,
             textStyle = MPTextStyle.BodySmallSemiBold,
-            colorType = MPTextColorType.Positive
+            colorType = MPTextColorType.Positive,
         )
     }
 }
 
-@Preview(name = "Pill")
+@Preview(name = "Pill - Green")
 @Composable
 fun PillPreview() {
     MercadoPagoTheme {
@@ -50,9 +48,8 @@ fun PillPreview() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .size(100.dp)
-                .padding(16.dp)
                 .background(Color.White)
+                .padding(20.dp)
         ) {
             Pill("Label")
         }
