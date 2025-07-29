@@ -15,6 +15,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
+private const val PILL_GROUP = "Pill"
+
 @Composable
 fun Pill(
     text: String,
@@ -39,7 +41,7 @@ fun Pill(
     }
 }
 
-@Preview(name = "Pill - Green")
+@Preview(name = "Pill - Green", group = PILL_GROUP)
 @Composable
 fun PillPreview() {
     MercadoPagoTheme {
