@@ -31,10 +31,9 @@ fun Pill(
             )
             .padding(horizontal = MercadoPagoTheme.spacing.xs),
     ) {
-        // TODO: Precisa adicionar um token de cor positive para texto no figma
         MPText(
             text,
-            textStyle = MPTextStyle.BodySmallSemiBold,
+            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
             colorType = MPTextColorType.Positive,
         )
     }
