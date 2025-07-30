@@ -39,7 +39,7 @@ fun MPRadioButton(
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     error: Boolean = false,
-    interactionSource: MutableInteractionSource? = null
+    interactionSource: MutableInteractionSource? = null,
 ) {
     RadioButton(
         selected = selected,
@@ -50,9 +50,9 @@ fun MPRadioButton(
             selectedColor = getRadioColor(error),
             unselectedColor = getRadioColor(error),
             disabledSelectedColor = MercadoPagoTheme.color.text.disabled,
-            disabledUnselectedColor = MercadoPagoTheme.color.text.disabled
+            disabledUnselectedColor = MercadoPagoTheme.color.text.disabled,
         ),
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
     )
 }
 
@@ -82,23 +82,22 @@ internal fun MPRadioButtonPreview() {
             Row {
                 MPRadioButton(
                     selected = false,
-                    enabled = false
+                    enabled = false,
                 )
                 MPRadioButton(
                     selected = true,
-                    enabled = false
+                    enabled = false,
                 )
             }
 
             Row {
                 MPRadioButton(
                     selected = false,
-                    error = true
-
+                    error = true,
                 )
                 MPRadioButton(
                     selected = true,
-                    error = true
+                    error = true,
                 )
             }
         }
