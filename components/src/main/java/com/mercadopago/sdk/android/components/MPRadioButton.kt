@@ -20,9 +20,9 @@ private const val RADIO_GROUP = "RadioButton"
 
 /**
  * @param selected whether this radio button is selected or not
+ * @param modifier the [Modifier] to be applied to this radio button
  * @param onClick called when this radio button is clicked. If `null`, then this radio button will
  *   not be interactable, unless something else handles its input events and updates its state.
- * @param modifier the [Modifier] to be applied to this radio button
  * @param enabled controls the enabled state of this radio button. When `false`, this component will
  *   not respond to user input, and it will appear visually disabled and disabled to accessibility
  *   services.
@@ -47,13 +47,18 @@ fun MPRadioButton(
         modifier = modifier.size(MercadoPagoTheme.spacing.xl),
         enabled = enabled,
         colors = RadioButtonColors(
-            selectedColor = if (error) MercadoPagoTheme.color.text.negative else MercadoPagoTheme.color.text.accent,
-            unselectedColor = if (error) MercadoPagoTheme.color.text.negative else MercadoPagoTheme.color.text.secondary,
+            selectedColor = getRadioColor(error),
+            unselectedColor = getRadioColor(error),
             disabledSelectedColor = MercadoPagoTheme.color.text.disabled,
             disabledUnselectedColor = MercadoPagoTheme.color.text.disabled
         ),
         interactionSource = interactionSource
     )
+}
+
+@Composable
+private fun getRadioColor(error: Boolean): Color {
+    return if (error) MercadoPagoTheme.color.text.negative else MercadoPagoTheme.color.text.accent
 }
 
 @Preview(name = "Radio Button", group = RADIO_GROUP)
