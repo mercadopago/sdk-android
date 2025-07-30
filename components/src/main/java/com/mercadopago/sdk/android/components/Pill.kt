@@ -17,6 +17,11 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val PILL_GROUP = "Pill"
 
+/**
+ * Pill Component
+ * @param text component text to be showed
+ * @param modifier component modifier
+ */
 @Composable
 fun Pill(
     text: String,
@@ -43,7 +48,7 @@ fun Pill(
 
 @Preview(name = "Pill - Green", group = PILL_GROUP)
 @Composable
-fun PillPreview() {
+internal fun PillPreview() {
     MercadoPagoTheme {
         Column(
             verticalArrangement = Arrangement.Center,
