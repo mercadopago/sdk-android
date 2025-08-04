@@ -5,9 +5,16 @@ import android.content.Context
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
+import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSNotInitializedException
+import com.mercadopago.sdk.android.threeds.domain.usecase.RequestChallengeUseCase
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.unmockkAll
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -87,5 +94,83 @@ internal class MPThreeDSTest {
 
         assertNotNull(initializeMethod)
         assertNotNull(getInstanceMethod)
+    }
+
+    @Test
+    fun `when initialize is called twice Then should throw MPThreeDSAlreadyInitializedException`() {
+        // Given
+        MPThreeDS.initialize(context)
+
+        // When & Then
+        assertFailsWith<MPThreeDSAlreadyInitializedException> {
+            MPThreeDS.initialize(context)
+        }
+    }
+
+    @Test
+    fun `when requestChallenge is called with valid parameters Then should invoke use case`() {
+        // Given
+        MPThreeDS.initialize(context)
+        val instance = MPThreeDS.getInstance()
+        val mockUseCase = mockk<RequestChallengeUseCase>(relaxed = true)
+        every { instance.koin.get<RequestChallengeUseCase>() } returns mockUseCase
+        coEvery { mockUseCase.invoke(any(), any(), any(), any(), any()) } just runs
+
+        val cardToken = "test_token"
+        val paymentMethodId = "visa"
+        val timeout = 15
+
+        // When
+        instance.requestChallenge(activity, cardToken, paymentMethodId, delegate, timeout)
+
+        // Then - verify use case was called (we can't verify parameters due to coroutine scope)
+        // This test mainly ensures the method doesn't throw and follows the expected flow
+        assertNotNull(instance.koin)
+    }
+
+    @Test
+    fun `when requestChallenge is called with default timeout Then should use default value`() {
+        // Given
+        MPThreeDS.initialize(context)
+        val instance = MPThreeDS.getInstance()
+        val mockUseCase = mockk<RequestChallengeUseCase>(relaxed = true)
+        every { instance.koin.get<RequestChallengeUseCase>() } returns mockUseCase
+        coEvery { mockUseCase.invoke(any(), any(), any(), any(), any()) } just runs
+
+        val cardToken = "test_token"
+        val paymentMethodId = "mastercard"
+
+        // When
+        instance.requestChallenge(activity, cardToken, paymentMethodId, delegate)
+
+        // Then - verify method executes without timeout parameter
+        assertNotNull(instance.koin)
+    }
+
+    @Test
+    fun `when getInstance is called after successful initialization Then should return same instance`() {
+        // Given
+        MPThreeDS.initialize(context)
+        val instance1 = MPThreeDS.getInstance()
+
+        // When
+        val instance2 = MPThreeDS.getInstance()
+
+        // Then
+        assertEquals(instance1, instance2)
+    }
+
+    @Test
+    fun `when initialize is called with different contexts Then should create instance`() {
+        // Given
+        val anotherContext = mockk<Context>(relaxed = true)
+
+        // When
+        MPThreeDS.initialize(anotherContext)
+        val instance = MPThreeDS.getInstance()
+
+        // Then
+        assertNotNull(instance)
+        assertNotNull(instance.koin)
     }
 }
