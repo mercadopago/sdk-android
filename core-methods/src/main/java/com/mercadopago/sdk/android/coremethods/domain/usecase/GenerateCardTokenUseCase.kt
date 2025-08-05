@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
 
 internal const val EXPIRATION_YEAR_START = "20"
 internal const val EXPIRATION_YEAR_MIN_LENGTH = 2
@@ -24,7 +25,7 @@ internal class GenerateCardTokenUseCase(
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
-        val expirationDateIsNotNull = expirationDate != null
+        val expirationDateIsOptional = expirationDate == null
 
         if (cardNumber.isEmpty()) {
             return Result.Error(ResultError.Validation("card id number cannot be empty"))
@@ -34,7 +35,7 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("security code length cannot be smaller than tree"))
         }
 
-        if (expirationDateIsNotNull) {
+        if (!expirationDateIsOptional) {
             if (expirationDate!!.isEmpty()) {
                 return Result.Error(ResultError.Validation("expiration date cannot be empty"))
             }
@@ -44,15 +45,22 @@ internal class GenerateCardTokenUseCase(
             }
         }
 
-        val expirationMonth = expirationDate?.ifEmpty { "0" }?.take(INT_TWO)?.toInt()
-        val expirationYear =
+        val expirationMonth = if (expirationDateIsOptional) {
+            INT_ZERO
+        } else {
+            expirationDate?.ifEmpty { "0" }?.take(INT_TWO)?.toInt()
+        }
+        val expirationYear = if (expirationDateIsOptional) {
+            INT_ZERO
+        } else {
             (EXPIRATION_YEAR_START + expirationDate?.ifEmpty { "0" }?.takeLast(INT_TWO)).toInt()
+        }
 
         return repository.generateCardToken(
             GenerateCardTokenParams(
                 cardNumber = cardNumber,
-                expirationMonth = if (expirationDateIsNotNull) expirationMonth else null,
-                expirationYear = if (expirationDateIsNotNull) expirationYear else null,
+                expirationMonth = if (!expirationDateIsOptional) expirationMonth else null,
+                expirationYear = if (!expirationDateIsOptional) expirationYear else null,
                 securityCode = securityCode,
                 buyerIdentification = buyerIdentification?.let { buyer ->
                     BuyerIdentificationParam(
