@@ -42,10 +42,11 @@ enum class MPTextColorType {
      *  Inverted: Text of the Inverted type
      */
     Inverted,
+
     /**
      *  Positive: Text of the Positive type
      */
-    Positive
+    Positive,
 }
 
 /**
@@ -159,7 +160,7 @@ fun MPText(
         text = text,
         style = style,
         color = if (!enabled) MercadoPagoTheme.color.text.disabled else color,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -170,43 +171,43 @@ internal fun TextTittlePreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My Tittle Primary Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My Tittle Secondary Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My Tittle Accent Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My Tittle Inverted Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My Tittle Negative Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My Tittle Disabled Text",
                 textStyle = MPTextStyle.Title,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My Tittle Positive Text",
                 textStyle = MPTextStyle.Title,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -219,43 +220,43 @@ internal fun TextBodyMediumSemiBoldPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My BodyMediumSemiBold Primary Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My BodyMediumSemiBold Secondary Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My BodyMediumSemiBold Accent Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My BodyMediumSemiBold Inverted Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My BodyMediumSemiBold Negative Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My BodyMediumSemiBold Disabled Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My BodyMediumSemiBold Positive Text",
                 textStyle = MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -268,43 +269,43 @@ internal fun TextBodyMediumRegularPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My BodyMediumRegular Primary Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My BodyMediumRegular Secondary Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My BodyMediumRegular Accent Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My BodyMediumRegular Inverted Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My BodyMediumRegular Negative Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My BodyMediumRegular Disabled Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My BodyMediumRegular Positive Text",
                 textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -317,43 +318,43 @@ internal fun TextBodySmallSemiBoldPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My BodySmallSemiBold Primary Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My BodySmallSemiBold Secondary Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My BodySmallSemiBold Accent Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My BodySmallSemiBold Inverted Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My BodySmallSemiBold Negative Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My BodySmallSemiBold Disabled Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My BodySmallSemiBold Positive Text",
                 textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -366,43 +367,43 @@ internal fun TextBodySmallRegularPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My BodySmallRegular Primary Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My BodySmallRegular Secondary Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My BodySmallRegular Accent Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My BodySmallRegular Inverted Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My BodySmallRegular Negative Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My BodySmallRegular Disabled Text",
                 textStyle = MPTextStyle.BodySmallRegular,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My BodySmallRegular Positive Text",
                 textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -415,43 +416,43 @@ internal fun TextBodyExtraSmallSemiBoldPreview() {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color.White)
+                .background(Color.White),
         ) {
             MPText(
                 text = "My BodyExtraSmallSemiBold Primary Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Primary
+                colorType = MPTextColorType.Primary,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Secondary Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Secondary
+                colorType = MPTextColorType.Secondary,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Accent Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Accent
+                colorType = MPTextColorType.Accent,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Inverted Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Inverted
+                colorType = MPTextColorType.Inverted,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Negative Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Negative
+                colorType = MPTextColorType.Negative,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Disabled Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
                 colorType = MPTextColorType.Primary,
-                enabled = false
+                enabled = false,
             )
             MPText(
                 text = "My BodyExtraSmallSemiBold Positive Text",
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Positive
+                colorType = MPTextColorType.Positive,
             )
         }
     }

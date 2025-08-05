@@ -34,7 +34,7 @@ fun Pill(
             .height(MercadoPagoTheme.spacing.m)
             .background(
                 color = MercadoPagoTheme.color.feedback.positiveSecondary,
-                shape = RoundedCornerShape(MercadoPagoTheme.spacing.m)
+                shape = RoundedCornerShape(MercadoPagoTheme.spacing.m),
             )
             .padding(horizontal = MercadoPagoTheme.spacing.xs),
     ) {
@@ -55,7 +55,7 @@ internal fun PillPreview() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .background(Color.White)
-                .padding(20.dp)
+                .padding(20.dp),
         ) {
             Pill("Label")
         }
