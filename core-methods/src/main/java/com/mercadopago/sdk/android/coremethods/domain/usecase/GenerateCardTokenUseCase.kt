@@ -14,7 +14,7 @@ internal const val EXPIRATION_YEAR_START = "20"
 internal const val EXPIRATION_YEAR_MIN_LENGTH = 2
 internal const val SECURITY_CODE_MIN_LENGTH = 3
 
-@Suppress("ReturnCount")
+@Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardTokenUseCase(
     private val repository: CoreMethodsRepository,
 ) {
@@ -24,7 +24,6 @@ internal class GenerateCardTokenUseCase(
         expirationDate: String,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
-
         if (cardNumber.isEmpty()) {
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
