@@ -9,7 +9,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
 
 internal const val EXPIRATION_YEAR_START = "20"
 internal const val EXPIRATION_YEAR_MIN_LENGTH = 2

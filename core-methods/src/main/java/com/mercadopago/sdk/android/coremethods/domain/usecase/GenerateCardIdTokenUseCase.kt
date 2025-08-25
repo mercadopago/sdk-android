@@ -20,7 +20,6 @@ internal class GenerateCardIdTokenUseCase(
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
-
         if (cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
