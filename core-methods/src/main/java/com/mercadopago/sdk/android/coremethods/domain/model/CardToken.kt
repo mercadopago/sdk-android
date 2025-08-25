@@ -7,6 +7,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  *
  * @param token The secure token representing the card, generated after successful tokenization
  * @param publicKey This app public Key
+ * @param cardId This card id
  * @param firstSixDigits First card six digits
  * @param expirationMonth Card expiration Month
  * @param expirationYear Card expiration year
@@ -26,6 +27,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
 data class CardToken(
     val token: String,
     val publicKey: String? = null,
+    val cardId: String? = null,
     val firstSixDigits: String? = null,
     val expirationMonth: Int? = null,
     val expirationYear: Int? = null,
