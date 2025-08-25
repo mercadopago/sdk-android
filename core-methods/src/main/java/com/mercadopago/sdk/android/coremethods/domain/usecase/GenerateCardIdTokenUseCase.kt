@@ -9,46 +9,45 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
-
-internal const val EXPIRATION_YEAR_START = "20"
-internal const val EXPIRATION_YEAR_MIN_LENGTH = 2
-internal const val SECURITY_CODE_MIN_LENGTH = 3
 
 @Suppress("ReturnCount")
-internal class GenerateCardTokenUseCase(
+internal class GenerateCardIdTokenUseCase(
     private val repository: CoreMethodsRepository,
 ) {
     suspend operator fun invoke(
-        cardNumber: String,
+        cardId: String,
         securityCode: String?,
-        expirationDate: String,
+        expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
 
-        if (cardNumber.isEmpty()) {
-            return Result.Error(ResultError.Validation("card number cannot be empty"))
+        if (cardId.isEmpty()) {
+            return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
         if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
             return Result.Error(ResultError.Validation("security code length cannot be smaller than tree"))
         }
 
-        if (expirationDate.isEmpty()) {
-            return Result.Error(ResultError.Validation("expiration date cannot be empty"))
-        }
+        var expirationMonth: Int? = null
+        var expirationYear: Int? = null
 
-        if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
-            return Result.Error(ResultError.Validation("expiration date length cannot be smaller than two"))
-        }
+        if (!expirationDate.isNullOrEmpty()) {
+            if (expirationDate.isEmpty()) {
+                return Result.Error(ResultError.Validation("expiration date cannot be empty"))
+            }
 
-        val expirationMonth = expirationDate.ifEmpty { "0" }.take(INT_TWO).toInt()
-        val expirationYear =
-            (EXPIRATION_YEAR_START + expirationDate.ifEmpty { "0" }.takeLast(INT_TWO)).toInt()
+            if (expirationDate.length < EXPIRATION_YEAR_MIN_LENGTH) {
+                return Result.Error(ResultError.Validation("expiration date length cannot be smaller than two"))
+            }
+
+            expirationMonth = expirationDate.ifEmpty { "0" }.take(INT_TWO).toInt()
+            expirationYear = (EXPIRATION_YEAR_START + expirationDate.ifEmpty { "0" }.takeLast(INT_TWO)).toInt()
+        }
 
         return repository.generateCardToken(
             GenerateCardTokenParams(
-                cardNumber = cardNumber,
+                cardId = cardId,
                 expirationMonth = expirationMonth,
                 expirationYear = expirationYear,
                 securityCode = securityCode,
