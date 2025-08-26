@@ -16,8 +16,6 @@ import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepo
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 
-
-
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardTokenUseCase(
     private val repository: CoreMethodsRepository,
