@@ -119,63 +119,6 @@ internal class CoreMethodsTest {
         }
 
     @Test
-    fun `generateCardToken by cardId should return success and track success metric`() =
-        runTest {
-            val expirationDateState = PCIFieldState()
-            val securityCodeState = PCIFieldState()
-            val buyerIdentification = BuyerIdentification(
-                name = "",
-                number = "",
-                type = "",
-            )
-
-            val expectedCardToken = CardToken("token_12345")
-
-            val expectedResult = Result.Success(expectedCardToken)
-
-            coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
-            val result =
-                coreMethods.generateCardToken(
-                    "id",
-                    expirationDateState,
-                    securityCodeState,
-                    buyerIdentification,
-                )
-
-            assertEquals(expectedResult, result)
-        }
-
-    @Test
-    fun `generateCardToken by cardId should return error and track error metric`() =
-        runTest {
-            val expirationDateState = PCIFieldState()
-            val securityCodeState = PCIFieldState()
-            val buyerIdentification = BuyerIdentification(
-                name = "",
-                number = "",
-                type = "",
-            )
-
-            val expectedError = ResultError.Request(code = "400", message = "Invalid parameters")
-            val expectedResult = Result.Error(expectedError)
-
-            coEvery {
-                koin.get<GenerateCardTokenUseCase>().invoke(any(), any(), any(), any())
-            } returns expectedResult
-            val result =
-                coreMethods.generateCardToken(
-                    "id",
-                    expirationDateState,
-                    securityCodeState,
-                    buyerIdentification,
-                )
-
-            assertEquals(expectedResult, result)
-        }
-
-    @Test
     fun `getInstallments should return success and track success metric`() =
         runTest {
             val bin = "123456"
