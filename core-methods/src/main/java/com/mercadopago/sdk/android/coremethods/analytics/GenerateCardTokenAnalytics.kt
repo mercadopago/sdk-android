@@ -32,17 +32,16 @@ internal fun metricGenerateCardTokenCallError(
     isSavedCard: Boolean = false,
     typeWallet: String = "coremethods",
     error: String,
-) =
-    Metric(
-        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
-        type = TrackType.EVENT,
-        data = GenerateCardAnalyticsData(
-            identityType,
-            isSavedCard,
-            typeWallet,
-            error,
-        ),
-    )
+) = Metric(
+    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
+    type = TrackType.EVENT,
+    data = GenerateCardAnalyticsData(
+        identityType,
+        isSavedCard,
+        typeWallet,
+        error,
+    ),
+)
 
 @KoverIgnore("in development")
 internal data class GenerateCardAnalyticsData(
