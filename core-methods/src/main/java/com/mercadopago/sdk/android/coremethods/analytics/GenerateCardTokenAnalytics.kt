@@ -14,50 +14,48 @@ private const val GENERATE_CARD_TOKEN_PATH = "/tokenization"
 
 @KoverIgnore("in development")
 internal fun metricGenerateCardTokenCallSuccess(
-    cardFlag: String? = null,
-    paymentType: CardTokenPaymentTypeMetric = CardTokenPaymentTypeMetric.CREDIT,
-    cardType: CardTokenCardTypeMetric = CardTokenCardTypeMetric.SAVED_CARD,
-    issuer: String? = null,
+    identityType: String? = null,
+    isSavedCard: Boolean = false,
+    typeWallet: String = "coremethods"
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH",
     type = TrackType.EVENT,
     data = GenerateCardAnalyticsData(
-        cardFlag,
-        paymentType.type,
-        cardType.type,
-        issuer,
+        identityType,
+        isSavedCard,
+        typeWallet,
+        null
     ),
 )
 
 @KoverIgnore("in development")
-internal fun metricGenerateCardTokenCallError(error: String) =
+internal fun metricGenerateCardTokenCallError(
+    identityType: String? = null,
+    isSavedCard: Boolean = false,
+    typeWallet: String = "coremethods",
+    error: String
+) =
     Metric(
         path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
         type = TrackType.EVENT,
-        data = AnalyticsConstants.buildErrorData(error = error),
+        data = GenerateCardAnalyticsData(
+            identityType,
+            isSavedCard,
+            typeWallet,
+            error
+        )
     )
 
 @KoverIgnore("in development")
-internal enum class CardTokenPaymentTypeMetric(val type: String) {
-    CREDIT(type = "credit"),
-    DEBIT(type = "debit"),
-    PREPAID(type = "prepaid"),
-}
-
-@KoverIgnore("in development")
-internal enum class CardTokenCardTypeMetric(val type: String) {
-    SAVED_CARD(type = "credit"),
-    NOT_SAVED_CARD(type = "debit"),
-}
-
-@KoverIgnore("in development")
 internal data class GenerateCardAnalyticsData(
-    @SerializedName("card_flag")
-    val cardFlag: String?,
-    @SerializedName("payment_type")
-    val paymentType: String,
-    @SerializedName("card_type")
-    val cardType: String,
-    @SerializedName("issuer")
-    val issuer: String?,
+    @SerializedName("identity_document_type")
+    val identityType: String?,
+    @SerializedName("is_saved_card")
+    val isSavedCard: Boolean,
+    @SerializedName("type_wallet")
+    val typeWallet: String?,
+
+    @SerializedName("error_type")
+    val errorType: String?,
+
 ) : EventData
