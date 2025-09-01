@@ -23,8 +23,7 @@ internal fun metricGenerateCardTokenCallSuccess(
     data = GenerateCardAnalyticsData(
         identityType,
         isSavedCard,
-        typeWallet,
-        null
+        typeWallet
     ),
 )
 
@@ -56,6 +55,5 @@ internal data class GenerateCardAnalyticsData(
     val typeWallet: String?,
 
     @SerializedName("error_type")
-    val errorType: String?,
-
+    val errorType: String? = null,
 ) : EventData
