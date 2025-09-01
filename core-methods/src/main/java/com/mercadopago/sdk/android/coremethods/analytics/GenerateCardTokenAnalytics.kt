@@ -15,14 +15,14 @@ private const val GENERATE_CARD_TOKEN_PATH = "/tokenization"
 internal fun metricGenerateCardTokenCallSuccess(
     identityType: String? = null,
     isSavedCard: Boolean = false,
-    typeWallet: String = "coremethods"
+    typeWallet: String = "coremethods",
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH",
     type = TrackType.EVENT,
     data = GenerateCardAnalyticsData(
         identityType,
         isSavedCard,
-        typeWallet
+        typeWallet,
     ),
 )
 
@@ -31,7 +31,7 @@ internal fun metricGenerateCardTokenCallError(
     identityType: String? = null,
     isSavedCard: Boolean = false,
     typeWallet: String = "coremethods",
-    error: String
+    error: String,
 ) =
     Metric(
         path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
@@ -40,8 +40,8 @@ internal fun metricGenerateCardTokenCallError(
             identityType,
             isSavedCard,
             typeWallet,
-            error
-        )
+            error,
+        ),
     )
 
 @KoverIgnore("in development")
@@ -52,7 +52,6 @@ internal data class GenerateCardAnalyticsData(
     val isSavedCard: Boolean,
     @SerializedName("type_wallet")
     val typeWallet: String?,
-
     @SerializedName("error_type")
     val errorType: String? = null,
 ) : EventData
