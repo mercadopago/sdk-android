@@ -111,6 +111,7 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -119,6 +120,7 @@ class CoreMethods internal constructor(
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -128,7 +130,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess(),
+                    metricGenerateCardTokenCallSuccess(
+                        identityType = buyerIdentification.type,
+                    ),
                 )
             }
         }
@@ -194,6 +198,8 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                isSavedCard = true,
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -202,6 +208,8 @@ class CoreMethods internal constructor(
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                isSavedCard = true,
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -211,7 +219,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess(),
+                    metricGenerateCardTokenCallSuccess(isSavedCard = true, identityType = buyerIdentification.type),
                 )
             }
         }
