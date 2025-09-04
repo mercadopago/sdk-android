@@ -126,7 +126,10 @@ internal class ThreeDSAuthRequestParametersTest {
         // Then
         assertEquals(newSdkAppId, copiedAuthRequestParameters.sdkAppId)
         assertEquals(originalAuthRequestParameters.deviceData, copiedAuthRequestParameters.deviceData)
-        assertEquals(originalAuthRequestParameters.sdkEphemeralPublicKey, copiedAuthRequestParameters.sdkEphemeralPublicKey)
+        assertEquals(
+            originalAuthRequestParameters.sdkEphemeralPublicKey,
+            copiedAuthRequestParameters.sdkEphemeralPublicKey
+        )
         assertEquals(originalAuthRequestParameters.sdkReferenceNumber, copiedAuthRequestParameters.sdkReferenceNumber)
         assertEquals(originalAuthRequestParameters.sdkTransactionId, copiedAuthRequestParameters.sdkTransactionId)
     }

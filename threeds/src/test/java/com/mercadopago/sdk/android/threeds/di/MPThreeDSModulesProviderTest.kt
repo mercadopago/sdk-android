@@ -13,7 +13,7 @@ internal class MPThreeDSModulesProviderTest {
     private val context = mockk<Context>(relaxed = true)
 
     @Before
-    fun start(){
+    fun start() {
         MercadoPagoSDK.initialize(context, "public_key", CountryCode.BRA)
     }
 
@@ -29,8 +29,8 @@ internal class MPThreeDSModulesProviderTest {
         // Verify modules were created
         assertTrue(modules.isNotEmpty(), "Should provide at least one module")
         assertTrue(
-            modules.size == 5,
-            "Should provide exactly 5 modules (network, datasource, repository, usecase, adapters)"
+            modules.size == 1,
+            "Should provide exactly 1 module (adapters)"
         )
     }
 }

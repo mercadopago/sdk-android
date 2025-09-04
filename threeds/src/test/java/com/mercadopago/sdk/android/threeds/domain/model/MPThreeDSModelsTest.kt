@@ -163,13 +163,25 @@ internal class MPThreeDSModelsTest {
     fun `when data classes are compared for equality Then should work correctly`() {
         // Given
         val challengeModel1 = MPThreeDSChallengeModel(
-            "id1", "ref1", "ds1", "acs1", "content1"
+            "id1",
+            "ref1",
+            "ds1",
+            "acs1",
+            "content1"
         )
         val challengeModel2 = MPThreeDSChallengeModel(
-            "id1", "ref1", "ds1", "acs1", "content1"
+            "id1",
+            "ref1",
+            "ds1",
+            "acs1",
+            "content1"
         )
         val challengeModel3 = MPThreeDSChallengeModel(
-            "id2", "ref2", "ds2", "acs2", "content2"
+            "id2",
+            "ref2",
+            "ds2",
+            "acs2",
+            "content2"
         )
 
         // When & Then
@@ -185,7 +197,11 @@ internal class MPThreeDSModelsTest {
     fun `when MPThreeDSAuthenticated objects are compared Then should work correctly`() {
         // Given
         val challengeModel = MPThreeDSChallengeModel(
-            "id1", "ref1", "ds1", "acs1", "content1"
+            "id1",
+            "ref1",
+            "ds1",
+            "acs1",
+            "content1"
         )
         val authenticated1 = MPThreeDSAuthenticated(challengeModel, true)
         val authenticated2 = MPThreeDSAuthenticated(challengeModel, true)

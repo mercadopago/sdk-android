@@ -4,14 +4,11 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
 import com.mercadopago.sdk.android.threeds.mockThreeDSAuthenticationModel
 import com.usdk.android.UsdkThreeDS2ServiceImpl
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk

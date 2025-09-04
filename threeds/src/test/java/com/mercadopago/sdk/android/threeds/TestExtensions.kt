@@ -1,15 +1,10 @@
 package com.mercadopago.sdk.android.threeds
 
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeModel
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthRequestParameters
 import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 
 // Mock data factories for testing
 
-internal fun mockThreeDSAuthRequestParameters() = ThreeDSAuthRequestParameters(
+internal fun mockThreeDSAuthRequestParameters() = MPThreeDSAuthRequestParameters(
     sdkAppId = "mock_sdk_app_id",
     deviceData = "mock_device_data",
     sdkEphemeralPublicKey = "mock_ephemeral_pub_key",
@@ -27,7 +22,7 @@ internal fun mockThreeDSAuthenticationParams() = ThreeDSAuthenticationParams(
     sdkTransId = "mock_transaction_id",
 )
 
-internal fun mockThreeDSAuthenticationModel(response: String = "AUTHORIZED") = MPThreeDSAuthenticationModel(
+internal fun mockThreeDSAuthenticationResponse(response: String = "AUTHORIZED") = MPThreeDSAuthenticationResponse(
     response = response,
     threeDSServerTransID = "mock_3ds_server_trans_id",
     acsReferenceNumber = "mock_acs_reference_number",
@@ -36,7 +31,7 @@ internal fun mockThreeDSAuthenticationModel(response: String = "AUTHORIZED") = M
     acsSignedContent = "mock_acs_signed_content",
 )
 
-internal fun mockThreeDSChallengeModel() = MPThreeDSChallengeModel(
+internal fun mockThreeDSChallengeResponse() = MPThreeDSChallengeResponse(
     threeDSServerTransID = "mock_3ds_server_trans_id",
     acsReferenceNumber = "mock_acs_reference_number",
     dsTransID = "mock_ds_trans_id",
@@ -45,8 +40,11 @@ internal fun mockThreeDSChallengeModel() = MPThreeDSChallengeModel(
 )
 
 internal fun mockThreeDSAuthenticated(challengeCompleted: Boolean = false) = MPThreeDSAuthenticated(
-    challengeResponse = mockThreeDSChallengeModel(),
+    challengeResponse = mockThreeDSChallengeResponse(),
     challengeCompleted = challengeCompleted,
 )
 
-internal fun mockThreeDSChallengeError() = MPThreeDSChallengeError.authenticationFailed("Mock error")
+internal fun mockThreeDSChallengeError() = MPThreeDSChallengeError(
+    code = "MOCK_ERROR",
+    message = "Mock error for testing"
+)

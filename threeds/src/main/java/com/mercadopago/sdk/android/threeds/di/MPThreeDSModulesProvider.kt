@@ -4,11 +4,7 @@ import android.content.Context
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.core.di.CoreKoinModuleProvider
 import com.mercadopago.sdk.android.di.MercadoPagoKoinComponent
-import com.mercadopago.sdk.android.threeds.di.adapters.provideAdaptersModule
-import com.mercadopago.sdk.android.threeds.di.datasource.provideDataSourceModule
-import com.mercadopago.sdk.android.threeds.di.repository.provideRepositoryModule
-import com.mercadopago.sdk.android.threeds.di.services.provideNetworkModule
-import com.mercadopago.sdk.android.threeds.di.usecases.provideUseCaseModule
+import com.mercadopago.sdk.android.threeds.di.adapters.provideWrapperModule
 import org.koin.core.Koin
 import org.koin.core.module.Module
 
@@ -23,11 +19,7 @@ internal class MPThreeDSModulesProvider(
 
     override fun provideModules(): List<Module> {
         return listOf(
-            provideNetworkModule(),
-            provideDataSourceModule(),
-            provideRepositoryModule(),
-            provideUseCaseModule(),
-            provideAdaptersModule(context),
+            provideWrapperModule(context),
         )
     }
 }
