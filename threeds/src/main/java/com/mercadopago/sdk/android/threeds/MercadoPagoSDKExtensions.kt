@@ -6,20 +6,17 @@ import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
 /**
  * Extension property to access the MPThreeDS functionality from MercadoPagoSDK.
  * This provides a convenient way to access 3DS authentication methods.
+ * The MPThreeDS instance is automatically created using the same context from MercadoPagoSDK.
  *
  * Example:
  * ```kotlin
  * val threeDS = MercadoPagoSDK.getInstance().threeDS
- * threeDS.requestChallenge(
- *     activity = this,
- *     cardToken = "your_card_token",
- *     paymentMethodId = "your_payment_method_id",
- *     delegate = myDelegate
- * )
+ * threeDS.createTransaction("visa")
+ * val params = threeDS.getAuthenticationRequestParameters()
+ * // ... perform 3DS authentication
  * ```
  *
  * @return MPThreeDS instance for 3DS authentication operations
- * @throws MPThreeDSNotInitializedException if MPThreeDS is not initialized
  */
 val MercadoPagoSDK.threeDS: MPThreeDS
     get() = MPThreeDS.getInstance()

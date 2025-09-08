@@ -1,18 +1,12 @@
 package com.mercadopago.sdk.android.threeds.interactor
 
 import android.app.Activity
-import android.content.Context
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
-import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
-import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSNotInitializedException
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.core.Koin
 
 /**
@@ -37,9 +31,6 @@ class MPThreeDS internal constructor(
 ) {
     private val threeDSRepository: ThreeDSRepository by lazy { koin.get<ThreeDSRepository>() }
 
-    @Volatile
-    private var isRepositoryInitialized = false
-
     /**
      * Companion object containing static methods for initialization and instance management.
      */
@@ -48,57 +39,23 @@ class MPThreeDS internal constructor(
         private var instance: MPThreeDS? = null
 
         /**
-         * Initializes the MPThreeDS module asynchronously. This should be called before any other 3DS method.
-         * Call it inside the application class only once for your application.
-         *
-         * This method performs suspended initialization which is required for proper uSDK setup.
-         * The repository and wrapper are automatically initialized during this process.
+         * Get the current instance of the MPThreeDS with a specific context.
+         * This method is used for initialization.
          *
          * @param context The application context
-         */
-        fun initialize(context: Context) {
-            if (instance != null) {
-                throw MPThreeDSAlreadyInitializedException()
-            }
-
-            val modulesProvider = MPThreeDSModulesProvider(context)
-            val mpThreeDS = MPThreeDS(koin = modulesProvider.koinApp)
-
-            // Initialize the repository automatically
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    mpThreeDS.threeDSRepository.initialize()
-                    mpThreeDS.isRepositoryInitialized = true
-                } catch (e: Exception) {
-                    // Log error but don't fail the initialization
-                    // The repository initialization can be retried later if needed
-                    mpThreeDS.isRepositoryInitialized = false
-                }
-            }
-
-            instance = mpThreeDS
-        }
-
-        /**
-         * Get the current instance of the MPThreeDS.
-         * This should be called after the module is initialized.
-         *
          * @return The current instance of the MPThreeDS.
          */
         fun getInstance(): MPThreeDS {
-            return instance ?: throw MPThreeDSNotInitializedException()
+            return instance ?: synchronized(this) {
+                instance ?: MPThreeDS(
+                    koin = MPThreeDSModulesProvider().koinApp,
+                ).also {
+                    instance = it
+                }
+            }
         }
     }
 
-    /**
-     * Checks if the ThreeDSRepository has been successfully initialized.
-     * This can be used to verify that the SDK is ready for use.
-     *
-     * @return true if the repository is initialized, false otherwise
-     */
-    fun isInitialized(): Boolean {
-        return isRepositoryInitialized
-    }
 
     /**
      * Gets warnings from the 3DS SDK after initialization.
