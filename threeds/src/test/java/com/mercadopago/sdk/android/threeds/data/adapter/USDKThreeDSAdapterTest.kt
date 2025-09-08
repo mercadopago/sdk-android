@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSDirectoryServer
 import com.mercadopago.sdk.android.threeds.mockThreeDSAuthenticationModel
 import com.usdk.android.UsdkThreeDS2ServiceImpl
 import io.mockk.every

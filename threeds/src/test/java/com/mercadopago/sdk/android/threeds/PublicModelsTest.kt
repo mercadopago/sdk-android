@@ -1,5 +1,9 @@
 package com.mercadopago.sdk.android.threeds
 
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -35,7 +39,7 @@ internal class PublicModelsTest {
         val sdkTransactionId = "test_transaction_id"
 
         // When
-        val params = MPThreeDSAuthRequestParameters(
+        val params = MPThreeDSRequestParams(
             sdkAppId = sdkAppId,
             deviceData = deviceData,
             sdkEphemeralPublicKey = sdkEphemeralPublicKey,
@@ -62,7 +66,7 @@ internal class PublicModelsTest {
         val acsSignedContent = "acs_signed_content"
 
         // When
-        val authResponse = MPThreeDSAuthenticationResponse(
+        val authResponse = MPThreeDSAuthenticationModel(
             response = response,
             threeDSServerTransID = threeDSServerTransID,
             acsReferenceNumber = acsReferenceNumber,

@@ -1,15 +1,16 @@
 package com.mercadopago.sdk.android.threeds.domain.mappers
 
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.data.mappers.toChallengeModel
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class MPThreeDSAuthenticationModelMapperTest {
+internal class MPThreeDSAuthenticationParamsMapperTest {
 
     @Test
     fun `when MPThreeDSAuthenticationModel is mapped to challenge model Then should map all fields correctly`() {
         // Given
-        val authModel = MPThreeDSAuthenticationModel(
+        val authModel = MPThreeDSAuthenticationParams(
             response = "CHALLENGE",
             threeDSServerTransID = "server_trans_id",
             acsReferenceNumber = "acs_ref_number",
@@ -32,7 +33,7 @@ internal class MPThreeDSAuthenticationModelMapperTest {
     @Test
     fun `when MPThreeDSAuthenticationModel with AUTHORIZED status is mapped Then should create challenge model`() {
         // Given
-        val authModel = MPThreeDSAuthenticationModel(
+        val authModel = MPThreeDSAuthenticationParams(
             response = "AUTHORIZED",
             threeDSServerTransID = "authorized_server_trans_id",
             acsReferenceNumber = "authorized_acs_ref_number",
@@ -55,7 +56,7 @@ internal class MPThreeDSAuthenticationModelMapperTest {
     @Test
     fun `when MPThreeDSAuthenticationModel has empty values Then should map empty values correctly`() {
         // Given
-        val authModel = MPThreeDSAuthenticationModel(
+        val authModel = MPThreeDSAuthenticationParams(
             response = "",
             threeDSServerTransID = "",
             acsReferenceNumber = "",

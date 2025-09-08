@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.threeds.domain.model.params
 
+import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParameters
 import org.junit.Test
 import kotlin.test.assertEquals
 

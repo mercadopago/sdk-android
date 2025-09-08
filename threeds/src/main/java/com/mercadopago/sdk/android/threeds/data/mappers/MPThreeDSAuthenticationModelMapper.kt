@@ -1,9 +1,9 @@
-package com.mercadopago.sdk.android.threeds.domain.mappers
+package com.mercadopago.sdk.android.threeds.data.mappers
 
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeModel
 
-internal fun MPThreeDSAuthenticationModel.toChallengeModel() =
+internal fun MPThreeDSAuthenticationParams.toChallengeModel() =
     MPThreeDSChallengeModel(
         threeDSServerTransID = threeDSServerTransID,
         acsReferenceNumber = acsReferenceNumber,

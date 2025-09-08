@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.threeds.data.mappers
 
 import com.mercadopago.sdk.android.threeds.data.remote.mappers.toRequest
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
 import org.junit.Test
 import kotlin.test.assertEquals
 

@@ -1,10 +1,11 @@
 package com.mercadopago.sdk.android.threeds
 
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 
 // Mock data factories for testing
 
-internal fun mockThreeDSAuthRequestParameters() = MPThreeDSAuthRequestParameters(
+internal fun mockThreeDSAuthRequestParameters() = MPThreeDSRequestParams(
     sdkAppId = "mock_sdk_app_id",
     deviceData = "mock_device_data",
     sdkEphemeralPublicKey = "mock_ephemeral_pub_key",
@@ -22,7 +23,7 @@ internal fun mockThreeDSAuthenticationParams() = ThreeDSAuthenticationParams(
     sdkTransId = "mock_transaction_id",
 )
 
-internal fun mockThreeDSAuthenticationResponse(response: String = "AUTHORIZED") = MPThreeDSAuthenticationResponse(
+internal fun mockThreeDSAuthenticationResponse(response: String = "AUTHORIZED") = MPThreeDSAuthenticationModel(
     response = response,
     threeDSServerTransID = "mock_3ds_server_trans_id",
     acsReferenceNumber = "mock_acs_reference_number",

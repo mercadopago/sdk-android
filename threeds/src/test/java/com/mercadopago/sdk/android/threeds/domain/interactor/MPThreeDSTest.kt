@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.threeds.domain.callback.MPThreeDSChallengeDelegate
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSNotInitializedException
+import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import org.junit.After

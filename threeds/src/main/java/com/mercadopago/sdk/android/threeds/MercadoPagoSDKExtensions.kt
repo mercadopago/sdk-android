@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.threeds
 
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
-import com.mercadopago.sdk.android.threeds.domain.interactor.MPThreeDS
+import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
 
 /**
  * Extension property to access the MPThreeDS functionality from MercadoPagoSDK.

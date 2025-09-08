@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.threeds.domain.model
 
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSDirectoryServer
 import org.junit.Test
 import kotlin.test.assertEquals
 

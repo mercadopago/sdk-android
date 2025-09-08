@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.threeds.domain.model
+package com.mercadopago.sdk.android.threeds.data.model
 
 /**
  * Enumeration of supported 3DS Directory Servers.

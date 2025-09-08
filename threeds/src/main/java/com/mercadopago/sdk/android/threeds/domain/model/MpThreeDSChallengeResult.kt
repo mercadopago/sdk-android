@@ -1,4 +1,5 @@
 package com.mercadopago.sdk.android.threeds.domain.model
+
 /**
  * Implement this interface to receive callbacks during the 3DS authentication process.
  */

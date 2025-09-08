@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.threeds.data.adapter
+package com.mercadopago.sdk.android.threeds.data.wrapper
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -7,16 +7,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSWrapper
-import com.mercadopago.sdk.android.threeds.domain.mappers.toChallengeModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPSeverity
+import com.mercadopago.sdk.android.threeds.data.mappers.toChallengeModel
+import com.mercadopago.sdk.android.threeds.data.model.MPSeverityResponse
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSDirectoryServer
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSWarningResponse
+import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParameters
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthRequestParameters
+import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 import com.usdk.android.UsdkThreeDS2ServiceImpl
 import org.emvco.threeds.core.ChallengeParameters
 import org.emvco.threeds.core.ChallengeStatusReceiver
@@ -41,9 +41,7 @@ import kotlin.coroutines.suspendCoroutine
  * - Challenge flow execution
  * - Resource cleanup
  */
-internal class ThreeDSWrapperImpl(
-    private val context: Context,
-) : ThreeDSWrapper {
+internal class ThreeDSWrapper(private val context: Context) {
 
     @Volatile
     private lateinit var threeDSService: ThreeDS2Service
@@ -55,7 +53,7 @@ internal class ThreeDSWrapperImpl(
      * Initializes the uSDK service if not already initialized.
      * This method follows the suspended initialization pattern with broadcast receiver.
      */
-    override suspend fun initialize() {
+    suspend fun initialize() {
         threeDSService = suspendCoroutine { continuation ->
             val service: ThreeDS2Service = UsdkThreeDS2ServiceImpl()
             val listener: BroadcastReceiver = object : BroadcastReceiver() {
@@ -96,49 +94,50 @@ internal class ThreeDSWrapperImpl(
         }
     }
 
-    override fun getWarnings(): List<MPThreeDSWarning> {
+    fun getWarnings(): List<MPThreeDSWarningResponse> {
         return threeDSService.warnings.map {
-            MPThreeDSWarning(
+            MPThreeDSWarningResponse(
                 id = it.id,
                 message = it.message,
-                severity = MPSeverity.getWaningByGrade(it.severity.ordinal)
+                severity = MPSeverityResponse.getWaningByGrade(it.severity.ordinal)
             )
         }
     }
 
-    override fun createTransaction(directoryServer: MPThreeDSDirectoryServer) {
+    fun createTransaction(paymentMethodId: String) {
+        val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
         transaction = threeDSService.createTransaction(
             directoryServer.directoryServerID,
             directoryServer.messageVersion,
         )
     }
 
-    override fun getAuthenticationRequestParameters(): ThreeDSAuthRequestParameters {
+    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams {
         return transaction.authenticationRequestParameters.run {
-            ThreeDSAuthRequestParameters(
-                sdkAppID,
-                deviceData,
-                sdkEphemeralPublicKey,
-                sdkReferenceNumber,
-                sdkTransactionID,
+            MPThreeDSRequestParams(
+                sdkAppId = sdkAppID,
+                deviceData = deviceData,
+                sdkEphemeralPublicKey = sdkEphemeralPublicKey,
+                sdkReferenceNumber = sdkReferenceNumber,
+                sdkTransactionId = sdkTransactionID
             )
         }
     }
 
-    override fun close() {
+    fun close() {
         transaction.close()
     }
 
-    override suspend fun doChallenge(
+    suspend fun doChallenge(
         activity: Activity,
-        authenticationResponse: MPThreeDSAuthenticationModel,
+        authenticationParams: MPThreeDSAuthenticationParams,
         timeout: Int
     ): MPThreeDSChallengeResult {
         val threeDSChallengeParameters = ChallengeParameters().apply {
-            this.set3DSServerTransactionID(authenticationResponse.threeDSServerTransID)
-            acsRefNumber = authenticationResponse.acsReferenceNumber
-            acsSignedContent = authenticationResponse.acsSignedContent
-            acsTransactionID = authenticationResponse.acsTransID
+            this.set3DSServerTransactionID(authenticationParams.threeDSServerTransID)
+            acsRefNumber = authenticationParams.acsReferenceNumber
+            acsSignedContent = authenticationParams.acsSignedContent
+            acsTransactionID = authenticationParams.acsTransID
         }
 
         return try {
@@ -153,7 +152,7 @@ internal class ThreeDSWrapperImpl(
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnSuccess(
                                         result = MPThreeDSAuthenticated(
-                                            challengeResponse = authenticationResponse.toChallengeModel(),
+                                            challengeResponse = authenticationParams.toChallengeModel(),
                                             challengeCompleted = it.transactionStatus == "Y",
                                         )
                                     )
@@ -174,7 +173,8 @@ internal class ThreeDSWrapperImpl(
                                     MPThreeDSChallengeResult.OnError(
                                         error = MPThreeDSChallengeError(
                                             code = it.errorMessage.errorCode ?: "PROTOCOL_ERROR",
-                                            message = it.errorMessage.errorDescription ?: "Protocol error occurred",
+                                            message = it.errorMessage.errorDescription
+                                                ?: "Protocol error occurred",
                                             details = it.errorMessage.errorDetails ?: "",
                                         )
                                     )

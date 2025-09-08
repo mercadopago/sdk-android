@@ -1,18 +1,15 @@
-package com.mercadopago.sdk.android.threeds.domain.interactor
+package com.mercadopago.sdk.android.threeds.interactor
 
 import android.app.Activity
 import android.content.Context
-import com.mercadopago.sdk.android.threeds.MPThreeDSAuthRequestParameters
-import com.mercadopago.sdk.android.threeds.MPThreeDSAuthenticationResponse
-import com.mercadopago.sdk.android.threeds.MPThreeDSChallengeResult
-import com.mercadopago.sdk.android.threeds.MPThreeDSWarning
+import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
+import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
-import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSWrapper
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSAlreadyInitializedException
 import com.mercadopago.sdk.android.threeds.domain.exceptions.MPThreeDSNotInitializedException
-import com.mercadopago.sdk.android.threeds.domain.mappers.toInternal
-import com.mercadopago.sdk.android.threeds.domain.mappers.toPublic
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSDirectoryServer
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,10 +35,10 @@ import org.koin.core.Koin
 class MPThreeDS internal constructor(
     internal val koin: Koin,
 ) {
-    private val threeDSWrapper: ThreeDSWrapper by lazy { koin.get<ThreeDSWrapper>() }
+    private val threeDSRepository: ThreeDSRepository by lazy { koin.get<ThreeDSRepository>() }
 
     @Volatile
-    private var isWrapperInitialized = false
+    private var isRepositoryInitialized = false
 
     /**
      * Companion object containing static methods for initialization and instance management.
@@ -55,7 +52,7 @@ class MPThreeDS internal constructor(
          * Call it inside the application class only once for your application.
          *
          * This method performs suspended initialization which is required for proper uSDK setup.
-         * The ThreeDSWrapper is also automatically initialized during this process.
+         * The repository and wrapper are automatically initialized during this process.
          *
          * @param context The application context
          */
@@ -67,15 +64,15 @@ class MPThreeDS internal constructor(
             val modulesProvider = MPThreeDSModulesProvider(context)
             val mpThreeDS = MPThreeDS(koin = modulesProvider.koinApp)
 
-            // Initialize the ThreeDSWrapper automatically
+            // Initialize the repository automatically
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    mpThreeDS.threeDSWrapper.initialize()
-                    mpThreeDS.isWrapperInitialized = true
+                    mpThreeDS.threeDSRepository.initialize()
+                    mpThreeDS.isRepositoryInitialized = true
                 } catch (e: Exception) {
                     // Log error but don't fail the initialization
-                    // The wrapper initialization can be retried later if needed
-                    mpThreeDS.isWrapperInitialized = false
+                    // The repository initialization can be retried later if needed
+                    mpThreeDS.isRepositoryInitialized = false
                 }
             }
 
@@ -94,13 +91,13 @@ class MPThreeDS internal constructor(
     }
 
     /**
-     * Checks if the ThreeDSWrapper has been successfully initialized.
+     * Checks if the ThreeDSRepository has been successfully initialized.
      * This can be used to verify that the SDK is ready for use.
      *
-     * @return true if the wrapper is initialized, false otherwise
+     * @return true if the repository is initialized, false otherwise
      */
     fun isInitialized(): Boolean {
-        return isWrapperInitialized
+        return isRepositoryInitialized
     }
 
     /**
@@ -109,7 +106,7 @@ class MPThreeDS internal constructor(
      * @return List of warnings from the 3DS SDK
      */
     fun getWarnings(): List<MPThreeDSWarning> {
-        return threeDSWrapper.getWarnings().map { it.toPublic() }
+        return threeDSRepository.getWarnings()
     }
 
     /**
@@ -118,8 +115,7 @@ class MPThreeDS internal constructor(
      * @param paymentMethodId The payment method ID to create transaction for
      */
     fun createTransaction(paymentMethodId: String) {
-        val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
-        threeDSWrapper.createTransaction(directoryServer)
+        threeDSRepository.createTransaction(paymentMethodId)
     }
 
     /**
@@ -127,32 +123,34 @@ class MPThreeDS internal constructor(
      *
      * @return Authentication request parameters needed for backend call
      */
-    fun getAuthenticationRequestParameters(): MPThreeDSAuthRequestParameters? {
-        return threeDSWrapper.getAuthenticationRequestParameters()?.toPublic()
+    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? {
+        return threeDSRepository.getAuthenticationRequestParameters()
     }
 
     /**
      * Performs the challenge flow with the provided authentication response.
      *
      * @param activity The activity context for displaying the challenge UI
-     * @param authenticationResponse The response from MercadoPago backend
+     * @param authentication The response from MercadoPago backend
      * @param timeout Challenge timeout limit
      * @return Challenge result
      */
     suspend fun doChallenge(
         activity: Activity,
-        authenticationResponse: MPThreeDSAuthenticationResponse,
+        authentication: MPThreeDSAuthenticationModel,
         timeout: Int = 10
     ): MPThreeDSChallengeResult {
-        val internalResponse = authenticationResponse.toInternal()
-        val internalResult = threeDSWrapper.doChallenge(activity, internalResponse, timeout)
-        return internalResult.toPublic()
+        return threeDSRepository.doChallenge(
+            activity = activity,
+            authenticationResponse = authentication,
+            timeout = timeout
+        )
     }
 
     /**
      * Closes the current 3DS transaction and releases resources.
      */
     fun close() {
-        threeDSWrapper.close()
+        threeDSRepository.close()
     }
 }

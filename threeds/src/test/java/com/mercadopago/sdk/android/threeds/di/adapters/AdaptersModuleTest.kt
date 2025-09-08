@@ -1,8 +1,7 @@
 package com.mercadopago.sdk.android.threeds.di.adapters
 
 import android.content.Context
-import com.mercadopago.sdk.android.threeds.data.adapter.ThreeDSWrapperImpl
-import com.mercadopago.sdk.android.threeds.domain.adapter.ThreeDSWrapper
+import com.mercadopago.sdk.android.threeds.data.wrapper.ThreeDSWrapper
 import io.mockk.mockk
 import org.junit.Test
 import org.koin.core.context.startKoin
@@ -28,7 +27,7 @@ internal class AdaptersModuleTest : KoinTest {
 
         // Then
         assertNotNull(adapter)
-        assertTrue(adapter is ThreeDSWrapperImpl)
+        assertTrue(adapter is ThreeDSWrapper)
 
         // Clean up
         stopKoin()

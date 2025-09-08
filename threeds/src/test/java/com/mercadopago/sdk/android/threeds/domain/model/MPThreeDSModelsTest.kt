@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.threeds.domain.model
 
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthRequestParameters
-import com.mercadopago.sdk.android.threeds.domain.model.params.ThreeDSAuthenticationParams
+import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
+import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParameters
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -83,7 +83,7 @@ internal class MPThreeDSModelsTest {
         val acsSignedContent = "acs_signed_content"
 
         // When
-        val authModel = MPThreeDSAuthenticationModel(
+        val authModel = MPThreeDSAuthenticationParams(
             response,
             threeDSServerTransID,
             acsReferenceNumber,

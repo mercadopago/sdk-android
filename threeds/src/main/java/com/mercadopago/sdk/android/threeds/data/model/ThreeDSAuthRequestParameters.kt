@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.threeds.domain.model.params
+package com.mercadopago.sdk.android.threeds.data.model
 
 internal data class ThreeDSAuthRequestParameters(
     val sdkAppId: String,

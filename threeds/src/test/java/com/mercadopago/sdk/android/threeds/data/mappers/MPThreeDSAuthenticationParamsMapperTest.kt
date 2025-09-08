@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.threeds.data.datasource.mappers.toModel
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class MPThreeDSAuthenticationResponseMapperTest {
+internal class MPThreeDSAuthenticationParamsMapperTest {
 
     @Test
     fun `when MPThreeDSAuthenticationResponse is mapped to model Then should map all fields correctly`() {
