@@ -37,7 +37,7 @@ android {
 
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
-        version = CoreMethodsSDKConfig.VERSION_NAME
+        version = ThreeDSSDKConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -45,9 +45,21 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = false // Keep false for library modules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            isJniDebuggable = false
+            isRenderscriptDebuggable = false
+            isPseudoLocalesEnabled = false
+        }
+        debug {
+            isMinifyEnabled = false
+            // Keep ProGuard rules for debug builds to catch issues early
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro",
             )
         }
@@ -68,7 +80,7 @@ ksp {
 
 dependencies {
 
-    implementation(files("../libs/uSDK-MC-android-6.6.71.aar"))
+    implementation(files("../libs/mc-3ds-sdk-android-6.6.81.aar"))
 
     // 3DS SDK dependencies
     implementation("com.google.code.gson:gson:2.8.1")

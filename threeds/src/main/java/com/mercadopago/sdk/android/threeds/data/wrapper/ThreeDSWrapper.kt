@@ -95,7 +95,6 @@ internal class ThreeDSWrapper(private val context: Context) {
         }
     }
 
-
     fun getWarnings(): List<MPThreeDSWarningResponse> {
         return threeDSService.warnings.map {
             MPThreeDSWarningResponse(

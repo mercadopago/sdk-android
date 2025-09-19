@@ -12,7 +12,6 @@ internal fun provideWrapperModule(context: Context): Module =
     module {
         single<ThreeDSWrapper> {
             val wrapper = ThreeDSWrapper(context)
-
             // Initialize wrapper automatically when created by Koin
             CoroutineScope(Dispatchers.IO).launch {
                 try {

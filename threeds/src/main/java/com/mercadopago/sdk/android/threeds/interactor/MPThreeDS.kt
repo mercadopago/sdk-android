@@ -15,9 +15,6 @@ import org.koin.core.Koin
  *
  * Usage:
  * ```kotlin
- * // Initialize in Application class with context for uSDK integration
- * MPThreeDS.initialize(context)
- *
  * // Use in your activity with individual methods
  * val threeDS = MercadoPagoSDK.getInstance().threeDS
  * ```
@@ -42,7 +39,6 @@ class MPThreeDS internal constructor(
          * Get the current instance of the MPThreeDS with a specific context.
          * This method is used for initialization.
          *
-         * @param context The application context
          * @return The current instance of the MPThreeDS.
          */
         fun getInstance(): MPThreeDS {
