@@ -7,7 +7,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPThreeDSRequestParamsTest {
-
     @Test
     fun `MPThreeDSRequestParams should create instance with all properties`() {
         // Arrange
@@ -23,7 +22,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = deviceData,
             sdkEphemeralPublicKey = sdkEphemeralPublicKey,
             sdkReferenceNumber = sdkReferenceNumber,
-            sdkTransactionId = sdkTransactionId
+            sdkTransactionId = sdkTransactionId,
         )
 
         // Assert
@@ -42,7 +41,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "",
             sdkEphemeralPublicKey = "",
             sdkReferenceNumber = "",
-            sdkTransactionId = ""
+            sdkTransactionId = "",
         )
 
         // Assert
@@ -64,7 +63,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = longString,
             sdkEphemeralPublicKey = longString,
             sdkReferenceNumber = longString,
-            sdkTransactionId = longString
+            sdkTransactionId = longString,
         )
 
         // Assert
@@ -86,7 +85,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = specialChars,
             sdkEphemeralPublicKey = specialChars,
             sdkReferenceNumber = specialChars,
-            sdkTransactionId = specialChars
+            sdkTransactionId = specialChars,
         )
 
         // Assert
@@ -105,7 +104,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         val requestParams2 = MPThreeDSRequestParams(
@@ -113,7 +112,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         val requestParams3 = MPThreeDSRequestParams(
@@ -121,7 +120,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         // Act & Assert
@@ -138,7 +137,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         // Act
@@ -161,7 +160,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         // Act
@@ -186,7 +185,7 @@ class MPThreeDSRequestParamsTest {
             deviceData = unicodeString,
             sdkEphemeralPublicKey = unicodeString,
             sdkReferenceNumber = unicodeString,
-            sdkTransactionId = unicodeString
+            sdkTransactionId = unicodeString,
         )
 
         // Assert

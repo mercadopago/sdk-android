@@ -7,14 +7,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ThreeDSWarningMapperTest {
-
     @Test
     fun `toModel should map MPThreeDSWarningResponse correctly`() {
         // Arrange
         val inputWarningResponse = MPThreeDSWarningResponse(
             id = "warning-id-123",
             message = "This is a warning message",
-            severity = MPSeverityResponse.HIGH
+            severity = MPSeverityResponse.HIGH,
         )
 
         // Act
@@ -32,7 +31,7 @@ class ThreeDSWarningMapperTest {
         val inputWarningResponse = MPThreeDSWarningResponse(
             id = "",
             message = "",
-            severity = MPSeverityResponse.NONE
+            severity = MPSeverityResponse.NONE,
         )
 
         // Act
@@ -99,7 +98,7 @@ class ThreeDSWarningMapperTest {
             MPSeverityResponse.LOW to MPThreeDSSeverity.LOW,
             MPSeverityResponse.MEDIUM to MPThreeDSSeverity.MEDIUM,
             MPSeverityResponse.HIGH to MPThreeDSSeverity.HIGH,
-            MPSeverityResponse.NONE to MPThreeDSSeverity.NONE
+            MPSeverityResponse.NONE to MPThreeDSSeverity.NONE,
         )
 
         // Act & Assert
@@ -119,7 +118,7 @@ class ThreeDSWarningMapperTest {
         val inputWarningResponse = MPThreeDSWarningResponse(
             id = "long-message-warning",
             message = longMessage,
-            severity = MPSeverityResponse.MEDIUM
+            severity = MPSeverityResponse.MEDIUM,
         )
 
         // Act
@@ -137,7 +136,7 @@ class ThreeDSWarningMapperTest {
         val inputWarningResponse = MPThreeDSWarningResponse(
             id = "warning-!@#$%^&*()",
             message = "Message with special chars: <>&\"'`~",
-            severity = MPSeverityResponse.LOW
+            severity = MPSeverityResponse.LOW,
         )
 
         // Act

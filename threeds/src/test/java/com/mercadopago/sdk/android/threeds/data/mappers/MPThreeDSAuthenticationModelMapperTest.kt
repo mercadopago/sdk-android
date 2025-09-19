@@ -5,7 +5,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MPThreeDSAuthenticationModelMapperTest {
-
     @Test
     fun `toChallengeModel should map all properties correctly`() {
         // Arrange
@@ -15,7 +14,7 @@ class MPThreeDSAuthenticationModelMapperTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         // Act
@@ -38,7 +37,7 @@ class MPThreeDSAuthenticationModelMapperTest {
             acsReferenceNumber = "",
             dsTransID = "",
             acsTransID = "",
-            acsSignedContent = ""
+            acsSignedContent = "",
         )
 
         // Act
@@ -61,7 +60,7 @@ class MPThreeDSAuthenticationModelMapperTest {
             acsReferenceNumber = "acs-ref-&*()_+",
             dsTransID = "ds-trans-{}|:<>?",
             acsTransID = "acs-trans-[]\\;'\".,/",
-            acsSignedContent = "signed-content-~`"
+            acsSignedContent = "signed-content-~`",
         )
 
         // Act

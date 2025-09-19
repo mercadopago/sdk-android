@@ -8,7 +8,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPThreeDSChallengeErrorTest {
-
     @Test
     fun `MPThreeDSChallengeError should create instance with all properties`() {
         // Arrange
@@ -22,7 +21,7 @@ class MPThreeDSChallengeErrorTest {
             code = code,
             message = message,
             details = details,
-            cause = cause
+            cause = cause,
         )
 
         // Assert
@@ -41,7 +40,7 @@ class MPThreeDSChallengeErrorTest {
         // Act
         val error = MPThreeDSChallengeError(
             code = code,
-            message = message
+            message = message,
         )
 
         // Assert
@@ -56,7 +55,7 @@ class MPThreeDSChallengeErrorTest {
         // Arrange
         val error = MPThreeDSChallengeError(
             code = "TEST_ERROR",
-            message = "Test error message"
+            message = "Test error message",
         )
 
         // Act & Assert
@@ -70,7 +69,7 @@ class MPThreeDSChallengeErrorTest {
         val error = MPThreeDSChallengeError(
             code = "",
             message = "",
-            details = ""
+            details = "",
         )
 
         // Assert
@@ -113,7 +112,7 @@ class MPThreeDSChallengeErrorTest {
         val exceptions = listOf(
             IllegalArgumentException("Invalid argument"),
             NullPointerException("Null pointer"),
-            IllegalStateException("Invalid state")
+            IllegalStateException("Invalid state"),
         )
 
         // Act & Assert
@@ -221,7 +220,7 @@ class MPThreeDSChallengeErrorTest {
         // Arrange
         val error = MPThreeDSChallengeError(
             code = "TEST_ERROR",
-            message = "Test error for stack trace"
+            message = "Test error for stack trace",
         )
 
         // Act & Assert

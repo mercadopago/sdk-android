@@ -9,7 +9,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPThreeDSChallengeResultTest {
-
     @Test
     fun `OnSuccess should contain MPThreeDSAuthenticated result`() {
         // Arrange
@@ -18,12 +17,12 @@ class MPThreeDSChallengeResultTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         val authenticated = MPThreeDSAuthenticated(
             challengeResponse = challengeModel,
-            challengeCompleted = true
+            challengeCompleted = true,
         )
 
         // Act
@@ -44,12 +43,12 @@ class MPThreeDSChallengeResultTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         val authenticated = MPThreeDSAuthenticated(
             challengeResponse = challengeModel,
-            challengeCompleted = false
+            challengeCompleted = false,
         )
 
         // Act
@@ -65,7 +64,7 @@ class MPThreeDSChallengeResultTest {
         val error = MPThreeDSChallengeError(
             code = "PROTOCOL_ERROR",
             message = "Protocol error occurred during challenge",
-            details = "Additional error details"
+            details = "Additional error details",
         )
 
         // Act
@@ -84,7 +83,7 @@ class MPThreeDSChallengeResultTest {
         // Arrange
         val error = MPThreeDSChallengeError(
             code = "RUNTIME_ERROR",
-            message = "Runtime error occurred"
+            message = "Runtime error occurred",
         )
 
         // Act
@@ -126,7 +125,7 @@ class MPThreeDSChallengeResultTest {
             acsReferenceNumber = "test",
             dsTransID = "test",
             acsTransID = "test",
-            acsSignedContent = "test"
+            acsSignedContent = "test",
         )
 
         val authenticated = MPThreeDSAuthenticated(challengeModel, true)
@@ -136,7 +135,7 @@ class MPThreeDSChallengeResultTest {
             MPThreeDSChallengeResult.OnSuccess(authenticated),
             MPThreeDSChallengeResult.OnError(error),
             MPThreeDSChallengeResult.OnCancel,
-            MPThreeDSChallengeResult.OnTimedOut
+            MPThreeDSChallengeResult.OnTimedOut,
         )
 
         // Act & Assert
@@ -173,7 +172,7 @@ class MPThreeDSChallengeResultTest {
             MPThreeDSChallengeResult.OnSuccess(authenticated),
             MPThreeDSChallengeResult.OnError(error),
             MPThreeDSChallengeResult.OnCancel,
-            MPThreeDSChallengeResult.OnTimedOut
+            MPThreeDSChallengeResult.OnTimedOut,
         )
 
         // Act & Assert
@@ -188,7 +187,7 @@ class MPThreeDSChallengeResultTest {
             assertNotNull("Result type should not be null", resultType)
             assertTrue(
                 "Result type should be valid",
-                listOf("success", "error", "cancel", "timeout").contains(resultType)
+                listOf("success", "error", "cancel", "timeout").contains(resultType),
             )
         }
     }

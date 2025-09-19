@@ -6,7 +6,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPSeverityResponseTest {
-
     @Test
     fun `MPSeverityResponse should have all expected values`() {
         // Arrange
@@ -14,7 +13,7 @@ class MPSeverityResponseTest {
             MPSeverityResponse.LOW,
             MPSeverityResponse.MEDIUM,
             MPSeverityResponse.HIGH,
-            MPSeverityResponse.NONE
+            MPSeverityResponse.NONE,
         )
 
         // Act
@@ -91,7 +90,7 @@ class MPSeverityResponseTest {
             0 to MPSeverityResponse.LOW,
             1 to MPSeverityResponse.MEDIUM,
             2 to MPSeverityResponse.HIGH,
-            3 to MPSeverityResponse.NONE
+            3 to MPSeverityResponse.NONE,
         )
 
         // Act & Assert
@@ -136,7 +135,6 @@ class MPSeverityResponseTest {
 
     @Test
     fun `enum constructor should accept grade parameter`() {
-
         // Act & Assert
         assertNotNull(MPSeverityResponse.LOW)
         assertNotNull(MPSeverityResponse.MEDIUM)

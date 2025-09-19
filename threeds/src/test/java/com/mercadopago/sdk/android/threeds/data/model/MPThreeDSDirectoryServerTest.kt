@@ -6,7 +6,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPThreeDSDirectoryServerTest {
-
     @Test
     fun `VISA should have correct directory server ID and message version`() {
         // Arrange & Act
@@ -125,12 +124,12 @@ class MPThreeDSDirectoryServerTest {
         // Assert
         assertEquals(
             MPThreeDSDirectoryServer.MASTERCARD,
-            visaUppercase
+            visaUppercase,
         ) // Should default to MASTERCARD since "VISA" != "visa"
         assertEquals(MPThreeDSDirectoryServer.VISA, visaLowercase)
         assertEquals(
             MPThreeDSDirectoryServer.MASTERCARD,
-            visaMixedCase
+            visaMixedCase,
         ) // Should default to MASTERCARD since "ViSa" != "visa"
     }
 
@@ -144,9 +143,9 @@ class MPThreeDSDirectoryServerTest {
             "master" to MPThreeDSDirectoryServer.MASTERCARD,
             "amex" to MPThreeDSDirectoryServer.AMEX,
             "american_express" to MPThreeDSDirectoryServer.AMEX,
-            "discover" to MPThreeDSDirectoryServer.MASTERCARD, // Default
-            "jcb" to MPThreeDSDirectoryServer.MASTERCARD, // Default
-            "diners" to MPThreeDSDirectoryServer.MASTERCARD, // Default
+            "discover" to MPThreeDSDirectoryServer.MASTERCARD,
+            "jcb" to MPThreeDSDirectoryServer.MASTERCARD,
+            "diners" to MPThreeDSDirectoryServer.MASTERCARD,
         )
 
         // Act & Assert
@@ -162,7 +161,7 @@ class MPThreeDSDirectoryServerTest {
         val allDirectoryServers = listOf(
             MPThreeDSDirectoryServer.VISA,
             MPThreeDSDirectoryServer.MASTERCARD,
-            MPThreeDSDirectoryServer.AMEX
+            MPThreeDSDirectoryServer.AMEX,
         )
 
         // Act & Assert

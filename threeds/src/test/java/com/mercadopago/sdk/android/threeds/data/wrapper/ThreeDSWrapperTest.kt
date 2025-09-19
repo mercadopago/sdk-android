@@ -7,7 +7,6 @@ import org.junit.Before
 import org.junit.Test
 
 class ThreeDSWrapperTest {
-
     private lateinit var mockContext: Context
     private lateinit var threeDSWrapper: ThreeDSWrapper
 

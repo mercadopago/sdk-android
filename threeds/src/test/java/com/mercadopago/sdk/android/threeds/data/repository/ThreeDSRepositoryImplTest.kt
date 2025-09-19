@@ -22,7 +22,6 @@ import org.junit.Before
 import org.junit.Test
 
 class ThreeDSRepositoryImplTest {
-
     private lateinit var mockThreeDSWrapper: ThreeDSWrapper
     private lateinit var threeDSRepository: ThreeDSRepositoryImpl
 
@@ -39,13 +38,13 @@ class ThreeDSRepositoryImplTest {
             MPThreeDSWarningResponse(
                 id = "warning-1",
                 message = "First warning",
-                severity = MPSeverityResponse.HIGH
+                severity = MPSeverityResponse.HIGH,
             ),
             MPThreeDSWarningResponse(
                 id = "warning-2",
                 message = "Second warning",
-                severity = MPSeverityResponse.LOW
-            )
+                severity = MPSeverityResponse.LOW,
+            ),
         )
 
         every { mockThreeDSWrapper.getWarnings() } returns mockWarningResponses
@@ -60,7 +59,7 @@ class ThreeDSRepositoryImplTest {
         assertEquals("First warning", actualWarnings[0].message)
         assertEquals(
             com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity.HIGH,
-            actualWarnings[0].severity
+            actualWarnings[0].severity,
         )
 
         assertEquals("warning-2", actualWarnings[1].id)
@@ -131,7 +130,7 @@ class ThreeDSRepositoryImplTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         every { mockThreeDSWrapper.getAuthenticationRequestParameters() } returns expectedRequestParams
@@ -152,7 +151,7 @@ class ThreeDSRepositoryImplTest {
             deviceData = "test-device-data",
             sdkEphemeralPublicKey = "test-public-key",
             sdkReferenceNumber = "test-ref-number",
-            sdkTransactionId = "test-transaction-id"
+            sdkTransactionId = "test-transaction-id",
         )
 
         every { mockThreeDSWrapper.getAuthenticationRequestParameters() } returns expectedRequestParams
@@ -175,7 +174,7 @@ class ThreeDSRepositoryImplTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
         val timeout = 30
 
@@ -186,17 +185,17 @@ class ThreeDSRepositoryImplTest {
                     acsReferenceNumber = "acs-ref-456",
                     dsTransID = "ds-trans-789",
                     acsTransID = "acs-trans-101",
-                    acsSignedContent = "signed-content-abc"
+                    acsSignedContent = "signed-content-abc",
                 ),
-                challengeCompleted = true
-            )
+                challengeCompleted = true,
+            ),
         )
 
         coEvery {
             mockThreeDSWrapper.doChallenge(
                 activity = mockActivity,
                 authenticationParams = any<MPThreeDSAuthenticationParams>(),
-                timeout = timeout
+                timeout = timeout,
             )
         } returns expectedChallengeResult
 
@@ -204,7 +203,7 @@ class ThreeDSRepositoryImplTest {
         val actualResult = threeDSRepository.doChallenge(
             activity = mockActivity,
             authenticationResponse = authenticationModel,
-            timeout = timeout
+            timeout = timeout,
         )
 
         // Assert
@@ -221,7 +220,7 @@ class ThreeDSRepositoryImplTest {
                         params.acsTransID == "acs-trans-101" &&
                         params.acsSignedContent == "signed-content-abc"
                 },
-                timeout = timeout
+                timeout = timeout,
             )
         }
     }
@@ -236,7 +235,7 @@ class ThreeDSRepositoryImplTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
         val timeout = 10
 
@@ -244,7 +243,7 @@ class ThreeDSRepositoryImplTest {
             mockThreeDSWrapper.doChallenge(
                 activity = mockActivity,
                 authenticationParams = any<MPThreeDSAuthenticationParams>(),
-                timeout = timeout
+                timeout = timeout,
             )
         } returns MPThreeDSChallengeResult.OnCancel
 
@@ -252,7 +251,7 @@ class ThreeDSRepositoryImplTest {
         val actualResult = threeDSRepository.doChallenge(
             activity = mockActivity,
             authenticationResponse = authenticationModel,
-            timeout = timeout
+            timeout = timeout,
         )
 
         // Assert
@@ -269,7 +268,7 @@ class ThreeDSRepositoryImplTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
         val timeout = 5
 
@@ -277,7 +276,7 @@ class ThreeDSRepositoryImplTest {
             mockThreeDSWrapper.doChallenge(
                 activity = mockActivity,
                 authenticationParams = any<MPThreeDSAuthenticationParams>(),
-                timeout = timeout
+                timeout = timeout,
             )
         } returns MPThreeDSChallengeResult.OnTimedOut
 
@@ -285,7 +284,7 @@ class ThreeDSRepositoryImplTest {
         val actualResult = threeDSRepository.doChallenge(
             activity = mockActivity,
             authenticationResponse = authenticationModel,
-            timeout = timeout
+            timeout = timeout,
         )
 
         // Assert

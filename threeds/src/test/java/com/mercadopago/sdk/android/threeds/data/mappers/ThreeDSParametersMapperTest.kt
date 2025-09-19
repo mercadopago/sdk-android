@@ -6,7 +6,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ThreeDSParametersMapperTest {
-
     @Test
     fun `toModel should map ThreeDSAuthRequestParameters correctly`() {
         // Arrange
@@ -15,7 +14,7 @@ class ThreeDSParametersMapperTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         // Act
@@ -37,7 +36,7 @@ class ThreeDSParametersMapperTest {
             deviceData = "",
             sdkEphemeralPublicKey = "",
             sdkReferenceNumber = "",
-            sdkTransactionId = ""
+            sdkTransactionId = "",
         )
 
         // Act
@@ -60,7 +59,7 @@ class ThreeDSParametersMapperTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         // Act
@@ -84,7 +83,7 @@ class ThreeDSParametersMapperTest {
             acsReferenceNumber = "",
             dsTransID = "",
             acsTransID = "",
-            acsSignedContent = ""
+            acsSignedContent = "",
         )
 
         // Act
@@ -108,7 +107,7 @@ class ThreeDSParametersMapperTest {
             acsReferenceNumber = "ref-456",
             dsTransID = "ds-789",
             acsTransID = "acs-101",
-            acsSignedContent = "content-abc"
+            acsSignedContent = "content-abc",
         )
 
         val authorizedModel = challengeModel.copy(response = "AUTHORIZED")

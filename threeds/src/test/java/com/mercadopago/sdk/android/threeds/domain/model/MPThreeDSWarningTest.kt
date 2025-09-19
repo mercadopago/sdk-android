@@ -6,7 +6,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MPThreeDSWarningTest {
-
     @Test
     fun `MPThreeDSWarning should create instance with all properties`() {
         // Arrange
@@ -18,7 +17,7 @@ class MPThreeDSWarningTest {
         val warning = MPThreeDSWarning(
             id = id,
             message = message,
-            severity = severity
+            severity = severity,
         )
 
         // Assert
@@ -33,7 +32,7 @@ class MPThreeDSWarningTest {
         val warning = MPThreeDSWarning(
             id = "",
             message = "",
-            severity = MPThreeDSSeverity.NONE
+            severity = MPThreeDSSeverity.NONE,
         )
 
         // Assert
@@ -53,7 +52,7 @@ class MPThreeDSWarningTest {
         val warning = MPThreeDSWarning(
             id = "long-message-warning",
             message = longMessage,
-            severity = MPThreeDSSeverity.MEDIUM
+            severity = MPThreeDSSeverity.MEDIUM,
         )
 
         // Assert
@@ -72,7 +71,7 @@ class MPThreeDSWarningTest {
         val warning = MPThreeDSWarning(
             id = specialId,
             message = specialMessage,
-            severity = MPThreeDSSeverity.LOW
+            severity = MPThreeDSSeverity.LOW,
         )
 
         // Assert
@@ -87,19 +86,19 @@ class MPThreeDSWarningTest {
         val warning1 = MPThreeDSWarning(
             id = "warning-1",
             message = "Test message",
-            severity = MPThreeDSSeverity.HIGH
+            severity = MPThreeDSSeverity.HIGH,
         )
 
         val warning2 = MPThreeDSWarning(
             id = "warning-1",
             message = "Test message",
-            severity = MPThreeDSSeverity.HIGH
+            severity = MPThreeDSSeverity.HIGH,
         )
 
         val warning3 = MPThreeDSWarning(
             id = "warning-2",
             message = "Test message",
-            severity = MPThreeDSSeverity.HIGH
+            severity = MPThreeDSSeverity.HIGH,
         )
 
         // Act & Assert
@@ -115,7 +114,7 @@ class MPThreeDSWarningTest {
             MPThreeDSSeverity.LOW,
             MPThreeDSSeverity.MEDIUM,
             MPThreeDSSeverity.HIGH,
-            MPThreeDSSeverity.NONE
+            MPThreeDSSeverity.NONE,
         )
 
         // Act

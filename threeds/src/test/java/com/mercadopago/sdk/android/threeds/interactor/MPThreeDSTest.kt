@@ -25,7 +25,6 @@ import org.junit.Test
 import org.koin.core.Koin
 
 class MPThreeDSTest {
-
     private lateinit var mockKoin: Koin
     private lateinit var mockRepository: ThreeDSRepository
     private lateinit var mpThreeDS: MPThreeDS
@@ -45,13 +44,13 @@ class MPThreeDSTest {
             MPThreeDSWarning(
                 id = "warning-1",
                 message = "First warning message",
-                severity = MPThreeDSSeverity.HIGH
+                severity = MPThreeDSSeverity.HIGH,
             ),
             MPThreeDSWarning(
                 id = "warning-2",
                 message = "Second warning message",
-                severity = MPThreeDSSeverity.MEDIUM
-            )
+                severity = MPThreeDSSeverity.MEDIUM,
+            ),
         )
 
         every { mockRepository.getWarnings() } returns expectedWarnings
@@ -117,7 +116,7 @@ class MPThreeDSTest {
             deviceData = "device-data-456",
             sdkEphemeralPublicKey = "public-key-789",
             sdkReferenceNumber = "ref-number-101",
-            sdkTransactionId = "transaction-id-202"
+            sdkTransactionId = "transaction-id-202",
         )
 
         every { mockRepository.getAuthenticationRequestParameters() } returns expectedParams
@@ -153,7 +152,7 @@ class MPThreeDSTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         val expectedResult = MPThreeDSChallengeResult.OnSuccess(
@@ -163,24 +162,24 @@ class MPThreeDSTest {
                     acsReferenceNumber = "acs-ref-456",
                     dsTransID = "ds-trans-789",
                     acsTransID = "acs-trans-101",
-                    acsSignedContent = "signed-content-abc"
+                    acsSignedContent = "signed-content-abc",
                 ),
-                challengeCompleted = true
-            )
+                challengeCompleted = true,
+            ),
         )
 
         coEvery {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = 10
+                timeout = 10,
             )
         } returns expectedResult
 
         // Act
         val actualResult = mpThreeDS.doChallenge(
             activity = mockActivity,
-            authentication = authenticationModel
+            authentication = authenticationModel,
         )
 
         // Assert
@@ -189,7 +188,7 @@ class MPThreeDSTest {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = 10
+                timeout = 10,
             )
         }
     }
@@ -204,7 +203,7 @@ class MPThreeDSTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
         val customTimeout = 30
 
@@ -214,7 +213,7 @@ class MPThreeDSTest {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = customTimeout
+                timeout = customTimeout,
             )
         } returns expectedResult
 
@@ -222,7 +221,7 @@ class MPThreeDSTest {
         val actualResult = mpThreeDS.doChallenge(
             activity = mockActivity,
             authentication = authenticationModel,
-            timeout = customTimeout
+            timeout = customTimeout,
         )
 
         // Assert
@@ -231,7 +230,7 @@ class MPThreeDSTest {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = customTimeout
+                timeout = customTimeout,
             )
         }
     }
@@ -246,21 +245,21 @@ class MPThreeDSTest {
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
-            acsSignedContent = "signed-content-abc"
+            acsSignedContent = "signed-content-abc",
         )
 
         coEvery {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = 10
+                timeout = 10,
             )
         } returns MPThreeDSChallengeResult.OnTimedOut
 
         // Act
         val actualResult = mpThreeDS.doChallenge(
             activity = mockActivity,
-            authentication = authenticationModel
+            authentication = authenticationModel,
         )
 
         // Assert
