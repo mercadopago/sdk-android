@@ -1,12 +1,12 @@
 package com.mercadopago.sdk.android.threeds.interactor
 
 import android.app.Activity
-import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
-import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
+import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
+import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import org.koin.core.Koin
 
 /**
@@ -51,7 +51,6 @@ class MPThreeDS internal constructor(
             }
         }
     }
-
 
     /**
      * Gets warnings from the 3DS SDK after initialization.

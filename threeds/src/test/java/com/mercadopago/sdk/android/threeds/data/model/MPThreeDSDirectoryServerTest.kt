@@ -1,7 +1,9 @@
 package com.mercadopago.sdk.android.threeds.data.model
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class MPThreeDSDirectoryServerTest {
 
@@ -121,9 +123,15 @@ class MPThreeDSDirectoryServerTest {
         val visaMixedCase = MPThreeDSDirectoryServer.paymentMethodDirectoryServer("ViSa")
 
         // Assert
-        assertEquals(MPThreeDSDirectoryServer.MASTERCARD, visaUppercase) // Should default to MASTERCARD since "VISA" != "visa"
+        assertEquals(
+            MPThreeDSDirectoryServer.MASTERCARD,
+            visaUppercase
+        ) // Should default to MASTERCARD since "VISA" != "visa"
         assertEquals(MPThreeDSDirectoryServer.VISA, visaLowercase)
-        assertEquals(MPThreeDSDirectoryServer.MASTERCARD, visaMixedCase) // Should default to MASTERCARD since "ViSa" != "visa"
+        assertEquals(
+            MPThreeDSDirectoryServer.MASTERCARD,
+            visaMixedCase
+        ) // Should default to MASTERCARD since "ViSa" != "visa"
     }
 
     @Test

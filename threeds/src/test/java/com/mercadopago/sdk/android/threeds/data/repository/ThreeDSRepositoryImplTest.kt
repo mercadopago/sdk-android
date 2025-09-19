@@ -5,20 +5,21 @@ import com.mercadopago.sdk.android.threeds.data.model.MPSeverityResponse
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSWarningResponse
 import com.mercadopago.sdk.android.threeds.data.wrapper.ThreeDSWrapper
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeModel
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.coVerify
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 
 class ThreeDSRepositoryImplTest {
 
@@ -57,7 +58,10 @@ class ThreeDSRepositoryImplTest {
 
         assertEquals("warning-1", actualWarnings[0].id)
         assertEquals("First warning", actualWarnings[0].message)
-        assertEquals(com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity.HIGH, actualWarnings[0].severity)
+        assertEquals(
+            com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity.HIGH,
+            actualWarnings[0].severity
+        )
 
         assertEquals("warning-2", actualWarnings[1].id)
         assertEquals("Second warning", actualWarnings[1].message)
@@ -211,11 +215,11 @@ class ThreeDSRepositoryImplTest {
                 activity = mockActivity,
                 authenticationParams = match<MPThreeDSAuthenticationParams> { params ->
                     params.response == "CHALLENGE" &&
-                    params.threeDSServerTransID == "server-trans-123" &&
-                    params.acsReferenceNumber == "acs-ref-456" &&
-                    params.dsTransID == "ds-trans-789" &&
-                    params.acsTransID == "acs-trans-101" &&
-                    params.acsSignedContent == "signed-content-abc"
+                        params.threeDSServerTransID == "server-trans-123" &&
+                        params.acsReferenceNumber == "acs-ref-456" &&
+                        params.dsTransID == "ds-trans-789" &&
+                        params.acsTransID == "acs-trans-101" &&
+                        params.acsSignedContent == "signed-content-abc"
                 },
                 timeout = timeout
             )

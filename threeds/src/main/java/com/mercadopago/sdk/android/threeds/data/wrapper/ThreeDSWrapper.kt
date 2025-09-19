@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.threeds.data.model.MPSeverityResponse
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSDirectoryServer
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSWarningResponse
-import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParameters
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeError
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
@@ -78,7 +77,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                             "ThreeDSWrapper",
                             "Failed to initialize SDK, code: $code, type: $type",
                         )
-                        //TODO - return a erro here
+                        // TODO - return a erro here
                         continuation.resume(service) // Resume even on error to prevent hanging
                     } else {
                         // Everything is okay, start using service
@@ -96,6 +95,12 @@ internal class ThreeDSWrapper(private val context: Context) {
         }
     }
 
+    /**
+     * Retrieves warnings from the ThreeDS service initialization.
+     * These warnings contain information about potential issues or configuration problems.
+     *
+     * @return List of warnings from the 3DS SDK
+     */
     fun getWarnings(): List<MPThreeDSWarningResponse> {
         return threeDSService.warnings.map {
             MPThreeDSWarningResponse(
@@ -106,6 +111,12 @@ internal class ThreeDSWrapper(private val context: Context) {
         }
     }
 
+    /**
+     * Creates a new 3DS transaction for the specified payment method.
+     * This transaction will be used for subsequent authentication and challenge operations.
+     *
+     * @param paymentMethodId The payment method ID (e.g., "visa", "mastercard") to create transaction for
+     */
     fun createTransaction(paymentMethodId: String) {
         val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
         transaction = threeDSService.createTransaction(
@@ -114,6 +125,12 @@ internal class ThreeDSWrapper(private val context: Context) {
         )
     }
 
+    /**
+     * Retrieves the authentication request parameters from the current transaction.
+     * These parameters are required to perform the authentication request to the backend.
+     *
+     * @return Authentication request parameters containing SDK information needed for 3DS flow
+     */
     fun getAuthenticationRequestParameters(): MPThreeDSRequestParams {
         return transaction.authenticationRequestParameters.run {
             MPThreeDSRequestParams(
@@ -126,10 +143,23 @@ internal class ThreeDSWrapper(private val context: Context) {
         }
     }
 
+    /**
+     * Closes the current 3DS transaction and releases associated resources.
+     * This should be called when the 3DS flow is completed or cancelled.
+     */
     fun close() {
         transaction.close()
     }
 
+    /**
+     * Performs the 3DS challenge flow with the provided authentication parameters.
+     * This method handles the challenge UI presentation and user interaction.
+     *
+     * @param activity The activity context where the challenge UI will be displayed
+     * @param authenticationParams Authentication parameters received from the backend
+     * @param timeout Challenge timeout in minutes (default: 10)
+     * @return Challenge result indicating success, error, cancellation, or timeout
+     */
     suspend fun doChallenge(
         activity: Activity,
         authenticationParams: MPThreeDSAuthenticationParams,

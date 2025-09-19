@@ -14,7 +14,6 @@ internal class ThreeDSRepositoryImpl(
     private val threeDSWrapper: ThreeDSWrapper
 ) : ThreeDSRepository {
 
-
     override fun getWarnings(): List<MPThreeDSWarning> {
         return threeDSWrapper.getWarnings().map { it.toModel() }
     }

@@ -1,23 +1,27 @@
 package com.mercadopago.sdk.android.threeds.interactor
 
 import android.app.Activity
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticated
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeModel
-import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity
+import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.coVerify
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 import org.koin.core.Koin
 
 class MPThreeDSTest {

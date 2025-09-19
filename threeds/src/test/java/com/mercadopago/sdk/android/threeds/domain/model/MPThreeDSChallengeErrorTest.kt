@@ -1,7 +1,11 @@
 package com.mercadopago.sdk.android.threeds.domain.model
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class MPThreeDSChallengeErrorTest {
 

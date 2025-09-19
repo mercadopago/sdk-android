@@ -3,8 +3,8 @@ package com.mercadopago.sdk.android.threeds.data.mappers
 import com.mercadopago.sdk.android.threeds.data.model.MPSeverityResponse
 import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSWarningResponse
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSSeverity
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 
 class ThreeDSWarningMapperTest {
 
@@ -113,8 +113,8 @@ class ThreeDSWarningMapperTest {
     fun `toModel should handle long warning messages`() {
         // Arrange
         val longMessage = "This is a very long warning message that contains multiple sentences. " +
-                "It might include details about what went wrong during the 3DS authentication process. " +
-                "The message should be preserved exactly as provided without any truncation."
+            "It might include details about what went wrong during the 3DS authentication process. " +
+            "The message should be preserved exactly as provided without any truncation."
 
         val inputWarningResponse = MPThreeDSWarningResponse(
             id = "long-message-warning",

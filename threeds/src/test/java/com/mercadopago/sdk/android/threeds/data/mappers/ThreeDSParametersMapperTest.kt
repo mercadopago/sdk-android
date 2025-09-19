@@ -1,10 +1,9 @@
 package com.mercadopago.sdk.android.threeds.data.mappers
 
-import com.mercadopago.sdk.android.threeds.data.model.MPThreeDSAuthenticationParams
 import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParameters
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 
 class ThreeDSParametersMapperTest {
 

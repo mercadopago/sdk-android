@@ -1,7 +1,12 @@
 package com.mercadopago.sdk.android.threeds.domain.model
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class MPThreeDSChallengeResultTest {
 
@@ -181,8 +186,10 @@ class MPThreeDSChallengeResultTest {
             }
 
             assertNotNull("Result type should not be null", resultType)
-            assertTrue("Result type should be valid",
-                listOf("success", "error", "cancel", "timeout").contains(resultType))
+            assertTrue(
+                "Result type should be valid",
+                listOf("success", "error", "cancel", "timeout").contains(resultType)
+            )
         }
     }
 }

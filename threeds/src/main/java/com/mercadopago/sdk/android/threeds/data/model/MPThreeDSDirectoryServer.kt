@@ -23,6 +23,13 @@ internal enum class MPThreeDSDirectoryServer(
     AMEX("A000000025", "2.1.0"), ;
 
     companion object {
+        /**
+         * Maps a payment method ID to the corresponding directory server.
+         * Returns MASTERCARD as default for unknown payment methods.
+         *
+         * @param paymentMethodId The payment method identifier (e.g., "visa", "mastercard", "amex")
+         * @return The corresponding MPThreeDSDirectoryServer enum value
+         */
         internal fun paymentMethodDirectoryServer(paymentMethodId: String): MPThreeDSDirectoryServer {
             return when (paymentMethodId) {
                 "visa", "debvisa" -> VISA

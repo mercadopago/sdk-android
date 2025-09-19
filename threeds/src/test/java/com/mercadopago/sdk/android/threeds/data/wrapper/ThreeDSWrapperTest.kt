@@ -1,10 +1,10 @@
 package com.mercadopago.sdk.android.threeds.data.wrapper
 
 import android.content.Context
-import io.mockk.*
+import io.mockk.mockk
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.Assert.*
 
 class ThreeDSWrapperTest {
 

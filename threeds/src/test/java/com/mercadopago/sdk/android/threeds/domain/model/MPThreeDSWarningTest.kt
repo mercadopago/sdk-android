@@ -1,7 +1,9 @@
 package com.mercadopago.sdk.android.threeds.domain.model
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.Assert.*
 
 class MPThreeDSWarningTest {
 
@@ -44,8 +46,8 @@ class MPThreeDSWarningTest {
     fun `MPThreeDSWarning should handle long messages`() {
         // Arrange
         val longMessage = "This is a very long warning message that contains multiple sentences and " +
-                "detailed information about what went wrong during the 3DS authentication process. " +
-                "It should be preserved exactly as provided without any truncation or modification."
+            "detailed information about what went wrong during the 3DS authentication process. " +
+            "It should be preserved exactly as provided without any truncation or modification."
 
         // Act
         val warning = MPThreeDSWarning(
