@@ -78,6 +78,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                             "ThreeDSWrapper",
                             "Failed to initialize SDK, code: $code, type: $type",
                         )
+                        //TODO - return a erro here
                         continuation.resume(service) // Resume even on error to prevent hanging
                     } else {
                         // Everything is okay, start using service
