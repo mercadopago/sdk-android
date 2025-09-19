@@ -136,9 +136,6 @@ class MPSeverityResponseTest {
 
     @Test
     fun `enum constructor should accept grade parameter`() {
-        // This test verifies that the enum constructor accepts a grade parameter
-        // We can't directly test the constructor, but we can verify the enum values exist
-        // and the getWaningByGrade method works with the expected grades
 
         // Act & Assert
         assertNotNull(MPSeverityResponse.LOW)

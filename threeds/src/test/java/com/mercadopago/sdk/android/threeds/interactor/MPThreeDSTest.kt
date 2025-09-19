@@ -173,7 +173,7 @@ class MPThreeDSTest {
             mockRepository.doChallenge(
                 activity = mockActivity,
                 authenticationResponse = authenticationModel,
-                timeout = 10 // Default timeout
+                timeout = 10
             )
         } returns expectedResult
 
@@ -281,7 +281,6 @@ class MPThreeDSTest {
 
     @Test
     fun `getInstance should return singleton instance`() {
-        // This test would require SDK initialization, so we'll test the constructor instead
         // Act
         val instance1 = MPThreeDS(mockKoin)
         val instance2 = MPThreeDS(mockKoin)
@@ -289,7 +288,6 @@ class MPThreeDSTest {
         // Assert
         assertNotNull(instance1)
         assertNotNull(instance2)
-        // They are different instances because we're calling constructor directly
         assertNotSame(instance1, instance2)
     }
 
