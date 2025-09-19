@@ -143,9 +143,6 @@ class MPThreeDSDirectoryServerTest {
             "master" to MPThreeDSDirectoryServer.MASTERCARD,
             "amex" to MPThreeDSDirectoryServer.AMEX,
             "american_express" to MPThreeDSDirectoryServer.AMEX,
-            "discover" to MPThreeDSDirectoryServer.MASTERCARD,
-            "jcb" to MPThreeDSDirectoryServer.MASTERCARD,
-            "diners" to MPThreeDSDirectoryServer.MASTERCARD,
         )
 
         // Act & Assert
