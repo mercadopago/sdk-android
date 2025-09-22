@@ -11,6 +11,7 @@ internal fun CardTokenResponse.toModel() =
     CardToken(
         token = this.id.toString(),
         publicKey = this.publicKey,
+        cardId = this.cardId,
         firstSixDigits = this.firstSixDigits,
         expirationMonth = this.expirationMonth,
         expirationYear = this.expirationYear,

@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.di.usecases
 
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
@@ -15,4 +16,5 @@ internal fun provideUseCaseModule(): Module =
         factory { GetIdentificationTypesUseCase(get()) }
         factory { GetCardIssuersUseCase(get()) }
         factory { GetPaymentMethodsUseCase(get()) }
+        factory { GenerateCardIdTokenUseCase(get()) }
     }

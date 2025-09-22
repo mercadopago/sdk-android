@@ -76,11 +76,6 @@ jobs:
           name: Install Dependencies
           command: ./gradlew dependencies
 
-      # PRE TEST
-      - run:
-          name: KLint Format
-          command: ./gradlew ktlintFormat
-
       # TEST STEP
       - run:
           name: Run Detekt

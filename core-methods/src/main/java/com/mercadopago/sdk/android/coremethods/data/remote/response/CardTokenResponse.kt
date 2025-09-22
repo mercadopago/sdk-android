@@ -7,6 +7,8 @@ internal data class CardTokenResponse(
     val id: String? = null,
     @SerializedName("public_key")
     val publicKey: String? = null,
+    @SerializedName("card_id")
+    val cardId: String? = null,
     @SerializedName("luhnValidation")
     val luhnValidation: Boolean? = null,
     @SerializedName("status")

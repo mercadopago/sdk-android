@@ -42,6 +42,11 @@ enum class MPTextColorType {
      *  Inverted: Text of the Inverted type
      */
     Inverted,
+
+    /**
+     *  Positive: Text of the Positive type
+     */
+    Positive,
 }
 
 /**
@@ -119,6 +124,10 @@ fun MPText(
         MPTextColorType.Inverted -> {
             MercadoPagoTheme.color.text.inverted
         }
+
+        MPTextColorType.Positive -> {
+            MercadoPagoTheme.color.feedback.positive
+        }
     }
 
     val style = when (textStyle) {
@@ -195,6 +204,11 @@ internal fun TextTittlePreview() {
                 colorType = MPTextColorType.Primary,
                 enabled = false,
             )
+            MPText(
+                text = "My Tittle Positive Text",
+                textStyle = MPTextStyle.Title,
+                colorType = MPTextColorType.Positive,
+            )
         }
     }
 }
@@ -238,6 +252,11 @@ internal fun TextBodyMediumSemiBoldPreview() {
                 textStyle = MPTextStyle.BodyMediumSemiBold,
                 colorType = MPTextColorType.Primary,
                 enabled = false,
+            )
+            MPText(
+                text = "My BodyMediumSemiBold Positive Text",
+                textStyle = MPTextStyle.BodyMediumSemiBold,
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -283,6 +302,11 @@ internal fun TextBodyMediumRegularPreview() {
                 colorType = MPTextColorType.Primary,
                 enabled = false,
             )
+            MPText(
+                text = "My BodyMediumRegular Positive Text",
+                textStyle = MPTextStyle.BodyMediumRegular,
+                colorType = MPTextColorType.Positive,
+            )
         }
     }
 }
@@ -326,6 +350,11 @@ internal fun TextBodySmallSemiBoldPreview() {
                 textStyle = MPTextStyle.BodySmallSemiBold,
                 colorType = MPTextColorType.Primary,
                 enabled = false,
+            )
+            MPText(
+                text = "My BodySmallSemiBold Positive Text",
+                textStyle = MPTextStyle.BodySmallSemiBold,
+                colorType = MPTextColorType.Positive,
             )
         }
     }
@@ -371,6 +400,11 @@ internal fun TextBodySmallRegularPreview() {
                 colorType = MPTextColorType.Primary,
                 enabled = false,
             )
+            MPText(
+                text = "My BodySmallRegular Positive Text",
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Positive,
+            )
         }
     }
 }
@@ -414,6 +448,11 @@ internal fun TextBodyExtraSmallSemiBoldPreview() {
                 textStyle = MPTextStyle.BodyExtraSmallSemiBold,
                 colorType = MPTextColorType.Primary,
                 enabled = false,
+            )
+            MPText(
+                text = "My BodyExtraSmallSemiBold Positive Text",
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Positive,
             )
         }
     }

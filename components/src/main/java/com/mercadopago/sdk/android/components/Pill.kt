@@ -1,0 +1,63 @@
+package com.mercadopago.sdk.android.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+
+private const val PILL_GROUP = "Pill"
+
+/**
+ * Pill Component
+ * @param text component text to be showed
+ * @param modifier component modifier
+ */
+@Composable
+fun Pill(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .height(MercadoPagoTheme.spacing.m)
+            .background(
+                color = MercadoPagoTheme.color.feedback.positiveSecondary,
+                shape = RoundedCornerShape(MercadoPagoTheme.spacing.m),
+            )
+            .padding(horizontal = MercadoPagoTheme.spacing.xs),
+    ) {
+        MPText(
+            text,
+            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+            colorType = MPTextColorType.Positive,
+        )
+    }
+}
+
+@Preview(name = "Pill - Green", group = PILL_GROUP)
+@Composable
+internal fun PillPreview() {
+    MercadoPagoTheme {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .background(Color.White)
+                .padding(20.dp),
+        ) {
+            Pill("Label")
+        }
+    }
+}

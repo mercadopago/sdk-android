@@ -21,6 +21,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
@@ -110,6 +111,7 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -118,6 +120,7 @@ class CoreMethods internal constructor(
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -127,7 +130,9 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess(),
+                    metricGenerateCardTokenCallSuccess(
+                        identityType = buyerIdentification.type,
+                    ),
                 )
             }
         }
@@ -180,8 +185,8 @@ class CoreMethods internal constructor(
         expirationDateState: PCIFieldState? = null,
         buyerIdentification: BuyerIdentification,
     ): Result<CardToken, ResultError> {
-        val result = koin.get<GenerateCardTokenUseCase>().invoke(
-            cardNumber = cardId,
+        val result = koin.get<GenerateCardIdTokenUseCase>().invoke(
+            cardId = cardId,
             expirationDate = expirationDateState?.input,
             securityCode = securityCodeState.input,
             buyerIdentification = buyerIdentification,
@@ -193,6 +198,8 @@ class CoreMethods internal constructor(
                     is ResultError.Request -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                isSavedCard = true,
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -201,6 +208,8 @@ class CoreMethods internal constructor(
                     is ResultError.Validation -> {
                         MPAnalytics.getInstance().trackMetric(
                             metricGenerateCardTokenCallError(
+                                isSavedCard = true,
+                                identityType = buyerIdentification.type,
                                 error = result.error.message,
                             ),
                         )
@@ -210,7 +219,7 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess(),
+                    metricGenerateCardTokenCallSuccess(isSavedCard = true, identityType = buyerIdentification.type),
                 )
             }
         }
