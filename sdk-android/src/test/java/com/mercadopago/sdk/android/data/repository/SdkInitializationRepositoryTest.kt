@@ -8,7 +8,6 @@ import com.mercadopago.sdk.android.domain.model.SiteId
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verifyOrder
 import io.mockk.verifySequence
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
