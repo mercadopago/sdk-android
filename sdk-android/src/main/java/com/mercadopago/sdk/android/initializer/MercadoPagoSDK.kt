@@ -91,8 +91,6 @@ class MercadoPagoSDK private constructor(
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val fetchSiteIdUseCase = modulesProvider.koinApp.get<FetchSiteIdUseCase>()
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
-                val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
-                setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 DeviceSDK.getInstance().execute(context)
                 MPAnalytics.initialize(
                     context = context,
