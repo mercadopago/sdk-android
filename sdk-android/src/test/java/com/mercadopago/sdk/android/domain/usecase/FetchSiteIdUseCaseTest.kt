@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.domain.usecase
 
 import app.cash.turbine.test
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.model.SiteId
 import com.mercadopago.sdk.android.domain.repository.SdkInitializationRepository
 import io.mockk.every
@@ -21,10 +22,11 @@ internal class FetchSiteIdUseCaseTest {
         // Given
         val siteId = SiteId("123")
         val publicKey = "public_key"
-        every { sdkInitializationRepository.fetchSiteId(publicKey) } returns flowOf(siteId)
+        val countryCode = CountryCode.ARG
+        every { sdkInitializationRepository.fetchSiteId(publicKey, countryCode) } returns flowOf(siteId)
 
         // When
-        val result = useCase(publicKey)
+        val result = useCase(publicKey, countryCode)
 
         // Then
         result.test {
@@ -38,12 +40,13 @@ internal class FetchSiteIdUseCaseTest {
         // Given
         val exception = Exception()
         val publicKey = "public_key"
+        val countryCode = CountryCode.BRA
         every {
-            sdkInitializationRepository.fetchSiteId(publicKey)
+            sdkInitializationRepository.fetchSiteId(publicKey, countryCode)
         } returns flow { throw exception }
 
         // When
-        val result = useCase(publicKey)
+        val result = useCase(publicKey, countryCode)
 
         // Then
         result.test {

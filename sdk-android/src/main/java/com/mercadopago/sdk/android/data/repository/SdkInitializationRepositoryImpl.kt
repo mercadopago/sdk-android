@@ -10,6 +10,8 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.timeout
@@ -25,16 +27,25 @@ internal class SdkInitializationRepositoryImpl(
 ) : SdkInitializationRepository {
 
     @OptIn(FlowPreview::class)
-    override fun fetchSiteId(publicKey: String): Flow<SiteId> {
-        return sdkInitializationRemoteDataSource.fetchSiteId(publicKey)
-            .retry(MAX_RETRY_COUNT)
-            .timeout(TIMEOUT.toDuration(DurationUnit.MILLISECONDS))
-            .onEach { siteId ->
-                sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
-            }
-            .catch { error ->
-                emitAll(sdkInitializationLocalDataSource.getSiteId(publicKey))
-            }
+    override fun fetchSiteId(publicKey: String, countryCode: CountryCode): Flow<SiteId> = flow {
+        val cachedSiteId: SiteId = sdkInitializationLocalDataSource.getSiteId(publicKey).first()
+
+        if (cachedSiteId.siteId.isNotEmpty()) {
+            emit(cachedSiteId)
+        } else {
+            emitAll(
+                sdkInitializationRemoteDataSource.fetchSiteId(publicKey)
+                    .retry(MAX_RETRY_COUNT)
+                    .timeout(TIMEOUT.toDuration(DurationUnit.MILLISECONDS))
+                    .onEach { siteId ->
+                        sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
+                    }
+                    .catch { _ ->
+                        setSiteId(publicKey, countryCode).first()
+                        emitAll(sdkInitializationLocalDataSource.getSiteId(publicKey))
+                    }
+            )
+        }
     }
 
     override fun getSiteId(publicKey: String): Flow<SiteId> {

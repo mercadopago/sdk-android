@@ -11,7 +11,6 @@ import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.usecase.FetchSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
-import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
@@ -19,7 +18,6 @@ import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedE
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
@@ -91,8 +89,6 @@ class MercadoPagoSDK private constructor(
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val fetchSiteIdUseCase = modulesProvider.koinApp.get<FetchSiteIdUseCase>()
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
-                val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
-                setSiteIdUseCase(publicKey, countryCode).firstOrNull()
                 DeviceSDK.getInstance().execute(context)
                 MPAnalytics.initialize(
                     context = context,
@@ -100,7 +96,7 @@ class MercadoPagoSDK private constructor(
                         siteId.siteId
                     },
                 )
-                fetchSiteIdUseCase(publicKey)
+                fetchSiteIdUseCase(publicKey, countryCode)
                     .catch { error ->
                         Log.d(TAG, "Error initializing SDK: ${error.message}", error)
                         MPAnalytics.getInstance().trackMetric(

@@ -10,7 +10,6 @@ import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.model.SiteId
 import com.mercadopago.sdk.android.domain.usecase.FetchSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
-import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
@@ -41,7 +40,6 @@ internal class MercadoPagoSDKTest {
     private val koin = mockk<Koin>(relaxed = true)
     private val fetchSiteIdUseCase = mockk<FetchSiteIdUseCase>(relaxed = true)
     private val getSiteIdUseCase = mockk<GetSiteIdUseCase>(relaxed = true)
-    private val setSiteIdUseCase = mockk<SetSiteIdUseCase>(relaxed = true)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val deviceSDK = mockk<DeviceSDK>(relaxed = true)
 
@@ -74,9 +72,6 @@ internal class MercadoPagoSDKTest {
             koin.get<GetSiteIdUseCase>()
         } returns getSiteIdUseCase
         every {
-            koin.get<SetSiteIdUseCase>()
-        } returns setSiteIdUseCase
-        every {
             MPAnalytics.getInstance()
         } returns mpAnalytics
         every {
@@ -96,7 +91,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flowOf(siteId)
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
@@ -113,8 +108,7 @@ internal class MercadoPagoSDKTest {
         // Then
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
-            setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             mpAnalytics.trackMetric(sdkInitializerEvent)
         }
     }
@@ -126,7 +120,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val exception = Exception()
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flow { throw exception }
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(
             context = context,
@@ -146,8 +140,7 @@ internal class MercadoPagoSDKTest {
         // Then
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
-            setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             Log.d(any(), any(), exception)
             mpAnalytics.trackMetric(any())
         }
@@ -160,7 +153,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flowOf(siteId)
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
@@ -188,8 +181,7 @@ internal class MercadoPagoSDKTest {
             awaitError() is SDKAlreadyInitializedException
         }
         verifyOrder {
-            setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             mpAnalytics.trackMetric(sdkInitializerEvent)
         }
     }
