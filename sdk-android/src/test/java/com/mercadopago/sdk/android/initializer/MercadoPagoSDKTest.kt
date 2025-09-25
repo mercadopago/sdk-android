@@ -91,7 +91,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flowOf(siteId)
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
@@ -108,7 +108,7 @@ internal class MercadoPagoSDKTest {
         // Then
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             mpAnalytics.trackMetric(sdkInitializerEvent)
         }
     }
@@ -120,7 +120,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val exception = Exception()
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flow { throw exception }
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(
             context = context,
@@ -140,7 +140,7 @@ internal class MercadoPagoSDKTest {
         // Then
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             Log.d(any(), any(), exception)
             mpAnalytics.trackMetric(any())
         }
@@ -153,7 +153,7 @@ internal class MercadoPagoSDKTest {
         val countryCode = CountryCode.ARG
         val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
         } returns flowOf(siteId)
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
@@ -181,7 +181,7 @@ internal class MercadoPagoSDKTest {
             awaitError() is SDKAlreadyInitializedException
         }
         verifyOrder {
-            fetchSiteIdUseCase(publicKey)
+            fetchSiteIdUseCase(publicKey, countryCode)
             mpAnalytics.trackMetric(sdkInitializerEvent)
         }
     }

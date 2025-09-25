@@ -13,7 +13,7 @@ internal class FetchSiteIdUseCase(
 ) {
 
     operator fun invoke(publicKey: String, countryCode: CountryCode): Flow<SiteId> {
-        return sdkInitializationRepository.fetchSiteId(publicKey)
+        return sdkInitializationRepository.fetchSiteId(publicKey, countryCode)
             .map { siteId ->
                 if (siteId.siteId.isEmpty()) {
                     SiteId(UNKNOWN_SITE_ID)

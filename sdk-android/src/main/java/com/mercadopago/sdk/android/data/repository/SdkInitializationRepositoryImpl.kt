@@ -40,8 +40,8 @@ internal class SdkInitializationRepositoryImpl(
                     .onEach { siteId ->
                         sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
                     }
-                    .catch { error ->
-                        setSiteId(publicKey, countryCode)
+                    .catch { _ ->
+                        setSiteId(publicKey, countryCode).first()
                         emitAll(sdkInitializationLocalDataSource.getSiteId(publicKey))
                     }
             )

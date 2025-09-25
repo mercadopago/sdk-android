@@ -96,7 +96,7 @@ class MercadoPagoSDK private constructor(
                         siteId.siteId
                     },
                 )
-                fetchSiteIdUseCase(publicKey)
+                fetchSiteIdUseCase(publicKey, countryCode)
                     .catch { error ->
                         Log.d(TAG, "Error initializing SDK: ${error.message}", error)
                         MPAnalytics.getInstance().trackMetric(

@@ -28,13 +28,14 @@ internal class SdkInitializationRepositoryTest {
     fun `when fetchSiteId is called and cache is valid Then return cached siteId without remote call`() = runTest {
         // Given
         val publicKey = "public_key"
+        val countryCode = CountryCode.ARG
         val cachedSiteId = SiteId("cached_123")
         every {
             sdkInitializationLocalDataSource.getSiteId(publicKey)
         } returns flowOf(cachedSiteId)
 
         // When
-        val result = repository.fetchSiteId(publicKey)
+        val result = repository.fetchSiteId(publicKey, countryCode)
 
         // Then
         result.test {
@@ -53,6 +54,7 @@ internal class SdkInitializationRepositoryTest {
     fun `when fetchSiteId is called and cache is empty Then fetch from remote and save it`() = runTest {
         // Given
         val publicKey = "public_key"
+        val countryCode = CountryCode.ARG
         val emptySiteId = SiteId("")
         val remoteSiteId = SiteId("remote_123")
         every {
@@ -66,7 +68,7 @@ internal class SdkInitializationRepositoryTest {
         } returns flowOf(Unit)
 
         // When
-        val result = repository.fetchSiteId(publicKey)
+        val result = repository.fetchSiteId(publicKey, countryCode)
 
         // Then
         result.test {
@@ -81,29 +83,35 @@ internal class SdkInitializationRepositoryTest {
     }
 
     @Test
-    fun `when fetchSiteId is called with empty cache and remote error Then return cached empty siteId`() = runTest {
+    fun `when fetchSiteId is called with empty cache and remote error Then save countryCode and return it`() = runTest {
         // Given
         val publicKey = "public_key"
+        val countryCode = CountryCode.ARG
         val emptySiteId = SiteId("")
+        val savedSiteId = SiteId("MLA") // siteId baseado no countryCode ARG
         val exception = Exception("Network error")
         every {
             sdkInitializationLocalDataSource.getSiteId(publicKey)
-        } returns flowOf(emptySiteId)
+        } returns flowOf(emptySiteId) andThen flowOf(savedSiteId)
         every {
             sdkInitializationRemoteDataSource.fetchSiteId(publicKey)
         } returns flow { throw exception }
+        every {
+            sdkInitializationLocalDataSource.setSiteId(publicKey, savedSiteId)
+        } returns flowOf(Unit)
 
         // When
-        val result = repository.fetchSiteId(publicKey)
+        val result = repository.fetchSiteId(publicKey, countryCode)
 
         // Then
         result.test {
-            assertEquals(emptySiteId, awaitItem())
+            assertEquals(savedSiteId, awaitItem())
             awaitComplete()
         }
         verifySequence {
             sdkInitializationLocalDataSource.getSiteId(publicKey)
             sdkInitializationRemoteDataSource.fetchSiteId(publicKey)
+            sdkInitializationLocalDataSource.setSiteId(publicKey, savedSiteId)
             sdkInitializationLocalDataSource.getSiteId(publicKey)
         }
     }
@@ -112,6 +120,7 @@ internal class SdkInitializationRepositoryTest {
     fun `when fetchSiteId is called and cache has null or empty siteId Then fetch from remote`() = runTest {
         // Given
         val publicKey = "public_key"
+        val countryCode = CountryCode.BRA
         val nullSiteId = SiteId("")
         val remoteSiteId = SiteId("remote_456")
         every {
@@ -125,7 +134,7 @@ internal class SdkInitializationRepositoryTest {
         } returns flowOf(Unit)
 
         // When
-        val result = repository.fetchSiteId(publicKey)
+        val result = repository.fetchSiteId(publicKey, countryCode)
 
         // Then
         result.test {
