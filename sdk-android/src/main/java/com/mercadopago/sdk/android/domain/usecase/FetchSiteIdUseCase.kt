@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.domain.usecase
 
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.model.SiteId
 import com.mercadopago.sdk.android.domain.repository.SdkInitializationRepository
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ internal class FetchSiteIdUseCase(
     private val sdkInitializationRepository: SdkInitializationRepository,
 ) {
 
-    operator fun invoke(publicKey: String): Flow<SiteId> {
+    operator fun invoke(publicKey: String, countryCode: CountryCode): Flow<SiteId> {
         return sdkInitializationRepository.fetchSiteId(publicKey)
             .map { siteId ->
                 if (siteId.siteId.isEmpty()) {

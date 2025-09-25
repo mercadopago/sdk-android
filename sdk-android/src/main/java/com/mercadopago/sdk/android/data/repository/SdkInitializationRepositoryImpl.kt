@@ -27,7 +27,7 @@ internal class SdkInitializationRepositoryImpl(
 ) : SdkInitializationRepository {
 
     @OptIn(FlowPreview::class)
-    override fun fetchSiteId(publicKey: String): Flow<SiteId> = flow {
+    override fun fetchSiteId(publicKey: String, countryCode: CountryCode): Flow<SiteId> = flow {
         val cachedSiteId: SiteId = sdkInitializationLocalDataSource.getSiteId(publicKey).first()
 
         if (cachedSiteId.siteId.isNotEmpty()) {
@@ -40,7 +40,8 @@ internal class SdkInitializationRepositoryImpl(
                     .onEach { siteId ->
                         sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
                     }
-                    .catch { _ ->
+                    .catch { error ->
+                        setSiteId(publicKey, countryCode)
                         emitAll(sdkInitializationLocalDataSource.getSiteId(publicKey))
                     }
             )
