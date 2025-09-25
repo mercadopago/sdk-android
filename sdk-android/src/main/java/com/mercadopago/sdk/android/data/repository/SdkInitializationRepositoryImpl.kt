@@ -38,7 +38,7 @@ internal class SdkInitializationRepositoryImpl(
                     .retry(MAX_RETRY_COUNT)
                     .timeout(TIMEOUT.toDuration(DurationUnit.MILLISECONDS))
                     .onEach { siteId ->
-                        sdkInitializationLocalDataSource.setSiteId(publicKey, siteId)
+                        sdkInitializationLocalDataSource.setSiteId(publicKey, siteId).first()
                     }
                     .catch { _ ->
                         setSiteId(publicKey, countryCode).first()
