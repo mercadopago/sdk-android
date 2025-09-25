@@ -16,16 +16,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
-enum class MPTrailingType {
-    Text,
-    Pill
+private const val LIST_GROUP = "LIST_ITEM"
 
+/**
+ * Trailing Type enum class, used to determine the trailing showing type
+ * This its used to change the component showed in trailing
+ */
+enum class MPTrailingType {
+    /**
+     *  Text: Trailing type that`s shows a text
+     */
+    Text,
+    /**
+     *  Pill: Trailing type that`s shows a pill
+     */
+    Pill
 }
 
+
+/**
+ * List Item component
+ * @param text component text to be showed
+ * @param modifier component modifier
+ * @param selected component is selected
+ * @param trailingText component is trailing text
+ * @param trailingType component is trailing type [MPTrailingType]
+ */
 @Composable
 fun MPListItem(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     selected: Boolean = false,
     trailingText: String? = null,
     trailingType: MPTrailingType = MPTrailingType.Text,
@@ -57,7 +77,7 @@ fun MPListItem(
     }
 }
 
-@Preview (showBackground = true)
+@Preview (name = "List Item", group = LIST_GROUP, showBackground = true)
 @Composable
 fun MPListItemPreview() {
     MercadoPagoTheme {
