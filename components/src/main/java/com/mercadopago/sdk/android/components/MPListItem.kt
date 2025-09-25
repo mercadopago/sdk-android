@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,36 +35,36 @@ fun MPListItem(
     ){
         Row (
             modifier = Modifier.fillMaxWidth().padding(MercadoPagoTheme.spacing.xs),
-            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ){
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                MPRadioButton(selected)
-                Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
-                MPText(
-                    text = text,
-                    modifier = Modifier.weight(1f, false)
-                )
-            }
+            MPRadioButton(selected)
+            Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
+            MPText(
+                text = text,
+                textStyle = MPTextStyle.BodyMediumRegular,
+                modifier = Modifier.weight(1f)
+            )
 
             trailingText?.let {
                 when (trailingType) {
-                    MPTrailingType.Text -> MPText(trailingText, Modifier.weight(1f, false))
-                    MPTrailingType.Pill -> Pill(trailingText, Modifier.weight(1f, false))
+                    MPTrailingType.Text -> MPText(trailingText, textStyle = MPTextStyle.BodySmallRegular)
+                    MPTrailingType.Pill -> Pill(trailingText)
                 }
             }
         }
 
-        Spacer(Modifier.fillMaxWidth().height(1.dp).background(color = MercadoPagoTheme.color.secondarySecondVariant))
+        Spacer(Modifier.fillMaxWidth().height(1.dp).background(color = MercadoPagoTheme.color.outline.secondary))
     }
 }
 
-@Preview
+@Preview (showBackground = true)
 @Composable
 fun MPListItemPreview() {
     MercadoPagoTheme {
-        MPListItem(text = "List Item item te sdasdasdasdasdaim ", trailingText = "training")
+        Box (
+            modifier = Modifier.padding(10.dp)
+        ){
+            MPListItem(text = "List Item ", trailingText = "trailing", trailingType = MPTrailingType.Pill, selected = true)
+        }
     }
 }
