@@ -54,7 +54,9 @@ fun MPListItem(
         modifier = modifier,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(MercadoPagoTheme.spacing.xs),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(MercadoPagoTheme.spacing.xs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MPRadioButton(selected)
@@ -67,13 +69,22 @@ fun MPListItem(
 
             trailingText?.let {
                 when (trailingType) {
-                    MPTrailingType.Text -> MPText(trailingText, textStyle = MPTextStyle.BodySmallRegular)
+                    MPTrailingType.Text -> MPText(
+                        trailingText,
+                        textStyle = MPTextStyle.BodySmallRegular
+                    )
+
                     MPTrailingType.Pill -> Pill(trailingText)
                 }
             }
         }
 
-        Spacer(Modifier.fillMaxWidth().height(1.dp).background(color = MercadoPagoTheme.color.outline.secondary))
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(color = MercadoPagoTheme.color.outline.secondary)
+        )
     }
 }
 
