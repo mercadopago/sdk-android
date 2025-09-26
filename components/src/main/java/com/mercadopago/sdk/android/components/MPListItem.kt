@@ -83,7 +83,7 @@ fun MPListItem(
             Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = MercadoPagoTheme.color.outline.secondary,)
+                .background(color = MercadoPagoTheme.color.outline.secondary),
         )
     }
 }
