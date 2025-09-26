@@ -71,7 +71,7 @@ fun MPListItem(
                 when (trailingType) {
                     MPTrailingType.Text -> MPText(
                         trailingText,
-                        textStyle = MPTextStyle.BodySmallRegular
+                        textStyle = MPTextStyle.BodySmallRegular,
                     )
 
                     MPTrailingType.Pill -> Pill(trailingText)
@@ -83,7 +83,7 @@ fun MPListItem(
             Modifier
                 .fillMaxWidth()
                 .height(1.dp)
-                .background(color = MercadoPagoTheme.color.outline.secondary)
+                .background(color = MercadoPagoTheme.color.outline.secondary,)
         )
     }
 }
@@ -96,10 +96,10 @@ private fun MPListItemPreview() {
             modifier = Modifier.padding(10.dp),
         ) {
             MPListItem(
-                text = "List Item ",
+                text = "List Item",
                 trailingText = "trailing",
                 trailingType = MPTrailingType.Pill,
-                selected = true
+                selected = true,
             )
         }
     }
