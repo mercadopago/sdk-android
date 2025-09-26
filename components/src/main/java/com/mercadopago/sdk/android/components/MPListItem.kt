@@ -27,12 +27,12 @@ enum class MPTrailingType {
      *  Text: Trailing type that`s shows a text
      */
     Text,
+
     /**
      *  Pill: Trailing type that`s shows a pill
      */
-    Pill
+    Pill,
 }
-
 
 /**
  * List Item component
@@ -50,19 +50,19 @@ fun MPListItem(
     trailingText: String? = null,
     trailingType: MPTrailingType = MPTrailingType.Text,
 ) {
-    Column (
-        modifier = modifier
-    ){
-        Row (
+    Column(
+        modifier = modifier,
+    ) {
+        Row(
             modifier = Modifier.fillMaxWidth().padding(MercadoPagoTheme.spacing.xs),
-            verticalAlignment = Alignment.CenterVertically
-        ){
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             MPRadioButton(selected)
             Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
             MPText(
                 text = text,
                 textStyle = MPTextStyle.BodyMediumRegular,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
 
             trailingText?.let {
@@ -77,14 +77,19 @@ fun MPListItem(
     }
 }
 
-@Preview (name = "List Item", group = LIST_GROUP, showBackground = true)
+@Preview(name = "List Item", group = LIST_GROUP, showBackground = true)
 @Composable
-fun MPListItemPreview() {
+private fun MPListItemPreview() {
     MercadoPagoTheme {
-        Box (
-            modifier = Modifier.padding(10.dp)
-        ){
-            MPListItem(text = "List Item ", trailingText = "trailing", trailingType = MPTrailingType.Pill, selected = true)
+        Box(
+            modifier = Modifier.padding(10.dp),
+        ) {
+            MPListItem(
+                text = "List Item ",
+                trailingText = "trailing",
+                trailingType = MPTrailingType.Pill,
+                selected = true
+            )
         }
     }
 }
