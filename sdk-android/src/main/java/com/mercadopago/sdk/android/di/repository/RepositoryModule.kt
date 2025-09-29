@@ -8,7 +8,6 @@ import org.koin.dsl.module
 internal fun provideRepositoryModule(): Module = module {
     factory<SdkInitializationRepository> {
         SdkInitializationRepositoryImpl(
-            sdkInitializationRemoteDataSource = get(),
             sdkInitializationLocalDataSource = get(),
         )
     }

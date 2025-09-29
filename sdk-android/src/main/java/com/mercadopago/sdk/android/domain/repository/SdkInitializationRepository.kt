@@ -6,8 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface SdkInitializationRepository {
 
-    fun fetchSiteId(publicKey: String, countryCode: CountryCode): Flow<SiteId>
-
     fun getSiteId(publicKey: String): Flow<SiteId>
 
     fun setSiteId(publicKey: String, countryCode: CountryCode): Flow<Unit>

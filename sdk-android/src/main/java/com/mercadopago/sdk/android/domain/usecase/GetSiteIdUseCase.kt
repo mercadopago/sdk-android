@@ -5,6 +5,8 @@ import com.mercadopago.sdk.android.domain.repository.SdkInitializationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+internal const val UNKNOWN_SITE_ID = "UNKNOWN"
+
 internal class GetSiteIdUseCase(
     private val sdkInitializationRepository: SdkInitializationRepository,
 ) {

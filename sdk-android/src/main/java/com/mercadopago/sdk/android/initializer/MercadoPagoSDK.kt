@@ -9,8 +9,8 @@ import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
-import com.mercadopago.sdk.android.domain.usecase.FetchSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
+import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
@@ -87,8 +87,9 @@ class MercadoPagoSDK private constructor(
                 countryCode = countryCode,
             )
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
-                val fetchSiteIdUseCase = modulesProvider.koinApp.get<FetchSiteIdUseCase>()
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
+                val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
+
                 DeviceSDK.getInstance().execute(context)
                 MPAnalytics.initialize(
                     context = context,
@@ -96,18 +97,17 @@ class MercadoPagoSDK private constructor(
                         siteId.siteId
                     },
                 )
-                fetchSiteIdUseCase(publicKey, countryCode)
-                    .catch { error ->
-                        Log.d(TAG, "Error initializing SDK: ${error.message}", error)
-                        MPAnalytics.getInstance().trackMetric(
-                            SdkInitializerAnalytics.buildSdkInitializerEvent(
-                                context = context,
-                                publicKey = publicKey,
-                                errorType = "Error initializing SDK: ${error.message}",
-                            )
+                setSiteIdUseCase(publicKey, countryCode).catch { error ->
+                    Log.d(TAG, "Error initializing SDK: ${error.message}", error)
+                    MPAnalytics.getInstance().trackMetric(
+                        SdkInitializerAnalytics.buildSdkInitializerEvent(
+                            context = context,
+                            publicKey = publicKey,
+                            errorType = "Error initializing SDK: ${error.message}",
                         )
-                    }
-                    .collect { siteId ->
+                    )
+                }
+                    .collect { _ ->
                         Log.d(TAG, "Initialized SDK")
                         MPAnalytics.getInstance().trackMetric(
                             SdkInitializerAnalytics.buildSdkInitializerEvent(
