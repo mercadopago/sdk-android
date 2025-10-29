@@ -32,23 +32,78 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val BUTTON_GROUP = "BUTTON"
 
+/**
+ * Button style enum class, used to determine the visual appearance of the button
+ * This is used to change the button's background color and text styling
+ */
 enum class MPButtonStyle {
+    /**
+     * Loud: Primary button style with accent background color
+     */
     Loud,
+
+    /**
+     * Quiet: Secondary button style with secondary background color
+     */
     Quiet,
+
+    /**
+     * Transparent: Button style with transparent background
+     */
     Transparent
 }
 
+/**
+ * Button icon type enum class, used to determine the icon placement within the button
+ * This is used to control where the icon appears relative to the text
+ */
 enum class MPButtonIconType {
+    /**
+     * None: No icon displayed
+     */
     None,
+
+    /**
+     * Left: Icon displayed to the left of the text
+     */
     Left,
+
+    /**
+     * Right: Icon displayed to the right of the text
+     */
     Right
 }
 
+/**
+ * Button size enum class, used to determine the button dimensions and spacing
+ * This is used to control the button's height, padding, and text size
+ */
 enum class MPButtonSize {
+    /**
+     * Large: Larger button size with more padding and bigger text
+     */
     Large,
+
+    /**
+     * Medium: Smaller button size with less padding and smaller text
+     */
     Medium
 }
 
+/**
+ * Button component - This handles the button implementation with different styles and configurations
+ * This component is used to build interactive buttons throughout the application
+ * handling different visual styles, sizes, and icon placements
+ *
+ * @param text: button text label
+ * @param modifier: button modifier
+ * @param icon: optional icon to display in the button
+ * @param style: button style, must be one of MPButtonStyle values (Loud, Quiet, Transparent)
+ * @param iconType: type of icon placement (None, Left, Right)
+ * @param size: button size (Large, Medium)
+ * @param enabled: Boolean indicates if the component is enabled
+ * @param onClick: callback function executed when button is clicked
+ */
 @Composable
 fun MpButton(
     text: String,
