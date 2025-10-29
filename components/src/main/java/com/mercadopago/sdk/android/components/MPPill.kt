@@ -23,7 +23,7 @@ private const val PILL_GROUP = "Pill"
  * @param modifier component modifier
  */
 @Composable
-fun Pill(
+fun MPPill(
     text: String,
     modifier: Modifier = Modifier,
 ) {
@@ -57,7 +57,7 @@ internal fun PillPreview() {
                 .background(Color.White)
                 .padding(20.dp),
         ) {
-            Pill("Label")
+            MPPill("Label")
         }
     }
 }

@@ -74,7 +74,7 @@ fun MPListItem(
                         textStyle = MPTextStyle.BodySmallRegular,
                     )
 
-                    MPTrailingType.Pill -> Pill(trailingText)
+                    MPTrailingType.Pill -> MPPill(trailingText)
                 }
             }
         }
