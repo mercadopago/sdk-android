@@ -49,7 +49,7 @@ enum class MPButtonStyle {
     /**
      * Transparent: Button style with transparent background
      */
-    Transparent
+    Transparent,
 }
 
 /**
@@ -70,7 +70,7 @@ enum class MPButtonIconType {
     /**
      * Right: Icon displayed to the right of the text
      */
-    Right
+    Right,
 }
 
 /**
@@ -86,7 +86,7 @@ enum class MPButtonSize {
     /**
      * Medium: Smaller button size with less padding and smaller text
      */
-    Medium
+    Medium,
 }
 
 /**
@@ -96,7 +96,7 @@ enum class MPButtonSize {
 private fun getButtonBackgroundColor(
     style: MPButtonStyle,
     enabled: Boolean,
-    isPressed: Boolean
+    isPressed: Boolean,
 ): Color {
     return when (style) {
         MPButtonStyle.Loud -> if (enabled) {
@@ -150,7 +150,10 @@ private fun getIconColor(style: MPButtonStyle): Color {
  * Helper function to calculate horizontal padding based on size and icon type
  */
 @Composable
-private fun getHorizontalPadding(size: MPButtonSize, iconType: MPButtonIconType): androidx.compose.ui.unit.Dp {
+private fun getHorizontalPadding(
+    size: MPButtonSize,
+    iconType: MPButtonIconType,
+): androidx.compose.ui.unit.Dp {
     return if (size == MPButtonSize.Large) {
         if (iconType != MPButtonIconType.None) {
             MercadoPagoTheme.spacing.m
@@ -183,17 +186,17 @@ private fun Modifier.getFocusedModifier(): Modifier {
         .border(
             width = 2.dp,
             color = MercadoPagoTheme.color.secondarySecondVariant,
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
         )
         .border(
             width = 3.dp,
             color = MercadoPagoTheme.color.accent,
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
         )
         .border(
             width = 5.dp,
             color = Color.White,
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
         )
         .padding(horizontal = 4.dp, vertical = 5.dp)
 }
@@ -206,14 +209,14 @@ private fun LeftIcon(
     icon: ImageVector,
     size: MPButtonSize,
     enabled: Boolean,
-    iconColor: Color
+    iconColor: Color,
 ) {
     Icon(
         icon,
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
+        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
     )
     Spacer(
         Modifier.size(
@@ -221,8 +224,8 @@ private fun LeftIcon(
                 MercadoPagoTheme.spacing.s
             } else {
                 MercadoPagoTheme.spacing.xxs
-            }
-        )
+            },
+        ),
     )
 }
 
@@ -234,7 +237,7 @@ private fun RightIcon(
     icon: ImageVector,
     size: MPButtonSize,
     enabled: Boolean,
-    iconColor: Color
+    iconColor: Color,
 ) {
     Spacer(
         Modifier.size(
@@ -242,15 +245,15 @@ private fun RightIcon(
                 MercadoPagoTheme.spacing.s
             } else {
                 MercadoPagoTheme.spacing.xxs
-            }
-        )
+            },
+        ),
     )
     Icon(
         icon,
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
+        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
     )
 }
 
@@ -304,14 +307,14 @@ fun MPButton(
                 enabled = enabled,
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = onClick
+                onClick = onClick,
             )
             .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier.height(20.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (drawIcon && iconType == MPButtonIconType.Left) {
                 LeftIcon(icon!!, size, enabled, iconColor)
@@ -325,7 +328,7 @@ fun MPButton(
                     MPTextStyle.BodySmallSemiBold
                 },
                 colorType = textColor,
-                enabled = enabled
+                enabled = enabled,
             )
 
             if (drawIcon && iconType == MPButtonIconType.Right) {
@@ -342,7 +345,7 @@ private fun MPButtonStylesLargePreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(text = "Label", style = MPButtonStyle.Loud) {}
             Spacer(Modifier.size(10.dp))
@@ -362,7 +365,7 @@ private fun MPButtonStylesMediumPreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(text = "Label", style = MPButtonStyle.Loud, size = MPButtonSize.Medium) {}
             Spacer(Modifier.size(10.dp))
@@ -371,14 +374,14 @@ private fun MPButtonStylesMediumPreview() {
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Transparent,
-                size = MPButtonSize.Medium
+                size = MPButtonSize.Medium,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Loud,
                 enabled = false,
-                size = MPButtonSize.Medium
+                size = MPButtonSize.Medium,
             ) {}
         }
     }
@@ -391,27 +394,27 @@ private fun MPButtonIconLeftLargePreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Loud,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Quiet,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Transparent,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -419,7 +422,7 @@ private fun MPButtonIconLeftLargePreview() {
                 style = MPButtonStyle.Loud,
                 enabled = false,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
         }
     }
@@ -432,14 +435,14 @@ private fun MPButtonIconLeftMediumPreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Loud,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -447,7 +450,7 @@ private fun MPButtonIconLeftMediumPreview() {
                 style = MPButtonStyle.Quiet,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -455,7 +458,7 @@ private fun MPButtonIconLeftMediumPreview() {
                 style = MPButtonStyle.Transparent,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -464,7 +467,7 @@ private fun MPButtonIconLeftMediumPreview() {
                 enabled = false,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Left,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
         }
     }
@@ -477,27 +480,27 @@ private fun MPButtonIconRightLargePreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Loud,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Quiet,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Transparent,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -505,7 +508,7 @@ private fun MPButtonIconRightLargePreview() {
                 style = MPButtonStyle.Loud,
                 enabled = false,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
         }
     }
@@ -518,14 +521,14 @@ private fun MPButtonIconRightMediumPreview() {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(10.dp)
+                .padding(10.dp),
         ) {
             MPButton(
                 text = "Label",
                 style = MPButtonStyle.Loud,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -533,7 +536,7 @@ private fun MPButtonIconRightMediumPreview() {
                 style = MPButtonStyle.Quiet,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -541,7 +544,7 @@ private fun MPButtonIconRightMediumPreview() {
                 style = MPButtonStyle.Transparent,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
             Spacer(Modifier.size(10.dp))
             MPButton(
@@ -550,7 +553,7 @@ private fun MPButtonIconRightMediumPreview() {
                 enabled = false,
                 size = MPButtonSize.Medium,
                 iconType = MPButtonIconType.Right,
-                icon = Icons.Filled.Favorite
+                icon = Icons.Filled.Favorite,
             ) {}
         }
     }
