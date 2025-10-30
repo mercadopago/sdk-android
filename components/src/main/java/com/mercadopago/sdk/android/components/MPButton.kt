@@ -2,28 +2,27 @@ package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,7 +90,172 @@ enum class MPButtonSize {
 }
 
 /**
- * Button component - This handles the button implementation with different styles and configurations
+ * Helper function to calculate button background color based on style, enabled state, and pressed state
+ */
+@Composable
+private fun getButtonBackgroundColor(
+    style: MPButtonStyle,
+    enabled: Boolean,
+    isPressed: Boolean
+): Color {
+    return when (style) {
+        MPButtonStyle.Loud -> if (enabled) {
+            if (isPressed) {
+                MercadoPagoTheme.color.accentSecondVariant
+            } else {
+                MercadoPagoTheme.color.accent
+            }
+        } else {
+            MercadoPagoTheme.color.background.tertiary
+        }
+
+        MPButtonStyle.Quiet -> if (enabled) {
+            if (isPressed) {
+                MercadoPagoTheme.color.secondarySecondVariant
+            } else {
+                MercadoPagoTheme.color.secondary
+            }
+        } else {
+            MercadoPagoTheme.color.background.tertiary
+        }
+
+        MPButtonStyle.Transparent -> Color.Transparent
+    }
+}
+
+/**
+ * Helper function to get text color type based on button style
+ */
+private fun getTextColorType(style: MPButtonStyle): MPTextColorType {
+    return when (style) {
+        MPButtonStyle.Loud -> MPTextColorType.Inverted
+        MPButtonStyle.Quiet -> MPTextColorType.Accent
+        MPButtonStyle.Transparent -> MPTextColorType.Accent
+    }
+}
+
+/**
+ * Helper function to get icon color based on button style
+ */
+@Composable
+private fun getIconColor(style: MPButtonStyle): Color {
+    return when (style) {
+        MPButtonStyle.Loud -> MercadoPagoTheme.color.text.inverted
+        MPButtonStyle.Quiet -> MercadoPagoTheme.color.text.accent
+        MPButtonStyle.Transparent -> MercadoPagoTheme.color.text.accent
+    }
+}
+
+/**
+ * Helper function to calculate horizontal padding based on size and icon type
+ */
+@Composable
+private fun getHorizontalPadding(size: MPButtonSize, iconType: MPButtonIconType): androidx.compose.ui.unit.Dp {
+    return if (size == MPButtonSize.Large) {
+        if (iconType != MPButtonIconType.None) {
+            MercadoPagoTheme.spacing.m
+        } else {
+            MercadoPagoTheme.spacing.xl
+        }
+    } else {
+        MercadoPagoTheme.spacing.s
+    }
+}
+
+/**
+ * Helper function to calculate vertical padding based on size
+ */
+@Composable
+private fun getVerticalPadding(size: MPButtonSize): androidx.compose.ui.unit.Dp {
+    return if (size == MPButtonSize.Large) {
+        MercadoPagoTheme.spacing.s
+    } else {
+        MercadoPagoTheme.spacing.xxs
+    }
+}
+
+/**
+ * Helper function to create focused modifier with borders
+ */
+@Composable
+private fun getFocusedModifier(modifier: Modifier): Modifier {
+    return modifier
+        .border(
+            width = 2.dp,
+            color = MercadoPagoTheme.color.secondarySecondVariant,
+            shape = MaterialTheme.shapes.small
+        )
+        .border(
+            width = 3.dp,
+            color = MercadoPagoTheme.color.accent,
+            shape = MaterialTheme.shapes.small
+        )
+        .border(
+            width = 5.dp,
+            color = Color.White,
+            shape = MaterialTheme.shapes.small
+        )
+        .padding(horizontal = 4.dp, vertical = 5.dp)
+}
+
+/**
+ * Helper function to render left icon
+ */
+@Composable
+private fun LeftIcon(
+    icon: ImageVector,
+    size: MPButtonSize,
+    enabled: Boolean,
+    iconColor: Color
+) {
+    Icon(
+        icon,
+        "",
+        modifier = Modifier
+            .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
+        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
+    )
+    Spacer(
+        Modifier.size(
+            if (size == MPButtonSize.Large) {
+                MercadoPagoTheme.spacing.s
+            } else {
+                MercadoPagoTheme.spacing.xxs
+            }
+        )
+    )
+}
+
+/**
+ * Helper function to render right icon
+ */
+@Composable
+private fun RightIcon(
+    icon: ImageVector,
+    size: MPButtonSize,
+    enabled: Boolean,
+    iconColor: Color
+) {
+    Spacer(
+        Modifier.size(
+            if (size == MPButtonSize.Large) {
+                MercadoPagoTheme.spacing.s
+            } else {
+                MercadoPagoTheme.spacing.xxs
+            }
+        )
+    )
+    Icon(
+        icon,
+        "",
+        modifier = Modifier
+            .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
+        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
+    )
+}
+
+/**
+ * Button component - Handles button implementation with different styles and configurations
  * This component is used to build interactive buttons throughout the application
  * handling different visual styles, sizes, and icon placements
  *
@@ -105,7 +269,7 @@ enum class MPButtonSize {
  * @param onClick: callback function executed when button is clicked
  */
 @Composable
-fun MpButton(
+fun MPButton(
     text: String,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
@@ -120,354 +284,274 @@ fun MpButton(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    val buttonColors = when (style) {
-        MPButtonStyle.Loud -> ButtonDefaults.buttonColors().copy(
-            containerColor = if (isPressed) MercadoPagoTheme.color.accentSecondVariant
-            else MercadoPagoTheme.color.accent,
-            disabledContainerColor = MercadoPagoTheme.color.background.tertiary
-        )
+    val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed)
+    val textColor = getTextColorType(style)
+    val iconColor = getIconColor(style)
+    val contentPaddingHorizontal = getHorizontalPadding(size, iconType)
+    val contentPaddingVertical = getVerticalPadding(size)
 
-        MPButtonStyle.Quiet -> ButtonDefaults.buttonColors().copy(
-            containerColor = if (isPressed) MercadoPagoTheme.color.secondarySecondVariant
-            else MercadoPagoTheme.color.secondary,
-            disabledContainerColor = MercadoPagoTheme.color.background.tertiary
-        )
-
-        MPButtonStyle.Transparent -> ButtonDefaults.buttonColors().copy(
-            containerColor = if (isPressed) Color.Transparent
-            else Color.Transparent,
-            disabledContainerColor = Color.Transparent
-        )
+    val borderModifier = if (isFocused) {
+        getFocusedModifier(modifier)
+    } else {
+        modifier.padding(0.dp)
     }
 
-    val textColor = when (style) {
-        MPButtonStyle.Loud -> MPTextColorType.Inverted
-        MPButtonStyle.Quiet -> MPTextColorType.Accent
-        MPButtonStyle.Transparent -> MPTextColorType.Accent
-    }
-
-    val iconColor: Color = when (style) {
-        MPButtonStyle.Loud -> MercadoPagoTheme.color.text.inverted
-        MPButtonStyle.Quiet -> MercadoPagoTheme.color.text.accent
-        MPButtonStyle.Transparent -> MercadoPagoTheme.color.text.accent
-    }
-
-    Button(
-        onClick = onClick,
-        modifier = if (isFocused) {
-            modifier
-                .border(
-                    width = 2.dp,
-                    color = MercadoPagoTheme.color.secondarySecondVariant,
-                    shape = MaterialTheme.shapes.small
-                )
-                .border(
-                    width = 3.dp,
-                    color = MercadoPagoTheme.color.accent,
-                    shape = MaterialTheme.shapes.small
-                )
-                .border(
-                    width = 5.dp,
-                    color = Color.White,
-                    shape = MaterialTheme.shapes.small
-                )
-                .padding(horizontal = 4.dp, vertical = 1.dp)
-        } else {
-            modifier
-                .padding(0.dp)
-                .defaultMinSize(1.dp, 1.dp)
-        },
-        enabled = enabled,
-        colors = buttonColors,
-        shape = MercadoPagoTheme.shape.xs,
-        interactionSource = interactionSource,
-        contentPadding = PaddingValues(
-            horizontal = if (size == MPButtonSize.Large) if (iconType != MPButtonIconType.None) MercadoPagoTheme.spacing.m else MercadoPagoTheme.spacing.xl
-            else MercadoPagoTheme.spacing.s,
-            vertical = if (size == MPButtonSize.Large) MercadoPagoTheme.spacing.s else MercadoPagoTheme.spacing.xs
-        )
+    Box(
+        modifier = borderModifier
+            .clip(MercadoPagoTheme.shape.xs)
+            .background(backgroundColor)
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
+            .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
+        contentAlignment = Alignment.Center
     ) {
-        Row {
+        Row(
+            modifier = Modifier.height(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             if (drawIcon && iconType == MPButtonIconType.Left) {
-                Icon(
-                    icon!!,
-                    "",
-                    modifier = Modifier
-                        .size(if (size == MPButtonSize.Large) 20.dp else 13.dp)
-                        .align(Alignment.CenterVertically),
-                    tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
-                )
-                Spacer(Modifier.size(if (size == MPButtonSize.Large) MercadoPagoTheme.spacing.s else MercadoPagoTheme.spacing.xxs))
+                LeftIcon(icon!!, size, enabled, iconColor)
             }
 
             MPText(
                 text,
-                textStyle = if (size == MPButtonSize.Large) MPTextStyle.BodyMediumSemiBold else MPTextStyle.BodySmallSemiBold,
+                textStyle = if (size == MPButtonSize.Large) {
+                    MPTextStyle.BodyMediumSemiBold
+                } else {
+                    MPTextStyle.BodySmallSemiBold
+                },
                 colorType = textColor,
                 enabled = enabled
             )
 
             if (drawIcon && iconType == MPButtonIconType.Right) {
-                Spacer(Modifier.size(if (size == MPButtonSize.Large) MercadoPagoTheme.spacing.s else MercadoPagoTheme.spacing.xxs))
-                Icon(
-                    icon!!,
-                    "",
-                    modifier = Modifier
-                        .size(if (size == MPButtonSize.Large) 20.dp else 13.dp)
-                        .align(Alignment.CenterVertically),
-                    tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled
-                )
+                RightIcon(icon!!, size, enabled, iconColor)
             }
         }
     }
 }
 
-
-@Preview(name = "Button", group = BUTTON_GROUP)
+@Preview(name = "Button Styles Large", group = BUTTON_GROUP)
 @Composable
-private fun MpButtonPreview() {
+private fun MPButtonStylesLargePreview() {
     MercadoPagoTheme {
-        Row {
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(10.dp),
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(text = "Label", style = MPButtonStyle.Loud) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(text = "Label", style = MPButtonStyle.Quiet) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(text = "Label", style = MPButtonStyle.Transparent) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(text = "Label", style = MPButtonStyle.Loud, enabled = false) {}
+        }
+    }
+}
 
-                ) {
-                // Loud style
-                MpButton(text = "Label", style = MPButtonStyle.Loud) {
+@Preview(name = "Button Styles Medium", group = BUTTON_GROUP)
+@Composable
+private fun MPButtonStylesMediumPreview() {
+    MercadoPagoTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(text = "Label", style = MPButtonStyle.Loud, size = MPButtonSize.Medium) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(text = "Label", style = MPButtonStyle.Quiet, size = MPButtonSize.Medium) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Transparent,
+                size = MPButtonSize.Medium
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                enabled = false,
+                size = MPButtonSize.Medium
+            ) {}
+        }
+    }
+}
 
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(text = "Label", style = MPButtonStyle.Quiet) {
+@Preview(name = "Button Icon Left Large", group = BUTTON_GROUP)
+@Composable
+private fun MPButtonIconLeftLargePreview() {
+    MercadoPagoTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Quiet,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Transparent,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                enabled = false,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+        }
+    }
+}
 
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(text = "Label", style = MPButtonStyle.Transparent) {
+@Preview(name = "Button Icon Left Medium", group = BUTTON_GROUP)
+@Composable
+private fun MPButtonIconLeftMediumPreview() {
+    MercadoPagoTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Quiet,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Transparent,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                enabled = false,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Left,
+                icon = Icons.Filled.Favorite
+            ) {}
+        }
+    }
+}
 
-                }
-                Spacer(Modifier.size(10.dp))
+@Preview(name = "Button Icon Right Large", group = BUTTON_GROUP)
+@Composable
+private fun MPButtonIconRightLargePreview() {
+    MercadoPagoTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Quiet,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Transparent,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                enabled = false,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+        }
+    }
+}
 
-                // Disabled state
-                MpButton(text = "Label", style = MPButtonStyle.Loud, enabled = false) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                Text("Icon Left")
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Quiet,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Transparent,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-
-                // Disabled state
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    enabled = false,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                Text("Icon Right")
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Quiet,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Transparent,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Disabled state
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    enabled = false,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(10.dp),
-            ) {
-                // Loud style
-                MpButton(text = "Label", style = MPButtonStyle.Loud, size = MPButtonSize.Medium) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(text = "Label", style = MPButtonStyle.Quiet, size = MPButtonSize.Medium) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Transparent,
-                    size = MPButtonSize.Medium
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Disabled state
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    enabled = false,
-                    size = MPButtonSize.Medium
-                ) {
-
-                }
-
-
-                Spacer(Modifier.size(10.dp))
-                Text("Icon Left")
-                // Loud style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Quiet,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Transparent,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Disabled state
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    enabled = false,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Left,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-
-                Spacer(Modifier.size(10.dp))
-                Text("Icon Right")
-                // Loud style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Quiet style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Quiet,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Transparent style
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Transparent,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-                Spacer(Modifier.size(10.dp))
-                // Disabled state
-                MpButton(
-                    text = "Label",
-                    style = MPButtonStyle.Loud,
-                    enabled = false,
-                    size = MPButtonSize.Medium,
-                    iconType = MPButtonIconType.Right,
-                    icon = Icons.Filled.Favorite
-                ) {
-
-                }
-            }
+@Preview(name = "Button Icon Right Medium", group = BUTTON_GROUP)
+@Composable
+private fun MPButtonIconRightMediumPreview() {
+    MercadoPagoTheme {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Quiet,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Transparent,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
+            Spacer(Modifier.size(10.dp))
+            MPButton(
+                text = "Label",
+                style = MPButtonStyle.Loud,
+                enabled = false,
+                size = MPButtonSize.Medium,
+                iconType = MPButtonIconType.Right,
+                icon = Icons.Filled.Favorite
+            ) {}
         }
     }
 }
