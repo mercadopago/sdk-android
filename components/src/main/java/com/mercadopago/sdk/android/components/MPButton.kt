@@ -178,8 +178,8 @@ private fun getVerticalPadding(size: MPButtonSize): androidx.compose.ui.unit.Dp 
  * Helper function to create focused modifier with borders
  */
 @Composable
-private fun getFocusedModifier(modifier: Modifier): Modifier {
-    return modifier
+private fun Modifier.getFocusedModifier(): Modifier {
+    return this
         .border(
             width = 2.dp,
             color = MercadoPagoTheme.color.secondarySecondVariant,
@@ -291,7 +291,7 @@ fun MPButton(
     val contentPaddingVertical = getVerticalPadding(size)
 
     val borderModifier = if (isFocused) {
-        getFocusedModifier(modifier)
+        modifier.getFocusedModifier()
     } else {
         modifier.padding(0.dp)
     }
