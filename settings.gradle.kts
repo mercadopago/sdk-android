@@ -11,6 +11,9 @@ pluginManagement {
         maven {
             url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
         }
+        maven {
+            url = uri("https://android.artifacts.furycloud.io/repository/releases")
+        }
         gradlePluginPortal()
     }
 }
@@ -22,6 +25,9 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {
             url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
+        }
+        maven {
+            url = uri("https://android.artifacts.furycloud.io/repository/releases")
         }
     }
 }

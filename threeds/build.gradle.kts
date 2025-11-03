@@ -80,7 +80,7 @@ ksp {
 
 dependencies {
 
-    implementation(files("../libs/mc-3ds-sdk-android-6.6.81.aar"))
+    implementation("com.usdk.android:usdk:6.6.81")
 
     // 3DS SDK dependencies
     implementation("com.google.code.gson:gson:2.8.1")
