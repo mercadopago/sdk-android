@@ -138,7 +138,7 @@ class MercadoPagoSDK private constructor(
         fun setNewConfiguration(
             publicKey: String,
             countryCode: CountryCode,
-        ): Unit {
+        ) {
             val instance: MercadoPagoSDK = sdkInstance ?: throw SDKNotInitializedException()
             if (publicKey.isEmpty()) {
                 throw EmptyPublicKeyException()
