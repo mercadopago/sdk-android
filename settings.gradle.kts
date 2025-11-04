@@ -5,7 +5,7 @@ val secrets = java.util.Properties().apply {
     }
 }
 
-fun readSecret(name: String): String? {
+private fun readSecret(name: String): String? {
     val fromProps: String? = secrets.getProperty(name)
     val fromSysProp: String? = System.getProperty(name)
     val fromEnv: String? = System.getenv(name)
