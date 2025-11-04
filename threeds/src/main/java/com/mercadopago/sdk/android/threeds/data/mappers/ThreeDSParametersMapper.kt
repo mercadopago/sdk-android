@@ -11,7 +11,7 @@ internal fun ThreeDSAuthRequestParameters.toModel(): MPThreeDSRequestParams {
         deviceData = this.deviceData,
         sdkEphemeralPublicKey = this.sdkEphemeralPublicKey,
         sdkReferenceNumber = this.sdkReferenceNumber,
-        sdkTransactionId = this.sdkTransactionId
+        sdkTransactionId = this.sdkTransactionId,
     )
 }
 
@@ -22,6 +22,6 @@ internal fun MPThreeDSAuthenticationModel.toParams(): MPThreeDSAuthenticationPar
         acsReferenceNumber = this.acsReferenceNumber,
         dsTransID = this.dsTransID,
         acsTransID = this.acsTransID,
-        acsSignedContent = this.acsSignedContent
+        acsSignedContent = this.acsSignedContent,
     )
 }

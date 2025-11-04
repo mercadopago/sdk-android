@@ -41,7 +41,6 @@ import kotlin.coroutines.suspendCoroutine
  * - Resource cleanup
  */
 internal class ThreeDSWrapper(private val context: Context) {
-
     @Volatile
     private lateinit var threeDSService: ThreeDS2Service
 
@@ -106,7 +105,7 @@ internal class ThreeDSWrapper(private val context: Context) {
             MPThreeDSWarningResponse(
                 id = it.id,
                 message = it.message,
-                severity = MPSeverityResponse.getWaningByGrade(it.severity.ordinal)
+                severity = MPSeverityResponse.getWaningByGrade(it.severity.ordinal),
             )
         }
     }
@@ -138,7 +137,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                 deviceData = deviceData,
                 sdkEphemeralPublicKey = sdkEphemeralPublicKey,
                 sdkReferenceNumber = sdkReferenceNumber,
-                sdkTransactionId = sdkTransactionID
+                sdkTransactionId = sdkTransactionID,
             )
         }
     }
@@ -163,7 +162,7 @@ internal class ThreeDSWrapper(private val context: Context) {
     suspend fun doChallenge(
         activity: Activity,
         authenticationParams: MPThreeDSAuthenticationParams,
-        timeout: Int
+        timeout: Int,
     ): MPThreeDSChallengeResult {
         val threeDSChallengeParameters = ChallengeParameters().apply {
             this.set3DSServerTransactionID(authenticationParams.threeDSServerTransID)
@@ -178,7 +177,6 @@ internal class ThreeDSWrapper(private val context: Context) {
                     activity,
                     threeDSChallengeParameters,
                     object : ChallengeStatusReceiver {
-
                         override fun completed(event: CompletionEvent?) {
                             event?.let {
                                 continuation.resume(
@@ -186,16 +184,16 @@ internal class ThreeDSWrapper(private val context: Context) {
                                         result = MPThreeDSAuthenticated(
                                             challengeResponse = authenticationParams.toChallengeModel(),
                                             challengeCompleted = it.transactionStatus == "Y",
-                                        )
-                                    )
+                                        ),
+                                    ),
                                 )
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
                                         code = "COMPLETION_ERROR",
                                         message = "Completion event is null",
-                                    )
-                                )
+                                    ),
+                                ),
                             )
                         }
 
@@ -208,16 +206,16 @@ internal class ThreeDSWrapper(private val context: Context) {
                                             message = it.errorMessage.errorDescription
                                                 ?: "Protocol error occurred",
                                             details = it.errorMessage.errorDetails ?: "",
-                                        )
-                                    )
+                                        ),
+                                    ),
                                 )
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
                                         code = "PROTOCOL_ERROR",
                                         message = "Protocol error event is null",
-                                    )
-                                )
+                                    ),
+                                ),
                             )
                         }
 
@@ -228,16 +226,16 @@ internal class ThreeDSWrapper(private val context: Context) {
                                         error = MPThreeDSChallengeError(
                                             code = it.errorCode ?: "RUNTIME_ERROR",
                                             message = it.errorMessage ?: "Runtime error occurred",
-                                        )
-                                    )
+                                        ),
+                                    ),
                                 )
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
                                         code = "RUNTIME_ERROR",
                                         message = "Runtime error event is null",
-                                    )
-                                )
+                                    ),
+                                ),
                             )
                         }
 
@@ -256,8 +254,8 @@ internal class ThreeDSWrapper(private val context: Context) {
             MPThreeDSChallengeResult.OnError(
                 MPThreeDSChallengeError(
                     code = "INVALID_INPUT",
-                    message = "[3DS] Error trying to do the challenge - Message: ${e.message}"
-                )
+                    message = "[3DS] Error trying to do the challenge - Message: ${e.message}",
+                ),
             )
         }
     }

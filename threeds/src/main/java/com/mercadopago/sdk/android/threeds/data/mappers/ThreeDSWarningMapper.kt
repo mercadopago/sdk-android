@@ -9,7 +9,7 @@ internal fun MPThreeDSWarningResponse.toModel(): MPThreeDSWarning {
     return MPThreeDSWarning(
         id = this.id,
         message = this.message,
-        severity = this.severity.toModel()
+        severity = this.severity.toModel(),
     )
 }
 

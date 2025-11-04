@@ -9,5 +9,5 @@ internal fun MPThreeDSAuthenticationParams.toChallengeModel() =
         acsReferenceNumber = acsReferenceNumber,
         dsTransID = dsTransID,
         acsTransID = acsTransID,
-        acsSignedContent = acsSignedContent
+        acsSignedContent = acsSignedContent,
     )

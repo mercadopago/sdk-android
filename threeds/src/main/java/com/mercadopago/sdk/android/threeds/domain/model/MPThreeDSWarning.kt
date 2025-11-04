@@ -10,7 +10,7 @@ package com.mercadopago.sdk.android.threeds.domain.model
 data class MPThreeDSWarning(
     val id: String,
     val message: String,
-    val severity: MPThreeDSSeverity
+    val severity: MPThreeDSSeverity,
 )
 
 /**
@@ -19,10 +19,13 @@ data class MPThreeDSWarning(
 enum class MPThreeDSSeverity {
     /** Low severity warning */
     LOW,
+
     /** Medium severity warning */
     MEDIUM,
+
     /** High severity warning */
     HIGH,
+
     /** No severity or unknown */
-    NONE
+    NONE,
 }

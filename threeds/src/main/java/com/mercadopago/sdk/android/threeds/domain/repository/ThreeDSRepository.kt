@@ -7,7 +7,6 @@ import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 
 internal interface ThreeDSRepository {
-
     fun getWarnings(): List<MPThreeDSWarning>
 
     fun close()
@@ -19,6 +18,6 @@ internal interface ThreeDSRepository {
     suspend fun doChallenge(
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationModel,
-        timeout: Int
+        timeout: Int,
     ): MPThreeDSChallengeResult
 }

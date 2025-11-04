@@ -9,7 +9,7 @@ internal fun provideRepositoryModule(): Module =
     module {
         single<ThreeDSRepository> {
             ThreeDSRepositoryImpl(
-                threeDSWrapper = get()
+                threeDSWrapper = get(),
             )
         }
     }

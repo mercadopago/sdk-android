@@ -11,9 +11,8 @@ import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestP
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
 
 internal class ThreeDSRepositoryImpl(
-    private val threeDSWrapper: ThreeDSWrapper
+    private val threeDSWrapper: ThreeDSWrapper,
 ) : ThreeDSRepository {
-
     override fun getWarnings(): List<MPThreeDSWarning> {
         return threeDSWrapper.getWarnings().map { it.toModel() }
     }
@@ -33,12 +32,12 @@ internal class ThreeDSRepositoryImpl(
     override suspend fun doChallenge(
         activity: Activity,
         authenticationResponse: MPThreeDSAuthenticationModel,
-        timeout: Int
+        timeout: Int,
     ): MPThreeDSChallengeResult {
         return threeDSWrapper.doChallenge(
             activity = activity,
             authenticationParams = authenticationResponse.toParams(),
-            timeout = timeout
+            timeout = timeout,
         )
     }
 }

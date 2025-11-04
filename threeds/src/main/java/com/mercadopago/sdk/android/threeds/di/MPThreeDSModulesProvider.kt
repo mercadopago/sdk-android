@@ -10,7 +10,6 @@ import org.koin.core.Koin
 import org.koin.core.module.Module
 
 internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoinComponent {
-
     override val koinApp: Koin = CoreKoinFactory.setKoinModules(
         koin = getKoin(),
         modules = provideModules(),

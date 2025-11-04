@@ -90,12 +90,12 @@ class MPThreeDS internal constructor(
     suspend fun doChallenge(
         activity: Activity,
         authentication: MPThreeDSAuthenticationModel,
-        timeout: Int = 10
+        timeout: Int = 10,
     ): MPThreeDSChallengeResult {
         return threeDSRepository.doChallenge(
             activity = activity,
             authenticationResponse = authentication,
-            timeout = timeout
+            timeout = timeout,
         )
     }
 

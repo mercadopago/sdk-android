@@ -10,7 +10,7 @@ package com.mercadopago.sdk.android.threeds.data.model
 data class MPThreeDSWarningResponse(
     val id: String,
     val message: String,
-    val severity: MPSeverityResponse
+    val severity: MPSeverityResponse,
 )
 
 /**
@@ -19,12 +19,17 @@ data class MPThreeDSWarningResponse(
 enum class MPSeverityResponse {
     /** Low severity warning */
     LOW,
+
     /** Medium severity warning */
     MEDIUM,
+
     /** High severity warning */
     HIGH,
+
     /** No severity or unknown */
-    NONE ;
+    NONE,
+
+    ;
 
     /**
      * Severity levels for 3DS warnings from the uSDK service.
