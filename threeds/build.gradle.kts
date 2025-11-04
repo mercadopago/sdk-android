@@ -65,11 +65,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
+        jvmTarget = "1.8"
         allWarningsAsErrors = false
     }
 }
@@ -99,6 +100,7 @@ dependencies {
     api(libs.androidx.datastore)
     implementation(libs.androidx.annotation)
     api(libs.device.sdk)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
