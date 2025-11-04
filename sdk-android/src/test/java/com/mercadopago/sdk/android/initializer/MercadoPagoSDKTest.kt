@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -54,6 +55,8 @@ internal class MercadoPagoSDKTest {
         mockkObject(SdkCoroutineProvider)
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
+        every { MPAnalytics.initialize(any(), any()) } returns Unit
+        every { SdkInitializerAnalytics.buildSdkInitializerEvent(any(), any(), any()) } answers { callOriginal() }
         mockkStatic(DeviceSDK::class)
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
@@ -227,6 +230,42 @@ internal class MercadoPagoSDKTest {
         // Then
         initialization.test {
             awaitError() is SDKNotInitializedException
+        }
+    }
+
+    @Test
+    fun `when setNewConfiguration is called Then update keys and reinitialize flows`() = runTest {
+        // Given
+        val initialPublicKey = "public_key_1"
+        val initialCountryCode = CountryCode.ARG
+        val newPublicKey = "public_key_2"
+        val newCountryCode = CountryCode.BRA
+        every { setSiteIdUseCase(initialPublicKey, initialCountryCode) } returns flowOf(Unit)
+        every { setSiteIdUseCase(newPublicKey, newCountryCode) } returns flowOf(Unit)
+        // Use real SdkInitializerAnalytics via callOriginal stub in setup
+
+        // When
+        MercadoPagoSDK.initialize(
+            context = context,
+            publicKey = initialPublicKey,
+            countryCode = initialCountryCode,
+        )
+        MercadoPagoSDK.setNewConfiguration(
+            publicKey = newPublicKey,
+            countryCode = newCountryCode,
+        )
+
+        advanceUntilIdle()
+
+        // Then
+        assertNotNull(MercadoPagoSDK.getInstance())
+        kotlin.test.assertEquals(newPublicKey, MercadoPagoSDK.publicKey)
+        kotlin.test.assertEquals(newCountryCode, MercadoPagoSDK.countryCode)
+        io.mockk.verify(exactly = 1) { setSiteIdUseCase(initialPublicKey, initialCountryCode) }
+        io.mockk.verify(exactly = 1) { setSiteIdUseCase(newPublicKey, newCountryCode) }
+        io.mockk.verify { koin.close() }
+        io.mockk.verify(exactly = 2) {
+            mpAnalytics.trackMetric(match { it.path == "/checkout_api_native/initialize" })
         }
     }
 }

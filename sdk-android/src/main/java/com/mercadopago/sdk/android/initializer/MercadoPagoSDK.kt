@@ -27,10 +27,11 @@ import java.util.UUID
  * Mercado Pago SDK. This class holds logic to initialize the SDK and call some of it's methods.
  */
 class MercadoPagoSDK private constructor(
-    internal val koin: Koin,
-    internal val publicKey: String,
-    internal val countryCode: CountryCode,
+    internal var koin: Koin,
+    internal var publicKey: String,
+    internal var countryCode: CountryCode,
     private val sessionId: String,
+    private val context: Context,
 ) {
 
     /**
@@ -85,6 +86,7 @@ class MercadoPagoSDK private constructor(
                 sessionId = sessionId,
                 publicKey = publicKey,
                 countryCode = countryCode,
+                context = context.applicationContext,
             )
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
@@ -126,6 +128,58 @@ class MercadoPagoSDK private constructor(
          */
         fun getInstance(): MercadoPagoSDK {
             return sdkInstance ?: throw SDKNotInitializedException()
+        }
+
+        /**
+         * Updates the current SDK configuration with a new public key and country code.
+         * Re-initializes analytics and site ID using a fresh dependency graph.
+         */
+        @Synchronized
+        fun setNewConfiguration(
+            publicKey: String,
+            countryCode: CountryCode,
+        ): Unit {
+            val instance: MercadoPagoSDK = sdkInstance ?: throw SDKNotInitializedException()
+            if (publicKey.isEmpty()) {
+                throw EmptyPublicKeyException()
+            }
+            if (instance.publicKey == publicKey && instance.countryCode == countryCode) {
+                return
+            }
+            val modulesProvider: MercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
+                publicKey = publicKey,
+                context = instance.context,
+            )
+            instance.koin.close()
+            instance.koin = modulesProvider.koinApp
+            instance.publicKey = publicKey
+            instance.countryCode = countryCode
+            SdkCoroutineProvider.provideSDKCoroutineScope().launch {
+                val getSiteIdUseCase: GetSiteIdUseCase = modulesProvider.koinApp.get()
+                val setSiteIdUseCase: SetSiteIdUseCase = modulesProvider.koinApp.get()
+                MPAnalytics.initialize(
+                    context = instance.context,
+                    getSiteIdFlow = getSiteIdUseCase(publicKey).map { siteId -> siteId.siteId },
+                )
+                setSiteIdUseCase(publicKey, countryCode).catch { error ->
+                    Log.d(TAG, "Error reconfiguring SDK: ${error.message}", error)
+                    MPAnalytics.getInstance().trackMetric(
+                        SdkInitializerAnalytics.buildSdkInitializerEvent(
+                            context = instance.context,
+                            publicKey = publicKey,
+                            errorType = "Error reconfiguring SDK: ${error.message}",
+                        )
+                    )
+                }.collect { _ ->
+                    Log.d(TAG, "Reconfigured SDK")
+                    MPAnalytics.getInstance().trackMetric(
+                        SdkInitializerAnalytics.buildSdkInitializerEvent(
+                            context = instance.context,
+                            publicKey = publicKey,
+                        )
+                    )
+                }
+            }
         }
 
         /**
