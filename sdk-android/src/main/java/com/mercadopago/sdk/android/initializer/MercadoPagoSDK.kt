@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
@@ -16,7 +17,6 @@ import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
-import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
