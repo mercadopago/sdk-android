@@ -263,7 +263,6 @@ internal class MercadoPagoSDKTest {
         kotlin.test.assertEquals(newCountryCode, MercadoPagoSDK.countryCode)
         io.mockk.verify(exactly = 1) { setSiteIdUseCase(initialPublicKey, initialCountryCode) }
         io.mockk.verify(exactly = 1) { setSiteIdUseCase(newPublicKey, newCountryCode) }
-        io.mockk.verify { koin.close() }
         io.mockk.verify(exactly = 2) {
             mpAnalytics.trackMetric(match { it.path == "/checkout_api_native/initialize" })
         }

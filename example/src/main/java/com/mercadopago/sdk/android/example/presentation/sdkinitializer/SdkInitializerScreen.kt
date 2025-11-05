@@ -160,17 +160,17 @@ internal fun SdkInitializerScreen(
         Button(
             onClick = onInitializeSdkClick,
             modifier = Modifier.fillMaxWidth(),
-            enabled = viewState.sdkState.isInitialized.not(),
+            enabled = true,
         ) {
-            Text("Set and Initialize SDK")
+            Text("Change SDK Configuration")
         }
-        Button(
-            onClick = onDestroySdkInstanceClick,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = viewState.sdkState.isInitialized,
-        ) {
-            Text("Destroy SDK Instance")
-        }
+//        Button(
+//            onClick = onDestroySdkInstanceClick,
+//            modifier = Modifier.fillMaxWidth(),
+//            enabled = viewState.sdkState.isInitialized,
+//        ) {
+//            Text("Destroy SDK Instance")
+//        }
     }
 }
 

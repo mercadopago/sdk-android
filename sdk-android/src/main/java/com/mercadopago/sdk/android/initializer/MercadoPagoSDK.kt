@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
+import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -88,6 +89,7 @@ class MercadoPagoSDK private constructor(
                 countryCode = countryCode,
                 context = context.applicationContext,
             )
+            PublicKeyStore.publicKey = publicKey
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val getSiteIdUseCase = modulesProvider.koinApp.get<GetSiteIdUseCase>()
                 val setSiteIdUseCase = modulesProvider.koinApp.get<SetSiteIdUseCase>()
@@ -150,10 +152,9 @@ class MercadoPagoSDK private constructor(
                 publicKey = publicKey,
                 context = instance.context,
             )
-            instance.koin.close()
-            instance.koin = modulesProvider.koinApp
             instance.publicKey = publicKey
             instance.countryCode = countryCode
+            PublicKeyStore.publicKey = publicKey
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val getSiteIdUseCase: GetSiteIdUseCase = modulesProvider.koinApp.get()
                 val setSiteIdUseCase: SetSiteIdUseCase = modulesProvider.koinApp.get()

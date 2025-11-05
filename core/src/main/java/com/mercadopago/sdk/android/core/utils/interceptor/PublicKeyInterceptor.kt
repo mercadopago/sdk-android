@@ -8,13 +8,17 @@ private const val PUBLIC_KEY = "public_key"
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 internal class PublicKeyInterceptor(
-    private val publicKey: String,
+    private val publicKeyProvider: () -> String?,
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+        val currentPublicKey: String? = publicKeyProvider()
+        if (currentPublicKey.isNullOrEmpty()) {
+            return chain.proceed(request)
+        }
         val url = request.url.newBuilder().apply {
-            addQueryParameter(PUBLIC_KEY, publicKey)
+            addQueryParameter(PUBLIC_KEY, currentPublicKey)
         }.build()
         val newRequest = request.newBuilder().url(url).build()
         return chain.proceed(newRequest)
