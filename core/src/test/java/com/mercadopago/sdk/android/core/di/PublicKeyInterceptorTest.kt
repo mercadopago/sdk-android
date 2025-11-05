@@ -18,7 +18,7 @@ class PublicKeyInterceptorTest {
             .build()
 
         val client = OkHttpClient.Builder()
-            .addInterceptor(PublicKeyInterceptor(publicKey = publicKey))
+            .addInterceptor(PublicKeyInterceptor { publicKey })
             .build()
 
         val newResponse = client.newCall(originalRequest).execute()
