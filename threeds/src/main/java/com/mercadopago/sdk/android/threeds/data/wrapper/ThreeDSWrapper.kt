@@ -29,6 +29,11 @@ import org.emvco.threeds.core.exceptions.InvalidInputException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+const val ERROR_RUNTIME: String = "RUNTIME_ERROR"
+const val ERROR_PROTOCOL: String = "PROTOCOL_ERROR"
+const val ERROR_COMPLETION: String = "COMPLETION_ERROR"
+const val ERROR_INVALID_INPUT: String = "INVALID_INPUT"
+
 /**
  * Adapter implementation for the uSDK ThreeDS integration.
  * This class integrates the uSDK (Universal SDK) for 3DS authentication functionality.
@@ -76,7 +81,6 @@ internal class ThreeDSWrapper(private val context: Context) {
                             "ThreeDSWrapper",
                             "Failed to initialize SDK, code: $code, type: $type",
                         )
-                        // TODO - return a erro here
                         continuation.resume(service) // Resume even on error to prevent hanging
                     } else {
                         // Everything is okay, start using service
@@ -190,7 +194,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
-                                        code = "COMPLETION_ERROR",
+                                        code = ERROR_COMPLETION,
                                         message = "Completion event is null",
                                     ),
                                 ),
@@ -202,7 +206,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnError(
                                         error = MPThreeDSChallengeError(
-                                            code = it.errorMessage.errorCode ?: "PROTOCOL_ERROR",
+                                            code = it.errorMessage.errorCode ?: ERROR_PROTOCOL,
                                             message = it.errorMessage.errorDescription
                                                 ?: "Protocol error occurred",
                                             details = it.errorMessage.errorDetails ?: "",
@@ -212,7 +216,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
-                                        code = "PROTOCOL_ERROR",
+                                        code = ERROR_PROTOCOL,
                                         message = "Protocol error event is null",
                                     ),
                                 ),
@@ -224,7 +228,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnError(
                                         error = MPThreeDSChallengeError(
-                                            code = it.errorCode ?: "RUNTIME_ERROR",
+                                            code = it.errorCode ?: ERROR_RUNTIME,
                                             message = it.errorMessage ?: "Runtime error occurred",
                                         ),
                                     ),
@@ -232,7 +236,7 @@ internal class ThreeDSWrapper(private val context: Context) {
                             } ?: continuation.resume(
                                 MPThreeDSChallengeResult.OnError(
                                     error = MPThreeDSChallengeError(
-                                        code = "RUNTIME_ERROR",
+                                        code = ERROR_RUNTIME,
                                         message = "Runtime error event is null",
                                     ),
                                 ),
@@ -253,7 +257,7 @@ internal class ThreeDSWrapper(private val context: Context) {
         } catch (e: InvalidInputException) {
             MPThreeDSChallengeResult.OnError(
                 MPThreeDSChallengeError(
-                    code = "INVALID_INPUT",
+                    code = ERROR_INVALID_INPUT,
                     message = "[3DS] Error trying to do the challenge - Message: ${e.message}",
                 ),
             )

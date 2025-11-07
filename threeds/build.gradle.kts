@@ -81,14 +81,14 @@ ksp {
 
 dependencies {
 
-    implementation("com.usdk.android:usdk:6.6.81")
+    implementation(libs.usdk)
 
     // 3DS SDK dependencies
-    implementation("com.google.code.gson:gson:2.8.1")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("com.google.android.gms:play-services-ads-identifier:18.2.0")
-    implementation("com.google.android.gms:play-services-auth-api-phone:18.2.0")
-    implementation("com.android.support:support-v4:28.0.0")
+    implementation(libs.gson)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.ads.identifier)
+    implementation(libs.play.services.auth.api.phone)
+    implementation(libs.support.v4)
 
     api(projects.core)
     implementation(projects.sdkAndroid)

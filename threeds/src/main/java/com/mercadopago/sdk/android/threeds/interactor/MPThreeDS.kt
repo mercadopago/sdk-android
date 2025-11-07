@@ -57,27 +57,24 @@ class MPThreeDS internal constructor(
      *
      * @return List of warnings from the 3DS SDK
      */
-    fun getWarnings(): List<MPThreeDSWarning> {
-        return threeDSRepository.getWarnings()
-    }
+    fun getWarnings(): List<MPThreeDSWarning> = threeDSRepository.getWarnings()
 
     /**
      * Creates a transaction with the specified payment method.
      *
      * @param paymentMethodId The payment method ID to create transaction for
      */
-    fun createTransaction(paymentMethodId: String) {
+    fun createTransaction(paymentMethodId: String) =
         threeDSRepository.createTransaction(paymentMethodId)
-    }
 
     /**
      * Gets the authentication request parameters for the current transaction.
      *
      * @return Authentication request parameters needed for backend call
      */
-    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? {
-        return threeDSRepository.getAuthenticationRequestParameters()
-    }
+    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? =
+        threeDSRepository.getAuthenticationRequestParameters()
+
 
     /**
      * Performs the challenge flow with the provided authentication response.
