@@ -15,8 +15,9 @@ internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoi
         modules = provideModules(),
     )
 
-    override fun provideModules(): List<Module> = listOf(
-        provideWrapperModule(koinApp.get<Context>()),
-        provideRepositoryModule(),
-    )
+    override fun provideModules(): List<Module> =
+        listOf(
+            provideWrapperModule(koinApp.get<Context>()),
+            provideRepositoryModule(),
+        )
 }

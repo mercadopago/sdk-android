@@ -64,16 +64,15 @@ class MPThreeDS internal constructor(
      *
      * @param paymentMethodId The payment method ID to create transaction for
      */
-    fun createTransaction(paymentMethodId: String) =
-        threeDSRepository.createTransaction(paymentMethodId)
+    fun createTransaction(paymentMethodId: String) = threeDSRepository.createTransaction(paymentMethodId)
 
     /**
      * Gets the authentication request parameters for the current transaction.
      *
      * @return Authentication request parameters needed for backend call
      */
-    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? =
-        threeDSRepository.getAuthenticationRequestParameters()
+    fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? = threeDSRepository
+        .getAuthenticationRequestParameters()
 
     /**
      * Performs the challenge flow with the provided authentication response.
