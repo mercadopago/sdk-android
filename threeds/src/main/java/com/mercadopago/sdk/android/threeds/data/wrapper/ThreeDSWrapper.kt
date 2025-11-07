@@ -29,9 +29,21 @@ import org.emvco.threeds.core.exceptions.InvalidInputException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Runtime error
+ */
 const val ERROR_RUNTIME: String = "RUNTIME_ERROR"
+/**
+ * Protocol error
+ */
 const val ERROR_PROTOCOL: String = "PROTOCOL_ERROR"
+/**
+ * Completion error
+ */
 const val ERROR_COMPLETION: String = "COMPLETION_ERROR"
+/**
+ * Invalid Input error
+ */
 const val ERROR_INVALID_INPUT: String = "INVALID_INPUT"
 
 /**

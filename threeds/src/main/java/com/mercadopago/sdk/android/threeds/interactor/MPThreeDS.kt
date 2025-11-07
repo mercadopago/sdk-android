@@ -75,7 +75,6 @@ class MPThreeDS internal constructor(
     fun getAuthenticationRequestParameters(): MPThreeDSRequestParams? =
         threeDSRepository.getAuthenticationRequestParameters()
 
-
     /**
      * Performs the challenge flow with the provided authentication response.
      *
