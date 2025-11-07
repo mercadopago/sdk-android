@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -82,15 +84,15 @@ fun MpTooltip(
 
                 Box(
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(MercadoPagoTheme.spacing.m)
+                        .padding(1.dp)
                         .clickable(onClick = onDismiss),
                     contentAlignment = Alignment.Center,
                 ) {
-                    // TODO adicionar o icone aqui
-                    MPText(
-                        text = "×",
-                        textStyle = MPTextStyle.BodyMediumRegular,
-                        colorType = MPTextColorType.Inverted,
+                    Icon(
+                        painterResource(R.drawable.mp_icon_close_x),
+                        "",
+                        tint = MercadoPagoTheme.color.text.inverted
                     )
                 }
             }
