@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
+private const val TOOLTIP_MAX_WIDTH_FRACTION: Float = 0.9f
+
 /**
  * Tooltip component with two visual styles: Dark and Blue.
  *
@@ -57,7 +59,7 @@ fun MpTooltip(
     Surface(
         modifier = modifier
             .defaultMinSize(minWidth = 240.dp, minHeight = 86.dp)
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(TOOLTIP_MAX_WIDTH_FRACTION)
             .padding(MercadoPagoTheme.spacing.m),
         color = colors.container,
         shape = bubbleShape,
@@ -69,45 +71,66 @@ fun MpTooltip(
                     horizontal = MercadoPagoTheme.spacing.m,
                     vertical = MercadoPagoTheme.spacing.m,
                 ),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.s),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                MPText(
-                    text = title,
-                    textStyle = MPTextStyle.BodyMediumSemiBold,
-                    colorType = MPTextColorType.Inverted,
-                    modifier = Modifier.weight(1f),
-                )
+            TooltipHeader(title = title, onDismiss = onDismiss, closeTint = colors.close)
+            TooltipDescription(text = description)
+        }
+    }
+}
 
-                Box(
-                    modifier = Modifier
-                        .size(MercadoPagoTheme.spacing.m)
-                        .padding(1.dp)
-                        .clickable(onClick = onDismiss),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painterResource(R.drawable.mp_icon_close_x),
-                        "",
-                        tint = MercadoPagoTheme.color.text.inverted
-                    )
-                }
-            }
-
-            MPText(
-                text = description,
-                textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Inverted,
+@Composable
+private fun TooltipHeader(
+    title: String,
+    onDismiss: () -> Unit,
+    closeTint: Color,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        MPText(
+            text = title,
+            textStyle = MPTextStyle.BodyMediumSemiBold,
+            colorType = MPTextColorType.Inverted,
+            modifier = Modifier.weight(1f),
+        )
+        Box(
+            modifier = Modifier
+                .size(MercadoPagoTheme.spacing.m)
+                .padding(MercadoPagoTheme.spacing.xxs)
+                .clickable(onClick = onDismiss),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painterResource(R.drawable.mp_icon_close_x),
+                "",
+                tint = closeTint,
             )
         }
     }
 }
 
+@Composable
+private fun TooltipDescription(text: String) {
+    MPText(
+        text = text,
+        textStyle = MPTextStyle.BodySmallRegular,
+        colorType = MPTextColorType.Inverted,
+    )
+}
+
+/**
+ * Defines the available visual styles for `MpTooltip`.
+ *
+ * - `Dark`: Uses an inverted background for high contrast.
+ * - `Blue`: Uses the accent color background.
+ */
 enum class MpTooltipStyle {
+    /** Dark style using inverted background. */
     Dark,
+
+    /** Blue style using the accent color. */
     Blue,
 }
 
