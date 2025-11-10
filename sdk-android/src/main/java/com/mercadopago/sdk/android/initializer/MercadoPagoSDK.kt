@@ -28,7 +28,7 @@ class MercadoPagoSDK private constructor(
     internal var publicKey: String,
     internal var countryCode: CountryCode,
     private val sessionId: String,
-    private val applicationContext: Application,
+     private val applicationContext: Context,
 ) {
 
     /**
@@ -82,7 +82,7 @@ class MercadoPagoSDK private constructor(
                 sessionId = sessionId,
                 publicKey = publicKey,
                 countryCode = countryCode,
-                applicationContext = context.applicationContext as Application,
+                applicationContext = context.applicationContext,
             )
             PublicKeyStore.publicKey = publicKey
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
@@ -91,7 +91,7 @@ class MercadoPagoSDK private constructor(
                 val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
                 configureSdkUseCase(
                     ConfigureSdkParams(
-                        context = instance.applicationContext,
+                        context = context,
                         publicKey = publicKey,
                         countryCode = countryCode,
                     )
