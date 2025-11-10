@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
-import com.mercadopago.sdk.android.initializer.usecase.ReconfigureSdkUseCase
+import com.mercadopago.sdk.android.initializer.usecase.ConfigureSdkUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -40,7 +40,7 @@ internal class MercadoPagoSDKTest {
     private val getSiteIdUseCase = mockk<com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase>(relaxed = true)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val deviceSDK = mockk<DeviceSDK>(relaxed = true)
-    private val reconfigureSdkUseCase = ReconfigureSdkUseCase(getSiteIdUseCase, setSiteIdUseCase)
+    private val configureSdkUseCase = ConfigureSdkUseCase(getSiteIdUseCase, setSiteIdUseCase)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -66,7 +66,7 @@ internal class MercadoPagoSDKTest {
         every {
             CoreKoinFactory.createKoinApp(any(), any(), any())
         } returns koin
-        every { koin.get<ReconfigureSdkUseCase>() } returns reconfigureSdkUseCase
+        every { koin.get<ConfigureSdkUseCase>() } returns configureSdkUseCase
         every {
             MPAnalytics.getInstance()
         } returns mpAnalytics

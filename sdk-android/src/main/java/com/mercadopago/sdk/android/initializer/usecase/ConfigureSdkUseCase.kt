@@ -12,18 +12,18 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-internal data class ReconfigureSdkParams(
+internal data class ConfigureSdkParams(
     val context: Context,
     val publicKey: String,
     val countryCode: CountryCode,
 )
 
-internal class ReconfigureSdkUseCase(
+internal class ConfigureSdkUseCase(
     private val getSiteIdUseCase: GetSiteIdUseCase,
     private val setSiteIdUseCase: SetSiteIdUseCase,
 ) {
 
-    operator fun invoke(params: ReconfigureSdkParams): Flow<Unit> {
+    operator fun invoke(params: ConfigureSdkParams): Flow<Unit> {
         MPAnalytics.initialize(
             context = params.context,
             getSiteIdFlow = getSiteIdUseCase(params.publicKey).map { siteId -> siteId.siteId },

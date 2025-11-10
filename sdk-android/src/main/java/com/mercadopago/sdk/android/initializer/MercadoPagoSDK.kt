@@ -13,8 +13,8 @@ import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
-import com.mercadopago.sdk.android.initializer.usecase.ReconfigureSdkParams
-import com.mercadopago.sdk.android.initializer.usecase.ReconfigureSdkUseCase
+import com.mercadopago.sdk.android.initializer.usecase.ConfigureSdkParams
+import com.mercadopago.sdk.android.initializer.usecase.ConfigureSdkUseCase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import org.koin.core.Koin
@@ -88,9 +88,9 @@ class MercadoPagoSDK private constructor(
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val instance = getInstance()
                 DeviceSDK.getInstance().execute(instance.applicationContext)
-                val reconfigureSdkUseCase: ReconfigureSdkUseCase = modulesProvider.koinApp.get()
-                reconfigureSdkUseCase(
-                    ReconfigureSdkParams(
+                val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
+                configureSdkUseCase(
+                    ConfigureSdkParams(
                         context = instance.applicationContext,
                         publicKey = publicKey,
                         countryCode = countryCode,
@@ -142,9 +142,9 @@ class MercadoPagoSDK private constructor(
             PublicKeyStore.publicKey = publicKey
 
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
-                val reconfigureSdkUseCase: ReconfigureSdkUseCase = modulesProvider.koinApp.get()
-                reconfigureSdkUseCase(
-                    ReconfigureSdkParams(
+                val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
+                configureSdkUseCase(
+                    ConfigureSdkParams(
                         context = instance.applicationContext,
                         publicKey = publicKey,
                         countryCode = countryCode,
