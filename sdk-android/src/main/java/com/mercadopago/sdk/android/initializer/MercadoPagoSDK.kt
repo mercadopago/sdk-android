@@ -2,7 +2,6 @@
 
 package com.mercadopago.sdk.android.initializer
 
-import android.app.Application
 import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
@@ -28,7 +27,7 @@ class MercadoPagoSDK private constructor(
     internal var publicKey: String,
     internal var countryCode: CountryCode,
     private val sessionId: String,
-     private val applicationContext: Context,
+    private val applicationContext: Context,
 ) {
 
     /**
