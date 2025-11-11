@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.core.BuildConfig
+import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,9 +50,7 @@ class RetrofitServiceFactory(
             }
         }
         OkHttpClient.Builder().apply {
-            if (publicKey != null) {
-                addInterceptor(PublicKeyInterceptor(publicKey))
-            }
+            addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey ?: publicKey })
             addInterceptor(loggingInterceptor)
         }.build()
     }
