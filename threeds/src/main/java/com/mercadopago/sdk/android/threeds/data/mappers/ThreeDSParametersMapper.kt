@@ -5,18 +5,17 @@ import com.mercadopago.sdk.android.threeds.data.model.ThreeDSAuthRequestParamete
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 
-internal fun ThreeDSAuthRequestParameters.toModel(): MPThreeDSRequestParams {
-    return MPThreeDSRequestParams(
+internal fun ThreeDSAuthRequestParameters.toModel(): MPThreeDSRequestParams =
+    MPThreeDSRequestParams(
         sdkAppId = this.sdkAppId,
         deviceData = this.deviceData,
         sdkEphemeralPublicKey = this.sdkEphemeralPublicKey,
         sdkReferenceNumber = this.sdkReferenceNumber,
         sdkTransactionId = this.sdkTransactionId,
     )
-}
 
-internal fun MPThreeDSAuthenticationModel.toParams(): MPThreeDSAuthenticationParams {
-    return MPThreeDSAuthenticationParams(
+internal fun MPThreeDSAuthenticationModel.toParams(): MPThreeDSAuthenticationParams =
+    MPThreeDSAuthenticationParams(
         response = this.response,
         threeDSServerTransID = this.threeDSServerTransID,
         acsReferenceNumber = this.acsReferenceNumber,
@@ -24,4 +23,3 @@ internal fun MPThreeDSAuthenticationModel.toParams(): MPThreeDSAuthenticationPar
         acsTransID = this.acsTransID,
         acsSignedContent = this.acsSignedContent,
     )
-}
