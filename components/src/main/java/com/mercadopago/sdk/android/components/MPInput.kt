@@ -48,9 +48,27 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 enum class LabelState {
     Idle,
     Disabled,
-    Error
+    Error,
 }
 
+/**
+ * Composable function that displays a card number text field with MercadoPago styling.
+ *
+ * This component wraps the CardNumberTextField with consistent styling, validation, and accessibility features.
+ * It provides automatic formatting for card numbers and handles focus states, errors, and labels.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param state The PCIFieldState that manages the secure field state.
+ * @param onEvent Callback invoked when card number events occur (e.g., value changes, validation).
+ * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
+ * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
+ * @param error Whether the field is in an error state. Displays error styling when true.
+ * @param enabled Whether the field is enabled for user interaction.
+ * @param label Optional label text displayed above the field.
+ * @param helper Optional helper text displayed below the field.
+ * @param visualTransformation The visual transformation to apply to the input (e.g., masking).
+ *                              Defaults to card number masking format.
+ */
 @Composable
 fun MPCardNumberTextField(
     modifier: Modifier = Modifier,
@@ -84,7 +102,7 @@ fun MPCardNumberTextField(
                         // Adding a border by field state created for this example
                         .addBorder(
                             isFocused = isFocused,
-                            error = error
+                            error = error,
                         )
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
@@ -105,6 +123,23 @@ fun MPCardNumberTextField(
     }
 }
 
+/**
+ * Composable function that displays an expiration date text field with MercadoPago styling.
+ *
+ * This component wraps the ExpirationDateTextField with consistent styling and validation for card expiration dates.
+ * It automatically formats the date input based on the specified format and handles focus states, errors, and labels.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param state The PCIFieldState that manages the secure field state.
+ * @param onEvent Callback invoked when expiration date events occur (e.g., value changes, validation).
+ * @param dateFormat The format for the expiration date. Defaults to ShortFormat (MM/YY).
+ * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
+ * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
+ * @param error Whether the field is in an error state. Displays error styling when true.
+ * @param enabled Whether the field is enabled for user interaction.
+ * @param label Optional label text displayed above the field.
+ * @param helper Optional helper text displayed below the field.
+ */
 @Composable
 fun MPExpirationDateTextField(
     modifier: Modifier = Modifier,
@@ -137,7 +172,7 @@ fun MPExpirationDateTextField(
                     modifier = Modifier
                         .addBorder(
                             isFocused = isFocused,
-                            error = error
+                            error = error,
                         )
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
@@ -153,11 +188,31 @@ fun MPExpirationDateTextField(
                         innerTextField()
                     }
                 }
-            }
+            },
         )
     }
 }
 
+/**
+ * Composable function that displays a security code (CVV/CVC) text field with MercadoPago styling.
+ *
+ * This component wraps the SecurityCodeTextField with consistent styling and validation for card security codes.
+ * It handles variable length security codes (typically 3 or 4 digits), provides secure input masking,
+ * and displays an icon indicator. The component manages focus states, errors, and labels consistently
+ * with other payment input fields.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param state The PCIFieldState that manages the secure field state.
+ * @param onEvent Callback invoked when security code events occur (e.g., value changes, validation).
+ * @param securityCodeSize The expected length of the security code. Defaults to 3 for most cards,
+ *                         but can be 4 for cards like American Express.
+ * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
+ * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
+ * @param error Whether the field is in an error state. Displays error styling when true.
+ * @param enabled Whether the field is enabled for user interaction.
+ * @param label Optional label text displayed above the field.
+ * @param helper Optional helper text displayed below the field.
+ */
 @Composable
 fun MPSecurityCodeTextField(
     modifier: Modifier = Modifier,
@@ -191,7 +246,7 @@ fun MPSecurityCodeTextField(
                     modifier = Modifier
                         .addBorder(
                             isFocused = isFocused,
-                            error = error
+                            error = error,
                         )
                         .height(OutlinedTextFieldDefaults.MinHeight)
                         .padding(horizontal = 16.dp),
@@ -229,15 +284,20 @@ internal fun MPInputBody(
     content: @Composable () -> Unit,
 ) {
     val state =
-        if (error) LabelState.Error else if (!enabled) LabelState.Disabled else LabelState.Idle
+        if (error) {
+            LabelState.Error
+        } else if (!enabled) {
+            LabelState.Disabled
+        } else {
+            LabelState.Idle
+        }
     Column {
-
         label?.let {
             MPLabel(
                 it,
                 modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
                 textStyle = MPTextStyle.BodySmallRegular,
-                labelState = state
+                labelState = state,
             )
         }
         content()
@@ -247,19 +307,18 @@ internal fun MPInputBody(
                 modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
                 labelState = state,
                 showIcon = showHelperIcon,
-                icon = icon
+                icon = icon,
             )
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MPDropList(
     text: String,
     modifier: Modifier = Modifier,
-    dropList: List<String>
+    dropList: List<String>,
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -273,7 +332,7 @@ internal fun MPDropList(
         ) {
             MPText(
                 text = text,
-                modifier = modifier.widthIn(min = 32.dp)
+                modifier = modifier.widthIn(min = 32.dp),
             )
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
         }
@@ -285,8 +344,8 @@ internal fun MPDropList(
                     },
                     onClick = {
                         expanded = false
-                        //onSelectIdentification(option)
-                    }
+                        // onSelectIdentification(option)
+                    },
                 )
             }
         }
@@ -299,18 +358,20 @@ internal fun MPHelper(
     modifier: Modifier = Modifier,
     showIcon: Boolean = false,
     labelState: LabelState = LabelState.Idle,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
 ) {
     Row {
-        if (showIcon) icon?.let {
-            Icon(it, "")
-            Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs))
+        if (showIcon) {
+            icon?.let {
+                Icon(it, "")
+                Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs))
+            }
         }
         MPLabel(
             text,
             modifier = modifier,
             labelState = labelState,
-            textStyle = MPTextStyle.BodyExtraSmallSemiBold
+            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
         )
     }
 }
@@ -320,7 +381,7 @@ internal fun MPLabel(
     text: String,
     modifier: Modifier = Modifier,
     textStyle: MPTextStyle = MPTextStyle.Title,
-    labelState: LabelState = LabelState.Idle
+    labelState: LabelState = LabelState.Idle,
 ) {
     val colorType = when (labelState) {
         LabelState.Idle -> MPTextColorType.Primary
@@ -332,7 +393,7 @@ internal fun MPLabel(
         text,
         modifier = modifier,
         textStyle = textStyle,
-        colorType = colorType
+        colorType = colorType,
     )
 }
 
@@ -354,20 +415,18 @@ internal fun Modifier.addBorder(
     )
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun MPSecurityCodeTextFieldPreview() {
     MercadoPagoTheme {
         val securityCodeState = rememberPCIFieldState()
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
         ) {
             MPSecurityCodeTextField(
                 state = securityCodeState,
                 onEvent = {
-
-                }
+                },
             )
         }
     }
@@ -379,13 +438,12 @@ fun MPCardNumberTextFieldPreview() {
     MercadoPagoTheme {
         val cardNumberState = rememberPCIFieldState()
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
         ) {
             MPCardNumberTextField(
                 state = cardNumberState,
                 onEvent = {
-
-                }
+                },
             )
         }
     }
@@ -397,13 +455,12 @@ fun MPExpirationDateTextFieldPreview() {
     MercadoPagoTheme {
         val expirationDateState = rememberPCIFieldState()
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(10.dp),
         ) {
             MPExpirationDateTextField(
                 state = expirationDateState,
                 onEvent = {
-
-                }
+                },
             )
         }
     }
