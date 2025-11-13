@@ -45,12 +45,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
-enum class LabelState {
-    Idle,
-    Disabled,
-    Error,
-}
-
 /**
  * Composable function that displays a card number text field with MercadoPago styling.
  *
@@ -417,7 +411,7 @@ internal fun Modifier.addBorder(
 
 @Preview(showBackground = true)
 @Composable
-fun MPSecurityCodeTextFieldPreview() {
+private fun MPSecurityCodeTextFieldPreview() {
     MercadoPagoTheme {
         val securityCodeState = rememberPCIFieldState()
         Column(
@@ -434,7 +428,7 @@ fun MPSecurityCodeTextFieldPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MPCardNumberTextFieldPreview() {
+private fun MPCardNumberTextFieldPreview() {
     MercadoPagoTheme {
         val cardNumberState = rememberPCIFieldState()
         Column(
@@ -451,7 +445,7 @@ fun MPCardNumberTextFieldPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MPExpirationDateTextFieldPreview() {
+private fun MPExpirationDateTextFieldPreview() {
     MercadoPagoTheme {
         val expirationDateState = rememberPCIFieldState()
         Column(
@@ -464,4 +458,10 @@ fun MPExpirationDateTextFieldPreview() {
             )
         }
     }
+}
+
+internal enum class LabelState {
+    Idle,
+    Disabled,
+    Error,
 }
