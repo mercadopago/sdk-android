@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,28 +54,30 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
  *
  * @param modifier The modifier to be applied to the component.
  * @param state The PCIFieldState that manages the secure field state.
- * @param onEvent Callback invoked when card number events occur (e.g., value changes, validation).
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
  * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
+ * @param placeHolder Field place holder.
  * @param visualTransformation The visual transformation to apply to the input (e.g., masking).
- *                              Defaults to card number masking format.
+ * Defaults to card number masking format.
+ * @param onEvent Callback invoked when card number events occur (e.g., value changes, validation).
  */
 @Composable
 fun MPCardNumberTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
-    onEvent: (CardNumberTextFieldEvent) -> Unit,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
     error: Boolean = false,
     enabled: Boolean = true,
     label: String? = null,
     helper: String? = null,
+    placeHolder: String = MP_EMPTY_STRING,
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
+    onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
         error = error,
@@ -90,21 +93,14 @@ fun MPCardNumberTextField(
             enabled = enabled,
             visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        // Adding a border by field state created for this example
-                        .addBorder(
-                            isFocused = isFocused,
-                            error = error,
-                        )
-                        .height(OutlinedTextFieldDefaults.MinHeight)
-                        .padding(horizontal = 16.dp),
+                MPInputDecorationBox(
+                    isFocused = isFocused,
+                    error = error,
                 ) {
                     Box {
                         if (showPlaceHolder) {
                             MPText(
-                                text = "123",
+                                text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -125,7 +121,6 @@ fun MPCardNumberTextField(
  *
  * @param modifier The modifier to be applied to the component.
  * @param state The PCIFieldState that manages the secure field state.
- * @param onEvent Callback invoked when expiration date events occur (e.g., value changes, validation).
  * @param dateFormat The format for the expiration date. Defaults to ShortFormat (MM/YY).
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
@@ -133,12 +128,13 @@ fun MPCardNumberTextField(
  * @param enabled Whether the field is enabled for user interaction.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
+ * @param placeHolder Field place holder.
+ * @param onEvent Callback invoked when expiration date events occur (e.g., value changes, validation).
  */
 @Composable
 fun MPExpirationDateTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
-    onEvent: (ExpirationDateTextFieldEvent) -> Unit,
     dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
@@ -146,6 +142,8 @@ fun MPExpirationDateTextField(
     enabled: Boolean = true,
     label: String? = null,
     helper: String? = null,
+    placeHolder: String = MP_EMPTY_STRING,
+    onEvent: (ExpirationDateTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
         error = error,
@@ -161,20 +159,14 @@ fun MPExpirationDateTextField(
             onEvent = onEvent,
             textStyle = MercadoPagoTheme.typography.body.mediumRegular,
             decorationBox = { innerTextField ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .addBorder(
-                            isFocused = isFocused,
-                            error = error,
-                        )
-                        .height(OutlinedTextFieldDefaults.MinHeight)
-                        .padding(horizontal = 16.dp),
+                MPInputDecorationBox(
+                    isFocused = isFocused,
+                    error = error,
                 ) {
                     Box {
                         if (showPlaceHolder) {
                             MPText(
-                                text = "123",
+                                text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -197,7 +189,6 @@ fun MPExpirationDateTextField(
  *
  * @param modifier The modifier to be applied to the component.
  * @param state The PCIFieldState that manages the secure field state.
- * @param onEvent Callback invoked when security code events occur (e.g., value changes, validation).
  * @param securityCodeSize The expected length of the security code. Defaults to 3 for most cards,
  *                         but can be 4 for cards like American Express.
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
@@ -206,12 +197,13 @@ fun MPExpirationDateTextField(
  * @param enabled Whether the field is enabled for user interaction.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
+ * @param placeHolder Field place holder.
+ * @param onEvent Callback invoked when security code events occur (e.g., value changes, validation).
  */
 @Composable
 fun MPSecurityCodeTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
-    onEvent: (SecurityCodeTextFieldEvent) -> Unit,
     securityCodeSize: Int = 3,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
@@ -219,6 +211,8 @@ fun MPSecurityCodeTextField(
     enabled: Boolean = true,
     label: String? = null,
     helper: String? = null,
+    placeHolder: String = MP_EMPTY_STRING,
+    onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
         error = error,
@@ -235,20 +229,14 @@ fun MPSecurityCodeTextField(
             securityCodeSize = securityCodeSize,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .addBorder(
-                            isFocused = isFocused,
-                            error = error,
-                        )
-                        .height(OutlinedTextFieldDefaults.MinHeight)
-                        .padding(horizontal = 16.dp),
+                MPInputDecorationBox(
+                    isFocused = isFocused,
+                    error = error,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
                         if (showPlaceHolder) {
                             MPText(
-                                text = "123",
+                                text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -264,6 +252,37 @@ fun MPSecurityCodeTextField(
                 }
             },
         )
+    }
+}
+
+/**
+ * Internal composable that provides a standardized decoration box for input fields.
+ *
+ * This component wraps the inner text field with consistent styling including borders,
+ * height, and padding. It's used internally by all MP input field components to maintain
+ * visual consistency.
+ *
+ * @param isFocused Whether the field is currently focused. Affects border styling.
+ * @param error Whether the field is in an error state. Affects border color.
+ * @param content The content to display inside the decoration box (typically innerTextField and icons).
+ */
+@Composable
+internal fun MPInputDecorationBox(
+    isFocused: Boolean,
+    error: Boolean,
+    content: @Composable (RowScope.() -> Unit),
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .addBorder(
+                isFocused = isFocused,
+                error = error,
+            )
+            .height(OutlinedTextFieldDefaults.MinHeight)
+            .padding(horizontal = 16.dp),
+    ) {
+        content()
     }
 }
 
@@ -338,7 +357,6 @@ internal fun MPDropList(
                     },
                     onClick = {
                         expanded = false
-                        // onSelectIdentification(option)
                     },
                 )
             }
@@ -357,7 +375,7 @@ internal fun MPHelper(
     Row {
         if (showIcon) {
             icon?.let {
-                Icon(it, "")
+                Icon(it, MP_EMPTY_STRING)
                 Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs))
             }
         }
@@ -399,13 +417,13 @@ internal fun Modifier.addBorder(
     return border(
         width = if (isFocused) 2.dp else 1.dp,
         color = if (error) {
-            MaterialTheme.colorScheme.error
+            MercadoPagoTheme.color.accentNegative
         } else if (isFocused) {
-            MaterialTheme.colorScheme.primary
+            MercadoPagoTheme.color.secondary
         } else {
-            MaterialTheme.colorScheme.outline
+            MercadoPagoTheme.color.secondarySecondVariant
         },
-        shape = MaterialTheme.shapes.small,
+        shape = MercadoPagoTheme.shape.xs,
     )
 }
 
@@ -419,9 +437,8 @@ private fun MPSecurityCodeTextFieldPreview() {
         ) {
             MPSecurityCodeTextField(
                 state = securityCodeState,
-                onEvent = {
-                },
-            )
+            ) {
+            }
         }
     }
 }
@@ -436,9 +453,8 @@ private fun MPCardNumberTextFieldPreview() {
         ) {
             MPCardNumberTextField(
                 state = cardNumberState,
-                onEvent = {
-                },
-            )
+            ) {
+            }
         }
     }
 }
@@ -453,9 +469,8 @@ private fun MPExpirationDateTextFieldPreview() {
         ) {
             MPExpirationDateTextField(
                 state = expirationDateState,
-                onEvent = {
-                },
-            )
+            ) {
+            }
         }
     }
 }
