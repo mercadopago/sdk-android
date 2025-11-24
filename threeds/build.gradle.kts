@@ -80,7 +80,6 @@ ksp {
 }
 
 dependencies {
-
     implementation(libs.usdk)
 
     // 3DS SDK dependencies

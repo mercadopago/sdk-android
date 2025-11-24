@@ -30,6 +30,8 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsU
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
+import com.mercadopago.sdk.android.threeds.interactor.threeDS
 import org.koin.core.Koin
 import java.math.BigDecimal
 
@@ -50,6 +52,7 @@ import java.math.BigDecimal
  */
 class CoreMethods internal constructor(
     internal val koin: Koin,
+    private val threeDS: MPThreeDS = MercadoPagoSDK.getInstance().threeDS
 ) {
     /**
      * Generates a secure card token from the provided card details.
@@ -191,7 +194,6 @@ class CoreMethods internal constructor(
             securityCode = securityCodeState.input,
             buyerIdentification = buyerIdentification,
         )
-
         when (result) {
             is Result.Error -> {
                 when (result.error) {
@@ -333,7 +335,7 @@ class CoreMethods internal constructor(
      */
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
-
+        threeDS.getWarnings()
         when (result) {
             is Result.Error -> {
                 when (result.error) {
