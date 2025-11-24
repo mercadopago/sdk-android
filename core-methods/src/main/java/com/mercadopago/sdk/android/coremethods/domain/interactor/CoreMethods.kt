@@ -52,8 +52,10 @@ import java.math.BigDecimal
  */
 class CoreMethods internal constructor(
     internal val koin: Koin,
-    private val threeDS: MPThreeDS = MercadoPagoSDK.getInstance().threeDS
+    private var threeDS: MPThreeDS = MercadoPagoSDK.getInstance().threeDS,
 ) {
+
+
     /**
      * Generates a secure card token from the provided card details.
      * This method handles the tokenization of card information in a PCI-compliant manner,
@@ -107,6 +109,7 @@ class CoreMethods internal constructor(
             securityCode = securityCodeState.input,
             buyerIdentification = buyerIdentification,
         )
+        threeDS.getWarnings()
 
         when (result) {
             is Result.Error -> {
@@ -335,7 +338,6 @@ class CoreMethods internal constructor(
      */
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
-        threeDS.getWarnings()
         when (result) {
             is Result.Error -> {
                 when (result.error) {

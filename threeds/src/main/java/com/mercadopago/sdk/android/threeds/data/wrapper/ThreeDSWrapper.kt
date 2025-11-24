@@ -67,6 +67,9 @@ internal class ThreeDSWrapper(private val context: Context) {
     @Volatile
     private lateinit var transaction: Transaction
 
+    @Volatile
+    private var isInitialized: Boolean = false
+
     /**
      * Initializes the uSDK service if not already initialized.
      * This method follows the suspended initialization pattern with broadcast receiver.
@@ -111,15 +114,20 @@ internal class ThreeDSWrapper(private val context: Context) {
 
             service.initialize(context, ConfigParameters(), null, null)
         }
+        isInitialized = true
     }
 
     /**
      * Retrieves warnings from the ThreeDS service initialization.
      * These warnings contain information about potential issues or configuration problems.
      *
-     * @return List of warnings from the 3DS SDK
+     * @return List of warnings from the 3DS SDK. Returns empty list if service is not initialized yet.
      */
     fun getWarnings(): List<MPThreeDSWarningResponse> {
+        if (!isInitialized) {
+            Log.w("ThreeDSWrapper", "getWarnings called before initialization completed")
+            return emptyList()
+        }
         return threeDSService.warnings.map {
             MPThreeDSWarningResponse(
                 id = it.id,
@@ -134,8 +142,12 @@ internal class ThreeDSWrapper(private val context: Context) {
      * This transaction will be used for subsequent authentication and challenge operations.
      *
      * @param paymentMethodId The payment method ID (e.g., "visa", "mastercard") to create transaction for
+     * @throws IllegalStateException if the service is not initialized yet
      */
     fun createTransaction(paymentMethodId: String) {
+        if (!isInitialized) {
+            throw IllegalStateException("ThreeDSWrapper must be initialized before creating a transaction")
+        }
         val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
         transaction = threeDSService.createTransaction(
             directoryServer.directoryServerID,
@@ -148,8 +160,15 @@ internal class ThreeDSWrapper(private val context: Context) {
      * These parameters are required to perform the authentication request to the backend.
      *
      * @return Authentication request parameters containing SDK information needed for 3DS flow
+     * @throws IllegalStateException if the service is not initialized or transaction not created yet
      */
     fun getAuthenticationRequestParameters(): MPThreeDSRequestParams {
+        if (!isInitialized) {
+            throw IllegalStateException("ThreeDSWrapper must be initialized before getting authentication parameters")
+        }
+        if (!::transaction.isInitialized) {
+            throw IllegalStateException("Transaction must be created before getting authentication parameters")
+        }
         return transaction.authenticationRequestParameters.run {
             MPThreeDSRequestParams(
                 sdkAppId = sdkAppID,
@@ -166,7 +185,9 @@ internal class ThreeDSWrapper(private val context: Context) {
      * This should be called when the 3DS flow is completed or cancelled.
      */
     fun close() {
-        transaction.close()
+        if (::transaction.isInitialized) {
+            transaction.close()
+        }
     }
 
     /**
@@ -183,6 +204,22 @@ internal class ThreeDSWrapper(private val context: Context) {
         authenticationParams: MPThreeDSAuthenticationParams,
         timeout: Int,
     ): MPThreeDSChallengeResult {
+        if (!isInitialized) {
+            return MPThreeDSChallengeResult.OnError(
+                MPThreeDSChallengeError(
+                    code = ERROR_RUNTIME,
+                    message = "ThreeDSWrapper must be initialized before performing challenge",
+                ),
+            )
+        }
+        if (!::transaction.isInitialized) {
+            return MPThreeDSChallengeResult.OnError(
+                MPThreeDSChallengeError(
+                    code = ERROR_RUNTIME,
+                    message = "Transaction must be created before performing challenge",
+                ),
+            )
+        }
         val threeDSChallengeParameters = ChallengeParameters().apply {
             this.set3DSServerTransactionID(authenticationParams.threeDSServerTransID)
             acsRefNumber = authenticationParams.acsReferenceNumber

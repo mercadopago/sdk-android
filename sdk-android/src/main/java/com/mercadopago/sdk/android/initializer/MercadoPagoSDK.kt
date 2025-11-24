@@ -28,8 +28,8 @@ import java.util.UUID
 /**
  * Mercado Pago SDK. This class holds logic to initialize the SDK and call some of it's methods.
  */
-class MercadoPagoSDK private constructor(
-    internal val koin: Koin,
+class MercadoPagoSDK internal constructor(
+    val koin: Koin,
     internal val publicKey: String,
     internal val countryCode: CountryCode,
     private val sessionId: String,

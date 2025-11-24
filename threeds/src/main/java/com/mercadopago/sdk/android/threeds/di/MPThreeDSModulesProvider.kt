@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.threeds.di.repository.provideRepositoryModule
 import org.koin.core.Koin
 import org.koin.core.module.Module
 
-internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoinComponent {
+internal class MPThreeDSModulesProvider(val context: Context) : CoreKoinModuleProvider, MercadoPagoKoinComponent {
 
     override val koinApp: Koin = CoreKoinFactory.setKoinModules(
         koin = getKoin(),
@@ -18,7 +18,7 @@ internal class MPThreeDSModulesProvider : CoreKoinModuleProvider, MercadoPagoKoi
 
     override fun provideModules(): List<Module> =
         listOf(
-            provideWrapperModule(koinApp.get<Context>()),
+            provideWrapperModule(context),
             provideRepositoryModule(),
         )
 }

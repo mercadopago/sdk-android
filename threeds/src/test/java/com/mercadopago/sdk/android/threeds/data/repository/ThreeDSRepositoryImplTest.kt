@@ -32,6 +32,18 @@ class ThreeDSRepositoryImplTest {
     }
 
     @Test
+    fun `initialize should call wrapper initialize method`() = runTest {
+        // Arrange
+        coEvery { mockThreeDSWrapper.initialize() } returns Unit
+
+        // Act
+        threeDSRepository.initialize()
+
+        // Assert
+        coVerify { mockThreeDSWrapper.initialize() }
+    }
+
+    @Test
     fun `getWarnings should return mapped warnings from wrapper`() {
         // Arrange
         val mockWarningResponses = listOf(

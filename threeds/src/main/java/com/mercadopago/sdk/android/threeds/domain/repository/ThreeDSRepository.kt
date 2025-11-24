@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 
 internal interface ThreeDSRepository {
+    suspend fun initialize()
+
     fun getWarnings(): List<MPThreeDSWarning>
 
     fun close()

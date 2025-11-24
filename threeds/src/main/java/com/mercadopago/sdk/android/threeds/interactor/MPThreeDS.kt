@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.threeds.interactor
 
 import android.app.Activity
+import android.content.Context
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.threeds.di.MPThreeDSModulesProvider
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
@@ -8,6 +9,9 @@ import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSChallengeResult
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSWarning
 import com.mercadopago.sdk.android.threeds.domain.model.params.MPThreeDSRequestParams
 import com.mercadopago.sdk.android.threeds.domain.repository.ThreeDSRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.Koin
 
 /**
@@ -42,12 +46,15 @@ class MPThreeDS internal constructor(
          *
          * @return The current instance of the MPThreeDS.
          */
-        fun getInstance(): MPThreeDS {
+        fun getInstance(context: Context): MPThreeDS {
             return instance ?: synchronized(this) {
                 instance ?: MPThreeDS(
-                    koin = MPThreeDSModulesProvider().koinApp,
-                ).also {
-                    instance = it
+                    koin = MPThreeDSModulesProvider(context).koinApp,
+                ).also { mpThreeDS ->
+                    instance = mpThreeDS
+                    CoroutineScope(Dispatchers.IO).launch {
+                        mpThreeDS.threeDSRepository.initialize()
+                    }
                 }
             }
         }
@@ -120,4 +127,4 @@ class MPThreeDS internal constructor(
  * @return MPThreeDS instance for 3DS authentication operations
  */
 val MercadoPagoSDK.threeDS: MPThreeDS
-    get() = MPThreeDS.getInstance()
+    get() = MPThreeDS.getInstance(this.koin.get())
