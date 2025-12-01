@@ -105,7 +105,6 @@ ksp {
 dependencies {
 
     implementation(projects.core)
-    implementation(projects.threeds)
     implementation(projects.sdkAndroid)
     implementation(projects.analytics)
     implementation(libs.androidx.core.ktx)

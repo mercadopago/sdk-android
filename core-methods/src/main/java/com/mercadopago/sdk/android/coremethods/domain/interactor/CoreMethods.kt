@@ -30,8 +30,6 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsU
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
-import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
-import com.mercadopago.sdk.android.threeds.interactor.threeDS
 import org.koin.core.Koin
 import java.math.BigDecimal
 
@@ -52,7 +50,6 @@ import java.math.BigDecimal
  */
 class CoreMethods internal constructor(
     internal val koin: Koin,
-    private var threeDS: MPThreeDS = MercadoPagoSDK.getInstance().threeDS,
 ) {
 
 
@@ -109,7 +106,6 @@ class CoreMethods internal constructor(
             securityCode = securityCodeState.input,
             buyerIdentification = buyerIdentification,
         )
-        threeDS.getWarnings()
 
         when (result) {
             is Result.Error -> {
