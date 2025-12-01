@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
+import android.app.Activity
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallError
@@ -21,6 +22,11 @@ import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
@@ -51,7 +57,289 @@ import java.math.BigDecimal
 class CoreMethods internal constructor(
     internal val koin: Koin,
 ) {
+    /**
+     * Private property to hold the 3DS provider instance.
+     * This is set by the client application through setThreeDSProvider method.
+     */
+    private var threeDSProvider: ThreeDSProvider? = null
 
+    /**
+     * Sets the 3DS provider implementation for this CoreMethods instance.
+     * This method should be called once during application initialization to enable 3DS functionality.
+     *
+     * @param provider The ThreeDSProvider implementation to use for 3DS operations
+     *
+     * Example:
+     * ```kotlin
+     * val coreMethods = MercadoPagoSDK.getInstance().coreMethods
+     * val threeDS = MPThreeDS.getInstance(context)
+     * coreMethods.setThreeDSProvider(MPThreeDSProviderAdapter(threeDS))
+     * ```
+     */
+    fun setThreeDSProvider(provider: ThreeDSProvider) {
+        threeDSProvider = provider
+    }
+
+    /**
+     * Private method to check if a 3DS provider is available.
+     *
+     * @return true if a provider is set, false otherwise
+     */
+    private fun hasThreeDSProvider(): Boolean = threeDSProvider != null
+
+    /**
+     * Creates a 3DS transaction for the specified payment method.
+     * This method requires a 3DS provider to be set via setThreeDSProvider.
+     *
+     * @param paymentMethodId The payment method ID to create the transaction for (e.g., "visa", "mastercard")
+     * @return [Result.Success] with Unit if the transaction was created successfully,
+     *         [Result.Error] with ResultError if the provider is not available or an error occurred
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.createThreeDSTransaction("visa")
+     * when (result) {
+     *     is Result.Success -> {
+     *         // Transaction created, proceed with authentication
+     *         val params = coreMethods.getThreeDSAuthenticationParameters()
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error - provider not available or transaction creation failed
+     *     }
+     * }
+     * ```
+     */
+    fun createThreeDSTransaction(paymentMethodId: String): Result<Unit, ResultError> {
+        return if (hasThreeDSProvider()) {
+            try {
+                threeDSProvider?.createTransaction(paymentMethodId)
+                Result.Success(Unit)
+            } catch (e: Exception) {
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error creating 3DS transaction: ${e.message}",
+                    ),
+                )
+            }
+        } else {
+            Result.Error(
+                ResultError.Validation(
+                    message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                ),
+            )
+        }
+    }
+
+    /**
+     * Retrieves the authentication request parameters for the current 3DS transaction.
+     * These parameters should be sent to your backend for authentication.
+     * This method requires a 3DS provider to be set via setThreeDSProvider.
+     *
+     * @return [Result.Success] with ThreeDSRequestParams if parameters are available,
+     *         [Result.Error] with ResultError if the provider is not available or no transaction exists
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.getThreeDSAuthenticationParameters()
+     * when (result) {
+     *     is Result.Success -> {
+     *         val params = result.data
+     *         // Send params to your backend
+     *         backendService.authenticate3DS(params)
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     */
+    fun getThreeDSAuthenticationParameters(): Result<ThreeDSRequestParams, ResultError> {
+        return if (hasThreeDSProvider()) {
+            val params = threeDSProvider?.getAuthenticationRequestParameters()
+            if (params != null) {
+                Result.Success(params)
+            } else {
+                Result.Error(
+                    ResultError.Validation(
+                        message = "No active 3DS transaction. Please call createThreeDSTransaction first.",
+                    ),
+                )
+            }
+        } else {
+            Result.Error(
+                ResultError.Validation(
+                    message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                ),
+            )
+        }
+    }
+
+    /**
+     * Starts the 3DS challenge flow with the provided authentication response.
+     * This method requires a 3DS provider to be set via setThreeDSProvider.
+     *
+     * @param activity The activity context for displaying the challenge UI
+     * @param authentication The authentication response received from your backend
+     * @param timeout The challenge timeout in minutes (default: 10)
+     * @return [Result.Success] with ThreeDSChallengeResult if the challenge completed,
+     *         [Result.Error] with ResultError if the provider is not available or an error occurred
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.startThreeDSChallenge(
+     *     activity = this,
+     *     authentication = authenticationModel,
+     *     timeout = 10
+     * )
+     * when (result) {
+     *     is Result.Success -> {
+     *         when (val challengeResult = result.data) {
+     *             is ThreeDSChallengeResult.OnSuccess -> {
+     *                 // Challenge completed successfully
+     *                 val authenticated = challengeResult.result
+     *             }
+     *             is ThreeDSChallengeResult.OnError -> {
+     *                 // Challenge failed
+     *             }
+     *             is ThreeDSChallengeResult.OnCancel -> {
+     *                 // User cancelled
+     *             }
+     *             is ThreeDSChallengeResult.OnTimedOut -> {
+     *                 // Challenge timed out
+     *             }
+     *         }
+     *     }
+     *     is Result.Error -> {
+     *         // Provider not available
+     *     }
+     * }
+     * ```
+     */
+    suspend fun startThreeDSChallenge(
+        activity: Activity,
+        authentication: ThreeDSAuthenticationModel,
+        timeout: Int = 10,
+    ): Result<ThreeDSChallengeResult, ResultError> {
+        return if (hasThreeDSProvider()) {
+            try {
+                val challengeResult = threeDSProvider?.doChallenge(
+                    activity = activity,
+                    authentication = authentication,
+                    timeout = timeout,
+                )
+                if (challengeResult != null) {
+                    Result.Success(challengeResult)
+                } else {
+                    Result.Error(
+                        ResultError.Request(
+                            code = "",
+                            message = "Failed to execute 3DS challenge.",
+                        ),
+                    )
+                }
+            } catch (e: Exception) {
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error during 3DS challenge: ${e.message}",
+                    ),
+                )
+            }
+        } else {
+            Result.Error(
+                ResultError.Validation(
+                    message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                ),
+            )
+        }
+    }
+
+    /**
+     * Closes the current 3DS transaction and releases associated resources.
+     * This method requires a 3DS provider to be set via setThreeDSProvider.
+     *
+     * @return [Result.Success] with Unit if the transaction was closed successfully,
+     *         [Result.Error] with ResultError if the provider is not available
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.closeThreeDSTransaction()
+     * when (result) {
+     *     is Result.Success -> {
+     *         // Transaction closed successfully
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     */
+    fun closeThreeDSTransaction(): Result<Unit, ResultError> {
+        return if (hasThreeDSProvider()) {
+            try {
+                threeDSProvider?.close()
+                Result.Success(Unit)
+            } catch (e: Exception) {
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error closing 3DS transaction: ${e.message}",
+                    ),
+                )
+            }
+        } else {
+            Result.Error(
+                ResultError.Validation(
+                    message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                ),
+            )
+        }
+    }
+
+    /**
+     * Retrieves warnings generated by the 3DS SDK during initialization or operation.
+     * This method requires a 3DS provider to be set via setThreeDSProvider.
+     *
+     * @return [Result.Success] with a list of ThreeDSWarning,
+     *         [Result.Error] with ResultError if the provider is not available
+     *
+     * Example:
+     * ```kotlin
+     * val result = coreMethods.getThreeDSWarnings()
+     * when (result) {
+     *     is Result.Success -> {
+     *         result.data.forEach { warning ->
+     *             println("Warning: ${warning.message}")
+     *         }
+     *     }
+     *     is Result.Error -> {
+     *         // Handle error
+     *     }
+     * }
+     * ```
+     */
+    fun getThreeDSWarnings(): Result<List<ThreeDSWarning>, ResultError> {
+        return if (hasThreeDSProvider()) {
+            try {
+                val warnings = threeDSProvider?.getWarnings() ?: emptyList()
+                Result.Success(warnings)
+            } catch (e: Exception) {
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error getting 3DS warnings: ${e.message}",
+                    ),
+                )
+            }
+        } else {
+            Result.Error(
+                ResultError.Validation(
+                    message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                ),
+            )
+        }
+    }
 
     /**
      * Generates a secure card token from the provided card details.

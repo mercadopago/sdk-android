@@ -90,17 +90,22 @@ dependencies {
     implementation(libs.play.services.auth.api.phone)
     implementation(libs.support.v4)
 
-    api(projects.core)
+    implementation(projects.core)
     implementation(projects.sdkAndroid)
-    api(projects.analytics)
+    implementation(projects.analytics)
+    // CompileOnly dependency to access CoreMethods interfaces without creating runtime dependency
+    compileOnly(projects.coreMethods)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.okhttp.mockWebServer)
-    api(libs.androidx.datastore)
+    implementation(libs.androidx.datastore)
     implementation(libs.androidx.annotation)
-    api(libs.device.sdk)
+    implementation(libs.device.sdk)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Test implementation of core-methods to access interfaces and models
+    testImplementation(projects.coreMethods)
 
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
@@ -108,6 +113,7 @@ dependencies {
     testImplementation(libs.kotlin.mockk)
     testImplementation(libs.cashapp.turbine)
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
