@@ -220,7 +220,7 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallSuccess(
                         isSavedCard = true,
-                        identityType = buyerIdentification.type
+                        identityType = buyerIdentification.type,
                     ),
                 )
             }

@@ -35,7 +35,6 @@ import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
 class MPThreeDSProviderAdapter(
     private val mpThreeDS: MPThreeDS,
 ) : ThreeDSProvider {
-
     /**
      * Creates a 3DS transaction for the specified payment method.
      * Delegates to MPThreeDS.createTransaction().

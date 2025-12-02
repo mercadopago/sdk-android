@@ -145,9 +145,7 @@ internal class ThreeDSWrapper(private val context: Context) {
      * @throws IllegalStateException if the service is not initialized yet
      */
     fun createTransaction(paymentMethodId: String) {
-        if (!isInitialized) {
-            throw IllegalStateException("ThreeDSWrapper must be initialized before creating a transaction")
-        }
+        check(isInitialized) { "ThreeDSWrapper must be initialized before creating a transaction" }
         val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
         transaction = threeDSService.createTransaction(
             directoryServer.directoryServerID,
@@ -163,12 +161,8 @@ internal class ThreeDSWrapper(private val context: Context) {
      * @throws IllegalStateException if the service is not initialized or transaction not created yet
      */
     fun getAuthenticationRequestParameters(): MPThreeDSRequestParams {
-        if (!isInitialized) {
-            throw IllegalStateException("ThreeDSWrapper must be initialized before getting authentication parameters")
-        }
-        if (!::transaction.isInitialized) {
-            throw IllegalStateException("Transaction must be created before getting authentication parameters")
-        }
+        check(isInitialized) { "ThreeDSWrapper must be initialized before getting authentication parameters" }
+        check(::transaction.isInitialized) { "Transaction must be created before getting authentication parameters" }
         return transaction.authenticationRequestParameters.run {
             MPThreeDSRequestParams(
                 sdkAppId = sdkAppID,
@@ -199,6 +193,7 @@ internal class ThreeDSWrapper(private val context: Context) {
      * @param timeout Challenge timeout in minutes (default: 10)
      * @return Challenge result indicating success, error, cancellation, or timeout
      */
+    @Suppress("ReturnCount")
     suspend fun doChallenge(
         activity: Activity,
         authenticationParams: MPThreeDSAuthenticationParams,

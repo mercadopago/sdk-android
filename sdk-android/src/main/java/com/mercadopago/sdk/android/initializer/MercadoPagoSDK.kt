@@ -27,6 +27,11 @@ import java.util.UUID
 
 /**
  * Mercado Pago SDK. This class holds logic to initialize the SDK and call some of it's methods.
+ *
+ * @property koin The Koin instance used for dependency injection across the SDK.
+ * @property publicKey The public key of your Mercado Pago account.
+ * @property countryCode The country code associated with the public key.
+ * @param sessionId The unique session identifier for this SDK instance.
  */
 class MercadoPagoSDK internal constructor(
     val koin: Koin,

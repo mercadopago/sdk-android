@@ -23,7 +23,6 @@ import org.junit.Before
 import org.junit.Test
 
 class MPThreeDSProviderAdapterTest {
-
     private lateinit var mpThreeDS: MPThreeDS
     private lateinit var adapter: MPThreeDSProviderAdapter
 
