@@ -80,7 +80,7 @@ ksp {
 }
 
 dependencies {
-//    implementation(libs.usdk)
+    testImplementation(libs.usdk)
 
     compileOnly(files("../libs/mc-3ds-sdk-android-6.6.71.aar"))
     // 3DS SDK dependencies
