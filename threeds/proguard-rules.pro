@@ -200,3 +200,14 @@
 # Don't optimize certain critical security classes
 -keep,allowshrinking,allowobfuscation class com.mercadopago.sdk.android.threeds.data.wrapper.ThreeDSWrapper
 -keep,allowshrinking,allowobfuscation class com.mercadopago.sdk.android.threeds.data.repository.ThreeDSRepositoryImpl
+
+# Keep the MPThreeDSProviderAdapter for external usage
+-keep class com.mercadopago.sdk.android.threeds.adapter.MPThreeDSProviderAdapter {
+    public *;
+    <init>(...);
+}
+
+# Also keep the mappers if they are needed externally
+-keep class com.mercadopago.sdk.android.threeds.adapter.mappers.** {
+    public *;
+}
