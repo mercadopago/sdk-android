@@ -73,6 +73,7 @@ ksp {
 dependencies {
 
     implementation(projects.foundation)
+    implementation(projects.coreMethods)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
