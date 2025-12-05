@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,15 +35,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextField
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
@@ -255,6 +261,206 @@ fun MPSecurityCodeTextField(
     }
 }
 
+
+/**
+ * Composable function that displays a simple text field with MercadoPago styling.
+ *
+ * This component wraps the SimpleTextField with consistent styling for generic text input.
+ * It provides a PCI-compliant input field that can be used for any type of text input,
+ * managing focus states, errors, and labels consistently with other payment input fields.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param state The PCIFieldState that manages the secure field state.
+ * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
+ * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
+ * @param error Whether the field is in an error state. Displays error styling when true.
+ * @param enabled Whether the field is enabled for user interaction.
+ * @param label Optional label text displayed above the field.
+ * @param helper Optional helper text displayed below the field.
+ * @param placeHolder Field place holder.
+ * @param onEvent Callback invoked when text field events occur (e.g., value changes, focus changes).
+ */
+@Composable
+fun MPSimpleTextField(
+    modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    isFocused: Boolean = false,
+    showPlaceHolder: Boolean = false,
+    error: Boolean = false,
+    enabled: Boolean = true,
+    label: String? = null,
+    helper: String? = null,
+    placeHolder: String = MP_EMPTY_STRING,
+    onEvent: (SimpleTextFieldEvent) -> Unit,
+) {
+    MPInputBody(
+        error = error,
+        enabled = enabled,
+        label = label,
+        helper = helper,
+    ) {
+        SimpleTextField(
+            state = state,
+            modifier = modifier.fillMaxWidth(),
+            onEvent = onEvent,
+            enabled = enabled,
+            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { innerTextField ->
+                MPInputDecorationBox(
+                    isFocused = isFocused,
+                    error = error,
+                ) {
+                    Box {
+                        if (showPlaceHolder) {
+                            MPText(
+                                text = placeHolder,
+                                textStyle = MPTextStyle.BodyMediumRegular,
+                                modifier = Modifier.align(Alignment.CenterStart),
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
+            },
+        )
+    }
+}
+
+/**
+ * Composable function that displays an identification text field with MercadoPago styling.
+ *
+ * This component provides a PCI-compliant input field for identification documents (CPF, DNI, etc.)
+ * with a dropdown selector for identification type. It combines a type selector dropdown with
+ * a secure input field, managing focus states, errors, and labels consistently with other
+ * payment input fields.
+ *
+ * @param modifier The modifier to be applied to the component.
+ * @param state The PCIFieldState that manages the secure field state for the identification value.
+ * @param identificationTypes List of available identification types for the dropdown.
+ * @param selectedIdentificationType The currently selected identification type.
+ * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
+ * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
+ * @param error Whether the field is in an error state. Displays error styling when true.
+ * @param enabled Whether the field is enabled for user interaction.
+ * @param label Optional label text displayed above the field.
+ * @param helper Optional helper text displayed below the field.
+ * @param placeHolder Field place holder.
+ * @param onEvent Callback invoked when identification field events occur (value changes, focus, type selection).
+ */
+@Composable
+fun MPIdentificationTextField(
+    modifier: Modifier = Modifier,
+    state: PCIFieldState,
+    identificationTypes: List<IdentificationType>,
+    selectedIdentificationType: IdentificationType?,
+    isFocused: Boolean = false,
+    showPlaceHolder: Boolean = false,
+    error: Boolean = false,
+    enabled: Boolean = true,
+    label: String? = null,
+    helper: String? = null,
+    placeHolder: String = MP_EMPTY_STRING,
+    onEvent: (IdentificationTextFieldEvent) -> Unit,
+) {
+    MPInputBody(
+        error = error,
+        enabled = enabled,
+        label = label,
+        helper = helper,
+    ) {
+        IdentificationTextField(
+            state = state,
+            modifier = modifier.fillMaxWidth(),
+            identificationType = selectedIdentificationType,
+            onEvent = onEvent,
+            enabled = enabled,
+            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { innerTextField ->
+                MPInputDecorationBox(
+                    isFocused = isFocused,
+                    error = error,
+                ) {
+                    MPIdentificationTypeSelector(
+                        identificationTypes = identificationTypes,
+                        selectedIdentificationType = selectedIdentificationType,
+                        onTypeSelected = { identificationType ->
+                            onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
+                        },
+                    )
+                    VerticalDivider(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (showPlaceHolder) {
+                            MPText(
+                                text = placeHolder,
+                                textStyle = MPTextStyle.BodyMediumRegular,
+                                modifier = Modifier.align(Alignment.CenterStart),
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
+            },
+        )
+    }
+}
+
+/**
+ * Internal composable that provides a dropdown selector for identification types.
+ *
+ * This component displays a dropdown menu for selecting identification document types,
+ * with the selected type name and a trailing icon indicator.
+ *
+ * @param identificationTypes List of available identification types.
+ * @param selectedIdentificationType The currently selected identification type.
+ * @param onTypeSelected Callback invoked when an identification type is selected.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun MPIdentificationTypeSelector(
+    identificationTypes: List<IdentificationType>,
+    selectedIdentificationType: IdentificationType?,
+    onTypeSelected: (IdentificationType) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable),
+        ) {
+            MPText(
+                text = selectedIdentificationType?.name.orEmpty(),
+                textStyle = MPTextStyle.BodyMediumRegular,
+                modifier = Modifier.widthIn(min = 32.dp),
+            )
+            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+        }
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            identificationTypes.forEach { identificationType ->
+                DropdownMenuItem(
+                    text = {
+                        identificationType.name?.let {
+                            MPText(
+                                text = it,
+                                textStyle = MPTextStyle.BodyMediumRegular,
+                            )
+                        }
+                    },
+                    onClick = {
+                        expanded = false
+                        onTypeSelected(identificationType)
+                    },
+                )
+            }
+        }
+    }
+}
+
 /**
  * Internal composable that provides a standardized decoration box for input fields.
  *
@@ -322,44 +528,6 @@ internal fun MPInputBody(
                 showIcon = showHelperIcon,
                 icon = icon,
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun MPDropList(
-    text: String,
-    modifier: Modifier = Modifier,
-    dropList: List<String>,
-) {
-    var expanded by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable),
-        ) {
-            MPText(
-                text = text,
-                modifier = modifier.widthIn(min = 32.dp),
-            )
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-        }
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            dropList.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        MPText(text = option)
-                    },
-                    onClick = {
-                        expanded = false
-                    },
-                )
-            }
         }
     }
 }
@@ -469,6 +637,50 @@ private fun MPExpirationDateTextFieldPreview() {
         ) {
             MPExpirationDateTextField(
                 state = expirationDateState,
+            ) {
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MPSimpleTextFieldPreview() {
+    MercadoPagoTheme {
+        val simpleTextState = rememberPCIFieldState()
+        Column(
+            modifier = Modifier.padding(10.dp),
+        ) {
+            MPSimpleTextField(
+                state = simpleTextState,
+                label = "Name",
+                placeHolder = "Enter your name",
+                showPlaceHolder = true,
+            ) {
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MPIdentificationTextFieldPreview() {
+    MercadoPagoTheme {
+        val identificationState = rememberPCIFieldState()
+        val identificationTypes = listOf(
+            IdentificationType(id = "CPF", name = "CPF", type = "number", minLength = 11, maxLength = 11),
+            IdentificationType(id = "CNPJ", name = "CNPJ", type = "number", minLength = 14, maxLength = 14),
+        )
+        Column(
+            modifier = Modifier.padding(10.dp),
+        ) {
+            MPIdentificationTextField(
+                state = identificationState,
+                identificationTypes = identificationTypes,
+                selectedIdentificationType = identificationTypes.first(),
+                label = "Identification",
+                placeHolder = "000.000.000-00",
+                showPlaceHolder = true,
             ) {
             }
         }
