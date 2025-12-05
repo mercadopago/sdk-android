@@ -105,7 +105,7 @@ fun MPCardNumberTextField(
                     error = error,
                 ) {
                     Box {
-                        if (showPlaceHolder) {
+                        if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
@@ -172,7 +172,7 @@ fun MPExpirationDateTextField(
                     error = error,
                 ) {
                     Box {
-                        if (showPlaceHolder) {
+                        if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
@@ -243,7 +243,7 @@ fun MPSecurityCodeTextField(
                     error = error,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
-                        if (showPlaceHolder) {
+                        if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
@@ -316,7 +316,7 @@ fun MPSimpleTextField(
                     error = error,
                 ) {
                     Box {
-                        if (showPlaceHolder) {
+                        if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,
@@ -397,7 +397,7 @@ fun MPIdentificationTextField(
                     VerticalDivider(modifier = Modifier.height(40.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Box(modifier = Modifier.weight(1f)) {
-                        if (showPlaceHolder) {
+                        if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 textStyle = MPTextStyle.BodyMediumRegular,

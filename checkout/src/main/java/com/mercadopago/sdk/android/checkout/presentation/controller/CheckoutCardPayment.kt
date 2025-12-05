@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreenContent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import kotlinx.serialization.Serializable
@@ -56,27 +57,13 @@ internal fun CardPaymentNavHost(
     ) {
 
         composable<SampleDestination.Form> {
-            CardPaymentFormScreen()
+            CardPaymentScreen( viewModel = koinViewModel())
         }
 
         composable<SampleDestination.Installment> {
             CardPaymentInstallmentScreen()
         }
     }
-}
-
-@Composable
-internal fun CardPaymentFormScreen(
-    viewModel: CardPaymentViewModel = koinViewModel(),
-) {
-    val viewState by viewModel.viewState.collectAsState()
-    CardPaymentScreenContent(
-        expirationDateState = viewState.expirationDateState,
-        secureCodeState = viewState.secureCodeState,
-        cardNumberState = viewState.cardNumberState,
-        cardHolderState = viewState.cardHolderState,
-        identificationTypeState = viewState.identificationTypeState,
-    )
 }
 
 @Composable

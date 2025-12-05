@@ -37,6 +37,13 @@ class PCIFieldState internal constructor() {
     internal var input: String by mutableStateOf("")
 
     /**
+     * Returns true if the input field is empty, false otherwise.
+     * This property can be used to determine if placeholder text should be displayed.
+     */
+    val isEmpty: Boolean
+        get() = input.isEmpty()
+
+    /**
      * Companion object providing state restoration functionality.
      * This allows the PCI field state to be preserved across configuration changes
      * and process death using Compose's state restoration system.
