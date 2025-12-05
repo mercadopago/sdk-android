@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberTextFieldState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
@@ -28,7 +28,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 internal fun CardPaymentScreenContent(
     expirationDateState: ExpirationDateState,
     secureCodeState: SecurityCodeState,
-    cardNumberState: CardNumberTextFieldState,
+    cardNumberState: CardNumberState,
     cardHolderState: CardHolderState,
     identificationTypeState: IdentificationTypeState
 ) {
@@ -36,7 +36,7 @@ internal fun CardPaymentScreenContent(
     val expirationDatePCIState = rememberPCIFieldState()
     val securityCodePCIState = rememberPCIFieldState()
 
-    Column {
+    Column(modifier = Modifier.padding(16.dp)) {
         MPCardNumberTextField(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -59,15 +59,14 @@ internal fun CardPaymentScreenContent(
                 showPlaceHolder = cardHolderState.showPlaceHolder,
                 error = cardHolderState.error,
                 enabled = cardHolderState.enabled,
-                label = cardNumberState.label,
-                helper = cardNumberState.helper,
-                placeHolder = cardNumberState.placeHolder
+                label = cardHolderState.label,
+                helper = cardHolderState.helper,
+                placeHolder = cardHolderState.placeHolder
             ) {
 
             }
         }
-        Row(modifier = Modifier.padding(horizontal = 16.dp)) {
-
+        Row {
             MPExpirationDateTextField(
                 modifier = Modifier.weight(1f),
                 state = expirationDatePCIState,
@@ -135,14 +134,14 @@ private fun CardPaymentScreenContentPreview() {
                 placeHolder = "123",
                 secureCodeLength = 3
             ),
-            cardNumberState = CardNumberTextFieldState(
+            cardNumberState = CardNumberState(
                 label = "Número de tarjeta",
                 placeHolder = "0000 0000 0000 0000"
             ),
             cardHolderState = CardHolderState(
                 show = true,
                 label = "Nombre del titular",
-                placeHolder = "Como figura en la tarjeta"
+                placeHolder = "Maria Elena"
             ),
             identificationTypeState = IdentificationTypeState(
                 show = true,
@@ -190,7 +189,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                 placeHolder = "123",
                 secureCodeLength = 3
             ),
-            cardNumberState = CardNumberTextFieldState(
+            cardNumberState = CardNumberState(
                 label = "Número de tarjeta",
                 placeHolder = "0000 0000 0000 0000"
             ),
@@ -216,7 +215,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                 secureCodeLength = 3,
                 error = Pair(true, "CVV inválido")
             ),
-            cardNumberState = CardNumberTextFieldState(
+            cardNumberState = CardNumberState(
                 label = "Número de tarjeta",
                 placeHolder = "0000 0000 0000 0000",
                 error = Pair(true, "Número de tarjeta inválido")
@@ -224,7 +223,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             cardHolderState = CardHolderState(
                 show = true,
                 label = "Nombre del titular",
-                placeHolder = "Como figura en la tarjeta",
+                placeHolder = "Maria Elena",
                 error = true
             ),
             identificationTypeState = IdentificationTypeState(

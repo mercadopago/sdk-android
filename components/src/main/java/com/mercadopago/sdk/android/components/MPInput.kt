@@ -86,6 +86,7 @@ fun MPCardNumberTextField(
     onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
+        modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
@@ -93,7 +94,7 @@ fun MPCardNumberTextField(
     ) {
         CardNumberTextField(
             state = state,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             textStyle = MercadoPagoTheme.typography.body.mediumRegular,
             enabled = enabled,
@@ -152,6 +153,7 @@ fun MPExpirationDateTextField(
     onEvent: (ExpirationDateTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
+        modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
@@ -159,7 +161,7 @@ fun MPExpirationDateTextField(
     ) {
         ExpirationDateTextField(
             state = state,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
@@ -221,6 +223,7 @@ fun MPSecurityCodeTextField(
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
+        modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
@@ -228,7 +231,7 @@ fun MPSecurityCodeTextField(
     ) {
         SecurityCodeTextField(
             state = state,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
             textStyle = MercadoPagoTheme.typography.body.mediumRegular,
@@ -294,6 +297,7 @@ fun MPSimpleTextField(
     onEvent: (SimpleTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
+        modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
@@ -301,7 +305,7 @@ fun MPSimpleTextField(
     ) {
         SimpleTextField(
             state = state,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
             textStyle = MercadoPagoTheme.typography.body.mediumRegular,
@@ -364,6 +368,7 @@ fun MPIdentificationTextField(
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
     MPInputBody(
+        modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
@@ -371,7 +376,7 @@ fun MPIdentificationTextField(
     ) {
         IdentificationTextField(
             state = state,
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
@@ -494,6 +499,7 @@ internal fun MPInputDecorationBox(
 
 @Composable
 internal fun MPInputBody(
+    modifier: Modifier = Modifier,
     error: Boolean = false,
     enabled: Boolean = true,
     label: String? = null,
@@ -510,7 +516,7 @@ internal fun MPInputBody(
         } else {
             LabelState.Idle
         }
-    Column {
+    Column(modifier = modifier) {
         label?.let {
             MPLabel(
                 it,
