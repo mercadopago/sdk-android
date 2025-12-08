@@ -15,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -63,9 +62,9 @@ internal fun CardPaymentNavHost(
     }
 }
 
-@Suppress("EmptyFunctionBlock", "UnusedParameter")
 @Composable
-internal fun CardPaymentInstallmentScreen(viewModel: CardPaymentViewModel = koinViewModel()) {
+internal fun CardPaymentInstallmentScreen() {
+    // Installment screen placeholder
 }
 
 @Serializable

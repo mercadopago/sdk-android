@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,17 +15,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentDialogState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.components.MPCardNumberTextField
-import com.mercadopago.sdk.android.components.MPExpirationDateTextField
-import com.mercadopago.sdk.android.components.MPIdentificationTextField
-import com.mercadopago.sdk.android.components.MPSecurityCodeTextField
-import com.mercadopago.sdk.android.components.MPSimpleTextField
+import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
+import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
+import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
+import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
+import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -64,14 +60,6 @@ internal fun CardPaymentScreen(viewModel: CardPaymentViewModel) {
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onGenerateToken = {
-            viewModel.generateToken(
-                cardNumberState = cardNumberPCIState,
-                expirationDateState = expirationDatePCIState,
-                securityCodeState = securityCodePCIState,
-            )
-        },
-        onDialogDismiss = { viewModel.onDialogStateChanged(CardPaymentDialogState.Hidden) },
     )
 }
 
@@ -89,14 +77,7 @@ internal fun CardPaymentScreenContent(
     onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit,
     onCardHolderEvent: (SimpleTextFieldEvent) -> Unit,
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
-    onGenerateToken: () -> Unit,
-    onDialogDismiss: () -> Unit,
 ) {
-    CardPaymentDialogs(
-        dialogState = viewState.dialogState,
-        onDismiss = onDialogDismiss,
-    )
-
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(Modifier.width(16.dp))
         MPCardNumberTextField(
@@ -178,50 +159,6 @@ internal fun CardPaymentScreenContent(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = onGenerateToken,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !viewState.isLoading,
-        ) {
-            Text(text = if (viewState.isLoading) "Processing..." else "Generate Token")
-        }
-    }
-}
-
-@Composable
-private fun CardPaymentDialogs(
-    dialogState: CardPaymentDialogState,
-    onDismiss: () -> Unit,
-) {
-    when (dialogState) {
-        is CardPaymentDialogState.CardToken -> {
-            AlertDialog(
-                onDismissRequest = onDismiss,
-                title = { Text("Token Generated") },
-                text = { Text("Token: ${dialogState.token}") },
-                confirmButton = {
-                    Button(onClick = onDismiss) {
-                        Text("OK")
-                    }
-                },
-            )
-        }
-        is CardPaymentDialogState.Error -> {
-            AlertDialog(
-                onDismissRequest = onDismiss,
-                title = { Text(dialogState.title) },
-                text = { Text(dialogState.description) },
-                confirmButton = {
-                    Button(onClick = onDismiss) {
-                        Text("OK")
-                    }
-                },
-            )
-        }
-        CardPaymentDialogState.Hidden -> Unit
     }
 }
 
@@ -255,22 +192,7 @@ private fun CardPaymentScreenContentPreview() {
                     show = true,
                     label = "Documento",
                     placeHolder = "Número de documento",
-                    identificationTypes = listOf(
-                        IdentificationType(
-                            id = "CPF",
-                            name = "CPF",
-                            type = "number",
-                            minLength = 11,
-                            maxLength = 11,
-                        ),
-                        IdentificationType(
-                            id = "CNPJ",
-                            name = "CNPJ",
-                            type = "number",
-                            minLength = 14,
-                            maxLength = 14,
-                        ),
-                    ),
+                    identificationTypes = listOf(),
                     selected = IdentificationType(
                         id = "CPF",
                         name = "CPF",
@@ -290,12 +212,11 @@ private fun CardPaymentScreenContentPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
-            onGenerateToken = {},
-            onDialogDismiss = {},
         )
     }
 }
 
+@Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - Without Card Holder")
 @Composable
 private fun CardPaymentScreenContentWithoutCardHolderPreview() {
@@ -328,8 +249,6 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
-            onGenerateToken = {},
-            onDialogDismiss = {},
         )
     }
 }
@@ -368,15 +287,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     label = "Documento",
                     placeHolder = "Número de documento",
                     error = true,
-                    identificationTypes = listOf(
-                        IdentificationType(
-                            id = "CPF",
-                            name = "CPF",
-                            type = "number",
-                            minLength = 11,
-                            maxLength = 11,
-                        ),
-                    ),
+                    identificationTypes = listOf(),
                     selected = IdentificationType(
                         id = "CPF",
                         name = "CPF",
@@ -396,8 +307,6 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
-            onGenerateToken = {},
-            onDialogDismiss = {},
         )
     }
 }

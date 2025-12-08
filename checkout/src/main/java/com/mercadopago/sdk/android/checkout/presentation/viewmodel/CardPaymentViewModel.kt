@@ -37,7 +37,7 @@ private const val CARD_LENGTH_15_MASK = "#### ###### #####"
 private const val CARD_LENGTH_17_MASK = "#### #### #### #####"
 private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions") // ViewModel requires multiple event handlers for card payment form
 internal class CardPaymentViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
