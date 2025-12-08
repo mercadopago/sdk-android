@@ -75,6 +75,7 @@ internal fun CardPaymentScreen(viewModel: CardPaymentViewModel) {
     )
 }
 
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 internal fun CardPaymentScreenContent(
     viewState: CardPaymentScreenState,
@@ -224,6 +225,7 @@ private fun CardPaymentDialogs(
     }
 }
 
+@Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - Default")
 @Composable
 private fun CardPaymentScreenContentPreview() {
@@ -332,6 +334,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
     }
 }
 
+@Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - With Error")
 @Composable
 private fun CardPaymentScreenContentWithErrorPreview() {

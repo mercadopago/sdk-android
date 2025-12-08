@@ -51,7 +51,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletex
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
-
 /**
  * Composable function that displays a card number text field with MercadoPago styling.
  *

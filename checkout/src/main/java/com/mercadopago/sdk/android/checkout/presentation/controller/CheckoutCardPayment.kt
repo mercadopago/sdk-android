@@ -63,6 +63,7 @@ internal fun CardPaymentNavHost(
     }
 }
 
+@Suppress("EmptyFunctionBlock", "UnusedParameter")
 @Composable
 internal fun CardPaymentInstallmentScreen(viewModel: CardPaymentViewModel = koinViewModel()) {
 }
