@@ -264,7 +264,6 @@ fun MPSecurityCodeTextField(
     }
 }
 
-
 /**
  * Composable function that displays a simple text field with MercadoPago styling.
  *

@@ -17,7 +17,7 @@ internal data class CardPaymentScreenState(
     val installmentsState: InstallmentsState = InstallmentsState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
     val dialogState: CardPaymentDialogState = CardPaymentDialogState.Hidden,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )
 
 internal data class SecurityCodeState(
@@ -30,7 +30,7 @@ internal data class SecurityCodeState(
     val label: String = "Security code",
     val length: Int = 0,
     val error: Pair<Boolean, String> = Pair(false, ""),
-    val secureCodeLength: Int = 3
+    val secureCodeLength: Int = 3,
 )
 
 internal data class ExpirationDateState(
@@ -43,7 +43,7 @@ internal data class ExpirationDateState(
     val label: String = "Expiration date",
     val length: Int = 0,
     val error: Pair<Boolean, String> = Pair(false, ""),
-    val valid: Boolean = true
+    val valid: Boolean = true,
 )
 
 internal data class CardNumberState(
@@ -61,7 +61,7 @@ internal data class CardNumberState(
     val error: Pair<Boolean, String> = Pair(false, ""),
     val isValid: Boolean = false,
     val lastFourDigits: String = "",
-    val cardBin: String? = null
+    val cardBin: String? = null,
 )
 
 internal data class CardHolderState(
@@ -74,7 +74,7 @@ internal data class CardHolderState(
     val placeHolder: String = "As it appears on the card",
     val showPlaceHolder: Boolean = true,
     val label: String = "Cardholder name",
-    val value: String = ""
+    val value: String = "",
 )
 
 internal data class IdentificationTypeState(
@@ -89,17 +89,19 @@ internal data class IdentificationTypeState(
     val placeHolder: String = "Identification number",
     val showPlaceHolder: Boolean = true,
     val label: String = "Identification",
-    val value: String = ""
+    val value: String = "",
 )
 
 internal data class InstallmentsState(
     val showList: Boolean = false,
     val installments: List<PayerCost> = emptyList(),
-    val selectedInstallment: PayerCost? = null
+    val selectedInstallment: PayerCost? = null,
 )
 
 internal sealed interface CardPaymentDialogState {
     data object Hidden : CardPaymentDialogState
+
     data class CardToken(val token: String) : CardPaymentDialogState
+
     data class Error(val title: String, val description: String) : CardPaymentDialogState
 }

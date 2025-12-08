@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -16,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
-import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreenContent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -28,12 +26,12 @@ internal fun MPCardPayment() {
     val destination = currentBackStackEntry?.destination?.route
 
     Scaffold(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             CardPaymentNavHost(
                 navController = navController,
@@ -55,9 +53,8 @@ internal fun CardPaymentNavHost(
         enterTransition = { slideInHorizontally { it } },
         exitTransition = { slideOutHorizontally { it } },
     ) {
-
         composable<SampleDestination.Form> {
-            CardPaymentScreen( viewModel = koinViewModel())
+            CardPaymentScreen(viewModel = koinViewModel())
         }
 
         composable<SampleDestination.Installment> {
@@ -67,16 +64,11 @@ internal fun CardPaymentNavHost(
 }
 
 @Composable
-internal fun CardPaymentInstallmentScreen(
-    viewModel: CardPaymentViewModel = koinViewModel(),
-) {
-
+internal fun CardPaymentInstallmentScreen(viewModel: CardPaymentViewModel = koinViewModel()) {
 }
-
 
 @Serializable
 internal sealed interface SampleDestination {
-
     @Serializable
     object Form : SampleDestination
 

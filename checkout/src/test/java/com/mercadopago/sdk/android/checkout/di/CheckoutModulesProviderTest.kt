@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
@@ -52,7 +53,7 @@ internal class CheckoutModulesProviderTest {
         }
 
         // Then
-        module.verify()
+        module.verify(extraTypes = listOf(CoreMethods::class))
         koin.checkModules()
     }
 }

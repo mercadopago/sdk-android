@@ -68,10 +68,10 @@ internal fun CardPaymentScreen(viewModel: CardPaymentViewModel) {
             viewModel.generateToken(
                 cardNumberState = cardNumberPCIState,
                 expirationDateState = expirationDatePCIState,
-                securityCodeState = securityCodePCIState
+                securityCodeState = securityCodePCIState,
             )
         },
-        onDialogDismiss = { viewModel.onDialogStateChanged(CardPaymentDialogState.Hidden) }
+        onDialogDismiss = { viewModel.onDialogStateChanged(CardPaymentDialogState.Hidden) },
     )
 }
 
@@ -89,14 +89,15 @@ internal fun CardPaymentScreenContent(
     onCardHolderEvent: (SimpleTextFieldEvent) -> Unit,
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
     onGenerateToken: () -> Unit,
-    onDialogDismiss: () -> Unit
+    onDialogDismiss: () -> Unit,
 ) {
     CardPaymentDialogs(
         dialogState = viewState.dialogState,
-        onDismiss = onDialogDismiss
+        onDismiss = onDialogDismiss,
     )
 
     Column(modifier = Modifier.padding(16.dp)) {
+        Spacer(Modifier.width(16.dp))
         MPCardNumberTextField(
             modifier = Modifier.fillMaxWidth(),
             state = cardNumberPCIState,
@@ -107,10 +108,11 @@ internal fun CardPaymentScreenContent(
             label = viewState.cardNumberState.label,
             helper = viewState.cardNumberState.helper,
             placeHolder = viewState.cardNumberState.placeHolder,
-            onEvent = onCardNumberEvent
+            onEvent = onCardNumberEvent,
         )
 
         if (viewState.cardHolderState.show) {
+            Spacer(Modifier.width(16.dp))
             MPSimpleTextField(
                 modifier = Modifier.fillMaxWidth(),
                 state = cardHolderPCIState,
@@ -121,10 +123,10 @@ internal fun CardPaymentScreenContent(
                 label = viewState.cardHolderState.label,
                 helper = viewState.cardHolderState.helper,
                 placeHolder = viewState.cardHolderState.placeHolder,
-                onEvent = onCardHolderEvent
+                onEvent = onCardHolderEvent,
             )
         }
-
+        Spacer(Modifier.width(16.dp))
         Row {
             MPExpirationDateTextField(
                 modifier = Modifier.weight(1f),
@@ -136,7 +138,7 @@ internal fun CardPaymentScreenContent(
                 label = viewState.expirationDateState.label,
                 helper = viewState.expirationDateState.helper,
                 placeHolder = viewState.expirationDateState.placeHolder,
-                onEvent = onExpirationDateEvent
+                onEvent = onExpirationDateEvent,
             )
 
             Spacer(Modifier.width(16.dp))
@@ -152,11 +154,12 @@ internal fun CardPaymentScreenContent(
                 label = viewState.secureCodeState.label,
                 helper = viewState.secureCodeState.helper,
                 placeHolder = viewState.secureCodeState.placeHolder,
-                onEvent = onSecurityCodeEvent
+                onEvent = onSecurityCodeEvent,
             )
         }
 
         if (viewState.identificationTypeState.show) {
+            Spacer(Modifier.width(16.dp))
             viewState.identificationTypeState.identificationTypes?.let { types ->
                 MPIdentificationTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -170,7 +173,7 @@ internal fun CardPaymentScreenContent(
                     label = viewState.identificationTypeState.label,
                     helper = viewState.identificationTypeState.helper,
                     placeHolder = viewState.identificationTypeState.placeHolder,
-                    onEvent = onIdentificationEvent
+                    onEvent = onIdentificationEvent,
                 )
             }
         }
@@ -180,7 +183,7 @@ internal fun CardPaymentScreenContent(
         Button(
             onClick = onGenerateToken,
             modifier = Modifier.fillMaxWidth(),
-            enabled = !viewState.isLoading
+            enabled = !viewState.isLoading,
         ) {
             Text(text = if (viewState.isLoading) "Processing..." else "Generate Token")
         }
@@ -190,7 +193,7 @@ internal fun CardPaymentScreenContent(
 @Composable
 private fun CardPaymentDialogs(
     dialogState: CardPaymentDialogState,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     when (dialogState) {
         is CardPaymentDialogState.CardToken -> {
@@ -202,7 +205,7 @@ private fun CardPaymentDialogs(
                     Button(onClick = onDismiss) {
                         Text("OK")
                     }
-                }
+                },
             )
         }
         is CardPaymentDialogState.Error -> {
@@ -214,13 +217,12 @@ private fun CardPaymentDialogs(
                     Button(onClick = onDismiss) {
                         Text("OK")
                     }
-                }
+                },
             )
         }
         CardPaymentDialogState.Hidden -> Unit
     }
 }
-
 
 @Preview(showBackground = true, name = "Card Payment Screen - Default")
 @Composable
@@ -230,21 +232,22 @@ private fun CardPaymentScreenContentPreview() {
             viewState = CardPaymentScreenState(
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
-                    placeHolder = "MM/AA"
+                    placeHolder = "MM/AA",
                 ),
                 secureCodeState = SecurityCodeState(
                     label = "CVV",
                     placeHolder = "123",
-                    secureCodeLength = 3
+                    secureCodeLength = 3,
                 ),
                 cardNumberState = CardNumberState(
                     label = "Número de tarjeta",
-                    placeHolder = "0000 0000 0000 0000"
+                    placeHolder = "0000 0000 0000 0000",
                 ),
                 cardHolderState = CardHolderState(
                     show = true,
                     label = "Nombre del titular",
-                    placeHolder = "Maria Elena"
+                    placeHolder = "Maria Elena",
+                    helper = "Como descrito atrás do cartão",
                 ),
                 identificationTypeState = IdentificationTypeState(
                     show = true,
@@ -256,24 +259,24 @@ private fun CardPaymentScreenContentPreview() {
                             name = "CPF",
                             type = "number",
                             minLength = 11,
-                            maxLength = 11
+                            maxLength = 11,
                         ),
                         IdentificationType(
                             id = "CNPJ",
                             name = "CNPJ",
                             type = "number",
                             minLength = 14,
-                            maxLength = 14
-                        )
+                            maxLength = 14,
+                        ),
                     ),
                     selected = IdentificationType(
                         id = "CPF",
                         name = "CPF",
                         type = "number",
                         minLength = 11,
-                        maxLength = 11
-                    )
-                )
+                        maxLength = 11,
+                    ),
+                ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -286,7 +289,7 @@ private fun CardPaymentScreenContentPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onGenerateToken = {},
-            onDialogDismiss = {}
+            onDialogDismiss = {},
         )
     }
 }
@@ -299,19 +302,19 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             viewState = CardPaymentScreenState(
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
-                    placeHolder = "MM/AA"
+                    placeHolder = "MM/AA",
                 ),
                 secureCodeState = SecurityCodeState(
                     label = "CVV",
                     placeHolder = "123",
-                    secureCodeLength = 3
+                    secureCodeLength = 3,
                 ),
                 cardNumberState = CardNumberState(
                     label = "Número de tarjeta",
-                    placeHolder = "0000 0000 0000 0000"
+                    placeHolder = "0000 0000 0000 0000",
                 ),
                 cardHolderState = CardHolderState(show = false),
-                identificationTypeState = IdentificationTypeState(show = false)
+                identificationTypeState = IdentificationTypeState(show = false),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -324,7 +327,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onGenerateToken = {},
-            onDialogDismiss = {}
+            onDialogDismiss = {},
         )
     }
 }
@@ -338,24 +341,24 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
                     placeHolder = "MM/AA",
-                    error = Pair(true, "Fecha inválida")
+                    error = Pair(true, "Fecha inválida"),
                 ),
                 secureCodeState = SecurityCodeState(
                     label = "CVV",
                     placeHolder = "123",
                     secureCodeLength = 3,
-                    error = Pair(true, "CVV inválido")
+                    error = Pair(true, "CVV inválido"),
                 ),
                 cardNumberState = CardNumberState(
                     label = "Número de tarjeta",
                     placeHolder = "0000 0000 0000 0000",
-                    error = Pair(true, "Número de tarjeta inválido")
+                    error = Pair(true, "Número de tarjeta inválido"),
                 ),
                 cardHolderState = CardHolderState(
                     show = true,
                     label = "Nombre del titular",
                     placeHolder = "Maria Elena",
-                    error = true
+                    error = true,
                 ),
                 identificationTypeState = IdentificationTypeState(
                     show = true,
@@ -368,17 +371,17 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                             name = "CPF",
                             type = "number",
                             minLength = 11,
-                            maxLength = 11
-                        )
+                            maxLength = 11,
+                        ),
                     ),
                     selected = IdentificationType(
                         id = "CPF",
                         name = "CPF",
                         type = "number",
                         minLength = 11,
-                        maxLength = 11
-                    )
-                )
+                        maxLength = 11,
+                    ),
+                ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -391,7 +394,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onGenerateToken = {},
-            onDialogDismiss = {}
+            onDialogDismiss = {},
         )
     }
 }

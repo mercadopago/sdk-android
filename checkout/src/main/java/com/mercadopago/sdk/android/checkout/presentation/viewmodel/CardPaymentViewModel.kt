@@ -40,21 +40,20 @@ private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 internal class CardPaymentViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
-
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     fun generateToken(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
-        securityCodeState: PCIFieldState
+        securityCodeState: PCIFieldState,
     ) {
         viewModelScope.launch {
             if (viewState.value.cardNumberState.length != viewState.value.cardNumberState.maxLength) {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        error = Pair(true, "Please, fill the card number")
-                    )
+                        error = Pair(true, "Please, fill the card number"),
+                    ),
                 )
                 return@launch
             }
@@ -66,8 +65,8 @@ internal class CardPaymentViewModel(
                 buyerIdentification = BuyerIdentification(
                     name = viewState.value.cardHolderState.value,
                     number = viewState.value.identificationTypeState.value,
-                    type = viewState.value.identificationTypeState.selected?.name
-                )
+                    type = viewState.value.identificationTypeState.selected?.name,
+                ),
             )
             _viewState.value = _viewState.value.copy(isLoading = false)
             when (result) {
@@ -81,7 +80,10 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getInstallments(bin: String, amount: BigDecimal) {
+    fun getInstallments(
+        bin: String,
+        amount: BigDecimal,
+    ) {
         viewModelScope.launch {
             val result = coreMethods.getInstallments(bin = bin, amount = amount)
             when (result) {
@@ -89,8 +91,8 @@ internal class CardPaymentViewModel(
                     _viewState.value = _viewState.value.copy(
                         installmentsState = _viewState.value.installmentsState.copy(
                             showList = true,
-                            installments = result.data.getOrNull(0)?.payerCost.orEmpty()
-                        )
+                            installments = result.data.getOrNull(0)?.payerCost.orEmpty(),
+                        ),
                     )
                 }
                 is Result.Error -> Unit
@@ -106,8 +108,8 @@ internal class CardPaymentViewModel(
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
                             identificationTypes = result.data,
-                            selected = result.data.firstOrNull()
-                        )
+                            selected = result.data.firstOrNull(),
+                        ),
                     )
                 }
                 is Result.Error -> Unit
@@ -115,7 +117,10 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getCardIssuers(bin: String, paymentMethodId: String) {
+    fun getCardIssuers(
+        bin: String,
+        paymentMethodId: String,
+    ) {
         viewModelScope.launch {
             val result = coreMethods.getCardIssuers(bin, paymentMethodId)
             when (result) {
@@ -123,8 +128,8 @@ internal class CardPaymentViewModel(
                     _viewState.value = _viewState.value.copy(
                         cardIssuers = result.data,
                         cardNumberState = _viewState.value.cardNumberState.copy(
-                            image = result.data.getOrNull(0)?.thumbnail
-                        )
+                            image = result.data.getOrNull(0)?.thumbnail,
+                        ),
                     )
                 }
                 is Result.Error -> Unit
@@ -140,14 +145,14 @@ internal class CardPaymentViewModel(
                     val paymentMethod = result.data.firstOrNull()
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
-                            secureCodeLength = paymentMethod?.card?.securityCode?.length ?: 3
-                        )
+                            secureCodeLength = paymentMethod?.card?.securityCode?.length ?: 3,
+                        ),
                     )
                     paymentMethod?.id?.let { paymentMethodId ->
                         getCardIssuers(bin = bin, paymentMethodId = paymentMethodId)
                     }
                     updateCardMaskState(
-                        paymentMethod?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH
+                        paymentMethod?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH,
                     )
                 }
                 is Result.Error -> Unit
@@ -160,30 +165,30 @@ internal class CardPaymentViewModel(
             is ExpirationDateTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        filled = event.isFilled
-                    )
+                        filled = event.isFilled,
+                    ),
                 )
             }
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         valid = event.isValid,
-                        error = Pair(!event.isValid, "Invalid expiration date")
-                    )
+                        error = Pair(!event.isValid, "Invalid expiration date"),
+                    ),
                 )
             }
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        isFocused = event.isFocused
-                    )
+                        isFocused = event.isFocused,
+                    ),
                 )
             }
             is ExpirationDateTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        length = event.length
-                    )
+                        length = event.length,
+                    ),
                 )
             }
         }
@@ -196,26 +201,26 @@ internal class CardPaymentViewModel(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         isFocused = event.isFocused,
                         error = Pair(
-                            !_viewState.value.secureCodeState.filled
-                                && _viewState.value.secureCodeState.isFocused,
-                            "Please, fill the security code"
-                        )
-                    )
+                            !_viewState.value.secureCodeState.filled &&
+                                _viewState.value.secureCodeState.isFocused,
+                            "Please, fill the security code",
+                        ),
+                    ),
                 )
             }
             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
-                        length = event.length
-                    )
+                        length = event.length,
+                    ),
                 )
             }
             is SecurityCodeTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         filled = event.isFilled,
-                        error = Pair(false, "")
-                    )
+                        error = Pair(false, ""),
+                    ),
                 )
             }
         }
@@ -226,30 +231,30 @@ internal class CardPaymentViewModel(
             is CardNumberTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        isFocused = event.isFocused
-                    )
+                        isFocused = event.isFocused,
+                    ),
                 )
             }
             is CardNumberTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        length = event.length
-                    )
+                        length = event.length,
+                    ),
                 )
             }
             is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        lastFourDigits = event.lastFourDigits
-                    )
+                        lastFourDigits = event.lastFourDigits,
+                    ),
                 )
             }
             is CardNumberTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         isValid = event.isValid,
-                        error = Pair(!event.isValid, "Invalid card number")
-                    )
+                        error = Pair(!event.isValid, "Invalid card number"),
+                    ),
                 )
             }
             is CardNumberTextFieldEvent.OnBinChanged -> {
@@ -261,32 +266,32 @@ internal class CardPaymentViewModel(
     fun onInstallmentSelected(value: PayerCost) {
         _viewState.value = _viewState.value.copy(
             installmentsState = _viewState.value.installmentsState.copy(
-                selectedInstallment = value
-            )
+                selectedInstallment = value,
+            ),
         )
     }
 
     fun onIdentificationTypeValueChanged(value: String) {
         _viewState.value = _viewState.value.copy(
             identificationTypeState = _viewState.value.identificationTypeState.copy(
-                value = value
-            )
+                value = value,
+            ),
         )
     }
 
     fun onIdentificationTypeChanged(identificationType: IdentificationType) {
         _viewState.value = _viewState.value.copy(
             identificationTypeState = _viewState.value.identificationTypeState.copy(
-                selected = identificationType
-            )
+                selected = identificationType,
+            ),
         )
     }
 
     fun onCardHolderNameChanged(value: String) {
         _viewState.value = _viewState.value.copy(
             cardHolderState = _viewState.value.cardHolderState.copy(
-                value = value
-            )
+                value = value,
+            ),
         )
     }
 
@@ -295,15 +300,15 @@ internal class CardPaymentViewModel(
             is SimpleTextFieldEvent.OnValueChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardHolderState = _viewState.value.cardHolderState.copy(
-                        value = event.value
-                    )
+                        value = event.value,
+                    ),
                 )
             }
             is SimpleTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardHolderState = _viewState.value.cardHolderState.copy(
-                        isFocused = event.isFocused
-                    )
+                        isFocused = event.isFocused,
+                    ),
                 )
             }
         }
@@ -314,22 +319,22 @@ internal class CardPaymentViewModel(
             is IdentificationTextFieldEvent.OnValueChanged -> {
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
-                        value = event.value
-                    )
+                        value = event.value,
+                    ),
                 )
             }
             is IdentificationTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
-                        isFocused = event.isFocused
-                    )
+                        isFocused = event.isFocused,
+                    ),
                 )
             }
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
-                        selected = event.identificationType
-                    )
+                        selected = event.identificationType,
+                    ),
                 )
             }
         }
@@ -343,7 +348,7 @@ internal class CardPaymentViewModel(
         if ((cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
             _viewState.value = _viewState.value.copy(
                 cardNumberState = _viewState.value.cardNumberState.copy(image = null),
-                installmentsState = _viewState.value.installmentsState.copy(showList = false)
+                installmentsState = _viewState.value.installmentsState.copy(showList = false),
             )
             updateCardMaskState(DEFAULT_MAX_CARD_LENGTH)
         } else {
@@ -352,18 +357,21 @@ internal class CardPaymentViewModel(
         }
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
-                cardBin = cardBin
-            )
+                cardBin = cardBin,
+            ),
         )
     }
 
-    private fun handleResultError(error: ResultError, title: String) {
+    private fun handleResultError(
+        error: ResultError,
+        title: String,
+    ) {
         val message = when (error) {
             is ResultError.Request -> error.message
             is ResultError.Validation -> error.message
         }
         _viewState.value = _viewState.value.copy(
-            dialogState = CardPaymentDialogState.Error(title = title, description = message)
+            dialogState = CardPaymentDialogState.Error(title = title, description = message),
         )
     }
 
@@ -384,8 +392,8 @@ internal class CardPaymentViewModel(
                     17 -> CARD_LENGTH_17_MASK
                     19 -> CARD_LENGTH_19_MASK
                     else -> DEFAULT_CARD_MASK
-                }
-            )
+                },
+            ),
         )
     }
 }
