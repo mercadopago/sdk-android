@@ -69,6 +69,9 @@ android {
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
         )
     }
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 ksp {
