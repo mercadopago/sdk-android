@@ -149,28 +149,24 @@ private fun createMotionScene(
                     $TITLE_ID: {
                         top: ['$BACK_BUTTON_ID', 'bottom', 16],
                         start: ['parent', 'start', $titleStartExpandedDp],
-                        alpha: 1.0,
-                        custom: {
-                            textSize: 24
-                        }
+                        alpha: 1.0
                     }
                 },
                 end: {
                     $BACK_BUTTON_ID: {
                         top: ['parent', 'top', 8],
+                        bottom: ['parent', 'bottom', 8],
                         start: ['parent', 'start', 8],
                         width: $backButtonSizeDp,
                         height: $backButtonSizeDp,
                         alpha: 1.0
                     },
                     $TITLE_ID: {
-                        top: ['parent', 'top', 16],
-                        start: ['$BACK_BUTTON_ID', 'end', 8],
-                        centerVertically: 'parent',
-                        alpha: 1.0,
-                        custom: {
-                            textSize: 18
-                        }
+                        top: ['parent', 'top', 0],
+                        bottom: ['parent', 'bottom', 0],
+                        start: ['parent', 'start', 0],
+                        end: ['parent', 'end', 0],
+                        alpha: 1.0
                     }
                 }
             },
@@ -208,7 +204,7 @@ private fun HeaderBackButton(
                 indication = null,
                 onClick = onClick,
             ),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = icon,
@@ -316,27 +312,16 @@ fun MPHeader(
                         .size(0.dp),
                 )
             }
-            Box(
-                modifier = Modifier
-                    .layoutId(TITLE_ID)
-                    .fillMaxWidth(),
-                contentAlignment = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
-                    Alignment.CenterStart
+            MPText(
+                text = title,
+                textStyle = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
+                    MPTextStyle.Title
                 } else {
-                    Alignment.Center
-                }
-            ) {
-                MPText(
-                    text = title,
-                    textStyle = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
-                        MPTextStyle.Title
-                    } else {
-                        MPTextStyle.BodyMediumSemiBold
-                    },
-                    colorType = MPTextColorType.Primary,
-                    modifier = Modifier.layoutId(TITLE_ID),
-                )
-            }
+                    MPTextStyle.BodyMediumSemiBold
+                },
+                colorType = MPTextColorType.Primary,
+                modifier = Modifier.layoutId(TITLE_ID),
+            )
         }
         Box(modifier = Modifier.fillMaxSize()) {
             content()
