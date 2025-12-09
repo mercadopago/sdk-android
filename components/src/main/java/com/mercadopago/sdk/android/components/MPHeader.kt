@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -315,16 +316,27 @@ fun MPHeader(
                         .size(0.dp),
                 )
             }
-            MPText(
-                text = title,
-                textStyle = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
-                    MPTextStyle.Title
+            Box(
+                modifier = Modifier
+                    .layoutId(TITLE_ID)
+                    .fillMaxWidth(),
+                contentAlignment = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
+                    Alignment.CenterStart
                 } else {
-                    MPTextStyle.BodyMediumSemiBold
-                },
-                colorType = MPTextColorType.Primary,
-                modifier = Modifier.layoutId(TITLE_ID),
-            )
+                    Alignment.Center
+                }
+            ) {
+                MPText(
+                    text = title,
+                    textStyle = if (animatedProgress < 0.5f && hierarchy != MPHeaderHierarchy.Mute) {
+                        MPTextStyle.Title
+                    } else {
+                        MPTextStyle.BodyMediumSemiBold
+                    },
+                    colorType = MPTextColorType.Primary,
+                    modifier = Modifier.layoutId(TITLE_ID),
+                )
+            }
         }
         Box(modifier = Modifier.fillMaxSize()) {
             content()
@@ -346,147 +358,12 @@ private fun calculateCurrentHeight(
         MPHeaderHierarchy.Loud -> {
             expandedHeight - (expandedHeight - collapsedHeight) * animatedProgress
         }
+
         MPHeaderHierarchy.Quiet -> {
             expandedHeight - (expandedHeight - collapsedHeight) * animatedProgress
         }
+
         MPHeaderHierarchy.Mute -> collapsedHeight
-    }
-}
-
-/**
- * A simple header without collapse behavior, useful for static screens
- *
- * @param title The title text to display
- * @param modifier Modifier for the header
- * @param hierarchy The hierarchy state (affects visual appearance)
- * @param showBackButton Whether to show the back button
- * @param backIcon The icon for the back button
- * @param backgroundColor The background color of the header
- * @param onBackClick Callback when the back button is clicked
- */
-@OptIn(ExperimentalMotionApi::class)
-@Composable
-fun MPHeaderStatic(
-    title: String,
-    modifier: Modifier = Modifier,
-    hierarchy: MPHeaderHierarchy = MPHeaderHierarchy.Loud,
-    showBackButton: Boolean = true,
-    backIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    backgroundColor: Color? = null,
-    onBackClick: () -> Unit = {},
-) {
-    val effectiveBackgroundColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
-    val shouldShowBackButton = showBackButton && hierarchy != MPHeaderHierarchy.Quiet
-    val height = when (hierarchy) {
-        MPHeaderHierarchy.Loud -> EXPANDED_HEIGHT_DP.dp
-        MPHeaderHierarchy.Quiet -> EXPANDED_HEIGHT_DP.dp
-        MPHeaderHierarchy.Mute -> COLLAPSED_HEIGHT_DP.dp
-    }
-    val motionProgress = when (hierarchy) {
-        MPHeaderHierarchy.Loud -> 0f
-        MPHeaderHierarchy.Quiet -> 0f
-        MPHeaderHierarchy.Mute -> 1f
-    }
-    val motionSceneContent = remember {
-        createMotionScene(
-            expandedHeightDp = EXPANDED_HEIGHT_DP,
-            collapsedHeightDp = COLLAPSED_HEIGHT_DP,
-            backButtonSizeDp = BACK_BUTTON_SIZE_DP,
-            titleStartExpandedDp = TITLE_START_EXPANDED_DP,
-            titleStartCollapsedDp = TITLE_START_COLLAPSED_DP,
-        )
-    }
-    MotionLayout(
-        motionScene = MotionScene(content = motionSceneContent),
-        progress = motionProgress,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(height)
-            .statusBarsPadding()
-            .background(effectiveBackgroundColor),
-    ) {
-        if (shouldShowBackButton) {
-            HeaderBackButton(
-                icon = backIcon,
-                onClick = onBackClick,
-                modifier = Modifier
-                    .layoutId(BACK_BUTTON_ID)
-                    .graphicsLayer {
-                        alpha = if (hierarchy == MPHeaderHierarchy.Quiet) 0f else 1f
-                    },
-            )
-        } else {
-            Spacer(
-                modifier = Modifier
-                    .layoutId(BACK_BUTTON_ID)
-                    .size(0.dp),
-            )
-        }
-        MPText(
-            text = title,
-            textStyle = if (hierarchy != MPHeaderHierarchy.Mute) {
-                MPTextStyle.Title
-            } else {
-                MPTextStyle.BodyMediumSemiBold
-            },
-            colorType = MPTextColorType.Primary,
-            modifier = Modifier.layoutId(TITLE_ID),
-        )
-    }
-}
-
-@Preview(name = "Header Loud (Expanded)", group = HEADER_GROUP)
-@Composable
-private fun MPHeaderLoudPreview() {
-    MercadoPagoTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-        ) {
-            MPHeaderStatic(
-                title = "Page Title",
-                hierarchy = MPHeaderHierarchy.Loud,
-                onBackClick = {},
-            )
-        }
-    }
-}
-
-@Preview(name = "Header Quiet (No Back Button)", group = HEADER_GROUP)
-@Composable
-private fun MPHeaderQuietPreview() {
-    MercadoPagoTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-        ) {
-            MPHeaderStatic(
-                title = "Page Title",
-                hierarchy = MPHeaderHierarchy.Quiet,
-                showBackButton = false,
-                onBackClick = {},
-            )
-        }
-    }
-}
-
-@Preview(name = "Header Mute (Collapsed)", group = HEADER_GROUP)
-@Composable
-private fun MPHeaderMutePreview() {
-    MercadoPagoTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-        ) {
-            MPHeaderStatic(
-                title = "Page Title",
-                hierarchy = MPHeaderHierarchy.Mute,
-                onBackClick = {},
-            )
-        }
     }
 }
 
@@ -512,77 +389,6 @@ private fun MPHeaderWithContentPreview() {
                             .padding(16.dp),
                     )
                 }
-            }
-        }
-    }
-}
-
-@Preview(name = "Header All Hierarchies", group = HEADER_GROUP)
-@Composable
-private fun MPHeaderAllHierarchiesPreview() {
-    MercadoPagoTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .padding(8.dp),
-        ) {
-            MPText(
-                text = "Loud",
-                textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Secondary,
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(Color(0xFFF5F5F5)),
-            ) {
-                MPHeaderStatic(
-                    title = "Page Title",
-                    hierarchy = MPHeaderHierarchy.Loud,
-                    onBackClick = {},
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            MPText(
-                text = "Quiet",
-                textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Secondary,
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .background(Color(0xFFF5F5F5)),
-            ) {
-                MPHeaderStatic(
-                    title = "Page Title",
-                    hierarchy = MPHeaderHierarchy.Quiet,
-                    showBackButton = false,
-                    onBackClick = {},
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            MPText(
-                text = "Mute",
-                textStyle = MPTextStyle.BodySmallSemiBold,
-                colorType = MPTextColorType.Secondary,
-                modifier = Modifier.padding(bottom = 4.dp),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .background(Color(0xFFF5F5F5)),
-            ) {
-                MPHeaderStatic(
-                    title = "Page Title",
-                    hierarchy = MPHeaderHierarchy.Mute,
-                    onBackClick = {},
-                )
             }
         }
     }
