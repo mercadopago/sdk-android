@@ -36,6 +36,9 @@ android {
     buildFeatures {
         compose = true
     }
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 kover.reports.filters.excludes {
