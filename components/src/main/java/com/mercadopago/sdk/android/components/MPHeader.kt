@@ -1,12 +1,14 @@
 package com.mercadopago.sdk.android.components
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,8 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -57,7 +59,7 @@ enum class MPHeaderHierarchy {
     Mute,
 }
 
-private fun createMotionScene(): String = """
+private val MOTION_SCENE = """
     {
         ConstraintSets: {
             start: {
@@ -133,14 +135,59 @@ private fun rememberNestedScrollConnection(
     return remember(maxOffsetPx) {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val newOffset = (currentOffset + available.y).coerceIn(-maxOffsetPx, 0f)
-                val consumed = newOffset - currentOffset
-                currentOffset = newOffset
-                onProgressChanged((-currentOffset / maxOffsetPx).coerceIn(0f, 1f))
-                return Offset(0f, consumed)
+                val delta = available.y
+                return if (delta < 0) {
+                    val newOffset = (currentOffset + delta).coerceIn(-maxOffsetPx, 0f)
+                    val consumed = newOffset - currentOffset
+                    currentOffset = newOffset
+                    onProgressChanged((-currentOffset / maxOffsetPx).coerceIn(0f, 1f))
+                    Offset(0f, consumed)
+                } else {
+                    Offset.Zero
+                }
+            }
+
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                return if (available.y > 0.5f) {
+                    val newOffset = (currentOffset + available.y).coerceIn(-maxOffsetPx, 0f)
+                    val consumedY = newOffset - currentOffset
+                    currentOffset = newOffset
+                    onProgressChanged((-currentOffset / maxOffsetPx).coerceIn(0f, 1f))
+                    Offset(0f, consumedY)
+                } else {
+                    Offset.Zero
+                }
             }
         }
     }
+}
+
+@Composable
+private fun ContentFadeOverlay(
+    backgroundColor: Color,
+    headerHeight: Dp,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(headerHeight + 24.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        backgroundColor,
+                        backgroundColor.copy(alpha = 0.95f),
+                        backgroundColor.copy(alpha = 0.8f),
+                        backgroundColor.copy(alpha = 0.4f),
+                        Color.Transparent,
+                    ),
+                ),
+            ),
+    )
 }
 
 @OptIn(ExperimentalMotionApi::class)
@@ -155,38 +202,52 @@ fun MPHeader(
     collapsedHeight: Dp = COLLAPSED_HEIGHT_DP.dp,
     backgroundColor: Color? = null,
     onBackClick: () -> Unit = {},
-    content: @Composable () -> Unit,
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val density = LocalDensity.current
     val maxOffsetPx = with(density) { (expandedHeight - collapsedHeight).toPx() }
     var progress by rememberSaveable { mutableFloatStateOf(0f) }
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(durationMillis = 300),
-        label = "headerProgress",
-    )
     val nestedScrollConnection = rememberNestedScrollConnection(maxOffsetPx) { progress = it }
     val bgColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
-    val motionScene = remember { createMotionScene() }
-    val currentProgress = if (hierarchy == MPHeaderHierarchy.Mute) 1f else animatedProgress
-    val currentHeight = when (hierarchy) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = if (hierarchy == MPHeaderHierarchy.Mute) 1f else progress,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessMediumLow,
+        ),
+        label = "headerProgress",
+    )
+    val targetHeight = when (hierarchy) {
         MPHeaderHierarchy.Mute -> collapsedHeight
-        else -> expandedHeight - (expandedHeight - collapsedHeight) * animatedProgress
+        else -> expandedHeight - (expandedHeight - collapsedHeight) * progress
     }
-    Column(
+    val animatedHeight by animateDpAsState(
+        targetValue = targetHeight,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessMediumLow,
+        ),
+        label = "headerHeight",
+    )
+    val contentPadding = PaddingValues(top = expandedHeight)
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(bgColor)
             .nestedScroll(nestedScrollConnection),
     ) {
+        content(contentPadding)
+        ContentFadeOverlay(
+            backgroundColor = bgColor,
+            headerHeight = animatedHeight,
+        )
         MotionLayout(
-            motionScene = MotionScene(content = motionScene),
-            progress = currentProgress,
+            motionScene = MotionScene(content = MOTION_SCENE),
+            progress = animatedProgress,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(currentHeight)
-                .statusBarsPadding()
-                .background(bgColor),
+                .height(animatedHeight)
+                .statusBarsPadding(),
         ) {
             if (showBackButton && hierarchy != MPHeaderHierarchy.Quiet) {
                 HeaderBackButton(
@@ -199,13 +260,10 @@ fun MPHeader(
             }
             MPText(
                 text = title,
-                textStyle = if (currentProgress < 0.5f) MPTextStyle.Title else MPTextStyle.BodyMediumSemiBold,
+                textStyle = if (animatedProgress < 0.5f) MPTextStyle.Title else MPTextStyle.BodyMediumSemiBold,
                 colorType = MPTextColorType.Primary,
                 modifier = Modifier.layoutId(TITLE_ID),
             )
-        }
-        Box(modifier = Modifier.fillMaxSize()) {
-            content()
         }
     }
 }
@@ -218,8 +276,11 @@ private fun MPHeaderPreview() {
             title = "Page Title",
             hierarchy = MPHeaderHierarchy.Loud,
             onBackClick = {},
-        ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+        ) { contentPadding ->
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = contentPadding,
+            ) {
                 items(50) { index ->
                     MPText(
                         text = "Item $index",
