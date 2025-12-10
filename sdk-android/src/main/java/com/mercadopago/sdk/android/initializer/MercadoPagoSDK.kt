@@ -26,6 +26,7 @@ import java.util.UUID
  * @property publicKey The public key of your Mercado Pago account.
  * @property countryCode The country code associated with the public key.
  * @param sessionId The unique session identifier for this SDK instance.
+ * @param applicationContext The application context
  */
 class MercadoPagoSDK private constructor(
     val koin: Koin,
