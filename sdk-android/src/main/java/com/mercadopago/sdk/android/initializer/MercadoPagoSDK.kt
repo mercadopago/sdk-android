@@ -28,9 +28,9 @@ import java.util.UUID
  * @param sessionId The unique session identifier for this SDK instance.
  */
 class MercadoPagoSDK private constructor(
-    val val koin: Koin,
-    internal val publicKey: String,
-    internal val countryCode: CountryCode,
+    val koin: Koin,
+    internal var publicKey: String,
+    internal var countryCode: CountryCode,
     private val sessionId: String,
     private val applicationContext: Context,
 ) {
