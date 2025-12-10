@@ -7,15 +7,12 @@ import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.domain.model.CountryCode
-import com.mercadopago.sdk.android.domain.model.SiteId
-import com.mercadopago.sdk.android.domain.usecase.FetchSiteIdUseCase
-import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
-import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
 import com.mercadopago.sdk.android.initializer.analytics.SdkInitializerAnalytics
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKAlreadyInitializedException
 import com.mercadopago.sdk.android.initializer.exceptions.SDKNotInitializedException
+import com.mercadopago.sdk.android.initializer.usecase.ConfigureSdkUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -27,6 +24,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -39,11 +37,11 @@ internal class MercadoPagoSDKTest {
 
     private val context = mockk<Context>(relaxed = true)
     private val koin = mockk<Koin>(relaxed = true)
-    private val fetchSiteIdUseCase = mockk<FetchSiteIdUseCase>(relaxed = true)
-    private val getSiteIdUseCase = mockk<GetSiteIdUseCase>(relaxed = true)
-    private val setSiteIdUseCase = mockk<SetSiteIdUseCase>(relaxed = true)
+    private val setSiteIdUseCase = mockk<com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase>(relaxed = true)
+    private val getSiteIdUseCase = mockk<com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase>(relaxed = true)
     private val mpAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val deviceSDK = mockk<DeviceSDK>(relaxed = true)
+    private val configureSdkUseCase = ConfigureSdkUseCase(getSiteIdUseCase, setSiteIdUseCase)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = UnconfinedTestDispatcher()
@@ -57,6 +55,8 @@ internal class MercadoPagoSDKTest {
         mockkObject(SdkCoroutineProvider)
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
+        every { MPAnalytics.initialize(any(), any()) } returns Unit
+        every { SdkInitializerAnalytics.buildSdkInitializerEvent(any(), any(), any()) } answers { callOriginal() }
         mockkStatic(DeviceSDK::class)
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
@@ -67,15 +67,7 @@ internal class MercadoPagoSDKTest {
         every {
             CoreKoinFactory.createKoinApp(any(), any(), any())
         } returns koin
-        every {
-            koin.get<FetchSiteIdUseCase>()
-        } returns fetchSiteIdUseCase
-        every {
-            koin.get<GetSiteIdUseCase>()
-        } returns getSiteIdUseCase
-        every {
-            koin.get<SetSiteIdUseCase>()
-        } returns setSiteIdUseCase
+        every { koin.get<ConfigureSdkUseCase>() } returns configureSdkUseCase
         every {
             MPAnalytics.getInstance()
         } returns mpAnalytics
@@ -94,14 +86,9 @@ internal class MercadoPagoSDKTest {
         // Given
         val publicKey = "public_key"
         val countryCode = CountryCode.ARG
-        val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
-        } returns flowOf(siteId)
-        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
-        every {
-            SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
-        } returns sdkInitializerEvent
+            setSiteIdUseCase(publicKey, countryCode)
+        } returns flowOf(Unit)
 
         // When
         MercadoPagoSDK.initialize(
@@ -114,27 +101,17 @@ internal class MercadoPagoSDKTest {
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
             setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
-            mpAnalytics.trackMetric(sdkInitializerEvent)
+            mpAnalytics.trackMetric(any())
         }
     }
 
     @Test
-    fun `when initialize is called and siteId fails Then log error`() = runTest {
+    fun `when initialize is called and use case fails Then log error`() = runTest {
         // Given
         val publicKey = "public_key"
         val countryCode = CountryCode.ARG
         val exception = Exception()
-        every {
-            fetchSiteIdUseCase(publicKey)
-        } returns flow { throw exception }
-        val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(
-            context = context,
-            publicKey = publicKey,
-        )
-        every {
-            SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
-        } returns sdkInitializerEvent
+        every { setSiteIdUseCase(publicKey, countryCode) } returns kotlinx.coroutines.flow.flow { throw exception }
 
         // When
         MercadoPagoSDK.initialize(
@@ -147,7 +124,6 @@ internal class MercadoPagoSDKTest {
         assertNotNull(MercadoPagoSDK.getInstance())
         verifyOrder {
             setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
             Log.d(any(), any(), exception)
             mpAnalytics.trackMetric(any())
         }
@@ -158,10 +134,9 @@ internal class MercadoPagoSDKTest {
         // Given
         val publicKey = "public_key"
         val countryCode = CountryCode.ARG
-        val siteId = SiteId("MLA")
         every {
-            fetchSiteIdUseCase(publicKey)
-        } returns flowOf(siteId)
+            setSiteIdUseCase(publicKey, countryCode)
+        } returns flowOf(Unit)
         val sdkInitializerEvent = SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
         every {
             SdkInitializerAnalytics.buildSdkInitializerEvent(context, publicKey)
@@ -189,7 +164,6 @@ internal class MercadoPagoSDKTest {
         }
         verifyOrder {
             setSiteIdUseCase(publicKey, countryCode)
-            fetchSiteIdUseCase(publicKey)
             mpAnalytics.trackMetric(sdkInitializerEvent)
         }
     }
@@ -238,6 +212,41 @@ internal class MercadoPagoSDKTest {
         // Then
         initialization.test {
             awaitError() is SDKNotInitializedException
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `when setNewConfiguration is called Then update keys and reinitialize flows`() = runTest {
+        // Given
+        val initialPublicKey = "public_key_1"
+        val initialCountryCode = CountryCode.ARG
+        val newPublicKey = "public_key_2"
+        val newCountryCode = CountryCode.BRA
+        every { setSiteIdUseCase(initialPublicKey, initialCountryCode) } returns flowOf(Unit)
+        every { setSiteIdUseCase(newPublicKey, newCountryCode) } returns flowOf(Unit)
+
+        // When
+        MercadoPagoSDK.initialize(
+            context = context,
+            publicKey = initialPublicKey,
+            countryCode = initialCountryCode,
+        )
+        MercadoPagoSDK.setNewConfiguration(
+            publicKey = newPublicKey,
+            countryCode = newCountryCode,
+        )
+
+        advanceUntilIdle()
+
+        // Then
+        assertNotNull(MercadoPagoSDK.getInstance())
+        kotlin.test.assertEquals(newPublicKey, MercadoPagoSDK.publicKey)
+        kotlin.test.assertEquals(newCountryCode, MercadoPagoSDK.countryCode)
+        io.mockk.verify(exactly = 1) { setSiteIdUseCase(initialPublicKey, initialCountryCode) }
+        io.mockk.verify(exactly = 1) { setSiteIdUseCase(newPublicKey, newCountryCode) }
+        io.mockk.verify(exactly = 2) {
+            mpAnalytics.trackMetric(match { it.path == "/checkout_api_native/initialize" })
         }
     }
 }

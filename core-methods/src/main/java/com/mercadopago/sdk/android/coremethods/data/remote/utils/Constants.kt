@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.utils
 
-internal const val PRODUCT_ID: String = "CVQP49FTT60D1548Q56G"
+import com.mercadopago.sdk.android.coremethods.BuildConfig
+
+internal const val PRODUCT_ID: String = BuildConfig.CORE_METHODS_PRODUCT_ID
 
 internal const val EXPIRATION_YEAR_START = "20"
 internal const val EXPIRATION_YEAR_MIN_LENGTH = 2

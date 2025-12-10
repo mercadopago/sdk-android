@@ -1,4 +1,6 @@
 import com.mercadopago.sdk.android.BomConfig
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -37,6 +39,18 @@ android {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = MercadoPagoSDKConfig.VERSION_NAME
         buildConfigField("String", "SdkVersion", "\"${BomConfig.VERSION_NAME}\"")
+
+        val secretPropertiesFile = rootProject.file("secrets.properties")
+        val secretProperties = Properties()
+        runCatching {
+            secretProperties.load(FileInputStream(secretPropertiesFile))
+        }
+
+        buildConfigField(
+            "String",
+            "CORE_METHODS_PRODUCT_ID",
+            secretProperties.getProperty("coreMethods.productId", "\"\""),
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

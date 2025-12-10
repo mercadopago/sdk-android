@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.example.BuildConfig
 import com.mercadopago.sdk.android.example.domain.model.PublicKey
+import com.mercadopago.sdk.android.example.extensions.formatPublicKey
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,11 +47,15 @@ internal class SdkInitializerViewModel(
             )
             return
         }
-        MercadoPagoSDK.initialize(
-            context = getApplication(),
-            publicKey = publicKey,
-            countryCode = _viewState.value.selectedCountryCode,
-        )
+        if (MercadoPagoSDK.isInitialized) {
+            MercadoPagoSDK.setNewConfiguration(publicKey, _viewState.value.selectedCountryCode)
+        } else {
+            MercadoPagoSDK.initialize(
+                context = getApplication(),
+                publicKey = publicKey,
+                countryCode = _viewState.value.selectedCountryCode,
+            )
+        }
         _viewState.value = _viewState.value.copy(
             sdkState = SdkState(
                 isInitialized = true,
@@ -79,7 +84,9 @@ internal class SdkInitializerViewModel(
 
     private fun getDefaultPublicKeyList(): List<PublicKey> {
         return try {
-            Json.decodeFromString<List<PublicKey>>(BuildConfig.DEFAULT_PUBLIC_KEY_LIST.trim('"').replace("\\\"", "\""))
+            Json.decodeFromString<List<PublicKey>>(
+                BuildConfig.DEFAULT_PUBLIC_KEY_LIST.formatPublicKey()
+            )
         } catch (_: Exception) {
             emptyList()
         }

@@ -78,7 +78,7 @@ class MaskVisualTransformation(
  * This object provides pre-defined mask patterns for frequently used input formats
  * in the payment form.
  */
-internal object MaskVisualTransformationDefaults {
+object MaskVisualTransformationDefaults {
     /**
      * Default mask for card numbers (#### #### #### ####).
      * This mask formats card numbers with spaces after every 4 digits.
