@@ -52,10 +52,22 @@ private const val COLLAPSED_HEIGHT_DP = 56
 private const val BACK_BUTTON_SIZE_DP = 40
 private const val BACK_BUTTON_ID = "backButton"
 private const val TITLE_ID = "title"
+private const val SCROLL_THRESHOLD = 0.5f
+private const val PREVIEW_ITEM_COUNT = 50
 
+/**
+ * Defines the visual hierarchy level for [MPHeader].
+ *
+ * The hierarchy determines how prominent the header appears in the UI.
+ */
 enum class MPHeaderHierarchy {
+    /** Maximum prominence with full visual treatment. */
     Loud,
+
+    /** Reduced prominence without back button. */
     Quiet,
+
+    /** Minimal prominence, collapsed state only. */
     Mute,
 }
 
@@ -134,7 +146,10 @@ private fun rememberNestedScrollConnection(
     var currentOffset by rememberSaveable { mutableFloatStateOf(0f) }
     return remember(maxOffsetPx) {
         object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+            override fun onPreScroll(
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
                 val delta = available.y
                 return if (delta < 0) {
                     val newOffset = (currentOffset + delta).coerceIn(-maxOffsetPx, 0f)
@@ -152,7 +167,7 @@ private fun rememberNestedScrollConnection(
                 available: Offset,
                 source: NestedScrollSource,
             ): Offset {
-                return if (available.y > 0.5f) {
+                return if (available.y > SCROLL_THRESHOLD) {
                     val newOffset = (currentOffset + available.y).coerceIn(-maxOffsetPx, 0f)
                     val consumedY = newOffset - currentOffset
                     currentOffset = newOffset
@@ -190,7 +205,76 @@ private fun ContentFadeOverlay(
     )
 }
 
+@Composable
+private fun computeTargetHeight(
+    hierarchy: MPHeaderHierarchy,
+    collapsedHeight: Dp,
+    expandedHeight: Dp,
+    progress: Float,
+): Dp =
+    when (hierarchy) {
+        MPHeaderHierarchy.Mute -> collapsedHeight
+        else -> expandedHeight - (expandedHeight - collapsedHeight) * progress
+    }
+
+private data class MPHeaderMotionLayoutParams(
+    val title: String,
+    val hierarchy: MPHeaderHierarchy,
+    val showBackButton: Boolean,
+    val backIcon: ImageVector,
+    val animatedProgress: Float,
+    val animatedHeight: Dp,
+    val onBackClick: () -> Unit,
+)
+
 @OptIn(ExperimentalMotionApi::class)
+@Composable
+private fun MPHeaderMotionLayout(params: MPHeaderMotionLayoutParams) {
+    MotionLayout(
+        motionScene = MotionScene(content = MOTION_SCENE),
+        progress = params.animatedProgress,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(params.animatedHeight)
+            .statusBarsPadding(),
+    ) {
+        if (params.showBackButton && params.hierarchy != MPHeaderHierarchy.Quiet) {
+            HeaderBackButton(
+                icon = params.backIcon,
+                onClick = params.onBackClick,
+                modifier = Modifier.layoutId(BACK_BUTTON_ID),
+            )
+        } else {
+            Spacer(modifier = Modifier.layoutId(BACK_BUTTON_ID).size(0.dp))
+        }
+        val textStyle = if (params.animatedProgress < SCROLL_THRESHOLD) {
+            MPTextStyle.Title
+        } else {
+            MPTextStyle.BodyMediumSemiBold
+        }
+        MPText(
+            text = params.title,
+            textStyle = textStyle,
+            colorType = MPTextColorType.Primary,
+            modifier = Modifier.layoutId(TITLE_ID),
+        )
+    }
+}
+
+/**
+ * A collapsible header component with motion animation support.
+ *
+ * @param title The title text displayed in the header.
+ * @param modifier Modifier to be applied to the header container.
+ * @param hierarchy The visual hierarchy level of the header.
+ * @param showBackButton Whether to display the back navigation button.
+ * @param backIcon The icon to use for the back button.
+ * @param expandedHeight The height of the header when fully expanded.
+ * @param collapsedHeight The height of the header when collapsed.
+ * @param backgroundColor Optional background color override.
+ * @param onBackClick Callback invoked when the back button is clicked.
+ * @param content The content to display below the header.
+ */
 @Composable
 fun MPHeader(
     title: String,
@@ -209,62 +293,48 @@ fun MPHeader(
     var progress by rememberSaveable { mutableFloatStateOf(0f) }
     val nestedScrollConnection = rememberNestedScrollConnection(maxOffsetPx) { progress = it }
     val bgColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
+    val springSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+    )
+    val targetProgress = if (hierarchy == MPHeaderHierarchy.Mute) 1f else progress
     val animatedProgress by animateFloatAsState(
-        targetValue = if (hierarchy == MPHeaderHierarchy.Mute) 1f else progress,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioNoBouncy,
-            stiffness = Spring.StiffnessMediumLow,
-        ),
+        targetValue = targetProgress,
+        animationSpec = springSpec,
         label = "headerProgress",
     )
-    val targetHeight = when (hierarchy) {
-        MPHeaderHierarchy.Mute -> collapsedHeight
-        else -> expandedHeight - (expandedHeight - collapsedHeight) * progress
-    }
+    val targetHeight = computeTargetHeight(hierarchy, collapsedHeight, expandedHeight, progress)
+    val dpSpringSpec = spring<Dp>(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+    )
     val animatedHeight by animateDpAsState(
         targetValue = targetHeight,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioNoBouncy,
-            stiffness = Spring.StiffnessMediumLow,
-        ),
+        animationSpec = dpSpringSpec,
         label = "headerHeight",
     )
-    val contentPadding = PaddingValues(top = expandedHeight)
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(bgColor)
             .nestedScroll(nestedScrollConnection),
     ) {
-        content(contentPadding)
+        content(PaddingValues(top = expandedHeight))
         ContentFadeOverlay(
             backgroundColor = bgColor,
             headerHeight = animatedHeight,
         )
-        MotionLayout(
-            motionScene = MotionScene(content = MOTION_SCENE),
-            progress = animatedProgress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(animatedHeight)
-                .statusBarsPadding(),
-        ) {
-            if (showBackButton && hierarchy != MPHeaderHierarchy.Quiet) {
-                HeaderBackButton(
-                    icon = backIcon,
-                    onClick = onBackClick,
-                    modifier = Modifier.layoutId(BACK_BUTTON_ID),
-                )
-            } else {
-                Spacer(modifier = Modifier.layoutId(BACK_BUTTON_ID).size(0.dp))
-            }
-            MPText(
-                text = title,
-                textStyle = if (animatedProgress < 0.5f) MPTextStyle.Title else MPTextStyle.BodyMediumSemiBold,
-                colorType = MPTextColorType.Primary,
-                modifier = Modifier.layoutId(TITLE_ID),
-            )
-        }
+        MPHeaderMotionLayout(
+            params = MPHeaderMotionLayoutParams(
+                title = title,
+                hierarchy = hierarchy,
+                showBackButton = showBackButton,
+                backIcon = backIcon,
+                animatedProgress = animatedProgress,
+                animatedHeight = animatedHeight,
+                onBackClick = onBackClick,
+            ),
+        )
     }
 }
 
@@ -281,7 +351,7 @@ private fun MPHeaderPreview() {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = contentPadding,
             ) {
-                items(50) { index ->
+                items(PREVIEW_ITEM_COUNT) { index ->
                     MPText(
                         text = "Item $index",
                         textStyle = MPTextStyle.BodyMediumRegular,
