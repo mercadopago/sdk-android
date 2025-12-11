@@ -79,10 +79,16 @@ ksp {
     arg("skipPrivatePreviews", "true")
 }
 
-dependencies {
-    testImplementation(libs.usdk)
+val localAarFile = file("../libs/mc-3ds-sdk-android-6.6.71.aar")
 
-    compileOnly(files("../libs/mc-3ds-sdk-android-6.6.71.aar"))
+dependencies {
+    if (localAarFile.exists()) {
+        compileOnly(files(localAarFile))
+    } else {
+        // Fallback to Maven dependency when local AAR is not available (e.g., CI/CD, tests)
+        compileOnly(libs.usdk)
+    }
+    testImplementation(libs.usdk)
     // 3DS SDK dependencies
     implementation(libs.gson)
     implementation(libs.play.services.location)
