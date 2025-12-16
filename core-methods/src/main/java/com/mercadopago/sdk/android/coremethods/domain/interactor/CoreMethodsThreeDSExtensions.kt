@@ -32,14 +32,6 @@ fun CoreMethods.setThreeDSProvider(provider: ThreeDSProvider) {
     threeDSProvider = provider
 }
 
-/**
- * Checks if a 3DS provider is currently configured and available.
- *
- * This internal helper method is used to verify that a [ThreeDSProvider]
- * has been set via [setThreeDSProvider] before attempting any 3DS operations.
- *
- * @return `true` if a provider is set and available, `false` otherwise
- */
 private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
 
 /**

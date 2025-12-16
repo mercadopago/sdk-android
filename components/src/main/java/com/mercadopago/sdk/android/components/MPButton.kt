@@ -89,9 +89,6 @@ enum class MPButtonSize {
     Medium,
 }
 
-/**
- * Helper function to calculate button background color based on style, enabled state, and pressed state
- */
 @Composable
 private fun getButtonBackgroundColor(
     style: MPButtonStyle,
@@ -123,9 +120,6 @@ private fun getButtonBackgroundColor(
     }
 }
 
-/**
- * Helper function to get text color type based on button style
- */
 private fun getTextColorType(style: MPButtonStyle): MPTextColorType {
     return when (style) {
         MPButtonStyle.Loud -> MPTextColorType.Inverted
@@ -134,9 +128,6 @@ private fun getTextColorType(style: MPButtonStyle): MPTextColorType {
     }
 }
 
-/**
- * Helper function to get icon color based on button style
- */
 @Composable
 private fun getIconColor(style: MPButtonStyle): Color {
     return when (style) {
@@ -146,9 +137,6 @@ private fun getIconColor(style: MPButtonStyle): Color {
     }
 }
 
-/**
- * Helper function to calculate horizontal padding based on size and icon type
- */
 @Composable
 private fun getHorizontalPadding(
     size: MPButtonSize,
@@ -165,9 +153,6 @@ private fun getHorizontalPadding(
     }
 }
 
-/**
- * Helper function to calculate vertical padding based on size
- */
 @Composable
 private fun getVerticalPadding(size: MPButtonSize): androidx.compose.ui.unit.Dp {
     return if (size == MPButtonSize.Large) {
@@ -177,9 +162,6 @@ private fun getVerticalPadding(size: MPButtonSize): androidx.compose.ui.unit.Dp 
     }
 }
 
-/**
- * Helper function to create focused modifier with borders
- */
 @Composable
 private fun Modifier.getFocusedModifier(): Modifier {
     return this
@@ -201,9 +183,6 @@ private fun Modifier.getFocusedModifier(): Modifier {
         .padding(horizontal = 4.dp, vertical = 5.dp)
 }
 
-/**
- * Helper function to render left icon
- */
 @Composable
 private fun LeftIcon(
     icon: ImageVector,
@@ -229,9 +208,6 @@ private fun LeftIcon(
     )
 }
 
-/**
- * Helper function to render right icon
- */
 @Composable
 private fun RightIcon(
     icon: ImageVector,
