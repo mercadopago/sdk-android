@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.klint)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
 }
@@ -38,7 +37,7 @@ android {
 
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
-        version = CoreMethodsSDKConfig.VERSION_NAME
+        version = ThreeDSSDKConfig.VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -46,23 +45,33 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = false // Keep false for library modules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            isJniDebuggable = false
+            isRenderscriptDebuggable = false
+            isPseudoLocalesEnabled = false
+        }
+        debug {
+            isMinifyEnabled = false
+            // Keep ProGuard rules for debug builds to catch issues early
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro",
             )
         }
     }
     compileOptions {
-        sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
-        targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
-        jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
+        jvmTarget = "1.8"
         allWarningsAsErrors = false
-        freeCompilerArgs += listOf(
-            "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-        )
     }
 }
 
@@ -70,12 +79,47 @@ ksp {
     arg("skipPrivatePreviews", "true")
 }
 
-dependencies {
+val localAarFile = file("../libs/mc-3ds-sdk-android-6.6.71.aar")
 
+dependencies {
+    if (localAarFile.exists()) {
+        compileOnly(files(localAarFile))
+    } else {
+        // Fallback to Maven dependency when local AAR is not available (e.g., CI/CD, tests)
+        compileOnly(libs.usdk)
+    }
+    testImplementation(libs.usdk)
+    // 3DS SDK dependencies
+    implementation(libs.gson)
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.ads.identifier)
+    implementation(libs.play.services.auth.api.phone)
+    implementation(libs.support.v4)
+
+    implementation(projects.core)
+    implementation(projects.sdkAndroid)
+    implementation(projects.analytics)
+    // CompileOnly dependency to access CoreMethods interfaces without creating runtime dependency
+    compileOnly(projects.coreMethods)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.okhttp.mockWebServer)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.annotation)
+    implementation(libs.device.sdk)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    // Test implementation of core-methods to access interfaces and models
+    testImplementation(projects.coreMethods)
+
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.mockk)
+    testImplementation(libs.cashapp.turbine)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

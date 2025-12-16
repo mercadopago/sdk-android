@@ -2,6 +2,7 @@
 agp = "8.7.3"
 annotation = "1.9.1"
 coilCompose = "3.1.0"
+gson = "2.8.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -16,9 +17,13 @@ material = "1.12.0"
 detekt = "1.23.8"
 kotlinKover = "0.9.0"
 paparazzi = "1.3.5"
+playServicesAdsIdentifier = "18.2.0"
+playServicesAuthApiPhone = "18.2.0"
+playServicesLocation = "21.3.0"
 sdk = "4.0.1"
 showkase = "1.0.4"
 googleKsp = "2.0.21-1.0.25"
+supportV4 = "28.0.0"
 testParameterInjector = "1.17"
 converterGson = "2.6.4"
 converterKotlinxSerialization = "2.11.0"
@@ -38,12 +43,15 @@ navigationCompose = "2.9.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 constraintlayout-compose = "1.1.0"
+desugarJdkLibs = "2.0.4"
+usdk = "6.6.81"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -64,10 +72,14 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore-preferenc
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 device-sdk = { module = "com.mercadolibre.android.device:sdk", version.ref = "sdk" }
+play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+play-services-auth-api-phone = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playServicesAuthApiPhone" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 showkase = { group = "com.airbnb.android", name = "showkase", version.ref = "showkase" }
 showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotation", version.ref = "showkase" }
 showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
 showkase-test = { group = "com.airbnb.android", name = "showkase-screenshot-testing", version.ref = "showkase" }
+support-v4 = { module = "com.android.support:support-v4", version.ref = "supportV4" }
 test-parameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParameterInjector" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -92,6 +104,8 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+usdk = { module = "com.usdk.android:usdk", version.ref = "usdk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

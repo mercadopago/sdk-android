@@ -103,6 +103,7 @@ ksp {
 }
 
 dependencies {
+
     implementation(projects.core)
     implementation(projects.sdkAndroid)
     implementation(projects.analytics)

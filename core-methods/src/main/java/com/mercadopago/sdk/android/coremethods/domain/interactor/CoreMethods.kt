@@ -191,7 +191,6 @@ class CoreMethods internal constructor(
             securityCode = securityCodeState.input,
             buyerIdentification = buyerIdentification,
         )
-
         when (result) {
             is Result.Error -> {
                 when (result.error) {
@@ -219,7 +218,10 @@ class CoreMethods internal constructor(
 
             is Result.Success -> {
                 MPAnalytics.getInstance().trackMetric(
-                    metricGenerateCardTokenCallSuccess(isSavedCard = true, identityType = buyerIdentification.type),
+                    metricGenerateCardTokenCallSuccess(
+                        isSavedCard = true,
+                        identityType = buyerIdentification.type,
+                    ),
                 )
             }
         }
@@ -333,7 +335,6 @@ class CoreMethods internal constructor(
      */
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
-
         when (result) {
             is Result.Error -> {
                 when (result.error) {
