@@ -32,8 +32,6 @@ fun CoreMethods.setThreeDSProvider(provider: ThreeDSProvider) {
     threeDSProvider = provider
 }
 
-private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
-
 /**
  * Retrieves the list of security warnings from the 3DS SDK.
  * These warnings indicate potential security issues or configuration problems
@@ -260,3 +258,5 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
             },
         )
 }
+
+private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null

@@ -89,6 +89,87 @@ enum class MPButtonSize {
     Medium,
 }
 
+/**
+ * Button component - Handles button implementation with different styles and configurations
+ * This component is used to build interactive buttons throughout the application
+ * handling different visual styles, sizes, and icon placements
+ *
+ * @param text: button text label
+ * @param modifier: button modifier
+ * @param icon: optional icon to display in the button
+ * @param style: button style, must be one of MPButtonStyle values (Loud, Quiet, Transparent)
+ * @param iconType: type of icon placement (None, Left, Right)
+ * @param size: button size (Large, Medium)
+ * @param enabled: Boolean indicates if the component is enabled
+ * @param onClick: callback function executed when button is clicked
+ */
+@Composable
+fun MPButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    icon: ImageVector? = null,
+    style: MPButtonStyle = MPButtonStyle.Loud,
+    iconType: MPButtonIconType = MPButtonIconType.None,
+    size: MPButtonSize = MPButtonSize.Large,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    val drawIcon = icon != null && iconType != MPButtonIconType.None
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed)
+    val textColor = getTextColorType(style)
+    val iconColor = getIconColor(style)
+    val contentPaddingHorizontal = getHorizontalPadding(size, iconType)
+    val contentPaddingVertical = getVerticalPadding(size)
+
+    val borderModifier = if (isFocused) {
+        modifier.getFocusedModifier()
+    } else {
+        modifier.padding(0.dp)
+    }
+
+    Box(
+        modifier = borderModifier
+            .clip(MercadoPagoTheme.shape.xs)
+            .background(backgroundColor)
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+            )
+            .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier.height(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (drawIcon && iconType == MPButtonIconType.Left) {
+                LeftIcon(icon!!, size, enabled, iconColor)
+            }
+
+            MPText(
+                text,
+                textStyle = if (size == MPButtonSize.Large) {
+                    MPTextStyle.BodyMediumSemiBold
+                } else {
+                    MPTextStyle.BodySmallSemiBold
+                },
+                colorType = textColor,
+                enabled = enabled,
+            )
+
+            if (drawIcon && iconType == MPButtonIconType.Right) {
+                RightIcon(icon!!, size, enabled, iconColor)
+            }
+        }
+    }
+}
+
 @Composable
 private fun getButtonBackgroundColor(
     style: MPButtonStyle,
@@ -231,87 +312,6 @@ private fun RightIcon(
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
         tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
     )
-}
-
-/**
- * Button component - Handles button implementation with different styles and configurations
- * This component is used to build interactive buttons throughout the application
- * handling different visual styles, sizes, and icon placements
- *
- * @param text: button text label
- * @param modifier: button modifier
- * @param icon: optional icon to display in the button
- * @param style: button style, must be one of MPButtonStyle values (Loud, Quiet, Transparent)
- * @param iconType: type of icon placement (None, Left, Right)
- * @param size: button size (Large, Medium)
- * @param enabled: Boolean indicates if the component is enabled
- * @param onClick: callback function executed when button is clicked
- */
-@Composable
-fun MPButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
-    style: MPButtonStyle = MPButtonStyle.Loud,
-    iconType: MPButtonIconType = MPButtonIconType.None,
-    size: MPButtonSize = MPButtonSize.Large,
-    enabled: Boolean = true,
-    onClick: () -> Unit,
-) {
-    val drawIcon = icon != null && iconType != MPButtonIconType.None
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-    val isFocused by interactionSource.collectIsFocusedAsState()
-
-    val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed)
-    val textColor = getTextColorType(style)
-    val iconColor = getIconColor(style)
-    val contentPaddingHorizontal = getHorizontalPadding(size, iconType)
-    val contentPaddingVertical = getVerticalPadding(size)
-
-    val borderModifier = if (isFocused) {
-        modifier.getFocusedModifier()
-    } else {
-        modifier.padding(0.dp)
-    }
-
-    Box(
-        modifier = borderModifier
-            .clip(MercadoPagoTheme.shape.xs)
-            .background(backgroundColor)
-            .clickable(
-                enabled = enabled,
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick,
-            )
-            .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(
-            modifier = Modifier.height(20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (drawIcon && iconType == MPButtonIconType.Left) {
-                LeftIcon(icon!!, size, enabled, iconColor)
-            }
-
-            MPText(
-                text,
-                textStyle = if (size == MPButtonSize.Large) {
-                    MPTextStyle.BodyMediumSemiBold
-                } else {
-                    MPTextStyle.BodySmallSemiBold
-                },
-                colorType = textColor,
-                enabled = enabled,
-            )
-
-            if (drawIcon && iconType == MPButtonIconType.Right) {
-                RightIcon(icon!!, size, enabled, iconColor)
-            }
-        }
-    }
 }
 
 @Preview(name = "Button Styles Large", group = BUTTON_GROUP)

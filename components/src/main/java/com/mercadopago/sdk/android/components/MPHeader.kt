@@ -111,6 +111,83 @@ private val MOTION_SCENE = """
     }
 """.trimIndent()
 
+/**
+ * A collapsible header component with motion animation support.
+ *
+ * @param title The title text displayed in the header.
+ * @param modifier Modifier to be applied to the header container.
+ * @param hierarchy The visual hierarchy level of the header.
+ * @param showBackButton Whether to display the back navigation button.
+ * @param backIcon The icon to use for the back button.
+ * @param expandedHeight The height of the header when fully expanded.
+ * @param collapsedHeight The height of the header when collapsed.
+ * @param backgroundColor Optional background color override.
+ * @param onBackClick Callback invoked when the back button is clicked.
+ * @param content The content to display below the header.
+ */
+@Composable
+fun MPHeader(
+    title: String,
+    modifier: Modifier = Modifier,
+    hierarchy: MPHeaderHierarchy = MPHeaderHierarchy.Loud,
+    showBackButton: Boolean = true,
+    backIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    expandedHeight: Dp = EXPANDED_HEIGHT_DP.dp,
+    collapsedHeight: Dp = COLLAPSED_HEIGHT_DP.dp,
+    backgroundColor: Color? = null,
+    onBackClick: () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    val density = LocalDensity.current
+    val maxOffsetPx = with(density) { (expandedHeight - collapsedHeight).toPx() }
+    var progress by rememberSaveable { mutableFloatStateOf(0f) }
+    val nestedScrollConnection = rememberNestedScrollConnection(maxOffsetPx) { progress = it }
+    val bgColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
+    val springSpec = spring<Float>(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+    )
+    val targetProgress = if (hierarchy == MPHeaderHierarchy.Mute) 1f else progress
+    val animatedProgress by animateFloatAsState(
+        targetValue = targetProgress,
+        animationSpec = springSpec,
+        label = "headerProgress",
+    )
+    val targetHeight = computeTargetHeight(hierarchy, collapsedHeight, expandedHeight, progress)
+    val dpSpringSpec = spring<Dp>(
+        dampingRatio = Spring.DampingRatioNoBouncy,
+        stiffness = Spring.StiffnessMediumLow,
+    )
+    val animatedHeight by animateDpAsState(
+        targetValue = targetHeight,
+        animationSpec = dpSpringSpec,
+        label = "headerHeight",
+    )
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(bgColor)
+            .nestedScroll(nestedScrollConnection),
+    ) {
+        content(PaddingValues(top = expandedHeight))
+        ContentFadeOverlay(
+            backgroundColor = bgColor,
+            headerHeight = animatedHeight,
+        )
+        MPHeaderMotionLayout(
+            params = MPHeaderMotionLayoutParams(
+                title = title,
+                hierarchy = hierarchy,
+                showBackButton = showBackButton,
+                backIcon = backIcon,
+                animatedProgress = animatedProgress,
+                animatedHeight = animatedHeight,
+                onBackClick = onBackClick,
+            ),
+        )
+    }
+}
+
 @Composable
 private fun HeaderBackButton(
     icon: ImageVector,
@@ -257,83 +334,6 @@ private fun MPHeaderMotionLayout(params: MPHeaderMotionLayoutParams) {
             textStyle = textStyle,
             colorType = MPTextColorType.Primary,
             modifier = Modifier.layoutId(TITLE_ID),
-        )
-    }
-}
-
-/**
- * A collapsible header component with motion animation support.
- *
- * @param title The title text displayed in the header.
- * @param modifier Modifier to be applied to the header container.
- * @param hierarchy The visual hierarchy level of the header.
- * @param showBackButton Whether to display the back navigation button.
- * @param backIcon The icon to use for the back button.
- * @param expandedHeight The height of the header when fully expanded.
- * @param collapsedHeight The height of the header when collapsed.
- * @param backgroundColor Optional background color override.
- * @param onBackClick Callback invoked when the back button is clicked.
- * @param content The content to display below the header.
- */
-@Composable
-fun MPHeader(
-    title: String,
-    modifier: Modifier = Modifier,
-    hierarchy: MPHeaderHierarchy = MPHeaderHierarchy.Loud,
-    showBackButton: Boolean = true,
-    backIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    expandedHeight: Dp = EXPANDED_HEIGHT_DP.dp,
-    collapsedHeight: Dp = COLLAPSED_HEIGHT_DP.dp,
-    backgroundColor: Color? = null,
-    onBackClick: () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit,
-) {
-    val density = LocalDensity.current
-    val maxOffsetPx = with(density) { (expandedHeight - collapsedHeight).toPx() }
-    var progress by rememberSaveable { mutableFloatStateOf(0f) }
-    val nestedScrollConnection = rememberNestedScrollConnection(maxOffsetPx) { progress = it }
-    val bgColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
-    val springSpec = spring<Float>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessMediumLow,
-    )
-    val targetProgress = if (hierarchy == MPHeaderHierarchy.Mute) 1f else progress
-    val animatedProgress by animateFloatAsState(
-        targetValue = targetProgress,
-        animationSpec = springSpec,
-        label = "headerProgress",
-    )
-    val targetHeight = computeTargetHeight(hierarchy, collapsedHeight, expandedHeight, progress)
-    val dpSpringSpec = spring<Dp>(
-        dampingRatio = Spring.DampingRatioNoBouncy,
-        stiffness = Spring.StiffnessMediumLow,
-    )
-    val animatedHeight by animateDpAsState(
-        targetValue = targetHeight,
-        animationSpec = dpSpringSpec,
-        label = "headerHeight",
-    )
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(bgColor)
-            .nestedScroll(nestedScrollConnection),
-    ) {
-        content(PaddingValues(top = expandedHeight))
-        ContentFadeOverlay(
-            backgroundColor = bgColor,
-            headerHeight = animatedHeight,
-        )
-        MPHeaderMotionLayout(
-            params = MPHeaderMotionLayoutParams(
-                title = title,
-                hierarchy = hierarchy,
-                showBackButton = showBackButton,
-                backIcon = backIcon,
-                animatedProgress = animatedProgress,
-                animatedHeight = animatedHeight,
-                onBackClick = onBackClick,
-            ),
         )
     }
 }
