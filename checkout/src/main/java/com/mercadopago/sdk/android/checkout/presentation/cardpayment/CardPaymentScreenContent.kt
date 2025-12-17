@@ -1,15 +1,20 @@
 package com.mercadopago.sdk.android.checkout.presentation.cardpayment
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,6 +22,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
+import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -81,88 +87,108 @@ internal fun CardPaymentScreenContent(
     onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit,
     onCardHolderEvent: (SimpleTextFieldEvent) -> Unit,
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
+    onFooterButtonClick: () -> Unit = {},
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Spacer(Modifier.width(16.dp))
-        MPCardNumberTextField(
-            modifier = Modifier.fillMaxWidth(),
-            state = cardNumberPCIState,
-            isFocused = viewState.cardNumberState.isFocused,
-            showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
-            error = viewState.cardNumberState.error.first,
-            enabled = viewState.cardNumberState.enabled,
-            label = viewState.cardNumberState.label,
-            helper = viewState.cardNumberState.helper,
-            placeHolder = viewState.cardNumberState.placeHolder,
-            onEvent = onCardNumberEvent,
-        )
-
-        if (viewState.cardHolderState.show) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 120.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+        ) {
             Spacer(Modifier.width(16.dp))
-            MPSimpleTextField(
+            MPCardNumberTextField(
                 modifier = Modifier.fillMaxWidth(),
-                state = cardHolderPCIState,
-                isFocused = viewState.cardHolderState.isFocused,
-                showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
-                error = viewState.cardHolderState.error,
-                enabled = viewState.cardHolderState.enabled,
-                label = viewState.cardHolderState.label,
-                helper = viewState.cardHolderState.helper,
-                placeHolder = viewState.cardHolderState.placeHolder,
-                onEvent = onCardHolderEvent,
+                state = cardNumberPCIState,
+                isFocused = viewState.cardNumberState.isFocused,
+                showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
+                error = viewState.cardNumberState.error.first,
+                enabled = viewState.cardNumberState.enabled,
+                label = viewState.cardNumberState.label,
+                helper = viewState.cardNumberState.helper,
+                placeHolder = viewState.cardNumberState.placeHolder,
+                onEvent = onCardNumberEvent,
             )
-        }
-        Spacer(Modifier.width(16.dp))
-        Row {
-            MPExpirationDateTextField(
-                modifier = Modifier.weight(1f),
-                state = expirationDatePCIState,
-                isFocused = viewState.expirationDateState.isFocused,
-                showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
-                error = viewState.expirationDateState.error.first,
-                enabled = viewState.expirationDateState.enabled,
-                label = viewState.expirationDateState.label,
-                helper = viewState.expirationDateState.helper,
-                placeHolder = viewState.expirationDateState.placeHolder,
-                onEvent = onExpirationDateEvent,
-            )
-
-            Spacer(Modifier.width(16.dp))
-
-            MPSecurityCodeTextField(
-                modifier = Modifier.weight(1f),
-                state = securityCodePCIState,
-                securityCodeSize = viewState.secureCodeState.secureCodeLength,
-                isFocused = viewState.secureCodeState.isFocused,
-                showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                error = viewState.secureCodeState.error.first,
-                enabled = viewState.secureCodeState.enabled,
-                label = viewState.secureCodeState.label,
-                helper = viewState.secureCodeState.helper,
-                placeHolder = viewState.secureCodeState.placeHolder,
-                onEvent = onSecurityCodeEvent,
-            )
-        }
-
-        if (viewState.identificationTypeState.show) {
-            Spacer(Modifier.width(16.dp))
-            viewState.identificationTypeState.identificationTypes?.let { types ->
-                MPIdentificationTextField(
+            if (viewState.cardHolderState.show) {
+                Spacer(Modifier.width(16.dp))
+                MPSimpleTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    state = identificationPCIState,
-                    identificationTypes = types,
-                    selectedIdentificationType = viewState.identificationTypeState.selected,
-                    isFocused = viewState.identificationTypeState.isFocused,
-                    showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
-                    error = viewState.identificationTypeState.error,
-                    enabled = viewState.identificationTypeState.enabled,
-                    label = viewState.identificationTypeState.label,
-                    helper = viewState.identificationTypeState.helper,
-                    placeHolder = viewState.identificationTypeState.placeHolder,
-                    onEvent = onIdentificationEvent,
+                    state = cardHolderPCIState,
+                    isFocused = viewState.cardHolderState.isFocused,
+                    showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
+                    error = viewState.cardHolderState.error,
+                    enabled = viewState.cardHolderState.enabled,
+                    label = viewState.cardHolderState.label,
+                    helper = viewState.cardHolderState.helper,
+                    placeHolder = viewState.cardHolderState.placeHolder,
+                    onEvent = onCardHolderEvent,
                 )
             }
+            Spacer(Modifier.width(16.dp))
+            Row {
+                MPExpirationDateTextField(
+                    modifier = Modifier.weight(1f),
+                    state = expirationDatePCIState,
+                    isFocused = viewState.expirationDateState.isFocused,
+                    showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
+                    error = viewState.expirationDateState.error.first,
+                    enabled = viewState.expirationDateState.enabled,
+                    label = viewState.expirationDateState.label,
+                    helper = viewState.expirationDateState.helper,
+                    placeHolder = viewState.expirationDateState.placeHolder,
+                    onEvent = onExpirationDateEvent,
+                )
+                Spacer(Modifier.width(16.dp))
+                MPSecurityCodeTextField(
+                    modifier = Modifier.weight(1f),
+                    state = securityCodePCIState,
+                    securityCodeSize = viewState.secureCodeState.secureCodeLength,
+                    isFocused = viewState.secureCodeState.isFocused,
+                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                    error = viewState.secureCodeState.error.first,
+                    enabled = viewState.secureCodeState.enabled,
+                    label = viewState.secureCodeState.label,
+                    helper = viewState.secureCodeState.helper,
+                    placeHolder = viewState.secureCodeState.placeHolder,
+                    onEvent = onSecurityCodeEvent,
+                )
+            }
+            if (viewState.identificationTypeState.show) {
+                Spacer(Modifier.width(16.dp))
+                viewState.identificationTypeState.identificationTypes?.let { types ->
+                    MPIdentificationTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = identificationPCIState,
+                        identificationTypes = types,
+                        selectedIdentificationType = viewState.identificationTypeState.selected,
+                        isFocused = viewState.identificationTypeState.isFocused,
+                        showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
+                        error = viewState.identificationTypeState.error,
+                        enabled = viewState.identificationTypeState.enabled,
+                        label = viewState.identificationTypeState.label,
+                        helper = viewState.identificationTypeState.helper,
+                        placeHolder = viewState.identificationTypeState.placeHolder,
+                        onEvent = onIdentificationEvent,
+                    )
+                }
+            }
         }
+        MPFixedFooter(
+            title = viewState.fixedFooterState.title,
+            amount = MPAmountData(
+                currencySymbol = viewState.fixedFooterState.currencySymbol,
+                integerPart = viewState.fixedFooterState.amountIntegerPart,
+                decimalPart = viewState.fixedFooterState.amountDecimalPart,
+            ),
+            subtitle = viewState.fixedFooterState.subtitle,
+            buttonData = MPFixedFooterButtonData(
+                text = viewState.fixedFooterState.buttonText,
+                enabled = viewState.fixedFooterState.buttonEnabled,
+                onClick = onFooterButtonClick,
+            ),
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
 }
 
@@ -205,6 +231,15 @@ private fun CardPaymentScreenContentPreview() {
                         maxLength = 11,
                     ),
                 ),
+                fixedFooterState = FixedFooterState(
+                    title = "Total a pagar",
+                    currencySymbol = "$",
+                    amountIntegerPart = "1.000",
+                    amountDecimalPart = "00",
+                    subtitle = "em até 12x sem juros",
+                    buttonText = "Pagar",
+                    buttonEnabled = true,
+                ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -216,6 +251,7 @@ private fun CardPaymentScreenContentPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
+            onFooterButtonClick = {},
         )
     }
 }
@@ -242,6 +278,14 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                 ),
                 cardHolderState = CardHolderState(show = false),
                 identificationTypeState = IdentificationTypeState(show = false),
+                fixedFooterState = FixedFooterState(
+                    title = "Total",
+                    currencySymbol = "$",
+                    amountIntegerPart = "500",
+                    amountDecimalPart = "00",
+                    buttonText = "Continuar",
+                    buttonEnabled = true,
+                ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -253,6 +297,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
+            onFooterButtonClick = {},
         )
     }
 }
@@ -300,6 +345,15 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                         maxLength = 11,
                     ),
                 ),
+                fixedFooterState = FixedFooterState(
+                    title = "Total a pagar",
+                    currencySymbol = "$",
+                    amountIntegerPart = "2.500",
+                    amountDecimalPart = "50",
+                    subtitle = "em até 12x",
+                    buttonText = "Pagar",
+                    buttonEnabled = false,
+                ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
             expirationDatePCIState = rememberPCIFieldState(),
@@ -311,6 +365,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             onSecurityCodeEvent = {},
             onCardHolderEvent = {},
             onIdentificationEvent = {},
+            onFooterButtonClick = {},
         )
     }
 }
