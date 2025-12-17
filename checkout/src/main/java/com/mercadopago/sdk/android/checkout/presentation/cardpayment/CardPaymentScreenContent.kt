@@ -29,7 +29,6 @@ import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentVi
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
-import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -70,7 +69,6 @@ internal fun CardPaymentScreen(viewModel: CardPaymentViewModel) {
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
     )
-
 }
 
 @Suppress("LongParameterList", "LongMethod")

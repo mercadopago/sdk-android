@@ -3,11 +3,9 @@ package com.mercadopago.sdk.android.checkout.presentation.controller
 import android.annotation.SuppressLint
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,9 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
-import com.mercadopago.sdk.android.components.MPAmountData
-import com.mercadopago.sdk.android.components.MPFixedFooter
-import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
@@ -31,7 +26,7 @@ internal fun MPCardPayment() {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = currentBackStackEntry?.destination?.route
 
-    MPHeader (
+    MPHeader(
         title = "Card Payment",
         modifier = Modifier.fillMaxSize(),
     ) { paddingValues ->
