@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.interactor.getWarnings
+import com.mercadopago.sdk.android.coremethods.domain.interactor.setThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError

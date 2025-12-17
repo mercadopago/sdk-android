@@ -11,6 +11,7 @@ dependencies {
         api(projects.analytics)
         api(projects.sdkAndroid)
         api(projects.coreMethods)
+        api(projects.threeds)
     }
 }
 

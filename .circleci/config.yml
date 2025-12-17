@@ -28,7 +28,7 @@ jobs:
 #      - run: git lfs fetch --all
       - run:
           name: Set Secrets File
-          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+          command: echo "$SECRET_FILE" | base64 --decode > secrets.properties
       - run:
           name: Check JDK exists
           command: javac -version

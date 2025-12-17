@@ -1,3 +1,22 @@
+val secretsFile = file("secrets.properties")
+val secrets = java.util.Properties().apply {
+    if (secretsFile.exists()) {
+        secretsFile.inputStream().use { load(it) }
+    }
+}
+
+private fun readSecret(name: String): String? {
+    val fromProps: String? = secrets.getProperty(name)
+    val fromSysProp: String? = System.getProperty(name)
+    val fromEnv: String? = System.getenv(name)
+    return (fromProps ?: fromSysProp ?: fromEnv)
+        ?.trim()
+        ?.removeSurrounding("\"")
+        ?.removeSurrounding("'")
+}
+
+val furyMavenRepoUrl: String? = readSecret("FURY_MAVEN_REPO_URL")
+
 pluginManagement {
     repositories {
         google {
@@ -20,9 +39,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://artifacts.mercadolibre.com/repository/android-releases")
+        if (furyMavenRepoUrl != null) {
+            maven { url = uri(furyMavenRepoUrl) }
         }
+        maven { url = uri("https://artifacts.mercadolibre.com/repository/android-releases") }
     }
 }
 
