@@ -18,7 +18,7 @@ internal val SampleFeaturesNavigationList: List<SampleFeature> = listOf(
         title = R.string.checkout_feature_title,
         description = R.string.checkout_feature_description,
         destination = SampleDestination.Checkout,
-        isEnabled = false,
+        isEnabled = true,
     )
 )
 

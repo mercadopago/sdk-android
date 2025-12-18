@@ -61,7 +61,7 @@ internal class CheckoutControllerTest {
             theme = theme,
             appearance = appearance,
         )
-        checkoutController.launchBottomSheet()
+        checkoutController.launchCheckout()
 
         // Then
         verify(exactly = 1) {

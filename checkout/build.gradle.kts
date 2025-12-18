@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
+    id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin
 }
 
 publishing {
@@ -68,6 +69,9 @@ android {
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
         )
     }
+    lint {
+        disable += "NullSafeMutableLiveData"
+    }
 }
 
 ksp {
@@ -85,6 +89,8 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
