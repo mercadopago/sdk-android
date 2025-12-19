@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.service
 
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
+import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardIssuerResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
@@ -48,4 +49,9 @@ internal interface CoreMethodsService {
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("bin") bin: Int?,
     ): Response<List<PaymentMethodResponse>>
+
+    @POST("$BRICKS_API/$VERSION/challenges/threeds/device")
+    suspend fun saveThreeDSDeviceData(
+        @Body request: ThreeDSDeviceDataRequest,
+    ): Response<Unit>
 }

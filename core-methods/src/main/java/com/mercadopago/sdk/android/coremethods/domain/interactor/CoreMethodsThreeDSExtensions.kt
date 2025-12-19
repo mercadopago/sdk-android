@@ -3,10 +3,14 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSDeviceData
+import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
+import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPublicKeyParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
+import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 /**
@@ -267,4 +271,92 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
                 )
             },
         )
+}
+
+/**
+ * Saves the 3DS device data collected by the SDK to initiate the authentication process.
+ *
+ * This method sends the device data to the backend for 3DS authentication.
+ * It should be called after creating a transaction and before starting the challenge flow.
+ *
+ * @param deviceData The [ThreeDSDeviceData] containing all required device information
+ * @return [Result.Success] with [Unit] if the device data was saved successfully,
+ *         [Result.Error] with [ResultError] if an error occurred during the operation
+ *
+ * Example:
+ * ```kotlin
+ * val deviceData = ThreeDSDeviceData(
+ *     appId = "com.mercadopago.checkout",
+ *     integratorSdkVersion = "2.2.0",
+ *     threeDsSdkVersion = "1.0.0",
+ *     cardTokenId = cardToken.token,
+ *     deviceRenderOptions = DeviceRenderOptions(
+ *         sdkInterface = "Native",
+ *         uiTypes = listOf("01", "02", "03", "04", "05")
+ *     ),
+ *     encData = authParams.deviceData,
+ *     ephemPubKey = EphemeralPublicKey(
+ *         curve = "P-256",
+ *         keyType = "EC",
+ *         x = ephemeralKeyX,
+ *         y = ephemeralKeyY
+ *     ),
+ *     maxTimeout = 5,
+ *     protocolVersion = "2.2.0",
+ *     referenceNumber = authParams.sdkReferenceNumber,
+ *     transId = authParams.sdkTransactionId
+ * )
+ *
+ * val result = coreMethods.saveThreeDSDeviceData(deviceData)
+ * when (result) {
+ *     is Result.Success -> {
+ *         Log.d("3DS", "Device data saved successfully")
+ *         // Proceed with authentication
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to save device data: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see ThreeDSDeviceData
+ * @see Result
+ * @see ResultError
+ */
+suspend fun CoreMethods.saveThreeDSDeviceData(
+    deviceData: ThreeDSDeviceData,
+): Result<Unit, ResultError> {
+    return runCatching {
+        koin.get<SaveThreeDSDeviceDataUseCase>().invoke(
+            appId = deviceData.appId,
+            integratorSdkVersion = deviceData.integratorSdkVersion,
+            threeDsSdkVersion = deviceData.threeDsSdkVersion,
+            cardTokenId = deviceData.cardTokenId,
+            deviceRenderOptions = DeviceRenderOptionsParams(
+                sdkInterface = deviceData.deviceRenderOptions.sdkInterface,
+                uiTypes = deviceData.deviceRenderOptions.uiTypes,
+            ),
+            encData = deviceData.encData,
+            ephemPubKey = EphemeralPublicKeyParams(
+                curve = deviceData.ephemPubKey.curve,
+                keyType = deviceData.ephemPubKey.keyType,
+                x = deviceData.ephemPubKey.x,
+                y = deviceData.ephemPubKey.y,
+            ),
+            maxTimeout = deviceData.maxTimeout,
+            protocolVersion = deviceData.protocolVersion,
+            referenceNumber = deviceData.referenceNumber,
+            transId = deviceData.transId,
+        )
+    }.fold(
+        onSuccess = { result -> result },
+        onFailure = { throwable ->
+            Result.Error(
+                ResultError.Request(
+                    code = "",
+                    message = "Error saving 3DS device data: ${throwable.message}",
+                ),
+            )
+        },
+    )
 }
