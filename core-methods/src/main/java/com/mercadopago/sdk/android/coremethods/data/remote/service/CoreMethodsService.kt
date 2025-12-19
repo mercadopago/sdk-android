@@ -7,12 +7,14 @@ import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenRes
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.InstallmentsResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.PaymentMethodResponse
+import com.mercadopago.sdk.android.coremethods.data.remote.response.ThreeDSChallengeAuthenticationResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.PRODUCT_ID
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 import java.math.BigDecimal
 
@@ -54,4 +56,9 @@ internal interface CoreMethodsService {
     suspend fun saveThreeDSDeviceData(
         @Body request: ThreeDSDeviceDataRequest,
     ): Response<Unit>
+
+    @POST("$BRICKS_API/$VERSION/challenges/threeds/{challengeId}/authenticate")
+    suspend fun authenticateThreeDSChallenge(
+        @Path("challengeId") challengeId: String,
+    ): Response<ThreeDSChallengeAuthenticationResponse>
 }

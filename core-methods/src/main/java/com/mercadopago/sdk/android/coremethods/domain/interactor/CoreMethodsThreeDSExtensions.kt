@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSDeviceData
 import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPublicKeyParams
@@ -10,6 +11,7 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
+import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -355,6 +357,70 @@ suspend fun CoreMethods.saveThreeDSDeviceData(
                 ResultError.Request(
                     code = "",
                     message = "Error saving 3DS device data: ${throwable.message}",
+                ),
+            )
+        },
+    )
+}
+
+/**
+ * Authenticates a 3DS challenge and returns the authentication status along with
+ * the data needed to display the challenge to the user (if required).
+ *
+ * This method sends the challenge ID to the backend to authenticate the 3DS challenge.
+ * The response indicates whether the authentication was successful or if a challenge
+ * needs to be displayed to the user.
+ *
+ * @param challengeId The unique identifier of the 3DS challenge to authenticate
+ * @return [Result.Success] with [ThreeDSChallengeAuthentication] containing the authentication
+ *         status and optional challenge data,
+ *         [Result.Error] with [ResultError] if the authentication failed
+ *
+ * Example:
+ * ```kotlin
+ * val result = coreMethods.authenticateThreeDSChallenge(
+ *     challengeId = "challenge_abc123"
+ * )
+ *
+ * when (result) {
+ *     is Result.Success -> {
+ *         val authentication = result.data
+ *         when (authentication.status) {
+ *             "authenticated" -> {
+ *                 // Authentication successful, proceed with payment
+ *                 Log.d("3DS", "Authentication successful without challenge")
+ *             }
+ *             "challenge" -> {
+ *                 // Challenge required, display challenge UI
+ *                 val challengeData = authentication.data
+ *                 Log.d("3DS", "Challenge required: ${challengeData?.acsTransId}")
+ *             }
+ *         }
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Authentication failed: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see ThreeDSChallengeAuthentication
+ * @see Result
+ * @see ResultError
+ */
+suspend fun CoreMethods.authenticateThreeDSChallenge(
+    challengeId: String,
+): Result<ThreeDSChallengeAuthentication, ResultError> {
+    return runCatching {
+        koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(
+            challengeId = challengeId,
+        )
+    }.fold(
+        onSuccess = { result -> result },
+        onFailure = { throwable ->
+            Result.Error(
+                ResultError.Request(
+                    code = "",
+                    message = "Error authenticating 3DS challenge: ${throwable.message}",
                 ),
             )
         },
