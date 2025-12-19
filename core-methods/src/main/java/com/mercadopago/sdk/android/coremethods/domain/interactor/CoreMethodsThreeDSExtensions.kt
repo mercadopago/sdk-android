@@ -4,6 +4,8 @@ import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErrorDetail
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSDeviceData
 import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPublicKeyParams
@@ -13,6 +15,7 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSCha
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.UpdateThreeDSChallengeStatusUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 /**
@@ -421,6 +424,81 @@ suspend fun CoreMethods.authenticateThreeDSChallenge(
                 ResultError.Request(
                     code = "",
                     message = "Error authenticating 3DS challenge: ${throwable.message}",
+                ),
+            )
+        },
+    )
+}
+
+/**
+ * Updates the status of a 3DS challenge after user interaction.
+ *
+ * This method sends the challenge result (completion, cancellation, error, or timeout)
+ * to the backend. It should be called after the challenge flow completes to update
+ * the server with the final status.
+ *
+ * @param challengeId The unique identifier of the 3DS challenge to update
+ * @param status The status of the challenge. Valid values are:
+ *               - [ThreeDSChallengeStatus.COMPLETED]: Challenge completed successfully
+ *               - [ThreeDSChallengeStatus.CANCELLED]: Challenge cancelled by the user
+ *               - [ThreeDSChallengeStatus.ERROR]: Error during challenge execution
+ *               - [ThreeDSChallengeStatus.TIMEOUT]: Challenge expired due to timeout
+ * @param errorDetail Optional error details when status is [ThreeDSChallengeStatus.ERROR].
+ *                    This parameter is required when status is ERROR.
+ * @return [Result.Success] with [Unit] if the status was updated successfully,
+ *         [Result.Error] with [ResultError] if the operation failed
+ *
+ * Example:
+ * ```kotlin
+ * // Challenge completed successfully
+ * val result = coreMethods.updateThreeDSChallengeStatus(
+ *     challengeId = "challenge_abc123",
+ *     status = ThreeDSChallengeStatus.COMPLETED
+ * )
+ *
+ * // Challenge failed with error
+ * val errorResult = coreMethods.updateThreeDSChallengeStatus(
+ *     challengeId = "challenge_abc123",
+ *     status = ThreeDSChallengeStatus.ERROR,
+ *     errorDetail = ThreeDSChallengeErrorDetail(
+ *         type = "PROTOCOL_ERROR",
+ *         code = "301"
+ *     )
+ * )
+ *
+ * when (result) {
+ *     is Result.Success -> {
+ *         Log.d("3DS", "Challenge status updated successfully")
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to update status: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see ThreeDSChallengeStatus
+ * @see ThreeDSChallengeErrorDetail
+ * @see Result
+ * @see ResultError
+ */
+suspend fun CoreMethods.updateThreeDSChallengeStatus(
+    challengeId: String,
+    status: ThreeDSChallengeStatus,
+    errorDetail: ThreeDSChallengeErrorDetail? = null,
+): Result<Unit, ResultError> {
+    return runCatching {
+        koin.get<UpdateThreeDSChallengeStatusUseCase>().invoke(
+            challengeId = challengeId,
+            status = status,
+            errorDetail = errorDetail,
+        )
+    }.fold(
+        onSuccess = { result -> result },
+        onFailure = { throwable ->
+            Result.Error(
+                ResultError.Request(
+                    code = "",
+                    message = "Error updating 3DS challenge status: ${throwable.message}",
                 ),
             )
         },

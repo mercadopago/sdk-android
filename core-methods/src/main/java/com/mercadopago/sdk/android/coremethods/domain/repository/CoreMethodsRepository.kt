@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMethodsParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.SaveThreeDSDeviceDataParams
+import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDSChallengeStatusParams
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRepository {
@@ -31,4 +32,8 @@ internal interface CoreMethodsRepository {
     suspend fun authenticateThreeDSChallenge(
         params: AuthenticateThreeDSChallengeParams,
     ): Result<ThreeDSChallengeAuthentication, ResultError>
+
+    suspend fun updateThreeDSChallengeStatus(
+        params: UpdateThreeDSChallengeStatusParams,
+    ): Result<Unit, ResultError>
 }

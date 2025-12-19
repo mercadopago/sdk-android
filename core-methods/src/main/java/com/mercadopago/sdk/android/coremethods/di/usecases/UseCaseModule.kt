@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.di.usecases
 
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.UpdateThreeDSChallengeStatusUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
@@ -21,4 +22,5 @@ internal fun provideUseCaseModule(): Module =
         factory { GenerateCardIdTokenUseCase(get()) }
         factory { SaveThreeDSDeviceDataUseCase(get()) }
         factory { AuthenticateThreeDSChallengeUseCase(get()) }
+        factory { UpdateThreeDSChallengeStatusUseCase(get()) }
     }

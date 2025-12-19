@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMethodsParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.SaveThreeDSDeviceDataParams
+import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDSChallengeStatusParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -49,5 +50,14 @@ internal class CoreMethodsRepositoryImpl(
         params: AuthenticateThreeDSChallengeParams,
     ): Result<ThreeDSChallengeAuthentication, ResultError> {
         return dataSource.authenticateThreeDSChallenge(params.challengeId)
+    }
+
+    override suspend fun updateThreeDSChallengeStatus(
+        params: UpdateThreeDSChallengeStatusParams,
+    ): Result<Unit, ResultError> {
+        return dataSource.updateThreeDSChallengeStatus(
+            challengeId = params.challengeId,
+            request = params.toRequest(),
+        )
     }
 }

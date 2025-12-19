@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.data.remote.service
 
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
+import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardIssuerResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.CardTokenResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
@@ -13,6 +14,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -61,4 +63,10 @@ internal interface CoreMethodsService {
     suspend fun authenticateThreeDSChallenge(
         @Path("challengeId") challengeId: String,
     ): Response<ThreeDSChallengeAuthenticationResponse>
+
+    @PATCH("$BRICKS_API/$VERSION/challenges/threeds/{challengeId}")
+    suspend fun updateThreeDSChallengeStatus(
+        @Path("challengeId") challengeId: String,
+        @Body request: UpdateThreeDSChallengeStatusRequest,
+    ): Response<Unit>
 }
