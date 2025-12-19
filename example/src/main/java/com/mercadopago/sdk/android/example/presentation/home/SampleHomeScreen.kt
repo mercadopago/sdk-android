@@ -21,7 +21,6 @@ import com.mercadopago.sdk.android.example.navigation.SampleFeaturesNavigationLi
 import com.mercadopago.sdk.android.example.navigation.isRoute
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SampleHomeScreen(
     modifier: Modifier = Modifier,
