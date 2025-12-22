@@ -1,13 +1,12 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import android.app.Activity
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.DeviceRenderOptions
 import com.mercadopago.sdk.android.coremethods.domain.model.EphemeralPublicKey
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.fromJson
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErrorDetail
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
@@ -418,7 +417,7 @@ private suspend fun CoreMethods.saveThreeDSDeviceData(
 
         val parameters = (parametersResult as Result.Success).data
 
-        val ephemeralPublicKey = parseEphemeralPublicKey(parameters.sdkEphemeralPublicKey)
+        val ephemeralPublicKey = EphemeralPublicKey.fromJson(parameters.sdkEphemeralPublicKey)
             ?: return Result.Error(
                 ResultError.Validation(
                     message = "Failed to parse ephemeral public key from 3DS SDK.",
@@ -613,37 +612,6 @@ private suspend fun CoreMethods.updateThreeDSChallengeStatus(
             )
         },
     )
-}
-
-/**
- * Internal model for parsing the ephemeral public key JSON from 3DS SDK.
- */
-private data class EphemeralPublicKeyJson(
-    @SerializedName("kty")
-    val keyType: String,
-    @SerializedName("crv")
-    val curve: String,
-    @SerializedName("x")
-    val x: String,
-    @SerializedName("y")
-    val y: String,
-)
-/**
- * Parses the ephemeral public key JSON string into an [EphemeralPublicKey] object.
- *
- * @param ephemeralPublicKeyJson The JSON string containing the ephemeral public key
- * @return [EphemeralPublicKey] if parsing was successful, null otherwise
- */
-private fun parseEphemeralPublicKey(ephemeralPublicKeyJson: String): EphemeralPublicKey? {
-    return runCatching {
-        val parsed = Gson().fromJson(ephemeralPublicKeyJson, EphemeralPublicKeyJson::class.java)
-        EphemeralPublicKey(
-            curve = parsed.curve,
-            keyType = parsed.keyType,
-            x = parsed.x,
-            y = parsed.y,
-        )
-    }.getOrNull()
 }
 
 private const val DEFAULT_MAX_TIMEOUT = 5
