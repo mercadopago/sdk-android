@@ -41,6 +41,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "THREEDS_SDK_VERSION", "\"${ThreeDSSDKConfig.VERSION_NAME}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

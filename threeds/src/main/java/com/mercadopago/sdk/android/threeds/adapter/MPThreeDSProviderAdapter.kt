@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAut
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
+import com.mercadopago.sdk.android.threeds.BuildConfig
 import com.mercadopago.sdk.android.threeds.adapter.mappers.ThreeDSAuthenticationModelMapper
 import com.mercadopago.sdk.android.threeds.adapter.mappers.ThreeDSChallengeResultMapper
 import com.mercadopago.sdk.android.threeds.adapter.mappers.ThreeDSRequestParamsMapper
@@ -35,6 +36,12 @@ import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
 class MPThreeDSProviderAdapter(
     private val mpThreeDS: MPThreeDS,
 ) : ThreeDSProvider {
+    /**
+     * The version of the 3DS SDK.
+     * Retrieved from the BuildConfig generated at build time.
+     */
+    override val sdkVersion: String = BuildConfig.THREEDS_SDK_VERSION
+
     /**
      * Creates a 3DS transaction for the specified payment method.
      * Delegates to MPThreeDS.createTransaction().

@@ -25,6 +25,12 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWar
  */
 interface ThreeDSProvider {
     /**
+     * The version of the 3DS SDK.
+     * This is used to identify the SDK version in device data submissions.
+     */
+    val sdkVersion: String
+
+    /**
      * Creates a 3DS transaction for the specified payment method.
      *
      * @param paymentMethodId The payment method ID to create the transaction for (e.g., "visa", "mastercard")

@@ -33,6 +33,16 @@ class MPThreeDSProviderAdapterTest {
     }
 
     @Test
+    fun `sdkVersion should return the BuildConfig version`() {
+        // Act
+        val version = adapter.sdkVersion
+
+        // Assert
+        assertNotNull(version)
+        assertEquals(com.mercadopago.sdk.android.threeds.BuildConfig.THREEDS_SDK_VERSION, version)
+    }
+
+    @Test
     fun `createTransaction should delegate to MPThreeDS`() {
         // Arrange
         val paymentMethodId = "visa"

@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
+import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toParams
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.DeviceRenderOptions
 import com.mercadopago.sdk.android.coremethods.domain.model.EphemeralPublicKey
@@ -11,8 +12,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuth
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErrorDetail
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSDeviceData
-import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
-import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPublicKeyParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
@@ -424,43 +423,29 @@ private suspend fun CoreMethods.saveThreeDSDeviceData(
                 ),
             )
 
-        val deviceData = ThreeDSDeviceData(
+        val sdkVersion = threeDSProvider?.sdkVersion ?: return Result.Error(
+            ResultError.Validation(
+                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+            ),
+        )
+
+        val deviceRenderOptions = DeviceRenderOptions(
+            sdkInterface = SDK_INTERFACE_NATIVE,
+            uiTypes = DEFAULT_UI_TYPES,
+        )
+
+        koin.get<SaveThreeDSDeviceDataUseCase>().invoke(
             appId = parameters.sdkAppId,
             integratorSdkVersion = INTEGRATOR_SDK_VERSION,
-            threeDsSdkVersion = THREEDS_SDK_VERSION,
+            threeDsSdkVersion = sdkVersion,
             cardTokenId = cardToken.token,
-            deviceRenderOptions = DeviceRenderOptions(
-                sdkInterface = SDK_INTERFACE_NATIVE,
-                uiTypes = DEFAULT_UI_TYPES,
-            ),
+            deviceRenderOptions = deviceRenderOptions.toParams(),
             encData = parameters.deviceData,
-            ephemPubKey = ephemeralPublicKey,
+            ephemPubKey = ephemeralPublicKey.toParams(),
             maxTimeout = DEFAULT_MAX_TIMEOUT,
             protocolVersion = PROTOCOL_VERSION,
             referenceNumber = parameters.sdkReferenceNumber,
             transId = parameters.sdkTransactionId,
-        )
-
-        koin.get<SaveThreeDSDeviceDataUseCase>().invoke(
-            appId = deviceData.appId,
-            integratorSdkVersion = deviceData.integratorSdkVersion,
-            threeDsSdkVersion = deviceData.threeDsSdkVersion,
-            cardTokenId = deviceData.cardTokenId,
-            deviceRenderOptions = DeviceRenderOptionsParams(
-                sdkInterface = deviceData.deviceRenderOptions.sdkInterface,
-                uiTypes = deviceData.deviceRenderOptions.uiTypes,
-            ),
-            encData = deviceData.encData,
-            ephemPubKey = EphemeralPublicKeyParams(
-                curve = deviceData.ephemPubKey.curve,
-                keyType = deviceData.ephemPubKey.keyType,
-                x = deviceData.ephemPubKey.x,
-                y = deviceData.ephemPubKey.y,
-            ),
-            maxTimeout = deviceData.maxTimeout,
-            protocolVersion = deviceData.protocolVersion,
-            referenceNumber = deviceData.referenceNumber,
-            transId = deviceData.transId,
         )
     }.fold(
         onSuccess = { result -> result },
@@ -616,7 +601,6 @@ private suspend fun CoreMethods.updateThreeDSChallengeStatus(
 
 private const val DEFAULT_MAX_TIMEOUT = 5
 private const val INTEGRATOR_SDK_VERSION = "2.2.0"
-private const val THREEDS_SDK_VERSION = "1.0.0"
 private const val SDK_INTERFACE_NATIVE = "Native"
 private const val PROTOCOL_VERSION = "2.2.0"
 private val DEFAULT_UI_TYPES = listOf("01", "02", "03", "04", "05")
