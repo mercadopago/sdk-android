@@ -1,7 +1,12 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import android.app.Activity
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
+import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.DeviceRenderOptions
+import com.mercadopago.sdk.android.coremethods.domain.model.EphemeralPublicKey
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErrorDetail
@@ -12,6 +17,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPubl
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
@@ -279,6 +285,74 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
 }
 
 /**
+ * Retrieves the authentication request parameters for the current 3DS transaction.
+ * These parameters should be sent to your backend for 3DS authentication.
+ *
+ * This method requires a 3DS provider to be set via [setThreeDSProvider] and
+ * a transaction to be created via [createTransaction] before calling this method.
+ *
+ * @return [Result.Success] with [ThreeDSRequestParams] containing the authentication parameters,
+ *         [Result.Error] with [ResultError] if the provider is not available, no transaction exists,
+ *         or an error occurred
+ *
+ * Example:
+ * ```kotlin
+ * // First create a transaction
+ * coreMethods.createTransaction(cardToken)
+ *
+ * // Then get authentication parameters
+ * val result = coreMethods.getAuthenticationRequestParameters()
+ * when (result) {
+ *     is Result.Success -> {
+ *         val params = result.data
+ *         // Send params to your backend for 3DS authentication
+ *         // params.sdkAppId
+ *         // params.deviceData
+ *         // params.sdkEphemeralPublicKey
+ *         // params.sdkReferenceNumber
+ *         // params.sdkTransactionId
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to get auth params: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see ThreeDSRequestParams
+ * @see createTransaction
+ * @see Result
+ * @see ResultError
+ */
+fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParams, ResultError> {
+    if (!hasThreeDSProvider()) {
+        return Result.Error(
+            ResultError.Validation(
+                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+            ),
+        )
+    }
+    return runCatching { threeDSProvider?.getAuthenticationRequestParameters() }
+        .fold(
+            onSuccess = { params ->
+                params?.let { Result.Success(it) } ?: Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Failed to get authentication request parameters. Make sure a transaction was created.",
+                    ),
+                )
+            },
+            onFailure = { throwable ->
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error getting authentication request parameters: ${throwable.message}",
+                    ),
+                )
+            },
+        )
+}
+
+/**
  * Saves the 3DS device data collected by the SDK to initiate the authentication process.
  *
  * This method sends the device data to the backend for 3DS authentication.
@@ -329,9 +403,45 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
  * @see ResultError
  */
 private suspend fun CoreMethods.saveThreeDSDeviceData(
-    deviceData: ThreeDSDeviceData,
+    cardToken: CardToken,
 ): Result<Unit, ResultError> {
     return runCatching {
+        val transactionResult = createTransaction(cardToken)
+        if (transactionResult is Result.Error) {
+            return Result.Error(transactionResult.error)
+        }
+
+        val parametersResult = getAuthenticationRequestParameters()
+        if (parametersResult is Result.Error) {
+            return Result.Error(parametersResult.error)
+        }
+
+        val parameters = (parametersResult as Result.Success).data
+
+        val ephemeralPublicKey = parseEphemeralPublicKey(parameters.sdkEphemeralPublicKey)
+            ?: return Result.Error(
+                ResultError.Validation(
+                    message = "Failed to parse ephemeral public key from 3DS SDK.",
+                ),
+            )
+
+        val deviceData = ThreeDSDeviceData(
+            appId = parameters.sdkAppId,
+            integratorSdkVersion = INTEGRATOR_SDK_VERSION,
+            threeDsSdkVersion = THREEDS_SDK_VERSION,
+            cardTokenId = cardToken.token,
+            deviceRenderOptions = DeviceRenderOptions(
+                sdkInterface = SDK_INTERFACE_NATIVE,
+                uiTypes = DEFAULT_UI_TYPES,
+            ),
+            encData = parameters.deviceData,
+            ephemPubKey = ephemeralPublicKey,
+            maxTimeout = DEFAULT_MAX_TIMEOUT,
+            protocolVersion = PROTOCOL_VERSION,
+            referenceNumber = parameters.sdkReferenceNumber,
+            transId = parameters.sdkTransactionId,
+        )
+
         koin.get<SaveThreeDSDeviceDataUseCase>().invoke(
             appId = deviceData.appId,
             integratorSdkVersion = deviceData.integratorSdkVersion,
@@ -504,3 +614,41 @@ private suspend fun CoreMethods.updateThreeDSChallengeStatus(
         },
     )
 }
+
+/**
+ * Internal model for parsing the ephemeral public key JSON from 3DS SDK.
+ */
+private data class EphemeralPublicKeyJson(
+    @SerializedName("kty")
+    val keyType: String,
+    @SerializedName("crv")
+    val curve: String,
+    @SerializedName("x")
+    val x: String,
+    @SerializedName("y")
+    val y: String,
+)
+/**
+ * Parses the ephemeral public key JSON string into an [EphemeralPublicKey] object.
+ *
+ * @param ephemeralPublicKeyJson The JSON string containing the ephemeral public key
+ * @return [EphemeralPublicKey] if parsing was successful, null otherwise
+ */
+private fun parseEphemeralPublicKey(ephemeralPublicKeyJson: String): EphemeralPublicKey? {
+    return runCatching {
+        val parsed = Gson().fromJson(ephemeralPublicKeyJson, EphemeralPublicKeyJson::class.java)
+        EphemeralPublicKey(
+            curve = parsed.curve,
+            keyType = parsed.keyType,
+            x = parsed.x,
+            y = parsed.y,
+        )
+    }.getOrNull()
+}
+
+private const val DEFAULT_MAX_TIMEOUT = 5
+private const val INTEGRATOR_SDK_VERSION = "2.2.0"
+private const val THREEDS_SDK_VERSION = "1.0.0"
+private const val SDK_INTERFACE_NATIVE = "Native"
+private const val PROTOCOL_VERSION = "2.2.0"
+private val DEFAULT_UI_TYPES = listOf("01", "02", "03", "04", "05")
