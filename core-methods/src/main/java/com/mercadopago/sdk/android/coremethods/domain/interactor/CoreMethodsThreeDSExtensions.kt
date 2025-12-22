@@ -328,7 +328,7 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
  * @see Result
  * @see ResultError
  */
-suspend fun CoreMethods.saveThreeDSDeviceData(
+private suspend fun CoreMethods.saveThreeDSDeviceData(
     deviceData: ThreeDSDeviceData,
 ): Result<Unit, ResultError> {
     return runCatching {
@@ -410,7 +410,7 @@ suspend fun CoreMethods.saveThreeDSDeviceData(
  * @see Result
  * @see ResultError
  */
-suspend fun CoreMethods.authenticateThreeDSChallenge(
+private suspend fun CoreMethods.authenticateThreeDSChallenge(
     challengeId: String,
 ): Result<ThreeDSChallengeAuthentication, ResultError> {
     return runCatching {
@@ -481,7 +481,7 @@ suspend fun CoreMethods.authenticateThreeDSChallenge(
  * @see Result
  * @see ResultError
  */
-suspend fun CoreMethods.updateThreeDSChallengeStatus(
+private suspend fun CoreMethods.updateThreeDSChallengeStatus(
     challengeId: String,
     status: ThreeDSChallengeStatus,
     errorDetail: ThreeDSChallengeErrorDetail? = null,
