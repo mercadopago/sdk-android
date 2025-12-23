@@ -315,9 +315,7 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
  * @see Result
  * @see ResultError
  */
-internal suspend fun CoreMethods.authenticateThreeDSChallenge(
-    challengeId: String,
-): Result<ThreeDSChallengeAuthentication, ResultError> {
+internal suspend fun CoreMethods.authenticateThreeDSChallenge(challengeId: String): Result<ThreeDSChallengeAuthentication, ResultError> {
     return runCatching {
         koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(
             challengeId = challengeId,

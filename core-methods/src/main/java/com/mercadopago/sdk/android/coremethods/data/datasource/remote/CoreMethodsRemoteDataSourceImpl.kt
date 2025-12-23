@@ -54,9 +54,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
-    override suspend fun authenticateThreeDSChallenge(
-        challengeId: String,
-    ): Result<ThreeDSChallengeAuthentication, ResultError> {
+    override suspend fun authenticateThreeDSChallenge(challengeId: String): Result<ThreeDSChallengeAuthentication, ResultError> {
         return service.authenticateThreeDSChallenge(challengeId).toInternalResponse().mapSuccess {
             this.toModel()
         }

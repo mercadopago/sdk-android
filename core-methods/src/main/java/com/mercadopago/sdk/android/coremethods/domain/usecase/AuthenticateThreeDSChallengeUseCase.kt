@@ -16,9 +16,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class AuthenticateThreeDSChallengeUseCase(
     private val repository: CoreMethodsRepository,
 ) {
-    suspend operator fun invoke(
-        challengeId: String,
-    ): Result<ThreeDSChallengeAuthentication, ResultError> {
+    suspend operator fun invoke(challengeId: String): Result<ThreeDSChallengeAuthentication, ResultError> {
         if (challengeId.isEmpty()) {
             return Result.Error(ResultError.Validation("challenge id cannot be empty"))
         }
