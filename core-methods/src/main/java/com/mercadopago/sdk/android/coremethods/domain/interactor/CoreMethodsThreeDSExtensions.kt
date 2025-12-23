@@ -1,22 +1,23 @@
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import android.app.Activity
+import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toParams
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.DeviceRenderOptions
+import com.mercadopago.sdk.android.coremethods.domain.model.EphemeralPublicKey
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSDeviceData
-import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
-import com.mercadopago.sdk.android.coremethods.domain.model.params.EphemeralPublicKeyParams
+import com.mercadopago.sdk.android.coremethods.domain.model.fromJson
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.flatMap
+import com.mercadopago.sdk.android.coremethods.domain.utils.map
+import com.mercadopago.sdk.android.coremethods.domain.utils.suspendFlatMap
 
-/**
- * Private property to hold the 3DS provider instance.
- * This is set by the client application through setThreeDSProvider method.
- */
 private var threeDSProvider: ThreeDSProvider? = null
 
 /**
@@ -35,16 +36,6 @@ private var threeDSProvider: ThreeDSProvider? = null
 fun CoreMethods.setThreeDSProvider(provider: ThreeDSProvider) {
     threeDSProvider = provider
 }
-
-/**
- * Checks if a 3DS provider is currently configured and available.
- *
- * This internal helper method is used to verify that a [ThreeDSProvider]
- * has been set via [setThreeDSProvider] before attempting any 3DS operations.
- *
- * @return `true` if a provider is set and available, `false` otherwise
- */
-private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
 
 /**
  * Retrieves the list of security warnings from the 3DS SDK.
@@ -274,79 +265,149 @@ fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultEr
 }
 
 /**
- * Saves the 3DS device data collected by the SDK to initiate the authentication process.
+ * Retrieves the authentication request parameters for the current 3DS transaction.
+ * These parameters should be sent to your backend for 3DS authentication.
  *
- * This method sends the device data to the backend for 3DS authentication.
- * It should be called after creating a transaction and before starting the challenge flow.
+ * This method requires a 3DS provider to be set via [setThreeDSProvider] and
+ * a transaction to be created via [createTransaction] before calling this method.
  *
- * @param deviceData The [ThreeDSDeviceData] containing all required device information
- * @return [Result.Success] with [Unit] if the device data was saved successfully,
- *         [Result.Error] with [ResultError] if an error occurred during the operation
+ * @return [Result.Success] with [ThreeDSRequestParams] containing the authentication parameters,
+ *         [Result.Error] with [ResultError] if the provider is not available, no transaction exists,
+ *         or an error occurred
  *
  * Example:
  * ```kotlin
- * val deviceData = ThreeDSDeviceData(
- *     appId = "com.mercadopago.checkout",
- *     integratorSdkVersion = "2.2.0",
- *     threeDsSdkVersion = "1.0.0",
- *     cardTokenId = cardToken.token,
- *     deviceRenderOptions = DeviceRenderOptions(
- *         sdkInterface = "Native",
- *         uiTypes = listOf("01", "02", "03", "04", "05")
- *     ),
- *     encData = authParams.deviceData,
- *     ephemPubKey = EphemeralPublicKey(
- *         curve = "P-256",
- *         keyType = "EC",
- *         x = ephemeralKeyX,
- *         y = ephemeralKeyY
- *     ),
- *     maxTimeout = 5,
- *     protocolVersion = "2.2.0",
- *     referenceNumber = authParams.sdkReferenceNumber,
- *     transId = authParams.sdkTransactionId
- * )
+ * // First create a transaction
+ * coreMethods.createTransaction(cardToken)
  *
- * val result = coreMethods.saveThreeDSDeviceData(deviceData)
+ * // Then get authentication parameters
+ * val result = coreMethods.getAuthenticationRequestParameters()
  * when (result) {
  *     is Result.Success -> {
- *         Log.d("3DS", "Device data saved successfully")
- *         // Proceed with authentication
+ *         val params = result.data
+ *         // Send params to your backend for 3DS authentication
+ *         // params.sdkAppId
+ *         // params.deviceData
+ *         // params.sdkEphemeralPublicKey
+ *         // params.sdkReferenceNumber
+ *         // params.sdkTransactionId
  *     }
  *     is Result.Error -> {
- *         Log.e("3DS", "Failed to save device data: ${result.error.message}")
+ *         Log.e("3DS", "Failed to get auth params: ${result.error.message}")
  *     }
  * }
  * ```
  *
- * @see ThreeDSDeviceData
+ * @see ThreeDSRequestParams
+ * @see createTransaction
  * @see Result
  * @see ResultError
  */
-suspend fun CoreMethods.saveThreeDSDeviceData(
-    deviceData: ThreeDSDeviceData,
+fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParams, ResultError> {
+    if (!hasThreeDSProvider()) {
+        return Result.Error(
+            ResultError.Validation(
+                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+            ),
+        )
+    }
+    return runCatching { threeDSProvider?.getAuthenticationRequestParameters() }
+        .fold(
+            onSuccess = { params ->
+                params?.let { Result.Success(it) } ?: Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Failed to get authentication request parameters. Make sure a transaction was created.",
+                    ),
+                )
+            },
+            onFailure = { throwable ->
+                Result.Error(
+                    ResultError.Request(
+                        code = "",
+                        message = "Error getting authentication request parameters: ${throwable.message}",
+                    ),
+                )
+            },
+        )
+}
+
+private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
+
+/**
+ * Validates that the 3DS provider is available and returns its SDK version.
+ *
+ * This is an early check function used to ensure the provider is configured
+ * before performing any 3DS operations.
+ *
+ * @return [Result.Success] with the SDK version string if provider is available,
+ *         [Result.Error] with [ResultError.Validation] if provider is not set
+ */
+private fun CoreMethods.validateProvider(): Result<String, ResultError> {
+    val sdkVersion = threeDSProvider?.sdkVersion
+        ?: return Result.Error(
+            ResultError.Validation(
+                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+            ),
+        )
+    return Result.Success(sdkVersion)
+}
+
+/**
+ * Parses the ephemeral public key from its JSON string representation.
+ *
+ * @param jsonKey The JSON string containing the ephemeral public key data
+ * @return [Result.Success] with the parsed [EphemeralPublicKey] if parsing succeeds,
+ *         [Result.Error] with [ResultError.Validation] if parsing fails
+ */
+private fun parseEphemeralKey(jsonKey: String): Result<EphemeralPublicKey, ResultError> {
+    val ephemeralPublicKey = EphemeralPublicKey.fromJson(jsonKey)
+        ?: return Result.Error(
+            ResultError.Validation(
+                message = "Failed to parse ephemeral public key from 3DS SDK.",
+            ),
+        )
+    return Result.Success(ephemeralPublicKey)
+}
+
+/**
+ * Data class to hold the intermediate state needed to execute the device data save.
+ */
+private data class DeviceDataContext(
+    val sdkVersion: String,
+    val parameters: ThreeDSRequestParams,
+    val ephemeralKey: EphemeralPublicKey,
+)
+
+/**
+ * Executes the device data save operation using the provided context.
+ *
+ * @param cardToken The card token containing the tokenized card information
+ * @param context The [DeviceDataContext] containing all required data for the operation
+ * @return [Result.Success] with [Unit] if the save operation succeeds,
+ *         [Result.Error] with [ResultError] if the operation fails
+ */
+private suspend fun CoreMethods.executeDeviceDataSave(
+    cardToken: CardToken,
+    context: DeviceDataContext,
 ): Result<Unit, ResultError> {
+    val deviceRenderOptions = DeviceRenderOptions(
+        sdkInterface = SDK_INTERFACE_NATIVE,
+        uiTypes = DEFAULT_UI_TYPES,
+    )
     return runCatching {
         koin.get<SaveThreeDSDeviceDataUseCase>().invoke(
-            appId = deviceData.appId,
-            integratorSdkVersion = deviceData.integratorSdkVersion,
-            threeDsSdkVersion = deviceData.threeDsSdkVersion,
-            cardTokenId = deviceData.cardTokenId,
-            deviceRenderOptions = DeviceRenderOptionsParams(
-                sdkInterface = deviceData.deviceRenderOptions.sdkInterface,
-                uiTypes = deviceData.deviceRenderOptions.uiTypes,
-            ),
-            encData = deviceData.encData,
-            ephemPubKey = EphemeralPublicKeyParams(
-                curve = deviceData.ephemPubKey.curve,
-                keyType = deviceData.ephemPubKey.keyType,
-                x = deviceData.ephemPubKey.x,
-                y = deviceData.ephemPubKey.y,
-            ),
-            maxTimeout = deviceData.maxTimeout,
-            protocolVersion = deviceData.protocolVersion,
-            referenceNumber = deviceData.referenceNumber,
-            transId = deviceData.transId,
+            appId = context.parameters.sdkAppId,
+            integratorSdkVersion = INTEGRATOR_SDK_VERSION,
+            threeDsSdkVersion = context.sdkVersion,
+            cardTokenId = cardToken.token,
+            deviceRenderOptions = deviceRenderOptions.toParams(),
+            encData = context.parameters.deviceData,
+            ephemPubKey = context.ephemeralKey.toParams(),
+            maxTimeout = DEFAULT_MAX_TIMEOUT,
+            protocolVersion = PROTOCOL_VERSION,
+            referenceNumber = context.parameters.sdkReferenceNumber,
+            transId = context.parameters.sdkTransactionId,
         )
     }.fold(
         onSuccess = { result -> result },
@@ -360,3 +421,67 @@ suspend fun CoreMethods.saveThreeDSDeviceData(
         },
     )
 }
+
+/**
+ * Saves the 3DS device data collected by the SDK to initiate the authentication process.
+ *
+ * This method orchestrates the following operations using functional composition:
+ * 1. Validates the 3DS provider is available
+ * 2. Creates a transaction with the card token
+ * 3. Gets authentication request parameters
+ * 4. Parses the ephemeral public key
+ * 5. Executes the device data save operation
+ *
+ * @param cardToken The [CardToken] containing the tokenized card information
+ * @return [Result.Success] with [Unit] if the device data was saved successfully,
+ *         [Result.Error] with [ResultError] if an error occurred during any operation
+ *
+ * Example:
+ * ```kotlin
+ * val result = coreMethods.saveThreeDSDeviceData(cardToken)
+ * when (result) {
+ *     is Result.Success -> {
+ *         Log.d("3DS", "Device data saved successfully")
+ *         // Proceed with authentication
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to save device data: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see CardToken
+ * @see Result
+ * @see ResultError
+ */
+internal suspend fun CoreMethods.saveThreeDSDeviceData(
+    cardToken: CardToken,
+): Result<Unit, ResultError> {
+    return validateProvider()
+        .flatMap { sdkVersion ->
+            createTransaction(cardToken).map { sdkVersion }
+        }
+        .flatMap { sdkVersion ->
+            getAuthenticationRequestParameters().map { params ->
+                Pair(sdkVersion, params)
+            }
+        }
+        .flatMap { (sdkVersion, params) ->
+            parseEphemeralKey(params.sdkEphemeralPublicKey).map { ephemeralKey ->
+                DeviceDataContext(
+                    sdkVersion = sdkVersion,
+                    parameters = params,
+                    ephemeralKey = ephemeralKey,
+                )
+            }
+        }
+        .suspendFlatMap { context ->
+            executeDeviceDataSave(cardToken, context)
+        }
+}
+
+private const val DEFAULT_MAX_TIMEOUT = 5
+private const val INTEGRATOR_SDK_VERSION = "2.2.0"
+private const val SDK_INTERFACE_NATIVE = "Native"
+private const val PROTOCOL_VERSION = "2.2.0"
+private val DEFAULT_UI_TYPES = listOf("01", "02", "03", "04", "05")

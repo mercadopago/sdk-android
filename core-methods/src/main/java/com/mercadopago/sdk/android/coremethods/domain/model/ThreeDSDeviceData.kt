@@ -81,4 +81,6 @@ data class EphemeralPublicKey(
     val keyType: String,
     val x: String,
     val y: String,
-)
+) {
+    companion object
+}

@@ -20,3 +20,27 @@ sealed class Result<out A, out B> {
         val error: B,
     ) : Result<Nothing, B>()
 }
+
+
+internal inline fun <A, B, C> Result<A, B>.map(transform: (A) -> C): Result<C, B> {
+    return when (this) {
+        is Result.Success -> Result.Success(transform(data))
+        is Result.Error -> this
+    }
+}
+
+internal inline fun <A, B, C> Result<A, B>.flatMap(transform: (A) -> Result<C, B>): Result<C, B> {
+    return when (this) {
+        is Result.Success -> transform(data)
+        is Result.Error -> this
+    }
+}
+
+internal suspend inline fun <A, B, C> Result<A, B>.suspendFlatMap(
+    crossinline transform: suspend (A) -> Result<C, B>,
+): Result<C, B> {
+    return when (this) {
+        is Result.Success -> transform(data)
+        is Result.Error -> this
+    }
+}
