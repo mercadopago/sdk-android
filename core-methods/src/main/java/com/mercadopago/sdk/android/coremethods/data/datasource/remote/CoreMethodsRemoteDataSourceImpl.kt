@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class CoreMethodsRemoteDataSourceImpl(
@@ -51,5 +52,13 @@ internal class CoreMethodsRemoteDataSourceImpl(
         return service.getPaymentMethods(
             bin = request.bin,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
+    }
+
+    override suspend fun authenticateThreeDSChallenge(
+        challengeId: String,
+    ): Result<ThreeDSChallengeAuthentication, ResultError> {
+        return service.authenticateThreeDSChallenge(challengeId).toInternalResponse().mapSuccess {
+            this.toModel()
+        }
     }
 }
