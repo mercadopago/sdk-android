@@ -44,3 +44,11 @@ internal fun <T, R> Result<T, ResultError>.mapSuccess(mapper: T.() -> R): Result
 
         is Result.Error -> Result.Error(error)
     }
+
+internal fun <T> Response<T>.toUnitResponse(): Result<Unit, ResultError> {
+    return if (isSuccessful) {
+        Result.Success(Unit)
+    } else {
+        Result.Error<ResultError>(errorBody().toResultError())
+    }
+}

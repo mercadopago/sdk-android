@@ -4,6 +4,7 @@ import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRe
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.PaymentMethodsRequest
+import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -22,4 +23,9 @@ internal interface CoreMethodsRemoteDataSource {
     suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError>
 
     suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError>
+
+    suspend fun updateThreeDSChallengeStatus(
+        challengeId: String,
+        request: UpdateThreeDSChallengeStatusRequest,
+    ): Result<Unit, ResultError>
 }
