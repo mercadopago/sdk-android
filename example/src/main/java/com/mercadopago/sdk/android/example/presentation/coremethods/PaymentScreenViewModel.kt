@@ -22,6 +22,8 @@ import com.mercadopago.sdk.android.example.presentation.coremethods.state.Paymen
 import com.mercadopago.sdk.android.example.presentation.coremethods.state.PaymentScreenViewState
 import com.mercadopago.sdk.android.example.utils.LogHelper
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import com.mercadopago.sdk.android.threeds.adapter.MPThreeDSProviderAdapter
+import com.mercadopago.sdk.android.threeds.interactor.threeDS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -51,6 +53,11 @@ internal class PaymentScreenViewModel(
     private val gson = GsonBuilder()
         .setPrettyPrinting()
         .create()
+
+    init {
+        val threeDS = MercadoPagoSDK.getInstance().threeDS
+        coreMethods.setThreeDSProvider(MPThreeDSProviderAdapter(threeDS))
+    }
 
     fun generateToken(
         cardNumberState: PCIFieldState,

@@ -134,6 +134,7 @@ class CoreMethods internal constructor(
                         identityType = buyerIdentification.type,
                     ),
                 )
+                saveThreeDSDeviceData(result.data)
             }
         }
         return result
@@ -223,6 +224,7 @@ class CoreMethods internal constructor(
                         identityType = buyerIdentification.type,
                     ),
                 )
+                saveThreeDSDeviceData(result.data)
             }
         }
         return result
@@ -561,6 +563,7 @@ class CoreMethods internal constructor(
                 MPAnalytics.getInstance().trackMetric(
                     metricGenerateCardTokenCallSuccess(),
                 )
+                saveThreeDSDeviceData(result.data)
             }
         }
         return result

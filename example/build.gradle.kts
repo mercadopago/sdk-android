@@ -75,11 +75,14 @@ kover.reports.filters.excludes {
 }
 
 dependencies {
+
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation( files("../libs/mc-3ds-sdk-android-6.6.71.aar"))
     implementation(projects.sdkAndroid)
     implementation(projects.foundation)
     implementation(projects.checkout)
     implementation(projects.coreMethods)
+    implementation(projects.threeds)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
     api(libs.koin.android)
