@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuersParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMethodsParams
+import com.mercadopago.sdk.android.coremethods.domain.model.params.SaveThreeDSDeviceDataParams
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRepository {
@@ -22,4 +23,6 @@ internal interface CoreMethodsRepository {
     suspend fun getCardIssuers(params: GetCardIssuersParams): Result<List<CardIssuer>, ResultError>
 
     suspend fun getPaymentMethods(params: GetPaymentMethodsParams): Result<List<PaymentMethod>, ResultError>
+
+    suspend fun saveThreeDSDeviceData(params: SaveThreeDSDeviceDataParams): Result<Unit, ResultError>
 }
