@@ -17,4 +17,6 @@ internal fun Int.between(
  * Take the last digits by count
  * @param num: digits to take
  */
-internal fun Int.takeLast(num: Int): Int = this.toString().takeLast(num).toInt()
+internal fun Int.takeLast(
+    num: Int,
+): Int = this.toString().takeLast(num).toInt()

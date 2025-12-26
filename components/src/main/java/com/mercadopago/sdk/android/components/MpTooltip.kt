@@ -112,7 +112,9 @@ private fun TooltipHeader(
 }
 
 @Composable
-private fun TooltipDescription(text: String) {
+private fun TooltipDescription(
+    text: String,
+) {
     MPText(
         text = text,
         textStyle = MPTextStyle.BodySmallRegular,
@@ -140,7 +142,9 @@ private data class MpTooltipColors(
 )
 
 @Composable
-private fun tooltipBackgroundColorPalette(style: MpTooltipStyle): Color {
+private fun tooltipBackgroundColorPalette(
+    style: MpTooltipStyle,
+): Color {
     return when (style) {
         MpTooltipStyle.Dark -> MercadoPagoTheme.color.background.inverted
         MpTooltipStyle.Blue -> MercadoPagoTheme.color.accent

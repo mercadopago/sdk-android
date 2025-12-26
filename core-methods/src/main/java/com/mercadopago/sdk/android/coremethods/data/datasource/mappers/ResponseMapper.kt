@@ -36,7 +36,9 @@ internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {
     }
 }
 
-internal fun <T, R> Result<T, ResultError>.mapSuccess(mapper: T.() -> R): Result<R, ResultError> =
+internal fun <T, R> Result<T, ResultError>.mapSuccess(
+    mapper: T.() -> R,
+): Result<R, ResultError> =
     when (this) {
         is Result.Success -> {
             Result.Success(mapper(data))

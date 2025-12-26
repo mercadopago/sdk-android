@@ -25,7 +25,9 @@ data class MPThreeDSChallengeError(
          * @param exception The exception to convert
          * @return A MPThreeDSChallengeError instance
          */
-        fun fromException(exception: Throwable): MPThreeDSChallengeError {
+        fun fromException(
+            exception: Throwable,
+        ): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "UNKNOWN_ERROR",
                 message = exception.message ?: "Unknown error occurred",
@@ -39,7 +41,9 @@ data class MPThreeDSChallengeError(
          * @param reason The reason for authentication failure
          * @return A MPThreeDSChallengeError instance
          */
-        fun authenticationFailed(reason: String): MPThreeDSChallengeError {
+        fun authenticationFailed(
+            reason: String,
+        ): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "AUTHENTICATION_FAILED",
                 message = "3DS Authentication failed: $reason",
@@ -52,7 +56,9 @@ data class MPThreeDSChallengeError(
          * @param reason The reason for challenge failure
          * @return A MPThreeDSChallengeError instance
          */
-        fun challengeFailed(reason: String): MPThreeDSChallengeError {
+        fun challengeFailed(
+            reason: String,
+        ): MPThreeDSChallengeError {
             return MPThreeDSChallengeError(
                 code = "CHALLENGE_FAILED",
                 message = "3DS Challenge failed: $reason",

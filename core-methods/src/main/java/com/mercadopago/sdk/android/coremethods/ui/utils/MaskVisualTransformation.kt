@@ -40,7 +40,9 @@ class MaskVisualTransformation(
 ) : VisualTransformation {
     private val specialSymbolsIndices = mask.indices.filter { mask[it] != '#' }
 
-    override fun filter(text: AnnotatedString): TransformedText {
+    override fun filter(
+        text: AnnotatedString,
+    ): TransformedText {
         var out = ""
         var maskIndex = INT_ZERO
         text.forEach { char ->
@@ -56,7 +58,9 @@ class MaskVisualTransformation(
 
     private fun offsetTranslator() =
         object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
+            override fun originalToTransformed(
+                offset: Int,
+            ): Int {
                 val offsetValue = offset.absoluteValue
                 if (offsetValue == INT_ZERO) return INT_ZERO
                 var numberOfHashtags = INT_ZERO
@@ -67,7 +71,9 @@ class MaskVisualTransformation(
                 return masked.length + INT_ONE
             }
 
-            override fun transformedToOriginal(offset: Int): Int {
+            override fun transformedToOriginal(
+                offset: Int,
+            ): Int {
                 return mask.take(offset.absoluteValue).count { it == '#' }
             }
         }

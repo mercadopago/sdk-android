@@ -29,7 +29,9 @@ interface ThreeDSProvider {
      *
      * @param paymentMethodId The payment method ID to create the transaction for (e.g., "visa", "mastercard")
      */
-    fun createTransaction(paymentMethodId: String)
+    fun createTransaction(
+        paymentMethodId: String,
+    )
 
     /**
      * Retrieves the authentication request parameters for the current transaction.
