@@ -12,11 +12,15 @@ internal class CheckoutThemePreferencesImpl : CheckoutThemePreferences {
 
     override fun getCurrentAppearance(): MercadoPagoThemeAppearance = appearance
 
-    override fun setCurrentThemeScheme(theme: MercadoPagoThemeProviderScheme) {
+    override fun setCurrentThemeScheme(
+        theme: MercadoPagoThemeProviderScheme,
+    ) {
         this.theme = theme
     }
 
-    override fun setCurrentAppearance(appearance: MercadoPagoThemeAppearance) {
+    override fun setCurrentAppearance(
+        appearance: MercadoPagoThemeAppearance,
+    ) {
         this.appearance = appearance
     }
 }

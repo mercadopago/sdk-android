@@ -57,7 +57,9 @@ fun MPRadioButton(
 }
 
 @Composable
-private fun getRadioColor(error: Boolean): Color {
+private fun getRadioColor(
+    error: Boolean,
+): Color {
     return if (error) MercadoPagoTheme.color.text.negative else MercadoPagoTheme.color.text.accent
 }
 

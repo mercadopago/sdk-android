@@ -14,7 +14,9 @@ internal object ThreeDSRequestParamsMapper {
      * @param mpParams The MPThreeDSRequestParams to convert
      * @return The converted ThreeDSRequestParams
      */
-    fun toThreeDSRequestParams(mpParams: MPThreeDSRequestParams): ThreeDSRequestParams {
+    fun toThreeDSRequestParams(
+        mpParams: MPThreeDSRequestParams,
+    ): ThreeDSRequestParams {
         return ThreeDSRequestParams(
             sdkAppId = mpParams.sdkAppId,
             deviceData = mpParams.deviceData,
@@ -30,7 +32,9 @@ internal object ThreeDSRequestParamsMapper {
      * @param params The ThreeDSRequestParams to convert
      * @return The converted MPThreeDSRequestParams
      */
-    fun toMPThreeDSRequestParams(params: ThreeDSRequestParams): MPThreeDSRequestParams {
+    fun toMPThreeDSRequestParams(
+        params: ThreeDSRequestParams,
+    ): MPThreeDSRequestParams {
         return MPThreeDSRequestParams(
             sdkAppId = params.sdkAppId,
             deviceData = params.deviceData,

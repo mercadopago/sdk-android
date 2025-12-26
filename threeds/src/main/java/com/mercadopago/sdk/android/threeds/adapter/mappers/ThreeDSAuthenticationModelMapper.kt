@@ -14,7 +14,9 @@ internal object ThreeDSAuthenticationModelMapper {
      * @param mpModel The MPThreeDSAuthenticationModel to convert
      * @return The converted ThreeDSAuthenticationModel
      */
-    fun toThreeDSAuthenticationModel(mpModel: MPThreeDSAuthenticationModel): ThreeDSAuthenticationModel {
+    fun toThreeDSAuthenticationModel(
+        mpModel: MPThreeDSAuthenticationModel,
+    ): ThreeDSAuthenticationModel {
         return ThreeDSAuthenticationModel(
             response = mpModel.response,
             threeDSServerTransID = mpModel.threeDSServerTransID,
@@ -31,7 +33,9 @@ internal object ThreeDSAuthenticationModelMapper {
      * @param model The ThreeDSAuthenticationModel to convert
      * @return The converted MPThreeDSAuthenticationModel
      */
-    fun toMPThreeDSAuthenticationModel(model: ThreeDSAuthenticationModel): MPThreeDSAuthenticationModel {
+    fun toMPThreeDSAuthenticationModel(
+        model: ThreeDSAuthenticationModel,
+    ): MPThreeDSAuthenticationModel {
         return MPThreeDSAuthenticationModel(
             response = model.response,
             threeDSServerTransID = model.threeDSServerTransID,

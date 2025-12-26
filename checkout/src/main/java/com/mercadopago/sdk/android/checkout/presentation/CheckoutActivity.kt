@@ -12,7 +12,9 @@ import org.koin.compose.KoinContext
 internal class CheckoutActivity : ComponentActivity() {
     private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance().koin.inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?,
+    ) {
         super.onCreate(savedInstanceState)
         setContent {
             KoinContext(context = Checkout.getInstance().koin) {

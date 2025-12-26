@@ -8,7 +8,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_ZERO
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.ZERO_CHAR
 
 internal class IsCardNumberValidUseCase {
-    operator fun invoke(cardNumber: String): Boolean {
+    operator fun invoke(
+        cardNumber: String,
+    ): Boolean {
         if (cardNumber.isEmpty()) return false
 
         var checksum: Int = INT_ZERO

@@ -229,7 +229,9 @@ private data class MPHeaderMotionLayoutParams(
 
 @OptIn(ExperimentalMotionApi::class)
 @Composable
-private fun MPHeaderMotionLayout(params: MPHeaderMotionLayoutParams) {
+private fun MPHeaderMotionLayout(
+    params: MPHeaderMotionLayoutParams,
+) {
     MotionLayout(
         motionScene = MotionScene(content = MOTION_SCENE),
         progress = params.animatedProgress,

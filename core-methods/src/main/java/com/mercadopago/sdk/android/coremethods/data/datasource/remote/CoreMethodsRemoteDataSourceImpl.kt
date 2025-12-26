@@ -22,13 +22,17 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CoreMethodsRemoteDataSourceImpl(
     private val service: CoreMethodsService,
 ) : CoreMethodsRemoteDataSource {
-    override suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError> {
+    override suspend fun generateCardToken(
+        request: CardTokenBodyRequest,
+    ): Result<CardToken, ResultError> {
         return service.createToken(request).toInternalResponse().mapSuccess {
             this.toModel()
         }
     }
 
-    override suspend fun getInstallments(request: InstallmentsRequest): Result<List<Installment>, ResultError> {
+    override suspend fun getInstallments(
+        request: InstallmentsRequest,
+    ): Result<List<Installment>, ResultError> {
         return service.getInstallments(
             bin = request.bin,
             processingMode = request.processingMode,
@@ -42,14 +46,18 @@ internal class CoreMethodsRemoteDataSourceImpl(
         }
     }
 
-    override suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError> {
+    override suspend fun getCardIssuers(
+        request: CardIssuersRequest,
+    ): Result<List<CardIssuer>, ResultError> {
         return service.getCardIssuers(
             bin = request.bin,
             paymentMethodId = request.paymentMethodId,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
-    override suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError> {
+    override suspend fun getPaymentMethods(
+        request: PaymentMethodsRequest,
+    ): Result<List<PaymentMethod>, ResultError> {
         return service.getPaymentMethods(
             bin = request.bin,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }

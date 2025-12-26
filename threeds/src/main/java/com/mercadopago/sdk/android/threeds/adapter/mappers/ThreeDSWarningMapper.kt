@@ -16,7 +16,9 @@ internal object ThreeDSWarningMapper {
      * @param mpWarning The MPThreeDSWarning to convert
      * @return The converted ThreeDSWarning
      */
-    fun toThreeDSWarning(mpWarning: MPThreeDSWarning): ThreeDSWarning {
+    fun toThreeDSWarning(
+        mpWarning: MPThreeDSWarning,
+    ): ThreeDSWarning {
         return ThreeDSWarning(
             id = mpWarning.id,
             message = mpWarning.message,
@@ -30,7 +32,9 @@ internal object ThreeDSWarningMapper {
      * @param warning The ThreeDSWarning to convert
      * @return The converted MPThreeDSWarning
      */
-    fun toMPThreeDSWarning(warning: ThreeDSWarning): MPThreeDSWarning {
+    fun toMPThreeDSWarning(
+        warning: ThreeDSWarning,
+    ): MPThreeDSWarning {
         return MPThreeDSWarning(
             id = warning.id,
             message = warning.message,
@@ -44,7 +48,9 @@ internal object ThreeDSWarningMapper {
      * @param mpWarnings The list of MPThreeDSWarning to convert
      * @return The converted list of ThreeDSWarning
      */
-    fun toThreeDSWarningList(mpWarnings: List<MPThreeDSWarning>): List<ThreeDSWarning> {
+    fun toThreeDSWarningList(
+        mpWarnings: List<MPThreeDSWarning>,
+    ): List<ThreeDSWarning> {
         return mpWarnings.map { toThreeDSWarning(it) }
     }
 
@@ -54,14 +60,18 @@ internal object ThreeDSWarningMapper {
      * @param warnings The list of ThreeDSWarning to convert
      * @return The converted list of MPThreeDSWarning
      */
-    fun toMPThreeDSWarningList(warnings: List<ThreeDSWarning>): List<MPThreeDSWarning> {
+    fun toMPThreeDSWarningList(
+        warnings: List<ThreeDSWarning>,
+    ): List<MPThreeDSWarning> {
         return warnings.map { toMPThreeDSWarning(it) }
     }
 
     /**
      * Converts MPThreeDSSeverity to ThreeDSSeverity.
      */
-    private fun toThreeDSSeverity(mpSeverity: MPThreeDSSeverity): ThreeDSSeverity {
+    private fun toThreeDSSeverity(
+        mpSeverity: MPThreeDSSeverity,
+    ): ThreeDSSeverity {
         return when (mpSeverity) {
             MPThreeDSSeverity.LOW -> ThreeDSSeverity.LOW
             MPThreeDSSeverity.MEDIUM -> ThreeDSSeverity.MEDIUM
@@ -73,7 +83,9 @@ internal object ThreeDSWarningMapper {
     /**
      * Converts ThreeDSSeverity to MPThreeDSSeverity.
      */
-    private fun toMPThreeDSSeverity(severity: ThreeDSSeverity): MPThreeDSSeverity {
+    private fun toMPThreeDSSeverity(
+        severity: ThreeDSSeverity,
+    ): MPThreeDSSeverity {
         return when (severity) {
             ThreeDSSeverity.LOW -> MPThreeDSSeverity.LOW
             ThreeDSSeverity.MEDIUM -> MPThreeDSSeverity.MEDIUM
