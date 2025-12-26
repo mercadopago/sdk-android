@@ -187,7 +187,8 @@ private suspend fun CoreMethods.processChallengeAuthentication(
 ): Result<ThreeDSChallengeResult, ResultError> =
     when (authenticationResult) {
         is Result.Success -> {
-            authenticationResult.data.data?.let { challengeData ->
+            val authentication = authenticationResult.data
+            authentication.data?.let { challengeData ->
                 executeChallengeFlow(activity, challengeData, timeout)
             } ?: Result.Error(
                 ResultError.Validation(

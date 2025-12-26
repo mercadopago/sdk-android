@@ -18,7 +18,6 @@ internal object ThreeDSAuthenticationModelMapper {
         mpModel: MPThreeDSAuthenticationModel,
     ): ThreeDSAuthenticationModel {
         return ThreeDSAuthenticationModel(
-            response = mpModel.response,
             threeDSServerTransID = mpModel.threeDSServerTransID,
             acsReferenceNumber = mpModel.acsReferenceNumber,
             dsTransID = mpModel.dsTransID,
@@ -37,7 +36,6 @@ internal object ThreeDSAuthenticationModelMapper {
         model: ThreeDSAuthenticationModel,
     ): MPThreeDSAuthenticationModel {
         return MPThreeDSAuthenticationModel(
-            response = model.response,
             threeDSServerTransID = model.threeDSServerTransID,
             acsReferenceNumber = model.acsReferenceNumber,
             dsTransID = model.dsTransID,

@@ -85,7 +85,6 @@ class MPThreeDSProviderAdapterTest {
         // Arrange
         val activity: Activity = mockk()
         val authentication = ThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server123",
             acsReferenceNumber = "acs123",
             dsTransID = "ds123",
@@ -131,7 +130,6 @@ class MPThreeDSProviderAdapterTest {
         // Arrange
         val activity: Activity = mockk()
         val authentication = ThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server123",
             acsReferenceNumber = "acs123",
             dsTransID = "ds123",
@@ -162,7 +160,6 @@ class MPThreeDSProviderAdapterTest {
         // Arrange
         val activity: Activity = mockk()
         val authentication = ThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server123",
             acsReferenceNumber = "acs123",
             dsTransID = "ds123",

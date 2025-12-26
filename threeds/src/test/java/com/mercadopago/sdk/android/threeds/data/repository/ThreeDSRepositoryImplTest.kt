@@ -181,7 +181,6 @@ class ThreeDSRepositoryImplTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
@@ -225,8 +224,7 @@ class ThreeDSRepositoryImplTest {
             mockThreeDSWrapper.doChallenge(
                 activity = mockActivity,
                 authenticationParams = match<MPThreeDSAuthenticationParams> { params ->
-                    params.response == "CHALLENGE" &&
-                        params.threeDSServerTransID == "server-trans-123" &&
+                    params.threeDSServerTransID == "server-trans-123" &&
                         params.acsReferenceNumber == "acs-ref-456" &&
                         params.dsTransID == "ds-trans-789" &&
                         params.acsTransID == "acs-trans-101" &&
@@ -242,7 +240,6 @@ class ThreeDSRepositoryImplTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
@@ -275,7 +272,6 @@ class ThreeDSRepositoryImplTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",

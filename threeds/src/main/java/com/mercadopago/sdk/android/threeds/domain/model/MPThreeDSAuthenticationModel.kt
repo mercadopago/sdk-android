@@ -4,7 +4,6 @@ package com.mercadopago.sdk.android.threeds.domain.model
  * Authentication response from the backend after processing 3DS authentication.
  * This should be created from your backend response and passed to the challenge flow.
  *
- * @param response The authentication response status (e.g., "CHALLENGE", "AUTHORIZED")
  * @param threeDSServerTransID 3DS server transaction ID
  * @param acsReferenceNumber ACS reference number
  * @param dsTransID Directory server transaction ID
@@ -12,7 +11,6 @@ package com.mercadopago.sdk.android.threeds.domain.model
  * @param acsSignedContent ACS signed content
  */
 data class MPThreeDSAuthenticationModel(
-    val response: String,
     val threeDSServerTransID: String,
     val acsReferenceNumber: String,
     val dsTransID: String,
