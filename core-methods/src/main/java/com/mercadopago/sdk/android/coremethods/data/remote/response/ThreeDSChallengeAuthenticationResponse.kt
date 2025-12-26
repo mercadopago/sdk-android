@@ -18,6 +18,8 @@ internal data class ThreeDSChallengeDataResponse(
     val acsTransId: String? = null,
     @SerializedName("threeds_server_trans_id")
     val threeDsServerTransId: String? = null,
+    @SerializedName("ds_trans_id")
+    val dsTransId: String? = null,
     @SerializedName("callback_url")
     val callbackUrl: String? = null,
 )

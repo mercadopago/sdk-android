@@ -4,6 +4,7 @@ import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
+import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeData
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
@@ -102,20 +103,23 @@ fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> {
 }
 
 /**
- * Starts the 3DS challenge flow with the provided authentication response.
+ * Starts the 3DS challenge flow with the provided challenge ID.
  * This method requires a 3DS provider to be set via setThreeDSProvider.
  *
+ * The method will authenticate the challenge using the provided challengeId,
+ * retrieve the authentication data from the backend, and execute the challenge flow.
+ *
  * @param activity The activity context for displaying the challenge UI
- * @param authentication The authentication response received from your backend
- * @param timeout The challenge timeout in minutes (default: 10)
+ * @param challengeId The challenge ID received from the backend to authenticate and start the challenge
+ * @param timeout The challenge timeout in minutes
  * @return [Result.Success] with ThreeDSChallengeResult if the challenge completed,
  *         [Result.Error] with ResultError if the provider is not available or an error occurred
  *
  * Example:
  * ```kotlin
- * val result = coreMethods.startThreeDSChallenge(
+ * val result = coreMethods.startChallenge(
  *     activity = this,
- *     authentication = authenticationModel,
+ *     challengeId = "<challenge id>",
  *     timeout = 10
  * )
  * when (result) {
@@ -137,15 +141,15 @@ fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> {
  *         }
  *     }
  *     is Result.Error -> {
- *         // Provider not available
+ *         // Provider not available or authentication failed
  *     }
  * }
  * ```
  */
 suspend fun CoreMethods.startChallenge(
     activity: Activity,
-    authentication: ThreeDSAuthenticationModel,
-    timeout: Int = 10,
+    challengeId: String,
+    timeout: Int,
 ): Result<ThreeDSChallengeResult, ResultError> {
     if (!hasThreeDSProvider()) {
         return Result.Error(
@@ -154,6 +158,52 @@ suspend fun CoreMethods.startChallenge(
             ),
         )
     }
+    return executeThreeDSChallenge(activity, challengeId, timeout)
+}
+
+private suspend fun CoreMethods.executeThreeDSChallenge(
+    activity: Activity,
+    challengeId: String,
+    timeout: Int,
+): Result<ThreeDSChallengeResult, ResultError> =
+    runCatching {
+        koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(challengeId = challengeId)
+    }.fold(
+        onSuccess = { authResult -> processChallengeAuthentication(activity, authResult, timeout) },
+        onFailure = { throwable ->
+            Result.Error(
+                ResultError.Request(
+                    code = "",
+                    message = "Error authenticating 3DS challenge: ${throwable.message}",
+                ),
+            )
+        },
+    )
+
+private suspend fun CoreMethods.processChallengeAuthentication(
+    activity: Activity,
+    authenticationResult: Result<ThreeDSChallengeAuthentication, ResultError>,
+    timeout: Int,
+): Result<ThreeDSChallengeResult, ResultError> =
+    when (authenticationResult) {
+        is Result.Success -> {
+            authenticationResult.data.data?.let { challengeData ->
+                executeChallengeFlow(activity, challengeData, timeout)
+            } ?: Result.Error(
+                ResultError.Validation(
+                    message = "Challenge data not available in authentication response.",
+                ),
+            )
+        }
+        is Result.Error -> authenticationResult
+    }
+
+private suspend fun CoreMethods.executeChallengeFlow(
+    activity: Activity,
+    challengeData: ThreeDSChallengeData,
+    timeout: Int,
+): Result<ThreeDSChallengeResult, ResultError> {
+    val authentication = challengeData.toAuthenticationModel()
     return runCatching {
         threeDSProvider?.doChallenge(
             activity = activity,
@@ -179,6 +229,18 @@ suspend fun CoreMethods.startChallenge(
         },
     )
 }
+
+/**
+ * Converts [ThreeDSChallengeData] to [ThreeDSAuthenticationModel] for the 3DS provider.
+ */
+private fun ThreeDSChallengeData.toAuthenticationModel(): ThreeDSAuthenticationModel =
+    ThreeDSAuthenticationModel(
+        threeDSServerTransID = this.threeDsServerTransId,
+        acsReferenceNumber = this.acsReferenceNumber,
+        dsTransID = this.dsTransId,
+        acsTransID = this.acsTransId,
+        acsSignedContent = this.acsSignedContent,
+    )
 
 /**
  * Closes the current 3DS transaction and releases associated resources.
@@ -273,68 +335,4 @@ fun CoreMethods.createTransaction(
                 )
             },
         )
-}
-
-/**
- * Authenticates a 3DS challenge and returns the authentication status along with
- * the data needed to display the challenge to the user (if required).
- *
- * This method sends the challenge ID to the backend to authenticate the 3DS challenge.
- * The response indicates whether the authentication was successful or if a challenge
- * needs to be displayed to the user.
- *
- * @param challengeId The unique identifier of the 3DS challenge to authenticate
- * @return [Result.Success] with [ThreeDSChallengeAuthentication] containing the authentication
- *         status and optional challenge data,
- *         [Result.Error] with [ResultError] if the authentication failed
- *
- * Example:
- * ```kotlin
- * val result = coreMethods.authenticateThreeDSChallenge(
- *     challengeId = "challenge_abc123"
- * )
- *
- * when (result) {
- *     is Result.Success -> {
- *         val authentication = result.data
- *         when (authentication.status) {
- *             "authenticated" -> {
- *                 // Authentication successful, proceed with payment
- *                 Log.d("3DS", "Authentication successful without challenge")
- *             }
- *             "challenge" -> {
- *                 // Challenge required, display challenge UI
- *                 val challengeData = authentication.data
- *                 Log.d("3DS", "Challenge required: ${challengeData?.acsTransId}")
- *             }
- *         }
- *     }
- *     is Result.Error -> {
- *         Log.e("3DS", "Authentication failed: ${result.error.message}")
- *     }
- * }
- * ```
- *
- * @see ThreeDSChallengeAuthentication
- * @see Result
- * @see ResultError
- */
-internal suspend fun CoreMethods.authenticateThreeDSChallenge(
-    challengeId: String,
-): Result<ThreeDSChallengeAuthentication, ResultError> {
-    return runCatching {
-        koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(
-            challengeId = challengeId,
-        )
-    }.fold(
-        onSuccess = { result -> result },
-        onFailure = { throwable ->
-            Result.Error(
-                ResultError.Request(
-                    code = "",
-                    message = "Error authenticating 3DS challenge: ${throwable.message}",
-                ),
-            )
-        },
-    )
 }

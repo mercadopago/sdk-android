@@ -47,6 +47,7 @@ data class ThreeDSChallengeAuthentication(
  * @property acsSignedContent Signed content from the ACS for verification
  * @property acsTransId Transaction ID in the ACS system
  * @property threeDsServerTransId Transaction ID in the 3DS server
+ * @property dsTransId Transaction ID in the Directory Server
  * @property callbackUrl URL for callback notification after challenge completion
  *
  * @see ThreeDSChallengeAuthentication
@@ -56,5 +57,6 @@ data class ThreeDSChallengeData(
     val acsSignedContent: String,
     val acsTransId: String,
     val threeDsServerTransId: String,
+    val dsTransId: String,
     val callbackUrl: String,
 )

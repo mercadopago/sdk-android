@@ -17,5 +17,6 @@ internal fun ThreeDSChallengeDataResponse.toModel(): ThreeDSChallengeData =
         acsSignedContent = this.acsSignedContent.orEmpty(),
         acsTransId = this.acsTransId.orEmpty(),
         threeDsServerTransId = this.threeDsServerTransId.orEmpty(),
+        dsTransId = this.dsTransId.orEmpty(),
         callbackUrl = this.callbackUrl.orEmpty(),
     )
