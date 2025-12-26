@@ -320,7 +320,7 @@ fun CoreMethods.createTransaction(
  * @see ResultError
  */
 internal suspend fun CoreMethods.authenticateThreeDSChallenge(
-    challengeId: String
+    challengeId: String,
 ): Result<ThreeDSChallengeAuthentication, ResultError> {
     return runCatching {
         koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(

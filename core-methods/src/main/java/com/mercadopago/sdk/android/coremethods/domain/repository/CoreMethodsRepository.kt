@@ -15,15 +15,23 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMet
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRepository {
-    suspend fun generateCardToken(params: GenerateCardTokenParams): Result<CardToken, ResultError>
+    suspend fun generateCardToken(
+        params: GenerateCardTokenParams,
+    ): Result<CardToken, ResultError>
 
-    suspend fun getInstallment(params: GetInstallmentParams): Result<List<Installment>, ResultError>
+    suspend fun getInstallment(
+        params: GetInstallmentParams,
+    ): Result<List<Installment>, ResultError>
 
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError>
 
-    suspend fun getCardIssuers(params: GetCardIssuersParams): Result<List<CardIssuer>, ResultError>
+    suspend fun getCardIssuers(
+        params: GetCardIssuersParams,
+    ): Result<List<CardIssuer>, ResultError>
 
-    suspend fun getPaymentMethods(params: GetPaymentMethodsParams): Result<List<PaymentMethod>, ResultError>
+    suspend fun getPaymentMethods(
+        params: GetPaymentMethodsParams,
+    ): Result<List<PaymentMethod>, ResultError>
 
     suspend fun authenticateThreeDSChallenge(
         params: AuthenticateThreeDSChallengeParams,
