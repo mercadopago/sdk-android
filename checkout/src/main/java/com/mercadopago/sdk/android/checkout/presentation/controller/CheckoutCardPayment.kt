@@ -75,6 +75,8 @@ internal sealed interface SampleDestination {
     object Installment : SampleDestination
 }
 
-internal fun SampleDestination.isRoute(route: String?): Boolean {
+internal fun SampleDestination.isRoute(
+    route: String?,
+): Boolean {
     return this::class.qualifiedName == route
 }

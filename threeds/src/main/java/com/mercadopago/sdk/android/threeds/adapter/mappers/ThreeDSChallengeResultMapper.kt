@@ -20,7 +20,9 @@ internal object ThreeDSChallengeResultMapper {
      * @param mpResult The MPThreeDSChallengeResult to convert
      * @return The converted ThreeDSChallengeResult
      */
-    fun toThreeDSChallengeResult(mpResult: MPThreeDSChallengeResult): ThreeDSChallengeResult {
+    fun toThreeDSChallengeResult(
+        mpResult: MPThreeDSChallengeResult,
+    ): ThreeDSChallengeResult {
         return when (mpResult) {
             is MPThreeDSChallengeResult.OnSuccess -> ThreeDSChallengeResult.OnSuccess(
                 result = toThreeDSAuthenticated(mpResult.result),
@@ -39,7 +41,9 @@ internal object ThreeDSChallengeResultMapper {
      * @param result The ThreeDSChallengeResult to convert
      * @return The converted MPThreeDSChallengeResult
      */
-    fun toMPThreeDSChallengeResult(result: ThreeDSChallengeResult): MPThreeDSChallengeResult {
+    fun toMPThreeDSChallengeResult(
+        result: ThreeDSChallengeResult,
+    ): MPThreeDSChallengeResult {
         return when (result) {
             is ThreeDSChallengeResult.OnSuccess -> MPThreeDSChallengeResult.OnSuccess(
                 result = toMPThreeDSAuthenticated(result.result),
@@ -55,7 +59,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts MPThreeDSAuthenticated to ThreeDSAuthenticated.
      */
-    private fun toThreeDSAuthenticated(mpAuthenticated: MPThreeDSAuthenticated): ThreeDSAuthenticated {
+    private fun toThreeDSAuthenticated(
+        mpAuthenticated: MPThreeDSAuthenticated,
+    ): ThreeDSAuthenticated {
         return ThreeDSAuthenticated(
             challengeResponse = toThreeDSChallengeModel(mpAuthenticated.challengeResponse),
             challengeCompleted = mpAuthenticated.challengeCompleted,
@@ -65,7 +71,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts ThreeDSAuthenticated to MPThreeDSAuthenticated.
      */
-    private fun toMPThreeDSAuthenticated(authenticated: ThreeDSAuthenticated): MPThreeDSAuthenticated {
+    private fun toMPThreeDSAuthenticated(
+        authenticated: ThreeDSAuthenticated,
+    ): MPThreeDSAuthenticated {
         return MPThreeDSAuthenticated(
             challengeResponse = toMPThreeDSChallengeModel(authenticated.challengeResponse),
             challengeCompleted = authenticated.challengeCompleted,
@@ -75,7 +83,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts MPThreeDSChallengeModel to ThreeDSChallengeModel.
      */
-    private fun toThreeDSChallengeModel(mpModel: MPThreeDSChallengeModel): ThreeDSChallengeModel {
+    private fun toThreeDSChallengeModel(
+        mpModel: MPThreeDSChallengeModel,
+    ): ThreeDSChallengeModel {
         return ThreeDSChallengeModel(
             threeDSServerTransID = mpModel.threeDSServerTransID,
             acsReferenceNumber = mpModel.acsReferenceNumber,
@@ -88,7 +98,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts ThreeDSChallengeModel to MPThreeDSChallengeModel.
      */
-    private fun toMPThreeDSChallengeModel(model: ThreeDSChallengeModel): MPThreeDSChallengeModel {
+    private fun toMPThreeDSChallengeModel(
+        model: ThreeDSChallengeModel,
+    ): MPThreeDSChallengeModel {
         return MPThreeDSChallengeModel(
             threeDSServerTransID = model.threeDSServerTransID,
             acsReferenceNumber = model.acsReferenceNumber,
@@ -101,7 +113,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts MPThreeDSChallengeError to ThreeDSChallengeError.
      */
-    private fun toThreeDSChallengeError(mpError: MPThreeDSChallengeError): ThreeDSChallengeError {
+    private fun toThreeDSChallengeError(
+        mpError: MPThreeDSChallengeError,
+    ): ThreeDSChallengeError {
         return ThreeDSChallengeError(
             code = mpError.code,
             message = mpError.message,
@@ -113,7 +127,9 @@ internal object ThreeDSChallengeResultMapper {
     /**
      * Converts ThreeDSChallengeError to MPThreeDSChallengeError.
      */
-    private fun toMPThreeDSChallengeError(error: ThreeDSChallengeError): MPThreeDSChallengeError {
+    private fun toMPThreeDSChallengeError(
+        error: ThreeDSChallengeError,
+    ): MPThreeDSChallengeError {
         return MPThreeDSChallengeError(
             code = error.code,
             message = error.message,

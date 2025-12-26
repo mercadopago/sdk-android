@@ -138,7 +138,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getPaymentMethods(bin: String) {
+    fun getPaymentMethods(
+        bin: String,
+    ) {
         viewModelScope.launch {
             val result = coreMethods.getPaymentMethods(bin = bin)
             when (result) {
@@ -161,7 +163,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onExpirationDateEvent(event: ExpirationDateTextFieldEvent) {
+    fun onExpirationDateEvent(
+        event: ExpirationDateTextFieldEvent,
+    ) {
         when (event) {
             is ExpirationDateTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
@@ -195,7 +199,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onSecurityCodeEvent(event: SecurityCodeTextFieldEvent) {
+    fun onSecurityCodeEvent(
+        event: SecurityCodeTextFieldEvent,
+    ) {
         when (event) {
             is SecurityCodeTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
@@ -227,7 +233,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onCardNumberEvent(event: CardNumberTextFieldEvent) {
+    fun onCardNumberEvent(
+        event: CardNumberTextFieldEvent,
+    ) {
         when (event) {
             is CardNumberTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
@@ -264,7 +272,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onInstallmentSelected(value: PayerCost) {
+    fun onInstallmentSelected(
+        value: PayerCost,
+    ) {
         _viewState.value = _viewState.value.copy(
             installmentsState = _viewState.value.installmentsState.copy(
                 selectedInstallment = value,
@@ -272,7 +282,9 @@ internal class CardPaymentViewModel(
         )
     }
 
-    fun onIdentificationTypeValueChanged(value: String) {
+    fun onIdentificationTypeValueChanged(
+        value: String,
+    ) {
         _viewState.value = _viewState.value.copy(
             identificationTypeState = _viewState.value.identificationTypeState.copy(
                 value = value,
@@ -280,7 +292,9 @@ internal class CardPaymentViewModel(
         )
     }
 
-    fun onIdentificationTypeChanged(identificationType: IdentificationType) {
+    fun onIdentificationTypeChanged(
+        identificationType: IdentificationType,
+    ) {
         _viewState.value = _viewState.value.copy(
             identificationTypeState = _viewState.value.identificationTypeState.copy(
                 selected = identificationType,
@@ -288,7 +302,9 @@ internal class CardPaymentViewModel(
         )
     }
 
-    fun onCardHolderNameChanged(value: String) {
+    fun onCardHolderNameChanged(
+        value: String,
+    ) {
         _viewState.value = _viewState.value.copy(
             cardHolderState = _viewState.value.cardHolderState.copy(
                 value = value,
@@ -296,7 +312,9 @@ internal class CardPaymentViewModel(
         )
     }
 
-    fun onCardHolderEvent(event: SimpleTextFieldEvent) {
+    fun onCardHolderEvent(
+        event: SimpleTextFieldEvent,
+    ) {
         when (event) {
             is SimpleTextFieldEvent.OnValueChanged -> {
                 _viewState.value = _viewState.value.copy(
@@ -315,7 +333,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onIdentificationEvent(event: IdentificationTextFieldEvent) {
+    fun onIdentificationEvent(
+        event: IdentificationTextFieldEvent,
+    ) {
         when (event) {
             is IdentificationTextFieldEvent.OnValueChanged -> {
                 _viewState.value = _viewState.value.copy(
@@ -341,11 +361,15 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onDialogStateChanged(dialogState: CardPaymentDialogState) {
+    fun onDialogStateChanged(
+        dialogState: CardPaymentDialogState,
+    ) {
         _viewState.value = _viewState.value.copy(dialogState = dialogState)
     }
 
-    private fun handleBinChanged(cardBin: String?) {
+    private fun handleBinChanged(
+        cardBin: String?,
+    ) {
         if ((cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
             _viewState.value = _viewState.value.copy(
                 cardNumberState = _viewState.value.cardNumberState.copy(image = null),
@@ -376,7 +400,9 @@ internal class CardPaymentViewModel(
         )
     }
 
-    private fun updateCardMaskState(cardLength: Int) {
+    private fun updateCardMaskState(
+        cardLength: Int,
+    ) {
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 maxLength = cardLength,

@@ -20,11 +20,15 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CoreMethodsRepositoryImpl(
     private val dataSource: CoreMethodsRemoteDataSource,
 ) : CoreMethodsRepository {
-    override suspend fun generateCardToken(params: GenerateCardTokenParams): Result<CardToken, ResultError> {
+    override suspend fun generateCardToken(
+        params: GenerateCardTokenParams,
+    ): Result<CardToken, ResultError> {
         return dataSource.generateCardToken(params.toRequest())
     }
 
-    override suspend fun getInstallment(params: GetInstallmentParams): Result<List<Installment>, ResultError> {
+    override suspend fun getInstallment(
+        params: GetInstallmentParams,
+    ): Result<List<Installment>, ResultError> {
         return dataSource.getInstallments(params.toRequest())
     }
 
@@ -32,11 +36,15 @@ internal class CoreMethodsRepositoryImpl(
         return dataSource.getIdentificationTypes()
     }
 
-    override suspend fun getCardIssuers(params: GetCardIssuersParams): Result<List<CardIssuer>, ResultError> {
+    override suspend fun getCardIssuers(
+        params: GetCardIssuersParams,
+    ): Result<List<CardIssuer>, ResultError> {
         return dataSource.getCardIssuers(params.toRequest())
     }
 
-    override suspend fun getPaymentMethods(params: GetPaymentMethodsParams): Result<List<PaymentMethod>, ResultError> {
+    override suspend fun getPaymentMethods(
+        params: GetPaymentMethodsParams,
+    ): Result<List<PaymentMethod>, ResultError> {
         return dataSource.getPaymentMethods(params.toRequest())
     }
 

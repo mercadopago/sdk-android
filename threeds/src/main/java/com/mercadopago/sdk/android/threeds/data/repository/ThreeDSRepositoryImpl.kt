@@ -25,7 +25,9 @@ internal class ThreeDSRepositoryImpl(
         threeDSWrapper.close()
     }
 
-    override fun createTransaction(paymentMethodId: String) {
+    override fun createTransaction(
+        paymentMethodId: String,
+    ) {
         threeDSWrapper.createTransaction(paymentMethodId)
     }
 

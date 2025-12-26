@@ -138,7 +138,9 @@ private fun HeaderSection(
  * Amount text with superscript decimal part
  */
 @Composable
-private fun AmountText(amount: MPAmountData) {
+private fun AmountText(
+    amount: MPAmountData,
+) {
     val annotatedString = buildAnnotatedString {
         append("${amount.currencySymbol} ${amount.integerPart} ")
         appendInlineContent(SUPERSCRIPT_ID, amount.decimalPart)

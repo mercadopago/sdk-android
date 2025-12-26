@@ -471,7 +471,9 @@ class CoreMethods internal constructor(
      * @see ResultError
      *
      */
-    suspend fun getPaymentMethods(bin: String): Result<List<PaymentMethod>, ResultError> {
+    suspend fun getPaymentMethods(
+        bin: String,
+    ): Result<List<PaymentMethod>, ResultError> {
         val result = koin.get<GetPaymentMethodsUseCase>().invoke(
             bin = bin,
         )

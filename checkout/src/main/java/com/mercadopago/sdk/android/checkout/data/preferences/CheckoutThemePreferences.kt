@@ -8,7 +8,11 @@ internal interface CheckoutThemePreferences {
 
     fun getCurrentAppearance(): MercadoPagoThemeAppearance
 
-    fun setCurrentThemeScheme(theme: MercadoPagoThemeProviderScheme)
+    fun setCurrentThemeScheme(
+        theme: MercadoPagoThemeProviderScheme,
+    )
 
-    fun setCurrentAppearance(appearance: MercadoPagoThemeAppearance)
+    fun setCurrentAppearance(
+        appearance: MercadoPagoThemeAppearance,
+    )
 }

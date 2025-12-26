@@ -45,7 +45,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletex
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 @Composable
-internal fun CardPaymentScreen(viewModel: CardPaymentViewModel) {
+internal fun CardPaymentScreen(
+    viewModel: CardPaymentViewModel,
+) {
     val viewState by viewModel.viewState.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
     val expirationDatePCIState = rememberPCIFieldState()
