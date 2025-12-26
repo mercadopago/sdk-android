@@ -43,7 +43,9 @@ internal open class PCIFieldRobot(
             .performClick()
     }
 
-    fun performTextInput(text: String) {
+    fun performTextInput(
+        text: String,
+    ) {
         composeRule.onNodeWithTag(testTag)
             .assertExists()
             .performTextInput(text)
@@ -64,7 +66,9 @@ internal open class PCIFieldRobot(
         assertEquals(input, fieldState.input)
     }
 
-    fun assertTextIsDisplayed(text: String) {
+    fun assertTextIsDisplayed(
+        text: String,
+    ) {
         composeRule.onNodeWithText(text)
             .assertExists()
             .assert(hasText(text))

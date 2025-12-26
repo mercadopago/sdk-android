@@ -26,12 +26,13 @@ internal fun metricPaymentMethodCallSuccess(
 )
 
 @KoverIgnore("in development")
-internal fun metricPaymentMethodCallError(error: String) =
-    Metric(
-        path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$PAYMENT_METHODS_PATH$ERROR_PATH",
-        type = TrackType.EVENT,
-        data = MetricErrorData(errorType = error),
-    )
+internal fun metricPaymentMethodCallError(
+    error: String,
+) = Metric(
+    path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$PAYMENT_METHODS_PATH$ERROR_PATH",
+    type = TrackType.EVENT,
+    data = MetricErrorData(errorType = error),
+)
 
 internal data class PaymentMethodEventData(
     @SerializedName("issuer")

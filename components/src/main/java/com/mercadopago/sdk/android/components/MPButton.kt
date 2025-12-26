@@ -126,7 +126,9 @@ private fun getButtonBackgroundColor(
 /**
  * Helper function to get text color type based on button style
  */
-private fun getTextColorType(style: MPButtonStyle): MPTextColorType {
+private fun getTextColorType(
+    style: MPButtonStyle,
+): MPTextColorType {
     return when (style) {
         MPButtonStyle.Loud -> MPTextColorType.Inverted
         MPButtonStyle.Quiet -> MPTextColorType.Accent
@@ -138,7 +140,9 @@ private fun getTextColorType(style: MPButtonStyle): MPTextColorType {
  * Helper function to get icon color based on button style
  */
 @Composable
-private fun getIconColor(style: MPButtonStyle): Color {
+private fun getIconColor(
+    style: MPButtonStyle,
+): Color {
     return when (style) {
         MPButtonStyle.Loud -> MercadoPagoTheme.color.text.inverted
         MPButtonStyle.Quiet -> MercadoPagoTheme.color.text.accent
@@ -169,7 +173,9 @@ private fun getHorizontalPadding(
  * Helper function to calculate vertical padding based on size
  */
 @Composable
-private fun getVerticalPadding(size: MPButtonSize): androidx.compose.ui.unit.Dp {
+private fun getVerticalPadding(
+    size: MPButtonSize,
+): androidx.compose.ui.unit.Dp {
     return if (size == MPButtonSize.Large) {
         MercadoPagoTheme.spacing.s
     } else {

@@ -13,7 +13,9 @@ internal interface ThreeDSRepository {
 
     fun close()
 
-    fun createTransaction(paymentMethodId: String)
+    fun createTransaction(
+        paymentMethodId: String,
+    )
 
     fun getAuthenticationRequestParameters(): MPThreeDSRequestParams?
 

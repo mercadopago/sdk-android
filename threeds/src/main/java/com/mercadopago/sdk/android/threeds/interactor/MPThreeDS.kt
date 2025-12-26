@@ -46,7 +46,9 @@ class MPThreeDS internal constructor(
          *
          * @return The current instance of the MPThreeDS.
          */
-        fun getInstance(context: Context): MPThreeDS {
+        fun getInstance(
+            context: Context,
+        ): MPThreeDS {
             return instance ?: synchronized(this) {
                 instance ?: MPThreeDS(
                     koin = MPThreeDSModulesProvider(context).koinApp,
@@ -72,7 +74,9 @@ class MPThreeDS internal constructor(
      *
      * @param paymentMethodId The payment method ID to create transaction for
      */
-    fun createTransaction(paymentMethodId: String) = threeDSRepository.createTransaction(paymentMethodId)
+    fun createTransaction(
+        paymentMethodId: String,
+    ) = threeDSRepository.createTransaction(paymentMethodId)
 
     /**
      * Gets the authentication request parameters for the current transaction.

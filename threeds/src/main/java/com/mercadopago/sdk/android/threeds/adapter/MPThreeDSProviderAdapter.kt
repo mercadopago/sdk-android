@@ -41,7 +41,9 @@ class MPThreeDSProviderAdapter(
      *
      * @param paymentMethodId The payment method ID to create the transaction for
      */
-    override fun createTransaction(paymentMethodId: String) {
+    override fun createTransaction(
+        paymentMethodId: String,
+    ) {
         mpThreeDS.createTransaction(paymentMethodId)
     }
 
