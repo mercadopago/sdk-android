@@ -9,7 +9,9 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class GetPaymentMethodsUseCase(
     private val repository: CoreMethodsRepository,
 ) {
-    suspend operator fun invoke(bin: String): Result<List<PaymentMethod>, ResultError> {
+    suspend operator fun invoke(
+        bin: String,
+    ): Result<List<PaymentMethod>, ResultError> {
         return repository.getPaymentMethods(
             GetPaymentMethodsParams(
                 bin = bin.toIntOrNull(),

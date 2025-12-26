@@ -144,7 +144,9 @@ internal class ThreeDSWrapper(private val context: Context) {
      * @param paymentMethodId The payment method ID (e.g., "visa", "mastercard") to create transaction for
      * @throws IllegalStateException if the service is not initialized yet
      */
-    fun createTransaction(paymentMethodId: String) {
+    fun createTransaction(
+        paymentMethodId: String,
+    ) {
         check(isInitialized) { "ThreeDSWrapper must be initialized before creating a transaction" }
         val directoryServer = MPThreeDSDirectoryServer.paymentMethodDirectoryServer(paymentMethodId)
         transaction = threeDSService.createTransaction(
@@ -228,7 +230,9 @@ internal class ThreeDSWrapper(private val context: Context) {
                     activity,
                     threeDSChallengeParameters,
                     object : ChallengeStatusReceiver {
-                        override fun completed(event: CompletionEvent?) {
+                        override fun completed(
+                            event: CompletionEvent?,
+                        ) {
                             event?.let {
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnSuccess(
@@ -248,7 +252,9 @@ internal class ThreeDSWrapper(private val context: Context) {
                             )
                         }
 
-                        override fun protocolError(event: ProtocolErrorEvent?) {
+                        override fun protocolError(
+                            event: ProtocolErrorEvent?,
+                        ) {
                             event?.let {
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnError(
@@ -270,7 +276,9 @@ internal class ThreeDSWrapper(private val context: Context) {
                             )
                         }
 
-                        override fun runtimeError(event: RuntimeErrorEvent?) {
+                        override fun runtimeError(
+                            event: RuntimeErrorEvent?,
+                        ) {
                             event?.let {
                                 continuation.resume(
                                     MPThreeDSChallengeResult.OnError(

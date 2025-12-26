@@ -28,7 +28,9 @@ private var threeDSProvider: ThreeDSProvider? = null
  * coreMethods.setThreeDSProvider(MPThreeDSProviderAdapter(threeDS))
  * ```
  */
-fun CoreMethods.setThreeDSProvider(provider: ThreeDSProvider) {
+fun CoreMethods.setThreeDSProvider(
+    provider: ThreeDSProvider,
+) {
     threeDSProvider = provider
 }
 
@@ -248,7 +250,9 @@ fun CoreMethods.close(): Result<String, ResultError> {
  * }
  * ```
  */
-fun CoreMethods.createTransaction(cardToken: CardToken): Result<String, ResultError> {
+fun CoreMethods.createTransaction(
+    cardToken: CardToken,
+): Result<String, ResultError> {
     if (!hasThreeDSProvider()) {
         return Result.Error(
             ResultError.Validation(

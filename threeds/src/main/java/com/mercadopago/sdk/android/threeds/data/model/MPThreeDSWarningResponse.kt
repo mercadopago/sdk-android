@@ -41,7 +41,9 @@ enum class MPSeverityResponse {
          * @param grade The numeric grade (0-3)
          * @return The corresponding MPSeverityResponse enum value
          */
-        fun getWaningByGrade(grade: Int): MPSeverityResponse {
+        fun getWaningByGrade(
+            grade: Int,
+        ): MPSeverityResponse {
             return when (grade) {
                 0 -> LOW
                 1 -> MEDIUM

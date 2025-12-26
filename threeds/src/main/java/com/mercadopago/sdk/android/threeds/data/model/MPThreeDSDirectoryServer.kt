@@ -30,7 +30,9 @@ internal enum class MPThreeDSDirectoryServer(
          * @param paymentMethodId The payment method identifier (e.g., "visa", "mastercard", "amex")
          * @return The corresponding MPThreeDSDirectoryServer enum value
          */
-        internal fun paymentMethodDirectoryServer(paymentMethodId: String): MPThreeDSDirectoryServer {
+        internal fun paymentMethodDirectoryServer(
+            paymentMethodId: String,
+        ): MPThreeDSDirectoryServer {
             return when (paymentMethodId) {
                 "visa", "debvisa" -> VISA
                 "mastercard", "master" -> MASTERCARD
