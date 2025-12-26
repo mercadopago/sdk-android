@@ -43,7 +43,9 @@ private data class EphemeralPublicKeyJson(
  * }
  * ```
  */
-internal fun EphemeralPublicKey.Companion.fromJson(json: String): EphemeralPublicKey? {
+internal fun EphemeralPublicKey.Companion.fromJson(
+    json: String,
+): EphemeralPublicKey? {
     return runCatching {
         val parsed = Gson().fromJson(json, EphemeralPublicKeyJson::class.java)
         EphemeralPublicKey(

@@ -29,17 +29,9 @@ internal class SaveThreeDSDeviceDataUseCase(
         referenceNumber: String,
         transId: String,
     ): Result<Unit, ResultError> {
-        if (cardTokenId.isEmpty()) {
-            return Result.Error(ResultError.Validation("card token id cannot be empty"))
-        }
-        if (appId.isEmpty()) {
-            return Result.Error(ResultError.Validation("app id cannot be empty"))
-        }
-        if (encData.isEmpty()) {
-            return Result.Error(ResultError.Validation("encrypted device data cannot be empty"))
-        }
-        if (transId.isEmpty()) {
-            return Result.Error(ResultError.Validation("transaction id cannot be empty"))
+        val validationError = validateParams(cardTokenId, appId, encData, transId)
+        if (validationError != null) {
+            return Result.Error(validationError)
         }
         return repository.saveThreeDSDeviceData(
             SaveThreeDSDeviceDataParams(
@@ -56,5 +48,20 @@ internal class SaveThreeDSDeviceDataUseCase(
                 transId = transId,
             ),
         )
+    }
+
+    private fun validateParams(
+        cardTokenId: String,
+        appId: String,
+        encData: String,
+        transId: String,
+    ): ResultError.Validation? {
+        return when {
+            cardTokenId.isEmpty() -> ResultError.Validation("card token id cannot be empty")
+            appId.isEmpty() -> ResultError.Validation("app id cannot be empty")
+            encData.isEmpty() -> ResultError.Validation("encrypted device data cannot be empty")
+            transId.isEmpty() -> ResultError.Validation("transaction id cannot be empty")
+            else -> null
+        }
     }
 }

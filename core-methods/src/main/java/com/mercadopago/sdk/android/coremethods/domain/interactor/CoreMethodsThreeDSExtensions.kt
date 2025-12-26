@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import android.app.Activity
@@ -321,7 +323,8 @@ fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParam
                 params?.let { Result.Success(it) } ?: Result.Error(
                     ResultError.Request(
                         code = "",
-                        message = "Failed to get authentication request parameters. Make sure a transaction was created.",
+                        message = "Failed to get authentication request parameters. " +
+                            "Make sure a transaction was created.",
                     ),
                 )
             },
@@ -364,7 +367,9 @@ private fun CoreMethods.validateProvider(): Result<String, ResultError> {
  * @return [Result.Success] with the parsed [EphemeralPublicKey] if parsing succeeds,
  *         [Result.Error] with [ResultError.Validation] if parsing fails
  */
-private fun parseEphemeralKey(jsonKey: String): Result<EphemeralPublicKey, ResultError> {
+private fun parseEphemeralKey(
+    jsonKey: String,
+): Result<EphemeralPublicKey, ResultError> {
     val ephemeralPublicKey = EphemeralPublicKey.fromJson(jsonKey)
         ?: return Result.Error(
             ResultError.Validation(

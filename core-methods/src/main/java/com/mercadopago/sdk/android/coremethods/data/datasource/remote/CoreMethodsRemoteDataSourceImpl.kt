@@ -63,7 +63,9 @@ internal class CoreMethodsRemoteDataSourceImpl(
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
-    override suspend fun saveThreeDSDeviceData(request: ThreeDSDeviceDataRequest): Result<Unit, ResultError> {
+    override suspend fun saveThreeDSDeviceData(
+        request: ThreeDSDeviceDataRequest,
+    ): Result<Unit, ResultError> {
         return service.saveThreeDSDeviceData(request).toUnitResponse()
     }
 }

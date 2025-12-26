@@ -47,7 +47,9 @@ internal class CoreMethodsRepositoryImpl(
         return dataSource.getPaymentMethods(params.toRequest())
     }
 
-    override suspend fun saveThreeDSDeviceData(params: SaveThreeDSDeviceDataParams): Result<Unit, ResultError> {
+    override suspend fun saveThreeDSDeviceData(
+        params: SaveThreeDSDeviceDataParams,
+    ): Result<Unit, ResultError> {
         return dataSource.saveThreeDSDeviceData(params.toRequest())
     }
 }

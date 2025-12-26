@@ -82,5 +82,8 @@ data class EphemeralPublicKey(
     val x: String,
     val y: String,
 ) {
+    /**
+     * Companion object providing factory methods for [EphemeralPublicKey].
+     */
     companion object
 }

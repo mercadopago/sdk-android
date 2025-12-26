@@ -14,15 +14,25 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRemoteDataSource {
-    suspend fun generateCardToken(request: CardTokenBodyRequest): Result<CardToken, ResultError>
+    suspend fun generateCardToken(
+        request: CardTokenBodyRequest,
+    ): Result<CardToken, ResultError>
 
-    suspend fun getInstallments(request: InstallmentsRequest): Result<List<Installment>, ResultError>
+    suspend fun getInstallments(
+        request: InstallmentsRequest,
+    ): Result<List<Installment>, ResultError>
 
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError>
 
-    suspend fun getCardIssuers(request: CardIssuersRequest): Result<List<CardIssuer>, ResultError>
+    suspend fun getCardIssuers(
+        request: CardIssuersRequest,
+    ): Result<List<CardIssuer>, ResultError>
 
-    suspend fun getPaymentMethods(request: PaymentMethodsRequest): Result<List<PaymentMethod>, ResultError>
+    suspend fun getPaymentMethods(
+        request: PaymentMethodsRequest,
+    ): Result<List<PaymentMethod>, ResultError>
 
-    suspend fun saveThreeDSDeviceData(request: ThreeDSDeviceDataRequest): Result<Unit, ResultError>
+    suspend fun saveThreeDSDeviceData(
+        request: ThreeDSDeviceDataRequest,
+    ): Result<Unit, ResultError>
 }
