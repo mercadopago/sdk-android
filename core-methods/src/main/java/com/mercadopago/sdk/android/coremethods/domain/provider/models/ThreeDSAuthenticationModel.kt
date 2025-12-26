@@ -9,6 +9,7 @@ package com.mercadopago.sdk.android.coremethods.domain.provider.models
  * @property dsTransID Directory server transaction ID
  * @property acsTransID ACS transaction ID
  * @property acsSignedContent ACS signed content
+ * @property callbackUrl callback url
  */
 data class ThreeDSAuthenticationModel(
     val threeDSServerTransID: String,
@@ -16,4 +17,5 @@ data class ThreeDSAuthenticationModel(
     val dsTransID: String,
     val acsTransID: String,
     val acsSignedContent: String,
+    val callbackUrl: String,
 )

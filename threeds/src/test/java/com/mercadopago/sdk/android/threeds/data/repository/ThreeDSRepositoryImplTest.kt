@@ -186,6 +186,7 @@ class ThreeDSRepositoryImplTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
         val timeout = 30
 
@@ -245,6 +246,7 @@ class ThreeDSRepositoryImplTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
         val timeout = 10
 
@@ -277,6 +279,7 @@ class ThreeDSRepositoryImplTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
         val timeout = 5
 

@@ -90,6 +90,7 @@ class MPThreeDSProviderAdapterTest {
             dsTransID = "ds123",
             acsTransID = "acstrans123",
             acsSignedContent = "signed_content",
+            callbackUrl = "",
         )
         val mpResult = MPThreeDSChallengeResult.OnSuccess(
             result = MPThreeDSAuthenticated(
@@ -135,6 +136,7 @@ class MPThreeDSProviderAdapterTest {
             dsTransID = "ds123",
             acsTransID = "acstrans123",
             acsSignedContent = "signed_content",
+            callbackUrl = "",
         )
         coEvery {
             mpThreeDS.doChallenge(
@@ -165,6 +167,7 @@ class MPThreeDSProviderAdapterTest {
             dsTransID = "ds123",
             acsTransID = "acstrans123",
             acsSignedContent = "signed_content",
+            callbackUrl = "",
         )
         coEvery {
             mpThreeDS.doChallenge(

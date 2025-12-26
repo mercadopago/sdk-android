@@ -152,6 +152,7 @@ class MPThreeDSTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         val expectedResult = MPThreeDSChallengeResult.OnSuccess(
@@ -202,6 +203,7 @@ class MPThreeDSTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
         val customTimeout = 30
 
@@ -243,6 +245,7 @@ class MPThreeDSTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         coEvery {

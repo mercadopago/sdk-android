@@ -59,6 +59,7 @@ class ThreeDSParametersMapperTest {
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         // Act
@@ -81,6 +82,7 @@ class ThreeDSParametersMapperTest {
             dsTransID = "",
             acsTransID = "",
             acsSignedContent = "",
+            callbackUrl = "",
         )
 
         // Act

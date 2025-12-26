@@ -4,7 +4,6 @@ import android.app.Activity
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
-import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeData
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
@@ -201,14 +200,13 @@ private suspend fun CoreMethods.processChallengeAuthentication(
 
 private suspend fun CoreMethods.executeChallengeFlow(
     activity: Activity,
-    challengeData: ThreeDSChallengeData,
+    challengeData: ThreeDSAuthenticationModel,
     timeout: Int,
 ): Result<ThreeDSChallengeResult, ResultError> {
-    val authentication = challengeData.toAuthenticationModel()
     return runCatching {
         threeDSProvider?.doChallenge(
             activity = activity,
-            authentication = authentication,
+            authentication = challengeData,
             timeout = timeout,
         )
     }.fold(
@@ -230,18 +228,6 @@ private suspend fun CoreMethods.executeChallengeFlow(
         },
     )
 }
-
-/**
- * Converts [ThreeDSChallengeData] to [ThreeDSAuthenticationModel] for the 3DS provider.
- */
-private fun ThreeDSChallengeData.toAuthenticationModel(): ThreeDSAuthenticationModel =
-    ThreeDSAuthenticationModel(
-        threeDSServerTransID = this.threeDsServerTransId,
-        acsReferenceNumber = this.acsReferenceNumber,
-        dsTransID = this.dsTransId,
-        acsTransID = this.acsTransId,
-        acsSignedContent = this.acsSignedContent,
-    )
 
 /**
  * Closes the current 3DS transaction and releases associated resources.

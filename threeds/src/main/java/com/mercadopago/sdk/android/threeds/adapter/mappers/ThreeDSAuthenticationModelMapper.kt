@@ -23,6 +23,7 @@ internal object ThreeDSAuthenticationModelMapper {
             dsTransID = mpModel.dsTransID,
             acsTransID = mpModel.acsTransID,
             acsSignedContent = mpModel.acsSignedContent,
+            callbackUrl = mpModel.callbackUrl,
         )
     }
 
@@ -41,6 +42,7 @@ internal object ThreeDSAuthenticationModelMapper {
             dsTransID = model.dsTransID,
             acsTransID = model.acsTransID,
             acsSignedContent = model.acsSignedContent,
+            callbackUrl = model.callbackUrl,
         )
     }
 }
