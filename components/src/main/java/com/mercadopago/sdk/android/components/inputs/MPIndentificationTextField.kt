@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
@@ -85,7 +86,13 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
+            textStyle = TextStyle(
+                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
+                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
+                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
+                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+            ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(

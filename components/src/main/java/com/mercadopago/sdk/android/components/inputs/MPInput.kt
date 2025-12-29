@@ -63,7 +63,7 @@ internal fun MPInputBody(
         label?.let {
             MPInputLabel(
                 it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
+                modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano),
                 textStyle = MPTextStyle.BodySmallRegular,
                 inputLabelState = state,
             )
@@ -72,7 +72,7 @@ internal fun MPInputBody(
         helper?.let {
             MPInputHelper(
                 text = it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
+                modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano),
                 inputLabelState = state,
                 showIcon = showHelperIcon,
                 icon = icon,
@@ -93,7 +93,7 @@ internal fun MPInputHelper(
         if (showIcon) {
             icon?.let {
                 Icon(it, MP_EMPTY_STRING)
-                Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs))
+                Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano))
             }
         }
         MPInputLabel(

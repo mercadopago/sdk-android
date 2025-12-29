@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
@@ -64,7 +65,13 @@ fun MPExpirationDateTextField(
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
-            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
+            textStyle = TextStyle(
+                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
+                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
+                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
+                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+            ),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
