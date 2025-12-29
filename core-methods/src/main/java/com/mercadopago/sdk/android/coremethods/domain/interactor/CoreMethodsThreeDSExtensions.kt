@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeD
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 private object ThreeDSErrorMessages {
-    const val PROVIDER_NOT_AVAILABLE = "3DS provider not available. Please set the provider using setThreeDSProvider() method."
+    const val PROVIDER_NOT_AVAILABLE = "3DS provider not available. Please use setThreeDSProvider() method."
     const val FAILED_TO_GET_WARNINGS = "Failed to get 3DS warnings."
     const val CHALLENGE_DATA_NOT_AVAILABLE = "Challenge data not available in authentication response."
     const val FAILED_TO_EXECUTE_CHALLENGE = "Failed to execute 3DS challenge."
