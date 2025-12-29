@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -101,22 +100,22 @@ private fun getButtonBackgroundColor(
     return when (style) {
         MPButtonStyle.Loud -> if (enabled) {
             if (isPressed) {
-                MercadoPagoTheme.color.accentSecondVariant
+                MercadoPagoTheme.newColor.interactive.fillLoud.active
             } else {
-                MercadoPagoTheme.color.accent
+                MercadoPagoTheme.newColor.interactive.fillLoud.idle
             }
         } else {
-            MercadoPagoTheme.color.background.tertiary
+            MercadoPagoTheme.newColor.fill.disabled
         }
 
         MPButtonStyle.Quiet -> if (enabled) {
             if (isPressed) {
-                MercadoPagoTheme.color.secondarySecondVariant
+                MercadoPagoTheme.newColor.interactive.fillQuiet.active
             } else {
-                MercadoPagoTheme.color.secondary
+                MercadoPagoTheme.newColor.interactive.fillQuiet.idle
             }
         } else {
-            MercadoPagoTheme.color.background.tertiary
+            MercadoPagoTheme.newColor.fill.disabled
         }
 
         MPButtonStyle.Transparent -> Color.Transparent
@@ -144,9 +143,9 @@ private fun getIconColor(
     style: MPButtonStyle,
 ): Color {
     return when (style) {
-        MPButtonStyle.Loud -> MercadoPagoTheme.color.text.inverted
-        MPButtonStyle.Quiet -> MercadoPagoTheme.color.text.accent
-        MPButtonStyle.Transparent -> MercadoPagoTheme.color.text.accent
+        MPButtonStyle.Loud -> MercadoPagoTheme.newColor.icon.inverse
+        MPButtonStyle.Quiet -> MercadoPagoTheme.newColor.icon.accent
+        MPButtonStyle.Transparent -> MercadoPagoTheme.newColor.icon.accent
     }
 }
 
@@ -159,27 +158,23 @@ private fun getHorizontalPadding(
     iconType: MPButtonIconType,
 ): androidx.compose.ui.unit.Dp {
     return if (size == MPButtonSize.Large) {
-        if (iconType != MPButtonIconType.None) {
-            MercadoPagoTheme.spacing.m
-        } else {
-            MercadoPagoTheme.spacing.xl
-        }
+        MercadoPagoTheme.newSpacing.paddings.xsmall
     } else {
-        MercadoPagoTheme.spacing.s
+        MercadoPagoTheme.newSpacing.paddings.micro
     }
 }
 
 /**
- * Helper function to calculate vertical padding based on size
+ * Helper function to calculate button height based on size
  */
 @Composable
-private fun getVerticalPadding(
+private fun getButtonHeight(
     size: MPButtonSize,
 ): androidx.compose.ui.unit.Dp {
     return if (size == MPButtonSize.Large) {
-        MercadoPagoTheme.spacing.s
+        MercadoPagoTheme.newSpacing.paddings.large
     } else {
-        MercadoPagoTheme.spacing.xxs
+        MercadoPagoTheme.newSpacing.paddings.small
     }
 }
 
@@ -190,21 +185,24 @@ private fun getVerticalPadding(
 private fun Modifier.getFocusedModifier(): Modifier {
     return this
         .border(
-            width = 2.dp,
-            color = MercadoPagoTheme.color.secondarySecondVariant,
-            shape = MaterialTheme.shapes.small,
+            width = MercadoPagoTheme.newBorderWidth.medium,
+            color = MercadoPagoTheme.newColor.interactive.fillQuiet.active,
+            shape = MercadoPagoTheme.newShape.small,
         )
         .border(
-            width = 3.dp,
-            color = MercadoPagoTheme.color.accent,
-            shape = MaterialTheme.shapes.small,
+            width = MercadoPagoTheme.newBorderWidth.large,
+            color = MercadoPagoTheme.newColor.border.accent,
+            shape = MercadoPagoTheme.newShape.small,
         )
         .border(
-            width = 5.dp,
-            color = Color.White,
-            shape = MaterialTheme.shapes.small,
+            width = MercadoPagoTheme.newBorderWidth.xlarge,
+            color = MercadoPagoTheme.newColor.fill.primary,
+            shape = MercadoPagoTheme.newShape.small,
         )
-        .padding(horizontal = 4.dp, vertical = 5.dp)
+        .padding(
+            horizontal = MercadoPagoTheme.newSpacing.paddings.xnano,
+            vertical = MercadoPagoTheme.newSpacing.paddings.xnano,
+        )
 }
 
 /**
@@ -222,14 +220,14 @@ private fun LeftIcon(
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
+        tint = if (enabled) iconColor else MercadoPagoTheme.newColor.icon.disabled,
     )
     Spacer(
         Modifier.size(
             if (size == MPButtonSize.Large) {
-                MercadoPagoTheme.spacing.s
+                MercadoPagoTheme.newSpacing.paddings.xmicro
             } else {
-                MercadoPagoTheme.spacing.xxs
+                MercadoPagoTheme.newSpacing.paddings.xnano
             },
         ),
     )
@@ -248,9 +246,9 @@ private fun RightIcon(
     Spacer(
         Modifier.size(
             if (size == MPButtonSize.Large) {
-                MercadoPagoTheme.spacing.s
+                MercadoPagoTheme.newSpacing.paddings.xmicro
             } else {
-                MercadoPagoTheme.spacing.xxs
+                MercadoPagoTheme.newSpacing.paddings.xnano
             },
         ),
     )
@@ -259,7 +257,7 @@ private fun RightIcon(
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
+        tint = if (enabled) iconColor else MercadoPagoTheme.newColor.icon.disabled,
     )
 }
 
@@ -297,7 +295,7 @@ fun MPButton(
     val textColor = getTextColorType(style)
     val iconColor = getIconColor(style)
     val contentPaddingHorizontal = getHorizontalPadding(size, iconType)
-    val contentPaddingVertical = getVerticalPadding(size)
+    val buttonHeight = getButtonHeight(size)
 
     val borderModifier = if (isFocused) {
         modifier.getFocusedModifier()
@@ -307,7 +305,8 @@ fun MPButton(
 
     Box(
         modifier = borderModifier
-            .clip(MercadoPagoTheme.shape.xs)
+            .height(buttonHeight)
+            .clip(MercadoPagoTheme.newShape.medium)
             .background(backgroundColor)
             .clickable(
                 enabled = enabled,
@@ -315,7 +314,7 @@ fun MPButton(
                 indication = null,
                 onClick = onClick,
             )
-            .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
+            .padding(horizontal = contentPaddingHorizontal),
         contentAlignment = Alignment.Center,
     ) {
         Row(
