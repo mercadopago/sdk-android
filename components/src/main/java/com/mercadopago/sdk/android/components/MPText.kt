@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -106,60 +107,97 @@ fun MPText(
 ) {
     val color = when (colorType) {
         MPTextColorType.Primary -> {
-            MercadoPagoTheme.color.text.primary
+            MercadoPagoTheme.newColor.text.primary
         }
 
         MPTextColorType.Secondary -> {
-            MercadoPagoTheme.color.text.secondary
+            MercadoPagoTheme.newColor.text.secondary
         }
 
         MPTextColorType.Accent -> {
-            MercadoPagoTheme.color.text.accent
+            MercadoPagoTheme.newColor.text.accent
         }
 
         MPTextColorType.Negative -> {
-            MercadoPagoTheme.color.text.negative
+            MercadoPagoTheme.newColor.feedback.negative.textLoud
         }
 
         MPTextColorType.Inverted -> {
-            MercadoPagoTheme.color.text.inverted
+            MercadoPagoTheme.newColor.text.inverse
         }
 
         MPTextColorType.Positive -> {
-            MercadoPagoTheme.color.feedback.positive
+            MercadoPagoTheme.newColor.feedback.positive.textLoud
         }
     }
 
+    val typography = MercadoPagoTheme.newTypography.heading
     val style = when (textStyle) {
         MPTextStyle.Title -> {
-            MercadoPagoTheme.typography.title.smallSemibold
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size20,
+                lineHeight = typography.lineHeight.lineHeight24,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
 
         MPTextStyle.BodyMediumSemiBold -> {
-            MercadoPagoTheme.typography.body.mediumSemibold
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size16,
+                lineHeight = typography.lineHeight.lineHeight24,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
 
         MPTextStyle.BodyMediumRegular -> {
-            MercadoPagoTheme.typography.body.mediumRegular
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.regular,
+                fontSize = typography.size.size16,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
 
         MPTextStyle.BodySmallSemiBold -> {
-            MercadoPagoTheme.typography.body.smallSemibold
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size14,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
 
         MPTextStyle.BodySmallRegular -> {
-            MercadoPagoTheme.typography.body.smallRegular
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.regular,
+                fontSize = typography.size.size14,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
 
         MPTextStyle.BodyExtraSmallSemiBold -> {
-            MercadoPagoTheme.typography.body.extraSmallSemibold
+            TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size12,
+                lineHeight = typography.lineHeight.lineHeight16,
+                letterSpacing = typography.letterSpacing.spacing0,
+            )
         }
     }
 
     Text(
         text = text,
         style = style,
-        color = if (!enabled) MercadoPagoTheme.color.text.disabled else color,
+        color = if (!enabled) MercadoPagoTheme.newColor.text.disabled else color,
         modifier = modifier,
     )
 }
