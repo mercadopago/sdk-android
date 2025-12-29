@@ -11,6 +11,27 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWar
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
+private object ThreeDSErrorMessages {
+    const val PROVIDER_NOT_AVAILABLE = "3DS provider not available. Please set the provider using setThreeDSProvider() method."
+    const val FAILED_TO_GET_WARNINGS = "Failed to get 3DS warnings."
+    const val CHALLENGE_DATA_NOT_AVAILABLE = "Challenge data not available in authentication response."
+    const val FAILED_TO_EXECUTE_CHALLENGE = "Failed to execute 3DS challenge."
+    const val ERROR_GETTING_WARNINGS_PREFIX = "Error getting warnings: "
+    const val ERROR_AUTHENTICATING_CHALLENGE_PREFIX = "Error authenticating 3DS challenge: "
+    const val ERROR_DURING_CHALLENGE_PREFIX = "Error during 3DS challenge: "
+    const val FAILED_TO_CLOSE_TRANSACTION_PREFIX = "Failed to close transaction: "
+    const val FAILED_TO_CREATE_TRANSACTION_PREFIX = "Failed to create transaction: "
+}
+
+private object ThreeDSSuccessMessages {
+    const val TRANSACTION_CLOSED = "Transaction closed"
+    const val TRANSACTION_CREATED = "Transaction created"
+}
+
+private object ThreeDSErrorCodes {
+    const val EMPTY = ""
+    const val BAD_REQUEST = "400"
+}
 
 private var threeDSProvider: ThreeDSProvider? = null
 
@@ -65,7 +86,7 @@ fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> {
     if (!hasThreeDSProvider()) {
         return Result.Error(
             ResultError.Validation(
-                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
             ),
         )
     }
@@ -74,16 +95,16 @@ fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> {
             onSuccess = { warnings ->
                 warnings?.let { Result.Success(it) } ?: Result.Error(
                     ResultError.Request(
-                        code = "",
-                        message = "Failed to get 3DS warnings.",
+                        code = ThreeDSErrorCodes.EMPTY,
+                        message = ThreeDSErrorMessages.FAILED_TO_GET_WARNINGS,
                     ),
                 )
             },
             onFailure = { throwable ->
                 Result.Error(
                     ResultError.Request(
-                        code = "",
-                        message = "Error getting warnings: ${throwable.message}",
+                        code = ThreeDSErrorCodes.EMPTY,
+                        message = "${ThreeDSErrorMessages.ERROR_GETTING_WARNINGS_PREFIX}${throwable.message}",
                     ),
                 )
             },
@@ -142,7 +163,7 @@ suspend fun CoreMethods.startChallenge(
     if (!hasThreeDSProvider()) {
         return Result.Error(
             ResultError.Validation(
-                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
             ),
         )
     }
@@ -161,8 +182,8 @@ private suspend fun CoreMethods.executeThreeDSChallenge(
         onFailure = { throwable ->
             Result.Error(
                 ResultError.Request(
-                    code = "400",
-                    message = "Error authenticating 3DS challenge: ${throwable.message}",
+                    code = ThreeDSErrorCodes.BAD_REQUEST,
+                    message = "${ThreeDSErrorMessages.ERROR_AUTHENTICATING_CHALLENGE_PREFIX}${throwable.message}",
                 ),
             )
         },
@@ -180,7 +201,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
                 executeChallengeFlow(activity, challengeData, timeout)
             } ?: Result.Error(
                 ResultError.Validation(
-                    message = "Challenge data not available in authentication response.",
+                    message = ThreeDSErrorMessages.CHALLENGE_DATA_NOT_AVAILABLE,
                 ),
             )
         }
@@ -202,16 +223,16 @@ private suspend fun CoreMethods.executeChallengeFlow(
         onSuccess = { challengeResult ->
             challengeResult?.let { Result.Success(it) } ?: Result.Error(
                 ResultError.Request(
-                    code = "400",
-                    message = "Failed to execute 3DS challenge.",
+                    code = ThreeDSErrorCodes.BAD_REQUEST,
+                    message = ThreeDSErrorMessages.FAILED_TO_EXECUTE_CHALLENGE,
                 ),
             )
         },
         onFailure = { throwable ->
             Result.Error(
                 ResultError.Request(
-                    code = "400",
-                    message = "Error during 3DS challenge: ${throwable.message}",
+                    code = ThreeDSErrorCodes.BAD_REQUEST,
+                    message = "${ThreeDSErrorMessages.ERROR_DURING_CHALLENGE_PREFIX}${throwable.message}",
                 ),
             )
         },
@@ -246,17 +267,17 @@ fun CoreMethods.close(): Result<String, ResultError> {
     if (!hasThreeDSProvider()) {
         return Result.Error(
             ResultError.Validation(
-                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
             ),
         )
     }
     return runCatching { threeDSProvider?.close() }
         .fold(
-            onSuccess = { Result.Success("Transaction closed") },
+            onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CLOSED) },
             onFailure = { throwable ->
                 Result.Error(
                     ResultError.Validation(
-                        message = "Failed to close transaction: ${throwable.message}",
+                        message = "${ThreeDSErrorMessages.FAILED_TO_CLOSE_TRANSACTION_PREFIX}${throwable.message}",
                     ),
                 )
             },
@@ -296,17 +317,17 @@ fun CoreMethods.createTransaction(
     if (!hasThreeDSProvider()) {
         return Result.Error(
             ResultError.Validation(
-                message = "3DS provider not available. Please set the provider using setThreeDSProvider() method.",
+                message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
             ),
         )
     }
     return runCatching { threeDSProvider?.createTransaction(cardToken.token) }
         .fold(
-            onSuccess = { Result.Success("Transaction created") },
+            onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CREATED) },
             onFailure = { throwable ->
                 Result.Error(
                     ResultError.Validation(
-                        message = "Failed to create transaction: ${throwable.message}",
+                        message = "${ThreeDSErrorMessages.FAILED_TO_CREATE_TRANSACTION_PREFIX}${throwable.message}",
                     ),
                 )
             },
