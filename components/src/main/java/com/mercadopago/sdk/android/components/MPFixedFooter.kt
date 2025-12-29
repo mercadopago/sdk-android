@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -75,10 +76,10 @@ fun MPFixedFooter(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MercadoPagoTheme.color.background.primary)
+            .background(MercadoPagoTheme.newColor.background.primary)
             .padding(
-                horizontal = MercadoPagoTheme.spacing.m,
-                vertical = MercadoPagoTheme.spacing.m,
+                horizontal = MercadoPagoTheme.newSpacing.paddings.xtiny,
+                vertical = MercadoPagoTheme.newSpacing.paddings.xtiny,
             ),
     ) {
         HeaderSection(
@@ -87,7 +88,7 @@ fun MPFixedFooter(
             subtitle = subtitle,
         )
         if (buttonData != null) {
-            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.m))
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.newSpacing.paddings.xtiny))
             MPButton(
                 text = buttonData.text,
                 modifier = Modifier.fillMaxWidth(),
@@ -141,6 +142,21 @@ private fun HeaderSection(
 private fun AmountText(
     amount: MPAmountData,
 ) {
+    val headingTypo = MercadoPagoTheme.newTypography.heading
+    val bodyExtraSmallSemiboldStyle = TextStyle(
+        fontFamily = headingTypo.familyDefault,
+        fontWeight = headingTypo.weight.semibold,
+        fontSize = headingTypo.size.size12,
+        lineHeight = headingTypo.lineHeight.lineHeight16,
+        letterSpacing = headingTypo.letterSpacing.spacing0,
+    )
+    val titleSmallSemiboldStyle = TextStyle(
+        fontFamily = headingTypo.familyDefault,
+        fontWeight = headingTypo.weight.semibold,
+        fontSize = headingTypo.size.size20,
+        lineHeight = headingTypo.lineHeight.lineHeight24,
+        letterSpacing = headingTypo.letterSpacing.spacing0,
+    )
     val annotatedString = buildAnnotatedString {
         append("${amount.currencySymbol} ${amount.integerPart} ")
         appendInlineContent(SUPERSCRIPT_ID, amount.decimalPart)
@@ -156,8 +172,8 @@ private fun AmountText(
         ) {
             Text(
                 text = amount.decimalPart,
-                style = MercadoPagoTheme.typography.body.extraSmallSemibold,
-                color = MercadoPagoTheme.color.text.primary,
+                style = bodyExtraSmallSemiboldStyle,
+                color = MercadoPagoTheme.newColor.text.primary,
             )
         },
     )
@@ -165,8 +181,8 @@ private fun AmountText(
     Text(
         text = annotatedString,
         inlineContent = inlineContent,
-        style = MercadoPagoTheme.typography.title.smallSemibold,
-        color = MercadoPagoTheme.color.text.primary,
+        style = titleSmallSemiboldStyle,
+        color = MercadoPagoTheme.newColor.text.primary,
     )
 }
 
