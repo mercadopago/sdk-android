@@ -168,4 +168,10 @@ internal val MercadoPagoDefaultLightTheme = MercadoPagoThemeProvider(
         xs = 2.dp,
     ),
     typography = MercadoPagoProximaNovaTypography,
+    newColor = NewDefaultLightColors,
+    newSpacing = NewDefaultLightSpacing,
+    newShape = NewDefaultLightShape,
+    newRadius = NewDefaultLightRadius,
+    newBorderWidth = NewDefaultLightBorderWidth,
+    newTypography = NewDefaultLightTypography,
 )
