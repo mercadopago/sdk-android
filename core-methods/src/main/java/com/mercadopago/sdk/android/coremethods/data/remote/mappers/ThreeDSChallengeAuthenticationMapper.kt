@@ -8,7 +8,7 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAut
 internal fun ThreeDSChallengeAuthenticationResponse.toModel(): ThreeDSChallengeAuthentication =
     ThreeDSChallengeAuthentication(
         status = this.status.orEmpty(),
-        data = this.data?.toModel(),
+        threeDSAuthenticationModel = this.data?.toModel(),
     )
 
 internal fun ThreeDSChallengeDataResponse.toModel(): ThreeDSAuthenticationModel =

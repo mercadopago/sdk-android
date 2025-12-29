@@ -11,10 +11,7 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWar
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
-/**
- * Private property to hold the 3DS provider instance.
- * This is set by the client application through setThreeDSProvider method.
- */
+
 private var threeDSProvider: ThreeDSProvider? = null
 
 /**
@@ -36,14 +33,6 @@ fun CoreMethods.setThreeDSProvider(
     threeDSProvider = provider
 }
 
-/**
- * Checks if a 3DS provider is currently configured and available.
- *
- * This internal helper method is used to verify that a [ThreeDSProvider]
- * has been set via [setThreeDSProvider] before attempting any 3DS operations.
- *
- * @return `true` if a provider is set and available, `false` otherwise
- */
 private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
 
 /**
@@ -172,7 +161,7 @@ private suspend fun CoreMethods.executeThreeDSChallenge(
         onFailure = { throwable ->
             Result.Error(
                 ResultError.Request(
-                    code = "",
+                    code = "400",
                     message = "Error authenticating 3DS challenge: ${throwable.message}",
                 ),
             )
@@ -187,7 +176,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
     when (authenticationResult) {
         is Result.Success -> {
             val authentication = authenticationResult.data
-            authentication.data?.let { challengeData ->
+            authentication.threeDSAuthenticationModel?.let { challengeData ->
                 executeChallengeFlow(activity, challengeData, timeout)
             } ?: Result.Error(
                 ResultError.Validation(
@@ -213,7 +202,7 @@ private suspend fun CoreMethods.executeChallengeFlow(
         onSuccess = { challengeResult ->
             challengeResult?.let { Result.Success(it) } ?: Result.Error(
                 ResultError.Request(
-                    code = "",
+                    code = "400",
                     message = "Failed to execute 3DS challenge.",
                 ),
             )
@@ -221,7 +210,7 @@ private suspend fun CoreMethods.executeChallengeFlow(
         onFailure = { throwable ->
             Result.Error(
                 ResultError.Request(
-                    code = "",
+                    code = "400",
                     message = "Error during 3DS challenge: ${throwable.message}",
                 ),
             )

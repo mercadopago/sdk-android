@@ -4,5 +4,5 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAut
 
 internal data class ThreeDSChallengeAuthentication(
     val status: String,
-    val data: ThreeDSAuthenticationModel?,
+    val threeDSAuthenticationModel: ThreeDSAuthenticationModel?,
 )
