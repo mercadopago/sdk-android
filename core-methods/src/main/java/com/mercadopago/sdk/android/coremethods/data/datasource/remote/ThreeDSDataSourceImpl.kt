@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
-import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toUnitResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.ThreeDSService
@@ -23,5 +22,5 @@ internal class ThreeDSDataSourceImpl(
     override suspend fun updateThreeDSChallengeStatus(
         challengeId: String,
         request: UpdateThreeDSChallengeStatusRequest,
-    ): Result<Unit, ResultError> = service.updateThreeDSChallengeStatus(challengeId, request).toUnitResponse()
+    ): Result<Unit, ResultError> = service.updateThreeDSChallengeStatus(challengeId, request).toInternalResponse()
 }
