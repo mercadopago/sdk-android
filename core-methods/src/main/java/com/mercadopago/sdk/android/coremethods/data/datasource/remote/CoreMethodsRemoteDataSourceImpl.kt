@@ -63,10 +63,4 @@ internal class CoreMethodsRemoteDataSourceImpl(
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
-    override suspend fun updateThreeDSChallengeStatus(
-        challengeId: String,
-        request: UpdateThreeDSChallengeStatusRequest,
-    ): Result<Unit, ResultError> {
-        return service.updateThreeDSChallengeStatus(challengeId, request).toUnitResponse()
-    }
 }

@@ -194,6 +194,7 @@ private suspend fun CoreMethods.executeThreeDSChallenge(
 
 private suspend fun CoreMethods.processChallengeAuthentication(
     activity: Activity,
+    challengeId: String,
     authenticationResult: Result<ThreeDSChallengeAuthentication, ResultError>,
     timeout: Int,
 ): Result<ThreeDSChallengeResult, ResultError> =
@@ -201,7 +202,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
         is Result.Success -> {
             val authentication = authenticationResult.data
             authentication.threeDSAuthenticationModel?.let { challengeData ->
-                executeChallengeFlow(activity, challengeData, timeout)
+                executeChallengeFlow(activity, challengeId, challengeData, timeout)
             } ?: Result.Error(
                 ResultError.Validation(
                     message = ThreeDSErrorMessages.CHALLENGE_DATA_NOT_AVAILABLE,
@@ -213,6 +214,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
 
 private suspend fun CoreMethods.executeChallengeFlow(
     activity: Activity,
+    challengeId: String,
     challengeData: ThreeDSAuthenticationModel,
     timeout: Int,
 ): Result<ThreeDSChallengeResult, ResultError> {
@@ -224,6 +226,10 @@ private suspend fun CoreMethods.executeChallengeFlow(
         )
     }.fold(
         onSuccess = { challengeResult ->
+            updateThreeDSChallengeStatus(
+                challengeId = challengeId,
+                status = challengeResult
+            )
             challengeResult?.let { Result.Success(it) } ?: Result.Error(
                 ResultError.Request(
                     code = ThreeDSErrorCodes.BAD_REQUEST,

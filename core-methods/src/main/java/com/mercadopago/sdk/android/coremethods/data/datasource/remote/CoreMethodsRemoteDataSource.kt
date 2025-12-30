@@ -31,9 +31,4 @@ internal interface CoreMethodsRemoteDataSource {
     suspend fun getPaymentMethods(
         request: PaymentMethodsRequest,
     ): Result<List<PaymentMethod>, ResultError>
-
-    suspend fun updateThreeDSChallengeStatus(
-        challengeId: String,
-        request: UpdateThreeDSChallengeStatusRequest,
-    ): Result<Unit, ResultError>
 }

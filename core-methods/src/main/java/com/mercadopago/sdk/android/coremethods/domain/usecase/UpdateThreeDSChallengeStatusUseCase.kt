@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErro
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDSChallengeStatusParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
+import com.mercadopago.sdk.android.coremethods.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 /**
@@ -15,7 +16,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
  * error, or timeout).
  */
 internal class UpdateThreeDSChallengeStatusUseCase(
-    private val repository: CoreMethodsRepository,
+    private val repository: ThreeDSRepository,
 ) {
     suspend operator fun invoke(
         challengeId: String,
