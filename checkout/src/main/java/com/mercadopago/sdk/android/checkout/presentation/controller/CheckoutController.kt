@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoDefaultThemes
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProviderScheme
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoDefaultThemes
 import org.koin.core.Koin
 
 /**
