@@ -24,12 +24,12 @@ import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
  * @property radius The border radius configuration for the theme (legacy)
  * @property outline The outline configuration for the theme (legacy)
  * @property typography The typography configuration for the theme (legacy)
- * @property newColor The new color palette configuration for the theme
- * @property newSpacing The new spacing system configuration for the theme
- * @property newShape The new shape configuration for the theme
- * @property newRadius The new border radius configuration for the theme
- * @property mercadoPagoAndesBorderWidth The new border width configuration for the theme
- * @property newTypography The new typography configuration for the theme
+ * @property andesColor The Andes color palette configuration for the theme
+ * @property andesSpacing The Andes spacing system configuration for the theme
+ * @property andesShape The Andes shape configuration for the theme
+ * @property andesRadius The Andes border radius configuration for the theme
+ * @property andesBorderWidth The Andes border width configuration for the theme
+ * @property andesTypography The Andes typography configuration for the theme
  */
 data class MercadoPagoThemeProvider(
     val color: MercadoPagoColor,
@@ -38,12 +38,12 @@ data class MercadoPagoThemeProvider(
     val radius: MercadoPagoRadius,
     val outline: MercadoPagoOutline,
     val typography: MercadoPagoTypography,
-    val newColor: MercadoPagoAndesColor,
-    val newSpacing: MercadoPagoAndesSpacing,
-    val newShape: MercadoPagoAndesShape,
-    val newRadius: MercadoPagoAndesRadius,
-    val mercadoPagoAndesBorderWidth: MercadoPagoAndesBorderWidth,
-    val newTypography: MercadoPagoAndesTypography,
+    val andesColor: MercadoPagoAndesColor,
+    val andesSpacing: MercadoPagoAndesSpacing,
+    val andesShape: MercadoPagoAndesShape,
+    val andesRadius: MercadoPagoAndesRadius,
+    val andesBorderWidth: MercadoPagoAndesBorderWidth,
+    val andesTypography: MercadoPagoAndesTypography,
 )
 
 /**

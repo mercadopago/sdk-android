@@ -130,7 +130,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 extraSmallSemibold = TextStyle.Default,
             ),
         ),
-        newColor = MercadoPagoAndesColor(
+        andesColor = MercadoPagoAndesColor(
             background = MercadoPagoAndesBackgroundColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
@@ -238,7 +238,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 transparent = Color.Unspecified,
             ),
         ),
-        newSpacing = MercadoPagoAndesSpacing(
+        andesSpacing = MercadoPagoAndesSpacing(
             paddings = AndesSpacingPaddings(
                 none = 0.dp,
                 pico = 0.dp,
@@ -278,7 +278,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 xmega = 0.dp,
             ),
         ),
-        newShape = MercadoPagoAndesShape(
+        andesShape = MercadoPagoAndesShape(
             none = RoundedCornerShape(0.dp),
             tiny = RoundedCornerShape(0.dp),
             xsmall = RoundedCornerShape(0.dp),
@@ -288,7 +288,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
             xlarge = RoundedCornerShape(0.dp),
             full = RoundedCornerShape(0.dp),
         ),
-        newRadius = MercadoPagoAndesRadius(
+        andesRadius = MercadoPagoAndesRadius(
             none = 0.dp,
             tiny = 0.dp,
             xsmall = 0.dp,
@@ -298,14 +298,14 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
             xlarge = 0.dp,
             full = 0.dp,
         ),
-        mercadoPagoAndesBorderWidth = MercadoPagoAndesBorderWidth(
+        andesBorderWidth = MercadoPagoAndesBorderWidth(
             none = 0.dp,
             small = 0.dp,
             medium = 0.dp,
             large = 0.dp,
             xlarge = 0.dp,
         ),
-        newTypography = MercadoPagoAndesTypography(
+        andesTypography = MercadoPagoAndesTypography(
             heading = NewHeadingTypography(
                 familyDefault = FontFamily.Default,
                 size = NewTypographySize(
@@ -390,48 +390,57 @@ object MercadoPagoTheme {
     val typography: MercadoPagoTypography
         @Composable
         get() = LocalMercadoPagoTheme.current.typography
+}
+
+/**
+ * @suppress
+ * Object that provides access to the current MercadoPago Andes theme values.
+ * This is the main entry point for accessing Andes theme values in composables.
+ * Use this object when working with the Andes design system.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+object MercadoPagoAndesTheme {
+    /**
+     * Gets the current Andes color configuration from the theme.
+     */
+    val color: MercadoPagoAndesColor
+        @Composable
+        get() = LocalMercadoPagoTheme.current.andesColor
 
     /**
-     * Gets the new color configuration from the theme.
+     * Gets the current Andes spacing configuration from the theme.
      */
-    val newColor: MercadoPagoAndesColor
+    val spacing: MercadoPagoAndesSpacing
         @Composable
-        get() = LocalMercadoPagoTheme.current.newColor
+        get() = LocalMercadoPagoTheme.current.andesSpacing
 
     /**
-     * Gets the new spacing configuration from the theme.
+     * Gets the current Andes shape configuration from the theme.
      */
-    val newSpacing: MercadoPagoAndesSpacing
+    val shape: MercadoPagoAndesShape
         @Composable
-        get() = LocalMercadoPagoTheme.current.newSpacing
+        get() = LocalMercadoPagoTheme.current.andesShape
 
     /**
-     * Gets the new shape configuration from the theme.
+     * Gets the current Andes radius configuration from the theme.
      */
-    val newShape: MercadoPagoAndesShape
+    val radius: MercadoPagoAndesRadius
         @Composable
-        get() = LocalMercadoPagoTheme.current.newShape
+        get() = LocalMercadoPagoTheme.current.andesRadius
 
     /**
-     * Gets the new radius configuration from the theme.
+     * Gets the current Andes border width configuration from the theme.
      */
-    val newRadius: MercadoPagoAndesRadius
+    val borderWidth: MercadoPagoAndesBorderWidth
         @Composable
-        get() = LocalMercadoPagoTheme.current.newRadius
+        get() = LocalMercadoPagoTheme.current.andesBorderWidth
 
     /**
-     * Gets the new border width configuration from the theme.
+     * Gets the current Andes typography configuration from the theme.
      */
-    val mercadoPagoAndesBorderWidth: MercadoPagoAndesBorderWidth
+    val typography: MercadoPagoAndesTypography
         @Composable
-        get() = LocalMercadoPagoTheme.current.mercadoPagoAndesBorderWidth
-
-    /**
-     * Gets the new typography configuration from the theme.
-     */
-    val newTypography: MercadoPagoAndesTypography
-        @Composable
-        get() = LocalMercadoPagoTheme.current.newTypography
+        get() = LocalMercadoPagoTheme.current.andesTypography
 }
 
 /**
