@@ -4,7 +4,7 @@ package com.mercadopago.sdk.android.checkout.data.preferences
 
 import androidx.compose.ui.graphics.Color
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoDefaultThemes
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

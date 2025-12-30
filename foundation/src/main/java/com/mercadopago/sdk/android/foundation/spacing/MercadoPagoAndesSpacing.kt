@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.Dp
  * @property paddings Padding spacing configuration
  * @property gap Gap spacing configuration
  */
-data class NewMercadoPagoSpacing(
-    val paddings: NewSpacingPaddings,
-    val gap: NewSpacingGap,
+data class MercadoPagoAndesSpacing(
+    val paddings: AndesSpacingPaddings,
+    val gap: AndesSpacingGap,
 )
 
 /**
@@ -35,7 +35,7 @@ data class NewMercadoPagoSpacing(
  * @property mega Mega padding (80)
  * @property xmega Extra mega padding (84)
  */
-data class NewSpacingPaddings(
+data class AndesSpacingPaddings(
     val none: Dp,
     val pico: Dp,
     val xnano: Dp,
@@ -76,7 +76,7 @@ data class NewSpacingPaddings(
  * @property mega Mega gap (80)
  * @property xmega Extra mega gap (84)
  */
-data class NewSpacingGap(
+data class AndesSpacingGap(
     val none: Dp,
     val pico: Dp,
     val xnano: Dp,

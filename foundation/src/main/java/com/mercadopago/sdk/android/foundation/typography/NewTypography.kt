@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.TextUnit
  *
  * @property heading Heading typography configuration
  */
-data class NewMercadoPagoTypography(
+data class MercadoPagoAndesTypography(
     val heading: NewHeadingTypography,
 )
 

@@ -1,17 +1,17 @@
 package com.mercadopago.sdk.android.foundation.theme
 
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.NewMercadoPagoColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesColor
 import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
-import com.mercadopago.sdk.android.foundation.outline.NewBorderWidth
+import com.mercadopago.sdk.android.foundation.outline.MercadoPagoAndesBorderWidth
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
-import com.mercadopago.sdk.android.foundation.shape.NewMercadoPagoRadius
-import com.mercadopago.sdk.android.foundation.shape.NewMercadoPagoShape
+import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesRadius
+import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesShape
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
-import com.mercadopago.sdk.android.foundation.spacing.NewMercadoPagoSpacing
+import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
-import com.mercadopago.sdk.android.foundation.typography.NewMercadoPagoTypography
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 
 /**
  * Represents a complete theme configuration for MercadoPago UI components.
@@ -28,7 +28,7 @@ import com.mercadopago.sdk.android.foundation.typography.NewMercadoPagoTypograph
  * @property newSpacing The new spacing system configuration for the theme
  * @property newShape The new shape configuration for the theme
  * @property newRadius The new border radius configuration for the theme
- * @property newBorderWidth The new border width configuration for the theme
+ * @property mercadoPagoAndesBorderWidth The new border width configuration for the theme
  * @property newTypography The new typography configuration for the theme
  */
 data class MercadoPagoThemeProvider(
@@ -38,12 +38,12 @@ data class MercadoPagoThemeProvider(
     val radius: MercadoPagoRadius,
     val outline: MercadoPagoOutline,
     val typography: MercadoPagoTypography,
-    val newColor: NewMercadoPagoColor,
-    val newSpacing: NewMercadoPagoSpacing,
-    val newShape: NewMercadoPagoShape,
-    val newRadius: NewMercadoPagoRadius,
-    val newBorderWidth: NewBorderWidth,
-    val newTypography: NewMercadoPagoTypography,
+    val newColor: MercadoPagoAndesColor,
+    val newSpacing: MercadoPagoAndesSpacing,
+    val newShape: MercadoPagoAndesShape,
+    val newRadius: MercadoPagoAndesRadius,
+    val mercadoPagoAndesBorderWidth: MercadoPagoAndesBorderWidth,
+    val newTypography: MercadoPagoAndesTypography,
 )
 
 /**
