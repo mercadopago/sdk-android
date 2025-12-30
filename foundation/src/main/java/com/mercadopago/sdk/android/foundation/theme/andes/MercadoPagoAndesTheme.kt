@@ -508,7 +508,6 @@ internal val AndesDefaultLightTypography = MercadoPagoAndesTypography(
     ),
 )
 
-
 internal val MercadoPagoAndesDefaultLightTheme = MercadoPagoThemeProvider.Andes(
     color = AndesDefaultLightColors,
     spacing = AndesDefaultLightSpacing,
