@@ -10,7 +10,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CoreMethodsRemoteDataSource {
@@ -31,8 +30,4 @@ internal interface CoreMethodsRemoteDataSource {
     suspend fun getPaymentMethods(
         request: PaymentMethodsRequest,
     ): Result<List<PaymentMethod>, ResultError>
-
-    suspend fun authenticateThreeDSChallenge(
-        challengeId: String,
-    ): Result<ThreeDSChallengeAuthentication, ResultError>
 }

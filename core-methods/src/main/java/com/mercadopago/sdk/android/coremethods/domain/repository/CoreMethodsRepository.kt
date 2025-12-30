@@ -6,8 +6,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeAuthentication
-import com.mercadopago.sdk.android.coremethods.domain.model.params.AuthenticateThreeDSChallengeParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuersParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
@@ -32,8 +30,4 @@ internal interface CoreMethodsRepository {
     suspend fun getPaymentMethods(
         params: GetPaymentMethodsParams,
     ): Result<List<PaymentMethod>, ResultError>
-
-    suspend fun authenticateThreeDSChallenge(
-        params: AuthenticateThreeDSChallengeParams,
-    ): Result<ThreeDSChallengeAuthentication, ResultError>
 }

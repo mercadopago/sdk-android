@@ -7,16 +7,16 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAut
 
 internal fun ThreeDSChallengeAuthenticationResponse.toModel(): ThreeDSChallengeAuthentication =
     ThreeDSChallengeAuthentication(
-        status = this.status.orEmpty(),
-        threeDSAuthenticationModel = this.data?.toModel(),
+        status = status.orEmpty(),
+        threeDSAuthenticationModel = data?.toModel(),
     )
 
 internal fun ThreeDSChallengeDataResponse.toModel(): ThreeDSAuthenticationModel =
     ThreeDSAuthenticationModel(
-        acsReferenceNumber = this.acsReferenceNumber.orEmpty(),
-        acsSignedContent = this.acsSignedContent.orEmpty(),
-        acsTransID = this.acsTransId.orEmpty(),
-        threeDSServerTransID = this.threeDsServerTransId.orEmpty(),
-        dsTransID = this.dsTransId.orEmpty(),
-        callbackUrl = this.callbackUrl.orEmpty(),
+        acsReferenceNumber = acsReferenceNumber.orEmpty(),
+        acsSignedContent = acsSignedContent.orEmpty(),
+        acsTransID = acsTransId.orEmpty(),
+        threeDSServerTransID = threeDsServerTransId.orEmpty(),
+        dsTransID = dsTransId.orEmpty(),
+        callbackUrl = callbackUrl.orEmpty(),
     )
