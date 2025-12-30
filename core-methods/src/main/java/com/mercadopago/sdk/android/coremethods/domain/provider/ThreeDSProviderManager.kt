@@ -1,10 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.provider
 
-/**
- * Thread-safe manager for the ThreeDSProvider instance.
- * This manager allows the provider to be set and accessed from use cases
- * via dependency injection while maintaining thread safety.
- */
+
 internal class ThreeDSProviderManager {
     @Volatile
     private var provider: ThreeDSProvider? = null

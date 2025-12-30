@@ -3,10 +3,6 @@ package com.mercadopago.sdk.android.threeds.adapter.mappers
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
 import com.mercadopago.sdk.android.threeds.domain.model.MPThreeDSAuthenticationModel
 
-/**
- * Mapper to convert between core-methods ThreeDSAuthenticationModel and threeds MPThreeDSAuthenticationModel.
- * This allows the adapter to translate between the two module's domain models.
- */
 internal object ThreeDSAuthenticationModelMapper {
     /**
      * Converts MPThreeDSAuthenticationModel (threeds model) to ThreeDSAuthenticationModel (core-methods model).

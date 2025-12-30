@@ -7,13 +7,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDS
 import com.mercadopago.sdk.android.coremethods.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
-/**
- * Use case responsible for updating the status of a 3DS challenge.
- *
- * This use case validates the input parameters and delegates the API call to the repository.
- * It updates the backend with the result of the 3DS challenge flow (completion, cancellation,
- * error, or timeout).
- */
 internal class UpdateThreeDSChallengeStatusUseCase(
     private val repository: ThreeDSRepository,
 ) {

@@ -4,12 +4,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErro
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 
-/**
- * Maps a ThreeDSChallengeResult to a Pair containing the status and optional error detail.
- *
- * @param result The challenge result to convert
- * @return A Pair containing the ThreeDSChallengeStatus and optional ThreeDSChallengeErrorDetail
- */
 internal fun convertChallengeResultToStatus(
     result: ThreeDSChallengeResult,
 ): Pair<ThreeDSChallengeStatus, ThreeDSChallengeErrorDetail?> {

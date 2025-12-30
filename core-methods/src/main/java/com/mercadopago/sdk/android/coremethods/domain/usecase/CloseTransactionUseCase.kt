@@ -6,11 +6,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSSuccessMessages
 
-/**
- * Use case responsible for closing the current 3DS transaction and releasing associated resources.
- * This should be called after the 3DS authentication flow is complete,
- * regardless of whether it succeeded or failed.
- */
 internal class CloseTransactionUseCase(
     private val providerManager: ThreeDSProviderManager,
 ) {

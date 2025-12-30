@@ -56,9 +56,6 @@ internal object ThreeDSChallengeResultMapper {
         }
     }
 
-    /**
-     * Converts MPThreeDSAuthenticated to ThreeDSAuthenticated.
-     */
     private fun toThreeDSAuthenticated(
         mpAuthenticated: MPThreeDSAuthenticated,
     ): ThreeDSAuthenticated {
@@ -68,9 +65,6 @@ internal object ThreeDSChallengeResultMapper {
         )
     }
 
-    /**
-     * Converts ThreeDSAuthenticated to MPThreeDSAuthenticated.
-     */
     private fun toMPThreeDSAuthenticated(
         authenticated: ThreeDSAuthenticated,
     ): MPThreeDSAuthenticated {
@@ -80,9 +74,6 @@ internal object ThreeDSChallengeResultMapper {
         )
     }
 
-    /**
-     * Converts MPThreeDSChallengeModel to ThreeDSChallengeModel.
-     */
     private fun toThreeDSChallengeModel(
         mpModel: MPThreeDSChallengeModel,
     ): ThreeDSChallengeModel {
@@ -95,9 +86,6 @@ internal object ThreeDSChallengeResultMapper {
         )
     }
 
-    /**
-     * Converts ThreeDSChallengeModel to MPThreeDSChallengeModel.
-     */
     private fun toMPThreeDSChallengeModel(
         model: ThreeDSChallengeModel,
     ): MPThreeDSChallengeModel {
@@ -110,9 +98,6 @@ internal object ThreeDSChallengeResultMapper {
         )
     }
 
-    /**
-     * Converts MPThreeDSChallengeError to ThreeDSChallengeError.
-     */
     private fun toThreeDSChallengeError(
         mpError: MPThreeDSChallengeError,
     ): ThreeDSChallengeError {
@@ -124,9 +109,6 @@ internal object ThreeDSChallengeResultMapper {
         )
     }
 
-    /**
-     * Converts ThreeDSChallengeError to MPThreeDSChallengeError.
-     */
     private fun toMPThreeDSChallengeError(
         error: ThreeDSChallengeError,
     ): MPThreeDSChallengeError {

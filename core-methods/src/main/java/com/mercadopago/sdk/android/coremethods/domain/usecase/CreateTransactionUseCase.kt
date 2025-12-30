@@ -7,10 +7,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSSuccessMessages
 
-/**
- * Use case responsible for creating a new 3DS transaction using the provided card token.
- * This initializes the 3DS authentication process for the specified card.
- */
 internal class CreateTransactionUseCase(
     private val providerManager: ThreeDSProviderManager,
 ) {

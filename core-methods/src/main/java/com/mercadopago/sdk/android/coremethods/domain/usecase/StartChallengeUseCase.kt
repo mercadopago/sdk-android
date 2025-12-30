@@ -13,14 +13,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorCodes
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 import com.mercadopago.sdk.android.coremethods.domain.utils.convertChallengeResultToStatus
 
-/**
- * Use case responsible for starting the 3DS challenge flow with the provided challenge ID.
- * This use case orchestrates the entire challenge flow:
- * 1. Authenticates the challenge using the challengeId
- * 2. Retrieves the authentication data from the backend
- * 3. Executes the challenge flow with the provider
- * 4. Updates the challenge status based on the result
- */
 internal class StartChallengeUseCase(
     private val providerManager: ThreeDSProviderManager,
     private val authenticateThreeDSChallengeUseCase: AuthenticateThreeDSChallengeUseCase,

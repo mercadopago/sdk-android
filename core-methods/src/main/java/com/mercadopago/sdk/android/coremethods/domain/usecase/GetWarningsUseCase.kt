@@ -7,11 +7,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorCodes
 import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 
-/**
- * Use case responsible for retrieving security warnings from the 3DS SDK.
- * These warnings indicate potential security issues or configuration problems
- * that may affect the 3DS authentication process.
- */
 internal class GetWarningsUseCase(
     private val providerManager: ThreeDSProviderManager,
 ) {

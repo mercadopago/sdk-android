@@ -4,9 +4,6 @@ import com.mercadopago.sdk.android.coremethods.data.remote.request.ErrorDetailRe
 import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDSChallengeStatusParams
 
-/**
- * Maps UpdateThreeDSChallengeStatusParams to UpdateThreeDSChallengeStatusRequest.
- */
 internal fun UpdateThreeDSChallengeStatusParams.toRequest(): UpdateThreeDSChallengeStatusRequest {
     return UpdateThreeDSChallengeStatusRequest(
         status = status.value,
