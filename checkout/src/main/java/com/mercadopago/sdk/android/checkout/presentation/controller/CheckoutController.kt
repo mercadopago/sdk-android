@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoDefaultThemes
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProviderScheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.core.Koin
 
 /**
@@ -31,7 +31,7 @@ import org.koin.core.Koin
 @Stable
 class CheckoutController internal constructor(
     private val context: Context,
-    private val theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
+    private val theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
     private val appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     private val koin: Koin = Checkout.getInstance().koin,
 ) {
@@ -63,7 +63,7 @@ class CheckoutController internal constructor(
          */
         fun create(
             context: Context,
-            theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
+            theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
             appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
         ): CheckoutController =
             CheckoutController(
@@ -84,7 +84,7 @@ class CheckoutController internal constructor(
  */
 @Composable
 fun rememberCheckout(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
+    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
 ): CheckoutController {
     val context = LocalContext.current

@@ -3,8 +3,8 @@ package com.mercadopago.sdk.android.checkout.presentation.controller
 import android.content.Context
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoDefaultThemes
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -22,7 +22,7 @@ internal class CheckoutControllerTest {
     fun `when create is called Then return CheckoutController`() {
         // Given
         mockkObject(Checkout.Companion)
-        val theme = MercadoPagoDefaultThemes.Default
+        val theme = MercadoPagoThemes.Legacy
         val appearance = MercadoPagoThemeAppearance.Light
         every {
             Checkout.getInstance().koin
@@ -46,7 +46,7 @@ internal class CheckoutControllerTest {
     fun `when launchBottomSheet is called Then set theme and launch intent`() {
         // Given
         mockkObject(Checkout.Companion)
-        val theme = MercadoPagoDefaultThemes.Default
+        val theme = MercadoPagoThemes.Legacy
         val appearance = MercadoPagoThemeAppearance.Light
         every {
             Checkout.getInstance().koin

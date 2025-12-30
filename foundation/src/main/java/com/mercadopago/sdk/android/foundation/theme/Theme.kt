@@ -474,14 +474,14 @@ object MercadoPagoAndesTheme {
  * Composable function that provides the MercadoPago theme to its content.
  * This is the main entry point for applying the theme to a composition.
  *
- * @param theme The theme scheme to be applied, defaults to [MercadoPagoDefaultThemes.Default]
+ * @param theme The theme scheme to be applied, defaults to [MercadoPagoThemes.Legacy]
  * @param appearance The appearance mode to be used, defaults to [MercadoPagoThemeAppearance.System]
  * @param content The content to be themed
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
+    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     content: @Composable () -> Unit,
 ) {

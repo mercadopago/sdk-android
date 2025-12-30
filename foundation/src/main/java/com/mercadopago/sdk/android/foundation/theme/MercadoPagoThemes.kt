@@ -7,13 +7,13 @@ import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultLi
  * Default theme configuration for MercadoPago UI components.
  * This object provides the standard theme scheme that includes both light and dark theme configurations.
  */
-object MercadoPagoDefaultThemes {
+object MercadoPagoThemes {
     /**
      * The default theme scheme that defines the visual appearance for both light and dark modes.
      * This is the standard theme used throughout the MercadoPago SDK.
      * Uses the legacy color system (MercadoPagoColor) as primary.
      */
-    val Default = MercadoPagoThemeProviderScheme(
+    val Legacy = MercadoPagoThemeProviderScheme(
         lightTheme = MercadoPagoDefaultLightTheme,
         darkTheme = MercadoPagoDefaultLightTheme,
     )
