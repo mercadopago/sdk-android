@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.foundation.theme
 
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoAndesDefaultLightTheme
+import com.mercadopago.sdk.android.foundation.theme.andes.MercadoPagoAndesDefaultLightTheme
 import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultLightTheme
 
 /**

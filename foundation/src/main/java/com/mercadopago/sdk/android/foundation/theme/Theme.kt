@@ -59,8 +59,8 @@ import com.mercadopago.sdk.android.foundation.typography.NewTypographyWeight
  * This is used to propagate theme values down the composition tree.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal val LocalMercadoPagoTheme = compositionLocalOf {
-    MercadoPagoThemeProvider(
+internal val LocalMercadoPagoTheme = compositionLocalOf<MercadoPagoThemeProvider> {
+    MercadoPagoThemeProvider.Legacy(
         color = MercadoPagoColor(
             accent = Color.Unspecified,
             accentFirstVariant = Color.Unspecified,
@@ -130,236 +130,14 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 extraSmallSemibold = TextStyle.Default,
             ),
         ),
-        andesColor = MercadoPagoAndesColor(
-            background = MercadoPagoAndesBackgroundColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-            ),
-            surface = MercadoPagoAndesSurfaceColor(
-                primaryIdle = Color.Unspecified,
-                primaryActive = Color.Unspecified,
-                primaryDisabled = Color.Unspecified,
-            ),
-            fill = MercadoPagoAndesFillColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-                inverse = Color.Unspecified,
-                disabled = Color.Unspecified,
-                accentLoud = Color.Unspecified,
-                accentQuiet = Color.Unspecified,
-                defaultOnScroll = Color.Unspecified,
-            ),
-            border = MercadoPagoAndesBorderColor(
-                primary = Color.Unspecified,
-                accent = Color.Unspecified,
-                inverse = Color.Unspecified,
-                disabled = Color.Unspecified,
-            ),
-            icon = MercadoPagoAndesIconColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-                accent = Color.Unspecified,
-                inverse = Color.Unspecified,
-                disabled = Color.Unspecified,
-            ),
-            text = MercadoPagoAndesTextColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-                accent = Color.Unspecified,
-                inverse = Color.Unspecified,
-                disabled = Color.Unspecified,
-                linkIdle = Color.Unspecified,
-                linkActive = Color.Unspecified,
-            ),
-            brand = MercadoPagoAndesBrandColor(
-                fillLoud = Color.Unspecified,
-                fillQuiet = Color.Unspecified,
-                gradientStart = Color.Unspecified,
-                gradientEnd = Color.Unspecified,
-            ),
-            feedback = MercadoPagoAndesFeedbackColor(
-                informative = MercadoPagoAndesFeedbackTypeColor(
-                    fillLoud = Color.Unspecified,
-                    fillQuiet = Color.Unspecified,
-                    textLoud = Color.Unspecified,
-                    borderLoud = Color.Unspecified,
-                    iconLoud = Color.Unspecified,
-                ),
-                positive = MercadoPagoAndesFeedbackTypeColor(
-                    fillLoud = Color.Unspecified,
-                    fillQuiet = Color.Unspecified,
-                    textLoud = Color.Unspecified,
-                    borderLoud = Color.Unspecified,
-                    iconLoud = Color.Unspecified,
-                ),
-                caution = MercadoPagoAndesFeedbackTypeColor(
-                    fillLoud = Color.Unspecified,
-                    fillQuiet = Color.Unspecified,
-                    textLoud = Color.Unspecified,
-                    borderLoud = Color.Unspecified,
-                    iconLoud = Color.Unspecified,
-                ),
-                negative = MercadoPagoAndesFeedbackTypeColor(
-                    fillLoud = Color.Unspecified,
-                    fillQuiet = Color.Unspecified,
-                    textLoud = Color.Unspecified,
-                    borderLoud = Color.Unspecified,
-                    iconLoud = Color.Unspecified,
-                ),
-            ),
-            interactive = MercadoPagoAndesInteractiveColor(
-                fillLoud = MercadoPagoAndesInteractiveFillColor(
-                    idle = Color.Unspecified,
-                    hover = Color.Unspecified,
-                    active = Color.Unspecified,
-                ),
-                fillQuiet = MercadoPagoAndesInteractiveFillColor(
-                    idle = Color.Unspecified,
-                    hover = Color.Unspecified,
-                    active = Color.Unspecified,
-                ),
-                fillMute = MercadoPagoAndesInteractiveFillColor(
-                    idle = Color.Unspecified,
-                    hover = Color.Unspecified,
-                    active = Color.Unspecified,
-                ),
-                border = MercadoPagoAndesInteractiveBorderColor(
-                    idle = Color.Unspecified,
-                    active = Color.Unspecified,
-                ),
-                icon = MercadoPagoAndesInteractiveIconColor(
-                    idle = Color.Unspecified,
-                    active = Color.Unspecified,
-                    idleAccent = Color.Unspecified,
-                    activeAccent = Color.Unspecified,
-                ),
-            ),
-            transparent = MercadoPagoAndesTransparentColor(
-                transparent = Color.Unspecified,
-            ),
-        ),
-        andesSpacing = MercadoPagoAndesSpacing(
-            paddings = AndesSpacingPaddings(
-                none = 0.dp,
-                pico = 0.dp,
-                xnano = 0.dp,
-                nano = 0.dp,
-                xmicro = 0.dp,
-                micro = 0.dp,
-                xtiny = 0.dp,
-                tiny = 0.dp,
-                xsmall = 0.dp,
-                small = 0.dp,
-                medium = 0.dp,
-                large = 0.dp,
-                xlarge = 0.dp,
-                huge = 0.dp,
-                xhuge = 0.dp,
-                mega = 0.dp,
-                xmega = 0.dp,
-            ),
-            gap = AndesSpacingGap(
-                none = 0.dp,
-                pico = 0.dp,
-                xnano = 0.dp,
-                nano = 0.dp,
-                xmicro = 0.dp,
-                micro = 0.dp,
-                xtiny = 0.dp,
-                tiny = 0.dp,
-                xsmall = 0.dp,
-                small = 0.dp,
-                medium = 0.dp,
-                large = 0.dp,
-                xlarge = 0.dp,
-                huge = 0.dp,
-                xhuge = 0.dp,
-                mega = 0.dp,
-                xmega = 0.dp,
-            ),
-        ),
-        andesShape = MercadoPagoAndesShape(
-            none = RoundedCornerShape(0.dp),
-            tiny = RoundedCornerShape(0.dp),
-            xsmall = RoundedCornerShape(0.dp),
-            small = RoundedCornerShape(0.dp),
-            medium = RoundedCornerShape(0.dp),
-            large = RoundedCornerShape(0.dp),
-            xlarge = RoundedCornerShape(0.dp),
-            full = RoundedCornerShape(0.dp),
-        ),
-        andesRadius = MercadoPagoAndesRadius(
-            none = 0.dp,
-            tiny = 0.dp,
-            xsmall = 0.dp,
-            small = 0.dp,
-            medium = 0.dp,
-            large = 0.dp,
-            xlarge = 0.dp,
-            full = 0.dp,
-        ),
-        andesBorderWidth = MercadoPagoAndesBorderWidth(
-            none = 0.dp,
-            small = 0.dp,
-            medium = 0.dp,
-            large = 0.dp,
-            xlarge = 0.dp,
-        ),
-        andesTypography = MercadoPagoAndesTypography(
-            heading = NewHeadingTypography(
-                familyDefault = FontFamily.Default,
-                size = NewTypographySize(
-                    size10 = 0.sp,
-                    size12 = 0.sp,
-                    size14 = 0.sp,
-                    size16 = 0.sp,
-                    size18 = 0.sp,
-                    size20 = 0.sp,
-                    size24 = 0.sp,
-                    size28 = 0.sp,
-                    size32 = 0.sp,
-                    size40 = 0.sp,
-                    size48 = 0.sp,
-                    size56 = 0.sp,
-                ),
-                lineHeight = NewTypographyLineHeight(
-                    lineHeight12 = 0.sp,
-                    lineHeight16 = 0.sp,
-                    lineHeight18 = 0.sp,
-                    lineHeight20 = 0.sp,
-                    lineHeight22 = 0.sp,
-                    lineHeight24 = 0.sp,
-                    lineHeight28 = 0.sp,
-                    lineHeight34 = 0.sp,
-                    lineHeight40 = 0.sp,
-                    lineHeight48 = 0.sp,
-                    lineHeight56 = 0.sp,
-                    lineHeight66 = 0.sp,
-                ),
-                weight = NewTypographyWeight(
-                    regular = FontWeight.W400,
-                    semibold = FontWeight.W600,
-                    bold = FontWeight.W700,
-                ),
-                letterSpacing = NewTypographyLetterSpacing(
-                    spacing0 = 0.sp,
-                    spacingNegative1 = 0.sp,
-                ),
-                paragraphSpacing = NewTypographyParagraphSpacing(
-                    spacing10 = 0.sp,
-                    spacing12 = 0.sp,
-                    spacing14 = 0.sp,
-                    spacing16 = 0.sp,
-                ),
-            ),
-        ),
     )
 }
 
 /**
  * @suppress
- * Object that provides access to the current MercadoPago theme values.
- * This is the main entry point for accessing theme values in composables.
+ * Object that provides access to the current MercadoPago legacy theme values.
+ * This is the main entry point for accessing legacy theme values in composables.
+ * Use this object when working with the legacy design system.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object MercadoPagoTheme {
@@ -368,28 +146,60 @@ object MercadoPagoTheme {
      */
     val color: MercadoPagoColor
         @Composable
-        get() = LocalMercadoPagoTheme.current.color
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.color
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy color from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
 
     /**
      * Gets the current spacing configuration from the theme (legacy).
      */
     val spacing: MercadoPagoSpacing
         @Composable
-        get() = LocalMercadoPagoTheme.current.spacing
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.spacing
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy spacing from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
 
     /**
      * Gets the current shape configuration from the theme (legacy).
      */
     val shape: MercadoPagoShape
         @Composable
-        get() = LocalMercadoPagoTheme.current.shape
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.shape
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy shape from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
+
+    /**
+     * Gets the current radius configuration from the theme (legacy).
+     */
+    val radius: MercadoPagoRadius
+        @Composable
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.radius
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy radius from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
+
+    /**
+     * Gets the current outline configuration from the theme (legacy).
+     */
+    val outline: MercadoPagoOutline
+        @Composable
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.outline
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy outline from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
 
     /**
      * Gets the current typography configuration from the theme (legacy).
      */
     val typography: MercadoPagoTypography
         @Composable
-        get() = LocalMercadoPagoTheme.current.typography
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> theme.typography
+            is MercadoPagoThemeProvider.Andes -> throw IllegalStateException("Cannot access legacy typography from Andes theme. Use MercadoPagoAndesTheme instead.")
+        }
 }
 
 /**
@@ -405,42 +215,60 @@ object MercadoPagoAndesTheme {
      */
     val color: MercadoPagoAndesColor
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesColor
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes color from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.color
+        }
 
     /**
      * Gets the current Andes spacing configuration from the theme.
      */
     val spacing: MercadoPagoAndesSpacing
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesSpacing
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes spacing from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.spacing
+        }
 
     /**
      * Gets the current Andes shape configuration from the theme.
      */
     val shape: MercadoPagoAndesShape
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesShape
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes shape from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.shape
+        }
 
     /**
      * Gets the current Andes radius configuration from the theme.
      */
     val radius: MercadoPagoAndesRadius
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesRadius
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes radius from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.radius
+        }
 
     /**
      * Gets the current Andes border width configuration from the theme.
      */
     val borderWidth: MercadoPagoAndesBorderWidth
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesBorderWidth
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes borderWidth from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.borderWidth
+        }
 
     /**
      * Gets the current Andes typography configuration from the theme.
      */
     val typography: MercadoPagoAndesTypography
         @Composable
-        get() = LocalMercadoPagoTheme.current.andesTypography
+        get() = when (val theme = LocalMercadoPagoTheme.current) {
+            is MercadoPagoThemeProvider.Legacy -> throw IllegalStateException("Cannot access Andes typography from legacy theme. Use MercadoPagoTheme instead.")
+            is MercadoPagoThemeProvider.Andes -> theme.typography
+        }
 }
 
 /**

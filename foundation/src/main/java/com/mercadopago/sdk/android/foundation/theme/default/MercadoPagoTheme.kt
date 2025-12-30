@@ -158,7 +158,7 @@ private val DefaultLightShape = MercadoPagoShape(
     s = RoundedCornerShape(DefaultLightRadius.s),
 )
 
-internal val MercadoPagoDefaultLightTheme = MercadoPagoThemeProvider(
+internal val MercadoPagoDefaultLightTheme = MercadoPagoThemeProvider.Legacy(
     color = DefaultLightColors,
     spacing = DefaultLightSpacing,
     radius = DefaultLightRadius,
@@ -168,10 +168,4 @@ internal val MercadoPagoDefaultLightTheme = MercadoPagoThemeProvider(
         xs = 2.dp,
     ),
     typography = MercadoPagoProximaNovaTypography,
-    andesColor = AndesDefaultLightColors,
-    andesSpacing = NewDefaultLightSpacing,
-    andesShape = NewDefaultLightShape,
-    andesRadius = NewDefaultLightRadius,
-    andesBorderWidth = NewDefaultLightBorderWidth,
-    andesTypography = NewDefaultLightTypography,
 )

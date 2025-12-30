@@ -15,36 +15,50 @@ import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
 
 /**
  * Represents a complete theme configuration for MercadoPago UI components.
- * This class holds all the necessary design tokens that define the visual appearance
- * of components in a specific theme.
- *
- * @property color The color palette configuration for the theme (legacy)
- * @property spacing The spacing system configuration for the theme (legacy)
- * @property shape The shape configuration for the theme (legacy)
- * @property radius The border radius configuration for the theme (legacy)
- * @property outline The outline configuration for the theme (legacy)
- * @property typography The typography configuration for the theme (legacy)
- * @property andesColor The Andes color palette configuration for the theme
- * @property andesSpacing The Andes spacing system configuration for the theme
- * @property andesShape The Andes shape configuration for the theme
- * @property andesRadius The Andes border radius configuration for the theme
- * @property andesBorderWidth The Andes border width configuration for the theme
- * @property andesTypography The Andes typography configuration for the theme
+ * This sealed class allows for two separate theme systems: Legacy and Andes.
+ * Each system contains only its own design tokens, ensuring complete separation.
  */
-data class MercadoPagoThemeProvider(
-    val color: MercadoPagoColor,
-    val spacing: MercadoPagoSpacing,
-    val shape: MercadoPagoShape,
-    val radius: MercadoPagoRadius,
-    val outline: MercadoPagoOutline,
-    val typography: MercadoPagoTypography,
-    val andesColor: MercadoPagoAndesColor,
-    val andesSpacing: MercadoPagoAndesSpacing,
-    val andesShape: MercadoPagoAndesShape,
-    val andesRadius: MercadoPagoAndesRadius,
-    val andesBorderWidth: MercadoPagoAndesBorderWidth,
-    val andesTypography: MercadoPagoAndesTypography,
-)
+sealed class MercadoPagoThemeProvider {
+    /**
+     * Represents the legacy theme configuration for MercadoPago UI components.
+     * This class holds only the legacy design tokens.
+     *
+     * @property color The color palette configuration for the theme
+     * @property spacing The spacing system configuration for the theme
+     * @property shape The shape configuration for the theme
+     * @property radius The border radius configuration for the theme
+     * @property outline The outline configuration for the theme
+     * @property typography The typography configuration for the theme
+     */
+    data class Legacy(
+        val color: MercadoPagoColor,
+        val spacing: MercadoPagoSpacing,
+        val shape: MercadoPagoShape,
+        val radius: MercadoPagoRadius,
+        val outline: MercadoPagoOutline,
+        val typography: MercadoPagoTypography,
+    ) : MercadoPagoThemeProvider()
+
+    /**
+     * Represents the Andes theme configuration for MercadoPago UI components.
+     * This class holds only the Andes design tokens.
+     *
+     * @property color The Andes color palette configuration for the theme
+     * @property spacing The Andes spacing system configuration for the theme
+     * @property shape The Andes shape configuration for the theme
+     * @property radius The Andes border radius configuration for the theme
+     * @property borderWidth The Andes border width configuration for the theme
+     * @property typography The Andes typography configuration for the theme
+     */
+    data class Andes(
+        val color: MercadoPagoAndesColor,
+        val spacing: MercadoPagoAndesSpacing,
+        val shape: MercadoPagoAndesShape,
+        val radius: MercadoPagoAndesRadius,
+        val borderWidth: MercadoPagoAndesBorderWidth,
+        val typography: MercadoPagoAndesTypography,
+    ) : MercadoPagoThemeProvider()
+}
 
 /**
  * Represents a complete theme scheme that includes both light and dark theme configurations.

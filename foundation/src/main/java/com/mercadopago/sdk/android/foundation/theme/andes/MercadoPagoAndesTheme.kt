@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.foundation.theme.default
+package com.mercadopago.sdk.android.foundation.theme.andes
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
@@ -7,8 +7,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseColor
-import com.mercadopago.sdk.android.foundation.color.BackgroundColor
-import com.mercadopago.sdk.android.foundation.color.FeedbackColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBackgroundColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBorderColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBrandColor
@@ -24,22 +22,14 @@ import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveI
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesSurfaceColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTextColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTransparentColor
-import com.mercadopago.sdk.android.foundation.color.MercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.OutlineColor
-import com.mercadopago.sdk.android.foundation.color.TextColor
 import com.mercadopago.sdk.android.foundation.outline.MercadoPagoAndesBorderWidth
-import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesShape
-import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
-import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
-import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoProximaNovaTypography
 import com.mercadopago.sdk.android.foundation.typography.NewHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.NewTypographyLetterSpacing
 import com.mercadopago.sdk.android.foundation.typography.NewTypographyLineHeight
@@ -428,13 +418,13 @@ internal val NewDefaultLightSpacingGap = AndesSpacingGap(
     xmega = 84.dp,
 )
 
-internal val NewDefaultLightSpacing = MercadoPagoAndesSpacing(
+internal val AndesDefaultLightSpacing = MercadoPagoAndesSpacing(
     paddings = NewDefaultLightSpacingPaddings,
     gap = NewDefaultLightSpacingGap,
 )
 
 // New Default Radius Configuration
-internal val NewDefaultLightRadius = MercadoPagoAndesRadius(
+internal val AndesDefaultLightRadius = MercadoPagoAndesRadius(
     none = 0.dp,
     tiny = 4.dp,
     xsmall = 6.dp,
@@ -446,7 +436,7 @@ internal val NewDefaultLightRadius = MercadoPagoAndesRadius(
 )
 
 // New Default Shape Configuration
-internal val NewDefaultLightShape = MercadoPagoAndesShape(
+internal val AndesDefaultLightShape = MercadoPagoAndesShape(
     none = RoundedCornerShape(0.dp),
     tiny = RoundedCornerShape(4.dp),
     xsmall = RoundedCornerShape(6.dp),
@@ -458,7 +448,7 @@ internal val NewDefaultLightShape = MercadoPagoAndesShape(
 )
 
 // New Default Border Width Configuration
-internal val NewDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
+internal val AndesDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
     none = 0.dp,
     small = 1.dp,
     medium = 2.dp,
@@ -469,7 +459,7 @@ internal val NewDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
 // New Default Typography Configuration
 internal val InterFontFamily = FontFamily.Default
 
-internal val NewDefaultLightTypography = MercadoPagoAndesTypography(
+internal val AndesDefaultLightTypography = MercadoPagoAndesTypography(
     heading = NewHeadingTypography(
         familyDefault = InterFontFamily,
         size = NewTypographySize(
@@ -518,78 +508,12 @@ internal val NewDefaultLightTypography = MercadoPagoAndesTypography(
     ),
 )
 
-// Andes Default Theme Configuration
-private val AndesDefaultLightRadius = MercadoPagoRadius(
-    xxs = 4.dp,
-    xs = 6.dp,
-    s = 16.dp,
-)
 
-private val AndesDefaultLightSpacing = MercadoPagoSpacing(
-    xxs = 4.dp,
-    xs = 8.dp,
-    s = 12.dp,
-    m = 16.dp,
-    l = 20.dp,
-    xl = 24.dp,
-    xxl = 32.dp,
-)
-
-private val AndesDefaultLightShape = MercadoPagoShape(
-    xxs = RoundedCornerShape(AndesDefaultLightRadius.xxs),
-    xs = RoundedCornerShape(AndesDefaultLightRadius.xs),
-    s = RoundedCornerShape(AndesDefaultLightRadius.s),
-)
-
-private val AndesDefaultLegacyLightColors = MercadoPagoColor(
-    accent = Color(0xFF3483FA),
-    accentFirstVariant = Color(0xFF2968C8),
-    accentSecondVariant = Color(0xFF1F4E96),
-    accentYellow = Color(0xFFFFE600),
-    accentPositive = Color(0xFF00A650),
-    accentNegative = Color(0xFFF23D4F),
-    background = BackgroundColor(
-        primary = Color(0xFFFFFFFF),
-        secondary = Color(0xFFF5F5F5),
-        tertiary = Color(0xFFEDEDED),
-        inverted = Color(0xFF1A1A1A),
-    ),
-    text = TextColor(
-        primary = Color(0xFF1A1A1A),
-        secondary = Color(0xFF737373),
-        accent = Color(0xFF3483FA),
-        disabled = Color(0xFFBFBFBF),
-        negative = Color(0xFFF23D4F),
-        inverted = Color(0xFFFFFFFF),
-    ),
-    secondary = Color(0xFFE3EDFB),
-    secondaryFirstVariant = Color(0xFFD9E7FA),
-    secondarySecondVariant = Color(0xFFC6DCF7),
-    outline = OutlineColor(
-        primary = Color(0xFFBFBFBF),
-        secondary = Color(0xFFE5E5E5),
-    ),
-    feedback = FeedbackColor(
-        positive = Color(0xFF00A650),
-        negative = Color(0xFFF23D4F),
-        positiveSecondary = Color(0xFFDCEDE4),
-    ),
-)
-
-internal val MercadoPagoAndesDefaultLightTheme = MercadoPagoThemeProvider(
-    color = AndesDefaultLegacyLightColors,
+internal val MercadoPagoAndesDefaultLightTheme = MercadoPagoThemeProvider.Andes(
+    color = AndesDefaultLightColors,
     spacing = AndesDefaultLightSpacing,
-    radius = AndesDefaultLightRadius,
     shape = AndesDefaultLightShape,
-    outline = MercadoPagoOutline(
-        xxs = 1.dp,
-        xs = 2.dp,
-    ),
-    typography = MercadoPagoProximaNovaTypography,
-    andesColor = AndesDefaultLightColors,
-    andesSpacing = NewDefaultLightSpacing,
-    andesShape = NewDefaultLightShape,
-    andesRadius = NewDefaultLightRadius,
-    andesBorderWidth = NewDefaultLightBorderWidth,
-    andesTypography = NewDefaultLightTypography,
+    radius = AndesDefaultLightRadius,
+    borderWidth = AndesDefaultLightBorderWidth,
+    typography = AndesDefaultLightTypography,
 )
