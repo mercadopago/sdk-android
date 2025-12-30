@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErro
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeError
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
@@ -15,9 +16,11 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.UpdateThreeDSChall
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 private object ThreeDSErrorMessages {
-    const val PROVIDER_NOT_AVAILABLE = "3DS provider not available. Please use setThreeDSProvider() method."
+    const val PROVIDER_NOT_AVAILABLE =
+        "3DS provider not available. Please use setThreeDSProvider() method."
     const val FAILED_TO_GET_WARNINGS = "Failed to get 3DS warnings."
-    const val CHALLENGE_DATA_NOT_AVAILABLE = "Challenge data not available in authentication response."
+    const val CHALLENGE_DATA_NOT_AVAILABLE =
+        "Challenge data not available in authentication response."
     const val FAILED_TO_EXECUTE_CHALLENGE = "Failed to execute 3DS challenge."
     const val ERROR_GETTING_WARNINGS_PREFIX = "Error getting warnings: "
     const val ERROR_AUTHENTICATING_CHALLENGE_PREFIX = "Error authenticating 3DS challenge: "
@@ -181,7 +184,14 @@ private suspend fun CoreMethods.executeThreeDSChallenge(
     runCatching {
         koin.get<AuthenticateThreeDSChallengeUseCase>().invoke(challengeId = challengeId)
     }.fold(
-        onSuccess = { authResult -> processChallengeAuthentication(activity, authResult, timeout) },
+        onSuccess = { authResult ->
+            processChallengeAuthentication(
+                activity,
+                challengeId,
+                authResult,
+                timeout
+            )
+        },
         onFailure = { throwable ->
             Result.Error(
                 ResultError.Request(
@@ -209,6 +219,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
                 ),
             )
         }
+
         is Result.Error -> authenticationResult
     }
 
@@ -226,11 +237,15 @@ private suspend fun CoreMethods.executeChallengeFlow(
         )
     }.fold(
         onSuccess = { challengeResult ->
-            updateThreeDSChallengeStatus(
-                challengeId = challengeId,
-                status = challengeResult
-            )
-            challengeResult?.let { Result.Success(it) } ?: Result.Error(
+            challengeResult?.let { result ->
+                val (status, errorDetail) = convertChallengeResultToStatus(result)
+                updateThreeDSChallengeStatus(
+                    challengeId = challengeId,
+                    status = status,
+                    errorDetail = errorDetail,
+                )
+                Result.Success(result)
+            } ?: Result.Error(
                 ResultError.Request(
                     code = ThreeDSErrorCodes.BAD_REQUEST,
                     message = ThreeDSErrorMessages.FAILED_TO_EXECUTE_CHALLENGE,
@@ -247,6 +262,57 @@ private suspend fun CoreMethods.executeChallengeFlow(
         },
     )
 }
+
+private fun convertChallengeResultToStatus(
+    result: ThreeDSChallengeResult,
+): Pair<ThreeDSChallengeStatus, ThreeDSChallengeErrorDetail?> {
+    return when (result) {
+        is ThreeDSChallengeResult.OnSuccess -> {
+            Pair(ThreeDSChallengeStatus.COMPLETED, null)
+        }
+
+        is ThreeDSChallengeResult.OnError -> {
+            val errorDetail = ThreeDSChallengeErrorDetail(
+                type = result.error.details,
+                code = result.error.code,
+            )
+            Pair(ThreeDSChallengeStatus.ERROR, errorDetail)
+        }
+
+        is ThreeDSChallengeResult.OnCancel -> {
+            Pair(ThreeDSChallengeStatus.CANCELLED, null)
+        }
+
+        is ThreeDSChallengeResult.OnTimedOut -> {
+            Pair(ThreeDSChallengeStatus.TIMEOUT, null)
+        }
+    }
+}
+
+private suspend fun CoreMethods.updateThreeDSChallengeStatus(
+    challengeId: String,
+    status: ThreeDSChallengeStatus,
+    errorDetail: ThreeDSChallengeErrorDetail? = null,
+): Result<Unit, ResultError> {
+    return runCatching {
+        koin.get<UpdateThreeDSChallengeStatusUseCase>().invoke(
+            challengeId = challengeId,
+            status = status,
+            errorDetail = errorDetail,
+        )
+    }.fold(
+        onSuccess = { result -> result },
+        onFailure = { throwable ->
+            Result.Error(
+                ResultError.Request(
+                    code = ThreeDSErrorCodes.BAD_REQUEST,
+                    message = ThreeDSErrorMessages.ERROR_DURING_CHALLENGE_PREFIX + "${throwable.message}",
+                ),
+            )
+        },
+    )
+}
+
 
 /**
  * Closes the current 3DS transaction and releases associated resources.
@@ -341,79 +407,4 @@ fun CoreMethods.createTransaction(
                 )
             },
         )
-}
-
-/**
- * Updates the status of a 3DS challenge after user interaction.
- *
- * This method sends the challenge result (completion, cancellation, error, or timeout)
- * to the backend. It should be called after the challenge flow completes to update
- * the server with the final status.
- *
- * @param challengeId The unique identifier of the 3DS challenge to update
- * @param status The status of the challenge. Valid values are:
- *               - [ThreeDSChallengeStatus.COMPLETED]: Challenge completed successfully
- *               - [ThreeDSChallengeStatus.CANCELLED]: Challenge cancelled by the user
- *               - [ThreeDSChallengeStatus.ERROR]: Error during challenge execution
- *               - [ThreeDSChallengeStatus.TIMEOUT]: Challenge expired due to timeout
- * @param errorDetail Optional error details when status is [ThreeDSChallengeStatus.ERROR].
- *                    This parameter is required when status is ERROR.
- * @return [Result.Success] with [Unit] if the status was updated successfully,
- *         [Result.Error] with [ResultError] if the operation failed
- *
- * Example:
- * ```kotlin
- * // Challenge completed successfully
- * val result = coreMethods.updateThreeDSChallengeStatus(
- *     challengeId = "challenge_abc123",
- *     status = ThreeDSChallengeStatus.COMPLETED
- * )
- *
- * // Challenge failed with error
- * val errorResult = coreMethods.updateThreeDSChallengeStatus(
- *     challengeId = "challenge_abc123",
- *     status = ThreeDSChallengeStatus.ERROR,
- *     errorDetail = ThreeDSChallengeErrorDetail(
- *         type = "PROTOCOL_ERROR",
- *         code = "301"
- *     )
- * )
- *
- * when (result) {
- *     is Result.Success -> {
- *         Log.d("3DS", "Challenge status updated successfully")
- *     }
- *     is Result.Error -> {
- *         Log.e("3DS", "Failed to update status: ${result.error.message}")
- *     }
- * }
- * ```
- *
- * @see ThreeDSChallengeStatus
- * @see ThreeDSChallengeErrorDetail
- * @see Result
- * @see ResultError
- */
-internal suspend fun CoreMethods.updateThreeDSChallengeStatus(
-    challengeId: String,
-    status: ThreeDSChallengeStatus,
-    errorDetail: ThreeDSChallengeErrorDetail? = null,
-): Result<Unit, ResultError> {
-    return runCatching {
-        koin.get<UpdateThreeDSChallengeStatusUseCase>().invoke(
-            challengeId = challengeId,
-            status = status,
-            errorDetail = errorDetail,
-        )
-    }.fold(
-        onSuccess = { result -> result },
-        onFailure = { throwable ->
-            Result.Error(
-                ResultError.Request(
-                    code = "",
-                    message = "Error updating 3DS challenge status: ${throwable.message}",
-                ),
-            )
-        },
-    )
 }
