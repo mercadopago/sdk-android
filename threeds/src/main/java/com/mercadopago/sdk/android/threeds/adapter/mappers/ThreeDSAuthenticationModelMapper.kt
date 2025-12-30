@@ -18,12 +18,12 @@ internal object ThreeDSAuthenticationModelMapper {
         mpModel: MPThreeDSAuthenticationModel,
     ): ThreeDSAuthenticationModel {
         return ThreeDSAuthenticationModel(
-            response = mpModel.response,
             threeDSServerTransID = mpModel.threeDSServerTransID,
             acsReferenceNumber = mpModel.acsReferenceNumber,
             dsTransID = mpModel.dsTransID,
             acsTransID = mpModel.acsTransID,
             acsSignedContent = mpModel.acsSignedContent,
+            callbackUrl = mpModel.callbackUrl,
         )
     }
 
@@ -37,12 +37,12 @@ internal object ThreeDSAuthenticationModelMapper {
         model: ThreeDSAuthenticationModel,
     ): MPThreeDSAuthenticationModel {
         return MPThreeDSAuthenticationModel(
-            response = model.response,
             threeDSServerTransID = model.threeDSServerTransID,
             acsReferenceNumber = model.acsReferenceNumber,
             dsTransID = model.dsTransID,
             acsTransID = model.acsTransID,
             acsSignedContent = model.acsSignedContent,
+            callbackUrl = model.callbackUrl,
         )
     }
 }

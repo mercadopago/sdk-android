@@ -54,19 +54,18 @@ class ThreeDSParametersMapperTest {
     fun `toParams should map MPThreeDSAuthenticationModel correctly`() {
         // Arrange
         val inputAuthModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         // Act
         val actualAuthParams = inputAuthModel.toParams()
 
         // Assert
-        assertEquals("CHALLENGE", actualAuthParams.response)
         assertEquals("server-trans-123", actualAuthParams.threeDSServerTransID)
         assertEquals("acs-ref-456", actualAuthParams.acsReferenceNumber)
         assertEquals("ds-trans-789", actualAuthParams.dsTransID)
@@ -78,54 +77,22 @@ class ThreeDSParametersMapperTest {
     fun `toParams should handle empty strings in MPThreeDSAuthenticationModel`() {
         // Arrange
         val inputAuthModel = MPThreeDSAuthenticationModel(
-            response = "",
             threeDSServerTransID = "",
             acsReferenceNumber = "",
             dsTransID = "",
             acsTransID = "",
             acsSignedContent = "",
+            callbackUrl = "",
         )
 
         // Act
         val actualAuthParams = inputAuthModel.toParams()
 
         // Assert
-        assertEquals("", actualAuthParams.response)
         assertEquals("", actualAuthParams.threeDSServerTransID)
         assertEquals("", actualAuthParams.acsReferenceNumber)
         assertEquals("", actualAuthParams.dsTransID)
         assertEquals("", actualAuthParams.acsTransID)
         assertEquals("", actualAuthParams.acsSignedContent)
-    }
-
-    @Test
-    fun `toParams should handle different response types`() {
-        // Arrange - Test different response types
-        val challengeModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
-            threeDSServerTransID = "trans-123",
-            acsReferenceNumber = "ref-456",
-            dsTransID = "ds-789",
-            acsTransID = "acs-101",
-            acsSignedContent = "content-abc",
-        )
-
-        val authorizedModel = challengeModel.copy(response = "AUTHORIZED")
-        val failedModel = challengeModel.copy(response = "FAILED")
-
-        // Act
-        val challengeParams = challengeModel.toParams()
-        val authorizedParams = authorizedModel.toParams()
-        val failedParams = failedModel.toParams()
-
-        // Assert
-        assertEquals("CHALLENGE", challengeParams.response)
-        assertEquals("AUTHORIZED", authorizedParams.response)
-        assertEquals("FAILED", failedParams.response)
-
-        // Verify other fields remain the same
-        assertEquals("trans-123", challengeParams.threeDSServerTransID)
-        assertEquals("trans-123", authorizedParams.threeDSServerTransID)
-        assertEquals("trans-123", failedParams.threeDSServerTransID)
     }
 }

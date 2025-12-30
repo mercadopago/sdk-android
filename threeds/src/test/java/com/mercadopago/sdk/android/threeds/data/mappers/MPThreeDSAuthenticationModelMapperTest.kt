@@ -9,7 +9,6 @@ class MPThreeDSAuthenticationModelMapperTest {
     fun `toChallengeModel should map all properties correctly`() {
         // Arrange
         val inputAuthParams = MPThreeDSAuthenticationParams(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
@@ -32,7 +31,6 @@ class MPThreeDSAuthenticationModelMapperTest {
     fun `toChallengeModel should handle empty strings`() {
         // Arrange
         val inputAuthParams = MPThreeDSAuthenticationParams(
-            response = "",
             threeDSServerTransID = "",
             acsReferenceNumber = "",
             dsTransID = "",
@@ -55,7 +53,6 @@ class MPThreeDSAuthenticationModelMapperTest {
     fun `toChallengeModel should handle special characters`() {
         // Arrange
         val inputAuthParams = MPThreeDSAuthenticationParams(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-!@#$%",
             acsReferenceNumber = "acs-ref-&*()_+",
             dsTransID = "ds-trans-{}|:<>?",
