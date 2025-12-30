@@ -23,7 +23,5 @@ internal class ThreeDSDataSourceImpl(
     override suspend fun updateThreeDSChallengeStatus(
         challengeId: String,
         request: UpdateThreeDSChallengeStatusRequest,
-    ): Result<Unit, ResultError> =
-        service.updateThreeDSChallengeStatus(challengeId, request).toUnitResponse()
-
+    ): Result<Unit, ResultError> = service.updateThreeDSChallengeStatus(challengeId, request).toUnitResponse()
 }

@@ -4,7 +4,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErrorDetail
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDSChallengeStatusParams
-import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 

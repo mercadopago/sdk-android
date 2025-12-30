@@ -8,7 +8,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeErro
 import com.mercadopago.sdk.android.coremethods.domain.model.ThreeDSChallengeStatus
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSAuthenticationModel
-import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeError
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.AuthenticateThreeDSChallengeUseCase
@@ -189,7 +188,7 @@ private suspend fun CoreMethods.executeThreeDSChallenge(
                 activity,
                 challengeId,
                 authResult,
-                timeout
+                timeout,
             )
         },
         onFailure = { throwable ->
@@ -312,7 +311,6 @@ private suspend fun CoreMethods.updateThreeDSChallengeStatus(
         },
     )
 }
-
 
 /**
  * Closes the current 3DS transaction and releases associated resources.
