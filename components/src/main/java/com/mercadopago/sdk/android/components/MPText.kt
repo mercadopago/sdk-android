@@ -10,9 +10,111 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val TEXT_GROUP = "Text"
+
+/**
+ * Default values for MPText component.
+ * Contains color and typography defaults.
+ */
+data class MPTextDefaults(
+    val colors: MPTextColorDefaults,
+    val typography: MPTextTypographyDefaults,
+)
+
+/**
+ * Default color values for MPText component.
+ * Contains colors for each MPTextColorType.
+ */
+data class MPTextColorDefaults(
+    val primary: Color,
+    val secondary: Color,
+    val accent: Color,
+    val negative: Color,
+    val inverted: Color,
+    val positive: Color,
+    val disabled: Color,
+)
+
+/**
+ * Default typography values for MPText component.
+ * Contains TextStyle for each MPTextStyle.
+ */
+data class MPTextTypographyDefaults(
+    val title: TextStyle,
+    val bodyMediumSemiBold: TextStyle,
+    val bodyMediumRegular: TextStyle,
+    val bodySmallSemiBold: TextStyle,
+    val bodySmallRegular: TextStyle,
+    val bodyExtraSmallSemiBold: TextStyle,
+)
+
+/**
+ * Provides default values for MPText component using MercadoPagoAndesTheme.
+ * This function creates MPTextDefaults with colors and typography from the Andes theme.
+ */
+@Composable
+fun getMPTextDefaults(): MPTextDefaults {
+    val typography = MercadoPagoAndesTheme.typography.heading
+    return MPTextDefaults(
+        colors = MPTextColorDefaults(
+            primary = MercadoPagoAndesTheme.color.text.primary,
+            secondary = MercadoPagoAndesTheme.color.text.secondary,
+            accent = MercadoPagoAndesTheme.color.text.accent,
+            negative = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
+            inverted = MercadoPagoAndesTheme.color.text.inverse,
+            positive = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
+            disabled = MercadoPagoAndesTheme.color.text.disabled,
+        ),
+        typography = MPTextTypographyDefaults(
+            title = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size20,
+                lineHeight = typography.lineHeight.lineHeight24,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+            bodyMediumSemiBold = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size16,
+                lineHeight = typography.lineHeight.lineHeight24,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+            bodyMediumRegular = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.regular,
+                fontSize = typography.size.size16,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+            bodySmallSemiBold = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size14,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+            bodySmallRegular = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.regular,
+                fontSize = typography.size.size14,
+                lineHeight = typography.lineHeight.lineHeight20,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+            bodyExtraSmallSemiBold = TextStyle(
+                fontFamily = typography.familyDefault,
+                fontWeight = typography.weight.semibold,
+                fontSize = typography.size.size12,
+                lineHeight = typography.lineHeight.lineHeight16,
+                letterSpacing = typography.letterSpacing.spacing0,
+            ),
+        ),
+    )
+}
 
 /**
  * Text Type enum class, used to determine the label type
@@ -105,99 +207,27 @@ fun MPText(
     colorType: MPTextColorType = MPTextColorType.Primary,
     enabled: Boolean = true,
 ) {
+    val defaults = getMPTextDefaults()
     val color = when (colorType) {
-        MPTextColorType.Primary -> {
-            MercadoPagoTheme.newColor.text.primary
-        }
-
-        MPTextColorType.Secondary -> {
-            MercadoPagoTheme.newColor.text.secondary
-        }
-
-        MPTextColorType.Accent -> {
-            MercadoPagoTheme.newColor.text.accent
-        }
-
-        MPTextColorType.Negative -> {
-            MercadoPagoTheme.newColor.feedback.negative.textLoud
-        }
-
-        MPTextColorType.Inverted -> {
-            MercadoPagoTheme.newColor.text.inverse
-        }
-
-        MPTextColorType.Positive -> {
-            MercadoPagoTheme.newColor.feedback.positive.textLoud
-        }
+        MPTextColorType.Primary -> defaults.colors.primary
+        MPTextColorType.Secondary -> defaults.colors.secondary
+        MPTextColorType.Accent -> defaults.colors.accent
+        MPTextColorType.Negative -> defaults.colors.negative
+        MPTextColorType.Inverted -> defaults.colors.inverted
+        MPTextColorType.Positive -> defaults.colors.positive
     }
-
-    val typography = MercadoPagoTheme.newTypography.heading
     val style = when (textStyle) {
-        MPTextStyle.Title -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size20,
-                lineHeight = typography.lineHeight.lineHeight24,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
-
-        MPTextStyle.BodyMediumSemiBold -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size16,
-                lineHeight = typography.lineHeight.lineHeight24,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
-
-        MPTextStyle.BodyMediumRegular -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.regular,
-                fontSize = typography.size.size16,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
-
-        MPTextStyle.BodySmallSemiBold -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size14,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
-
-        MPTextStyle.BodySmallRegular -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.regular,
-                fontSize = typography.size.size14,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
-
-        MPTextStyle.BodyExtraSmallSemiBold -> {
-            TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size12,
-                lineHeight = typography.lineHeight.lineHeight16,
-                letterSpacing = typography.letterSpacing.spacing0,
-            )
-        }
+        MPTextStyle.Title -> defaults.typography.title
+        MPTextStyle.BodyMediumSemiBold -> defaults.typography.bodyMediumSemiBold
+        MPTextStyle.BodyMediumRegular -> defaults.typography.bodyMediumRegular
+        MPTextStyle.BodySmallSemiBold -> defaults.typography.bodySmallSemiBold
+        MPTextStyle.BodySmallRegular -> defaults.typography.bodySmallRegular
+        MPTextStyle.BodyExtraSmallSemiBold -> defaults.typography.bodyExtraSmallSemiBold
     }
-
     Text(
         text = text,
         style = style,
-        color = if (!enabled) MercadoPagoTheme.newColor.text.disabled else color,
+        color = if (!enabled) defaults.colors.disabled else color,
         modifier = modifier,
     )
 }
@@ -205,7 +235,9 @@ fun MPText(
 @Preview(name = "Text Tittle Text", group = TEXT_GROUP)
 @Composable
 internal fun TextTittlePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -254,7 +286,9 @@ internal fun TextTittlePreview() {
 @Preview(name = "Text BodyMediumSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyMediumSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -303,7 +337,9 @@ internal fun TextBodyMediumSemiBoldPreview() {
 @Preview(name = "Text BodyMediumRegular Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyMediumRegularPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -352,7 +388,9 @@ internal fun TextBodyMediumRegularPreview() {
 @Preview(name = "Text BodySmallSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodySmallSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -401,7 +439,9 @@ internal fun TextBodySmallSemiBoldPreview() {
 @Preview(name = "Text BodySmallRegular Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodySmallRegularPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -450,7 +490,9 @@ internal fun TextBodySmallRegularPreview() {
 @Preview(name = "Text BodyExtraSmallSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyExtraSmallSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
