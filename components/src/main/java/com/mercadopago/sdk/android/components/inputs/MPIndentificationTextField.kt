@@ -13,7 +13,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -35,7 +34,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * Composable function that displays an identification text field with MercadoPago styling.
@@ -87,13 +88,13 @@ fun MPIdentificationTextField(
             onEvent = onEvent,
             enabled = enabled,
             textStyle = TextStyle(
-                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
-                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
-                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
-                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
+                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
+                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
+                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
             ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(MercadoPagoAndesTheme.color.interactive.border.active),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
@@ -181,7 +182,9 @@ internal fun MPIdentificationTypeSelector(
 @Preview(showBackground = true)
 @Composable
 private fun MPIdentificationTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         val identificationState = rememberPCIFieldState()
         val identificationTypes = listOf(
             IdentificationType(id = "CPF", name = "CPF", type = "number", minLength = 11, maxLength = 11),

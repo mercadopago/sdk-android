@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.components.extensions
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 
 @Composable
 internal fun Modifier.addBorder(
@@ -12,17 +12,17 @@ internal fun Modifier.addBorder(
 ): Modifier {
     return border(
         width = if (isFocused) {
-            MercadoPagoTheme.newBorderWidth.medium
+            MercadoPagoAndesTheme.borderWidth.medium
         } else {
-            MercadoPagoTheme.newBorderWidth.small
+            MercadoPagoAndesTheme.borderWidth.small
         },
         color = if (error) {
-            MercadoPagoTheme.newColor.feedback.negative.borderLoud
+            MercadoPagoAndesTheme.color.feedback.negative.borderLoud
         } else if (isFocused) {
-            MercadoPagoTheme.newColor.interactive.border.active
+            MercadoPagoAndesTheme.color.interactive.border.active
         } else {
-            MercadoPagoTheme.newColor.interactive.border.idle
+            MercadoPagoAndesTheme.color.interactive.border.idle
         },
-        shape = MercadoPagoTheme.newShape.xsmall,
+        shape = MercadoPagoAndesTheme.shape.xsmall,
     )
 }

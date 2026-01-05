@@ -18,7 +18,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expiratio
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * Composable function that displays an expiration date text field with MercadoPago styling.
@@ -66,11 +68,11 @@ fun MPExpirationDateTextField(
             dateFormat = dateFormat,
             onEvent = onEvent,
             textStyle = TextStyle(
-                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
-                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
-                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
-                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
+                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
+                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
+                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
             ),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
@@ -96,7 +98,9 @@ fun MPExpirationDateTextField(
 @Preview(showBackground = true)
 @Composable
 private fun MPExpirationDateTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         val expirationDateState = rememberPCIFieldState()
         Column(
             modifier = Modifier.padding(10.dp),

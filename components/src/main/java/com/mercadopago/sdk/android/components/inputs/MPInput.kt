@@ -18,7 +18,7 @@ import com.mercadopago.sdk.android.components.MPTextColorType
 import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.components.extensions.addBorder
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 
 @Composable
 internal fun MPInputDecorationBox(
@@ -63,7 +63,7 @@ internal fun MPInputBody(
         label?.let {
             MPInputLabel(
                 it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano),
+                modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano),
                 textStyle = MPTextStyle.BodySmallRegular,
                 inputLabelState = state,
             )
@@ -72,7 +72,7 @@ internal fun MPInputBody(
         helper?.let {
             MPInputHelper(
                 text = it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano),
+                modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano),
                 inputLabelState = state,
                 showIcon = showHelperIcon,
                 icon = icon,
@@ -93,7 +93,7 @@ internal fun MPInputHelper(
         if (showIcon) {
             icon?.let {
                 Icon(it, MP_EMPTY_STRING)
-                Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.newSpacing.paddings.xnano))
+                Spacer(modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano))
             }
         }
         MPInputLabel(

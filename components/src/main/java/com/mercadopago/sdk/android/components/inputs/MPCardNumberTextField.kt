@@ -19,7 +19,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumbe
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * Composable function that displays a card number text field with MercadoPago styling.
@@ -66,11 +68,11 @@ fun MPCardNumberTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             textStyle = TextStyle(
-                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
-                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
-                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
-                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
+                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
+                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
+                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
             ),
             enabled = enabled,
             visualTransformation = visualTransformation,
@@ -98,7 +100,9 @@ fun MPCardNumberTextField(
 @Preview(showBackground = true)
 @Composable
 private fun MPCardNumberTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         val cardNumberState = rememberPCIFieldState()
         Column(
             modifier = Modifier.padding(10.dp),

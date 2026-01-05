@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +24,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * Composable function that displays a security code (CVV/CVC) text field with MercadoPago styling.
@@ -75,14 +76,14 @@ fun MPSecurityCodeTextField(
             onEvent = onEvent,
             enabled = enabled,
             textStyle = TextStyle(
-                fontFamily = MercadoPagoTheme.newTypography.heading.familyDefault,
-                fontSize = MercadoPagoTheme.newTypography.heading.size.size16,
-                lineHeight = MercadoPagoTheme.newTypography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoTheme.newTypography.heading.weight.regular,
-                letterSpacing = MercadoPagoTheme.newTypography.heading.letterSpacing.spacing0,
+                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
+                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
+                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
+                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
+                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
             ),
             securityCodeSize = securityCodeSize,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(MercadoPagoAndesTheme.color.interactive.border.active),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
@@ -113,7 +114,9 @@ fun MPSecurityCodeTextField(
 @Preview(showBackground = true)
 @Composable
 private fun MPSecurityCodeTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes
+    ) {
         val securityCodeState = rememberPCIFieldState()
         Column(
             modifier = Modifier.padding(10.dp),
