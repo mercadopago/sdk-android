@@ -4,7 +4,8 @@ package com.mercadopago.sdk.android.checkout.data.preferences
 
 import androidx.compose.ui.graphics.Color
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,7 +15,7 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `when class is created Then getCurrentThemeScheme returns default theme`() {
         // Given
-        val expectedTheme = MercadoPagoDefaultThemes.Default
+        val expectedTheme = MercadoPagoThemes.Legacy
 
         // When
         val actualTheme = checkoutThemePreferences.getCurrentThemeScheme()
@@ -38,9 +39,10 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given a new theme when setCurrentThemeScheme is called Then getCurrentThemeScheme returns that theme`() {
         // Given
-        val newTheme = MercadoPagoDefaultThemes.Default.copy(
-            lightTheme = MercadoPagoDefaultThemes.Default.lightTheme.copy(
-                color = MercadoPagoDefaultThemes.Default.lightTheme.color.copy(
+        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
+        val newTheme = MercadoPagoThemes.Legacy.copy(
+            lightTheme = defaultLightTheme.copy(
+                color = defaultLightTheme.color.copy(
                     accent = Color.Red,
                 ),
             ),
@@ -70,14 +72,15 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given multiple theme changes when setCurrentThemeScheme is called sequentially Then getCurrentThemeScheme returns the last set theme`() {
         // Given
-        val firstTheme = MercadoPagoDefaultThemes.Default.copy(
-            lightTheme = MercadoPagoDefaultThemes.Default.lightTheme.copy(
-                color = MercadoPagoDefaultThemes.Default.lightTheme.color.copy(
+        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
+        val firstTheme = MercadoPagoThemes.Legacy.copy(
+            lightTheme = defaultLightTheme.copy(
+                color = defaultLightTheme.color.copy(
                     accent = Color.Red,
                 ),
             ),
         )
-        val secondTheme = MercadoPagoDefaultThemes.Default
+        val secondTheme = MercadoPagoThemes.Legacy
 
         // When
         checkoutThemePreferences.setCurrentThemeScheme(firstTheme)
