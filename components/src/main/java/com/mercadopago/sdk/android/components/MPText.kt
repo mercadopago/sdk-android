@@ -58,7 +58,7 @@ data class MPTextTypographyDefaults(
  */
 @Composable
 fun getMPTextDefaults(): MPTextDefaults {
-    val typography = MercadoPagoAndesTheme.typography.heading
+    val typography = MercadoPagoAndesTheme.typography
     return MPTextDefaults(
         colors = MPTextColorDefaults(
             primary = MercadoPagoAndesTheme.color.text.primary,
@@ -70,48 +70,12 @@ fun getMPTextDefaults(): MPTextDefaults {
             disabled = MercadoPagoAndesTheme.color.text.disabled,
         ),
         typography = MPTextTypographyDefaults(
-            title = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size20,
-                lineHeight = typography.lineHeight.lineHeight24,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
-            bodyMediumSemiBold = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size16,
-                lineHeight = typography.lineHeight.lineHeight24,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
-            bodyMediumRegular = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.regular,
-                fontSize = typography.size.size16,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
-            bodySmallSemiBold = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size14,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
-            bodySmallRegular = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.regular,
-                fontSize = typography.size.size14,
-                lineHeight = typography.lineHeight.lineHeight20,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
-            bodyExtraSmallSemiBold = TextStyle(
-                fontFamily = typography.familyDefault,
-                fontWeight = typography.weight.semibold,
-                fontSize = typography.size.size12,
-                lineHeight = typography.lineHeight.lineHeight16,
-                letterSpacing = typography.letterSpacing.spacing0,
-            ),
+            title = typography.title.title,
+            bodyMediumSemiBold = typography.body.bodyMediumSemiBold,
+            bodyMediumRegular = typography.body.bodyMediumRegular,
+            bodySmallSemiBold = typography.body.bodySmallSemiBold,
+            bodySmallRegular = typography.body.bodySmallRegular,
+            bodyExtraSmallSemiBold = typography.body.bodyExtraSmallSemiBold,
         ),
     )
 }

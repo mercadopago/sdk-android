@@ -42,16 +42,12 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
+import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
-import com.mercadopago.sdk.android.foundation.typography.NewHeadingTypography
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyLetterSpacing
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyLineHeight
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyParagraphSpacing
-import com.mercadopago.sdk.android.foundation.typography.NewTypographySize
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyWeight
 
 /**
  * @suppress
@@ -317,51 +313,15 @@ internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemePro
             xlarge = 0.dp,
         ),
         typography = MercadoPagoAndesTypography(
-            heading = NewHeadingTypography(
-                familyDefault = FontFamily.Default,
-                size = NewTypographySize(
-                    size10 = 0.sp,
-                    size12 = 0.sp,
-                    size14 = 0.sp,
-                    size16 = 0.sp,
-                    size18 = 0.sp,
-                    size20 = 0.sp,
-                    size24 = 0.sp,
-                    size28 = 0.sp,
-                    size32 = 0.sp,
-                    size40 = 0.sp,
-                    size48 = 0.sp,
-                    size56 = 0.sp,
-                ),
-                lineHeight = NewTypographyLineHeight(
-                    lineHeight12 = 0.sp,
-                    lineHeight16 = 0.sp,
-                    lineHeight18 = 0.sp,
-                    lineHeight20 = 0.sp,
-                    lineHeight22 = 0.sp,
-                    lineHeight24 = 0.sp,
-                    lineHeight28 = 0.sp,
-                    lineHeight34 = 0.sp,
-                    lineHeight40 = 0.sp,
-                    lineHeight48 = 0.sp,
-                    lineHeight56 = 0.sp,
-                    lineHeight66 = 0.sp,
-                ),
-                weight = NewTypographyWeight(
-                    regular = FontWeight.Normal,
-                    semibold = FontWeight.Normal,
-                    bold = FontWeight.Normal,
-                ),
-                letterSpacing = NewTypographyLetterSpacing(
-                    spacing0 = 0.sp,
-                    spacingNegative1 = 0.sp,
-                ),
-                paragraphSpacing = NewTypographyParagraphSpacing(
-                    spacing10 = 0.sp,
-                    spacing12 = 0.sp,
-                    spacing14 = 0.sp,
-                    spacing16 = 0.sp,
-                ),
+            title = AndesTitleTypography(
+                title = TextStyle.Default,
+            ),
+            body = AndesBodyTypography(
+                bodyMediumSemiBold = TextStyle.Default,
+                bodyMediumRegular = TextStyle.Default,
+                bodySmallSemiBold = TextStyle.Default,
+                bodySmallRegular = TextStyle.Default,
+                bodyExtraSmallSemiBold = TextStyle.Default,
             ),
         ),
     )
