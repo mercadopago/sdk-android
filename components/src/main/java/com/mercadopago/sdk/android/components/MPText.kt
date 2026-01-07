@@ -20,7 +20,7 @@ private const val TEXT_GROUP = "Text"
  * Default values for MPText component.
  * Contains color and typography defaults.
  */
-data class MPTextDefaults(
+internal data class MPTextDefaults(
     val colors: MPTextColorDefaults,
     val typography: MPTextTypographyDefaults,
 )
@@ -29,7 +29,7 @@ data class MPTextDefaults(
  * Default color values for MPText component.
  * Contains colors for each MPTextColorType.
  */
-data class MPTextColorDefaults(
+internal data class MPTextColorDefaults(
     val primary: Color,
     val secondary: Color,
     val accent: Color,
@@ -43,7 +43,7 @@ data class MPTextColorDefaults(
  * Default typography values for MPText component.
  * Contains TextStyle for each MPTextStyle.
  */
-data class MPTextTypographyDefaults(
+internal data class MPTextTypographyDefaults(
     val title: TextStyle,
     val bodyMediumSemiBold: TextStyle,
     val bodyMediumRegular: TextStyle,
@@ -57,7 +57,7 @@ data class MPTextTypographyDefaults(
  * This function creates MPTextDefaults with colors and typography from the Andes theme.
  */
 @Composable
-fun getMPTextDefaults(): MPTextDefaults {
+internal fun getMPTextDefaults(): MPTextDefaults {
     val typography = MercadoPagoAndesTheme.typography
     return MPTextDefaults(
         colors = MPTextColorDefaults(
@@ -200,7 +200,7 @@ fun MPText(
 @Composable
 internal fun TextTittlePreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -251,7 +251,7 @@ internal fun TextTittlePreview() {
 @Composable
 internal fun TextBodyMediumSemiBoldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -302,7 +302,7 @@ internal fun TextBodyMediumSemiBoldPreview() {
 @Composable
 internal fun TextBodyMediumRegularPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -353,7 +353,7 @@ internal fun TextBodyMediumRegularPreview() {
 @Composable
 internal fun TextBodySmallSemiBoldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -404,7 +404,7 @@ internal fun TextBodySmallSemiBoldPreview() {
 @Composable
 internal fun TextBodySmallRegularPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -455,7 +455,7 @@ internal fun TextBodySmallRegularPreview() {
 @Composable
 internal fun TextBodyExtraSmallSemiBoldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier

@@ -8,10 +8,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.foundation.color.BackgroundColor
 import com.mercadopago.sdk.android.foundation.color.FeedbackColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBackgroundColor
