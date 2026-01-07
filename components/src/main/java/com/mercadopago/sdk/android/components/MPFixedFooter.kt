@@ -20,11 +20,60 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
 private const val SUPERSCRIPT_ID = "superscript"
+
+/**
+ * Default tokens configuration for MPFixedFooter component
+ */
+data class FixedFooterDefaults(
+    val colors: MPFixedFooterColorDefaults,
+    val spacing: MPFixedFooterSpacingDefaults,
+)
+
+/**
+ * Color tokens for MPFixedFooter component
+ */
+data class MPFixedFooterColorDefaults(
+    val background: Color,
+    val textPrimary: Color,
+    val textAccent: Color,
+)
+
+/**
+ * Spacing tokens for MPFixedFooter component
+ */
+data class MPFixedFooterSpacingDefaults(
+    val paddingHorizontal: Dp,
+    val paddingVertical: Dp,
+    val spacingBetweenSections: Dp,
+)
+
+/**
+ * Helper function to get default tokens for MPFixedFooter component
+ */
+@Composable
+private fun getFixedFooterDefaults(): FixedFooterDefaults {
+    val andesTheme = MercadoPagoAndesTheme
+    return FixedFooterDefaults(
+        colors = MPFixedFooterColorDefaults(
+            background = andesTheme.color.background.primary,
+            textPrimary = andesTheme.color.text.primary,
+            textAccent = andesTheme.color.text.accent,
+        ),
+        spacing = MPFixedFooterSpacingDefaults(
+            paddingHorizontal = andesTheme.spacing.paddings.xtiny,
+            paddingVertical = andesTheme.spacing.paddings.xtiny,
+            spacingBetweenSections = andesTheme.spacing.paddings.xtiny,
+        ),
+    )
+}
 
 /**
  * Data class representing the amount display configuration
@@ -73,13 +122,14 @@ fun MPFixedFooter(
     subtitle: String? = null,
     buttonData: MPFixedFooterButtonData? = null,
 ) {
+    val defaults = getFixedFooterDefaults()
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MercadoPagoTheme.newColor.background.primary)
+            .background(defaults.colors.background)
             .padding(
-                horizontal = MercadoPagoTheme.newSpacing.paddings.xtiny,
-                vertical = MercadoPagoTheme.newSpacing.paddings.xtiny,
+                horizontal = defaults.spacing.paddingHorizontal,
+                vertical = defaults.spacing.paddingVertical,
             ),
     ) {
         HeaderSection(
@@ -88,7 +138,7 @@ fun MPFixedFooter(
             subtitle = subtitle,
         )
         if (buttonData != null) {
-            Spacer(modifier = Modifier.height(MercadoPagoTheme.newSpacing.paddings.xtiny))
+            Spacer(modifier = Modifier.height(defaults.spacing.spacingBetweenSections))
             MPButton(
                 text = buttonData.text,
                 modifier = Modifier.fillMaxWidth(),
@@ -142,15 +192,9 @@ private fun HeaderSection(
 private fun AmountText(
     amount: MPAmountData,
 ) {
-    val headingTypo = MercadoPagoTheme.newTypography.heading
-    val bodyExtraSmallSemiboldStyle = TextStyle(
-        fontFamily = headingTypo.familyDefault,
-        fontWeight = headingTypo.weight.semibold,
-        fontSize = headingTypo.size.size12,
-        lineHeight = headingTypo.lineHeight.lineHeight16,
-        letterSpacing = headingTypo.letterSpacing.spacing0,
-    )
-    val titleSmallSemiboldStyle = TextStyle(
+    val andesTheme = MercadoPagoAndesTheme
+    val headingTypo = andesTheme.typography.heading
+    val titleStyle = TextStyle(
         fontFamily = headingTypo.familyDefault,
         fontWeight = headingTypo.weight.semibold,
         fontSize = headingTypo.size.size20,
@@ -170,10 +214,10 @@ private fun AmountText(
                 placeholderVerticalAlign = PlaceholderVerticalAlign.Top,
             ),
         ) {
-            Text(
+            MPText(
                 text = amount.decimalPart,
-                style = bodyExtraSmallSemiboldStyle,
-                color = MercadoPagoTheme.newColor.text.primary,
+                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
+                colorType = MPTextColorType.Primary,
             )
         },
     )
@@ -181,15 +225,15 @@ private fun AmountText(
     Text(
         text = annotatedString,
         inlineContent = inlineContent,
-        style = titleSmallSemiboldStyle,
-        color = MercadoPagoTheme.newColor.text.primary,
+        style = titleStyle,
+        color = andesTheme.color.text.primary,
     )
 }
 
 @Preview(name = "Fixed Footer with Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithButtonPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         MPFixedFooter(
             title = "Text",
             amount = MPAmountData(
@@ -209,7 +253,7 @@ private fun MPFixedFooterWithButtonPreview() {
 @Preview(name = "Fixed Footer without Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithoutButtonPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         MPFixedFooter(
             title = "Text",
             amount = MPAmountData(
@@ -226,7 +270,7 @@ private fun MPFixedFooterWithoutButtonPreview() {
 @Preview(name = "Fixed Footer without Subtitle", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithoutSubtitlePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier.background(Color.LightGray),
         ) {
@@ -250,7 +294,7 @@ private fun MPFixedFooterWithoutSubtitlePreview() {
 @Preview(name = "Fixed Footer Disabled Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterDisabledButtonPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         MPFixedFooter(
             title = "Total a pagar",
             amount = MPAmountData(
