@@ -14,40 +14,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.foundation.color.BackgroundColor
 import com.mercadopago.sdk.android.foundation.color.FeedbackColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBackgroundColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBorderColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBrandColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesFeedbackColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesFeedbackTypeColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesFillColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesIconColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveBorderColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveFillColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveIconColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesSurfaceColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTextColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTransparentColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.NewBackgroundColor
-import com.mercadopago.sdk.android.foundation.color.NewBorderColor
-import com.mercadopago.sdk.android.foundation.color.NewBrandColor
-import com.mercadopago.sdk.android.foundation.color.NewFeedbackColor
-import com.mercadopago.sdk.android.foundation.color.NewFeedbackTypeColor
-import com.mercadopago.sdk.android.foundation.color.NewFillColor
-import com.mercadopago.sdk.android.foundation.color.NewIconColor
-import com.mercadopago.sdk.android.foundation.color.NewInteractiveBorderColor
-import com.mercadopago.sdk.android.foundation.color.NewInteractiveColor
-import com.mercadopago.sdk.android.foundation.color.NewInteractiveFillColor
-import com.mercadopago.sdk.android.foundation.color.NewInteractiveIconColor
-import com.mercadopago.sdk.android.foundation.color.NewMercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.NewSurfaceColor
-import com.mercadopago.sdk.android.foundation.color.NewTextColor
-import com.mercadopago.sdk.android.foundation.color.NewTransparentColor
 import com.mercadopago.sdk.android.foundation.color.OutlineColor
 import com.mercadopago.sdk.android.foundation.color.TextColor
+import com.mercadopago.sdk.android.foundation.outline.MercadoPagoAndesBorderWidth
 import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
-import com.mercadopago.sdk.android.foundation.outline.NewBorderWidth
+import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesRadius
+import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesShape
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
-import com.mercadopago.sdk.android.foundation.shape.NewMercadoPagoRadius
-import com.mercadopago.sdk.android.foundation.shape.NewMercadoPagoShape
+import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
+import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
+import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
-import com.mercadopago.sdk.android.foundation.spacing.NewMercadoPagoSpacing
-import com.mercadopago.sdk.android.foundation.spacing.NewSpacingGap
-import com.mercadopago.sdk.android.foundation.spacing.NewSpacingPaddings
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
+import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
 import com.mercadopago.sdk.android.foundation.typography.NewHeadingTypography
-import com.mercadopago.sdk.android.foundation.typography.NewMercadoPagoTypography
 import com.mercadopago.sdk.android.foundation.typography.NewTypographyLetterSpacing
 import com.mercadopago.sdk.android.foundation.typography.NewTypographyLineHeight
 import com.mercadopago.sdk.android.foundation.typography.NewTypographyParagraphSpacing
@@ -56,12 +55,12 @@ import com.mercadopago.sdk.android.foundation.typography.NewTypographyWeight
 
 /**
  * @suppress
- * CompositionLocal that provides the current MercadoPago theme configuration.
- * This is used to propagate theme values down the composition tree.
+ * CompositionLocal that provides the current MercadoPago legacy theme configuration.
+ * This is used to propagate legacy theme values down the composition tree.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal val LocalMercadoPagoTheme = compositionLocalOf {
-    MercadoPagoThemeProvider(
+internal val LocalMercadoPagoLegacyTheme = compositionLocalOf<MercadoPagoThemeProvider.Legacy> {
+    MercadoPagoThemeProvider.Legacy(
         color = MercadoPagoColor(
             accent = Color.Unspecified,
             accentFirstVariant = Color.Unspecified,
@@ -131,17 +130,28 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 extraSmallSemibold = TextStyle.Default,
             ),
         ),
-        newColor = NewMercadoPagoColor(
-            background = NewBackgroundColor(
+    )
+}
+
+/**
+ * @suppress
+ * CompositionLocal that provides the current MercadoPago Andes theme configuration.
+ * This is used to propagate Andes theme values down the composition tree.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemeProvider.Andes> {
+    MercadoPagoThemeProvider.Andes(
+        color = MercadoPagoAndesColor(
+            background = MercadoPagoAndesBackgroundColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
             ),
-            surface = NewSurfaceColor(
+            surface = MercadoPagoAndesSurfaceColor(
                 primaryIdle = Color.Unspecified,
                 primaryActive = Color.Unspecified,
                 primaryDisabled = Color.Unspecified,
             ),
-            fill = NewFillColor(
+            fill = MercadoPagoAndesFillColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
                 inverse = Color.Unspecified,
@@ -150,20 +160,20 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 accentQuiet = Color.Unspecified,
                 defaultOnScroll = Color.Unspecified,
             ),
-            border = NewBorderColor(
+            border = MercadoPagoAndesBorderColor(
                 primary = Color.Unspecified,
                 accent = Color.Unspecified,
                 inverse = Color.Unspecified,
                 disabled = Color.Unspecified,
             ),
-            icon = NewIconColor(
+            icon = MercadoPagoAndesIconColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
                 accent = Color.Unspecified,
                 inverse = Color.Unspecified,
                 disabled = Color.Unspecified,
             ),
-            text = NewTextColor(
+            text = MercadoPagoAndesTextColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
                 accent = Color.Unspecified,
@@ -172,35 +182,35 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 linkIdle = Color.Unspecified,
                 linkActive = Color.Unspecified,
             ),
-            brand = NewBrandColor(
+            brand = MercadoPagoAndesBrandColor(
                 fillLoud = Color.Unspecified,
                 fillQuiet = Color.Unspecified,
                 gradientStart = Color.Unspecified,
                 gradientEnd = Color.Unspecified,
             ),
-            feedback = NewFeedbackColor(
-                informative = NewFeedbackTypeColor(
+            feedback = MercadoPagoAndesFeedbackColor(
+                informative = MercadoPagoAndesFeedbackTypeColor(
                     fillLoud = Color.Unspecified,
                     fillQuiet = Color.Unspecified,
                     textLoud = Color.Unspecified,
                     borderLoud = Color.Unspecified,
                     iconLoud = Color.Unspecified,
                 ),
-                positive = NewFeedbackTypeColor(
+                positive = MercadoPagoAndesFeedbackTypeColor(
                     fillLoud = Color.Unspecified,
                     fillQuiet = Color.Unspecified,
                     textLoud = Color.Unspecified,
                     borderLoud = Color.Unspecified,
                     iconLoud = Color.Unspecified,
                 ),
-                caution = NewFeedbackTypeColor(
+                caution = MercadoPagoAndesFeedbackTypeColor(
                     fillLoud = Color.Unspecified,
                     fillQuiet = Color.Unspecified,
                     textLoud = Color.Unspecified,
                     borderLoud = Color.Unspecified,
                     iconLoud = Color.Unspecified,
                 ),
-                negative = NewFeedbackTypeColor(
+                negative = MercadoPagoAndesFeedbackTypeColor(
                     fillLoud = Color.Unspecified,
                     fillQuiet = Color.Unspecified,
                     textLoud = Color.Unspecified,
@@ -208,39 +218,39 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                     iconLoud = Color.Unspecified,
                 ),
             ),
-            interactive = NewInteractiveColor(
-                fillLoud = NewInteractiveFillColor(
+            interactive = MercadoPagoAndesInteractiveColor(
+                fillLoud = MercadoPagoAndesInteractiveFillColor(
                     idle = Color.Unspecified,
                     hover = Color.Unspecified,
                     active = Color.Unspecified,
                 ),
-                fillQuiet = NewInteractiveFillColor(
+                fillQuiet = MercadoPagoAndesInteractiveFillColor(
                     idle = Color.Unspecified,
                     hover = Color.Unspecified,
                     active = Color.Unspecified,
                 ),
-                fillMute = NewInteractiveFillColor(
+                fillMute = MercadoPagoAndesInteractiveFillColor(
                     idle = Color.Unspecified,
                     hover = Color.Unspecified,
                     active = Color.Unspecified,
                 ),
-                border = NewInteractiveBorderColor(
+                border = MercadoPagoAndesInteractiveBorderColor(
                     idle = Color.Unspecified,
                     active = Color.Unspecified,
                 ),
-                icon = NewInteractiveIconColor(
+                icon = MercadoPagoAndesInteractiveIconColor(
                     idle = Color.Unspecified,
                     active = Color.Unspecified,
                     idleAccent = Color.Unspecified,
                     activeAccent = Color.Unspecified,
                 ),
             ),
-            transparent = NewTransparentColor(
+            transparent = MercadoPagoAndesTransparentColor(
                 transparent = Color.Unspecified,
             ),
         ),
-        newSpacing = NewMercadoPagoSpacing(
-            paddings = NewSpacingPaddings(
+        spacing = MercadoPagoAndesSpacing(
+            paddings = AndesSpacingPaddings(
                 none = 0.dp,
                 pico = 0.dp,
                 xnano = 0.dp,
@@ -259,7 +269,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 mega = 0.dp,
                 xmega = 0.dp,
             ),
-            gap = NewSpacingGap(
+            gap = AndesSpacingGap(
                 none = 0.dp,
                 pico = 0.dp,
                 xnano = 0.dp,
@@ -279,7 +289,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                 xmega = 0.dp,
             ),
         ),
-        newShape = NewMercadoPagoShape(
+        shape = MercadoPagoAndesShape(
             none = RoundedCornerShape(0.dp),
             tiny = RoundedCornerShape(0.dp),
             xsmall = RoundedCornerShape(0.dp),
@@ -289,7 +299,7 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
             xlarge = RoundedCornerShape(0.dp),
             full = RoundedCornerShape(0.dp),
         ),
-        newRadius = NewMercadoPagoRadius(
+        radius = MercadoPagoAndesRadius(
             none = 0.dp,
             tiny = 0.dp,
             xsmall = 0.dp,
@@ -299,14 +309,14 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
             xlarge = 0.dp,
             full = 0.dp,
         ),
-        newBorderWidth = NewBorderWidth(
+        borderWidth = MercadoPagoAndesBorderWidth(
             none = 0.dp,
             small = 0.dp,
             medium = 0.dp,
             large = 0.dp,
             xlarge = 0.dp,
         ),
-        newTypography = NewMercadoPagoTypography(
+        typography = MercadoPagoAndesTypography(
             heading = NewHeadingTypography(
                 familyDefault = FontFamily.Default,
                 size = NewTypographySize(
@@ -338,9 +348,9 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
                     lineHeight66 = 0.sp,
                 ),
                 weight = NewTypographyWeight(
-                    regular = FontWeight.W400,
-                    semibold = FontWeight.W600,
-                    bold = FontWeight.W700,
+                    regular = FontWeight.Normal,
+                    semibold = FontWeight.Normal,
+                    bold = FontWeight.Normal,
                 ),
                 letterSpacing = NewTypographyLetterSpacing(
                     spacing0 = 0.sp,
@@ -359,8 +369,9 @@ internal val LocalMercadoPagoTheme = compositionLocalOf {
 
 /**
  * @suppress
- * Object that provides access to the current MercadoPago theme values.
- * This is the main entry point for accessing theme values in composables.
+ * Object that provides access to the current MercadoPago legacy theme values.
+ * This is the main entry point for accessing legacy theme values in composables.
+ * Use this object when working with the legacy design system.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object MercadoPagoTheme {
@@ -369,70 +380,93 @@ object MercadoPagoTheme {
      */
     val color: MercadoPagoColor
         @Composable
-        get() = LocalMercadoPagoTheme.current.color
+        get() = LocalMercadoPagoLegacyTheme.current.color
 
     /**
      * Gets the current spacing configuration from the theme (legacy).
      */
     val spacing: MercadoPagoSpacing
         @Composable
-        get() = LocalMercadoPagoTheme.current.spacing
+        get() = LocalMercadoPagoLegacyTheme.current.spacing
 
     /**
      * Gets the current shape configuration from the theme (legacy).
      */
     val shape: MercadoPagoShape
         @Composable
-        get() = LocalMercadoPagoTheme.current.shape
+        get() = LocalMercadoPagoLegacyTheme.current.shape
+
+    /**
+     * Gets the current radius configuration from the theme (legacy).
+     */
+    val radius: MercadoPagoRadius
+        @Composable
+        get() = LocalMercadoPagoLegacyTheme.current.radius
+
+    /**
+     * Gets the current outline configuration from the theme (legacy).
+     */
+    val outline: MercadoPagoOutline
+        @Composable
+        get() = LocalMercadoPagoLegacyTheme.current.outline
 
     /**
      * Gets the current typography configuration from the theme (legacy).
      */
     val typography: MercadoPagoTypography
         @Composable
-        get() = LocalMercadoPagoTheme.current.typography
+        get() = LocalMercadoPagoLegacyTheme.current.typography
+}
+
+/**
+ * @suppress
+ * Object that provides access to the current MercadoPago Andes theme values.
+ * This is the main entry point for accessing Andes theme values in composables.
+ * Use this object when working with the Andes design system.
+ */
+@RestrictTo(RestrictTo.Scope.LIBRARY)
+object MercadoPagoAndesTheme {
+    /**
+     * Gets the current Andes color configuration from the theme.
+     */
+    val color: MercadoPagoAndesColor
+        @Composable
+        get() = LocalMercadoPagoAndesTheme.current.color
 
     /**
-     * Gets the new color configuration from the theme.
+     * Gets the current Andes spacing configuration from the theme.
      */
-    val newColor: NewMercadoPagoColor
+    val spacing: MercadoPagoAndesSpacing
         @Composable
-        get() = LocalMercadoPagoTheme.current.newColor
+        get() = LocalMercadoPagoAndesTheme.current.spacing
 
     /**
-     * Gets the new spacing configuration from the theme.
+     * Gets the current Andes shape configuration from the theme.
      */
-    val newSpacing: NewMercadoPagoSpacing
+    val shape: MercadoPagoAndesShape
         @Composable
-        get() = LocalMercadoPagoTheme.current.newSpacing
+        get() = LocalMercadoPagoAndesTheme.current.shape
 
     /**
-     * Gets the new shape configuration from the theme.
+     * Gets the current Andes radius configuration from the theme.
      */
-    val newShape: NewMercadoPagoShape
+    val radius: MercadoPagoAndesRadius
         @Composable
-        get() = LocalMercadoPagoTheme.current.newShape
+        get() = LocalMercadoPagoAndesTheme.current.radius
 
     /**
-     * Gets the new radius configuration from the theme.
+     * Gets the current Andes border width configuration from the theme.
      */
-    val newRadius: NewMercadoPagoRadius
+    val borderWidth: MercadoPagoAndesBorderWidth
         @Composable
-        get() = LocalMercadoPagoTheme.current.newRadius
+        get() = LocalMercadoPagoAndesTheme.current.borderWidth
 
     /**
-     * Gets the new border width configuration from the theme.
+     * Gets the current Andes typography configuration from the theme.
      */
-    val newBorderWidth: NewBorderWidth
+    val typography: MercadoPagoAndesTypography
         @Composable
-        get() = LocalMercadoPagoTheme.current.newBorderWidth
-
-    /**
-     * Gets the new typography configuration from the theme.
-     */
-    val newTypography: NewMercadoPagoTypography
-        @Composable
-        get() = LocalMercadoPagoTheme.current.newTypography
+        get() = LocalMercadoPagoAndesTheme.current.typography
 }
 
 /**
@@ -440,14 +474,14 @@ object MercadoPagoTheme {
  * Composable function that provides the MercadoPago theme to its content.
  * This is the main entry point for applying the theme to a composition.
  *
- * @param theme The theme scheme to be applied, defaults to [MercadoPagoDefaultThemes.Default]
+ * @param theme The theme scheme to be applied, defaults to [MercadoPagoThemes.Legacy]
  * @param appearance The appearance mode to be used, defaults to [MercadoPagoThemeAppearance.System]
  * @param content The content to be themed
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
+    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     content: @Composable () -> Unit,
 ) {
@@ -460,8 +494,18 @@ fun MercadoPagoTheme(
         MercadoPagoThemeAppearance.Light -> theme.lightTheme
         MercadoPagoThemeAppearance.Dark -> theme.darkTheme
     }
-    CompositionLocalProvider(
-        LocalMercadoPagoTheme provides themeScheme,
-        content = content,
-    )
+    when (themeScheme) {
+        is MercadoPagoThemeProvider.Legacy -> {
+            CompositionLocalProvider(
+                LocalMercadoPagoLegacyTheme provides themeScheme,
+                content = content,
+            )
+        }
+        is MercadoPagoThemeProvider.Andes -> {
+            CompositionLocalProvider(
+                LocalMercadoPagoAndesTheme provides themeScheme,
+                content = content,
+            )
+        }
+    }
 }
