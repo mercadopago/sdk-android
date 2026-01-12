@@ -32,7 +32,7 @@ private const val SUPERSCRIPT_ID = "superscript"
 /**
  * Default tokens configuration for MPFixedFooter component
  */
-data class FixedFooterDefaults(
+internal data class FixedFooterDefaults(
     val colors: MPFixedFooterColorDefaults,
     val spacing: MPFixedFooterSpacingDefaults,
 )
@@ -40,7 +40,7 @@ data class FixedFooterDefaults(
 /**
  * Color tokens for MPFixedFooter component
  */
-data class MPFixedFooterColorDefaults(
+internal data class MPFixedFooterColorDefaults(
     val background: Color,
     val textPrimary: Color,
     val textAccent: Color,
@@ -49,7 +49,7 @@ data class MPFixedFooterColorDefaults(
 /**
  * Spacing tokens for MPFixedFooter component
  */
-data class MPFixedFooterSpacingDefaults(
+internal data class MPFixedFooterSpacingDefaults(
     val paddingHorizontal: Dp,
     val paddingVertical: Dp,
     val spacingBetweenSections: Dp,
