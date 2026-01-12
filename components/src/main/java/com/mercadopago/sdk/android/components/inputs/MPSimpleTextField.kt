@@ -98,7 +98,7 @@ fun MPSimpleTextField(
 @Composable
 private fun MPSimpleTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         val simpleTextState = rememberPCIFieldState()
         Column(

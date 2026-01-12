@@ -99,7 +99,7 @@ fun MPExpirationDateTextField(
 @Composable
 private fun MPExpirationDateTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         val expirationDateState = rememberPCIFieldState()
         Column(

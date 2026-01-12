@@ -101,7 +101,7 @@ fun MPCardNumberTextField(
 @Composable
 private fun MPCardNumberTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         val cardNumberState = rememberPCIFieldState()
         Column(

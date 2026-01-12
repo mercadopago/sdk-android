@@ -115,7 +115,7 @@ fun MPSecurityCodeTextField(
 @Composable
 private fun MPSecurityCodeTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         val securityCodeState = rememberPCIFieldState()
         Column(

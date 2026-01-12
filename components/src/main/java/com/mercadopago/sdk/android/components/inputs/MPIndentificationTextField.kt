@@ -183,7 +183,7 @@ internal fun MPIdentificationTypeSelector(
 @Composable
 private fun MPIdentificationTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         val identificationState = rememberPCIFieldState()
         val identificationTypes = listOf(
