@@ -23,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -37,7 +37,7 @@ private const val BUTTON_GROUP = "BUTTON"
 /**
  * Data class containing color defaults for MPButton component
  */
-data class MPButtonColorDefaults(
+internal data class MPButtonColorDefaults(
     val loudIdle: Color,
     val loudActive: Color,
     val quietIdle: Color,
@@ -53,7 +53,7 @@ data class MPButtonColorDefaults(
 /**
  * Data class containing spacing defaults for MPButton component
  */
-data class MPButtonSpacingDefaults(
+internal data class MPButtonSpacingDefaults(
     val horizontalLarge: Dp,
     val horizontalMedium: Dp,
     val heightLarge: Dp,
@@ -66,7 +66,7 @@ data class MPButtonSpacingDefaults(
 /**
  * Data class containing shape defaults for MPButton component
  */
-data class MPButtonShapeDefaults(
+internal data class MPButtonShapeDefaults(
     val medium: Shape,
     val small: Shape,
 )
@@ -74,7 +74,7 @@ data class MPButtonShapeDefaults(
 /**
  * Data class containing border width defaults for MPButton component
  */
-data class MPButtonBorderWidthDefaults(
+internal data class MPButtonBorderWidthDefaults(
     val medium: Dp,
     val large: Dp,
     val xlarge: Dp,
@@ -83,7 +83,7 @@ data class MPButtonBorderWidthDefaults(
 /**
  * Data class containing all defaults for MPButton component
  */
-data class MPButtonDefaults(
+internal data class MPButtonDefaults(
     val colors: MPButtonColorDefaults,
     val spacing: MPButtonSpacingDefaults,
     val shape: MPButtonShapeDefaults,
@@ -256,7 +256,6 @@ private fun getIconColor(
 @Composable
 private fun getHorizontalPadding(
     size: MPButtonSize,
-    iconType: MPButtonIconType,
     defaults: MPButtonDefaults,
 ): Dp {
     return if (size == MPButtonSize.Large) {
@@ -285,7 +284,9 @@ private fun getButtonHeight(
  * Helper function to create focused modifier with borders
  */
 @Composable
-private fun Modifier.getFocusedModifier(defaults: MPButtonDefaults): Modifier {
+private fun Modifier.getFocusedModifier(
+    defaults: MPButtonDefaults,
+): Modifier {
     return this
         .border(
             width = defaults.borderWidth.medium,
@@ -400,7 +401,7 @@ fun MPButton(
     val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed, defaults)
     val textColor = getTextColorType(style)
     val iconColor = getIconColor(style, defaults)
-    val contentPaddingHorizontal = getHorizontalPadding(size, iconType, defaults)
+    val contentPaddingHorizontal = getHorizontalPadding(size, defaults)
     val buttonHeight = getButtonHeight(size, defaults)
 
     val borderModifier = if (isFocused) {
@@ -452,8 +453,8 @@ fun MPButton(
 @Preview(name = "Button Styles Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonStylesLargePreview() {
-    MercadoPagoTheme (
-        theme = MercadoPagoThemes.Andes
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -474,8 +475,8 @@ private fun MPButtonStylesLargePreview() {
 @Preview(name = "Button Styles Medium", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonStylesMediumPreview() {
-    MercadoPagoTheme (
-        theme = MercadoPagoThemes.Andes
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -505,8 +506,8 @@ private fun MPButtonStylesMediumPreview() {
 @Preview(name = "Button Icon Left Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconLeftLargePreview() {
-    MercadoPagoTheme (
-        theme = MercadoPagoThemes.Andes
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -548,8 +549,8 @@ private fun MPButtonIconLeftLargePreview() {
 @Preview(name = "Button Icon Left Medium", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconLeftMediumPreview() {
-    MercadoPagoTheme (
-        theme = MercadoPagoThemes.Andes
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -595,8 +596,8 @@ private fun MPButtonIconLeftMediumPreview() {
 @Preview(name = "Button Icon Right Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconRightLargePreview() {
-    MercadoPagoTheme (
-        theme = MercadoPagoThemes.Andes
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
@@ -639,7 +640,7 @@ private fun MPButtonIconRightLargePreview() {
 @Composable
 private fun MPButtonIconRightMediumPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes
+        theme = MercadoPagoThemes.Andes,
     ) {
         Column(
             modifier = Modifier
