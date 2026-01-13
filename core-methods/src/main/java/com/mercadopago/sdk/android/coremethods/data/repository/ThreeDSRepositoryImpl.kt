@@ -14,16 +14,13 @@ internal class ThreeDSRepositoryImpl(
 ) : ThreeDSRepository {
     override suspend fun authenticateThreeDSChallenge(
         params: AuthenticateThreeDSChallengeParams,
-    ): Result<ThreeDSChallengeAuthentication, ResultError> {
-        return dataSource.authenticateThreeDSChallenge(params.challengeId)
-    }
+    ): Result<ThreeDSChallengeAuthentication, ResultError> = dataSource.authenticateThreeDSChallenge(params.challengeId)
 
     override suspend fun updateThreeDSChallengeStatus(
         params: UpdateThreeDSChallengeStatusParams,
-    ): Result<Unit, ResultError> {
-        return dataSource.updateThreeDSChallengeStatus(
+    ): Result<Unit, ResultError> =
+        dataSource.updateThreeDSChallengeStatus(
             challengeId = params.challengeId,
             request = params.toRequest(),
         )
-    }
 }

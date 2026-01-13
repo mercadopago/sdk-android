@@ -16,28 +16,29 @@ internal class UpdateThreeDSChallengeStatusUseCase(
         errorDetail: ThreeDSChallengeErrorDetail? = null,
     ): Result<Unit, ResultError> {
         val validationError = validateParams(challengeId, status, errorDetail)
-        if (validationError != null) {
+        return if (validationError != null) {
             return Result.Error(validationError)
+        } else {
+            repository.updateThreeDSChallengeStatus(
+                UpdateThreeDSChallengeStatusParams(
+                    challengeId = challengeId,
+                    status = status,
+                    errorDetail = errorDetail,
+                ),
+            )
         }
-        return repository.updateThreeDSChallengeStatus(
-            UpdateThreeDSChallengeStatusParams(
-                challengeId = challengeId,
-                status = status,
-                errorDetail = errorDetail,
-            ),
-        )
     }
 
     private fun validateParams(
         challengeId: String,
         status: ThreeDSChallengeStatus,
         errorDetail: ThreeDSChallengeErrorDetail?,
-    ): ResultError? {
-        return when {
+    ): ResultError? =
+        when {
             challengeId.isEmpty() -> ResultError.Validation("challenge id cannot be empty")
             status == ThreeDSChallengeStatus.ERROR && errorDetail == null ->
                 ResultError.Validation("error detail is required when status is ERROR")
+
             else -> null
         }
-    }
 }

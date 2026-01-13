@@ -58,9 +58,7 @@ fun CoreMethods.setThreeDSProvider(
  * }
  * ```
  */
-fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> {
-    return koin.get<GetWarningsUseCase>().invoke()
-}
+fun CoreMethods.getWarnings(): Result<List<ThreeDSWarning>, ResultError> = koin.get<GetWarningsUseCase>().invoke()
 
 /**
  * Starts the 3DS challenge flow with the provided challenge ID.
@@ -110,13 +108,12 @@ suspend fun CoreMethods.startChallenge(
     activity: Activity,
     challengeId: String,
     timeout: Int,
-): Result<ThreeDSChallengeResult, ResultError> {
-    return koin.get<StartChallengeUseCase>().invoke(
+): Result<ThreeDSChallengeResult, ResultError> =
+    koin.get<StartChallengeUseCase>().invoke(
         activity = activity,
         challengeId = challengeId,
         timeout = timeout,
     )
-}
 
 /**
  * Closes the current 3DS transaction and releases associated resources.
@@ -142,9 +139,7 @@ suspend fun CoreMethods.startChallenge(
  * }
  * ```
  */
-fun CoreMethods.close(): Result<String, ResultError> {
-    return koin.get<CloseTransactionUseCase>().invoke()
-}
+fun CoreMethods.close(): Result<String, ResultError> = koin.get<CloseTransactionUseCase>().invoke()
 
 /**
  * Creates a new 3DS transaction using the provided card token.
@@ -175,6 +170,4 @@ fun CoreMethods.close(): Result<String, ResultError> {
  */
 fun CoreMethods.createTransaction(
     cardToken: CardToken,
-): Result<String, ResultError> {
-    return koin.get<CreateTransactionUseCase>().invoke(cardToken)
-}
+): Result<String, ResultError> = koin.get<CreateTransactionUseCase>().invoke(cardToken)

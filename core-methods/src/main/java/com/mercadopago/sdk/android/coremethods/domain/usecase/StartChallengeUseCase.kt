@@ -22,16 +22,16 @@ internal class StartChallengeUseCase(
         activity: Activity,
         challengeId: String,
         timeout: Int,
-    ): Result<ThreeDSChallengeResult, ResultError> {
+    ): Result<ThreeDSChallengeResult, ResultError> =
         if (!providerManager.hasProvider()) {
-            return Result.Error(
+            Result.Error(
                 ResultError.Validation(
                     message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
                 ),
             )
+        } else {
+            executeThreeDSChallenge(activity, challengeId, timeout)
         }
-        return executeThreeDSChallenge(activity, challengeId, timeout)
-    }
 
     private suspend fun executeThreeDSChallenge(
         activity: Activity,

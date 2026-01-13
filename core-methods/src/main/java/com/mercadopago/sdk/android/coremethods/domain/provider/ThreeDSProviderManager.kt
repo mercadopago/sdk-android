@@ -6,17 +6,11 @@ internal class ThreeDSProviderManager {
 
     fun setProvider(
         provider: ThreeDSProvider,
-    ) {
-        synchronized(this) {
-            this.provider = provider
-        }
+    ) = synchronized(this) {
+        this.provider = provider
     }
 
-    fun getProvider(): ThreeDSProvider? {
-        return provider
-    }
+    fun getProvider(): ThreeDSProvider? = provider
 
-    fun hasProvider(): Boolean {
-        return provider != null
-    }
+    fun hasProvider(): Boolean = provider != null
 }
