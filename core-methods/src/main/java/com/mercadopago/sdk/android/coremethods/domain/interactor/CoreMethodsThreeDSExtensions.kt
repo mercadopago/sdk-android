@@ -23,9 +23,11 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.map
 import com.mercadopago.sdk.android.coremethods.domain.utils.suspendFlatMap
 
 private object ThreeDSErrorMessages {
-    const val PROVIDER_NOT_AVAILABLE = "3DS provider not available. Please use setThreeDSProvider() method."
+    const val PROVIDER_NOT_AVAILABLE =
+        "3DS provider not available. Please use setThreeDSProvider() method."
     const val FAILED_TO_GET_WARNINGS = "Failed to get 3DS warnings."
-    const val CHALLENGE_DATA_NOT_AVAILABLE = "Challenge data not available in authentication response."
+    const val CHALLENGE_DATA_NOT_AVAILABLE =
+        "Challenge data not available in authentication response."
     const val FAILED_TO_EXECUTE_CHALLENGE = "Failed to execute 3DS challenge."
     const val ERROR_GETTING_WARNINGS_PREFIX = "Error getting warnings: "
     const val ERROR_AUTHENTICATING_CHALLENGE_PREFIX = "Error authenticating 3DS challenge: "
@@ -216,6 +218,7 @@ private suspend fun CoreMethods.processChallengeAuthentication(
                 ),
             )
         }
+
         is Result.Error -> authenticationResult
     }
 
@@ -413,8 +416,6 @@ fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParam
             },
         )
 }
-
-private fun CoreMethods.hasThreeDSProvider(): Boolean = threeDSProvider != null
 
 /**
  * Validates that the 3DS provider is available and returns its SDK version.
