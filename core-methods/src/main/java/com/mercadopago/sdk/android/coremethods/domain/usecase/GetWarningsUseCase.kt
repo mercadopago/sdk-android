@@ -10,32 +10,32 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 internal class GetWarningsUseCase(
     private val providerManager: ThreeDSProviderManager,
 ) {
-    operator fun invoke(): Result<List<ThreeDSWarning>, ResultError> {
+    operator fun invoke(): Result<List<ThreeDSWarning>, ResultError> =
         if (!providerManager.hasProvider()) {
-            return Result.Error(
+            Result.Error(
                 ResultError.Validation(
                     message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
                 ),
             )
+        } else {
+            runCatching { providerManager.getProvider()?.getWarnings() }
+                .fold(
+                    onSuccess = { warnings ->
+                        warnings?.let { Result.Success(it) } ?: Result.Error(
+                            ResultError.Request(
+                                code = ThreeDSErrorCodes.EMPTY,
+                                message = ThreeDSErrorMessages.FAILED_TO_GET_WARNINGS,
+                            ),
+                        )
+                    },
+                    onFailure = { throwable ->
+                        Result.Error(
+                            ResultError.Request(
+                                code = ThreeDSErrorCodes.EMPTY,
+                                message = "${ThreeDSErrorMessages.ERROR_GETTING_WARNINGS}${throwable.message}",
+                            ),
+                        )
+                    },
+                )
         }
-        return runCatching { providerManager.getProvider()?.getWarnings() }
-            .fold(
-                onSuccess = { warnings ->
-                    warnings?.let { Result.Success(it) } ?: Result.Error(
-                        ResultError.Request(
-                            code = ThreeDSErrorCodes.EMPTY,
-                            message = ThreeDSErrorMessages.FAILED_TO_GET_WARNINGS,
-                        ),
-                    )
-                },
-                onFailure = { throwable ->
-                    Result.Error(
-                        ResultError.Request(
-                            code = ThreeDSErrorCodes.EMPTY,
-                            message = "${ThreeDSErrorMessages.ERROR_GETTING_WARNINGS_PREFIX}${throwable.message}",
-                        ),
-                    )
-                },
-            )
-    }
 }

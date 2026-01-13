@@ -12,24 +12,26 @@ internal class CreateTransactionUseCase(
 ) {
     operator fun invoke(
         cardToken: CardToken,
-    ): Result<String, ResultError> {
+    ): Result<String, ResultError> =
         if (!providerManager.hasProvider()) {
-            return Result.Error(
+            Result.Error(
                 ResultError.Validation(
                     message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
                 ),
             )
+        } else {
+            runCatching {
+                providerManager.getProvider()?.createTransaction(cardToken.token)
+            }
+                .fold(
+                    onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CREATED) },
+                    onFailure = { throwable ->
+                        Result.Error(
+                            ResultError.Validation(
+                                message = "${ThreeDSErrorMessages.FAILED_TO_CREATE_TRANSACTION}${throwable.message}",
+                            ),
+                        )
+                    },
+                )
         }
-        return runCatching { providerManager.getProvider()?.createTransaction(cardToken.token) }
-            .fold(
-                onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CREATED) },
-                onFailure = { throwable ->
-                    Result.Error(
-                        ResultError.Validation(
-                            message = "${ThreeDSErrorMessages.FAILED_TO_CREATE_TRANSACTION_PREFIX}${throwable.message}",
-                        ),
-                    )
-                },
-            )
-    }
 }

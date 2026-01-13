@@ -7,11 +7,11 @@ internal object ThreeDSErrorMessages {
     const val CHALLENGE_DATA_NOT_AVAILABLE =
         "Challenge data not available in authentication response."
     const val FAILED_TO_EXECUTE_CHALLENGE = "Failed to execute 3DS challenge."
-    const val ERROR_GETTING_WARNINGS_PREFIX = "Error getting warnings: "
-    const val ERROR_AUTHENTICATING_CHALLENGE_PREFIX = "Error authenticating 3DS challenge: "
-    const val ERROR_DURING_CHALLENGE_PREFIX = "Error during 3DS challenge: "
-    const val FAILED_TO_CLOSE_TRANSACTION_PREFIX = "Failed to close transaction: "
-    const val FAILED_TO_CREATE_TRANSACTION_PREFIX = "Failed to create transaction: "
+    const val ERROR_GETTING_WARNINGS = "Error getting warnings: "
+    const val ERROR_AUTHENTICATING_CHALLENGE = "Error authenticating 3DS challenge: "
+    const val ERROR_DURING_CHALLENGE = "Error during 3DS challenge: "
+    const val FAILED_TO_CLOSE_TRANSACTION = "Failed to close transaction: "
+    const val FAILED_TO_CREATE_TRANSACTION = "Failed to create transaction: "
 }
 
 internal object ThreeDSSuccessMessages {

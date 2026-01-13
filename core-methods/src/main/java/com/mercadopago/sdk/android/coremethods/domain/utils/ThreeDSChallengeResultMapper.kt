@@ -8,9 +8,7 @@ internal fun convertChallengeResultToStatus(
     result: ThreeDSChallengeResult,
 ): Pair<ThreeDSChallengeStatus, ThreeDSChallengeErrorDetail?> {
     return when (result) {
-        is ThreeDSChallengeResult.OnSuccess -> {
-            Pair(ThreeDSChallengeStatus.COMPLETED, null)
-        }
+        is ThreeDSChallengeResult.OnSuccess -> Pair(ThreeDSChallengeStatus.COMPLETED, null)
 
         is ThreeDSChallengeResult.OnError -> {
             val errorDetail = ThreeDSChallengeErrorDetail(
@@ -20,12 +18,8 @@ internal fun convertChallengeResultToStatus(
             Pair(ThreeDSChallengeStatus.ERROR, errorDetail)
         }
 
-        is ThreeDSChallengeResult.OnCancel -> {
-            Pair(ThreeDSChallengeStatus.CANCELLED, null)
-        }
+        is ThreeDSChallengeResult.OnCancel -> Pair(ThreeDSChallengeStatus.CANCELLED, null)
 
-        is ThreeDSChallengeResult.OnTimedOut -> {
-            Pair(ThreeDSChallengeStatus.TIMEOUT, null)
-        }
+        is ThreeDSChallengeResult.OnTimedOut -> Pair(ThreeDSChallengeStatus.TIMEOUT, null)
     }
 }

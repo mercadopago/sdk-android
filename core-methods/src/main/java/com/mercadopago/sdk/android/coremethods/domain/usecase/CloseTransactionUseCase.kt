@@ -9,24 +9,24 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSSuccessMessag
 internal class CloseTransactionUseCase(
     private val providerManager: ThreeDSProviderManager,
 ) {
-    operator fun invoke(): Result<String, ResultError> {
+    operator fun invoke(): Result<String, ResultError> =
         if (!providerManager.hasProvider()) {
-            return Result.Error(
+            Result.Error(
                 ResultError.Validation(
                     message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
                 ),
             )
+        } else {
+            runCatching { providerManager.getProvider()?.close() }
+                .fold(
+                    onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CLOSED) },
+                    onFailure = { throwable ->
+                        Result.Error(
+                            ResultError.Validation(
+                                message = "${ThreeDSErrorMessages.FAILED_TO_CLOSE_TRANSACTION}${throwable.message}",
+                            ),
+                        )
+                    },
+                )
         }
-        return runCatching { providerManager.getProvider()?.close() }
-            .fold(
-                onSuccess = { Result.Success(ThreeDSSuccessMessages.TRANSACTION_CLOSED) },
-                onFailure = { throwable ->
-                    Result.Error(
-                        ResultError.Validation(
-                            message = "${ThreeDSErrorMessages.FAILED_TO_CLOSE_TRANSACTION_PREFIX}${throwable.message}",
-                        ),
-                    )
-                },
-            )
-    }
 }

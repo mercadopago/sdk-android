@@ -48,7 +48,7 @@ internal class StartChallengeUseCase(
                 Result.Error(
                     ResultError.Request(
                         code = ThreeDSErrorCodes.BAD_REQUEST,
-                        message = "${ThreeDSErrorMessages.ERROR_AUTHENTICATING_CHALLENGE_PREFIX}${throwable.message}",
+                        message = "${ThreeDSErrorMessages.ERROR_AUTHENTICATING_CHALLENGE}${throwable.message}",
                     ),
                 )
             },
@@ -80,8 +80,8 @@ internal class StartChallengeUseCase(
         challengeId: String,
         challengeData: ThreeDSAuthenticationModel,
         timeout: Int,
-    ): Result<ThreeDSChallengeResult, ResultError> {
-        return runCatching {
+    ): Result<ThreeDSChallengeResult, ResultError> =
+        runCatching {
             providerManager.getProvider()?.doChallenge(
                 activity = activity,
                 authentication = challengeData,
@@ -108,19 +108,18 @@ internal class StartChallengeUseCase(
                 Result.Error(
                     ResultError.Request(
                         code = ThreeDSErrorCodes.BAD_REQUEST,
-                        message = "${ThreeDSErrorMessages.ERROR_DURING_CHALLENGE_PREFIX}${throwable.message}",
+                        message = "${ThreeDSErrorMessages.ERROR_DURING_CHALLENGE}${throwable.message}",
                     ),
                 )
             },
         )
-    }
 
     private suspend fun updateThreeDSChallengeStatus(
         challengeId: String,
         status: ThreeDSChallengeStatus,
         errorDetail: ThreeDSChallengeErrorDetail? = null,
-    ): Result<Unit, ResultError> {
-        return runCatching {
+    ): Result<Unit, ResultError> =
+        runCatching {
             updateThreeDSChallengeStatusUseCase.invoke(
                 challengeId = challengeId,
                 status = status,
@@ -132,10 +131,9 @@ internal class StartChallengeUseCase(
                 Result.Error(
                     ResultError.Request(
                         code = ThreeDSErrorCodes.BAD_REQUEST,
-                        message = "${ThreeDSErrorMessages.ERROR_DURING_CHALLENGE_PREFIX}${throwable.message}",
+                        message = "${ThreeDSErrorMessages.ERROR_DURING_CHALLENGE}${throwable.message}",
                     ),
                 )
             },
         )
-    }
 }
