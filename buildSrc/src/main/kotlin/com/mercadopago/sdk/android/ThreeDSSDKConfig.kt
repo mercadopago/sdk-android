@@ -7,5 +7,5 @@ package com.mercadopago.sdk.android
  */
 object ThreeDSSDKConfig {
     const val ARTIFACT_ID = "threeds"
-    const val VERSION_NAME = "0.0.1"
+    const val VERSION_NAME = "1.0.0"
 }

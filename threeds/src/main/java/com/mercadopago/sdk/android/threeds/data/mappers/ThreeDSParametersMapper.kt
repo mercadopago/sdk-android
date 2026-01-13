@@ -16,7 +16,6 @@ internal fun ThreeDSAuthRequestParameters.toModel(): MPThreeDSRequestParams =
 
 internal fun MPThreeDSAuthenticationModel.toParams(): MPThreeDSAuthenticationParams =
     MPThreeDSAuthenticationParams(
-        response = this.response,
         threeDSServerTransID = this.threeDSServerTransID,
         acsReferenceNumber = this.acsReferenceNumber,
         dsTransID = this.dsTransID,

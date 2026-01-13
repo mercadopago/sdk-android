@@ -147,12 +147,12 @@ class MPThreeDSTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         val expectedResult = MPThreeDSChallengeResult.OnSuccess(
@@ -198,12 +198,12 @@ class MPThreeDSTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
         val customTimeout = 30
 
@@ -240,12 +240,12 @@ class MPThreeDSTest {
         // Arrange
         val mockActivity = mockk<Activity>()
         val authenticationModel = MPThreeDSAuthenticationModel(
-            response = "CHALLENGE",
             threeDSServerTransID = "server-trans-123",
             acsReferenceNumber = "acs-ref-456",
             dsTransID = "ds-trans-789",
             acsTransID = "acs-trans-101",
             acsSignedContent = "signed-content-abc",
+            callbackUrl = "",
         )
 
         coEvery {
