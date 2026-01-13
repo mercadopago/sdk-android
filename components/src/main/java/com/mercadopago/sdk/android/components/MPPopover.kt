@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-import com.mercadopago.sdk.android.components.R
 
 private const val POPOVER_MAX_WIDTH_FRACTION: Float = 0.9f
 
@@ -120,6 +119,7 @@ private fun PopoverHeader(
         }
     }
 }
+
 internal data class PopoverDefaults(
     val colors: PopoverColorDefaults,
     val spacing: PopoverSpacingDefaults,
