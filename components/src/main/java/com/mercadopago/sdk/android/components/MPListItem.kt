@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
@@ -63,15 +64,17 @@ fun MPListItem(
             Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
             MPText(
                 text = text,
-                textStyle = MPTextStyle.BodyMediumRegular,
+                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                color = MercadoPagoAndesTheme.color.text.primary,
                 modifier = Modifier.weight(1f),
             )
 
             trailingText?.let {
                 when (trailingType) {
                     MPTrailingType.Text -> MPText(
-                        trailingText,
-                        textStyle = MPTextStyle.BodySmallRegular,
+                        text = trailingText,
+                        style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+                        color = MercadoPagoAndesTheme.color.text.primary,
                     )
 
                     MPTrailingType.Pill -> MPPill(trailingText)

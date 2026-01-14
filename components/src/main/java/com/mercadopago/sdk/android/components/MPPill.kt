@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val PILL_GROUP = "Pill"
@@ -39,9 +40,9 @@ fun MPPill(
             .padding(horizontal = MercadoPagoTheme.spacing.xs),
     ) {
         MPText(
-            text,
-            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-            colorType = MPTextColorType.Positive,
+            text = text,
+            style = MercadoPagoAndesTheme.typography.body.bodySmallEmphasis,
+            color = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
         )
     }
 }

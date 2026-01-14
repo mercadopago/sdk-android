@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val TOOLTIP_MAX_WIDTH_FRACTION: Float = 0.9f
@@ -91,8 +92,8 @@ private fun TooltipHeader(
     ) {
         MPText(
             text = title,
-            textStyle = MPTextStyle.BodyMediumSemiBold,
-            colorType = MPTextColorType.Inverted,
+            style = MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis,
+            color = MercadoPagoAndesTheme.color.text.inverse,
             modifier = Modifier.weight(1f),
         )
         Box(
@@ -117,8 +118,8 @@ private fun TooltipDescription(
 ) {
     MPText(
         text = text,
-        textStyle = MPTextStyle.BodySmallRegular,
-        colorType = MPTextColorType.Inverted,
+        style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+        color = MercadoPagoAndesTheme.color.text.inverse,
     )
 }
 

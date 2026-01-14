@@ -15,7 +15,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
  * This data class centralizes all token references used by input components.
  */
 internal data class MPInputDefaults(
-    val typography: MPInputTypographyDefaults,
     val colors: MPInputColorDefaults,
     val spacing: MPInputSpacingDefaults,
     val border: MPInputBorderDefaults,
@@ -73,13 +72,6 @@ internal data class MPInputBorderDefaults(
 internal fun getMPInputDefaults(): MPInputDefaults {
     val andesTheme = MercadoPagoAndesTheme
     return MPInputDefaults(
-        typography = MPInputTypographyDefaults(
-            fontFamily = andesTheme.typography.heading.familyDefault,
-            fontSize = andesTheme.typography.heading.size.size16,
-            lineHeight = andesTheme.typography.heading.lineHeight.lineHeight20,
-            fontWeight = andesTheme.typography.heading.weight.regular,
-            letterSpacing = andesTheme.typography.heading.letterSpacing.spacing0,
-        ),
         colors = MPInputColorDefaults(
             borderIdle = andesTheme.color.interactive.border.idle,
             borderActive = andesTheme.color.interactive.border.active,

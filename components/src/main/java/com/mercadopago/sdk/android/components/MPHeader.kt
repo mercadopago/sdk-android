@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val EXPANDED_HEIGHT_DP = 120
@@ -250,14 +251,14 @@ private fun MPHeaderMotionLayout(
             Spacer(modifier = Modifier.layoutId(BACK_BUTTON_ID).size(0.dp))
         }
         val textStyle = if (params.animatedProgress < SCROLL_THRESHOLD) {
-            MPTextStyle.Title
+            MercadoPagoAndesTheme.typography.heading.headingSmallDefault
         } else {
-            MPTextStyle.BodyMediumSemiBold
+            MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis
         }
         MPText(
             text = params.title,
-            textStyle = textStyle,
-            colorType = MPTextColorType.Primary,
+            style = textStyle,
+            color = MercadoPagoAndesTheme.color.text.primary,
             modifier = Modifier.layoutId(TITLE_ID),
         )
     }
@@ -356,8 +357,8 @@ private fun MPHeaderPreview() {
                 items(PREVIEW_ITEM_COUNT) { index ->
                     MPText(
                         text = "Item $index",
-                        textStyle = MPTextStyle.BodyMediumRegular,
-                        colorType = MPTextColorType.Primary,
+                        style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                        color = MercadoPagoAndesTheme.color.text.primary,
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                     )
                 }

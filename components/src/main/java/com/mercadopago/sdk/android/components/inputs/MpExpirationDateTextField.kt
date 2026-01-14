@@ -11,7 +11,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateFormat
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextField
@@ -67,13 +66,7 @@ fun MPExpirationDateTextField(
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
-            textStyle = TextStyle(
-                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
-                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
-                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
-                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
-            ),
+            textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
@@ -83,7 +76,8 @@ fun MPExpirationDateTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                color = MercadoPagoAndesTheme.color.text.primary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
@@ -118,16 +119,16 @@ private fun HeaderSection(
         ) {
             MPText(
                 text = title,
-                textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Primary,
+                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                color = MercadoPagoAndesTheme.color.text.primary,
             )
             AmountText(amount = amount)
         }
         if (subtitle != null) {
             MPText(
                 text = subtitle,
-                textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Accent,
+                style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+                color = MercadoPagoAndesTheme.color.text.accent,
                 modifier = Modifier.align(Alignment.End),
             )
         }
@@ -156,8 +157,8 @@ private fun AmountText(
         ) {
             Text(
                 text = amount.decimalPart,
-                style = MercadoPagoTheme.typography.body.extraSmallSemibold,
-                color = MercadoPagoTheme.color.text.primary,
+                style = MercadoPagoAndesTheme.typography.body.bodySmallEmphasis,
+                color = MercadoPagoAndesTheme.color.text.primary,
             )
         },
     )
@@ -165,8 +166,8 @@ private fun AmountText(
     Text(
         text = annotatedString,
         inlineContent = inlineContent,
-        style = MercadoPagoTheme.typography.title.smallSemibold,
-        color = MercadoPagoTheme.color.text.primary,
+        style = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+        color = MercadoPagoAndesTheme.color.text.primary,
     )
 }
 

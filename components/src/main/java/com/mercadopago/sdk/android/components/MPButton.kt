@@ -223,15 +223,17 @@ private fun getButtonBackgroundColor(
 }
 
 /**
- * Helper function to get text color type based on button style
+ * Helper function to get text color based on button style
  */
-private fun getTextColorType(
+@Composable
+private fun getTextColor(
     style: MPButtonStyle,
-): MPTextColorType {
+    defaults: MPButtonDefaults,
+): Color {
     return when (style) {
-        MPButtonStyle.Loud -> MPTextColorType.Inverted
-        MPButtonStyle.Quiet -> MPTextColorType.Accent
-        MPButtonStyle.Transparent -> MPTextColorType.Accent
+        MPButtonStyle.Loud -> MercadoPagoAndesTheme.color.text.inverse
+        MPButtonStyle.Quiet -> MercadoPagoAndesTheme.color.text.accent
+        MPButtonStyle.Transparent -> MercadoPagoAndesTheme.color.text.accent
     }
 }
 
@@ -399,7 +401,7 @@ fun MPButton(
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed, defaults)
-    val textColor = getTextColorType(style)
+    val textColor = getTextColor(style, defaults)
     val iconColor = getIconColor(style, defaults)
     val contentPaddingHorizontal = getHorizontalPadding(size, defaults)
     val buttonHeight = getButtonHeight(size, defaults)
@@ -433,14 +435,13 @@ fun MPButton(
             }
 
             MPText(
-                text,
-                textStyle = if (size == MPButtonSize.Large) {
-                    MPTextStyle.BodyMediumSemiBold
+                text = text,
+                style = if (size == MPButtonSize.Large) {
+                    MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis
                 } else {
-                    MPTextStyle.BodySmallSemiBold
+                    MercadoPagoAndesTheme.typography.body.bodySmallEmphasis
                 },
-                colorType = textColor,
-                enabled = enabled,
+                color = textColor,
             )
 
             if (drawIcon && iconType == MPButtonIconType.Right) {

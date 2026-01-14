@@ -13,9 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextColorType
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -64,7 +64,7 @@ internal fun MPInputBody(
             MPInputLabel(
                 it,
                 modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano),
-                textStyle = MPTextStyle.BodySmallRegular,
+                style = MercadoPagoAndesTheme.typography.body.bodySmallRegular,
                 inputLabelState = state,
             )
         }
@@ -99,8 +99,8 @@ internal fun MPInputHelper(
         MPInputLabel(
             text,
             modifier = modifier,
+            style = MercadoPagoAndesTheme.typography.body.bodyExtraSmallSemiBold,
             inputLabelState = inputLabelState,
-            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
         )
     }
 }
@@ -109,20 +109,19 @@ internal fun MPInputHelper(
 internal fun MPInputLabel(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: MPTextStyle = MPTextStyle.Title,
+    style: TextStyle = MercadoPagoAndesTheme.typography.title.title,
     inputLabelState: InputLabelState = InputLabelState.Idle,
 ) {
-    val colorType = when (inputLabelState) {
-        InputLabelState.Idle -> MPTextColorType.Primary
-        InputLabelState.Disabled -> MPTextColorType.Inverted
-        InputLabelState.Error -> MPTextColorType.Negative
+    val color = when (inputLabelState) {
+        InputLabelState.Idle -> MercadoPagoAndesTheme.color.text.primary
+        InputLabelState.Disabled -> MercadoPagoAndesTheme.color.text.inverse
+        InputLabelState.Error -> MercadoPagoAndesTheme.color.feedback.negative.textLoud
     }
-
     MPText(
-        text,
+        text = text,
         modifier = modifier,
-        textStyle = textStyle,
-        colorType = colorType,
+        style = style,
+        color = color,
     )
 }
 
