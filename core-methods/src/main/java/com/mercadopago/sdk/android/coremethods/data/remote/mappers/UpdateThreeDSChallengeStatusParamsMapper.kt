@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.UpdateThreeDS
 
 internal fun UpdateThreeDSChallengeStatusParams.toRequest(): UpdateThreeDSChallengeStatusRequest =
     UpdateThreeDSChallengeStatusRequest(
-        status = status.value,
+        status = status.name,
         errorDetail = errorDetail?.let {
             ErrorDetailRequest(
                 type = it.type,
