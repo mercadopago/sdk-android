@@ -87,7 +87,7 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
@@ -109,7 +109,7 @@ fun MPIdentificationTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -141,7 +141,7 @@ internal fun MPIdentificationTypeSelector(
         ) {
             MPText(
                 text = selectedIdentificationType?.name.orEmpty(),
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = defaults.colors.textPrimary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
@@ -154,7 +154,7 @@ internal fun MPIdentificationTypeSelector(
                         identificationType.name?.let {
                             MPText(
                                 text = it,
-                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                             )
                         }

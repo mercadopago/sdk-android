@@ -28,20 +28,25 @@ data class MercadoPagoAndesTypography(
 /**
  * Represents the heading typography configuration.
  *
- * @property headingSmallDefault Heading small default text style
- * @property headingSmallNarrow Heading small narrow text style
- * @property headingMediumDefault Heading medium default text style
- * @property headingMediumNarrow Heading medium narrow text style
- * @property headingHugeDefault Heading huge default text style
- * @property headingHugeNarrow Heading huge narrow text style
+ * @property default Default heading style configuration
+ * @property narrow Narrow heading style configuration
  */
 data class AndesHeadingTypography(
-    val headingSmallDefault: TextStyle,
-    val headingSmallNarrow: TextStyle,
-    val headingMediumDefault: TextStyle,
-    val headingMediumNarrow: TextStyle,
-    val headingHugeDefault: TextStyle,
-    val headingHugeNarrow: TextStyle,
+    val default: AndesHeadingStyle,
+    val narrow: AndesHeadingStyle,
+)
+
+/**
+ * Represents the heading style configuration with different sizes.
+ *
+ * @property small Small heading text style
+ * @property medium Medium heading text style
+ * @property huge Huge heading text style
+ */
+data class AndesHeadingStyle(
+    val small: TextStyle,
+    val medium: TextStyle,
+    val huge: TextStyle,
 )
 
 /**
@@ -58,41 +63,27 @@ data class AndesTitleTypography(
 /**
  * Represents the body typography configuration.
  *
- * @property bodySmallDefault Body small default text style
- * @property bodySmallEmphasis Body small emphasis text style
- * @property bodySmallTextlink Body small textlink text style
- * @property bodyMediumDefault Body medium default text style
- * @property bodyMediumEmphasis Body medium emphasis text style
- * @property bodyMediumTextlink Body medium textlink text style
- * @property bodyLargeDefault Body large default text style
- * @property bodyLargeEmphasis Body large emphasis text style
- * @property bodyLargeTextlink Body large textlink text style
- * @property bodyMediumSemiBold Body medium semibold text style (deprecated, use bodyMediumEmphasis)
- * @property bodyMediumRegular Body medium regular text style (deprecated, use bodyMediumDefault)
- * @property bodySmallSemiBold Body small semibold text style (deprecated, use bodySmallEmphasis)
- * @property bodySmallRegular Body small regular text style (deprecated, use bodySmallDefault)
- * @property bodyExtraSmallSemiBold Body extra small semibold text style (deprecated, use bodySmallEmphasis)
+ * @property default Default body style configuration
+ * @property emphasis Emphasis body style configuration
+ * @property textlink Textlink body style configuration
  */
 data class AndesBodyTypography(
-    val bodySmallDefault: TextStyle,
-    val bodySmallEmphasis: TextStyle,
-    val bodySmallTextlink: TextStyle,
-    val bodyMediumDefault: TextStyle,
-    val bodyMediumEmphasis: TextStyle,
-    val bodyMediumTextlink: TextStyle,
-    val bodyLargeDefault: TextStyle,
-    val bodyLargeEmphasis: TextStyle,
-    val bodyLargeTextlink: TextStyle,
-    @Deprecated("Use bodyMediumEmphasis instead", ReplaceWith("bodyMediumEmphasis"))
-    val bodyMediumSemiBold: TextStyle,
-    @Deprecated("Use bodyMediumDefault instead", ReplaceWith("bodyMediumDefault"))
-    val bodyMediumRegular: TextStyle,
-    @Deprecated("Use bodySmallEmphasis instead", ReplaceWith("bodySmallEmphasis"))
-    val bodySmallSemiBold: TextStyle,
-    @Deprecated("Use bodySmallDefault instead", ReplaceWith("bodySmallDefault"))
-    val bodySmallRegular: TextStyle,
-    @Deprecated("This style is no longer supported, use bodySmallEmphasis instead")
-    val bodyExtraSmallSemiBold: TextStyle,
+    val default: AndesBodyStyle,
+    val emphasis: AndesBodyStyle,
+    val textlink: AndesBodyStyle,
+)
+
+/**
+ * Represents the body style configuration with different sizes.
+ *
+ * @property small Small body text style
+ * @property medium Medium body text style
+ * @property large Large body text style
+ */
+data class AndesBodyStyle(
+    val small: TextStyle,
+    val medium: TextStyle,
+    val large: TextStyle,
 )
 
 @ShowkaseTypography(name = "Heading Small Default", group = TYPOGRAPHY_HEADING_GROUP)
@@ -230,51 +221,6 @@ internal val AndesBodyLargeTextlink = TextStyle(
     letterSpacing = 0.sp,
 )
 
-@ShowkaseTypography(name = "Body Medium SemiBold", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyMediumSemiBold = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W600,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
-    letterSpacing = 0.sp,
-)
-
-@ShowkaseTypography(name = "Body Medium Regular", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyMediumRegular = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W400,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
-    letterSpacing = 0.sp,
-)
-
-@ShowkaseTypography(name = "Body Small SemiBold", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodySmallSemiBold = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W600,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
-    letterSpacing = 0.sp,
-)
-
-@ShowkaseTypography(name = "Body Small Regular", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodySmallRegular = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W400,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
-    letterSpacing = 0.sp,
-)
-
-@ShowkaseTypography(name = "Body Extra Small SemiBold", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyExtraSmallSemiBold = TextStyle(
-    fontFamily = FontFamily.Default,
-    fontWeight = FontWeight.W600,
-    fontSize = 12.sp,
-    lineHeight = 16.sp,
-    letterSpacing = 0.sp,
-)
-
 internal val AndesTitle = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
@@ -285,28 +231,33 @@ internal val AndesTitle = TextStyle(
 
 internal val AndesDefaultTypography = MercadoPagoAndesTypography(
     heading = AndesHeadingTypography(
-        headingSmallDefault = AndesHeadingSmallDefault,
-        headingSmallNarrow = AndesHeadingSmallNarrow,
-        headingMediumDefault = AndesHeadingMediumDefault,
-        headingMediumNarrow = AndesHeadingMediumNarrow,
-        headingHugeDefault = AndesHeadingHugeDefault,
-        headingHugeNarrow = AndesHeadingHugeNarrow,
+        default = AndesHeadingStyle(
+            small = AndesHeadingSmallDefault,
+            medium = AndesHeadingMediumDefault,
+            huge = AndesHeadingHugeDefault,
+        ),
+        narrow = AndesHeadingStyle(
+            small = AndesHeadingSmallNarrow,
+            medium = AndesHeadingMediumNarrow,
+            huge = AndesHeadingHugeNarrow,
+        ),
     ),
     body = AndesBodyTypography(
-        bodySmallDefault = AndesBodySmallDefault,
-        bodySmallEmphasis = AndesBodySmallEmphasis,
-        bodySmallTextlink = AndesBodySmallTextlink,
-        bodyMediumDefault = AndesBodyMediumDefault,
-        bodyMediumEmphasis = AndesBodyMediumEmphasis,
-        bodyMediumTextlink = AndesBodyMediumTextlink,
-        bodyLargeDefault = AndesBodyLargeDefault,
-        bodyLargeEmphasis = AndesBodyLargeEmphasis,
-        bodyLargeTextlink = AndesBodyLargeTextlink,
-        bodyMediumSemiBold = AndesBodyMediumSemiBold,
-        bodyMediumRegular = AndesBodyMediumRegular,
-        bodySmallSemiBold = AndesBodySmallSemiBold,
-        bodySmallRegular = AndesBodySmallRegular,
-        bodyExtraSmallSemiBold = AndesBodyExtraSmallSemiBold,
+        default = AndesBodyStyle(
+            small = AndesBodySmallDefault,
+            medium = AndesBodyMediumDefault,
+            large = AndesBodyLargeDefault,
+        ),
+        emphasis = AndesBodyStyle(
+            small = AndesBodySmallEmphasis,
+            medium = AndesBodyMediumEmphasis,
+            large = AndesBodyLargeEmphasis,
+        ),
+        textlink = AndesBodyStyle(
+            small = AndesBodySmallTextlink,
+            medium = AndesBodyMediumTextlink,
+            large = AndesBodyLargeTextlink,
+        ),
     ),
     title = AndesTitleTypography(
         title = AndesTitle,

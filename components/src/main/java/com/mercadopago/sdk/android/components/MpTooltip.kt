@@ -92,7 +92,7 @@ private fun TooltipHeader(
     ) {
         MPText(
             text = title,
-            style = MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis,
+            style = MercadoPagoAndesTheme.typography.body.emphasis.medium,
             color = MercadoPagoAndesTheme.color.text.inverse,
             modifier = Modifier.weight(1f),
         )
@@ -118,7 +118,7 @@ private fun TooltipDescription(
 ) {
     MPText(
         text = text,
-        style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+        style = MercadoPagoAndesTheme.typography.body.default.small,
         color = MercadoPagoAndesTheme.color.text.inverse,
     )
 }

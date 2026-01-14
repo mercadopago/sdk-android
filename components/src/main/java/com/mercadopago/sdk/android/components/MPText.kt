@@ -54,37 +54,37 @@ internal fun TextTittlePreview() {
         ) {
             MPText(
                 text = "My Tittle Primary Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.primary,
             )
             MPText(
                 text = "My Tittle Secondary Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.secondary,
             )
             MPText(
                 text = "My Tittle Accent Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.accent,
             )
             MPText(
                 text = "My Tittle Inverted Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
             )
             MPText(
                 text = "My Tittle Negative Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.inverse,
             )
             MPText(
                 text = "My Tittle Disabled Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.disabled,
             )
             MPText(
                 text = "My Tittle Positive Text",
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
             )
         }

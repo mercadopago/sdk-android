@@ -65,7 +65,7 @@ internal fun MPInputBody(
             MPInputLabel(
                 it,
                 modifier = Modifier.padding(start = defaults.spacing.labelPadding),
-                style = MercadoPagoAndesTheme.typography.body.bodySmallRegular,
+                style = MercadoPagoAndesTheme.typography.body.default.small,
                 inputLabelState = state,
                 defaults = defaults,
             )
@@ -103,7 +103,7 @@ internal fun MPInputHelper(
         MPInputLabel(
             text,
             modifier = modifier,
-            style = MercadoPagoAndesTheme.typography.body.bodyExtraSmallSemiBold,
+            style = MercadoPagoAndesTheme.typography.body.emphasis.small,
             inputLabelState = inputLabelState,
             defaults = defaults,
         )

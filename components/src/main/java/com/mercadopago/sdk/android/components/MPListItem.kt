@@ -64,7 +64,7 @@ fun MPListItem(
             Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
             MPText(
                 text = text,
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.primary,
                 modifier = Modifier.weight(1f),
             )
@@ -73,7 +73,7 @@ fun MPListItem(
                 when (trailingType) {
                     MPTrailingType.Text -> MPText(
                         text = trailingText,
-                        style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+                        style = MercadoPagoAndesTheme.typography.body.default.small,
                         color = MercadoPagoAndesTheme.color.text.primary,
                     )
 

@@ -251,9 +251,9 @@ private fun MPHeaderMotionLayout(
             Spacer(modifier = Modifier.layoutId(BACK_BUTTON_ID).size(0.dp))
         }
         val textStyle = if (params.animatedProgress < SCROLL_THRESHOLD) {
-            MercadoPagoAndesTheme.typography.heading.headingSmallDefault
+            MercadoPagoAndesTheme.typography.heading.default.small
         } else {
-            MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis
+            MercadoPagoAndesTheme.typography.body.emphasis.medium
         }
         MPText(
             text = params.title,
@@ -357,7 +357,7 @@ private fun MPHeaderPreview() {
                 items(PREVIEW_ITEM_COUNT) { index ->
                     MPText(
                         text = "Item $index",
-                        style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                        style = MercadoPagoAndesTheme.typography.body.default.medium,
                         color = MercadoPagoAndesTheme.color.text.primary,
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                     )

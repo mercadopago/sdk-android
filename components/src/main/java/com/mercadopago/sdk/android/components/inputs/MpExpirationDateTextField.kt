@@ -67,7 +67,7 @@ fun MPExpirationDateTextField(
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
-            textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
@@ -78,7 +78,7 @@ fun MPExpirationDateTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )

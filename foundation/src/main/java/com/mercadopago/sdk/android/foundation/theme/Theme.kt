@@ -39,7 +39,9 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
+import com.mercadopago.sdk.android.foundation.typography.AndesBodyStyle
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesHeadingStyle
 import com.mercadopago.sdk.android.foundation.typography.AndesHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
@@ -312,28 +314,33 @@ internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemePro
         ),
         typography = MercadoPagoAndesTypography(
             heading = AndesHeadingTypography(
-                headingSmallDefault = TextStyle.Default,
-                headingSmallNarrow = TextStyle.Default,
-                headingMediumDefault = TextStyle.Default,
-                headingMediumNarrow = TextStyle.Default,
-                headingHugeDefault = TextStyle.Default,
-                headingHugeNarrow = TextStyle.Default,
+                default = AndesHeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
+                narrow = AndesHeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
             ),
             body = AndesBodyTypography(
-                bodySmallDefault = TextStyle.Default,
-                bodySmallEmphasis = TextStyle.Default,
-                bodySmallTextlink = TextStyle.Default,
-                bodyMediumDefault = TextStyle.Default,
-                bodyMediumEmphasis = TextStyle.Default,
-                bodyMediumTextlink = TextStyle.Default,
-                bodyLargeDefault = TextStyle.Default,
-                bodyLargeEmphasis = TextStyle.Default,
-                bodyLargeTextlink = TextStyle.Default,
-                bodyMediumSemiBold = TextStyle.Default,
-                bodyMediumRegular = TextStyle.Default,
-                bodySmallSemiBold = TextStyle.Default,
-                bodySmallRegular = TextStyle.Default,
-                bodyExtraSmallSemiBold = TextStyle.Default,
+                default = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                emphasis = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                textlink = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
             ),
             title = AndesTitleTypography(
                 title = TextStyle.Default,

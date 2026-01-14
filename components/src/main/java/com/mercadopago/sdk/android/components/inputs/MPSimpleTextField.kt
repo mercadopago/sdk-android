@@ -65,7 +65,7 @@ fun MPSimpleTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
@@ -77,7 +77,7 @@ fun MPSimpleTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )

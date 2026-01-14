@@ -167,8 +167,8 @@ fun MPMessage(
         MPText(
             text = text,
             style = when (hierarchy) {
-                MPMessageHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.bodySmallDefault
-                MPMessageHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.bodySmallEmphasis
+                MPMessageHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.default.small
+                MPMessageHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.emphasis.small
             },
             color = defaults.colors.textColor,
         )

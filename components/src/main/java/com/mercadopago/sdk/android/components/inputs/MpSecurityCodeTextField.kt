@@ -75,7 +75,7 @@ fun MPSecurityCodeTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             securityCodeSize = securityCodeSize,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
@@ -88,7 +88,7 @@ fun MPSecurityCodeTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )

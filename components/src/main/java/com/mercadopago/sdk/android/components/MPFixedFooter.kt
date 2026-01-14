@@ -116,7 +116,7 @@ private fun HeaderSection(
         ) {
             MPText(
                 text = title,
-                style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.primary,
             )
             AmountText(amount = amount)
@@ -124,7 +124,7 @@ private fun HeaderSection(
         if (subtitle != null) {
             MPText(
                 text = subtitle,
-                style = MercadoPagoAndesTheme.typography.body.bodySmallDefault,
+                style = MercadoPagoAndesTheme.typography.body.default.small,
                 color = MercadoPagoAndesTheme.color.text.accent,
                 modifier = Modifier.align(Alignment.End),
             )
@@ -151,7 +151,7 @@ private fun AmountText(
         ) {
             MPText(
                 text = amount.decimalPart,
-                style = MercadoPagoAndesTheme.typography.body.bodySmallEmphasis,
+                style = MercadoPagoAndesTheme.typography.body.emphasis.small,
                 color = MercadoPagoAndesTheme.color.text.primary,
             )
         },
@@ -160,7 +160,7 @@ private fun AmountText(
     Text(
         text = annotatedString,
         inlineContent = inlineContent,
-        style = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
+        style = MercadoPagoAndesTheme.typography.heading.default.small,
         color = MercadoPagoAndesTheme.color.text.primary,
     )
 }

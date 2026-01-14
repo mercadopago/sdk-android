@@ -399,9 +399,9 @@ fun MPButton(
             MPText(
                 text = text,
                 style = if (size == MPButtonSize.Large) {
-                    MercadoPagoAndesTheme.typography.body.bodyMediumEmphasis
+                    MercadoPagoAndesTheme.typography.body.emphasis.medium
                 } else {
-                    MercadoPagoAndesTheme.typography.body.bodySmallEmphasis
+                    MercadoPagoAndesTheme.typography.body.emphasis.small
                 },
                 color = textColor,
             )

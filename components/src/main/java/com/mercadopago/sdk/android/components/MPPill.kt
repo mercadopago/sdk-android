@@ -41,7 +41,7 @@ fun MPPill(
     ) {
         MPText(
             text = text,
-            style = MercadoPagoAndesTheme.typography.body.bodySmallEmphasis,
+            style = MercadoPagoAndesTheme.typography.body.emphasis.small,
             color = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
         )
     }
