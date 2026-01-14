@@ -31,7 +31,9 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesTypographyTokens
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 
 private const val ANDES_COLOR_GROUP_BACKGROUND = "Andes Background"
@@ -457,50 +459,157 @@ internal val AndesDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
 internal val InterFontFamily = FontFamily.Default
 
 internal val AndesDefaultLightTypography = MercadoPagoAndesTypography(
-    title = AndesTitleTypography(
-        title = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 20.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.sp,
+    heading = AndesHeadingTypography(
+        headingSmallDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightBold,
+            fontSize = AndesTypographyTokens.HeadingSizeSmall.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        headingSmallNarrow = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.HeadingSizeSmall.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        headingMediumDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightBold,
+            fontSize = AndesTypographyTokens.HeadingSizeMedium.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        headingMediumNarrow = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.HeadingSizeMedium.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        headingHugeDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightBold,
+            fontSize = AndesTypographyTokens.HeadingSizeHuge.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightHuge.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        headingHugeNarrow = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.HeadingSizeHuge.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightHuge.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
     ),
     body = AndesBodyTypography(
+        bodySmallDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightRegular,
+            fontSize = AndesTypographyTokens.BodySizeSmall.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodySmallEmphasis = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeSmall.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodySmallTextlink = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeSmall.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyMediumDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightRegular,
+            fontSize = AndesTypographyTokens.BodySizeMedium.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyMediumEmphasis = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeMedium.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyMediumTextlink = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeMedium.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyLargeDefault = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightRegular,
+            fontSize = AndesTypographyTokens.BodySizeLarge.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightLarge.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyLargeEmphasis = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeLarge.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightLarge.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+        bodyLargeTextlink = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeLarge.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightLarge.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
         bodyMediumSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.sp,
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeMedium.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
         bodyMediumRegular = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W400,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightRegular,
+            fontSize = AndesTypographyTokens.BodySizeMedium.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
         bodySmallSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.BodySizeSmall.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
         bodySmallRegular = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W400,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightRegular,
+            fontSize = AndesTypographyTokens.BodySizeSmall.sp,
+            lineHeight = AndesTypographyTokens.BodyLineHeightSmall.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
         bodyExtraSmallSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
             fontSize = 12.sp,
             lineHeight = 16.sp,
-            letterSpacing = 0.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
+        ),
+    ),
+    title = AndesTitleTypography(
+        title = TextStyle(
+            fontFamily = AndesTypographyTokens.FontFamilyDefault,
+            fontWeight = AndesTypographyTokens.FontWeightSemibold,
+            fontSize = AndesTypographyTokens.HeadingSizeMedium.sp,
+            lineHeight = AndesTypographyTokens.HeadingLineHeightMedium.sp,
+            letterSpacing = AndesTypographyTokens.LetterSpacingDefault.sp,
         ),
     ),
 )

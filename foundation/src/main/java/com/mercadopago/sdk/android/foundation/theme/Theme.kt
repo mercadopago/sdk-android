@@ -40,6 +40,7 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
@@ -310,15 +311,32 @@ internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemePro
             xlarge = 0.dp,
         ),
         typography = MercadoPagoAndesTypography(
-            title = AndesTitleTypography(
-                title = TextStyle.Default,
+            heading = AndesHeadingTypography(
+                headingSmallDefault = TextStyle.Default,
+                headingSmallNarrow = TextStyle.Default,
+                headingMediumDefault = TextStyle.Default,
+                headingMediumNarrow = TextStyle.Default,
+                headingHugeDefault = TextStyle.Default,
+                headingHugeNarrow = TextStyle.Default,
             ),
             body = AndesBodyTypography(
+                bodySmallDefault = TextStyle.Default,
+                bodySmallEmphasis = TextStyle.Default,
+                bodySmallTextlink = TextStyle.Default,
+                bodyMediumDefault = TextStyle.Default,
+                bodyMediumEmphasis = TextStyle.Default,
+                bodyMediumTextlink = TextStyle.Default,
+                bodyLargeDefault = TextStyle.Default,
+                bodyLargeEmphasis = TextStyle.Default,
+                bodyLargeTextlink = TextStyle.Default,
                 bodyMediumSemiBold = TextStyle.Default,
                 bodyMediumRegular = TextStyle.Default,
                 bodySmallSemiBold = TextStyle.Default,
                 bodySmallRegular = TextStyle.Default,
                 bodyExtraSmallSemiBold = TextStyle.Default,
+            ),
+            title = AndesTitleTypography(
+                title = TextStyle.Default,
             ),
         ),
     )
