@@ -61,12 +61,14 @@ fun MPSecurityCodeTextField(
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
         helper = helper,
+        defaults = defaults,
     ) {
         SecurityCodeTextField(
             state = state,
@@ -75,18 +77,19 @@ fun MPSecurityCodeTextField(
             enabled = enabled,
             textStyle = MercadoPagoAndesTheme.typography.heading.headingSmallDefault,
             securityCodeSize = securityCodeSize,
-            cursorBrush = SolidColor(MercadoPagoAndesTheme.color.interactive.border.active),
+            cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error,
+                    defaults = defaults,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
-                                color = MercadoPagoAndesTheme.color.text.primary,
+                                color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

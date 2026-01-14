@@ -54,12 +54,14 @@ fun MPCardNumberTextField(
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
         error = error,
         enabled = enabled,
         label = label,
         helper = helper,
+        defaults = defaults,
     ) {
         CardNumberTextField(
             state = state,
@@ -72,13 +74,14 @@ fun MPCardNumberTextField(
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error,
+                    defaults = defaults,
                 ) {
                     Box {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.bodyMediumDefault,
-                                color = MercadoPagoAndesTheme.color.text.primary,
+                                color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

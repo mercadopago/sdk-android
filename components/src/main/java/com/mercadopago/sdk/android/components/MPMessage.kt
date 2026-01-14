@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -69,60 +68,30 @@ enum class MPMessageType {
     Negative,
 }
 
-/**
- * Message Color Defaults data class
- * Stores color tokens for the message component
- */
-data class MessageColorDefaults(
+internal data class MessageColorDefaults(
     val textColor: Color,
     val iconColor: Color,
 )
 
-/**
- * Message Spacing Defaults data class
- * Stores spacing tokens for the message component
- */
-data class MessageSpacingDefaults(
+internal data class MessageSpacingDefaults(
     val horizontalPadding: androidx.compose.ui.unit.Dp,
     val verticalPadding: androidx.compose.ui.unit.Dp,
     val iconTextSpacing: androidx.compose.ui.unit.Dp,
     val iconSize: androidx.compose.ui.unit.Dp,
 )
 
-/**
- * Message Icon Defaults data class
- * Stores icon configuration for the message component
- */
-data class MessageIconDefaults(
+internal data class MessageIconDefaults(
     val icon: ImageVector,
 )
 
-/**
- * Message Typography Defaults data class
- * Stores typography configuration for the message component
- */
-data class MessageTypographyDefaults(
-    val fontWeight: FontWeight,
-)
-
-/**
- * Message Defaults data class
- * Main class containing all default configurations for the message component
- */
-data class MessageDefaults(
+internal data class MessageDefaults(
     val colors: MessageColorDefaults,
     val spacing: MessageSpacingDefaults,
     val icon: MessageIconDefaults,
-    val typography: MessageTypographyDefaults,
 )
 
-/**
- * Gets the message defaults based on hierarchy and type
- * Uses tokens from MercadoPagoAndesTheme
- */
 @Composable
 private fun getMessageDefaults(
-    hierarchy: MPMessageHierarchy,
     type: MPMessageType,
 ): MessageDefaults {
     val feedbackColors = when (type) {
@@ -133,10 +102,7 @@ private fun getMessageDefaults(
     }
     val textColor = feedbackColors.textLoud
     val iconColor = feedbackColors.iconLoud
-    val fontWeight = when (hierarchy) {
-        MPMessageHierarchy.Quiet -> FontWeight.W400
-        MPMessageHierarchy.Loud -> FontWeight.W600
-    }
+
     val icon = when (type) {
         MPMessageType.Informative -> Icons.Filled.Info
         MPMessageType.Positive -> Icons.Filled.Check
@@ -157,9 +123,6 @@ private fun getMessageDefaults(
         icon = MessageIconDefaults(
             icon = icon,
         ),
-        typography = MessageTypographyDefaults(
-            fontWeight = fontWeight,
-        ),
     )
 }
 
@@ -179,7 +142,7 @@ fun MPMessage(
     hierarchy: MPMessageHierarchy = MPMessageHierarchy.Quiet,
     type: MPMessageType = MPMessageType.Informative,
 ) {
-    val defaults = getMessageDefaults(hierarchy = hierarchy, type = type)
+    val defaults = getMessageDefaults(type = type)
     Row(
         modifier = modifier
             .padding(

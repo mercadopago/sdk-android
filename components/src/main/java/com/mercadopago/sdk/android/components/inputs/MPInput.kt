@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.components.extensions.addBorder
@@ -23,6 +22,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 internal fun MPInputDecorationBox(
     isFocused: Boolean,
     error: Boolean,
+    defaults: MPInputDefaults,
     content: @Composable (RowScope.() -> Unit),
 ) {
     Row(
@@ -31,9 +31,10 @@ internal fun MPInputDecorationBox(
             .addBorder(
                 isFocused = isFocused,
                 error = error,
+                defaults = defaults,
             )
             .height(OutlinedTextFieldDefaults.MinHeight)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = defaults.spacing.horizontalPadding),
     ) {
         content()
     }
@@ -48,6 +49,7 @@ internal fun MPInputBody(
     helper: String? = null,
     showHelperIcon: Boolean = false,
     icon: ImageVector? = null,
+    defaults: MPInputDefaults,
     content: @Composable () -> Unit,
 ) {
     val state =
@@ -62,19 +64,21 @@ internal fun MPInputBody(
         label?.let {
             MPInputLabel(
                 it,
-                modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano),
+                modifier = Modifier.padding(start = defaults.spacing.labelPadding),
                 style = MercadoPagoAndesTheme.typography.body.bodySmallRegular,
                 inputLabelState = state,
+                defaults = defaults,
             )
         }
         content()
         helper?.let {
             MPInputHelper(
                 text = it,
-                modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano),
+                modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 inputLabelState = state,
                 showIcon = showHelperIcon,
                 icon = icon,
+                defaults = defaults,
             )
         }
     }
@@ -87,12 +91,13 @@ internal fun MPInputHelper(
     showIcon: Boolean = false,
     inputLabelState: InputLabelState = InputLabelState.Idle,
     icon: ImageVector? = null,
+    defaults: MPInputDefaults,
 ) {
     Row {
         if (showIcon) {
             icon?.let {
                 Icon(it, MP_EMPTY_STRING)
-                Spacer(modifier = Modifier.padding(start = MercadoPagoAndesTheme.spacing.paddings.xnano))
+                Spacer(modifier = Modifier.padding(start = defaults.spacing.labelPadding))
             }
         }
         MPInputLabel(
@@ -100,6 +105,7 @@ internal fun MPInputHelper(
             modifier = modifier,
             style = MercadoPagoAndesTheme.typography.body.bodyExtraSmallSemiBold,
             inputLabelState = inputLabelState,
+            defaults = defaults,
         )
     }
 }
@@ -110,11 +116,12 @@ internal fun MPInputLabel(
     modifier: Modifier = Modifier,
     style: TextStyle = MercadoPagoAndesTheme.typography.title.title,
     inputLabelState: InputLabelState = InputLabelState.Idle,
+    defaults: MPInputDefaults,
 ) {
     val color = when (inputLabelState) {
-        InputLabelState.Idle -> MercadoPagoAndesTheme.color.text.primary
-        InputLabelState.Disabled -> MercadoPagoAndesTheme.color.text.inverse
-        InputLabelState.Error -> MercadoPagoAndesTheme.color.feedback.negative.textLoud
+        InputLabelState.Idle -> defaults.colors.textPrimary
+        InputLabelState.Disabled -> defaults.colors.textDisabled
+        InputLabelState.Error -> defaults.colors.textError
     }
     MPText(
         text = text,

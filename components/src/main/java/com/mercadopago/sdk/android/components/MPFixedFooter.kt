@@ -100,9 +100,6 @@ fun MPFixedFooter(
     }
 }
 
-/**
- * Header section containing title and amount on the same line, with subtitle below aligned to the right
- */
 @Composable
 private fun HeaderSection(
     title: String,
@@ -135,9 +132,6 @@ private fun HeaderSection(
     }
 }
 
-/**
- * Amount text with superscript decimal part
- */
 @Composable
 private fun AmountText(
     amount: MPAmountData,
@@ -155,7 +149,7 @@ private fun AmountText(
                 placeholderVerticalAlign = PlaceholderVerticalAlign.Top,
             ),
         ) {
-            Text(
+            MPText(
                 text = amount.decimalPart,
                 style = MercadoPagoAndesTheme.typography.body.bodySmallEmphasis,
                 color = MercadoPagoAndesTheme.color.text.primary,
