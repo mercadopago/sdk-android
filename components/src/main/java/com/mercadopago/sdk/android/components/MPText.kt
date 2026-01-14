@@ -16,7 +16,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val TEXT_GROUP = "Text"
 
-
 /**
  * Text component- This handle the text of the components
  * This component is used to build others components
@@ -48,7 +47,6 @@ internal fun TextTittlePreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
     ) {
-
         Column(
             modifier = Modifier
                 .padding(16.dp)
