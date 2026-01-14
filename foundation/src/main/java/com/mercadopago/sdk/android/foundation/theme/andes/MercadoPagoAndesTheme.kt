@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.foundation.theme.andes
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,13 +30,9 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
+import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
-import com.mercadopago.sdk.android.foundation.typography.NewHeadingTypography
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyLetterSpacing
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyLineHeight
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyParagraphSpacing
-import com.mercadopago.sdk.android.foundation.typography.NewTypographySize
-import com.mercadopago.sdk.android.foundation.typography.NewTypographyWeight
 
 private const val ANDES_COLOR_GROUP_BACKGROUND = "Andes Background"
 private const val ANDES_COLOR_GROUP_SURFACE = "Andes Surface"
@@ -460,50 +457,50 @@ internal val AndesDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
 internal val InterFontFamily = FontFamily.Default
 
 internal val AndesDefaultLightTypography = MercadoPagoAndesTypography(
-    heading = NewHeadingTypography(
-        familyDefault = InterFontFamily,
-        size = NewTypographySize(
-            size10 = 10.sp,
-            size12 = 12.sp,
-            size14 = 14.sp,
-            size16 = 16.sp,
-            size18 = 18.sp,
-            size20 = 20.sp,
-            size24 = 24.sp,
-            size28 = 28.sp,
-            size32 = 32.sp,
-            size40 = 40.sp,
-            size48 = 48.sp,
-            size56 = 56.sp,
+    title = AndesTitleTypography(
+        title = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W600,
+            fontSize = 20.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.sp,
         ),
-        lineHeight = NewTypographyLineHeight(
-            lineHeight12 = 12.sp,
-            lineHeight16 = 16.sp,
-            lineHeight18 = 18.sp,
-            lineHeight20 = 20.sp,
-            lineHeight22 = 22.sp,
-            lineHeight24 = 24.sp,
-            lineHeight28 = 28.sp,
-            lineHeight34 = 34.sp,
-            lineHeight40 = 40.sp,
-            lineHeight48 = 48.sp,
-            lineHeight56 = 56.sp,
-            lineHeight66 = 66.sp,
+    ),
+    body = AndesBodyTypography(
+        bodyMediumSemiBold = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W600,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            letterSpacing = 0.sp,
         ),
-        weight = NewTypographyWeight(
-            regular = FontWeight.W400,
-            semibold = FontWeight.W600,
-            bold = FontWeight.W700,
+        bodyMediumRegular = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W400,
+            fontSize = 16.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.sp,
         ),
-        letterSpacing = NewTypographyLetterSpacing(
-            spacing0 = 0.sp,
-            spacingNegative1 = (-1).sp,
+        bodySmallSemiBold = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W600,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.sp,
         ),
-        paragraphSpacing = NewTypographyParagraphSpacing(
-            spacing10 = 10.sp,
-            spacing12 = 12.sp,
-            spacing14 = 14.sp,
-            spacing16 = 16.sp,
+        bodySmallRegular = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W400,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            letterSpacing = 0.sp,
+        ),
+        bodyExtraSmallSemiBold = TextStyle(
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.W600,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.sp,
         ),
     ),
 )

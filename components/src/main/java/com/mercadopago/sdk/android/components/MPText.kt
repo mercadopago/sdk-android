@@ -7,11 +7,78 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val TEXT_GROUP = "Text"
+
+/**
+ * Default values for MPText component.
+ * Contains color and typography defaults.
+ */
+internal data class MPTextDefaults(
+    val colors: MPTextColorDefaults,
+    val typography: MPTextTypographyDefaults,
+)
+
+/**
+ * Default color values for MPText component.
+ * Contains colors for each MPTextColorType.
+ */
+internal data class MPTextColorDefaults(
+    val primary: Color,
+    val secondary: Color,
+    val accent: Color,
+    val negative: Color,
+    val inverted: Color,
+    val positive: Color,
+    val disabled: Color,
+)
+
+/**
+ * Default typography values for MPText component.
+ * Contains TextStyle for each MPTextStyle.
+ */
+internal data class MPTextTypographyDefaults(
+    val title: TextStyle,
+    val bodyMediumSemiBold: TextStyle,
+    val bodyMediumRegular: TextStyle,
+    val bodySmallSemiBold: TextStyle,
+    val bodySmallRegular: TextStyle,
+    val bodyExtraSmallSemiBold: TextStyle,
+)
+
+/**
+ * Provides default values for MPText component using MercadoPagoAndesTheme.
+ * This function creates MPTextDefaults with colors and typography from the Andes theme.
+ */
+@Composable
+internal fun getMPTextDefaults(): MPTextDefaults {
+    val typography = MercadoPagoAndesTheme.typography
+    return MPTextDefaults(
+        colors = MPTextColorDefaults(
+            primary = MercadoPagoAndesTheme.color.text.primary,
+            secondary = MercadoPagoAndesTheme.color.text.secondary,
+            accent = MercadoPagoAndesTheme.color.text.accent,
+            negative = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
+            inverted = MercadoPagoAndesTheme.color.text.inverse,
+            positive = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
+            disabled = MercadoPagoAndesTheme.color.text.disabled,
+        ),
+        typography = MPTextTypographyDefaults(
+            title = typography.title.title,
+            bodyMediumSemiBold = typography.body.bodyMediumSemiBold,
+            bodyMediumRegular = typography.body.bodyMediumRegular,
+            bodySmallSemiBold = typography.body.bodySmallSemiBold,
+            bodySmallRegular = typography.body.bodySmallRegular,
+            bodyExtraSmallSemiBold = typography.body.bodyExtraSmallSemiBold,
+        ),
+    )
+}
 
 /**
  * Text Type enum class, used to determine the label type
@@ -104,62 +171,27 @@ fun MPText(
     colorType: MPTextColorType = MPTextColorType.Primary,
     enabled: Boolean = true,
 ) {
+    val defaults = getMPTextDefaults()
     val color = when (colorType) {
-        MPTextColorType.Primary -> {
-            MercadoPagoTheme.color.text.primary
-        }
-
-        MPTextColorType.Secondary -> {
-            MercadoPagoTheme.color.text.secondary
-        }
-
-        MPTextColorType.Accent -> {
-            MercadoPagoTheme.color.text.accent
-        }
-
-        MPTextColorType.Negative -> {
-            MercadoPagoTheme.color.text.negative
-        }
-
-        MPTextColorType.Inverted -> {
-            MercadoPagoTheme.color.text.inverted
-        }
-
-        MPTextColorType.Positive -> {
-            MercadoPagoTheme.color.feedback.positive
-        }
+        MPTextColorType.Primary -> defaults.colors.primary
+        MPTextColorType.Secondary -> defaults.colors.secondary
+        MPTextColorType.Accent -> defaults.colors.accent
+        MPTextColorType.Negative -> defaults.colors.negative
+        MPTextColorType.Inverted -> defaults.colors.inverted
+        MPTextColorType.Positive -> defaults.colors.positive
     }
-
     val style = when (textStyle) {
-        MPTextStyle.Title -> {
-            MercadoPagoTheme.typography.title.smallSemibold
-        }
-
-        MPTextStyle.BodyMediumSemiBold -> {
-            MercadoPagoTheme.typography.body.mediumSemibold
-        }
-
-        MPTextStyle.BodyMediumRegular -> {
-            MercadoPagoTheme.typography.body.mediumRegular
-        }
-
-        MPTextStyle.BodySmallSemiBold -> {
-            MercadoPagoTheme.typography.body.smallSemibold
-        }
-
-        MPTextStyle.BodySmallRegular -> {
-            MercadoPagoTheme.typography.body.smallRegular
-        }
-
-        MPTextStyle.BodyExtraSmallSemiBold -> {
-            MercadoPagoTheme.typography.body.extraSmallSemibold
-        }
+        MPTextStyle.Title -> defaults.typography.title
+        MPTextStyle.BodyMediumSemiBold -> defaults.typography.bodyMediumSemiBold
+        MPTextStyle.BodyMediumRegular -> defaults.typography.bodyMediumRegular
+        MPTextStyle.BodySmallSemiBold -> defaults.typography.bodySmallSemiBold
+        MPTextStyle.BodySmallRegular -> defaults.typography.bodySmallRegular
+        MPTextStyle.BodyExtraSmallSemiBold -> defaults.typography.bodyExtraSmallSemiBold
     }
-
     Text(
         text = text,
         style = style,
-        color = if (!enabled) MercadoPagoTheme.color.text.disabled else color,
+        color = if (!enabled) defaults.colors.disabled else color,
         modifier = modifier,
     )
 }
@@ -167,7 +199,9 @@ fun MPText(
 @Preview(name = "Text Tittle Text", group = TEXT_GROUP)
 @Composable
 internal fun TextTittlePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -216,7 +250,9 @@ internal fun TextTittlePreview() {
 @Preview(name = "Text BodyMediumSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyMediumSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -265,7 +301,9 @@ internal fun TextBodyMediumSemiBoldPreview() {
 @Preview(name = "Text BodyMediumRegular Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyMediumRegularPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -314,7 +352,9 @@ internal fun TextBodyMediumRegularPreview() {
 @Preview(name = "Text BodySmallSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodySmallSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -363,7 +403,9 @@ internal fun TextBodySmallSemiBoldPreview() {
 @Preview(name = "Text BodySmallRegular Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodySmallRegularPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -412,7 +454,9 @@ internal fun TextBodySmallRegularPreview() {
 @Preview(name = "Text BodyExtraSmallSemiBold Text", group = TEXT_GROUP)
 @Composable
 internal fun TextBodyExtraSmallSemiBoldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)

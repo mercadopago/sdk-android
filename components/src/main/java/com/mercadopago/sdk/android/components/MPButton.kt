@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,12 +23,111 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val BUTTON_GROUP = "BUTTON"
+
+/**
+ * Data class containing color defaults for MPButton component
+ */
+internal data class MPButtonColorDefaults(
+    val loudIdle: Color,
+    val loudActive: Color,
+    val quietIdle: Color,
+    val quietActive: Color,
+    val disabled: Color,
+    val iconInverse: Color,
+    val iconAccent: Color,
+    val iconDisabled: Color,
+    val borderAccent: Color,
+    val fillPrimary: Color,
+)
+
+/**
+ * Data class containing spacing defaults for MPButton component
+ */
+internal data class MPButtonSpacingDefaults(
+    val horizontalLarge: Dp,
+    val horizontalMedium: Dp,
+    val heightLarge: Dp,
+    val heightMedium: Dp,
+    val iconSpacingLarge: Dp,
+    val iconSpacingMedium: Dp,
+    val focusPadding: Dp,
+)
+
+/**
+ * Data class containing shape defaults for MPButton component
+ */
+internal data class MPButtonShapeDefaults(
+    val medium: Shape,
+    val small: Shape,
+)
+
+/**
+ * Data class containing border width defaults for MPButton component
+ */
+internal data class MPButtonBorderWidthDefaults(
+    val medium: Dp,
+    val large: Dp,
+    val xlarge: Dp,
+)
+
+/**
+ * Data class containing all defaults for MPButton component
+ */
+internal data class MPButtonDefaults(
+    val colors: MPButtonColorDefaults,
+    val spacing: MPButtonSpacingDefaults,
+    val shape: MPButtonShapeDefaults,
+    val borderWidth: MPButtonBorderWidthDefaults,
+)
+
+/**
+ * Companion object providing default values for MPButton from MercadoPagoAndesTheme
+ */
+@Composable
+private fun getMPButtonDefaults(): MPButtonDefaults {
+    return MPButtonDefaults(
+        colors = MPButtonColorDefaults(
+            loudIdle = MercadoPagoAndesTheme.color.interactive.fillLoud.idle,
+            loudActive = MercadoPagoAndesTheme.color.interactive.fillLoud.active,
+            quietIdle = MercadoPagoAndesTheme.color.interactive.fillQuiet.idle,
+            quietActive = MercadoPagoAndesTheme.color.interactive.fillQuiet.active,
+            disabled = MercadoPagoAndesTheme.color.fill.disabled,
+            iconInverse = MercadoPagoAndesTheme.color.icon.inverse,
+            iconAccent = MercadoPagoAndesTheme.color.icon.accent,
+            iconDisabled = MercadoPagoAndesTheme.color.icon.disabled,
+            borderAccent = MercadoPagoAndesTheme.color.border.accent,
+            fillPrimary = MercadoPagoAndesTheme.color.fill.primary,
+        ),
+        spacing = MPButtonSpacingDefaults(
+            horizontalLarge = MercadoPagoAndesTheme.spacing.paddings.xsmall,
+            horizontalMedium = MercadoPagoAndesTheme.spacing.paddings.micro,
+            heightLarge = MercadoPagoAndesTheme.spacing.paddings.large,
+            heightMedium = MercadoPagoAndesTheme.spacing.paddings.small,
+            iconSpacingLarge = MercadoPagoAndesTheme.spacing.paddings.xmicro,
+            iconSpacingMedium = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            focusPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+        ),
+        shape = MPButtonShapeDefaults(
+            medium = MercadoPagoAndesTheme.shape.medium,
+            small = MercadoPagoAndesTheme.shape.small,
+        ),
+        borderWidth = MPButtonBorderWidthDefaults(
+            medium = MercadoPagoAndesTheme.borderWidth.medium,
+            large = MercadoPagoAndesTheme.borderWidth.large,
+            xlarge = MercadoPagoAndesTheme.borderWidth.xlarge,
+        ),
+    )
+}
 
 /**
  * Button style enum class, used to determine the visual appearance of the button
@@ -97,26 +195,27 @@ private fun getButtonBackgroundColor(
     style: MPButtonStyle,
     enabled: Boolean,
     isPressed: Boolean,
+    defaults: MPButtonDefaults,
 ): Color {
     return when (style) {
         MPButtonStyle.Loud -> if (enabled) {
             if (isPressed) {
-                MercadoPagoTheme.color.accentSecondVariant
+                defaults.colors.loudActive
             } else {
-                MercadoPagoTheme.color.accent
+                defaults.colors.loudIdle
             }
         } else {
-            MercadoPagoTheme.color.background.tertiary
+            defaults.colors.disabled
         }
 
         MPButtonStyle.Quiet -> if (enabled) {
             if (isPressed) {
-                MercadoPagoTheme.color.secondarySecondVariant
+                defaults.colors.quietActive
             } else {
-                MercadoPagoTheme.color.secondary
+                defaults.colors.quietIdle
             }
         } else {
-            MercadoPagoTheme.color.background.tertiary
+            defaults.colors.disabled
         }
 
         MPButtonStyle.Transparent -> Color.Transparent
@@ -142,11 +241,12 @@ private fun getTextColorType(
 @Composable
 private fun getIconColor(
     style: MPButtonStyle,
+    defaults: MPButtonDefaults,
 ): Color {
     return when (style) {
-        MPButtonStyle.Loud -> MercadoPagoTheme.color.text.inverted
-        MPButtonStyle.Quiet -> MercadoPagoTheme.color.text.accent
-        MPButtonStyle.Transparent -> MercadoPagoTheme.color.text.accent
+        MPButtonStyle.Loud -> defaults.colors.iconInverse
+        MPButtonStyle.Quiet -> defaults.colors.iconAccent
+        MPButtonStyle.Transparent -> defaults.colors.iconAccent
     }
 }
 
@@ -156,30 +256,27 @@ private fun getIconColor(
 @Composable
 private fun getHorizontalPadding(
     size: MPButtonSize,
-    iconType: MPButtonIconType,
-): androidx.compose.ui.unit.Dp {
+    defaults: MPButtonDefaults,
+): Dp {
     return if (size == MPButtonSize.Large) {
-        if (iconType != MPButtonIconType.None) {
-            MercadoPagoTheme.spacing.m
-        } else {
-            MercadoPagoTheme.spacing.xl
-        }
+        defaults.spacing.horizontalLarge
     } else {
-        MercadoPagoTheme.spacing.s
+        defaults.spacing.horizontalMedium
     }
 }
 
 /**
- * Helper function to calculate vertical padding based on size
+ * Helper function to calculate button height based on size
  */
 @Composable
-private fun getVerticalPadding(
+private fun getButtonHeight(
     size: MPButtonSize,
-): androidx.compose.ui.unit.Dp {
+    defaults: MPButtonDefaults,
+): Dp {
     return if (size == MPButtonSize.Large) {
-        MercadoPagoTheme.spacing.s
+        defaults.spacing.heightLarge
     } else {
-        MercadoPagoTheme.spacing.xxs
+        defaults.spacing.heightMedium
     }
 }
 
@@ -187,24 +284,29 @@ private fun getVerticalPadding(
  * Helper function to create focused modifier with borders
  */
 @Composable
-private fun Modifier.getFocusedModifier(): Modifier {
+private fun Modifier.getFocusedModifier(
+    defaults: MPButtonDefaults,
+): Modifier {
     return this
         .border(
-            width = 2.dp,
-            color = MercadoPagoTheme.color.secondarySecondVariant,
-            shape = MaterialTheme.shapes.small,
+            width = defaults.borderWidth.medium,
+            color = defaults.colors.quietActive,
+            shape = defaults.shape.small,
         )
         .border(
-            width = 3.dp,
-            color = MercadoPagoTheme.color.accent,
-            shape = MaterialTheme.shapes.small,
+            width = defaults.borderWidth.large,
+            color = defaults.colors.borderAccent,
+            shape = defaults.shape.small,
         )
         .border(
-            width = 5.dp,
-            color = Color.White,
-            shape = MaterialTheme.shapes.small,
+            width = defaults.borderWidth.xlarge,
+            color = defaults.colors.fillPrimary,
+            shape = defaults.shape.small,
         )
-        .padding(horizontal = 4.dp, vertical = 5.dp)
+        .padding(
+            horizontal = defaults.spacing.focusPadding,
+            vertical = defaults.spacing.focusPadding,
+        )
 }
 
 /**
@@ -216,20 +318,21 @@ private fun LeftIcon(
     size: MPButtonSize,
     enabled: Boolean,
     iconColor: Color,
+    defaults: MPButtonDefaults,
 ) {
     Icon(
         icon,
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
+        tint = if (enabled) iconColor else defaults.colors.iconDisabled,
     )
     Spacer(
         Modifier.size(
             if (size == MPButtonSize.Large) {
-                MercadoPagoTheme.spacing.s
+                defaults.spacing.iconSpacingLarge
             } else {
-                MercadoPagoTheme.spacing.xxs
+                defaults.spacing.iconSpacingMedium
             },
         ),
     )
@@ -244,13 +347,14 @@ private fun RightIcon(
     size: MPButtonSize,
     enabled: Boolean,
     iconColor: Color,
+    defaults: MPButtonDefaults,
 ) {
     Spacer(
         Modifier.size(
             if (size == MPButtonSize.Large) {
-                MercadoPagoTheme.spacing.s
+                defaults.spacing.iconSpacingLarge
             } else {
-                MercadoPagoTheme.spacing.xxs
+                defaults.spacing.iconSpacingMedium
             },
         ),
     )
@@ -259,7 +363,7 @@ private fun RightIcon(
         "",
         modifier = Modifier
             .size(if (size == MPButtonSize.Large) 20.dp else 13.dp),
-        tint = if (enabled) iconColor else MercadoPagoTheme.color.text.disabled,
+        tint = if (enabled) iconColor else defaults.colors.iconDisabled,
     )
 }
 
@@ -288,26 +392,28 @@ fun MPButton(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
+    val defaults = getMPButtonDefaults()
     val drawIcon = icon != null && iconType != MPButtonIconType.None
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed)
+    val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed, defaults)
     val textColor = getTextColorType(style)
-    val iconColor = getIconColor(style)
-    val contentPaddingHorizontal = getHorizontalPadding(size, iconType)
-    val contentPaddingVertical = getVerticalPadding(size)
+    val iconColor = getIconColor(style, defaults)
+    val contentPaddingHorizontal = getHorizontalPadding(size, defaults)
+    val buttonHeight = getButtonHeight(size, defaults)
 
     val borderModifier = if (isFocused) {
-        modifier.getFocusedModifier()
+        modifier.getFocusedModifier(defaults)
     } else {
         modifier.padding(0.dp)
     }
 
     Box(
         modifier = borderModifier
-            .clip(MercadoPagoTheme.shape.xs)
+            .height(buttonHeight)
+            .clip(defaults.shape.medium)
             .background(backgroundColor)
             .clickable(
                 enabled = enabled,
@@ -315,7 +421,7 @@ fun MPButton(
                 indication = null,
                 onClick = onClick,
             )
-            .padding(horizontal = contentPaddingHorizontal, vertical = contentPaddingVertical),
+            .padding(horizontal = contentPaddingHorizontal),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -323,7 +429,7 @@ fun MPButton(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (drawIcon && iconType == MPButtonIconType.Left) {
-                LeftIcon(icon!!, size, enabled, iconColor)
+                LeftIcon(icon!!, size, enabled, iconColor, defaults)
             }
 
             MPText(
@@ -338,7 +444,7 @@ fun MPButton(
             )
 
             if (drawIcon && iconType == MPButtonIconType.Right) {
-                RightIcon(icon!!, size, enabled, iconColor)
+                RightIcon(icon!!, size, enabled, iconColor, defaults)
             }
         }
     }
@@ -347,7 +453,9 @@ fun MPButton(
 @Preview(name = "Button Styles Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonStylesLargePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
@@ -367,7 +475,9 @@ private fun MPButtonStylesLargePreview() {
 @Preview(name = "Button Styles Medium", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonStylesMediumPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
@@ -396,7 +506,9 @@ private fun MPButtonStylesMediumPreview() {
 @Preview(name = "Button Icon Left Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconLeftLargePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
@@ -437,7 +549,9 @@ private fun MPButtonIconLeftLargePreview() {
 @Preview(name = "Button Icon Left Medium", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconLeftMediumPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
@@ -482,7 +596,9 @@ private fun MPButtonIconLeftMediumPreview() {
 @Preview(name = "Button Icon Right Large", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconRightLargePreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
@@ -523,7 +639,9 @@ private fun MPButtonIconRightLargePreview() {
 @Preview(name = "Button Icon Right Medium", group = BUTTON_GROUP)
 @Composable
 private fun MPButtonIconRightMediumPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Andes,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
