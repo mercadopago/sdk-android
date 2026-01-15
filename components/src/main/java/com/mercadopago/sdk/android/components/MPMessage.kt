@@ -6,18 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -70,7 +62,7 @@ enum class MPMessageType {
 
 internal data class MessageColorDefaults(
     val textColor: Color,
-    val textColorLoud: Color
+    val textColorLoud: Color,
 )
 
 internal data class MessageSpacingDefaults(
@@ -89,7 +81,6 @@ internal data class MessageDefaults(
 private fun getMessageDefaults(
     type: MPMessageType,
 ): MessageDefaults {
-
     val feedbackColors = when (type) {
         MPMessageType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
         MPMessageType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
@@ -103,7 +94,7 @@ private fun getMessageDefaults(
     return MessageDefaults(
         colors = MessageColorDefaults(
             textColor = textColor,
-            textColorLoud = textColorLoud
+            textColorLoud = textColorLoud,
         ),
         spacing = MessageSpacingDefaults(
             horizontalPadding = MercadoPagoAndesTheme.spacing.gap.xmicro,
@@ -120,6 +111,7 @@ private fun getMessageDefaults(
  *
  * @param text: Message text to display
  * @param modifier: Component modifier
+ * @param showIcon: Component icon
  * @param hierarchy: Visual hierarchy of the message (Quiet or Loud)
  * @param type: Message type (Informative, Positive, Caution, or Negative)
  */
@@ -161,7 +153,6 @@ fun MPMessage(
             color = when (hierarchy) {
                 MPMessageHierarchy.Quiet -> defaults.colors.textColor
                 MPMessageHierarchy.Loud -> defaults.colors.textColorLoud
-
             },
         )
     }

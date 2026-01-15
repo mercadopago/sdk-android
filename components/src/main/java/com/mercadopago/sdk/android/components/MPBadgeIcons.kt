@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -16,13 +15,13 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
-enum class BadgeType {
-    Positive,
-    Negative,
-    Caution,
-    Informative,
-}
-
+/**
+ * A composable that displays a badge icon with a circular background.
+ * The icon and color are determined by the [badgeType] parameter.
+ *
+ * @param modifier The modifier to be applied to the icon.
+ * @param badgeType The type of badge that determines the icon and color to display.
+ */
 @Composable
 fun BadgeIcons(
     modifier: Modifier = Modifier,
@@ -43,20 +42,21 @@ fun BadgeIcons(
     }
 
     Icon(
-        icon, "",
+        icon,
+        "",
         modifier
             .background(
                 color = color,
                 shape = CircleShape,
             )
             .padding(3.dp),
-        tint = MercadoPagoAndesTheme.color.text.inverse
+        tint = MercadoPagoAndesTheme.color.text.inverse,
     )
 }
 
 @Preview
 @Composable
-fun BadgeIconsPreview() {
+private fun BadgeIconsPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
     ) {
@@ -71,4 +71,19 @@ fun BadgeIconsPreview() {
             BadgeIcons(badgeType = BadgeType.Informative)
         }
     }
+}
+
+/**
+ * Enum representing the different types of badge icons available.
+ * Each type corresponds to a specific feedback category with its own icon and color scheme.
+ */
+enum class BadgeType {
+    /** Represents a positive feedback badge with a success icon. */
+    Positive,
+    /** Represents a negative feedback badge with an error icon. */
+    Negative,
+    /** Represents a caution feedback badge with a warning icon. */
+    Caution,
+    /** Represents an informative feedback badge with an info icon. */
+    Informative,
 }

@@ -17,14 +17,6 @@ import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 
-internal enum class InputLabelState {
-    Idle,
-    Caution,
-    Disabled,
-    Error,
-    ReadOnly
-}
-
 @Composable
 internal fun MPInputDecorationBox(
     isFocused: Boolean,
@@ -72,7 +64,7 @@ internal fun MPInputBody(
                 it,
                 state,
                 showHelperIcon,
-                defaults
+                defaults,
             )
         }
     }
@@ -83,7 +75,7 @@ internal fun MPInputMessage(
     text: String,
     state: InputLabelState,
     showHelperIcon: Boolean,
-    defaults: MPInputDefaults
+    defaults: MPInputDefaults,
 ) {
     when (state) {
         InputLabelState.Idle -> {
@@ -91,7 +83,7 @@ internal fun MPInputMessage(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = false,
-                hierarchy = MPMessageHierarchy.Quiet
+                hierarchy = MPMessageHierarchy.Quiet,
             )
         }
 
@@ -101,9 +93,8 @@ internal fun MPInputMessage(
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
                 type = MPMessageType.Negative,
-                hierarchy = MPMessageHierarchy.Loud
+                hierarchy = MPMessageHierarchy.Loud,
             )
-
         }
 
         InputLabelState.Caution -> {
@@ -112,9 +103,8 @@ internal fun MPInputMessage(
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
                 type = MPMessageType.Caution,
-                hierarchy = MPMessageHierarchy.Quiet
+                hierarchy = MPMessageHierarchy.Quiet,
             )
-
         }
 
         InputLabelState.ReadOnly -> {}
@@ -125,7 +115,7 @@ internal fun MPInputMessage(
 
 @Preview
 @Composable
-fun MPInputBodyPreview() {
+private fun MPInputBodyPreview() {
     val defaults = getMPInputDefaults()
     MPInputBody(
         label = "label text",
@@ -134,4 +124,12 @@ fun MPInputBodyPreview() {
     ) {
         MPText("Text")
     }
+}
+
+internal enum class InputLabelState {
+    Idle,
+    Caution,
+    Disabled,
+    Error,
+    ReadOnly,
 }

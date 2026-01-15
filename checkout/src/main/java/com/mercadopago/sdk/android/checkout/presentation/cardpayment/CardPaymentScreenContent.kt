@@ -200,7 +200,7 @@ internal fun CardPaymentScreenContent(
 private fun CardPaymentScreenContentPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
-    )  {
+    ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(
                 expirationDateState = ExpirationDateState(
@@ -266,7 +266,7 @@ private fun CardPaymentScreenContentPreview() {
 private fun CardPaymentScreenContentWithoutCardHolderPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
-    )  {
+    ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(
                 expirationDateState = ExpirationDateState(
@@ -314,7 +314,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
 private fun CardPaymentScreenContentWithErrorPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
-    )  {
+    ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(
                 expirationDateState = ExpirationDateState(
