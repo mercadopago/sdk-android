@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.components.MPMessage
-import com.mercadopago.sdk.android.components.MPMessageHierarchy
-import com.mercadopago.sdk.android.components.MPMessageType
+import com.mercadopago.sdk.android.components.MPHelper
+import com.mercadopago.sdk.android.components.MPHelperHierarchy
+import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -79,31 +79,31 @@ internal fun MPInputMessage(
 ) {
     when (state) {
         InputLabelState.Idle -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = false,
-                hierarchy = MPMessageHierarchy.Quiet,
+                hierarchy = MPHelperHierarchy.Quiet,
             )
         }
 
         InputLabelState.Error -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
-                type = MPMessageType.Negative,
-                hierarchy = MPMessageHierarchy.Loud,
+                type = MPHelperType.Negative,
+                hierarchy = MPHelperHierarchy.Loud,
             )
         }
 
         InputLabelState.Caution -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
-                type = MPMessageType.Caution,
-                hierarchy = MPMessageHierarchy.Quiet,
+                type = MPHelperType.Caution,
+                hierarchy = MPHelperHierarchy.Quiet,
             )
         }
 
