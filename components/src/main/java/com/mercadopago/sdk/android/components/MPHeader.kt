@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,40 +19,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
-enum class MPHeaderType {
-    ScrollOff,
-    ScrollOn,
-    TittleLeft
-}
-
 /**
- * A collapsible header component with motion animation support.
+ * A header component that provides different layout styles for page headers.
  *
- * @param title The title text displayed in the header.
+ * The component supports three different header types through [headerType]:
+ * - [MPHeaderType.ScrollOff]: Displays back button, large title, and optional subtitle in a column layout.
+ * - [MPHeaderType.ScrollOn]: Displays back button and medium title in a row layout.
+ * - [MPHeaderType.TittleLeft]: Displays only medium title without back button.
+ *
  * @param modifier Modifier to be applied to the header container.
- * @param subtitle Optional subtitle text displayed below the title when expanded.
- * @param hierarchy The visual hierarchy level of the header.
- * @param showBackButton Whether to display the back navigation button.
- * @param backIcon The icon to use for the back button.
- * @param expandedHeight The height of the header when fully expanded.
- * @param collapsedHeight The height of the header when collapsed.
- * @param backgroundColor Optional background color override.
+ * @param title The title text displayed in the header. Required parameter.
+ * @param subtitle Optional subtitle text displayed below the title.
+ * Only visible when [headerType] is [MPHeaderType.ScrollOff].
  * @param onBackClick Callback invoked when the back button is clicked.
- * @param content The content to display below the header.
+ * Only active when [headerType] is [MPHeaderType.ScrollOff] or [MPHeaderType.ScrollOn].
+ * @param headerType The type of header layout to display. Defaults to [MPHeaderType.ScrollOff].
+ * @param content The composable content to display below the header.
  */
 @Composable
 fun MPHeader(
     modifier: Modifier = Modifier,
     title: String,
     subtitle: String = "",
-    showBackButton: Boolean = true,
     onBackClick: () -> Unit = {},
     headerType: MPHeaderType = MPHeaderType.ScrollOff,
     content: @Composable () -> Unit,
@@ -63,53 +56,53 @@ fun MPHeader(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = MercadoPagoAndesTheme.color.background.primary)
+            .background(color = MercadoPagoAndesTheme.color.background.primary),
     ) {
         when (headerType) {
             MPHeaderType.ScrollOff -> {
-                Column (
-                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny)
-                ){
+                Column(
+                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
+                ) {
                     HeaderBackButton {
-
+                        onBackClick.invoke()
                     }
                     Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
                     MPText(
                         text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.huge
+                        style = MercadoPagoAndesTheme.typography.heading.default.huge,
                     )
                     Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
                     MPText(
                         text = subtitle,
-                        style = MercadoPagoAndesTheme.typography.body.default.medium
+                        style = MercadoPagoAndesTheme.typography.body.default.medium,
                     )
                 }
             }
 
             MPHeaderType.ScrollOn -> {
-                Row (
+                Row(
                     modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     HeaderBackButton {
-
+                        onBackClick.invoke()
                     }
                     Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
                     MPText(
                         text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium
+                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
                     )
                 }
             }
 
             MPHeaderType.TittleLeft -> {
-                Column (
-                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny)
+                Column(
+                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
                 ) {
                     MPText(
                         text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium
+                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
                     )
                 }
             }
@@ -118,7 +111,6 @@ fun MPHeader(
         content.invoke()
     }
 }
-
 
 @Composable
 private fun HeaderBackButton(
@@ -147,6 +139,20 @@ private fun HeaderBackButton(
     }
 }
 
+/**
+ * Enum representing the different types of header layouts.
+ */
+enum class MPHeaderType {
+    /** Header with back button, large title, and subtitle displayed in a column layout. */
+    ScrollOff,
+
+    /** Header with back button and medium title displayed in a row layout.*/
+    ScrollOn,
+
+    /** Header with only medium title, no back button.*/
+    TittleLeft,
+}
+
 @Preview(name = "MPHeader Preview", group = "HEADER")
 @Composable
 private fun MPHeaderPreview() {
@@ -159,7 +165,7 @@ private fun MPHeaderPreview() {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(10) { index ->
+                items(Int.MAX_VALUE) { index ->
                     MPText(
                         text = "Item $index",
                         style = MercadoPagoAndesTheme.typography.body.default.medium,
