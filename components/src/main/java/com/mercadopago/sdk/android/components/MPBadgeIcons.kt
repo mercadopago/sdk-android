@@ -80,10 +80,13 @@ private fun BadgeIconsPreview() {
 enum class BadgeType {
     /** Represents a positive feedback badge with a success icon. */
     Positive,
+
     /** Represents a negative feedback badge with an error icon. */
     Negative,
+
     /** Represents a caution feedback badge with a warning icon. */
     Caution,
+
     /** Represents an informative feedback badge with an info icon. */
     Informative,
 }
