@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -117,12 +116,13 @@ private fun HeaderBackButton(
     icon: ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    defaults: MPHeaderDefaults = getMPHeaderDefaults(),
 ) {
     Box(
         modifier = modifier
             .size(BACK_BUTTON_SIZE_DP.dp)
-            .clip(RoundedCornerShape(MercadoPagoTheme.spacing.xs))
-            .background(MercadoPagoTheme.color.secondary)
+            .clip(defaults.shape.backButtonShape)
+            .background(defaults.colors.backButtonBackground)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
@@ -133,7 +133,7 @@ private fun HeaderBackButton(
         Icon(
             imageVector = icon,
             contentDescription = "Back",
-            tint = MercadoPagoTheme.color.text.accent,
+            tint = defaults.colors.backButtonIcon,
             modifier = Modifier.size(24.dp),
         )
     }
@@ -187,11 +187,12 @@ private fun ContentFadeOverlay(
     backgroundColor: Color,
     headerHeight: Dp,
     modifier: Modifier = Modifier,
+    defaults: MPHeaderDefaults = getMPHeaderDefaults(),
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(headerHeight + 24.dp)
+            .height(headerHeight + defaults.spacing.fadeOverlayExtraHeight)
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
@@ -232,6 +233,7 @@ private data class MPHeaderMotionLayoutParams(
 @Composable
 private fun MPHeaderMotionLayout(
     params: MPHeaderMotionLayoutParams,
+    defaults: MPHeaderDefaults = getMPHeaderDefaults(),
 ) {
     MotionLayout(
         motionScene = MotionScene(content = MOTION_SCENE),
@@ -246,19 +248,20 @@ private fun MPHeaderMotionLayout(
                 icon = params.backIcon,
                 onClick = params.onBackClick,
                 modifier = Modifier.layoutId(BACK_BUTTON_ID),
+                defaults = defaults,
             )
         } else {
             Spacer(modifier = Modifier.layoutId(BACK_BUTTON_ID).size(0.dp))
         }
         val textStyle = if (params.animatedProgress < SCROLL_THRESHOLD) {
-            MercadoPagoAndesTheme.typography.heading.default.small
+            defaults.typography.titleExpanded
         } else {
-            MercadoPagoAndesTheme.typography.body.emphasis.medium
+            defaults.typography.titleCollapsed
         }
         MPText(
             text = params.title,
             style = textStyle,
-            color = MercadoPagoAndesTheme.color.text.primary,
+            color = defaults.colors.titleText,
             modifier = Modifier.layoutId(TITLE_ID),
         )
     }
@@ -291,11 +294,12 @@ fun MPHeader(
     onBackClick: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    val defaults = getMPHeaderDefaults()
     val density = LocalDensity.current
     val maxOffsetPx = with(density) { (expandedHeight - collapsedHeight).toPx() }
     var progress by rememberSaveable { mutableFloatStateOf(0f) }
     val nestedScrollConnection = rememberNestedScrollConnection(maxOffsetPx) { progress = it }
-    val bgColor = backgroundColor ?: MercadoPagoTheme.color.background.primary
+    val bgColor = backgroundColor ?: defaults.colors.backgroundPrimary
     val springSpec = spring<Float>(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessMediumLow,
@@ -326,6 +330,7 @@ fun MPHeader(
         ContentFadeOverlay(
             backgroundColor = bgColor,
             headerHeight = animatedHeight,
+            defaults = defaults,
         )
         MPHeaderMotionLayout(
             params = MPHeaderMotionLayoutParams(
@@ -337,6 +342,7 @@ fun MPHeader(
                 animatedHeight = animatedHeight,
                 onBackClick = onBackClick,
             ),
+            defaults = defaults,
         )
     }
 }
