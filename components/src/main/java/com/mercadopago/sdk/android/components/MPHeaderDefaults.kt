@@ -33,6 +33,7 @@ internal data class MPHeaderShapeDefaults(
 internal data class MPHeaderTypographyDefaults(
     val titleExpanded: TextStyle,
     val titleCollapsed: TextStyle,
+    val subtitleExpanded: TextStyle,
 )
 
 @Composable
@@ -52,8 +53,9 @@ internal fun getMPHeaderDefaults(): MPHeaderDefaults {
             backButtonShape = MercadoPagoAndesTheme.shape.xsmall,
         ),
         typography = MPHeaderTypographyDefaults(
-            titleExpanded = MercadoPagoAndesTheme.typography.heading.default.small,
-            titleCollapsed = MercadoPagoAndesTheme.typography.body.emphasis.medium,
+            titleExpanded = MercadoPagoAndesTheme.typography.heading.default.huge,
+            titleCollapsed = MercadoPagoAndesTheme.typography.heading.default.medium,
+            subtitleExpanded = MercadoPagoAndesTheme.typography.body.default.medium,
         ),
     )
 }

@@ -2,12 +2,16 @@ package com.mercadopago.sdk.android.checkout.presentation.cardpayment
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -29,6 +33,7 @@ import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentVi
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
+import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -49,6 +54,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 @Composable
 internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
+    onBackClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
@@ -60,6 +66,7 @@ internal fun CardPaymentScreen(
     LaunchedEffect(Unit) {
         viewModel.getIdentificationTypes()
     }
+
     CardPaymentScreenContent(
         viewState = viewState,
         cardNumberPCIState = cardNumberPCIState,
@@ -72,6 +79,7 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
+        onBackClick = onBackClick,
     )
 }
 
@@ -90,107 +98,113 @@ internal fun CardPaymentScreenContent(
     onCardHolderEvent: (SimpleTextFieldEvent) -> Unit,
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
     onFooterButtonClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 120.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-        ) {
-            Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
-            MPCardNumberTextField(
-                modifier = Modifier.fillMaxWidth(),
-                state = cardNumberPCIState,
-                isFocused = viewState.cardNumberState.isFocused,
-                showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
-                error = viewState.cardNumberState.error.first,
-                enabled = viewState.cardNumberState.enabled,
-                label = viewState.cardNumberState.label,
-                helper = viewState.cardNumberState.helper,
-                placeHolder = viewState.cardNumberState.placeHolder,
-                onEvent = onCardNumberEvent,
-            )
-            if (viewState.cardHolderState.show) {
+    MPHeader(
+        title = "Preencha os dados do\ncartão",
+        onBackClick = onBackClick,
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 120.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+            ) {
                 Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
-                MPSimpleTextField(
+                MPCardNumberTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    state = cardHolderPCIState,
-                    isFocused = viewState.cardHolderState.isFocused,
-                    showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
-                    error = viewState.cardHolderState.error,
-                    enabled = viewState.cardHolderState.enabled,
-                    label = viewState.cardHolderState.label,
-                    helper = viewState.cardHolderState.helper,
-                    placeHolder = viewState.cardHolderState.placeHolder,
-                    onEvent = onCardHolderEvent,
+                    state = cardNumberPCIState,
+                    isFocused = viewState.cardNumberState.isFocused,
+                    showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
+                    error = viewState.cardNumberState.error.first,
+                    enabled = viewState.cardNumberState.enabled,
+                    label = viewState.cardNumberState.label,
+                    helper = viewState.cardNumberState.helper,
+                    placeHolder = viewState.cardNumberState.placeHolder,
+                    onEvent = onCardNumberEvent,
                 )
-            }
-            Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
-            Row {
-                MPExpirationDateTextField(
-                    modifier = Modifier.weight(1f),
-                    state = expirationDatePCIState,
-                    isFocused = viewState.expirationDateState.isFocused,
-                    showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
-                    error = viewState.expirationDateState.error.first,
-                    enabled = viewState.expirationDateState.enabled,
-                    label = viewState.expirationDateState.label,
-                    helper = viewState.expirationDateState.helper,
-                    placeHolder = viewState.expirationDateState.placeHolder,
-                    onEvent = onExpirationDateEvent,
-                )
-                Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.micro))
-                MPSecurityCodeTextField(
-                    modifier = Modifier.weight(1f),
-                    state = securityCodePCIState,
-                    securityCodeSize = viewState.secureCodeState.secureCodeLength,
-                    isFocused = viewState.secureCodeState.isFocused,
-                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                    error = viewState.secureCodeState.error.first,
-                    enabled = viewState.secureCodeState.enabled,
-                    label = viewState.secureCodeState.label,
-                    helper = viewState.secureCodeState.helper,
-                    placeHolder = viewState.secureCodeState.placeHolder,
-                    onEvent = onSecurityCodeEvent,
-                )
-            }
-            if (viewState.identificationTypeState.show) {
-                Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
-                viewState.identificationTypeState.identificationTypes?.let { types ->
-                    MPIdentificationTextField(
+                if (viewState.cardHolderState.show) {
+                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                    MPSimpleTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        state = identificationPCIState,
-                        identificationTypes = types,
-                        selectedIdentificationType = viewState.identificationTypeState.selected,
-                        isFocused = viewState.identificationTypeState.isFocused,
-                        showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
-                        error = viewState.identificationTypeState.error,
-                        enabled = viewState.identificationTypeState.enabled,
-                        label = viewState.identificationTypeState.label,
-                        helper = viewState.identificationTypeState.helper,
-                        placeHolder = viewState.identificationTypeState.placeHolder,
-                        onEvent = onIdentificationEvent,
+                        state = cardHolderPCIState,
+                        isFocused = viewState.cardHolderState.isFocused,
+                        showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
+                        error = viewState.cardHolderState.error,
+                        enabled = viewState.cardHolderState.enabled,
+                        label = viewState.cardHolderState.label,
+                        helper = viewState.cardHolderState.helper,
+                        placeHolder = viewState.cardHolderState.placeHolder,
+                        onEvent = onCardHolderEvent,
                     )
                 }
+                Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                Row {
+                    MPExpirationDateTextField(
+                        modifier = Modifier.weight(1f),
+                        state = expirationDatePCIState,
+                        isFocused = viewState.expirationDateState.isFocused,
+                        showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
+                        error = viewState.expirationDateState.error.first,
+                        enabled = viewState.expirationDateState.enabled,
+                        label = viewState.expirationDateState.label,
+                        helper = viewState.expirationDateState.helper,
+                        placeHolder = viewState.expirationDateState.placeHolder,
+                        onEvent = onExpirationDateEvent,
+                    )
+                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.micro))
+                    MPSecurityCodeTextField(
+                        modifier = Modifier.weight(1f),
+                        state = securityCodePCIState,
+                        securityCodeSize = viewState.secureCodeState.secureCodeLength,
+                        isFocused = viewState.secureCodeState.isFocused,
+                        showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                        error = viewState.secureCodeState.error.first,
+                        enabled = viewState.secureCodeState.enabled,
+                        label = viewState.secureCodeState.label,
+                        helper = viewState.secureCodeState.helper,
+                        placeHolder = viewState.secureCodeState.placeHolder,
+                        onEvent = onSecurityCodeEvent,
+                    )
+                }
+                if (viewState.identificationTypeState.show) {
+                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                    viewState.identificationTypeState.identificationTypes?.let { types ->
+                        MPIdentificationTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            state = identificationPCIState,
+                            identificationTypes = types,
+                            selectedIdentificationType = viewState.identificationTypeState.selected,
+                            isFocused = viewState.identificationTypeState.isFocused,
+                            showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
+                            error = viewState.identificationTypeState.error,
+                            enabled = viewState.identificationTypeState.enabled,
+                            label = viewState.identificationTypeState.label,
+                            helper = viewState.identificationTypeState.helper,
+                            placeHolder = viewState.identificationTypeState.placeHolder,
+                            onEvent = onIdentificationEvent,
+                        )
+                    }
+                }
             }
+            MPFixedFooter(
+                title = viewState.fixedFooterState.title,
+                amount = MPAmountData(
+                    currencySymbol = viewState.fixedFooterState.currencySymbol,
+                    integerPart = viewState.fixedFooterState.amountIntegerPart,
+                    decimalPart = viewState.fixedFooterState.amountDecimalPart,
+                ),
+                subtitle = viewState.fixedFooterState.subtitle,
+                buttonData = MPFixedFooterButtonData(
+                    text = viewState.fixedFooterState.buttonText,
+                    enabled = viewState.fixedFooterState.buttonEnabled,
+                    onClick = onFooterButtonClick,
+                ),
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
-        MPFixedFooter(
-            title = viewState.fixedFooterState.title,
-            amount = MPAmountData(
-                currencySymbol = viewState.fixedFooterState.currencySymbol,
-                integerPart = viewState.fixedFooterState.amountIntegerPart,
-                decimalPart = viewState.fixedFooterState.amountDecimalPart,
-            ),
-            subtitle = viewState.fixedFooterState.subtitle,
-            buttonData = MPFixedFooterButtonData(
-                text = viewState.fixedFooterState.buttonText,
-                enabled = viewState.fixedFooterState.buttonEnabled,
-                onClick = onFooterButtonClick,
-            ),
-            modifier = Modifier.align(Alignment.BottomCenter),
-        )
     }
 }
 
@@ -256,6 +270,7 @@ private fun CardPaymentScreenContentPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
+            onBackClick = {},
         )
     }
 }
@@ -304,6 +319,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
+            onBackClick = {},
         )
     }
 }
@@ -374,6 +390,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
+            onBackClick = {},
         )
     }
 }
