@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.components.MPMessage
+import com.mercadopago.sdk.android.components.MPHelper
 import com.mercadopago.sdk.android.components.MPMessageHierarchy
 import com.mercadopago.sdk.android.components.MPMessageType
 import com.mercadopago.sdk.android.components.MPText
@@ -79,7 +79,7 @@ internal fun MPInputMessage(
 ) {
     when (state) {
         InputLabelState.Idle -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = false,
@@ -88,7 +88,7 @@ internal fun MPInputMessage(
         }
 
         InputLabelState.Error -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
@@ -98,7 +98,7 @@ internal fun MPInputMessage(
         }
 
         InputLabelState.Caution -> {
-            MPMessage(
+            MPHelper(
                 text = text,
                 modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,

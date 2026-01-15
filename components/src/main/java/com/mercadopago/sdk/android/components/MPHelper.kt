@@ -116,7 +116,7 @@ private fun getMessageDefaults(
  * @param type: Message type (Informative, Positive, Caution, or Negative)
  */
 @Composable
-fun MPMessage(
+fun MPHelper(
     text: String,
     modifier: Modifier = Modifier,
     showIcon: Boolean = true,
@@ -167,7 +167,7 @@ internal fun MessageInformativeQuietPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Informative,
@@ -185,7 +185,7 @@ internal fun MessageInformativeLoudPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Informative,
@@ -203,7 +203,7 @@ internal fun MessagePositiveQuietPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Positive,
@@ -221,7 +221,7 @@ internal fun MessagePositiveLoudPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Positive,
@@ -239,7 +239,7 @@ internal fun MessageCautionQuietPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Caution,
@@ -257,7 +257,7 @@ internal fun MessageCautionLoudPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Caution,
@@ -275,7 +275,7 @@ internal fun MessageNegativeQuietPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Negative,
@@ -293,7 +293,7 @@ internal fun MessageNegativeLoudPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Negative,
@@ -311,49 +311,49 @@ internal fun MessageAllVariationsPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Informative,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Positive,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Caution,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Quiet,
                 type = MPMessageType.Negative,
             )
             Spacer(modifier = Modifier.size(16.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Informative,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Positive,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Caution,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            MPMessage(
+            MPHelper(
                 text = "Helper text",
                 hierarchy = MPMessageHierarchy.Loud,
                 type = MPMessageType.Negative,
