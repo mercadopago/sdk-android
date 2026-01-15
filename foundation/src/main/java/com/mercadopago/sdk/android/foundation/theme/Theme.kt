@@ -463,7 +463,7 @@ object MercadoPagoAndesTheme {
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
+    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Andes,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     content: @Composable () -> Unit,
 ) {

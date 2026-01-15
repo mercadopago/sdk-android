@@ -70,6 +70,7 @@ enum class MPMessageType {
 
 internal data class MessageColorDefaults(
     val textColor: Color,
+    val textColorLoud: Color
 )
 
 internal data class MessageSpacingDefaults(
@@ -88,6 +89,7 @@ internal data class MessageDefaults(
 private fun getMessageDefaults(
     type: MPMessageType,
 ): MessageDefaults {
+
     val feedbackColors = when (type) {
         MPMessageType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
         MPMessageType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
@@ -95,11 +97,13 @@ private fun getMessageDefaults(
         MPMessageType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
     }
 
-    val textColor = feedbackColors.textLoud
+    val textColorLoud = feedbackColors.textLoud
+    val textColor = MercadoPagoAndesTheme.color.text.primary
 
     return MessageDefaults(
         colors = MessageColorDefaults(
             textColor = textColor,
+            textColorLoud = textColorLoud
         ),
         spacing = MessageSpacingDefaults(
             horizontalPadding = MercadoPagoAndesTheme.spacing.gap.xmicro,
@@ -123,6 +127,7 @@ private fun getMessageDefaults(
 fun MPMessage(
     text: String,
     modifier: Modifier = Modifier,
+    showIcon: Boolean = true,
     hierarchy: MPMessageHierarchy = MPMessageHierarchy.Quiet,
     type: MPMessageType = MPMessageType.Informative,
 ) {
@@ -135,22 +140,29 @@ fun MPMessage(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val badgeType = when(type){
-            MPMessageType.Informative ->  BadgeType.Informative
+        val badgeType = when (type) {
+            MPMessageType.Informative -> BadgeType.Informative
             MPMessageType.Positive -> BadgeType.Positive
             MPMessageType.Caution -> BadgeType.Caution
             MPMessageType.Negative -> BadgeType.Negative
         }
 
-        BadgeIcons(badgeType = badgeType)
-        Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
+        if (showIcon) {
+            BadgeIcons(badgeType = badgeType)
+            Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
+        }
+
         MPText(
             text = text,
             style = when (hierarchy) {
                 MPMessageHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.default.small
                 MPMessageHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.emphasis.small
             },
-            color = defaults.colors.textColor,
+            color = when (hierarchy) {
+                MPMessageHierarchy.Quiet -> defaults.colors.textColor
+                MPMessageHierarchy.Loud -> defaults.colors.textColorLoud
+
+            },
         )
     }
 }

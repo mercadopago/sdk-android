@@ -54,8 +54,6 @@ fun MPSimpleTextField(
     val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
         defaults = defaults,
@@ -104,6 +102,7 @@ private fun MPSimpleTextFieldPreview() {
                 state = simpleTextState,
                 label = "Name",
                 placeHolder = "Enter your name",
+                helper = "text helper",
                 showPlaceHolder = true,
             ) {
             }

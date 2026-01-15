@@ -30,8 +30,8 @@ private const val TEXT_GROUP = "Text"
 fun MPText(
     text: String,
     modifier: Modifier = Modifier,
-    style: TextStyle,
-    color: Color,
+    style: TextStyle = MercadoPagoAndesTheme.typography.body.default.small,
+    color: Color = MercadoPagoAndesTheme.color.text.primary,
 ) {
     Text(
         text = text,

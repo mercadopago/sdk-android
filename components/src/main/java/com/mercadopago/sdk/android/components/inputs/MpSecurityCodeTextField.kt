@@ -14,10 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
+import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
@@ -64,8 +66,6 @@ fun MPSecurityCodeTextField(
     val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
         defaults = defaults,
@@ -97,9 +97,10 @@ fun MPSecurityCodeTextField(
                     }
                     Spacer(Modifier.width(4.dp))
                     Icon(
-                        imageVector = Icons.Filled.Favorite,
+                        painter = painterResource(R.drawable.ic_tooltip),
                         contentDescription = null,
-                        modifier = Modifier.size(34.dp),
+                        modifier = Modifier.size(MercadoPagoAndesTheme.radius.xlarge),
+                        tint = MercadoPagoAndesTheme.color.icon.accent
                     )
                 }
             },

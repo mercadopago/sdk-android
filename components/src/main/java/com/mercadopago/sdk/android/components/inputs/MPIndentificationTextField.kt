@@ -75,8 +75,6 @@ fun MPIdentificationTextField(
     val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
         defaults = defaults,

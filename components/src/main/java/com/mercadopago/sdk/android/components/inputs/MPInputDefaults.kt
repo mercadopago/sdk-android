@@ -38,27 +38,26 @@ internal data class MPInputBorderDefaults(
 
 @Composable
 internal fun getMPInputDefaults(): MPInputDefaults {
-    val andesTheme = MercadoPagoAndesTheme
     return MPInputDefaults(
         colors = MPInputColorDefaults(
-            borderIdle = andesTheme.color.interactive.border.idle,
-            borderActive = andesTheme.color.interactive.border.active,
-            borderError = andesTheme.color.feedback.negative.borderLoud,
-            cursor = andesTheme.color.interactive.border.active,
-            textPrimary = andesTheme.color.text.primary,
-            textSecondary = andesTheme.color.text.secondary,
-            textDisabled = andesTheme.color.text.disabled,
-            textError = andesTheme.color.feedback.negative.textLoud,
+            borderIdle = MercadoPagoAndesTheme.color.interactive.border.idle,
+            borderActive = MercadoPagoAndesTheme.color.interactive.border.active,
+            borderError = MercadoPagoAndesTheme.color.feedback.negative.borderLoud,
+            cursor = MercadoPagoAndesTheme.color.interactive.border.active,
+            textPrimary = MercadoPagoAndesTheme.color.text.primary,
+            textSecondary = MercadoPagoAndesTheme.color.text.secondary,
+            textDisabled = MercadoPagoAndesTheme.color.text.disabled,
+            textError = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
         ),
         spacing = MPInputSpacingDefaults(
-            labelPadding = andesTheme.spacing.paddings.xnano,
-            helperPadding = andesTheme.spacing.paddings.xnano,
+            labelPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            helperPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
             horizontalPadding = 16.dp,
         ),
         border = MPInputBorderDefaults(
-            widthIdle = andesTheme.borderWidth.small,
-            widthFocused = andesTheme.borderWidth.medium,
-            shape = andesTheme.shape.xsmall,
+            widthIdle = MercadoPagoAndesTheme.borderWidth.small,
+            widthFocused = MercadoPagoAndesTheme.borderWidth.medium,
+            shape = MercadoPagoAndesTheme.shape.xsmall,
         ),
     )
 }

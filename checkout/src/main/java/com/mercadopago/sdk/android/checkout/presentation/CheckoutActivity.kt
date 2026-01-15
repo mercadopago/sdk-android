@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.compose.KoinContext
 
 internal class CheckoutActivity : ComponentActivity() {
@@ -19,7 +20,7 @@ internal class CheckoutActivity : ComponentActivity() {
         setContent {
             KoinContext(context = Checkout.getInstance().koin) {
                 MercadoPagoTheme(
-                    theme = checkoutThemePreferences.getCurrentThemeScheme(),
+                    theme = MercadoPagoThemes.Andes,
                     appearance = checkoutThemePreferences.getCurrentAppearance(),
                 ) {
                     MPCardPayment()
