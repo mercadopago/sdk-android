@@ -70,7 +70,6 @@ enum class MPMessageType {
 
 internal data class MessageColorDefaults(
     val textColor: Color,
-    val iconColor: Color,
 )
 
 internal data class MessageSpacingDefaults(
@@ -80,14 +79,9 @@ internal data class MessageSpacingDefaults(
     val iconSize: androidx.compose.ui.unit.Dp,
 )
 
-internal data class MessageIconDefaults(
-    val icon: ImageVector,
-)
-
 internal data class MessageDefaults(
     val colors: MessageColorDefaults,
     val spacing: MessageSpacingDefaults,
-    val icon: MessageIconDefaults,
 )
 
 @Composable
@@ -100,28 +94,18 @@ private fun getMessageDefaults(
         MPMessageType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
         MPMessageType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
     }
-    val textColor = feedbackColors.textLoud
-    val iconColor = feedbackColors.iconLoud
 
-    val icon = when (type) {
-        MPMessageType.Informative -> Icons.Filled.Info
-        MPMessageType.Positive -> Icons.Filled.Check
-        MPMessageType.Caution -> Icons.Filled.Warning
-        MPMessageType.Negative -> Icons.Filled.Close
-    }
+    val textColor = feedbackColors.textLoud
+
     return MessageDefaults(
         colors = MessageColorDefaults(
             textColor = textColor,
-            iconColor = iconColor,
         ),
         spacing = MessageSpacingDefaults(
             horizontalPadding = MercadoPagoAndesTheme.spacing.gap.xmicro,
             verticalPadding = MercadoPagoAndesTheme.spacing.gap.xnano,
             iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.xnano,
             iconSize = 16.dp,
-        ),
-        icon = MessageIconDefaults(
-            icon = icon,
         ),
     )
 }
@@ -151,18 +135,14 @@ fun MPMessage(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            imageVector = defaults.icon.icon,
-            contentDescription = null,
-            modifier = Modifier
-                .size(defaults.spacing.iconSize)
-                .background(
-                    color = defaults.colors.iconColor,
-                    shape = CircleShape,
-                )
-                .padding(3.dp),
-            tint = Color.White,
-        )
+        val badgeType = when(type){
+            MPMessageType.Informative ->  BadgeType.Informative
+            MPMessageType.Positive -> BadgeType.Positive
+            MPMessageType.Caution -> BadgeType.Caution
+            MPMessageType.Negative -> BadgeType.Negative
+        }
+
+        BadgeIcons(badgeType = badgeType)
         Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
         MPText(
             text = text,
