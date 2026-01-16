@@ -7,19 +7,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
+import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
@@ -63,37 +61,33 @@ fun MPSecurityCodeTextField(
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
+        defaults = defaults,
     ) {
         SecurityCodeTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = TextStyle(
-                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
-                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
-                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
-                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
-            ),
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             securityCodeSize = securityCodeSize,
-            cursorBrush = SolidColor(MercadoPagoAndesTheme.color.interactive.border.active),
+            cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error,
+                    defaults = defaults,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
@@ -101,9 +95,10 @@ fun MPSecurityCodeTextField(
                     }
                     Spacer(Modifier.width(4.dp))
                     Icon(
-                        imageVector = Icons.Filled.Favorite,
+                        painter = painterResource(R.drawable.ic_tooltip),
                         contentDescription = null,
-                        modifier = Modifier.size(34.dp),
+                        modifier = Modifier.size(MercadoPagoAndesTheme.radius.xlarge),
+                        tint = MercadoPagoAndesTheme.color.icon.accent,
                     )
                 }
             },

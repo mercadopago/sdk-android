@@ -8,72 +8,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.text.PlaceholderVerticalAlign
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
-private const val SUPERSCRIPT_ID = "superscript"
-
-/**
- * Default tokens configuration for MPFixedFooter component
- */
-internal data class FixedFooterDefaults(
-    val colors: MPFixedFooterColorDefaults,
-    val spacing: MPFixedFooterSpacingDefaults,
-)
-
-/**
- * Color tokens for MPFixedFooter component
- */
-internal data class MPFixedFooterColorDefaults(
-    val background: Color,
-    val textPrimary: Color,
-    val textAccent: Color,
-)
-
-/**
- * Spacing tokens for MPFixedFooter component
- */
-internal data class MPFixedFooterSpacingDefaults(
-    val paddingHorizontal: Dp,
-    val paddingVertical: Dp,
-    val spacingBetweenSections: Dp,
-)
-
-/**
- * Helper function to get default tokens for MPFixedFooter component
- */
-@Composable
-private fun getFixedFooterDefaults(): FixedFooterDefaults {
-    val andesTheme = MercadoPagoAndesTheme
-    return FixedFooterDefaults(
-        colors = MPFixedFooterColorDefaults(
-            background = andesTheme.color.background.primary,
-            textPrimary = andesTheme.color.text.primary,
-            textAccent = andesTheme.color.text.accent,
-        ),
-        spacing = MPFixedFooterSpacingDefaults(
-            paddingHorizontal = andesTheme.spacing.paddings.xtiny,
-            paddingVertical = andesTheme.spacing.paddings.xtiny,
-            spacingBetweenSections = andesTheme.spacing.paddings.xtiny,
-        ),
-    )
-}
 
 /**
  * Data class representing the amount display configuration
@@ -122,14 +66,13 @@ fun MPFixedFooter(
     subtitle: String? = null,
     buttonData: MPFixedFooterButtonData? = null,
 ) {
-    val defaults = getFixedFooterDefaults()
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(defaults.colors.background)
+            .background(MercadoPagoAndesTheme.color.background.primary)
             .padding(
-                horizontal = defaults.spacing.paddingHorizontal,
-                vertical = defaults.spacing.paddingVertical,
+                horizontal = MercadoPagoAndesTheme.spacing.paddings.xtiny,
+                vertical = MercadoPagoAndesTheme.spacing.paddings.xtiny,
             ),
     ) {
         HeaderSection(
@@ -138,7 +81,7 @@ fun MPFixedFooter(
             subtitle = subtitle,
         )
         if (buttonData != null) {
-            Spacer(modifier = Modifier.height(defaults.spacing.spacingBetweenSections))
+            Spacer(modifier = Modifier.height(MercadoPagoAndesTheme.spacing.paddings.micro))
             MPButton(
                 text = buttonData.text,
                 modifier = Modifier.fillMaxWidth(),
@@ -150,9 +93,6 @@ fun MPFixedFooter(
     }
 }
 
-/**
- * Header section containing title and amount on the same line, with subtitle below aligned to the right
- */
 @Composable
 private fun HeaderSection(
     title: String,
@@ -165,75 +105,57 @@ private fun HeaderSection(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
             MPText(
                 text = title,
-                textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Primary,
+                style = MercadoPagoAndesTheme.typography.body.emphasis.large,
+                color = MercadoPagoAndesTheme.color.text.primary,
             )
-            AmountText(amount = amount)
-        }
-        if (subtitle != null) {
-            MPText(
-                text = subtitle,
-                textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Accent,
-                modifier = Modifier.align(Alignment.End),
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+            ) {
+                AmountText(amount = amount)
+                if (subtitle != null) {
+                    MPText(
+                        text = subtitle,
+                        style = MercadoPagoAndesTheme.typography.body.default.medium,
+                        color = MercadoPagoAndesTheme.color.text.secondary,
+                    )
+                }
+            }
         }
     }
 }
 
-/**
- * Amount text with superscript decimal part
- */
 @Composable
 private fun AmountText(
     amount: MPAmountData,
 ) {
-    val andesTheme = MercadoPagoAndesTheme
-    val headingTypo = andesTheme.typography.heading
-    val titleStyle = TextStyle(
-        fontFamily = headingTypo.familyDefault,
-        fontWeight = headingTypo.weight.semibold,
-        fontSize = headingTypo.size.size20,
-        lineHeight = headingTypo.lineHeight.lineHeight24,
-        letterSpacing = headingTypo.letterSpacing.spacing0,
-    )
-    val annotatedString = buildAnnotatedString {
-        append("${amount.currencySymbol} ${amount.integerPart} ")
-        appendInlineContent(SUPERSCRIPT_ID, amount.decimalPart)
+    Row {
+        MPText(
+            text = amount.currencySymbol,
+            style = MercadoPagoAndesTheme.typography.heading.default.medium,
+            color = MercadoPagoAndesTheme.color.text.primary,
+        )
+        MPText(
+            text = amount.integerPart,
+            style = MercadoPagoAndesTheme.typography.heading.default.medium,
+            color = MercadoPagoAndesTheme.color.text.primary,
+        )
+        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+        MPText(
+            text = amount.decimalPart,
+            style = MercadoPagoAndesTheme.typography.body.emphasis.small,
+            color = MercadoPagoAndesTheme.color.text.primary,
+        )
     }
-
-    val inlineContent = mapOf(
-        SUPERSCRIPT_ID to InlineTextContent(
-            placeholder = Placeholder(
-                width = (amount.decimalPart.length * 10).sp,
-                height = 14.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.Top,
-            ),
-        ) {
-            MPText(
-                text = amount.decimalPart,
-                textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-                colorType = MPTextColorType.Primary,
-            )
-        },
-    )
-
-    Text(
-        text = annotatedString,
-        inlineContent = inlineContent,
-        style = titleStyle,
-        color = andesTheme.color.text.primary,
-    )
 }
 
 @Preview(name = "Fixed Footer with Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithButtonPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme {
         MPFixedFooter(
             title = "Text",
             amount = MPAmountData(
@@ -253,7 +175,7 @@ private fun MPFixedFooterWithButtonPreview() {
 @Preview(name = "Fixed Footer without Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithoutButtonPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme {
         MPFixedFooter(
             title = "Text",
             amount = MPAmountData(
@@ -270,7 +192,7 @@ private fun MPFixedFooterWithoutButtonPreview() {
 @Preview(name = "Fixed Footer without Subtitle", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterWithoutSubtitlePreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme {
         Column(
             modifier = Modifier.background(Color.LightGray),
         ) {
@@ -294,7 +216,7 @@ private fun MPFixedFooterWithoutSubtitlePreview() {
 @Preview(name = "Fixed Footer Disabled Button", group = FIXED_FOOTER_GROUP)
 @Composable
 private fun MPFixedFooterDisabledButtonPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme {
         MPFixedFooter(
             title = "Total a pagar",
             amount = MPAmountData(

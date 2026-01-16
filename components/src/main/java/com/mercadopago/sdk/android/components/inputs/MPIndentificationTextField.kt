@@ -23,11 +23,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextField
@@ -74,12 +72,12 @@ fun MPIdentificationTextField(
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
+        defaults = defaults,
     ) {
         IdentificationTextField(
             state = state,
@@ -87,18 +85,13 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = TextStyle(
-                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
-                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
-                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
-                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
-            ),
-            cursorBrush = SolidColor(MercadoPagoAndesTheme.color.interactive.border.active),
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error,
+                    defaults = defaults,
                 ) {
                     MPIdentificationTypeSelector(
                         identificationTypes = identificationTypes,
@@ -106,6 +99,7 @@ fun MPIdentificationTextField(
                         onTypeSelected = { identificationType ->
                             onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
                         },
+                        defaults = defaults,
                     )
                     VerticalDivider(modifier = Modifier.height(40.dp))
                     Spacer(modifier = Modifier.width(4.dp))
@@ -113,7 +107,8 @@ fun MPIdentificationTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
@@ -125,22 +120,13 @@ fun MPIdentificationTextField(
     }
 }
 
-/**
- * Internal composable that provides a dropdown selector for identification types.
- *
- * This component displays a dropdown menu for selecting identification document types,
- * with the selected type name and a trailing icon indicator.
- *
- * @param identificationTypes List of available identification types.
- * @param selectedIdentificationType The currently selected identification type.
- * @param onTypeSelected Callback invoked when an identification type is selected.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MPIdentificationTypeSelector(
     identificationTypes: List<IdentificationType>,
     selectedIdentificationType: IdentificationType?,
     onTypeSelected: (IdentificationType) -> Unit,
+    defaults: MPInputDefaults,
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -153,7 +139,8 @@ internal fun MPIdentificationTypeSelector(
         ) {
             MPText(
                 text = selectedIdentificationType?.name.orEmpty(),
-                textStyle = MPTextStyle.BodyMediumRegular,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                color = defaults.colors.textPrimary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
@@ -165,7 +152,8 @@ internal fun MPIdentificationTypeSelector(
                         identificationType.name?.let {
                             MPText(
                                 text = it,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                color = defaults.colors.textPrimary,
                             )
                         }
                     },

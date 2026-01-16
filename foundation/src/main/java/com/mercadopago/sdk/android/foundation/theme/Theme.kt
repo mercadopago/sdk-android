@@ -39,7 +39,10 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
+import com.mercadopago.sdk.android.foundation.typography.AndesBodyStyle
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesHeadingStyle
+import com.mercadopago.sdk.android.foundation.typography.AndesHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
@@ -310,15 +313,37 @@ internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemePro
             xlarge = 0.dp,
         ),
         typography = MercadoPagoAndesTypography(
-            title = AndesTitleTypography(
-                title = TextStyle.Default,
+            heading = AndesHeadingTypography(
+                default = AndesHeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
+                narrow = AndesHeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
             ),
             body = AndesBodyTypography(
-                bodyMediumSemiBold = TextStyle.Default,
-                bodyMediumRegular = TextStyle.Default,
-                bodySmallSemiBold = TextStyle.Default,
-                bodySmallRegular = TextStyle.Default,
-                bodyExtraSmallSemiBold = TextStyle.Default,
+                default = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                emphasis = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                textlink = AndesBodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+            ),
+            title = AndesTitleTypography(
+                title = TextStyle.Default,
             ),
         ),
     )
@@ -438,7 +463,7 @@ object MercadoPagoAndesTheme {
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
+    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Andes,
     appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
     content: @Composable () -> Unit,
 ) {

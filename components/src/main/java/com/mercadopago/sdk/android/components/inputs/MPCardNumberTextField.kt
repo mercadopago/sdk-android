@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -56,36 +54,32 @@ fun MPCardNumberTextField(
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
+        defaults = defaults,
     ) {
         CardNumberTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
-            textStyle = TextStyle(
-                fontFamily = MercadoPagoAndesTheme.typography.heading.familyDefault,
-                fontSize = MercadoPagoAndesTheme.typography.heading.size.size16,
-                lineHeight = MercadoPagoAndesTheme.typography.heading.lineHeight.lineHeight20,
-                fontWeight = MercadoPagoAndesTheme.typography.heading.weight.regular,
-                letterSpacing = MercadoPagoAndesTheme.typography.heading.letterSpacing.spacing0,
-            ),
+            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
             enabled = enabled,
             visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error,
+                    defaults = defaults,
                 ) {
                     Box {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                color = defaults.colors.textPrimary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

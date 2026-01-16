@@ -2,11 +2,8 @@ package com.mercadopago.sdk.android.foundation.theme.andes
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBackgroundColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBorderColor
@@ -30,9 +27,7 @@ import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
-import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
-import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
+import com.mercadopago.sdk.android.foundation.typography.AndesDefaultTypography
 
 private const val ANDES_COLOR_GROUP_BACKGROUND = "Andes Background"
 private const val ANDES_COLOR_GROUP_SURFACE = "Andes Surface"
@@ -456,60 +451,11 @@ internal val AndesDefaultLightBorderWidth = MercadoPagoAndesBorderWidth(
 // New Default Typography Configuration
 internal val InterFontFamily = FontFamily.Default
 
-internal val AndesDefaultLightTypography = MercadoPagoAndesTypography(
-    title = AndesTitleTypography(
-        title = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 20.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.sp,
-        ),
-    ),
-    body = AndesBodyTypography(
-        bodyMediumSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.sp,
-        ),
-        bodyMediumRegular = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W400,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
-        ),
-        bodySmallSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
-        ),
-        bodySmallRegular = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W400,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            letterSpacing = 0.sp,
-        ),
-        bodyExtraSmallSemiBold = TextStyle(
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.W600,
-            fontSize = 12.sp,
-            lineHeight = 16.sp,
-            letterSpacing = 0.sp,
-        ),
-    ),
-)
-
 internal val MercadoPagoAndesDefaultLightTheme = MercadoPagoThemeProvider.Andes(
     color = AndesDefaultLightColors,
     spacing = AndesDefaultLightSpacing,
     shape = AndesDefaultLightShape,
     radius = AndesDefaultLightRadius,
     borderWidth = AndesDefaultLightBorderWidth,
-    typography = AndesDefaultLightTypography,
+    typography = AndesDefaultTypography,
 )
