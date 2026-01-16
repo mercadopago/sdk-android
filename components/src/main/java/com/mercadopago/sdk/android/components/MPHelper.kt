@@ -140,7 +140,7 @@ fun MPHelper(
         }
 
         if (showIcon) {
-            BadgeIcons(badgeType = badgeType)
+            MPBadgeIcon(badgeType = badgeType)
             Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
         }
 

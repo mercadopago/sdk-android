@@ -23,7 +23,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param badgeType The type of badge that determines the icon and color to display.
  */
 @Composable
-fun BadgeIcons(
+fun MPBadgeIcon(
     modifier: Modifier = Modifier,
     badgeType: BadgeType,
 ) {
@@ -56,7 +56,7 @@ fun BadgeIcons(
 
 @Preview
 @Composable
-private fun BadgeIconsPreview() {
+private fun MPBadgeIconPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Andes,
     ) {
@@ -65,10 +65,10 @@ private fun BadgeIconsPreview() {
                 .padding(16.dp)
                 .background(Color.White),
         ) {
-            BadgeIcons(badgeType = BadgeType.Positive)
-            BadgeIcons(badgeType = BadgeType.Negative)
-            BadgeIcons(badgeType = BadgeType.Caution)
-            BadgeIcons(badgeType = BadgeType.Informative)
+            MPBadgeIcon(badgeType = BadgeType.Positive)
+            MPBadgeIcon(badgeType = BadgeType.Negative)
+            MPBadgeIcon(badgeType = BadgeType.Caution)
+            MPBadgeIcon(badgeType = BadgeType.Informative)
         }
     }
 }
