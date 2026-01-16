@@ -94,8 +94,8 @@ private fun getMessageDefaults(
             horizontalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
             verticalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
             iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.micro,
-            closeIconSize = 16.dp,
-            closeIconPadding = 4.dp,
+            closeIconSize = MercadoPagoAndesTheme.spacing.paddings.xsmall,
+            closeIconPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
         ),
     )
 }
@@ -133,7 +133,7 @@ fun MPMessage(
                 horizontal = defaults.spacing.horizontalPadding,
                 vertical = defaults.spacing.verticalPadding,
             ),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
     ) {
         MPBadgeIcon(badgeType = badgeType)
         Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
@@ -147,15 +147,14 @@ fun MPMessage(
         Box(
             modifier = Modifier
                 .size(defaults.spacing.closeIconSize)
-                .padding(defaults.spacing.closeIconPadding)
                 .clickable(onClick = onDismiss),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.TopEnd,
         ) {
             Icon(
                 painterResource(R.drawable.mp_icon_close_x),
                 "",
                 tint = defaults.colors.closeIconColor,
-                modifier = Modifier.size(defaults.spacing.closeIconSize),
+                modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xtiny),
             )
         }
     }
@@ -249,7 +248,7 @@ internal fun MessageAllVariationsPreview() {
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPMessage(
-                text = "This can be a single or multiline text",
+                text = "This can be a single or multiline text multiline text multiline text multiline text",
                 type = MPMessageType.Caution,
             )
             Spacer(modifier = Modifier.size(8.dp))
