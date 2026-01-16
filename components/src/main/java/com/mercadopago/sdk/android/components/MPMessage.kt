@@ -91,8 +91,8 @@ private fun getMessageDefaults(
             closeIconColor = closeIconColor,
         ),
         spacing = MessageSpacingDefaults(
-            horizontalPadding = MercadoPagoAndesTheme.spacing.paddings.micro,
-            verticalPadding = MercadoPagoAndesTheme.spacing.paddings.micro,
+            horizontalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
+            verticalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
             iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.micro,
             closeIconSize = 16.dp,
             closeIconPadding = 4.dp,
@@ -127,7 +127,7 @@ fun MPMessage(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MercadoPagoAndesTheme.shape.medium)
+            .clip(MercadoPagoAndesTheme.shape.xlarge)
             .background(defaults.colors.backgroundColor)
             .padding(
                 horizontal = defaults.spacing.horizontalPadding,
