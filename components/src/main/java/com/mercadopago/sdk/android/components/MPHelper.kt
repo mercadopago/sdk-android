@@ -16,29 +16,29 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
-private const val MESSAGE_GROUP = "Message"
+private const val HELPER_GROUP = "Helper"
 
 /**
- * Message Hierarchy enum class, used to determine the visual hierarchy of the message
+ * Helper Hierarchy enum class, used to determine the visual hierarchy of the message
  * This is used to change the typography weight
  */
-enum class MPMessageHierarchy {
+enum class MPHelperHierarchy {
     /**
-     * Quiet: Message with Regular typography
+     * Quiet: Helper with Regular typography
      */
     Quiet,
 
     /**
-     * Loud: Message with Bold typography
+     * Loud: Helper with Bold typography
      */
     Loud,
 }
 
 /**
- * Message Type enum class, used to determine the message type and color scheme
+ * Helper Type enum class, used to determine the message type and color scheme
  * This is used to change the colors and icon
  */
-enum class MPMessageType {
+enum class MPHelperType {
     /**
      * Informative: Blue color scheme for informational messages
      */
@@ -60,43 +60,43 @@ enum class MPMessageType {
     Negative,
 }
 
-internal data class MessageColorDefaults(
+internal data class HelperColorDefaults(
     val textColor: Color,
     val textColorLoud: Color,
 )
 
-internal data class MessageSpacingDefaults(
+internal data class HelperSpacingDefaults(
     val horizontalPadding: androidx.compose.ui.unit.Dp,
     val verticalPadding: androidx.compose.ui.unit.Dp,
     val iconTextSpacing: androidx.compose.ui.unit.Dp,
     val iconSize: androidx.compose.ui.unit.Dp,
 )
 
-internal data class MessageDefaults(
-    val colors: MessageColorDefaults,
-    val spacing: MessageSpacingDefaults,
+internal data class HelperDefaults(
+    val colors: HelperColorDefaults,
+    val spacing: HelperSpacingDefaults,
 )
 
 @Composable
-private fun getMessageDefaults(
-    type: MPMessageType,
-): MessageDefaults {
+private fun getHelperDefaults(
+    type: MPHelperType,
+): HelperDefaults {
     val feedbackColors = when (type) {
-        MPMessageType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
-        MPMessageType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
-        MPMessageType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
-        MPMessageType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
+        MPHelperType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
+        MPHelperType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
+        MPHelperType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
+        MPHelperType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
     }
 
     val textColorLoud = feedbackColors.textLoud
     val textColor = MercadoPagoAndesTheme.color.text.primary
 
-    return MessageDefaults(
-        colors = MessageColorDefaults(
+    return HelperDefaults(
+        colors = HelperColorDefaults(
             textColor = textColor,
             textColorLoud = textColorLoud,
         ),
-        spacing = MessageSpacingDefaults(
+        spacing = HelperSpacingDefaults(
             horizontalPadding = MercadoPagoAndesTheme.spacing.gap.xmicro,
             verticalPadding = MercadoPagoAndesTheme.spacing.gap.xnano,
             iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.xnano,
@@ -106,24 +106,24 @@ private fun getMessageDefaults(
 }
 
 /**
- * Message component - Displays feedback messages with different hierarchies and types
+ * Helper component - Displays feedback messages with different hierarchies and types
  * This component uses Andes design tokens for colors, typography, and spacing
  *
- * @param text: Message text to display
+ * @param text: Helper text to display
  * @param modifier: Component modifier
  * @param showIcon: Component icon
  * @param hierarchy: Visual hierarchy of the message (Quiet or Loud)
- * @param type: Message type (Informative, Positive, Caution, or Negative)
+ * @param type: Helper type (Informative, Positive, Caution, or Negative)
  */
 @Composable
 fun MPHelper(
     text: String,
     modifier: Modifier = Modifier,
     showIcon: Boolean = true,
-    hierarchy: MPMessageHierarchy = MPMessageHierarchy.Quiet,
-    type: MPMessageType = MPMessageType.Informative,
+    hierarchy: MPHelperHierarchy = MPHelperHierarchy.Quiet,
+    type: MPHelperType = MPHelperType.Informative,
 ) {
-    val defaults = getMessageDefaults(type = type)
+    val defaults = getHelperDefaults(type = type)
     Row(
         modifier = modifier
             .padding(
@@ -133,32 +133,32 @@ fun MPHelper(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val badgeType = when (type) {
-            MPMessageType.Informative -> BadgeType.Informative
-            MPMessageType.Positive -> BadgeType.Positive
-            MPMessageType.Caution -> BadgeType.Caution
-            MPMessageType.Negative -> BadgeType.Negative
+            MPHelperType.Informative -> BadgeType.Informative
+            MPHelperType.Positive -> BadgeType.Positive
+            MPHelperType.Caution -> BadgeType.Caution
+            MPHelperType.Negative -> BadgeType.Negative
         }
 
         if (showIcon) {
-            BadgeIcons(badgeType = badgeType)
+            MPBadgeIcon(badgeType = badgeType)
             Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
         }
 
         MPText(
             text = text,
             style = when (hierarchy) {
-                MPMessageHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.default.small
-                MPMessageHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.emphasis.small
+                MPHelperHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.default.small
+                MPHelperHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.emphasis.small
             },
             color = when (hierarchy) {
-                MPMessageHierarchy.Quiet -> defaults.colors.textColor
-                MPMessageHierarchy.Loud -> defaults.colors.textColorLoud
+                MPHelperHierarchy.Quiet -> defaults.colors.textColor
+                MPHelperHierarchy.Loud -> defaults.colors.textColorLoud
             },
         )
     }
 }
 
-@Preview(name = "Message Informative Quiet", group = MESSAGE_GROUP)
+@Preview(name = "Helper Informative Quiet", group = HELPER_GROUP)
 @Composable
 internal fun MessageInformativeQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -169,14 +169,14 @@ internal fun MessageInformativeQuietPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Informative,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Informative,
             )
         }
     }
 }
 
-@Preview(name = "Message Informative Loud", group = MESSAGE_GROUP)
+@Preview(name = "Helper Informative Loud", group = HELPER_GROUP)
 @Composable
 internal fun MessageInformativeLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -187,14 +187,14 @@ internal fun MessageInformativeLoudPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Informative,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Informative,
             )
         }
     }
 }
 
-@Preview(name = "Message Positive Quiet", group = MESSAGE_GROUP)
+@Preview(name = "Helper Positive Quiet", group = HELPER_GROUP)
 @Composable
 internal fun MessagePositiveQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -205,14 +205,14 @@ internal fun MessagePositiveQuietPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Positive,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Positive,
             )
         }
     }
 }
 
-@Preview(name = "Message Positive Loud", group = MESSAGE_GROUP)
+@Preview(name = "Helper Positive Loud", group = HELPER_GROUP)
 @Composable
 internal fun MessagePositiveLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -223,14 +223,14 @@ internal fun MessagePositiveLoudPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Positive,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Positive,
             )
         }
     }
 }
 
-@Preview(name = "Message Caution Quiet", group = MESSAGE_GROUP)
+@Preview(name = "Helper Caution Quiet", group = HELPER_GROUP)
 @Composable
 internal fun MessageCautionQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -241,14 +241,14 @@ internal fun MessageCautionQuietPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Caution,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Caution,
             )
         }
     }
 }
 
-@Preview(name = "Message Caution Loud", group = MESSAGE_GROUP)
+@Preview(name = "Helper Caution Loud", group = HELPER_GROUP)
 @Composable
 internal fun MessageCautionLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -259,14 +259,14 @@ internal fun MessageCautionLoudPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Caution,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Caution,
             )
         }
     }
 }
 
-@Preview(name = "Message Negative Quiet", group = MESSAGE_GROUP)
+@Preview(name = "Helper Negative Quiet", group = HELPER_GROUP)
 @Composable
 internal fun MessageNegativeQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -277,14 +277,14 @@ internal fun MessageNegativeQuietPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Negative,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Negative,
             )
         }
     }
 }
 
-@Preview(name = "Message Negative Loud", group = MESSAGE_GROUP)
+@Preview(name = "Helper Negative Loud", group = HELPER_GROUP)
 @Composable
 internal fun MessageNegativeLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -295,14 +295,14 @@ internal fun MessageNegativeLoudPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Negative,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Negative,
             )
         }
     }
 }
 
-@Preview(name = "Message All Variations", group = MESSAGE_GROUP)
+@Preview(name = "Helper All Variations", group = HELPER_GROUP)
 @Composable
 internal fun MessageAllVariationsPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
@@ -313,50 +313,50 @@ internal fun MessageAllVariationsPreview() {
         ) {
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Informative,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Informative,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Positive,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Positive,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Caution,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Caution,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Quiet,
-                type = MPMessageType.Negative,
+                hierarchy = MPHelperHierarchy.Quiet,
+                type = MPHelperType.Negative,
             )
             Spacer(modifier = Modifier.size(16.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Informative,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Informative,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Positive,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Positive,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Caution,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Caution,
             )
             Spacer(modifier = Modifier.size(8.dp))
             MPHelper(
                 text = "Helper text",
-                hierarchy = MPMessageHierarchy.Loud,
-                type = MPMessageType.Negative,
+                hierarchy = MPHelperHierarchy.Loud,
+                type = MPHelperType.Negative,
             )
         }
     }
