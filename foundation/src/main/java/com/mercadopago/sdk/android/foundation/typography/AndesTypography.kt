@@ -126,8 +126,8 @@ internal val AndesHeadingMediumNarrow = TextStyle(
 internal val AndesHeadingHugeDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
-    fontSize = 48.sp,
-    lineHeight = 56.sp,
+    fontSize = 24.sp,
+    lineHeight = 28.sp,
     letterSpacing = 0.sp,
 )
 
