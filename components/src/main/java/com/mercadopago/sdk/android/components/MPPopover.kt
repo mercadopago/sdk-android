@@ -79,8 +79,8 @@ fun MPPopover(
             )
             MPText(
                 text = description,
-                textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Inverted,
+                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                color = MercadoPagoAndesTheme.color.text.primary,
             )
         }
     }
@@ -100,8 +100,8 @@ private fun PopoverHeader(
     ) {
         MPText(
             text = title,
-            textStyle = MPTextStyle.Title,
-            colorType = MPTextColorType.Inverted,
+            style = MercadoPagoAndesTheme.typography.heading.default.medium,
+            color = MercadoPagoAndesTheme.color.text.primary,
             modifier = Modifier.weight(1f),
         )
         Box(
