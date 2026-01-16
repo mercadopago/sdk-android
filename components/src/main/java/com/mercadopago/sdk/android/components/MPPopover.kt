@@ -28,63 +28,71 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
-private const val TOOLTIP_MAX_WIDTH_FRACTION: Float = 0.9f
+private const val POPOVER_MAX_WIDTH_FRACTION: Float = 0.9f
 
 /**
- * Tooltip component with two visual styles: Dark and Blue.
+ * Popover component with white background and dark text.
  *
- * - Renders a bubble with rounded corners and a pointer tail on the bottom-right.
+ * - Renders a bubble with rounded corners and a pointer tail on the bottom-center.
  * - Displays a title, a description and a dismiss action ("×").
  */
 @Composable
-fun MpTooltip(
+fun MPPopover(
     title: String,
     description: String,
-    style: MpTooltipStyle,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit = {},
 ) {
-    val colors = MpTooltipColors(
-        container = tooltipBackgroundColorPalette(style),
-        close = MercadoPagoTheme.color.text.inverted,
-    )
-
-    val bubbleShape: Shape = TooltipBubbleShape(
-        cornerRadius = MercadoPagoTheme.spacing.s,
-        pointerWidth = MercadoPagoTheme.spacing.l,
-        pointerHeight = MercadoPagoTheme.spacing.s,
-        pointerEndOffset = MercadoPagoTheme.spacing.l,
+    val defaults = getPopoverDefaults()
+    val bubbleShape: Shape = PopoverBubbleShape(
+        cornerRadius = defaults.spacing.cornerRadius,
+        pointerWidth = defaults.spacing.pointerWidth,
+        pointerHeight = defaults.spacing.pointerHeight,
+        pointerEndOffset = defaults.spacing.pointerEndOffset,
     )
 
     Surface(
         modifier = modifier
             .defaultMinSize(minWidth = 240.dp, minHeight = 86.dp)
-            .fillMaxWidth(TOOLTIP_MAX_WIDTH_FRACTION)
-            .padding(MercadoPagoTheme.spacing.m),
-        color = colors.container,
+            .fillMaxWidth(POPOVER_MAX_WIDTH_FRACTION)
+            .padding(defaults.spacing.surfacePadding),
+        color = defaults.colors.backgroundColor,
         shape = bubbleShape,
     ) {
         Column(
             modifier = Modifier
-                .background(colors.container)
+                .background(defaults.colors.backgroundColor)
                 .padding(
-                    horizontal = MercadoPagoTheme.spacing.m,
-                    vertical = MercadoPagoTheme.spacing.m,
+                    horizontal = defaults.spacing.contentPaddingHorizontal,
+                    vertical = defaults.spacing.contentPaddingVertical,
                 ),
-            verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.s),
+            verticalArrangement = Arrangement.spacedBy(defaults.spacing.contentGap),
         ) {
-            TooltipHeader(title = title, onDismiss = onDismiss, closeTint = colors.close)
-            TooltipDescription(text = description)
+            PopoverHeader(
+                title = title,
+                onDismiss = onDismiss,
+                closeIconColor = defaults.colors.closeIconColor,
+                iconSize = defaults.spacing.iconSize,
+                iconPadding = defaults.spacing.iconPadding,
+            )
+            MPText(
+                text = description,
+                textStyle = MPTextStyle.BodySmallRegular,
+                colorType = MPTextColorType.Inverted,
+            )
         }
     }
 }
 
 @Composable
-private fun TooltipHeader(
+private fun PopoverHeader(
     title: String,
     onDismiss: () -> Unit,
-    closeTint: Color,
+    closeIconColor: Color,
+    iconSize: Dp,
+    iconPadding: Dp,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -92,70 +100,79 @@ private fun TooltipHeader(
     ) {
         MPText(
             text = title,
-            style = MercadoPagoAndesTheme.typography.body.emphasis.medium,
-            color = MercadoPagoAndesTheme.color.text.inverse,
+            textStyle = MPTextStyle.Title,
+            colorType = MPTextColorType.Inverted,
             modifier = Modifier.weight(1f),
         )
         Box(
             modifier = Modifier
-                .size(MercadoPagoTheme.spacing.m)
-                .padding(MercadoPagoTheme.spacing.xxs)
+                .size(iconSize)
+                .padding(iconPadding)
                 .clickable(onClick = onDismiss),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painterResource(R.drawable.mp_icon_close_x),
                 "",
-                tint = closeTint,
+                tint = closeIconColor,
             )
         }
     }
 }
 
+internal data class PopoverDefaults(
+    val colors: PopoverColorDefaults,
+    val spacing: PopoverSpacingDefaults,
+)
+
+internal data class PopoverColorDefaults(
+    val backgroundColor: Color,
+    val titleTextColor: Color,
+    val descriptionTextColor: Color,
+    val closeIconColor: Color,
+)
+
+internal data class PopoverSpacingDefaults(
+    val cornerRadius: Dp,
+    val pointerWidth: Dp,
+    val pointerHeight: Dp,
+    val pointerEndOffset: Dp,
+    val surfacePadding: Dp,
+    val contentPaddingHorizontal: Dp,
+    val contentPaddingVertical: Dp,
+    val contentGap: Dp,
+    val iconSize: Dp,
+    val iconPadding: Dp,
+)
+
 @Composable
-private fun TooltipDescription(
-    text: String,
-) {
-    MPText(
-        text = text,
-        style = MercadoPagoAndesTheme.typography.body.default.small,
-        color = MercadoPagoAndesTheme.color.text.inverse,
+private fun getPopoverDefaults(): PopoverDefaults {
+    return PopoverDefaults(
+        colors = PopoverColorDefaults(
+            backgroundColor = MercadoPagoAndesTheme.color.surface.primaryIdle,
+            titleTextColor = MercadoPagoAndesTheme.color.text.primary,
+            descriptionTextColor = MercadoPagoAndesTheme.color.text.secondary,
+            closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idleAccent,
+        ),
+        spacing = PopoverSpacingDefaults(
+            cornerRadius = MercadoPagoAndesTheme.radius.medium,
+            pointerWidth = MercadoPagoAndesTheme.spacing.paddings.xtiny,
+            pointerHeight = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            pointerEndOffset = MercadoPagoAndesTheme.spacing.gap.micro,
+            surfacePadding = MercadoPagoAndesTheme.spacing.paddings.micro,
+            contentPaddingHorizontal = MercadoPagoAndesTheme.spacing.paddings.micro,
+            contentPaddingVertical = MercadoPagoAndesTheme.spacing.paddings.micro,
+            contentGap = MercadoPagoAndesTheme.spacing.gap.nano,
+            iconSize = MercadoPagoAndesTheme.spacing.paddings.micro,
+            iconPadding = MercadoPagoAndesTheme.spacing.paddings.pico,
+        ),
     )
 }
 
 /**
- * Defines the available visual styles for `MpTooltip`.
- *
- * - `Dark`: Uses an inverted background for high contrast.
- * - `Blue`: Uses the accent color background.
+ * Bubble shape with rounded corners and a pointer tail at the bottom center.
  */
-enum class MpTooltipStyle {
-    /** Dark style using inverted background. */
-    Dark,
-
-    /** Blue style using the accent color. */
-    Blue,
-}
-
-private data class MpTooltipColors(
-    val container: Color,
-    val close: Color,
-)
-
-@Composable
-private fun tooltipBackgroundColorPalette(
-    style: MpTooltipStyle,
-): Color {
-    return when (style) {
-        MpTooltipStyle.Dark -> MercadoPagoTheme.color.background.inverted
-        MpTooltipStyle.Blue -> MercadoPagoTheme.color.accent
-    }
-}
-
-/**
- * Bubble shape with rounded corners and a pointer tail at the bottom right.
- */
-private class TooltipBubbleShape(
+private class PopoverBubbleShape(
     private val cornerRadius: Dp,
     private val pointerWidth: Dp,
     private val pointerHeight: Dp,
@@ -210,24 +227,12 @@ private class TooltipBubbleShape(
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewMpTooltipDark() {
-    MercadoPagoTheme {
-        MpTooltip(
+private fun PreviewMPPopover() {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+        MPPopover(
             title = "Title",
-            description = "Text description.",
-            style = MpTooltipStyle.Dark,
-        ) {}
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewMpTooltipBlue() {
-    MercadoPagoTheme {
-        MpTooltip(
-            title = "Title can be this big",
-            description = "Text description. this description can be much bigger",
-            style = MpTooltipStyle.Blue,
-        ) {}
+            description = "This can be a single or multiline message",
+            onDismiss = {},
+        )
     }
 }
