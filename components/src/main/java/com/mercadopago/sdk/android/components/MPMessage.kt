@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import kotlinx.coroutines.delay
 
 private const val MESSAGE_GROUP = "Message"
 
@@ -48,6 +50,32 @@ enum class MPMessageType {
      * Negative: Red color scheme for error messages
      */
     Negative,
+}
+
+/**
+ * Message Duration enum class, used to determine how long the message should be displayed
+ * This controls the auto-dismiss behavior of the toast-like message
+ */
+enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
+    /**
+     * Short: Message is displayed for 3 seconds
+     */
+    Short(3000L),
+
+    /**
+     * Medium: Message is displayed for 6 seconds
+     */
+    Medium(6000L),
+
+    /**
+     * Long: Message is displayed for 10 seconds
+     */
+    Long(10000L),
+
+    /**
+     * Indefinite: Message does not auto-dismiss and remains visible until manually closed
+     */
+    Indefinite(null),
 }
 
 internal data class MessageColorDefaults(
@@ -107,13 +135,15 @@ private fun getMessageDefaults(
  * @param text: Message text to display
  * @param modifier: Component modifier
  * @param type: Message type (Informative, Positive, Caution, or Negative)
- * @param onDismiss: Callback function executed when close button is clicked
+ * @param duration: Duration for auto-dismiss behavior (Short: 3s, Medium: 6s, Long: 10s, Indefinite: no auto-dismiss)
+ * @param onDismiss: Callback function executed when close button is clicked or when auto-dismiss timer expires
  */
 @Composable
 fun MPMessage(
     text: String,
     modifier: Modifier = Modifier,
     type: MPMessageType = MPMessageType.Informative,
+    duration: MPMessageDuration = MPMessageDuration.Short,
     onDismiss: () -> Unit = {},
 ) {
     val defaults = getMessageDefaults(type = type)
@@ -122,6 +152,13 @@ fun MPMessage(
         MPMessageType.Positive -> BadgeType.Positive
         MPMessageType.Caution -> BadgeType.Caution
         MPMessageType.Negative -> BadgeType.Negative
+    }
+
+    LaunchedEffect(duration) {
+        duration.durationMillis?.let { durationMillis ->
+            delay(durationMillis)
+            onDismiss()
+        }
     }
 
     Row(
