@@ -26,6 +26,10 @@ import kotlinx.coroutines.delay
 
 private const val MESSAGE_GROUP = "Message"
 
+private const val DURATION_SHORT_MILLIS = 3000L
+private const val DURATION_MEDIUM_MILLIS = 6000L
+private const val DURATION_LONG_MILLIS = 10000L
+
 /**
  * Message Type enum class, used to determine the message type and color scheme
  * This is used to change the colors and icon
@@ -55,22 +59,23 @@ enum class MPMessageType {
 /**
  * Message Duration enum class, used to determine how long the message should be displayed
  * This controls the auto-dismiss behavior of the toast-like message
+ * @param durationMillis Component dismiss call durations
  */
 enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
     /**
      * Short: Message is displayed for 3 seconds
      */
-    Short(3000L),
+    Short(DURATION_SHORT_MILLIS),
 
     /**
      * Medium: Message is displayed for 6 seconds
      */
-    Medium(6000L),
+    Medium(DURATION_MEDIUM_MILLIS),
 
     /**
      * Long: Message is displayed for 10 seconds
      */
-    Long(10000L),
+    Long(DURATION_LONG_MILLIS),
 
     /**
      * Indefinite: Message does not auto-dismiss and remains visible until manually closed
@@ -191,7 +196,9 @@ fun MPMessage(
                 painterResource(R.drawable.mp_icon_close_x),
                 "",
                 tint = defaults.colors.closeIconColor,
-                modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xtiny).padding(start = defaults.spacing.closeIconPadding),
+                modifier = Modifier.size(
+                    MercadoPagoAndesTheme.spacing.paddings.xtiny,
+                ).padding(start = defaults.spacing.closeIconPadding),
             )
         }
     }
