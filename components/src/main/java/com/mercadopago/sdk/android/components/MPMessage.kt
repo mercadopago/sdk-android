@@ -82,7 +82,7 @@ private fun getMessageDefaults(
 
     val backgroundColor = feedbackColors.fillQuiet
     val textColor = MercadoPagoAndesTheme.color.text.primary
-    val closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idleAccent
+    val closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idle
 
     return MessageDefaults(
         colors = MessageColorDefaults(
@@ -154,7 +154,7 @@ fun MPMessage(
                 painterResource(R.drawable.mp_icon_close_x),
                 "",
                 tint = defaults.colors.closeIconColor,
-                modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xtiny),
+                modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xtiny).padding(start = defaults.spacing.closeIconPadding),
             )
         }
     }
