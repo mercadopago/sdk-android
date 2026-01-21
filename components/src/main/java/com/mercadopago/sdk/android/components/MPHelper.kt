@@ -89,7 +89,7 @@ private fun getHelperDefaults(
     }
 
     val textColorLoud = feedbackColors.textLoud
-    val textColor = MercadoPagoAndesTheme.color.text.primary
+    val textColor = MercadoPagoAndesTheme.color.text.secondary
 
     return HelperDefaults(
         colors = HelperColorDefaults(
@@ -125,11 +125,6 @@ fun MPHelper(
 ) {
     val defaults = getHelperDefaults(type = type)
     Row(
-        modifier = modifier
-            .padding(
-                horizontal = defaults.spacing.horizontalPadding,
-                vertical = defaults.spacing.verticalPadding,
-            ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val badgeType = when (type) {

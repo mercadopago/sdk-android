@@ -48,8 +48,8 @@ fun MPCardNumberTextField(
     showPlaceHolder: Boolean = false,
     error: Boolean = false,
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
@@ -65,7 +65,7 @@ fun MPCardNumberTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
-            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             enabled = enabled,
             visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
@@ -79,7 +79,7 @@ fun MPCardNumberTextField(
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.default.medium,
-                                color = defaults.colors.textPrimary,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

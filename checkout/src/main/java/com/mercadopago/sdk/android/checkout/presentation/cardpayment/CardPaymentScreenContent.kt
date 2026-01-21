@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -106,9 +107,9 @@ internal fun CardPaymentScreenContent(
                     .fillMaxWidth()
                     .padding(bottom = 120.dp)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp),
             ) {
-                Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                 MPCardNumberTextField(
                     modifier = Modifier.fillMaxWidth(),
                     state = cardNumberPCIState,
@@ -121,8 +122,9 @@ internal fun CardPaymentScreenContent(
                     placeHolder = viewState.cardNumberState.placeHolder,
                     onEvent = onCardNumberEvent,
                 )
+
                 if (viewState.cardHolderState.show) {
-                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                    Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                     MPSimpleTextField(
                         modifier = Modifier.fillMaxWidth(),
                         state = cardHolderPCIState,
@@ -136,37 +138,36 @@ internal fun CardPaymentScreenContent(
                         onEvent = onCardHolderEvent,
                     )
                 }
-                Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
-                Row {
-                    MPExpirationDateTextField(
-                        modifier = Modifier.weight(1f),
-                        state = expirationDatePCIState,
-                        isFocused = viewState.expirationDateState.isFocused,
-                        showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
-                        error = viewState.expirationDateState.error.first,
-                        enabled = viewState.expirationDateState.enabled,
-                        label = viewState.expirationDateState.label,
-                        helper = viewState.expirationDateState.helper,
-                        placeHolder = viewState.expirationDateState.placeHolder,
-                        onEvent = onExpirationDateEvent,
-                    )
-                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.micro))
-                    MPSecurityCodeTextField(
-                        modifier = Modifier.weight(1f),
-                        state = securityCodePCIState,
-                        securityCodeSize = viewState.secureCodeState.secureCodeLength,
-                        isFocused = viewState.secureCodeState.isFocused,
-                        showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                        error = viewState.secureCodeState.error.first,
-                        enabled = viewState.secureCodeState.enabled,
-                        label = viewState.secureCodeState.label,
-                        helper = viewState.secureCodeState.helper,
-                        placeHolder = viewState.secureCodeState.placeHolder,
-                        onEvent = onSecurityCodeEvent,
-                    )
-                }
+
+                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                MPExpirationDateTextField(
+                    state = expirationDatePCIState,
+                    isFocused = viewState.expirationDateState.isFocused,
+                    showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
+                    error = viewState.expirationDateState.error.first,
+                    enabled = viewState.expirationDateState.enabled,
+                    label = viewState.expirationDateState.label,
+                    helper = viewState.expirationDateState.helper,
+                    placeHolder = viewState.expirationDateState.placeHolder,
+                    onEvent = onExpirationDateEvent,
+                )
+
+                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                MPSecurityCodeTextField(
+                    state = securityCodePCIState,
+                    securityCodeSize = viewState.secureCodeState.secureCodeLength,
+                    isFocused = viewState.secureCodeState.isFocused,
+                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                    error = viewState.secureCodeState.error.first,
+                    enabled = viewState.secureCodeState.enabled,
+                    label = viewState.secureCodeState.label,
+                    helper = viewState.secureCodeState.helper,
+                    placeHolder = viewState.secureCodeState.placeHolder,
+                    onEvent = onSecurityCodeEvent,
+                )
+
                 if (viewState.identificationTypeState.show) {
-                    Spacer(Modifier.width(MercadoPagoAndesTheme.spacing.gap.tiny))
+                    Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                     viewState.identificationTypeState.identificationTypes?.let { types ->
                         MPIdentificationTextField(
                             modifier = Modifier.fillMaxWidth(),
