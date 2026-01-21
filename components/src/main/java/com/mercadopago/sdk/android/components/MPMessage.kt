@@ -63,14 +63,14 @@ enum class MPMessageType {
  */
 enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
     /**
-     * Normal: Message is displayed for 3 seconds
+     * Short: Message is displayed for 3 seconds
      */
-    Normal(DURATION_SHORT_MILLIS),
+    Short(DURATION_SHORT_MILLIS),
 
     /**
-     * Medium: Message is displayed for 6 seconds
+     * Normal: Message is displayed for 6 seconds
      */
-    Medium(DURATION_MEDIUM_MILLIS),
+    Normal(DURATION_MEDIUM_MILLIS),
 
     /**
      * Long: Message is displayed for 10 seconds
@@ -148,7 +148,7 @@ fun MPMessage(
     text: String,
     modifier: Modifier = Modifier,
     type: MPMessageType = MPMessageType.Informative,
-    duration: MPMessageDuration = MPMessageDuration.Normal,
+    duration: MPMessageDuration = MPMessageDuration.Short,
     onDismiss: () -> Unit = {},
 ) {
     val defaults = getMessageDefaults(type = type)
