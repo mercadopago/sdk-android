@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetCardIssuersParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetInstallmentParams
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GetPaymentMethodsParams
-import com.mercadopago.sdk.android.coremethods.domain.model.params.SaveThreeDSDeviceDataParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -45,11 +44,5 @@ internal class CoreMethodsRepositoryImpl(
         params: GetPaymentMethodsParams,
     ): Result<List<PaymentMethod>, ResultError> {
         return dataSource.getPaymentMethods(params.toRequest())
-    }
-
-    override suspend fun saveThreeDSDeviceData(
-        params: SaveThreeDSDeviceDataParams,
-    ): Result<Unit, ResultError> {
-        return dataSource.saveThreeDSDeviceData(params.toRequest())
     }
 }

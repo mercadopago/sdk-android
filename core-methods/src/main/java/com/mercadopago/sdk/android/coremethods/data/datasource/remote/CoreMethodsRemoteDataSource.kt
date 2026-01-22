@@ -4,7 +4,6 @@ import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRe
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.PaymentMethodsRequest
-import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -31,8 +30,4 @@ internal interface CoreMethodsRemoteDataSource {
     suspend fun getPaymentMethods(
         request: PaymentMethodsRequest,
     ): Result<List<PaymentMethod>, ResultError>
-
-    suspend fun saveThreeDSDeviceData(
-        request: ThreeDSDeviceDataRequest,
-    ): Result<Unit, ResultError>
 }

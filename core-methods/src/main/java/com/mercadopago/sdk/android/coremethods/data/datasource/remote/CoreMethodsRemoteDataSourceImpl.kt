@@ -2,14 +2,12 @@ package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
-import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toUnitResponse
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.mapper.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardIssuersRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.CardTokenBodyRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.InstallmentsRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.PaymentMethodsRequest
-import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.CoreMethodsService
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
@@ -61,11 +59,5 @@ internal class CoreMethodsRemoteDataSourceImpl(
         return service.getPaymentMethods(
             bin = request.bin,
         ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
-    }
-
-    override suspend fun saveThreeDSDeviceData(
-        request: ThreeDSDeviceDataRequest,
-    ): Result<Unit, ResultError> {
-        return service.saveThreeDSDeviceData(request).toUnitResponse()
     }
 }
