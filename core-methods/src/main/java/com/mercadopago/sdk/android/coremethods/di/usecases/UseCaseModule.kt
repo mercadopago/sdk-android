@@ -10,10 +10,12 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseC
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetAuthenticationRequestParametersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.UpdateThreeDSChallengeStatusUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -32,5 +34,7 @@ internal fun provideUseCaseModule(): Module =
         factory { StartChallengeUseCase(get(), get(), get()) }
         factory { CloseTransactionUseCase(get()) }
         factory { CreateTransactionUseCase(get()) }
+        factory { GetAuthenticationRequestParametersUseCase(get()) }
         factory { SaveThreeDSDeviceDataUseCase(get()) }
+        factory { SaveThreeDSDeviceDataOrchestratorUseCase(get(), get(), get(), get()) }
     }
