@@ -15,8 +15,7 @@ internal data class EphemeralPublicKey(
     val y: String,
 )
 
-internal fun String.EphemeralfromJson(
-): EphemeralPublicKey? {
+internal fun String.ephemeralfromJson(): EphemeralPublicKey? {
     return runCatching {
         val parsed = Gson().fromJson(this, EphemeralPublicKey::class.java)
         EphemeralPublicKey(
@@ -29,7 +28,7 @@ internal fun String.EphemeralfromJson(
 }
 
 internal fun String.toEphemeralPublicKey(): Result<EphemeralPublicKey, ResultError> {
-    val ephemeralPublicKey = this.EphemeralfromJson()
+    val ephemeralPublicKey = this.ephemeralfromJson()
         ?: return Result.Error(
             ResultError.Validation(
                 message = "Failed to parse ephemeral public key from 3DS SDK.",

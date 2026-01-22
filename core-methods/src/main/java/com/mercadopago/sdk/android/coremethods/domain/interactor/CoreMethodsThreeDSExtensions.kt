@@ -11,8 +11,8 @@ import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWar
 import com.mercadopago.sdk.android.coremethods.domain.usecase.CloseTransactionUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.CreateTransactionUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetAuthenticationRequestParametersUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
