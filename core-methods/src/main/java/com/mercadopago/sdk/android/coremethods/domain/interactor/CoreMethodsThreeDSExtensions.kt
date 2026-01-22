@@ -14,10 +14,6 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetAuthenticationR
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.CloseTransactionUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.CreateTransactionUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 /**
@@ -177,7 +173,6 @@ fun CoreMethods.close(): Result<String, ResultError> = koin.get<CloseTransaction
  */
 fun CoreMethods.createTransaction(
     cardToken: CardToken,
-): Result<String, ResultError> = koin.get<CreateTransactionUseCase>().invoke(cardToken)
 ): Result<String, ResultError> = koin.get<CreateTransactionUseCase>().invoke(cardToken)
 
 /**
