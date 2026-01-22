@@ -1,0 +1,41 @@
+package com.mercadopago.sdk.android.coremethods.domain.usecase
+
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProviderManager
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorCodes
+import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
+
+internal class GetWarningsUseCase(
+    private val providerManager: ThreeDSProviderManager,
+) {
+    operator fun invoke(): Result<List<ThreeDSWarning>, ResultError> =
+        if (!providerManager.hasProvider()) {
+            Result.Error(
+                ResultError.Validation(
+                    message = ThreeDSErrorMessages.PROVIDER_NOT_AVAILABLE,
+                ),
+            )
+        } else {
+            runCatching { providerManager.getProvider()?.getWarnings() }
+                .fold(
+                    onSuccess = { warnings ->
+                        warnings?.let { Result.Success(it) } ?: Result.Error(
+                            ResultError.Request(
+                                code = ThreeDSErrorCodes.EMPTY,
+                                message = ThreeDSErrorMessages.FAILED_TO_GET_WARNINGS,
+                            ),
+                        )
+                    },
+                    onFailure = { throwable ->
+                        Result.Error(
+                            ResultError.Request(
+                                code = ThreeDSErrorCodes.EMPTY,
+                                message = "${ThreeDSErrorMessages.ERROR_GETTING_WARNINGS}${throwable.message}",
+                            ),
+                        )
+                    },
+                )
+        }
+}
