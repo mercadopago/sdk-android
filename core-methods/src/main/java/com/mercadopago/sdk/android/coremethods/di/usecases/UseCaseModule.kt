@@ -12,6 +12,9 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationT
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.UpdateThreeDSChallengeStatusUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
@@ -29,6 +32,11 @@ internal fun provideUseCaseModule(): Module =
         factory { GetPaymentMethodsUseCase(get()) }
         factory { GenerateCardIdTokenUseCase(get()) }
         factory { AuthenticateThreeDSChallengeUseCase(get()) }
+        factory { UpdateThreeDSChallengeStatusUseCase(get()) }
+        factory { GetWarningsUseCase(get()) }
+        factory { StartChallengeUseCase(get(), get(), get()) }
+        factory { CloseTransactionUseCase(get()) }
+        factory { CreateTransactionUseCase(get()) }
         factory { UpdateThreeDSChallengeStatusUseCase(get()) }
         factory { GetWarningsUseCase(get()) }
         factory { StartChallengeUseCase(get(), get(), get()) }
