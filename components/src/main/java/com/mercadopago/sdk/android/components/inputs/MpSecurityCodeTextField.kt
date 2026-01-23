@@ -58,6 +58,7 @@ fun MPSecurityCodeTextField(
     error: String = "",
     label: String = "",
     helper: String = "",
+    onClickTooltip: () -> Unit,
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
@@ -67,8 +68,11 @@ fun MPSecurityCodeTextField(
         label = label,
         helper = helper,
         error = error,
+        onClickTooltip = onClickTooltip,
+        showTooltipIcon = true,
         defaults = defaults,
     ) {
+
         SecurityCodeTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
@@ -94,13 +98,6 @@ fun MPSecurityCodeTextField(
                         }
                         innerTextField()
                     }
-                    Spacer(Modifier.width(4.dp))
-                    Icon(
-                        painter = painterResource(R.drawable.ic_tooltip),
-                        contentDescription = null,
-                        modifier = Modifier.size(MercadoPagoAndesTheme.radius.xlarge),
-                        tint = MercadoPagoAndesTheme.color.icon.accent,
-                    )
                 }
             },
         )
@@ -119,6 +116,7 @@ private fun MPSecurityCodeTextFieldPreview() {
         ) {
             MPSecurityCodeTextField(
                 state = securityCodeState,
+                onClickTooltip = {}
             ) {
             }
         }

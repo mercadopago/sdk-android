@@ -163,6 +163,7 @@ internal fun CardPaymentScreenContent(
                     label = viewState.secureCodeState.label,
                     helper = viewState.secureCodeState.helper,
                     placeHolder = viewState.secureCodeState.placeHolder,
+                    onClickTooltip = {},
                     onEvent = onSecurityCodeEvent,
                 )
 

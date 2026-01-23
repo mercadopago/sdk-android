@@ -53,7 +53,7 @@ internal class CardPaymentViewModel(
             if (viewState.value.cardNumberState.length != viewState.value.cardNumberState.maxLength) {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
-                        error = Pair(true, "Please, fill the card number"),
+                        error = "Please, fill the card number",
                     ),
                 )
                 return@launch
@@ -74,6 +74,7 @@ internal class CardPaymentViewModel(
                 is Result.Success -> {
                     onDialogStateChanged(CardPaymentDialogState.CardToken(token = result.data.token))
                 }
+
                 is Result.Error -> {
                     handleResultError(result.error, "Generate Token Error")
                 }
@@ -96,6 +97,7 @@ internal class CardPaymentViewModel(
                         ),
                     )
                 }
+
                 is Result.Error -> Unit
             }
         }
@@ -113,6 +115,7 @@ internal class CardPaymentViewModel(
                         ),
                     )
                 }
+
                 is Result.Error -> Unit
             }
         }
@@ -133,6 +136,7 @@ internal class CardPaymentViewModel(
                         ),
                     )
                 }
+
                 is Result.Error -> Unit
             }
         }
@@ -158,6 +162,7 @@ internal class CardPaymentViewModel(
                         paymentMethod?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH,
                     )
                 }
+
                 is Result.Error -> Unit
             }
         }
@@ -174,14 +179,16 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         valid = event.isValid,
-                        error = Pair(!event.isValid, "Invalid expiration date"),
+                        error = "Invalid expiration date",
                     ),
                 )
             }
+
             is ExpirationDateTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
@@ -189,6 +196,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is ExpirationDateTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
@@ -207,14 +215,13 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         isFocused = event.isFocused,
-                        error = Pair(
-                            !_viewState.value.secureCodeState.filled &&
-                                _viewState.value.secureCodeState.isFocused,
-                            "Please, fill the security code",
-                        ),
+                        error = if (!_viewState.value.secureCodeState.filled &&
+                            _viewState.value.secureCodeState.isFocused
+                        ) "Please, fill the security code" else ""
                     ),
                 )
             }
+
             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
@@ -222,11 +229,12 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is SecurityCodeTextFieldEvent.OnInputFilled -> {
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         filled = event.isFilled,
-                        error = Pair(false, ""),
+                        error = "Please, fill the security code",
                     ),
                 )
             }
@@ -244,6 +252,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is CardNumberTextFieldEvent.OnLengthChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
@@ -251,6 +260,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
@@ -258,14 +268,16 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is CardNumberTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         isValid = event.isValid,
-                        error = Pair(!event.isValid, "Invalid card number"),
+                        error = "Invalid card number",
                     ),
                 )
             }
+
             is CardNumberTextFieldEvent.OnBinChanged -> {
                 handleBinChanged(event.cardBin)
             }
@@ -323,6 +335,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is SimpleTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     cardHolderState = _viewState.value.cardHolderState.copy(
@@ -344,6 +357,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is IdentificationTextFieldEvent.OnFocusChanged -> {
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
@@ -351,6 +365,7 @@ internal class CardPaymentViewModel(
                     ),
                 )
             }
+
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(

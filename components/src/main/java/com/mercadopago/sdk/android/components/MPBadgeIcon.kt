@@ -48,8 +48,7 @@ fun MPBadgeIcon(
             .background(
                 color = color,
                 shape = CircleShape,
-            )
-            .padding(3.dp),
+            ),
         tint = MercadoPagoAndesTheme.color.text.inverse,
     )
 }

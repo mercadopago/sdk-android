@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.components.inputs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -7,15 +8,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.components.MPHelper
 import com.mercadopago.sdk.android.components.MPHelperHierarchy
 import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
+import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 
@@ -48,27 +52,53 @@ internal fun MPInputBody(
     label: String = "",
     helper: String = "",
     error: String = "",
+    showTooltipIcon: Boolean = false,
+    onClickTooltip: () -> Unit = {},
     showHelperIcon: Boolean = false,
     defaults: MPInputDefaults,
     content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier) {
-        if(label.isNotBlank()) {
-            MPText(
-                text = label,
-                modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = defaults.colors.textPrimary,
-            )
+        if (label.isNotBlank()) {
+            Row {
+                MPText(
+                    text = label,
+                    modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
+                    style = MercadoPagoAndesTheme.typography.body.default.medium,
+                    color = defaults.colors.textPrimary,
+                )
+                if (showTooltipIcon) {
+                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+                    Icon(
+                        painter = painterResource(R.drawable.ic_tooltip),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(MercadoPagoAndesTheme.radius.xlarge)
+                            .clickable { onClickTooltip.invoke() },
+                        tint = MercadoPagoAndesTheme.color.icon.accent,
+                    )
+                }
+            }
         }
         content()
-        if(helper.isNotEmpty()) {
-            Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
-            MPInputMessage(
-                helper,
-                state,
-                showHelperIcon,
-            )
+        when {
+            error.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = error,
+                    state = InputLabelState.Error,
+                    showHelperIcon = true,
+                )
+            }
+
+            helper.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = helper,
+                    state = state,
+                    showHelperIcon = showHelperIcon,
+                )
+            }
         }
     }
 }
@@ -77,7 +107,7 @@ internal fun MPInputBody(
 internal fun MPInputMessage(
     text: String,
     state: InputLabelState,
-    showHelperIcon: Boolean,
+    showHelperIcon: Boolean = true,
 ) {
     when (state) {
         InputLabelState.Idle -> {
