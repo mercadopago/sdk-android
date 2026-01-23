@@ -25,7 +25,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import kotlinx.coroutines.delay
 
 private const val MESSAGE_GROUP = "Message"
-
 private const val DURATION_SHORT_MILLIS = 3000L
 private const val DURATION_MEDIUM_MILLIS = 6000L
 private const val DURATION_LONG_MILLIS = 10000L
@@ -81,56 +80,6 @@ enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
      * Indefinite: Message does not auto-dismiss and remains visible until manually closed
      */
     Indefinite(null),
-}
-
-internal data class MessageColorDefaults(
-    val backgroundColor: Color,
-    val textColor: Color,
-    val closeIconColor: Color,
-)
-
-internal data class MessageSpacingDefaults(
-    val horizontalPadding: androidx.compose.ui.unit.Dp,
-    val verticalPadding: androidx.compose.ui.unit.Dp,
-    val iconTextSpacing: androidx.compose.ui.unit.Dp,
-    val closeIconSize: androidx.compose.ui.unit.Dp,
-    val closeIconPadding: androidx.compose.ui.unit.Dp,
-)
-
-internal data class MessageDefaults(
-    val colors: MessageColorDefaults,
-    val spacing: MessageSpacingDefaults,
-)
-
-@Composable
-private fun getMessageDefaults(
-    type: MPMessageType,
-): MessageDefaults {
-    val feedbackColors = when (type) {
-        MPMessageType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
-        MPMessageType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
-        MPMessageType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
-        MPMessageType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
-    }
-
-    val backgroundColor = feedbackColors.fillQuiet
-    val textColor = MercadoPagoAndesTheme.color.text.primary
-    val closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idle
-
-    return MessageDefaults(
-        colors = MessageColorDefaults(
-            backgroundColor = backgroundColor,
-            textColor = textColor,
-            closeIconColor = closeIconColor,
-        ),
-        spacing = MessageSpacingDefaults(
-            horizontalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-            verticalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-            iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.micro,
-            closeIconSize = MercadoPagoAndesTheme.spacing.paddings.xsmall,
-            closeIconPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
-        ),
-    )
 }
 
 /**
@@ -199,74 +148,6 @@ fun MPMessage(
                 modifier = Modifier.size(
                     MercadoPagoAndesTheme.spacing.paddings.xtiny,
                 ).padding(start = defaults.spacing.closeIconPadding),
-            )
-        }
-    }
-}
-
-@Preview(name = "Message Informative", group = MESSAGE_GROUP)
-@Composable
-internal fun MessageInformativePreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            MPMessage(
-                text = "This can be a single or multiline text",
-                type = MPMessageType.Informative,
-            )
-        }
-    }
-}
-
-@Preview(name = "Message Positive", group = MESSAGE_GROUP)
-@Composable
-internal fun MessagePositivePreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            MPMessage(
-                text = "This can be a single or multiline text",
-                type = MPMessageType.Positive,
-            )
-        }
-    }
-}
-
-@Preview(name = "Message Caution", group = MESSAGE_GROUP)
-@Composable
-internal fun MessageCautionPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            MPMessage(
-                text = "This can be a single or multiline text",
-                type = MPMessageType.Caution,
-            )
-        }
-    }
-}
-
-@Preview(name = "Message Negative", group = MESSAGE_GROUP)
-@Composable
-internal fun MessageNegativePreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            MPMessage(
-                text = "This can be a single or multiline text",
-                type = MPMessageType.Negative,
             )
         }
     }
