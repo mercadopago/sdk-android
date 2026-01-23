@@ -65,7 +65,7 @@ fun MPIdentificationTextField(
     selectedIdentificationType: IdentificationType?,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
+    error: String = "",
     enabled: Boolean = true,
     label: String = "",
     helper: String = "",
@@ -77,6 +77,7 @@ fun MPIdentificationTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         IdentificationTextField(
@@ -90,7 +91,7 @@ fun MPIdentificationTextField(
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     MPIdentificationTypeSelector(

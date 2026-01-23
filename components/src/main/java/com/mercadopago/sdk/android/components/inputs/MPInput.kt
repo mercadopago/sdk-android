@@ -47,6 +47,7 @@ internal fun MPInputBody(
     state: InputLabelState = InputLabelState.Idle,
     label: String = "",
     helper: String = "",
+    error: String = "",
     showHelperIcon: Boolean = false,
     defaults: MPInputDefaults,
     content: @Composable () -> Unit,

@@ -46,8 +46,8 @@ fun MPCardNumberTextField(
     state: PCIFieldState,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
+    error: String = "",
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
@@ -59,6 +59,7 @@ fun MPCardNumberTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         CardNumberTextField(
@@ -71,7 +72,7 @@ fun MPCardNumberTextField(
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box {

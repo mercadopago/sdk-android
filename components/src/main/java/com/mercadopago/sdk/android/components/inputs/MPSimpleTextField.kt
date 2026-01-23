@@ -44,8 +44,8 @@ fun MPSimpleTextField(
     state: PCIFieldState,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
+    error: String = "",
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
@@ -56,6 +56,7 @@ fun MPSimpleTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         SimpleTextField(
@@ -68,7 +69,7 @@ fun MPSimpleTextField(
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box {

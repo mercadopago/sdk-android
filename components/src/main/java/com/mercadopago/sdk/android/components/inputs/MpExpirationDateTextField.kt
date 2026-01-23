@@ -45,8 +45,8 @@ fun MPExpirationDateTextField(
     dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
+    error: String = "",
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
@@ -56,6 +56,7 @@ fun MPExpirationDateTextField(
     MPInputBody(
         modifier = modifier,
         label = label,
+        error = error,
         helper = helper,
         defaults = defaults,
     ) {
@@ -69,7 +70,7 @@ fun MPExpirationDateTextField(
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box {

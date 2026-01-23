@@ -54,8 +54,8 @@ fun MPSecurityCodeTextField(
     securityCodeSize: Int = 3,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
+    error: String = "",
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
@@ -66,6 +66,7 @@ fun MPSecurityCodeTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         SecurityCodeTextField(
@@ -79,7 +80,7 @@ fun MPSecurityCodeTextField(
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
