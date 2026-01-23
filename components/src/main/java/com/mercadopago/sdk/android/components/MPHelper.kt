@@ -160,7 +160,7 @@ fun MPHelper(
 
 @Preview(name = "Helper Informative Quiet", group = HELPER_GROUP)
 @Composable
-internal fun MessageInformativeQuietPreview() {
+internal fun HelperInformativeQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -178,7 +178,7 @@ internal fun MessageInformativeQuietPreview() {
 
 @Preview(name = "Helper Informative Loud", group = HELPER_GROUP)
 @Composable
-internal fun MessageInformativeLoudPreview() {
+internal fun HelperInformativeLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -196,7 +196,7 @@ internal fun MessageInformativeLoudPreview() {
 
 @Preview(name = "Helper Positive Quiet", group = HELPER_GROUP)
 @Composable
-internal fun MessagePositiveQuietPreview() {
+internal fun HelperPositiveQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -214,7 +214,7 @@ internal fun MessagePositiveQuietPreview() {
 
 @Preview(name = "Helper Positive Loud", group = HELPER_GROUP)
 @Composable
-internal fun MessagePositiveLoudPreview() {
+internal fun HelperPositiveLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -232,7 +232,7 @@ internal fun MessagePositiveLoudPreview() {
 
 @Preview(name = "Helper Caution Quiet", group = HELPER_GROUP)
 @Composable
-internal fun MessageCautionQuietPreview() {
+internal fun HelperCautionQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -250,7 +250,7 @@ internal fun MessageCautionQuietPreview() {
 
 @Preview(name = "Helper Caution Loud", group = HELPER_GROUP)
 @Composable
-internal fun MessageCautionLoudPreview() {
+internal fun HelperCautionLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -268,7 +268,7 @@ internal fun MessageCautionLoudPreview() {
 
 @Preview(name = "Helper Negative Quiet", group = HELPER_GROUP)
 @Composable
-internal fun MessageNegativeQuietPreview() {
+internal fun HelperNegativeQuietPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -286,7 +286,7 @@ internal fun MessageNegativeQuietPreview() {
 
 @Preview(name = "Helper Negative Loud", group = HELPER_GROUP)
 @Composable
-internal fun MessageNegativeLoudPreview() {
+internal fun HelperNegativeLoudPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
@@ -304,7 +304,7 @@ internal fun MessageNegativeLoudPreview() {
 
 @Preview(name = "Helper All Variations", group = HELPER_GROUP)
 @Composable
-internal fun MessageAllVariationsPreview() {
+internal fun HelperAllVariationsPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
         Column(
             modifier = Modifier
