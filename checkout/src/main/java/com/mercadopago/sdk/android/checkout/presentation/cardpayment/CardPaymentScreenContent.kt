@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,7 @@ import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
+import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -77,6 +79,7 @@ internal fun CardPaymentScreen(
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
         onBackClick = onBackClick,
+        onTooltipClick = viewModel::onTooltipClick
     )
 }
 
@@ -96,12 +99,19 @@ internal fun CardPaymentScreenContent(
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
     onFooterButtonClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
+    onTooltipClick: () -> Unit = {},
 ) {
     MPHeader(
         title = "Preencha os dados do\ncartão",
         onBackClick = onBackClick,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            if (viewState.showTooltip) {
+                Column {
+                    Spacer(Modifier.size(350.dp))
+                    MPText("teste")
+                }
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -163,7 +173,7 @@ internal fun CardPaymentScreenContent(
                     label = viewState.secureCodeState.label,
                     helper = viewState.secureCodeState.helper,
                     placeHolder = viewState.secureCodeState.placeHolder,
-                    onClickTooltip = {},
+                    onClickTooltip = onTooltipClick,
                     onEvent = onSecurityCodeEvent,
                 )
 

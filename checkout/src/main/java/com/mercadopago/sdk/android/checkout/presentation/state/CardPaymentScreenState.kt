@@ -19,6 +19,7 @@ internal data class CardPaymentScreenState(
     val cardIssuers: List<CardIssuer> = emptyList(),
     val dialogState: CardPaymentDialogState = CardPaymentDialogState.Hidden,
     val isLoading: Boolean = false,
+    val showTooltip: Boolean = false,
 )
 
 internal data class SecurityCodeState(
@@ -26,9 +27,9 @@ internal data class SecurityCodeState(
     val filled: Boolean = false,
     val enabled: Boolean = true,
     val helper: String = "",
-    val placeHolder: String = "123",
+    val placeHolder: String = "Ex: 123",
     val showPlaceHolder: Boolean = true,
-    val label: String = "Security code",
+    val label: String = "Código de Segurança",
     val length: Int = 0,
     val error: String = "",
     val secureCodeLength: Int = 3,

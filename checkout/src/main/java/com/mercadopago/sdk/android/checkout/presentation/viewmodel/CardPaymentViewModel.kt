@@ -324,6 +324,13 @@ internal class CardPaymentViewModel(
         )
     }
 
+    fun onTooltipClick(
+    ) {
+        _viewState.value = _viewState.value.copy(
+            showTooltip = !_viewState.value.showTooltip
+        )
+    }
+
     fun onCardHolderEvent(
         event: SimpleTextFieldEvent,
     ) {
