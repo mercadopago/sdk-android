@@ -7,6 +7,11 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentDialog
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
@@ -50,9 +55,19 @@ internal class CardPaymentViewModel(
         securityCodeState: PCIFieldState,
     ) {
         viewModelScope.launch {
-            if (viewState.value.cardNumberState.length != viewState.value.cardNumberState.maxLength) {
+            handleInputErrors()
+            val currentState = _viewState.value
+            val hasErrors = currentState.cardNumberState.error.isNotEmpty() ||
+                currentState.expirationDateState.error.isNotEmpty() ||
+                currentState.secureCodeState.error.isNotEmpty() ||
+                currentState.cardHolderState.error.isNotEmpty() ||
+                currentState.identificationTypeState.error.isNotEmpty()
+            if (hasErrors) {
+                return@launch
+            }
+            if (currentState.cardNumberState.length != currentState.cardNumberState.maxLength) {
                 _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
+                    cardNumberState = currentState.cardNumberState.copy(
                         error = "Please, fill the card number",
                     ),
                 )
@@ -195,6 +210,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
+                if (!event.isFocused) {
+                    handleInputErrors()
+                }
             }
 
             is ExpirationDateTextFieldEvent.OnLengthChanged -> {
@@ -215,11 +233,11 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     secureCodeState = _viewState.value.secureCodeState.copy(
                         isFocused = event.isFocused,
-                        error = if (!_viewState.value.secureCodeState.filled &&
-                            _viewState.value.secureCodeState.isFocused
-                        ) "Please, fill the security code" else ""
                     ),
                 )
+                if (!event.isFocused) {
+                    handleInputErrors()
+                }
             }
 
             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
@@ -251,6 +269,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
+                if (!event.isFocused) {
+                    handleInputErrors()
+                }
             }
 
             is CardNumberTextFieldEvent.OnLengthChanged -> {
@@ -356,6 +377,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
+                if (!event.isFocused) {
+                    handleInputErrors()
+                }
             }
         }
     }
@@ -378,6 +402,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
+                if (!event.isFocused) {
+                    handleInputErrors()
+                }
             }
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
@@ -416,9 +443,20 @@ internal class CardPaymentViewModel(
         )
     }
 
-    private fun handleInputErrors (){
-        //TODO - verificar preenchimento
-
+    private fun handleInputErrors() {
+        val currentState = _viewState.value
+        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
+        val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
+        val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
+        val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
+        val identificationError = IdentificationTypeVerifier.verify(currentState.identificationTypeState)
+        _viewState.value = currentState.copy(
+            cardNumberState = currentState.cardNumberState.copy(error = cardNumberError),
+            expirationDateState = currentState.expirationDateState.copy(error = expirationDateError),
+            secureCodeState = currentState.secureCodeState.copy(error = securityCodeError),
+            cardHolderState = currentState.cardHolderState.copy(error = cardHolderError),
+            identificationTypeState = currentState.identificationTypeState.copy(error = identificationError),
+        )
     }
 
     private fun handleResultError(
