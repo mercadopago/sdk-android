@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,9 +41,9 @@ private const val POPOVER_MAX_WIDTH_FRACTION: Float = 0.9f
  */
 @Composable
 fun MPPopover(
-    title: String,
-    description: String,
     modifier: Modifier = Modifier,
+    title: String = "",
+    description: String = "",
     onDismiss: () -> Unit = {},
 ) {
     val defaults = getPopoverDefaults()
@@ -56,67 +57,53 @@ fun MPPopover(
     Surface(
         modifier = modifier
             .defaultMinSize(minWidth = 240.dp, minHeight = 86.dp)
-            .fillMaxWidth(POPOVER_MAX_WIDTH_FRACTION)
             .padding(defaults.spacing.surfacePadding),
         color = defaults.colors.backgroundColor,
         shape = bubbleShape,
+        shadowElevation = 5.dp
     ) {
-        Column(
-            modifier = Modifier
-                .background(defaults.colors.backgroundColor)
-                .padding(
-                    horizontal = defaults.spacing.contentPaddingHorizontal,
-                    vertical = defaults.spacing.contentPaddingVertical,
-                ),
-            verticalArrangement = Arrangement.spacedBy(defaults.spacing.contentGap),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
         ) {
-            PopoverHeader(
-                title = title,
-                onDismiss = onDismiss,
-                closeIconColor = defaults.colors.closeIconColor,
-                iconSize = defaults.spacing.iconSize,
-                iconPadding = defaults.spacing.iconPadding,
-            )
-            MPText(
-                text = description,
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.primary,
-            )
-        }
-    }
-}
+            Column(
+                modifier = Modifier
+                    .background(defaults.colors.backgroundColor)
+                    .weight(1f)
+                    .padding(
+                        horizontal = defaults.spacing.contentPaddingHorizontal,
+                        vertical = defaults.spacing.contentPaddingVertical,
+                    ),
+                verticalArrangement = Arrangement.spacedBy(defaults.spacing.contentGap),
+            ) {
+                if (title.isNotBlank()) {
+                    MPText(
+                        text = title,
+                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
+                        color = MercadoPagoAndesTheme.color.text.primary,
+                    )
+                }
+                if (description.isNotBlank()) {
+                    MPText(
+                        text = description,
+                        style = MercadoPagoAndesTheme.typography.body.default.medium,
+                        color = MercadoPagoAndesTheme.color.text.primary,
+                    )
+                }
+            }
 
-@Composable
-private fun PopoverHeader(
-    title: String,
-    onDismiss: () -> Unit,
-    closeIconColor: Color,
-    iconSize: Dp,
-    iconPadding: Dp,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        MPText(
-            text = title,
-            style = MercadoPagoAndesTheme.typography.heading.default.medium,
-            color = MercadoPagoAndesTheme.color.text.primary,
-            modifier = Modifier.weight(1f),
-        )
-        Box(
-            modifier = Modifier
-                .size(iconSize)
-                .padding(iconPadding)
-                .clickable(onClick = onDismiss),
-            contentAlignment = Alignment.Center,
-        ) {
             Icon(
                 painterResource(R.drawable.mp_icon_close_x),
-                "",
-                tint = closeIconColor,
+                "Close ",
+                tint = defaults.colors.closeIconColor,
+                modifier = Modifier
+                    .size(23.dp)
+                    .padding(top = 10.dp)
+                    .clickable { onDismiss() }
             )
+            Spacer(Modifier.size(10.dp))
         }
+
     }
 }
 
@@ -152,7 +139,7 @@ private fun getPopoverDefaults(): PopoverDefaults {
             backgroundColor = MercadoPagoAndesTheme.color.surface.primaryIdle,
             titleTextColor = MercadoPagoAndesTheme.color.text.primary,
             descriptionTextColor = MercadoPagoAndesTheme.color.text.secondary,
-            closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idleAccent,
+            closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idle,
         ),
         spacing = PopoverSpacingDefaults(
             cornerRadius = MercadoPagoAndesTheme.radius.medium,

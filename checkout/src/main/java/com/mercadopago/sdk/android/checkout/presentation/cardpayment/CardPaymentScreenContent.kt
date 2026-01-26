@@ -32,6 +32,9 @@ import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
+import com.mercadopago.sdk.android.components.MPMessage
+import com.mercadopago.sdk.android.components.MPMessageType
+import com.mercadopago.sdk.android.components.MPPopover
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
@@ -79,7 +82,8 @@ internal fun CardPaymentScreen(
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
         onBackClick = onBackClick,
-        onTooltipClick = viewModel::onTooltipClick
+        onTooltipClick = viewModel::onTooltipClick,
+        onMessageClick = viewModel::onMessageClick,
     )
 }
 
@@ -100,18 +104,14 @@ internal fun CardPaymentScreenContent(
     onFooterButtonClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onTooltipClick: () -> Unit = {},
+    onMessageClick: () -> Unit = {},
+
 ) {
     MPHeader(
         title = "Preencha os dados do\ncartão",
         onBackClick = onBackClick,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (viewState.showTooltip) {
-                Column {
-                    Spacer(Modifier.size(350.dp))
-                    MPText("teste")
-                }
-            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -197,6 +197,32 @@ internal fun CardPaymentScreenContent(
                     }
                 }
             }
+            if (viewState.showTooltip) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(Modifier.size(260.dp))
+                    MPPopover(description = "É um número de 3 dígitos que está no verso do seu cartão.") {
+                        onTooltipClick()
+                    }
+                }
+            }
+
+            if (viewState.showMessage) {
+                Column(
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(10.dp)
+                ) {
+                    MPMessage(
+                        text = "Ocorreu um erro. Por favor, tente novamente.",
+                        type = MPMessageType.Negative
+                    ){
+                        onMessageClick()
+                    }
+                    Spacer(Modifier.size(140.dp))
+                }
+            }
+
             MPFixedFooter(
                 title = viewState.fixedFooterState.title,
                 amount = MPAmountData(
@@ -230,7 +256,7 @@ private fun CardPaymentScreenContentPreview() {
                     placeHolder = "MM/AA",
                 ),
                 secureCodeState = SecurityCodeState(
-                    label = "CVV",
+                    label = "Código de Segurança",
                     placeHolder = "123",
                     secureCodeLength = 3,
                 ),

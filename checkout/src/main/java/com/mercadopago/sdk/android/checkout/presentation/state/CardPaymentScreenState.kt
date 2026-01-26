@@ -20,6 +20,7 @@ internal data class CardPaymentScreenState(
     val dialogState: CardPaymentDialogState = CardPaymentDialogState.Hidden,
     val isLoading: Boolean = false,
     val showTooltip: Boolean = false,
+    val showMessage: Boolean = true,
 )
 
 internal data class SecurityCodeState(

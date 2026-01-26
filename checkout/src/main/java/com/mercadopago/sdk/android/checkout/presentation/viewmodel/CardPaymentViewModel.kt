@@ -331,6 +331,13 @@ internal class CardPaymentViewModel(
         )
     }
 
+    fun onMessageClick(
+    ) {
+        _viewState.value = _viewState.value.copy(
+            showMessage = false
+        )
+    }
+
     fun onCardHolderEvent(
         event: SimpleTextFieldEvent,
     ) {
@@ -407,6 +414,11 @@ internal class CardPaymentViewModel(
                 cardBin = cardBin,
             ),
         )
+    }
+
+    private fun handleInputErrors (){
+        //TODO - verificar preenchimento
+
     }
 
     private fun handleResultError(
