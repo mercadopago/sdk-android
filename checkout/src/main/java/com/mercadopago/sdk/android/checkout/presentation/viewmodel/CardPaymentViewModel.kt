@@ -217,9 +217,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
-                    handleInputErrors()
-                }
+                handleExpirationDateInputError()
             }
 
             is ExpirationDateTextFieldEvent.OnLengthChanged -> {
@@ -242,9 +240,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
-                    handleInputErrors()
-                }
+                handleSecurityCodeInputError()
             }
 
             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
@@ -276,9 +272,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
-                    handleInputErrors()
-                }
+                handleCardNumberInputError()
             }
 
             is CardNumberTextFieldEvent.OnLengthChanged -> {
@@ -384,9 +378,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
-                    handleInputErrors()
-                }
+                handleCardHolderInputError()
             }
         }
     }
@@ -409,9 +401,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
-                    handleInputErrors()
-                }
+                handleIdentificationTypeInputError()
             }
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
@@ -444,19 +434,43 @@ internal class CardPaymentViewModel(
         )
     }
 
-    private fun handleInputErrors() {
+    private fun handleCardNumberInputError() {
         val currentState = _viewState.value
         val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
+        _viewState.value = currentState.copy(
+            cardNumberState = currentState.cardNumberState.copy(error = cardNumberError),
+        )
+    }
+
+    private fun handleExpirationDateInputError() {
+        val currentState = _viewState.value
         val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
+        _viewState.value = currentState.copy(
+            expirationDateState = currentState.expirationDateState.copy(error = expirationDateError),
+        )
+    }
+
+    private fun handleSecurityCodeInputError() {
+        val currentState = _viewState.value
         val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
+        _viewState.value = currentState.copy(
+            secureCodeState = currentState.secureCodeState.copy(error = securityCodeError),
+        )
+    }
+
+    private fun handleCardHolderInputError() {
+        val currentState = _viewState.value
         val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
+        _viewState.value = currentState.copy(
+            cardHolderState = currentState.cardHolderState.copy(error = cardHolderError),
+        )
+    }
+
+    private fun handleIdentificationTypeInputError() {
+        val currentState = _viewState.value
         val identificationError =
             IdentificationTypeVerifier.verify(currentState.identificationTypeState)
         _viewState.value = currentState.copy(
-            cardNumberState = currentState.cardNumberState.copy(error = cardNumberError),
-            expirationDateState = currentState.expirationDateState.copy(error = expirationDateError),
-            secureCodeState = currentState.secureCodeState.copy(error = securityCodeError),
-            cardHolderState = currentState.cardHolderState.copy(error = cardHolderError),
             identificationTypeState = currentState.identificationTypeState.copy(error = identificationError),
         )
     }
