@@ -17,10 +17,10 @@ internal data class CardPaymentScreenState(
     val installmentsState: InstallmentsState = InstallmentsState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
-    val dialogState: CardPaymentDialogState = CardPaymentDialogState.Hidden,
+    val messageError: MessageError = MessageError(),
     val isLoading: Boolean = false,
     val showTooltip: Boolean = false,
-    val showMessage: Boolean = true,
+    val showMessage: Boolean = false,
 )
 
 internal data class SecurityCodeState(
@@ -101,13 +101,10 @@ internal data class InstallmentsState(
     val selectedInstallment: PayerCost? = null,
 )
 
-internal sealed interface CardPaymentDialogState {
-    data object Hidden : CardPaymentDialogState
-
-    data class CardToken(val token: String) : CardPaymentDialogState
-
-    data class Error(val title: String, val description: String) : CardPaymentDialogState
-}
+data class MessageError(
+    val title: String = "",
+    val description: String = ""
+)
 
 internal data class FixedFooterState(
     val title: String = "Total",

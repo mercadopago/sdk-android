@@ -3,10 +3,10 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentDialogState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
+import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
@@ -55,7 +55,6 @@ internal class CardPaymentViewModel(
         securityCodeState: PCIFieldState,
     ) {
         viewModelScope.launch {
-            handleInputErrors()
             val currentState = _viewState.value
             val hasErrors = currentState.cardNumberState.error.isNotEmpty() ||
                 currentState.expirationDateState.error.isNotEmpty() ||
@@ -87,7 +86,7 @@ internal class CardPaymentViewModel(
             _viewState.value = _viewState.value.copy(isLoading = false)
             when (result) {
                 is Result.Success -> {
-                    onDialogStateChanged(CardPaymentDialogState.CardToken(token = result.data.token))
+
                 }
 
                 is Result.Error -> {
@@ -113,7 +112,9 @@ internal class CardPaymentViewModel(
                     )
                 }
 
-                is Result.Error -> Unit
+                is Result.Error -> {
+                    handleResultError(result.error, "Get Installment error")
+                }
             }
         }
     }
@@ -131,7 +132,9 @@ internal class CardPaymentViewModel(
                     )
                 }
 
-                is Result.Error -> Unit
+                is Result.Error -> {
+                    handleResultError(result.error, "Get Identification type")
+                }
             }
         }
     }
@@ -152,7 +155,9 @@ internal class CardPaymentViewModel(
                     )
                 }
 
-                is Result.Error -> Unit
+                is Result.Error -> {
+                    handleResultError(result.error, "Get Card Issuer error")
+                }
             }
         }
     }
@@ -178,7 +183,9 @@ internal class CardPaymentViewModel(
                     )
                 }
 
-                is Result.Error -> Unit
+                is Result.Error -> {
+                    handleResultError(result.error, "Get Payment methods error")
+                }
             }
         }
     }
@@ -417,12 +424,6 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onDialogStateChanged(
-        dialogState: CardPaymentDialogState,
-    ) {
-        _viewState.value = _viewState.value.copy(dialogState = dialogState)
-    }
-
     private fun handleBinChanged(
         cardBin: String?,
     ) {
@@ -449,7 +450,8 @@ internal class CardPaymentViewModel(
         val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
         val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
         val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
-        val identificationError = IdentificationTypeVerifier.verify(currentState.identificationTypeState)
+        val identificationError =
+            IdentificationTypeVerifier.verify(currentState.identificationTypeState)
         _viewState.value = currentState.copy(
             cardNumberState = currentState.cardNumberState.copy(error = cardNumberError),
             expirationDateState = currentState.expirationDateState.copy(error = expirationDateError),
@@ -468,7 +470,8 @@ internal class CardPaymentViewModel(
             is ResultError.Validation -> error.message
         }
         _viewState.value = _viewState.value.copy(
-            dialogState = CardPaymentDialogState.Error(title = title, description = message),
+            messageError = MessageError(title = title, description = message),
+            showMessage = true,
         )
     }
 
