@@ -217,7 +217,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                handleExpirationDateInputError()
+                if (!event.isFocused) {
+                    handleExpirationDateInputError()
+                }
             }
 
             is ExpirationDateTextFieldEvent.OnLengthChanged -> {
@@ -240,7 +242,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                handleSecurityCodeInputError()
+                if (!event.isFocused) {
+                    handleSecurityCodeInputError()
+                }
             }
 
             is SecurityCodeTextFieldEvent.OnLengthChanged -> {
@@ -272,7 +276,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                handleCardNumberInputError()
+                if (!event.isFocused) {
+                    handleCardNumberInputError()
+                }
             }
 
             is CardNumberTextFieldEvent.OnLengthChanged -> {
@@ -378,7 +384,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                handleCardHolderInputError()
+                if (!event.isFocused) {
+                    handleCardHolderInputError()
+                }
             }
         }
     }
@@ -401,7 +409,9 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                handleIdentificationTypeInputError()
+                if (!event.isFocused) {
+                    handleIdentificationTypeInputError()
+                }
             }
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
