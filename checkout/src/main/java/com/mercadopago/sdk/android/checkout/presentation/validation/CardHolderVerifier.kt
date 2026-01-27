@@ -22,7 +22,7 @@ internal object CardHolderVerifier {
     }
 
     private fun checkIncomplete(state: CardHolderState): String? {
-        return if (state.value.isNotEmpty() && !state.filled) {
+        return if (state.value.isNotEmpty() && state.value.length > 12) {
             "Please, complete the cardholder name"
         } else {
             null
