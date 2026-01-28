@@ -33,6 +33,7 @@ internal data class SecurityCodeState(
     val label: String = "Código de Segurança",
     val length: Int = 0,
     val error: String = "",
+    val optional: Boolean = false,
     val secureCodeLength: Int = 3,
 )
 

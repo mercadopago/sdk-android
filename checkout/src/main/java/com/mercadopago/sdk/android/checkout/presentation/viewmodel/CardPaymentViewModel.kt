@@ -171,10 +171,13 @@ internal class CardPaymentViewModel(
                 is Result.Success -> {
                     val paymentMethod = result.data.firstOrNull()
                     val secureCodeNumber = paymentMethod?.card?.securityCode?.length ?: 3
+                    val secureCodeOptional = paymentMethod?.card?.securityCode?.mode != "mandatory"
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
                             secureCodeLength = secureCodeNumber,
-                            placeHolder = "Ex: ${(1..secureCodeNumber).joinToString("")}"
+                            placeHolder = "Ex: ${(1..secureCodeNumber).joinToString("")}",
+                            optional = secureCodeOptional,
+                            helper = if(secureCodeOptional) "Dado opcional" else ""
                         ),
                     )
                     paymentMethod?.id?.let { paymentMethodId ->
@@ -244,7 +247,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused) {
+                if (!event.isFocused && !_viewState.value.secureCodeState.optional) {
                     handleSecurityCodeInputError()
                 }
             }
