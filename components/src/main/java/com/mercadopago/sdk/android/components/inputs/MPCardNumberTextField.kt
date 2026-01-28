@@ -31,8 +31,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param state The PCIFieldState that manages the secure field state.
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
- * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
+ * @param error Whether the field is in an error state. Displays error styling when true.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.

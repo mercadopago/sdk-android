@@ -102,9 +102,9 @@ internal data class InstallmentsState(
     val selectedInstallment: PayerCost? = null,
 )
 
-data class MessageError(
+internal data class MessageError(
     val title: String = "",
-    val description: String = ""
+    val description: String = "",
 )
 
 internal data class FixedFooterState(

@@ -125,6 +125,7 @@ fun MPHelper(
 ) {
     val defaults = getHelperDefaults(type = type)
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val badgeType = when (type) {

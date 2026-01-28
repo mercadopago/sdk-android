@@ -19,14 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -58,6 +57,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletex
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import kotlin.math.roundToInt
 
 @Composable
 internal fun CardPaymentScreen(
@@ -111,8 +111,7 @@ internal fun CardPaymentScreenContent(
     onBackClick: () -> Unit = {},
     onTooltipClick: () -> Unit = {},
     onMessageClick: () -> Unit = {},
-
-    ) {
+) {
     MPHeader(
         title = "Preencha os dados do\ncartão",
         onBackClick = onBackClick,
@@ -177,9 +176,11 @@ internal fun CardPaymentScreenContent(
                 )
 
                 Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                Box(modifier = Modifier.onGloballyPositioned {
-                    securityCodeBounds = it.boundsInRoot()
-                }) {
+                Box(
+                    modifier = Modifier.onGloballyPositioned {
+                        securityCodeBounds = it.boundsInRoot()
+                    },
+                ) {
                     MPSecurityCodeTextField(
                         state = securityCodePCIState,
                         securityCodeSize = viewState.secureCodeState.secureCodeLength,
@@ -225,7 +226,8 @@ internal fun CardPaymentScreenContent(
                         .offset { IntOffset(0, popoverY) },
                 ) {
                     MPPopover(
-                        description = "É um número de ${viewState.secureCodeState.secureCodeLength} dígitos. Está atrás do cartão ou no app do seu banco.",
+                        description = "É um número de ${viewState.secureCodeState.secureCodeLength} dígitos. " +
+                            "Está atrás do cartão ou no app do seu banco.",
                         onDismiss = onTooltipClick,
                     )
                 }
@@ -235,11 +237,11 @@ internal fun CardPaymentScreenContent(
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     MPMessage(
                         text = viewState.messageError.description,
-                        type = MPMessageType.Negative
+                        type = MPMessageType.Negative,
                     ) {
                         onMessageClick()
                     }

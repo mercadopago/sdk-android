@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
+private const val SECURE_CODE_MIN_LENGTH = 3
 private const val CARD_LENGTH_8_MASK = "#### ####"
 private const val CARD_LENGTH_9_MASK = "#### #####"
 private const val CARD_LENGTH_10_MASK = "#### ######"
@@ -86,7 +87,6 @@ internal class CardPaymentViewModel(
             _viewState.value = _viewState.value.copy(isLoading = false)
             when (result) {
                 is Result.Success -> {
-
                 }
 
                 is Result.Error -> {
@@ -170,14 +170,14 @@ internal class CardPaymentViewModel(
             when (result) {
                 is Result.Success -> {
                     val paymentMethod = result.data.firstOrNull()
-                    val secureCodeNumber = paymentMethod?.card?.securityCode?.length ?: 3
+                    val secureCodeNumber = paymentMethod?.card?.securityCode?.length ?: SECURE_CODE_MIN_LENGTH
                     val secureCodeOptional = paymentMethod?.card?.securityCode?.mode != "mandatory"
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
                             secureCodeLength = secureCodeNumber,
                             placeHolder = "Ex: ${(1..secureCodeNumber).joinToString("")}",
                             optional = secureCodeOptional,
-                            helper = if(secureCodeOptional) "Dado opcional" else ""
+                            helper = if (secureCodeOptional) "Dado opcional" else "",
                         ),
                     )
                     paymentMethod?.id?.let { paymentMethodId ->
@@ -357,17 +357,15 @@ internal class CardPaymentViewModel(
         )
     }
 
-    fun onTooltipClick(
-    ) {
+    fun onTooltipClick() {
         _viewState.value = _viewState.value.copy(
-            showTooltip = !_viewState.value.showTooltip
+            showTooltip = !_viewState.value.showTooltip,
         )
     }
 
-    fun onMessageClick(
-    ) {
+    fun onMessageClick() {
         _viewState.value = _viewState.value.copy(
-            showMessage = false
+            showMessage = false,
         )
     }
 

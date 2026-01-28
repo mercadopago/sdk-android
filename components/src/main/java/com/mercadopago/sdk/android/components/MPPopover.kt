@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,8 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-
-private const val POPOVER_MAX_WIDTH_FRACTION: Float = 0.9f
 
 /**
  * Popover component with white background and dark text.
@@ -60,7 +57,7 @@ fun MPPopover(
             .padding(defaults.spacing.surfacePadding),
         color = defaults.colors.backgroundColor,
         shape = bubbleShape,
-        shadowElevation = 5.dp
+        shadowElevation = 5.dp,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -99,11 +96,10 @@ fun MPPopover(
                 modifier = Modifier
                     .size(23.dp)
                     .padding(top = 10.dp)
-                    .clickable { onDismiss() }
+                    .clickable { onDismiss() },
             )
             Spacer(Modifier.size(10.dp))
         }
-
     }
 }
 

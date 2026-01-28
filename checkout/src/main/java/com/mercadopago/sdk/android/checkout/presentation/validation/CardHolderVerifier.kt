@@ -4,8 +4,11 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 
 internal object CardHolderVerifier {
     private val SPECIAL_CHARACTERS_REGEX = Regex("[^a-zA-Z\\s]")
+    private const val MIN_CHARACTERS = 12
 
-    fun verify(state: CardHolderState): String {
+    fun verify(
+        state: CardHolderState,
+    ): String {
         var error = ""
         error = checkEmpty(state) ?: error
         error = checkIncomplete(state) ?: error
@@ -13,7 +16,9 @@ internal object CardHolderVerifier {
         return error
     }
 
-    private fun checkEmpty(state: CardHolderState): String? {
+    private fun checkEmpty(
+        state: CardHolderState,
+    ): String? {
         return if (state.value.isEmpty()) {
             "Please, fill the cardholder name"
         } else {
@@ -21,15 +26,19 @@ internal object CardHolderVerifier {
         }
     }
 
-    private fun checkIncomplete(state: CardHolderState): String? {
-        return if (state.value.isNotEmpty() && state.value.length > 12) {
+    private fun checkIncomplete(
+        state: CardHolderState,
+    ): String? {
+        return if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
             "Please, complete the cardholder name"
         } else {
             null
         }
     }
 
-    private fun checkFormat(state: CardHolderState): String? {
+    private fun checkFormat(
+        state: CardHolderState,
+    ): String? {
         return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
             "Invalid format. Use only letters and spaces"
         } else {
