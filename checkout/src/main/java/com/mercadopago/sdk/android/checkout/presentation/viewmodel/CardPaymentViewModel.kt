@@ -170,9 +170,11 @@ internal class CardPaymentViewModel(
             when (result) {
                 is Result.Success -> {
                     val paymentMethod = result.data.firstOrNull()
+                    val secureCodeNumber = paymentMethod?.card?.securityCode?.length ?: 3
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
-                            secureCodeLength = paymentMethod?.card?.securityCode?.length ?: 3,
+                            secureCodeLength = secureCodeNumber,
+                            placeHolder = "Ex: ${(1..secureCodeNumber).joinToString("")}"
                         ),
                     )
                     paymentMethod?.id?.let { paymentMethodId ->
