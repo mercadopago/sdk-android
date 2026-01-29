@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_LENGTH
+import com.mercadopago.sdk.android.di.SessionIdProvider
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_SECURITY_CODE_MIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.EXPIRATION_YEAR_MIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.EXPIRATION_YEAR_START
@@ -18,6 +19,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardIdTokenUseCase(
     private val repository: CoreMethodsRepository,
+    private val sessionIdProvider: SessionIdProvider,
 ) {
     suspend operator fun invoke(
         cardId: String,
@@ -59,7 +61,7 @@ internal class GenerateCardIdTokenUseCase(
                     )
                 },
                 device = DeviceSDK.getInstance()?.info,
-                session = "",
+                session = sessionIdProvider.getSessionId(),
                 sdkVersion = "",
             ),
         )
