@@ -18,7 +18,7 @@ internal fun GenerateCardTokenParams.toRequest() =
         buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest(),
         device = device,
         session = session,
-        sdkVersion = sdkVersion
+        sdkVersion = sdkVersion,
     )
 
 internal fun BuyerIdentificationParam.toBuyerIdentificationRequest() =

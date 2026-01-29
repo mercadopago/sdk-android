@@ -1,9 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
-import com.mercadopago.sdk.android.coremethods.BuildConfig
 import com.mercadolibre.android.device.sdk.DeviceSDK
+import com.mercadopago.sdk.android.coremethods.BuildConfig
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_LENGTH
-import com.mercadopago.sdk.android.di.SessionIdProvider
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_SECURITY_CODE_MIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.EXPIRATION_YEAR_MIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.EXPIRATION_YEAR_START
@@ -16,6 +15,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
+import com.mercadopago.sdk.android.di.SessionIdProvider
 
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardIdTokenUseCase(
