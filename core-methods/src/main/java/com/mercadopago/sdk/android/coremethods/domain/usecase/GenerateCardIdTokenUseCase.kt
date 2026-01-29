@@ -59,6 +59,8 @@ internal class GenerateCardIdTokenUseCase(
                     )
                 },
                 device = DeviceSDK.getInstance()?.info,
+                session = "",
+                sdkVersion = "",
             ),
         )
     }

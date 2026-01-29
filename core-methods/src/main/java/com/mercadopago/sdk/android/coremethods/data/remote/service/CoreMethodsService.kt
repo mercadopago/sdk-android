@@ -23,6 +23,8 @@ internal interface CoreMethodsService {
     suspend fun createToken(
         @Body cardTokenBody: CardTokenBodyRequest,
         @Header("X-Product-id") productId: String? = PRODUCT_ID,
+        @Header("Meli-Session-id") session: String? = PRODUCT_ID,
+        @Header("SDK-version") sdkVersion: String? = PRODUCT_ID,
     ): Response<CardTokenResponse>
 
     @GET("$BRICKS_API/$VERSION/installments")

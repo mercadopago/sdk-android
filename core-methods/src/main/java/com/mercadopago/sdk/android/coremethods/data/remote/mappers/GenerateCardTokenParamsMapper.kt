@@ -17,6 +17,8 @@ internal fun GenerateCardTokenParams.toRequest() =
         expirationYear = expirationYear,
         buyerIdentification = buyerIdentification?.toBuyerIdentificationRequest(),
         device = device,
+        session = session,
+        sdkVersion = sdkVersion
     )
 
 internal fun BuyerIdentificationParam.toBuyerIdentificationRequest() =
