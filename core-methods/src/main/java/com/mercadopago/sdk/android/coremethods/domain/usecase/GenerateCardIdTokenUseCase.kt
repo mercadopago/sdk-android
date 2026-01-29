@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadopago.sdk.android.coremethods.BuildConfig
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_LENGTH
 import com.mercadopago.sdk.android.di.SessionIdProvider
@@ -62,7 +63,7 @@ internal class GenerateCardIdTokenUseCase(
                 },
                 device = DeviceSDK.getInstance()?.info,
                 session = sessionIdProvider.getSessionId(),
-                sdkVersion = "",
+                sdkVersion = BuildConfig.SdkVersion,
             ),
         )
     }
