@@ -27,7 +27,5 @@ internal class ThreeDSRepositoryImpl(
 
     override suspend fun saveThreeDSDeviceData(
         params: SaveThreeDSDeviceDataParams,
-    ): Result<Unit, ResultError> {
-        return dataSource.saveThreeDSDeviceData(params.toRequest())
-    }
+    ): Result<Unit, ResultError> = dataSource.saveThreeDSDeviceData(params.toRequest())
 }

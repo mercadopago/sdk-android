@@ -2,9 +2,6 @@ package com.mercadopago.sdk.android.coremethods.data.remote.request
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Request body for saving 3DS device data.
- */
 internal data class ThreeDSDeviceDataRequest(
     @SerializedName("app_id")
     val appId: String,
@@ -30,9 +27,6 @@ internal data class ThreeDSDeviceDataRequest(
     val transId: String,
 )
 
-/**
- * Device rendering options for the 3DS request.
- */
 internal data class DeviceRenderOptionsRequest(
     @SerializedName("interface")
     val sdkInterface: String,
@@ -40,9 +34,6 @@ internal data class DeviceRenderOptionsRequest(
     val uiTypes: List<String>,
 )
 
-/**
- * Ephemeral public key for the 3DS request.
- */
 internal data class EphemeralPublicKeyRequest(
     @SerializedName("curve")
     val curve: String,

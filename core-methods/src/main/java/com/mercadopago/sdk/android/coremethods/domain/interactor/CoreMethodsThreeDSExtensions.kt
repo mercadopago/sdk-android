@@ -249,6 +249,6 @@ fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParam
  * @see Result
  * @see ResultError
  */
-internal suspend fun CoreMethods.saveThreeDSDeviceData(
+suspend fun CoreMethods.saveThreeDSDeviceData(
     cardToken: CardToken,
 ): Result<Unit, ResultError> = koin.get<SaveThreeDSDeviceDataOrchestratorUseCase>().invoke(cardToken)

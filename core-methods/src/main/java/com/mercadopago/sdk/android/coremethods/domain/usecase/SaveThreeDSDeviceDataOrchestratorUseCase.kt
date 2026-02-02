@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.EphemeralPublicKey
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.DeviceRenderOptionsParams
-import com.mercadopago.sdk.android.coremethods.domain.model.toEphemeralPublicKey
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProviderManager
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -13,17 +12,8 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.ThreeDSErrorMessages
 import com.mercadopago.sdk.android.coremethods.domain.utils.flatMap
 import com.mercadopago.sdk.android.coremethods.domain.utils.map
 import com.mercadopago.sdk.android.coremethods.domain.utils.suspendFlatMap
+import com.mercadopago.sdk.android.coremethods.domain.utils.toEphemeralPublicKey
 
-/**
- * Use case responsible for orchestrating the complete 3DS device data save flow.
- *
- * This use case orchestrates the following operations:
- * 1. Validates the 3DS provider is available
- * 2. Creates a transaction with the card token
- * 3. Gets authentication request parameters
- * 4. Parses the ephemeral public key
- * 5. Executes the device data save operation
- */
 internal class SaveThreeDSDeviceDataOrchestratorUseCase(
     private val providerManager: ThreeDSProviderManager,
     private val createTransactionUseCase: CreateTransactionUseCase,

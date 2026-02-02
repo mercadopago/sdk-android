@@ -28,7 +28,5 @@ internal class ThreeDSDataSourceImpl(
 
     override suspend fun saveThreeDSDeviceData(
         request: ThreeDSDeviceDataRequest,
-    ): Result<Unit, ResultError> {
-        return service.saveThreeDSDeviceData(request).toUnitResponse()
-    }
+    ): Result<Unit, ResultError> = service.saveThreeDSDeviceData(request).toUnitResponse()
 }

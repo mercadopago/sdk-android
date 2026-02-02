@@ -7,11 +7,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.SaveThreeDSDe
 import com.mercadopago.sdk.android.coremethods.domain.repository.ThreeDSRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
-/**
- * Use case responsible for saving 3DS device data to initiate the authentication process.
- *
- * This use case validates the input parameters and delegates the API call to the repository.
- */
 internal class SaveThreeDSDeviceDataUseCase(
     private val repository: ThreeDSRepository,
 ) {
@@ -30,24 +25,25 @@ internal class SaveThreeDSDeviceDataUseCase(
         transId: String,
     ): Result<Unit, ResultError> {
         val validationError = validateParams(cardTokenId, appId, encData, transId)
-        if (validationError != null) {
-            return Result.Error(validationError)
+        return if (validationError != null) {
+            Result.Error(validationError)
+        } else {
+            repository.saveThreeDSDeviceData(
+                SaveThreeDSDeviceDataParams(
+                    appId = appId,
+                    integratorSdkVersion = integratorSdkVersion,
+                    threeDsSdkVersion = threeDsSdkVersion,
+                    cardTokenId = cardTokenId,
+                    deviceRenderOptions = deviceRenderOptions,
+                    encData = encData,
+                    ephemPubKey = ephemPubKey,
+                    maxTimeout = maxTimeout,
+                    protocolVersion = protocolVersion,
+                    referenceNumber = referenceNumber,
+                    transId = transId,
+                ),
+            )
         }
-        return repository.saveThreeDSDeviceData(
-            SaveThreeDSDeviceDataParams(
-                appId = appId,
-                integratorSdkVersion = integratorSdkVersion,
-                threeDsSdkVersion = threeDsSdkVersion,
-                cardTokenId = cardTokenId,
-                deviceRenderOptions = deviceRenderOptions,
-                encData = encData,
-                ephemPubKey = ephemPubKey,
-                maxTimeout = maxTimeout,
-                protocolVersion = protocolVersion,
-                referenceNumber = referenceNumber,
-                transId = transId,
-            ),
-        )
     }
 
     private fun validateParams(

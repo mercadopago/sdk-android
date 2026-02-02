@@ -47,10 +47,9 @@ internal fun <T, R> Result<T, ResultError>.mapSuccess(
         is Result.Error -> Result.Error(error)
     }
 
-internal fun Response<Unit>.toUnitResponse(): Result<Unit, ResultError> {
-    return if (isSuccessful) {
+internal fun Response<Unit>.toUnitResponse(): Result<Unit, ResultError> =
+    if (isSuccessful) {
         Result.Success(Unit)
     } else {
         Result.Error<ResultError>(errorBody().toResultError())
     }
-}
