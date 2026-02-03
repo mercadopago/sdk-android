@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -32,12 +33,14 @@ fun MPText(
     modifier: Modifier = Modifier,
     style: TextStyle = MercadoPagoAndesTheme.typography.body.default.small,
     color: Color = MercadoPagoAndesTheme.color.text.primary,
+    fontWeight: FontWeight = FontWeight.Normal,
 ) {
     Text(
         text = text,
         style = style,
         color = color,
         modifier = modifier,
+        fontWeight = fontWeight,
     )
 }
 
