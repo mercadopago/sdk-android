@@ -26,8 +26,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
 
-
-
 /**
  * List Item component
  * @param text component text to be showed

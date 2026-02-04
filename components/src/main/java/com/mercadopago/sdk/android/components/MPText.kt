@@ -26,6 +26,7 @@ private const val TEXT_GROUP = "Text"
  * @param modifier: label modifier
  * @param style: TextStyle to use
  * @param color: Color to use
+ * @param fontWeight: FontWeight to use
  */
 @Composable
 fun MPText(
