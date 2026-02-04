@@ -114,10 +114,10 @@ private fun MPListItemPreview() {
                     type = MPTrailingType.Text,
                     icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
                     text = "Sem Acréscimo",
-                    textColor = MercadoPagoAndesTheme.color.feedback.positive.textLoud
+                    textColor = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
                 ),
                 selected = true,
-                description = "Sami test"
+                description = "Sami test",
             )
         }
     }
