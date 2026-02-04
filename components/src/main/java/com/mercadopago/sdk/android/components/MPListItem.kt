@@ -9,47 +9,40 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.components.model.MPTrailing
+import com.mercadopago.sdk.android.components.model.MPTrailingType
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
 
-/**
- * Trailing Type enum class, used to determine the trailing showing type
- * This its used to change the component showed in trailing
- */
-enum class MPTrailingType {
-    /**
-     *  Text: Trailing type that`s shows a text
-     */
-    Text,
 
-    /**
-     *  Pill: Trailing type that`s shows a pill
-     */
-    Pill,
-}
 
 /**
  * List Item component
  * @param text component text to be showed
  * @param modifier component modifier
  * @param selected component is selected
- * @param trailingText component is trailing text
- * @param trailingType component is trailing type [MPTrailingType]
+ * @param description component description
+ * @param trailing component trailing
  */
 @Composable
 fun MPListItem(
     text: String,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
-    trailingText: String? = null,
-    trailingType: MPTrailingType = MPTrailingType.Text,
+    description: String? = null,
+    trailing: MPTrailing? = null,
 ) {
     Column(
         modifier = modifier,
@@ -67,19 +60,38 @@ fun MPListItem(
                 style = MercadoPagoAndesTheme.typography.body.default.medium,
                 color = MercadoPagoAndesTheme.color.text.primary,
                 modifier = Modifier.weight(1f),
+                fontWeight = FontWeight.Bold,
             )
 
-            trailingText?.let {
-                when (trailingType) {
+            trailing?.let { trailing ->
+                when (trailing.type) {
                     MPTrailingType.Text -> MPText(
-                        text = trailingText,
+                        text = trailing.text,
                         style = MercadoPagoAndesTheme.typography.body.default.small,
-                        color = MercadoPagoAndesTheme.color.text.primary,
+                        color = trailing.textColor ?: MercadoPagoAndesTheme.color.text.primary,
                     )
 
-                    MPTrailingType.Pill -> MPPill(trailingText)
+                    MPTrailingType.Pill -> MPPill(trailing.text)
+                }
+
+                if(trailing.icon != null) {
+                    Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
+                    Icon(
+                        imageVector = trailing.icon,
+                        contentDescription = null,
+                        tint = MercadoPagoAndesTheme.color.icon.accent,
+                        modifier = Modifier.size(20.dp),
+                    )
                 }
             }
+        }
+
+        Row {
+            Text(
+                text = description.orEmpty(),
+                style = MercadoPagoAndesTheme.typography.body.default.small,
+                color = MercadoPagoAndesTheme.color.text.primary,
+            )
         }
 
         Spacer(
@@ -100,9 +112,14 @@ private fun MPListItemPreview() {
         ) {
             MPListItem(
                 text = "List Item",
-                trailingText = "trailing",
-                trailingType = MPTrailingType.Pill,
+                trailing = MPTrailing(
+                    type = MPTrailingType.Text,
+                    icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
+                    text = "Sem Acréscimo",
+                    textColor = MercadoPagoAndesTheme.color.feedback.positive.textLoud
+                ),
                 selected = true,
+                description = "Sami test"
             )
         }
     }
