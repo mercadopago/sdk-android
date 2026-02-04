@@ -11,7 +11,6 @@ internal object ExpirationDateVerifier {
             checkIncomplete(state),
         ).firstOrNull().orEmpty()
 
-
     private fun checkEmpty(
         state: ExpirationDateState,
     ): String? {

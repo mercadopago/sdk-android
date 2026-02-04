@@ -15,7 +15,6 @@ internal object CardHolderVerifier {
             checkFormat(state),
         ).firstOrNull().orEmpty()
 
-
     private fun checkEmpty(
         state: CardHolderState,
     ): String? {

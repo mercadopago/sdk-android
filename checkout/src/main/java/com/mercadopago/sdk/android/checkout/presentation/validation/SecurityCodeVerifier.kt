@@ -11,7 +11,6 @@ internal object SecurityCodeVerifier {
             checkIncomplete(state),
         ).firstOrNull().orEmpty()
 
-
     private fun checkEmpty(
         state: SecurityCodeState,
     ): String? {

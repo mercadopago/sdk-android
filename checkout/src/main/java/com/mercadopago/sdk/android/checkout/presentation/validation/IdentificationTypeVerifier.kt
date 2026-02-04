@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.validation
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 
 private val SPECIAL_CHARACTERS_REGEX = Regex("[^a-zA-Z\\s]")
+
 internal object IdentificationTypeVerifier {
     fun verify(
         state: IdentificationTypeState,
@@ -12,7 +13,6 @@ internal object IdentificationTypeVerifier {
             checkIncomplete(state),
             checkFormat(state),
         ).firstOrNull().orEmpty()
-
 
     private fun checkEmpty(
         state: IdentificationTypeState,

@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.validation
 
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 
-
 internal object CardNumberVerifier {
     fun verify(
         state: CardNumberState,
