@@ -72,7 +72,7 @@ fun MPListItem(
                     MPTrailingType.Pill -> MPPill(trailing.text)
                 }
 
-                if(trailing.icon != null) {
+                if (trailing.icon != null) {
                     Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
                     Icon(
                         imageVector = trailing.icon,
