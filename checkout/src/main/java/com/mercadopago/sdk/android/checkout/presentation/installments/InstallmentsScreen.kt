@@ -125,7 +125,7 @@ private fun InstallmentsScreenPreview() {
                         trailing = "Sem acréscimo",
                         interestFree = true,
                         isSelected = false,
-                    )
+                    ),
                 ),
                 footerState = FooterState(
                     title = "Total",
@@ -133,7 +133,7 @@ private fun InstallmentsScreenPreview() {
                     amountIntegerPart = "100",
                     amountDecimalPart = "30",
                     subtitle = "Banco Test",
-                )
+                ),
             ),
             onBackClick = { },
         )

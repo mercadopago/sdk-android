@@ -5,5 +5,5 @@ internal data class FooterState(
     val currencySymbol: String,
     val amountIntegerPart: String,
     val amountDecimalPart: String,
-    val subtitle: String? = null
+    val subtitle: String,
 )

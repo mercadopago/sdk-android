@@ -16,7 +16,6 @@ import java.math.BigDecimal
 internal class InstallmentsViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
-
     private val _viewState = MutableStateFlow(InstallmentsScreenState())
     val viewState: StateFlow<InstallmentsScreenState> = _viewState.asStateFlow()
 
