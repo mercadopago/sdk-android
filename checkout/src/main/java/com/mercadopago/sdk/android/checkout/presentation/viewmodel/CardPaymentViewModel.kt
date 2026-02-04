@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toCountStringPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
@@ -175,7 +176,7 @@ internal class CardPaymentViewModel(
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
                             secureCodeLength = secureCodeNumber,
-                            placeHolder = "Ex: ${(1..secureCodeNumber).joinToString("")}",
+                            placeHolder = secureCodeNumber.toCountStringPlaceholder("Ex:"),
                             optional = secureCodeOptional,
                             helper = if (secureCodeOptional) "Dado opcional" else "",
                         ),

@@ -5,12 +5,12 @@ import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 internal object SecurityCodeVerifier {
     fun verify(
         state: SecurityCodeState,
-    ): String {
-        var error = ""
-        error = checkEmpty(state) ?: error
-        error = checkIncomplete(state) ?: error
-        return error
-    }
+    ): String =
+        listOfNotNull(
+            checkEmpty(state),
+            checkIncomplete(state),
+        ).firstOrNull().orEmpty()
+
 
     private fun checkEmpty(
         state: SecurityCodeState,

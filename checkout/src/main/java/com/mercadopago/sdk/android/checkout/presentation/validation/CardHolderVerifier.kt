@@ -8,13 +8,13 @@ internal object CardHolderVerifier {
 
     fun verify(
         state: CardHolderState,
-    ): String {
-        var error = ""
-        error = checkEmpty(state) ?: error
-        error = checkIncomplete(state) ?: error
-        error = checkFormat(state) ?: error
-        return error
-    }
+    ): String =
+        listOfNotNull(
+            checkEmpty(state),
+            checkIncomplete(state),
+            checkFormat(state),
+        ).firstOrNull().orEmpty()
+
 
     private fun checkEmpty(
         state: CardHolderState,

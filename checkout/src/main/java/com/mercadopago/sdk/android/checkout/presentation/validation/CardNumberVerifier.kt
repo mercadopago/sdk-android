@@ -2,15 +2,15 @@ package com.mercadopago.sdk.android.checkout.presentation.validation
 
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 
+
 internal object CardNumberVerifier {
     fun verify(
         state: CardNumberState,
-    ): String {
-        var error = ""
-        error = checkEmpty(state) ?: error
-        error = checkIncomplete(state) ?: error
-        return error
-    }
+    ): String =
+        listOfNotNull(
+            checkEmpty(state),
+            checkIncomplete(state),
+        ).firstOrNull().orEmpty()
 
     private fun checkEmpty(
         state: CardNumberState,

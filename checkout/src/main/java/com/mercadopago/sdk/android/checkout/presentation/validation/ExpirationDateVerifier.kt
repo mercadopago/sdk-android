@@ -5,12 +5,12 @@ import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateSta
 internal object ExpirationDateVerifier {
     fun verify(
         state: ExpirationDateState,
-    ): String {
-        var error = ""
-        error = checkEmpty(state) ?: error
-        error = checkIncomplete(state) ?: error
-        return error
-    }
+    ): String =
+        listOfNotNull(
+            checkEmpty(state),
+            checkIncomplete(state),
+        ).firstOrNull().orEmpty()
+
 
     private fun checkEmpty(
         state: ExpirationDateState,
