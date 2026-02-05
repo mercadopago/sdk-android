@@ -52,9 +52,9 @@ internal class InstallmentsViewModel(
         }
     }
 
-    fun onInstallmentSelected(installment: Int) {
-        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(
-            installment = installment,
-        )
+    fun onInstallmentSelected(
+        installment: Int,
+    ) {
+        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(installment = installment)
     }
 }
