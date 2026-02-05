@@ -23,7 +23,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
     override suspend fun generateCardToken(
         request: CardTokenBodyRequest,
     ): Result<CardToken, ResultError> {
-        return service.createToken(request).toInternalResponse().mapSuccess {
+        return service.createToken(request, session = request.session, sdkVersion = request.sdkVersion).toInternalResponse().mapSuccess {
             this.toModel()
         }
     }
