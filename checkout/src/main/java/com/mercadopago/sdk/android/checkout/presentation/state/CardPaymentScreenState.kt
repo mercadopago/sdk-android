@@ -17,8 +17,10 @@ internal data class CardPaymentScreenState(
     val installmentsState: InstallmentsState = InstallmentsState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
-    val dialogState: CardPaymentDialogState = CardPaymentDialogState.Hidden,
+    val messageError: MessageError = MessageError(),
     val isLoading: Boolean = false,
+    val showTooltip: Boolean = false,
+    val showMessage: Boolean = false,
 )
 
 internal data class SecurityCodeState(
@@ -26,11 +28,12 @@ internal data class SecurityCodeState(
     val filled: Boolean = false,
     val enabled: Boolean = true,
     val helper: String = "",
-    val placeHolder: String = "123",
+    val placeHolder: String = "Ex: 123",
     val showPlaceHolder: Boolean = true,
-    val label: String = "Security code",
+    val label: String = "Código de Segurança",
     val length: Int = 0,
-    val error: Pair<Boolean, String> = Pair(false, ""),
+    val error: String = "",
+    val optional: Boolean = false,
     val secureCodeLength: Int = 3,
 )
 
@@ -43,7 +46,7 @@ internal data class ExpirationDateState(
     val showPlaceHolder: Boolean = true,
     val label: String = "Expiration date",
     val length: Int = 0,
-    val error: Pair<Boolean, String> = Pair(false, ""),
+    val error: String = "",
     val valid: Boolean = true,
 )
 
@@ -59,7 +62,7 @@ internal data class CardNumberState(
     val length: Int = 0,
     val maxLength: Int = DEFAULT_MAX_CARD_LENGTH,
     val mask: String = DEFAULT_CARD_MASK,
-    val error: Pair<Boolean, String> = Pair(false, ""),
+    val error: String = "",
     val isValid: Boolean = false,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
@@ -70,7 +73,7 @@ internal data class CardHolderState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val enabled: Boolean = true,
-    val error: Boolean = false,
+    val error: String = "",
     val helper: String = "",
     val placeHolder: String = "As it appears on the card",
     val showPlaceHolder: Boolean = true,
@@ -85,7 +88,7 @@ internal data class IdentificationTypeState(
     val isFocused: Boolean = false,
     val filled: Boolean = false,
     val enabled: Boolean = true,
-    val error: Boolean = false,
+    val error: String = "",
     val helper: String = "",
     val placeHolder: String = "Identification number",
     val showPlaceHolder: Boolean = true,
@@ -99,13 +102,10 @@ internal data class InstallmentsState(
     val selectedInstallment: PayerCost? = null,
 )
 
-internal sealed interface CardPaymentDialogState {
-    data object Hidden : CardPaymentDialogState
-
-    data class CardToken(val token: String) : CardPaymentDialogState
-
-    data class Error(val title: String, val description: String) : CardPaymentDialogState
-}
+internal data class MessageError(
+    val title: String = "",
+    val description: String = "",
+)
 
 internal data class FixedFooterState(
     val title: String = "Total",

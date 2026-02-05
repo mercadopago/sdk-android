@@ -117,7 +117,7 @@ private fun MPListItemPreview() {
                     textColor = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
                 ),
                 selected = true,
-                description = "Sami test",
+                description = "Description test",
             )
         }
     }

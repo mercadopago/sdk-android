@@ -9,6 +9,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
@@ -85,6 +87,7 @@ internal fun PCITextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
+    val previousFocusState = remember { mutableStateOf<Boolean?>(null) }
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -99,7 +102,12 @@ internal fun PCITextField(
         modifier = modifier
             .testTag(PCITextFieldTestTags.Field.tag)
             .onFocusChanged { focusState ->
-                onFocusChanged(focusState.isFocused)
+                val isFocused = focusState.isFocused
+                val previousFocus = previousFocusState.value
+                if (previousFocus != null && previousFocus != isFocused) {
+                    onFocusChanged(isFocused)
+                }
+                previousFocusState.value = isFocused
             },
     )
 }

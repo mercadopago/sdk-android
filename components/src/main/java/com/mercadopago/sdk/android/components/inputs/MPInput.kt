@@ -1,19 +1,25 @@
 package com.mercadopago.sdk.android.components.inputs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.components.MPHelper
 import com.mercadopago.sdk.android.components.MPHelperHierarchy
 import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
+import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 
@@ -43,29 +49,56 @@ internal fun MPInputDecorationBox(
 internal fun MPInputBody(
     modifier: Modifier = Modifier,
     state: InputLabelState = InputLabelState.Idle,
-    label: String? = null,
-    helper: String? = null,
+    label: String = "",
+    helper: String = "",
+    error: String = "",
+    showTooltipIcon: Boolean = false,
+    onClickTooltip: () -> Unit = {},
     showHelperIcon: Boolean = false,
     defaults: MPInputDefaults,
     content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier) {
-        label?.let {
-            MPText(
-                text = it,
-                modifier = Modifier.padding(start = defaults.spacing.labelPadding),
-                style = MercadoPagoAndesTheme.typography.title.title,
-                color = defaults.colors.textPrimary,
-            )
+        if (label.isNotBlank()) {
+            Row {
+                MPText(
+                    text = label,
+                    modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
+                    style = MercadoPagoAndesTheme.typography.body.default.medium,
+                    color = defaults.colors.textPrimary,
+                )
+                if (showTooltipIcon) {
+                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+                    Icon(
+                        painter = painterResource(R.drawable.ic_tooltip),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(MercadoPagoAndesTheme.radius.xlarge)
+                            .clickable { onClickTooltip.invoke() },
+                        tint = MercadoPagoAndesTheme.color.icon.accent,
+                    )
+                }
+            }
         }
         content()
-        helper?.let {
-            MPInputMessage(
-                it,
-                state,
-                showHelperIcon,
-                defaults,
-            )
+        when {
+            error.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = error,
+                    state = InputLabelState.Error,
+                    showHelperIcon = true,
+                )
+            }
+
+            helper.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = helper,
+                    state = state,
+                    showHelperIcon = showHelperIcon,
+                )
+            }
         }
     }
 }
@@ -74,14 +107,12 @@ internal fun MPInputBody(
 internal fun MPInputMessage(
     text: String,
     state: InputLabelState,
-    showHelperIcon: Boolean,
-    defaults: MPInputDefaults,
+    showHelperIcon: Boolean = true,
 ) {
     when (state) {
         InputLabelState.Idle -> {
             MPHelper(
                 text = text,
-                modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = false,
                 hierarchy = MPHelperHierarchy.Quiet,
             )
@@ -90,7 +121,6 @@ internal fun MPInputMessage(
         InputLabelState.Error -> {
             MPHelper(
                 text = text,
-                modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
                 type = MPHelperType.Negative,
                 hierarchy = MPHelperHierarchy.Loud,
@@ -100,7 +130,6 @@ internal fun MPInputMessage(
         InputLabelState.Caution -> {
             MPHelper(
                 text = text,
-                modifier = Modifier.padding(start = defaults.spacing.helperPadding),
                 showIcon = showHelperIcon,
                 type = MPHelperType.Caution,
                 hierarchy = MPHelperHierarchy.Quiet,

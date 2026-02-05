@@ -50,14 +50,14 @@ internal fun getMPInputDefaults(): MPInputDefaults {
             textError = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
         ),
         spacing = MPInputSpacingDefaults(
-            labelPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            labelPadding = MercadoPagoAndesTheme.spacing.paddings.pico,
             helperPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
             horizontalPadding = 16.dp,
         ),
         border = MPInputBorderDefaults(
             widthIdle = MercadoPagoAndesTheme.borderWidth.small,
             widthFocused = MercadoPagoAndesTheme.borderWidth.medium,
-            shape = MercadoPagoAndesTheme.shape.xsmall,
+            shape = MercadoPagoAndesTheme.shape.medium,
         ),
     )
 }

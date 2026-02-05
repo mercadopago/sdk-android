@@ -66,16 +66,18 @@ fun MPHeader(
                     HeaderBackButton {
                         onBackClick.invoke()
                     }
-                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
+                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.tiny))
                     MPText(
                         text = title,
                         style = MercadoPagoAndesTheme.typography.heading.default.huge,
                     )
-                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
-                    MPText(
-                        text = subtitle,
-                        style = MercadoPagoAndesTheme.typography.body.default.medium,
-                    )
+                    if (subtitle.isNotBlank()) {
+                        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
+                        MPText(
+                            text = subtitle,
+                            style = MercadoPagoAndesTheme.typography.body.default.medium,
+                        )
+                    }
                 }
             }
 
