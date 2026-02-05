@@ -26,7 +26,7 @@ internal class CoreMethodsRemoteDataSourceImpl(
         return service.createToken(
             request,
             session = request.session,
-            sdkVersion = request.sdkVersion
+            sdkVersion = request.sdkVersion,
         ).toInternalResponse().mapSuccess {
             this.toModel()
         }

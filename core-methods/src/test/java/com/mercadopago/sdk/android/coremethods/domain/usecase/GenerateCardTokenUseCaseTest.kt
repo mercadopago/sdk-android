@@ -4,7 +4,9 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.di.SessionIdProvider
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -13,7 +15,12 @@ import org.junit.Test
 
 internal class GenerateCardTokenUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
-    private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository)
+    private val sessionIdProvider: SessionIdProvider = mockk()
+    private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository, sessionIdProvider)
+
+    init {
+        every { sessionIdProvider.getSessionId() } returns "test-session-id"
+    }
 
     @Test
     fun `test invoke returns Result Success with valid data`() =
