@@ -2,22 +2,16 @@ package com.mercadopago.sdk.android.components.inputs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
-import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
@@ -40,10 +34,11 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  *                         but can be 4 for cards like American Express.
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
- * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
+ * @param error Whether the field is in an error state. Displays error styling when true.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
+ * @param onClickTooltip tooltip of secure code text field
  * @param placeHolder Field place holder.
  * @param onEvent Callback invoked when security code events occur (e.g., value changes, validation).
  */
@@ -54,10 +49,11 @@ fun MPSecurityCodeTextField(
     securityCodeSize: Int = 3,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    error: String = "",
+    label: String = "",
+    helper: String = "",
+    onClickTooltip: () -> Unit,
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
@@ -66,6 +62,9 @@ fun MPSecurityCodeTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
+        onClickTooltip = onClickTooltip,
+        showTooltipIcon = true,
         defaults = defaults,
     ) {
         SecurityCodeTextField(
@@ -73,13 +72,13 @@ fun MPSecurityCodeTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             securityCodeSize = securityCodeSize,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box(modifier = Modifier.weight(1f)) {
@@ -87,19 +86,12 @@ fun MPSecurityCodeTextField(
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.default.medium,
-                                color = defaults.colors.textPrimary,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
                         innerTextField()
                     }
-                    Spacer(Modifier.width(4.dp))
-                    Icon(
-                        painter = painterResource(R.drawable.ic_tooltip),
-                        contentDescription = null,
-                        modifier = Modifier.size(MercadoPagoAndesTheme.radius.xlarge),
-                        tint = MercadoPagoAndesTheme.color.icon.accent,
-                    )
                 }
             },
         )
@@ -118,6 +110,7 @@ private fun MPSecurityCodeTextFieldPreview() {
         ) {
             MPSecurityCodeTextField(
                 state = securityCodeState,
+                onClickTooltip = {},
             ) {
             }
         }

@@ -31,8 +31,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param dateFormat The format for the expiration date. Defaults to ShortFormat (MM/YY).
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
- * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
+ * @param error Whether the field is in an error state. Displays error styling when true.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
@@ -45,10 +45,10 @@ fun MPExpirationDateTextField(
     dateFormat: ExpirationDateFormat = ExpirationDateFormat.ShortFormat,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    error: String = "",
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (ExpirationDateTextFieldEvent) -> Unit,
 ) {
@@ -56,6 +56,7 @@ fun MPExpirationDateTextField(
     MPInputBody(
         modifier = modifier,
         label = label,
+        error = error,
         helper = helper,
         defaults = defaults,
     ) {
@@ -65,11 +66,11 @@ fun MPExpirationDateTextField(
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
-            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box {
@@ -77,7 +78,7 @@ fun MPExpirationDateTextField(
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.default.medium,
-                                color = defaults.colors.textPrimary,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

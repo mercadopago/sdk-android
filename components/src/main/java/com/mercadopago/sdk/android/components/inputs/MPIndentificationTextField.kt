@@ -65,10 +65,10 @@ fun MPIdentificationTextField(
     selectedIdentificationType: IdentificationType?,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
+    error: String = "",
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
@@ -77,6 +77,7 @@ fun MPIdentificationTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         IdentificationTextField(
@@ -85,12 +86,12 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     MPIdentificationTypeSelector(
@@ -108,7 +109,7 @@ fun MPIdentificationTextField(
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.default.medium,
-                                color = defaults.colors.textPrimary,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }

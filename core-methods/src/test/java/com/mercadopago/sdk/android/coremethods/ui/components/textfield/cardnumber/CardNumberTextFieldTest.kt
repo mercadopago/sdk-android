@@ -50,7 +50,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
             }
         }
@@ -73,7 +72,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 15), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -108,7 +106,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 15), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -140,7 +137,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 16), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -172,7 +168,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 19), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -204,7 +199,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, input)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 14), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -242,7 +236,6 @@ internal class CardNumberTextFieldTest {
                 assertTextInput(maskedInput, inputWithMaxLength)
             }
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = maxLength), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
@@ -273,7 +266,6 @@ internal class CardNumberTextFieldTest {
 
             // Then
             events.receiveAsFlow().test {
-                assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 14), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())

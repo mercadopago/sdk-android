@@ -31,8 +31,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param state The PCIFieldState that manages the secure field state.
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
- * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
+ * @param error Whether the field is in an error state. Displays error styling when true.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
@@ -44,10 +44,10 @@ fun MPSimpleTextField(
     state: PCIFieldState,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    error: String = "",
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (SimpleTextFieldEvent) -> Unit,
 ) {
@@ -56,6 +56,7 @@ fun MPSimpleTextField(
         modifier = modifier,
         label = label,
         helper = helper,
+        error = error,
         defaults = defaults,
     ) {
         SimpleTextField(
@@ -63,12 +64,12 @@ fun MPSimpleTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.heading.default.small,
+            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
                     Box {
@@ -76,7 +77,7 @@ fun MPSimpleTextField(
                             MPText(
                                 text = placeHolder,
                                 style = MercadoPagoAndesTheme.typography.body.default.medium,
-                                color = defaults.colors.textPrimary,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
