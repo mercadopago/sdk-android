@@ -47,8 +47,8 @@ internal fun InstallmentsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getInstallments(
-            bin = "44443333", // TECH DEBT
-            amount = BigDecimal.TEN
+            bin = "44443333",
+            amount = BigDecimal.TEN,
         )
     }
 
@@ -143,7 +143,7 @@ private fun InstallmentsScreenPreview() {
                         trailing = "R$ 300",
                         interestFree = false,
                         isSelected = false,
-                        number = 1
+                        number = 1,
                     ),
                     InstallmentState(
                         number = 2,

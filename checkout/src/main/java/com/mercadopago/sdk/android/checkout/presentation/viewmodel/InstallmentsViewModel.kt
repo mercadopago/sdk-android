@@ -38,7 +38,7 @@ internal class InstallmentsViewModel(
                 is Result.Success ->
                     _viewState.value = _viewState.value.copy(
                         title = "Escolha o parcelamento",
-                        installmentsState = result.data.getOrNull(0)?.payerCost?.toInstallmentsState() ?: emptyList(),
+                        installmentsState = result.data.getOrNull(0).toInstallmentsState(),
                         footerState = FooterState(
                             title = "Total",
                             currencySymbol = null.getCurrencyString(),
@@ -53,6 +53,8 @@ internal class InstallmentsViewModel(
     }
 
     fun onInstallmentSelected(installment: Int) {
-        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(installment)
+        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(
+            installment = installment,
+        )
     }
 }
