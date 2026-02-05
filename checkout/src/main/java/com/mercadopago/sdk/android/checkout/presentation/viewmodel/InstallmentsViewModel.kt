@@ -2,11 +2,11 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.data.mapper.getTotal
-import com.mercadopago.sdk.android.checkout.data.mapper.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.data.mapper.toInstallmentsState
 import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
@@ -36,19 +36,17 @@ internal class InstallmentsViewModel(
             val result = coreMethods.getInstallments(bin = bin, amount = amount)
             when (result) {
                 is Result.Success ->
-                    result.data.getOrNull(0)?.payerCost?.let { data ->
-                        _viewState.value = _viewState.value.copy(
-                            title = "Escolha o parcelamento",
-                            installmentsState = data.toInstallmentsState(),
-                            footerState = FooterState(
-                                title = "Total",
-                                currencySymbol = null.getCurrencyString(),
-                                amountIntegerPart = amount.getTotal(),
-                                amountDecimalPart = amount.getTotalDecimalPart(),
-                                subtitle = "Santander Credito **** 1234",
-                            ),
-                        )
-                    }
+                    _viewState.value = _viewState.value.copy(
+                        title = "Escolha o parcelamento",
+                        installmentsState = result.data.getOrNull(0)?.payerCost?.toInstallmentsState() ?: emptyList(),
+                        footerState = FooterState(
+                            title = "Total",
+                            currencySymbol = null.getCurrencyString(),
+                            amountIntegerPart = amount.getTotal(),
+                            amountDecimalPart = amount.getTotalDecimalPart(),
+                            subtitle = "Santander Credito **** 1234",
+                        ),
+                    )
                 is Result.Error -> Unit
             }
         }
