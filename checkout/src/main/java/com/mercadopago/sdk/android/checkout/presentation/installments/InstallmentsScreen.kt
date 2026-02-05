@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.installments
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +13,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
@@ -31,16 +34,37 @@ import com.mercadopago.sdk.android.components.model.MPTrailingType
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import java.math.BigDecimal
 
 @Composable
 internal fun InstallmentsScreen(
     viewModel: InstallmentsViewModel,
     onBackClick: () -> Unit = {},
+    onInstallmentSelected: (Int) -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val viewEvent by viewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getInstallments(
+            bin = "44443333", // TECH DEBT
+            amount = BigDecimal.TEN
+        )
+    }
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is InstallmentsScreenEvent.OnInstallmentsSelected -> {
+                onInstallmentSelected(event.installment)
+            }
+            InstallmentsScreenEvent.Idle -> Unit
+        }
+    }
+
     InstallmentsScreenContent(
         viewState = viewState,
         onBackClick = onBackClick,
+        onItemClick = { viewModel.onInstallmentSelected(installment = it) },
     )
 }
 
@@ -48,6 +72,7 @@ internal fun InstallmentsScreen(
 private fun InstallmentsScreenContent(
     viewState: InstallmentsScreenState,
     onBackClick: () -> Unit = {},
+    onItemClick: (Int) -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         MPHeader(
@@ -69,7 +94,6 @@ private fun InstallmentsScreenContent(
                             MPListItem(
                                 text = item.text,
                                 modifier = Modifier.fillMaxWidth(),
-                                selected = false,
                                 trailing = MPTrailing(
                                     text = item.trailing,
                                     type = MPTrailingType.Text,
@@ -81,6 +105,7 @@ private fun InstallmentsScreenContent(
                                     },
                                 ),
                                 description = item.description,
+                                onClick = { onItemClick(item.number) },
                             )
                         }
                     }
@@ -118,8 +143,10 @@ private fun InstallmentsScreenPreview() {
                         trailing = "R$ 300",
                         interestFree = false,
                         isSelected = false,
+                        number = 1
                     ),
                     InstallmentState(
+                        number = 2,
                         text = "2x 190,00",
                         description = "",
                         trailing = "Sem acréscimo",
@@ -132,10 +159,11 @@ private fun InstallmentsScreenPreview() {
                     currencySymbol = "R$",
                     amountIntegerPart = "100",
                     amountDecimalPart = "30",
-                    subtitle = "Banco Test",
+                    subtitle = "Santander Credito **** 1234",
                 ),
             ),
             onBackClick = { },
+            onItemClick = { Log.i("InstallmentsScreen", "onItemClick: $it") },
         )
     }
 }

@@ -12,4 +12,5 @@ internal data class InstallmentState(
     val trailing: String,
     val interestFree: Boolean,
     val isSelected: Boolean,
+    val number: Int,
 )

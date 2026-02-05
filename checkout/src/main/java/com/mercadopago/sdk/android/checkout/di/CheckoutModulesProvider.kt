@@ -15,6 +15,7 @@ internal class CheckoutModulesProvider : CoreKoinModuleProvider, MercadoPagoKoin
     override fun provideModules(): List<Module> {
         return listOf(
             provideDataModule(),
+            provideInstallmentsModule(),
         )
     }
 }

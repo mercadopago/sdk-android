@@ -63,6 +63,7 @@ import kotlin.math.roundToInt
 internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
     onBackClick: () -> Unit = {},
+    onPayClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
@@ -90,6 +91,7 @@ internal fun CardPaymentScreen(
         onBackClick = onBackClick,
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
+        onFooterButtonClick = onPayClick,
     )
 }
 

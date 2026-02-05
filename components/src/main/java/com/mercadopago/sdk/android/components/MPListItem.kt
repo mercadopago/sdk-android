@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ private const val LIST_GROUP = "LIST_ITEM"
  * @param selected component is selected
  * @param description component description
  * @param trailing component trailing
+ * @param onClick component onClick
  */
 @Composable
 fun MPListItem(
@@ -41,6 +43,7 @@ fun MPListItem(
     selected: Boolean = false,
     description: String? = null,
     trailing: MPTrailing? = null,
+    onClick: () -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -48,6 +51,7 @@ fun MPListItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable(onClick = onClick)
                 .padding(MercadoPagoTheme.spacing.xs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
