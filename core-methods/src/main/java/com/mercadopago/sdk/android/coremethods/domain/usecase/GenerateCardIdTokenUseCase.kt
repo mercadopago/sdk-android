@@ -40,7 +40,7 @@ internal class GenerateCardIdTokenUseCase(
             val securityCodeLength =
                 securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
 
-            if (isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
+            if (!isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }

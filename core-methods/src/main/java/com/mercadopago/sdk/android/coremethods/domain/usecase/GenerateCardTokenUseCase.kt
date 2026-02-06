@@ -46,7 +46,7 @@ internal class GenerateCardTokenUseCase(
                     is Result.Error -> SECURITY_CODE_MIN_LENGTH
                 }
 
-            if (isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
+            if (!isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }
