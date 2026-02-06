@@ -28,7 +28,7 @@ internal fun provideUseCaseModule(): Module =
                 get(),
                 get<SessionIdProvider>(),
                 get<SecurityCodeLengthProvider>(),
-                get()
+                get(),
             )
         }
     }
