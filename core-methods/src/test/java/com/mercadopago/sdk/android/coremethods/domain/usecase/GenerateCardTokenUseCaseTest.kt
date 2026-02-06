@@ -40,7 +40,7 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns false
+            every { isSecurityCodeValidUseCase(any(), any()) } returns true
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
@@ -60,7 +60,7 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns false
+            every { isSecurityCodeValidUseCase(any(), any()) } returns true
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
@@ -78,7 +78,7 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns true
+            every { isSecurityCodeValidUseCase(any(), any()) } returns false
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
             val actualResult = generateCardTokenUseCase(inputCardNumber, inputSecurityCode, inputExpirationDate)
