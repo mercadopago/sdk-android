@@ -20,7 +20,8 @@ internal class GenerateCardTokenUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
     private val sessionIdProvider: SessionIdProvider = mockk()
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase = mockk()
-    private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository, paymentMethodsUseCase, sessionIdProvider)
+    private val generateCardTokenUseCase =
+        GenerateCardTokenUseCase(repository, paymentMethodsUseCase, sessionIdProvider)
 
     init {
         every { sessionIdProvider.getSessionId() } returns "test-session-id"
@@ -38,7 +39,8 @@ internal class GenerateCardTokenUseCaseTest {
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
 
-            coEvery { paymentMethodsUseCase(any()) } returns Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
+            coEvery { paymentMethodsUseCase(any()) } returns
+                Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
 
             val result = generateCardTokenUseCase(cardNumber, securityCode, expirationDate)
@@ -59,7 +61,8 @@ internal class GenerateCardTokenUseCaseTest {
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
 
-            coEvery { paymentMethodsUseCase(any()) } returns Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
+            coEvery { paymentMethodsUseCase(any()) } returns
+                Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
 
             val result = generateCardTokenUseCase(cardNumber, securityCode, expirationDate)
