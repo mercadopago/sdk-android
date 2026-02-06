@@ -25,11 +25,12 @@ internal class GenerateCardIdTokenUseCase(
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
+
         if (cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
-        if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
+        if (securityCode.isNullOrEmpty() || securityCode.length != SECURITY_CODE_MIN_LENGTH) {
             return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
         }
 

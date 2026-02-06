@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
@@ -15,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
 import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
@@ -98,6 +101,9 @@ fun SecurityCodeTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
+
+    val isSecureCodeValidUseCase = remember { IsSecurityCodeValidUseCase() }
+
     LaunchedEffect(key1 = true) {
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricPCIFieldInitialization(
@@ -114,6 +120,8 @@ fun SecurityCodeTextField(
                 onEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = value.length))
                 state.input = value
             }
+            val isValid = isSecureCodeValidUseCase(securityCodeSize, value.length)
+            onEvent(SecurityCodeTextFieldEvent.IsValid(isValid))
         },
         onFocusChanged = { isFocused ->
             onEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused))

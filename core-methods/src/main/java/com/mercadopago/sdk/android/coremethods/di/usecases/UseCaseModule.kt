@@ -11,10 +11,10 @@ import org.koin.dsl.module
 
 internal fun provideUseCaseModule(): Module =
     module {
-        factory { GenerateCardTokenUseCase(get()) }
+        factory { GenerateCardTokenUseCase(get(), get()) }
         factory { GetInstallmentsUseCase(get()) }
         factory { GetIdentificationTypesUseCase(get()) }
         factory { GetCardIssuersUseCase(get()) }
         factory { GetPaymentMethodsUseCase(get()) }
-        factory { GenerateCardIdTokenUseCase(get()) }
+        factory { GenerateCardIdTokenUseCase(get(), get()) }
     }

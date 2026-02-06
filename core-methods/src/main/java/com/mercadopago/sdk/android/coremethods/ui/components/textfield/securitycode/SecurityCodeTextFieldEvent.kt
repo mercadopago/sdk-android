@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
+
 /**
  * Sealed interface representing events triggered by the security code text field.
  * This interface defines various events that can occur during security code (CVV) input,
@@ -89,4 +91,25 @@ interface SecurityCodeTextFieldEvent {
      * ```
      */
     data class OnFocusChanged(val isFocused: Boolean) : SecurityCodeTextFieldEvent
+
+    /**
+     * Event triggered when the security code number validation status changes.
+     * validation, helping to determine if the input is valid.
+     *
+     * @param isValid Whether the security code is valid according payment methods specification
+     *
+     * Example:
+     * ```kotlin
+     * when (event) {
+     *     is SecurityCodeTextFieldEvent.IsValid -> {
+     *         if (event.isValid) {
+     *             enableNextButton()
+     *         } else {
+     *             disableNextButton()
+     *         }
+     *     }
+     * }
+     * ```
+     */
+    data class IsValid(val isValid: Boolean) : SecurityCodeTextFieldEvent
 }

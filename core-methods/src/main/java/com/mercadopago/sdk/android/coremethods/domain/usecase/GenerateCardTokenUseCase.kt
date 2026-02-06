@@ -19,6 +19,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardTokenUseCase(
     private val repository: CoreMethodsRepository,
+    private val paymentMethodsUseCase: GetPaymentMethodsUseCase,
 ) {
     suspend operator fun invoke(
         cardNumber: String,
@@ -26,11 +27,20 @@ internal class GenerateCardTokenUseCase(
         expirationDate: String,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
+
         if (cardNumber.isEmpty()) {
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
 
-        if (!securityCode.isNullOrEmpty() && securityCode.length < SECURITY_CODE_MIN_LENGTH) {
+        val securityCodeLength: Int = when (val result = paymentMethodsUseCase(cardNumber)) {
+            is Result.Success -> {
+                result.data.firstOrNull()?.card?.securityCode?.length ?: SECURITY_CODE_MIN_LENGTH
+            }
+
+            is Result.Error -> SECURITY_CODE_MIN_LENGTH
+        }
+
+        if (securityCode.isNullOrEmpty() || securityCode.length != securityCodeLength) {
             return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
         }
 
