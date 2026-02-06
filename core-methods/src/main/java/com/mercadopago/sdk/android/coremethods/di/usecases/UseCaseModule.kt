@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseC
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.di.SessionIdProvider
 import org.koin.core.module.Module
 import org.koin.dsl.bind
@@ -20,6 +21,14 @@ internal fun provideUseCaseModule(): Module =
         factory { GetIdentificationTypesUseCase(get()) }
         factory { GetCardIssuersUseCase(get()) }
         factory { GetPaymentMethodsUseCase(get()) }
-        factory { GenerateCardTokenUseCase(get(), get(), get<SessionIdProvider>()) }
-        factory { GenerateCardIdTokenUseCase(get(), get<SessionIdProvider>(), get<SecurityCodeLengthProvider>()) }
+        factory { IsSecurityCodeValidUseCase() }
+        factory { GenerateCardTokenUseCase(get(), get(), get<SessionIdProvider>(), get()) }
+        factory {
+            GenerateCardIdTokenUseCase(
+                get(),
+                get<SessionIdProvider>(),
+                get<SecurityCodeLengthProvider>(),
+                get()
+            )
+        }
     }

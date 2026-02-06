@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
+import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 import com.mercadopago.sdk.android.di.SessionIdProvider
@@ -24,6 +25,7 @@ internal class GenerateCardTokenUseCase(
     private val repository: CoreMethodsRepository,
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase,
     private val sessionIdProvider: SessionIdProvider,
+    private val isSecurityCodeValidUseCase: IsSecurityCodeValidUseCase,
 ) {
     suspend operator fun invoke(
         cardNumber: String,
@@ -44,7 +46,7 @@ internal class GenerateCardTokenUseCase(
                     is Result.Error -> SECURITY_CODE_MIN_LENGTH
                 }
 
-            if (securityCode.length != securityCodeLength) {
+            if (isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }
