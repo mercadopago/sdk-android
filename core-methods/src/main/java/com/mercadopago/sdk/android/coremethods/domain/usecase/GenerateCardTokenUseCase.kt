@@ -21,8 +21,8 @@ import com.mercadopago.sdk.android.di.SessionIdProvider
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
 internal class GenerateCardTokenUseCase(
     private val repository: CoreMethodsRepository,
-    private val sessionIdProvider: SessionIdProvider,
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase,
+    private val sessionIdProvider: SessionIdProvider,
 ) {
     suspend operator fun invoke(
         cardNumber: String,

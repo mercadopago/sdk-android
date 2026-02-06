@@ -77,6 +77,7 @@ dependencies {
     implementation(projects.sdkAndroid)
     implementation(projects.foundation)
     implementation(projects.coreMethods)
+    implementation(projects.checkout)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
     api(libs.koin.android)
