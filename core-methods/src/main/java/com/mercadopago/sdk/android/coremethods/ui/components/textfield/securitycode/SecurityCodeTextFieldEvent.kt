@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
-
 /**
  * Sealed interface representing events triggered by the security code text field.
  * This interface defines various events that can occur during security code (CVV) input,

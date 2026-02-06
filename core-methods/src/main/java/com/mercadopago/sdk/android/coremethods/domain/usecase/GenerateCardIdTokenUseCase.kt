@@ -12,6 +12,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.model.params.BuyerIdentificationParam
 import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardTokenParams
+import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
@@ -21,6 +22,7 @@ import com.mercadopago.sdk.android.di.SessionIdProvider
 internal class GenerateCardIdTokenUseCase(
     private val repository: CoreMethodsRepository,
     private val sessionIdProvider: SessionIdProvider,
+    private val securityCodeLengthProvider: SecurityCodeLengthProvider,
 ) {
     suspend operator fun invoke(
         cardId: String,
@@ -28,12 +30,12 @@ internal class GenerateCardIdTokenUseCase(
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
-
+        val expectedSecurityCodeLength = securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
         if (cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
-        if (securityCode.isNullOrEmpty() || securityCode.length != SECURITY_CODE_MIN_LENGTH) {
+        if (securityCode.isNullOrEmpty() || securityCode.length != expectedSecurityCodeLength) {
             return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
         }
 

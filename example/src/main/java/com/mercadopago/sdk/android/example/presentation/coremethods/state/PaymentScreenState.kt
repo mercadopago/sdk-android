@@ -22,7 +22,7 @@ internal data class SecurityCodeState(
     val filled: Boolean = false,
     val length: Int = 0,
     val error: Pair<Boolean, String> = Pair(false, ""),
-    val secureCodeLength: Int = 3
+    val secureCodeLength: Int = 4
 )
 
 internal data class ExpirationDateState(

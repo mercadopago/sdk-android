@@ -68,7 +68,7 @@ internal class PaymentScreenViewModel(
                 return@launch
             }
             val result = coreMethods.generateCardToken(
-                cardNumberState = cardNumberState,
+                cardId = "0000000000",
                 expirationDateState = expirationDateState,
                 securityCodeState = securityCodeState,
                 buyerIdentification = BuyerIdentification(
@@ -266,7 +266,7 @@ internal class PaymentScreenViewModel(
                     )
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
-                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 3
+                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 4
                         )
 
                     )

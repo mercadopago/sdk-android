@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
 import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
+import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
+import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
@@ -23,6 +25,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCITextFieldTestTags
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 
 internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
 internal const val MIN_LENGTH = 3
@@ -110,6 +113,10 @@ fun SecurityCodeTextField(
                 field = COMPONENT_NAME_SECURITY_CODE,
             ),
         )
+    }
+
+    LaunchedEffect(securityCodeSize) {
+        MercadoPagoSDK.getInstance().coreMethods.koin.get<SecurityCodeLengthProvider>().setExpectedLength(securityCodeSize)
     }
 
     PCITextField(

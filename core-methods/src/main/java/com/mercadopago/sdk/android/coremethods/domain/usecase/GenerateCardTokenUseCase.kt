@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.BuildConfig
+import com.mercadopago.sdk.android.coremethods.data.remote.utils.CARD_BIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_EMPTY
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_SECURITY_CODE_MIN_LENGTH
@@ -35,7 +36,7 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
 
-        val securityCodeLength: Int = when (val result = paymentMethodsUseCase(cardNumber)) {
+        val securityCodeLength: Int = when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
             is Result.Success -> {
                 result.data.firstOrNull()?.card?.securityCode?.length ?: SECURITY_CODE_MIN_LENGTH
             }
