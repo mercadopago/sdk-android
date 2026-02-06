@@ -30,13 +30,16 @@ internal class GenerateCardIdTokenUseCase(
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
-        val expectedSecurityCodeLength = securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
         if (cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
-        if (securityCode.isNullOrEmpty() || securityCode.length != expectedSecurityCodeLength) {
-            return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+        if (securityCode != null) {
+            val expectedSecurityCodeLength =
+                securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
+            if (securityCode.length != expectedSecurityCodeLength) {
+                return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+            }
         }
 
         var expirationMonth: Int? = null
