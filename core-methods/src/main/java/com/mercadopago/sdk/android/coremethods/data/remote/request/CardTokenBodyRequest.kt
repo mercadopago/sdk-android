@@ -22,6 +22,10 @@ internal data class CardTokenBodyRequest(
     val expirationYear: Int? = null,
     @SerializedName("security_code")
     val securityCode: String? = null,
+    @SerializedName("session")
+    val session: String? = null,
+    @SerializedName("sdkVersion")
+    val sdkVersion: String? = null,
 )
 
 internal data class BuyerIdentificationBodyRequest(

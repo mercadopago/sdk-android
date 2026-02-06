@@ -52,6 +52,7 @@ android {
             "CORE_METHODS_PRODUCT_ID",
             secretProperties.getProperty("coreMethods.productId", "\"\""),
         )
+        buildConfigField("String", "SdkVersion", "\"${CoreMethodsSDKConfig.VERSION_NAME}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
