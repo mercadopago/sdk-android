@@ -18,7 +18,6 @@ import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldFocus
 import com.mercadopago.sdk.android.coremethods.analytics.metricPCIFieldInitialization
 import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
-import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsCardNumberValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -104,7 +103,6 @@ fun SecurityCodeTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
-
     val isSecureCodeValidUseCase = remember { IsSecurityCodeValidUseCase() }
 
     LaunchedEffect(key1 = true) {
@@ -116,7 +114,10 @@ fun SecurityCodeTextField(
     }
 
     LaunchedEffect(securityCodeSize) {
-        MercadoPagoSDK.getInstance().coreMethods.koin.get<SecurityCodeLengthProvider>().setExpectedLength(securityCodeSize)
+        MercadoPagoSDK.getInstance().coreMethods.koin.get<SecurityCodeLengthProvider>()
+            .setExpectedLength(
+                securityCodeSize,
+            )
     }
 
     PCITextField(

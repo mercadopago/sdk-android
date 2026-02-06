@@ -1,7 +1,10 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadopago.sdk.android.coremethods.domain.model.CardModel
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.model.SecurityCodeModel
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.di.SessionIdProvider
@@ -16,7 +19,8 @@ import org.junit.Test
 internal class GenerateCardTokenUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
     private val sessionIdProvider: SessionIdProvider = mockk()
-    private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository, sessionIdProvider)
+    private val paymentMethodsUseCase: GetPaymentMethodsUseCase = mockk()
+    private val generateCardTokenUseCase = GenerateCardTokenUseCase(repository, paymentMethodsUseCase, sessionIdProvider)
 
     init {
         every { sessionIdProvider.getSessionId() } returns "test-session-id"
@@ -30,14 +34,15 @@ internal class GenerateCardTokenUseCaseTest {
             val securityCode = "123"
             val expectedCardToken = CardToken("sampleToken")
             val expectedResult = Result.Success(expectedCardToken)
+            val paymentMethodWithSecurityCodeLengthThree = PaymentMethod(
+                card = CardModel(securityCode = SecurityCodeModel(length = 3)),
+            )
 
-            // Mock the repository behavior
-            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            coEvery { paymentMethodsUseCase(any()) } returns Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
+            coEvery { repository.generateCardToken(any()) } returns expectedResult
 
-            // Call the use case
-            val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
+            val result = generateCardTokenUseCase(cardNumber, securityCode, expirationDate)
 
-            // Verify the result
             assertTrue(result is Result.Success)
             assertEquals(expectedCardToken, (result as Result.Success).data)
         }
@@ -50,14 +55,15 @@ internal class GenerateCardTokenUseCaseTest {
             val securityCode = "123"
             val expectedError = ResultError.Request(code = "400", message = "Some error")
             val expectedResult = Result.Error(expectedError)
+            val paymentMethodWithSecurityCodeLengthThree = PaymentMethod(
+                card = CardModel(securityCode = SecurityCodeModel(length = 3)),
+            )
 
-            // Mock the repository behavior
-            coEvery { repository.generateCardToken(any()) } returns (expectedResult)
+            coEvery { paymentMethodsUseCase(any()) } returns Result.Success(listOf(paymentMethodWithSecurityCodeLengthThree))
+            coEvery { repository.generateCardToken(any()) } returns expectedResult
 
-            // Call the use case
-            val result = generateCardTokenUseCase(cardNumber, expirationDate, securityCode)
+            val result = generateCardTokenUseCase(cardNumber, securityCode, expirationDate)
 
-            // Verify the result
             assertTrue(result is Result.Error)
             assertEquals(expectedError, (result as Result.Error).error)
         }

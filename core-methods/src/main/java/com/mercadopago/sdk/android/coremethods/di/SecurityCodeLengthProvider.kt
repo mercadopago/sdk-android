@@ -6,10 +6,11 @@ package com.mercadopago.sdk.android.coremethods.di
  * the card token use case, so validation uses the correct length without changing the use case signature.
  */
 internal interface SecurityCodeLengthProvider {
-
     fun getExpectedLength(): Int?
 
-    fun setExpectedLength(length: Int?)
+    fun setExpectedLength(
+        length: Int?,
+    )
 }
 
 /**
@@ -17,14 +18,15 @@ internal interface SecurityCodeLengthProvider {
  * Uses initialValue() override for API 23 compatibility (ThreadLocal.withInitial requires API 26).
  */
 internal class SecurityCodeLengthProviderImpl : SecurityCodeLengthProvider {
-
     private val holder = object : ThreadLocal<Int?>() {
         override fun initialValue(): Int? = null
     }
 
     override fun getExpectedLength(): Int? = holder.get()
 
-    override fun setExpectedLength(length: Int?) {
+    override fun setExpectedLength(
+        length: Int?,
+    ) {
         holder.set(length)
     }
 }
