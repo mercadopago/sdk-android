@@ -35,13 +35,13 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
 
-        val securityCodeLength: Int = when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
-            is Result.Success -> {
-                result.data.firstOrNull()?.card?.securityCode?.length ?: SECURITY_CODE_MIN_LENGTH
-            }
+        val securityCodeLength: Int =
+            when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
+                is Result.Success -> result.data.firstOrNull()?.card?.securityCode?.length
+                    ?: SECURITY_CODE_MIN_LENGTH
 
-            is Result.Error -> SECURITY_CODE_MIN_LENGTH
-        }
+                is Result.Error -> SECURITY_CODE_MIN_LENGTH
+            }
 
         if (securityCode.isNullOrEmpty() || securityCode.length != securityCodeLength) {
             return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))

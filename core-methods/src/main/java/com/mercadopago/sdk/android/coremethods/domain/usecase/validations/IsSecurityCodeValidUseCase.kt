@@ -4,7 +4,5 @@ internal class IsSecurityCodeValidUseCase {
     operator fun invoke(
         securityCodeSize: Int,
         securityCodeLength: Int,
-    ): Boolean {
-        return securityCodeSize != securityCodeLength
-    }
+    ): Boolean = securityCodeSize != securityCodeLength
 }

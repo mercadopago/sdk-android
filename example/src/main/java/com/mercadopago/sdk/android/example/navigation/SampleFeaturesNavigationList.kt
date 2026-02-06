@@ -14,12 +14,12 @@ internal val SampleFeaturesNavigationList: List<SampleFeature> = listOf(
         description = R.string.core_methods_feature_description,
         destination = SampleDestination.CoreMethods,
     ),
-//    SampleFeature(
-//        title = R.string.checkout_feature_title,
-//        description = R.string.checkout_feature_description,
-//        destination = SampleDestination.Checkout,
-//        isEnabled = true,
-//    )
+    SampleFeature(
+        title = R.string.checkout_feature_title,
+        description = R.string.checkout_feature_description,
+        destination = SampleDestination.Checkout,
+        isEnabled = false,
+    )
 )
 
 internal data class SampleFeature(
