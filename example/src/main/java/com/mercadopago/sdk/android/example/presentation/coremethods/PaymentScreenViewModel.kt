@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
-import com.mercadopago.sdk.android.coremethods.domain.interactor.getWarnings
-import com.mercadopago.sdk.android.coremethods.domain.interactor.setThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -70,7 +68,7 @@ internal class PaymentScreenViewModel(
                 return@launch
             }
             val result = coreMethods.generateCardToken(
-                cardNumberState = cardNumberState,
+                cardId = "0000000000",
                 expirationDateState = expirationDateState,
                 securityCodeState = securityCodeState,
                 buyerIdentification = BuyerIdentification(
@@ -268,7 +266,7 @@ internal class PaymentScreenViewModel(
                     )
                     _viewState.value = _viewState.value.copy(
                         secureCodeState = _viewState.value.secureCodeState.copy(
-                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 3
+                            secureCodeLength = result.data[0].card?.securityCode?.length ?: 4
                         )
 
                     )

@@ -54,7 +54,6 @@ android {
     compileOptions {
         sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
-        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
@@ -75,11 +74,10 @@ kover.reports.filters.excludes {
 }
 
 dependencies {
-    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(projects.sdkAndroid)
     implementation(projects.foundation)
-    implementation(projects.checkout)
     implementation(projects.coreMethods)
+    implementation(projects.checkout)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
     api(libs.koin.android)
