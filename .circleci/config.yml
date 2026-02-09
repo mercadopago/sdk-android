@@ -132,7 +132,7 @@ jobs:
             sudo apt-get install git-lfs
             git lfs install --skip-smudge
       - checkout
-      - run: git lfs fetch --all
+#      - run: git lfs fetch --all
       - attach_workspace:
           at: build/dokka/
       - run:
@@ -167,7 +167,7 @@ jobs:
             sudo apt-get install git-lfs
             git lfs install --skip-smudge
       - checkout
-      - run: git lfs fetch --all
+#      - run: git lfs fetch --all
       - run:
           name: Set Secrets File
           command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
