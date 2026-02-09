@@ -36,7 +36,7 @@ internal class GenerateCardIdTokenUseCase(
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
-        if (securityCode != null) {
+        if (!securityCode.isNullOrEmpty()) {
             val securityCodeLength =
                 securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
 
