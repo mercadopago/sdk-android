@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.remote.service
 
+import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.response.ThreeDSChallengeAuthenticationResponse
 import retrofit2.Response
@@ -21,5 +22,10 @@ internal interface ThreeDSService {
     suspend fun updateThreeDSChallengeStatus(
         @Path("challengeId") challengeId: String,
         @Body request: UpdateThreeDSChallengeStatusRequest,
+    ): Response<Unit>
+
+    @POST("$BRICKS_API/$VERSION/challenges/threeds/device")
+    suspend fun saveThreeDSDeviceData(
+        @Body request: ThreeDSDeviceDataRequest,
     ): Response<Unit>
 }

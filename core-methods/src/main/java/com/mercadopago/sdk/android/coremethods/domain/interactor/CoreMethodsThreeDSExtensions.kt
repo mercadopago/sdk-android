@@ -6,10 +6,13 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProvider
 import com.mercadopago.sdk.android.coremethods.domain.provider.ThreeDSProviderManager
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSChallengeResult
+import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSRequestParams
 import com.mercadopago.sdk.android.coremethods.domain.provider.models.ThreeDSWarning
 import com.mercadopago.sdk.android.coremethods.domain.usecase.CloseTransactionUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.CreateTransactionUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GetAuthenticationRequestParametersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetWarningsUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.SaveThreeDSDeviceDataOrchestratorUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.StartChallengeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -171,3 +174,81 @@ fun CoreMethods.close(): Result<String, ResultError> = koin.get<CloseTransaction
 fun CoreMethods.createTransaction(
     cardToken: CardToken,
 ): Result<String, ResultError> = koin.get<CreateTransactionUseCase>().invoke(cardToken)
+
+/**
+ * Retrieves the authentication request parameters for the current 3DS transaction.
+ * These parameters should be sent to your backend for 3DS authentication.
+ *
+ * This method requires a 3DS provider to be set via [setThreeDSProvider] and
+ * a transaction to be created via [createTransaction] before calling this method.
+ *
+ * @return [Result.Success] with [ThreeDSRequestParams] containing the authentication parameters,
+ *         [Result.Error] with [ResultError] if the provider is not available, no transaction exists,
+ *         or an error occurred
+ *
+ * Example:
+ * ```kotlin
+ * // First create a transaction
+ * coreMethods.createTransaction(cardToken)
+ *
+ * // Then get authentication parameters
+ * val result = coreMethods.getAuthenticationRequestParameters()
+ * when (result) {
+ *     is Result.Success -> {
+ *         val params = result.data
+ *         // Send params to your backend for 3DS authentication
+ *         // params.sdkAppId
+ *         // params.deviceData
+ *         // params.sdkEphemeralPublicKey
+ *         // params.sdkReferenceNumber
+ *         // params.sdkTransactionId
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to get auth params: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see ThreeDSRequestParams
+ * @see createTransaction
+ * @see Result
+ * @see ResultError
+ */
+fun CoreMethods.getAuthenticationRequestParameters(): Result<ThreeDSRequestParams, ResultError> =
+    koin.get<GetAuthenticationRequestParametersUseCase>().invoke()
+
+/**
+ * Saves the 3DS device data collected by the SDK to initiate the authentication process.
+ *
+ * This method orchestrates the following operations:
+ * 1. Validates the 3DS provider is available
+ * 2. Creates a transaction with the card token
+ * 3. Gets authentication request parameters
+ * 4. Parses the ephemeral public key
+ * 5. Executes the device data save operation
+ *
+ * @param cardToken The [CardToken] containing the tokenized card information
+ * @return [Result.Success] with [Unit] if the device data was saved successfully,
+ *         [Result.Error] with [ResultError] if an error occurred during any operation
+ *
+ * Example:
+ * ```kotlin
+ * val result = coreMethods.saveThreeDSDeviceData(cardToken)
+ * when (result) {
+ *     is Result.Success -> {
+ *         Log.d("3DS", "Device data saved successfully")
+ *         // Proceed with authentication
+ *     }
+ *     is Result.Error -> {
+ *         Log.e("3DS", "Failed to save device data: ${result.error.message}")
+ *     }
+ * }
+ * ```
+ *
+ * @see CardToken
+ * @see Result
+ * @see ResultError
+ */
+suspend fun CoreMethods.saveThreeDSDeviceData(
+    cardToken: CardToken,
+): Result<Unit, ResultError> = koin.get<SaveThreeDSDeviceDataOrchestratorUseCase>().invoke(cardToken)

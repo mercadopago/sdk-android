@@ -31,9 +31,11 @@ import com.mercadopago.sdk.android.threeds.interactor.MPThreeDS
  * ```
  *
  * @param mpThreeDS The MPThreeDS instance to delegate calls to
+ * @param sdkVersion The SDk version number
  */
 class MPThreeDSProviderAdapter(
     private val mpThreeDS: MPThreeDS,
+    override val sdkVersion: String,
 ) : ThreeDSProvider {
     /**
      * Creates a 3DS transaction for the specified payment method.

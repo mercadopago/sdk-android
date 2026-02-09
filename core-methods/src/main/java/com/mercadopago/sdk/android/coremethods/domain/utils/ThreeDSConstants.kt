@@ -12,6 +12,9 @@ internal object ThreeDSErrorMessages {
     const val ERROR_DURING_CHALLENGE = "Error during 3DS challenge: "
     const val FAILED_TO_CLOSE_TRANSACTION = "Failed to close transaction: "
     const val FAILED_TO_CREATE_TRANSACTION = "Failed to create transaction: "
+    const val FAILED_TO_GET_AUTH_PARAMETERS = "Failed to get authentication request parameters. " +
+        "Make sure a transaction was created."
+    const val ERROR_GETTING_AUTH_PARAMETERS = "Error getting authentication request parameters: "
 }
 
 internal object ThreeDSSuccessMessages {

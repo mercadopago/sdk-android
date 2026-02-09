@@ -29,7 +29,7 @@ class MPThreeDSProviderAdapterTest {
     @Before
     fun setup() {
         mpThreeDS = mockk(relaxed = true)
-        adapter = MPThreeDSProviderAdapter(mpThreeDS)
+        adapter = MPThreeDSProviderAdapter(mpThreeDS, sdkVersion = "")
     }
 
     @Test

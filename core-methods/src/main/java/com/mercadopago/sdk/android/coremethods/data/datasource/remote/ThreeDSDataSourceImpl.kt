@@ -2,7 +2,9 @@ package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
+import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toUnitResponse
 import com.mercadopago.sdk.android.coremethods.data.remote.mappers.toModel
+import com.mercadopago.sdk.android.coremethods.data.remote.request.ThreeDSDeviceDataRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.request.UpdateThreeDSChallengeStatusRequest
 import com.mercadopago.sdk.android.coremethods.data.remote.service.ThreeDSService
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -23,4 +25,8 @@ internal class ThreeDSDataSourceImpl(
         challengeId: String,
         request: UpdateThreeDSChallengeStatusRequest,
     ): Result<Unit, ResultError> = service.updateThreeDSChallengeStatus(challengeId, request).toInternalResponse()
+
+    override suspend fun saveThreeDSDeviceData(
+        request: ThreeDSDeviceDataRequest,
+    ): Result<Unit, ResultError> = service.saveThreeDSDeviceData(request).toUnitResponse()
 }
