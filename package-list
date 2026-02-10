@@ -9,9 +9,11 @@ com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.xml
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.xml
+com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml
+com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield
 com.mercadopago.sdk.android.coremethods.ui.utils
 module:sdk-android
 com.mercadopago.sdk.android.di
