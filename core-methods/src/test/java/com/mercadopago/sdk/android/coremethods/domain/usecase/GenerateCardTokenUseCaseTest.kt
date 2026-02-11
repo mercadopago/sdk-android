@@ -40,7 +40,7 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns true
+            every { isSecurityCodeValidUseCase(any<Int>(), any<Int>()) } returns true
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
@@ -60,7 +60,7 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns true
+            every { isSecurityCodeValidUseCase(any<Int>(), any<Int>()) } returns true
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
             coEvery { repository.generateCardToken(any()) } returns expectedResult
@@ -78,9 +78,49 @@ internal class GenerateCardTokenUseCaseTest {
             val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
-            every { isSecurityCodeValidUseCase(any(), any()) } returns false
+            every { isSecurityCodeValidUseCase(any<Int>(), any<Int>()) } returns false
             coEvery { paymentMethodsUseCase(any()) } returns
                 Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
+            val actualResult = generateCardTokenUseCase(inputCardNumber, inputSecurityCode, inputExpirationDate)
+            assertTrue(actualResult is Result.Error)
+            assertTrue((actualResult as Result.Error).error is ResultError.Validation)
+        }
+
+    @Test
+    fun `test invoke returns Result Success when security code is null`() =
+        runBlocking {
+            val inputCardNumber = "4111111111111111"
+            val inputExpirationDate = "12/25"
+            val expectedCardToken = CardToken("sampleToken")
+            coEvery { repository.generateCardToken(any()) } returns Result.Success(expectedCardToken)
+            val actualResult = generateCardTokenUseCase(inputCardNumber, null, inputExpirationDate)
+            assertTrue(actualResult is Result.Success)
+            assertEquals(expectedCardToken, (actualResult as Result.Success).data)
+        }
+
+    @Test
+    fun `test invoke returns Result Error when security code has only one digit`() =
+        runBlocking {
+            val inputCardNumber = "4111111111111111"
+            val inputExpirationDate = "12/25"
+            val inputSecurityCode = "1"
+            val mockPaymentMethodWithSecurityCodeLengthThree = PaymentMethod(
+                card = CardModel(securityCode = SecurityCodeModel(length = 3)),
+            )
+            every { isSecurityCodeValidUseCase(any<Int>(), any<Int>()) } returns false
+            coEvery { paymentMethodsUseCase(any()) } returns
+                Result.Success(listOf(mockPaymentMethodWithSecurityCodeLengthThree))
+            val actualResult = generateCardTokenUseCase(inputCardNumber, inputSecurityCode, inputExpirationDate)
+            assertTrue(actualResult is Result.Error)
+            assertTrue((actualResult as Result.Error).error is ResultError.Validation)
+        }
+
+    @Test
+    fun `test invoke returns Result Error when security code is empty`() =
+        runBlocking {
+            val inputCardNumber = "4111111111111111"
+            val inputExpirationDate = "12/25"
+            val inputSecurityCode = ""
             val actualResult = generateCardTokenUseCase(inputCardNumber, inputSecurityCode, inputExpirationDate)
             assertTrue(actualResult is Result.Error)
             assertTrue((actualResult as Result.Error).error is ResultError.Validation)
