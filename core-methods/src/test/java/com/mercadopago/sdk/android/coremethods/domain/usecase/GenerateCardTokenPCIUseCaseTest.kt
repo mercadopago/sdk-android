@@ -19,13 +19,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-internal class GenerateCardTokenWithSecurityCodeUseCaseTest {
+internal class GenerateCardTokenPCIUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
     private val sessionIdProvider: SessionIdProvider = mockk()
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase = mockk()
     private val isSecurityCodeValidUseCase: IsSecurityCodeValidUseCase = mockk()
-    private val useCase: GenerateCardTokenWithSecurityCodeUseCase =
-        GenerateCardTokenWithSecurityCodeUseCase(
+    private val useCase: GenerateCardTokenPCIUseCase =
+        GenerateCardTokenPCIUseCase(
             repository = repository,
             paymentMethodsUseCase = paymentMethodsUseCase,
             sessionIdProvider = sessionIdProvider,

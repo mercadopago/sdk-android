@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
-import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenWithSecurityCodeUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenPCIUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
@@ -77,7 +77,7 @@ internal class CoreMethodsTest {
             val expectedResult = Result.Success(expectedCardToken)
 
             coEvery {
-                koin.get<GenerateCardTokenWithSecurityCodeUseCase>().invoke(any(), any(), any(), any())
+                koin.get<GenerateCardTokenPCIUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
                 coreMethods.generateCardToken(
@@ -106,7 +106,7 @@ internal class CoreMethodsTest {
             val expectedResult = Result.Error(expectedError)
 
             coEvery {
-                koin.get<GenerateCardTokenWithSecurityCodeUseCase>().invoke(any(), any(), any(), any())
+                koin.get<GenerateCardTokenPCIUseCase>().invoke(any(), any(), any(), any())
             } returns expectedResult
             val result =
                 coreMethods.generateCardToken(

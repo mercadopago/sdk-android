@@ -21,7 +21,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
 import com.mercadopago.sdk.android.di.SessionIdProvider
 
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
-internal class GenerateCardTokenWithSecurityCodeUseCase(
+internal class GenerateCardTokenPCIUseCase(
     private val repository: CoreMethodsRepository,
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase,
     private val sessionIdProvider: SessionIdProvider,
