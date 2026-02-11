@@ -38,8 +38,7 @@ internal class GenerateCardTokenUseCase(
         }
 
         if (securityCode != null) {
-
-            if(securityCode.isEmpty()){
+            if (securityCode.isEmpty()) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
 
