@@ -28,23 +28,23 @@ internal class GenerateCardIdTokenUseCase(
 ) {
     suspend operator fun invoke(
         cardId: String,
-        securityCode: String?,
+        securityCode: String? = null,
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
         if (cardId.isEmpty()) {
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
-        val normalizedSecurityCode: String? = securityCode?.takeIf { it.isNotBlank() }
-        if (normalizedSecurityCode != null) {
-            if (normalizedSecurityCode.isEmpty()) {
+
+        if (securityCode != null) {
+            if (securityCode.isEmpty()) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
 
             val securityCodeLength =
                 securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
 
-            if (isSecurityCodeValidUseCase(normalizedSecurityCode.length, securityCodeLength)) {
+            if (isSecurityCodeValidUseCase(securityCode.length, securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }
@@ -66,7 +66,7 @@ internal class GenerateCardIdTokenUseCase(
                 cardId = cardId,
                 expirationMonth = expirationMonth,
                 expirationYear = expirationYear,
-                securityCode = normalizedSecurityCode,
+                securityCode = securityCode,
                 buyerIdentification = buyerIdentification?.let { buyer ->
                     BuyerIdentificationParam(
                         name = buyer.name,

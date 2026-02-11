@@ -37,11 +37,11 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
 
-        if (securityCode != null && securityCode.isBlank()) {
-            return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
-        }
-        val normalizedSecurityCode: String? = securityCode?.takeIf { it.isNotBlank() }
-        if (normalizedSecurityCode != null) {
+        if (securityCode != null) {
+            if (securityCode.isEmpty()) {
+                return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+            }
+
             val securityCodeLength: Int =
                 when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
                     is Result.Success -> result.data.firstOrNull()?.card?.securityCode?.length
@@ -50,7 +50,7 @@ internal class GenerateCardTokenUseCase(
                     is Result.Error -> SECURITY_CODE_MIN_LENGTH
                 }
 
-            if (!isSecurityCodeValidUseCase(normalizedSecurityCode.length, securityCodeLength)) {
+            if (!isSecurityCodeValidUseCase(securityCode.length, securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }
@@ -72,7 +72,7 @@ internal class GenerateCardTokenUseCase(
                 cardNumber = cardNumber,
                 expirationMonth = expirationMonth,
                 expirationYear = expirationYear,
-                securityCode = normalizedSecurityCode,
+                securityCode = securityCode,
                 buyerIdentification = buyerIdentification?.let { buyer ->
                     BuyerIdentificationParam(
                         name = buyer.name,
