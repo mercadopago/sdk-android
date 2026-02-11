@@ -23,6 +23,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ProcessingMode
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenWithSecurityCodeUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetInstallmentsUseCase
@@ -98,7 +99,7 @@ class CoreMethods internal constructor(
         securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification,
     ): Result<CardToken, ResultError> {
-        val result = koin.get<GenerateCardTokenUseCase>().invoke(
+        val result = koin.get<GenerateCardTokenWithSecurityCodeUseCase>().invoke(
             cardNumber = cardNumberState.input,
             expirationDate = expirationDateState.input,
             securityCode = securityCodeState.input,
