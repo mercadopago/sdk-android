@@ -29,7 +29,7 @@ internal class GenerateCardTokenUseCase(
 ) {
     suspend operator fun invoke(
         cardNumber: String,
-        securityCode: String?,
+        securityCode: String? = null,
         expirationDate: String,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
@@ -37,7 +37,11 @@ internal class GenerateCardTokenUseCase(
             return Result.Error(ResultError.Validation("card number cannot be empty"))
         }
 
-        if (!securityCode.isNullOrEmpty()) {
+        if (securityCode != null) {
+            if (securityCode.isEmpty()) {
+                return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+            }
+
             val securityCodeLength: Int =
                 when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
                     is Result.Success -> result.data.firstOrNull()?.card?.securityCode?.length
@@ -46,7 +50,7 @@ internal class GenerateCardTokenUseCase(
                     is Result.Error -> SECURITY_CODE_MIN_LENGTH
                 }
 
-            if (!isSecurityCodeValidUseCase(securityCode.toInt(), securityCodeLength)) {
+            if (!isSecurityCodeValidUseCase(securityCode.length, securityCodeLength)) {
                 return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
             }
         }
