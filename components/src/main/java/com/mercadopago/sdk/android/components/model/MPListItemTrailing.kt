@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * @param icon: Trailing icon
  * @param textColor: Trailing text color
  */
-data class MPTrailing(
+data class MPListItemTrailing(
     val text: String? = null,
     val icon: ImageVector? = null,
     val textColor: Color? = null,

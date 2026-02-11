@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.isNotNull
-import com.mercadopago.sdk.android.components.model.MPTrailing
+import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
@@ -44,7 +44,7 @@ fun MPListItem(
     title: String,
     isSelected: Boolean? = null,
     description: String? = null,
-    trailing: MPTrailing? = null,
+    trailing: MPListItemTrailing? = null,
     leftImage: ImageVector? = null,
     onClick: () -> Unit = {},
 ) {
@@ -124,7 +124,7 @@ private fun MPListItemPreview() {
         ) {
             MPListItem(
                 title = "List Item",
-                trailing = MPTrailing(
+                trailing = MPListItemTrailing(
                     icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
                     text = "Sem Acréscimo",
                     textColor = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
