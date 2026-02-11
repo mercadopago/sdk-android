@@ -29,7 +29,7 @@ internal class GenerateCardTokenUseCase(
 ) {
     suspend operator fun invoke(
         cardNumber: String,
-        securityCode: String?,
+        securityCode: String? = null,
         expirationDate: String,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {

@@ -60,9 +60,9 @@ internal class CardPaymentViewModel(
             }
             _viewState.value = _viewState.value.copy(isLoading = true)
             val result = coreMethods.generateCardToken(
-                cardNumberState = cardNumberState,
-                expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState,
+                cardNumber = "4114411441144114",
+                expirationDate = "11/30",
+                securityCode = null,
                 buyerIdentification = BuyerIdentification(
                     name = viewState.value.cardHolderState.value,
                     number = viewState.value.identificationTypeState.value,

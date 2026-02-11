@@ -528,7 +528,7 @@ class CoreMethods internal constructor(
     suspend fun generateCardToken(
         cardNumber: String,
         expirationDate: String,
-        securityCode: String?,
+        securityCode: String? = null,
         buyerIdentification: BuyerIdentification,
     ): Result<CardToken, ResultError> {
         val result = koin.get<GenerateCardTokenUseCase>().invoke(
