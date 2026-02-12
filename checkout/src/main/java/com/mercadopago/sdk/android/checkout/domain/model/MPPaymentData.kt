@@ -25,7 +25,7 @@ data class MPPaymentData(
  * @property documentType Optional type of identification document (e.g. DNI, CPF).
  * @property documentNumber Optional identification document number.
  */
-data class Payer (
+data class Payer(
     val documentType: String? = null,
     val documentNumber: String? = null,
 )

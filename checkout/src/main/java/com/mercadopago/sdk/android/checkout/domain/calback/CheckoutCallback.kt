@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
  * - [UserCancelled] User explicitly cancelled the checkout.
  */
 interface CheckoutCallback {
-
     /**
      * Checkout completed successfully.
      *
