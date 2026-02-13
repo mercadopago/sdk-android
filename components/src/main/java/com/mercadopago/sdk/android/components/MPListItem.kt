@@ -85,7 +85,9 @@ internal fun MPListItem(
 }
 
 @Composable
-private fun MPListItemContentInfo(contentInfo: MPListItemContentInfo) {
+private fun MPListItemContentInfo(
+    contentInfo: MPListItemContentInfo,
+) {
     if (contentInfo.header.isNotNull()) {
         MPText(
             text = contentInfo.header,
@@ -109,7 +111,9 @@ private fun MPListItemContentInfo(contentInfo: MPListItemContentInfo) {
 }
 
 @Composable
-private fun MPListItemTrailing(trailing: MPListItemTrailing?) {
+private fun MPListItemTrailing(
+    trailing: MPListItemTrailing?,
+) {
     trailing?.let {
         if (it.text.isNotNull()) {
             MPText(
@@ -148,7 +152,7 @@ private fun MPListItemPreview() {
                     type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
                     text = "$ 1.000",
                     textColor = MercadoPagoAndesTheme.color.fill.accentLoud,
-                )
+                ),
             )
         }
     }

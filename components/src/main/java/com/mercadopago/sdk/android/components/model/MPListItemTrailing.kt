@@ -16,14 +16,12 @@ data class MPListItemTrailing(
     val type: Type? = null,
     val textColor: Color? = null,
 ) {
-
     /**
      * Represents the trailing content type for components that support an optional trailing area.
      *
      * Use this sealed class to describe what should be rendered at the end (right side) of a row/item.
      */
     sealed class Type {
-
         /**
          *  Trailing icon.
          *  @param icon Trailing icon
