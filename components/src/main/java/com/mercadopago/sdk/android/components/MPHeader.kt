@@ -155,13 +155,17 @@ private fun MPHeaderScrollOffContent(
             HeaderBackButton {
                 onBackClick.invoke()
             }
-            MPText(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(progress),
-                text = title,
-                style = MercadoPagoAndesTheme.typography.heading.default.medium.copy(textAlign = TextAlign.Center),
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                MPText(
+                    text = title,
+                    style = MercadoPagoAndesTheme.typography.heading.default.medium,
+                )
+            }
         }
     }
 }
@@ -192,21 +196,32 @@ private fun MPHeaderSingleLayoutContent(
                     HeaderBackButton {
                         onBackClick.invoke()
                     }
-                    MPText(
+                    Box(
                         modifier = Modifier.fillMaxWidth(),
-                        text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium.copy(textAlign = TextAlign.Center),
-                    )
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        MPText(
+                            text = title,
+                            style = MercadoPagoAndesTheme.typography.heading.default.medium,
+                        )
+                    }
                 }
             }
             MPHeaderType.TittleLeft -> {
                 Column(
-                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
                 ) {
-                    MPText(
-                        text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        MPText(
+                            text = title,
+                            style = MercadoPagoAndesTheme.typography.heading.default.medium,
+                        )
+                    }
                 }
             }
             MPHeaderType.ScrollOff -> { }
@@ -271,7 +286,7 @@ private fun MPHeaderScrollOffPreview() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                repeat(5) { index ->
+                repeat(20) { index ->
                     MPText(
                         text = "Item $index",
                         style = MercadoPagoAndesTheme.typography.body.default.medium,
