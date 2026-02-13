@@ -11,7 +11,18 @@ package com.mercadopago.sdk.android.checkout.core.model
  * - [PREPAID] Prepaid card.
  */
 enum class CardType {
+    /**
+     * CREDIT: Credit card.
+     */
     CREDIT,
+
+    /**
+     * DEBIT: Debit card.
+     */
     DEBIT,
+
+    /**
+     * PREPAID: Prepaid card.
+     */
     PREPAID
 }
