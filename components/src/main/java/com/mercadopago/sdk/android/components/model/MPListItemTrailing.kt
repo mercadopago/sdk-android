@@ -26,6 +26,7 @@ data class MPListItemTrailing(
 
         /**
          *  Trailing icon.
+         *  @param icon Trailing icon
          */
         data class Icon(val icon: ImageVector) : Type()
 

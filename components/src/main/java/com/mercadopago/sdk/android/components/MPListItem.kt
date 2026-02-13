@@ -27,33 +27,10 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
 
-@Preview(name = "List Item", group = LIST_GROUP, showBackground = true)
-@Composable
-private fun MPListItemPreview() {
-    MercadoPagoTheme {
-        Box(
-            modifier = Modifier.padding(10.dp),
-        ) {
-            MPListItem(
-                contentInfo = MPListItemContentInfo(
-                    title = "Title",
-                    description = "Description",
-                ),
-                trailing = MPListItemTrailing(
-                    type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
-                    text = "$ 1.000",
-                    textColor = MercadoPagoAndesTheme.color.fill.accentLoud,
-                )
-            )
-        }
-    }
-}
-
-
 /**
  * List Item component
- * @param contentInfo component content information (title, header, description)
  * @param modifier component modifier
+ * @param contentInfo component content information (title, header, description)
  * @param trailing component trailing content (text, icon, color)
  * @param leftImage component left image
  * @param type component type (RadioButton, etc.)
@@ -151,6 +128,28 @@ private fun MPListItemTrailing(trailing: MPListItemTrailing?) {
                     modifier = Modifier.size(20.dp),
                 )
             is MPListItemTrailing.Type.None, null -> Unit
+        }
+    }
+}
+
+@Preview(name = "List Item", group = LIST_GROUP, showBackground = true)
+@Composable
+private fun MPListItemPreview() {
+    MercadoPagoTheme {
+        Box(
+            modifier = Modifier.padding(10.dp),
+        ) {
+            MPListItem(
+                contentInfo = MPListItemContentInfo(
+                    title = "Title",
+                    description = "Description",
+                ),
+                trailing = MPListItemTrailing(
+                    type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
+                    text = "$ 1.000",
+                    textColor = MercadoPagoAndesTheme.color.fill.accentLoud,
+                )
+            )
         }
     }
 }
