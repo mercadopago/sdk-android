@@ -18,7 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.components.extensions.scrollProgressRatio
 
 /**
  * A header component that provides different layout styles for page headers.
@@ -43,10 +44,9 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
  * @param title The title text displayed in the header. Required parameter.
  * @param subtitle Optional subtitle text displayed below the title.
  * @param onBackClick Callback invoked when the back button is clicked.
- * @param content The composable content to display below the header. When [headerType] is [MPHeaderType.ScrollOff],
+ * @param content The composable content to display below the header.
  * this content is placed inside the same scroll as the expanded header; do not add verticalScroll to it.
  */
-@Suppress("LongMethod")
 @Composable
 fun MPHeader(
     modifier: Modifier = Modifier,
@@ -56,13 +56,9 @@ fun MPHeader(
     content: @Composable () -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    var titleBlockHeightPx by remember { mutableStateOf(0f) }
+    var titleBlockHeightPx by remember { mutableFloatStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
-    val progress = if (titleBlockHeightPx > 0) {
-        (scrollOffset / titleBlockHeightPx).coerceIn(0f, 1f)
-    } else {
-        0f
-    }
+    val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
     Box(
         modifier = modifier
             .background(color = MercadoPagoAndesTheme.color.background.primary),
@@ -164,7 +160,7 @@ private fun MPHeaderScrollOffPreview() {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                repeat(Int.MAX_VALUE) { index ->
+                repeat(20) { index ->
                     MPText(
                         text = "Item $index",
                         style = MercadoPagoAndesTheme.typography.body.default.medium,
@@ -190,7 +186,7 @@ private fun MPHeaderScrollOnPreview() {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(Int.MAX_VALUE) { index ->
+                items(20) { index ->
                     MPText(
                         text = "Item $index",
                         style = MercadoPagoAndesTheme.typography.body.default.medium,
