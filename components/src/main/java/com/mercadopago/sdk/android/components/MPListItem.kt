@@ -37,7 +37,7 @@ private const val LIST_GROUP = "LIST_ITEM"
  * @param onClick component click action
  */
 @Composable
-internal fun MPListItem(
+fun MPListItem(
     modifier: Modifier = Modifier,
     contentInfo: MPListItemContentInfo,
     trailing: MPListItemTrailing? = null,
