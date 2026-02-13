@@ -16,7 +16,7 @@ data class MPPaymentData(
     val installment: Int? = null,
     val paymentMethodId: String? = null,
     val issuerId: String? = null,
-    val payer: Payer,
+    val payer: Payer? = null,
 )
 
 /**
