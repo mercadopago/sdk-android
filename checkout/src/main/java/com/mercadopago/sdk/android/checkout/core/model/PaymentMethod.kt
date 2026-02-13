@@ -5,7 +5,6 @@ package com.mercadopago.sdk.android.checkout.core.model
  * This its used to change the payment method showed in checkout
  */
 sealed class PaymentMethod {
-
     /**
      * Card payment method
      * @param cardTypes List of card types
@@ -13,7 +12,7 @@ sealed class PaymentMethod {
      */
     data class Card(
         val cardTypes: List<CardType> = listOf(CardType.CREDIT, CardType.DEBIT, CardType.PREPAID),
-        val installment: Installment? = Installment()
+        val installment: Installment? = Installment(),
     ) : PaymentMethod()
 
     /**
@@ -31,7 +30,7 @@ sealed class PaymentMethod {
      * @param installment Installment
      */
     data class Loan(
-        val installment: Installment
+        val installment: Installment,
     ) : PaymentMethod()
 
     /**

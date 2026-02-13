@@ -22,7 +22,6 @@ class MercadoPagoCheckout private constructor(
     private val checkoutAppearance: CheckoutAppearance?,
     private val koin: Koin = Checkout.getInstance().koin,
 ) {
-
     /**
      * Launches the checkout
      */
@@ -50,29 +49,29 @@ class MercadoPagoCheckout private constructor(
             appearance = MercadoPagoThemeAppearance.System,
         ),
     ) {
-
         private var paymentMethods: List<PaymentMethod> = emptyList()
 
         /**
          * Sets the payment methods
          * @param paymentMethods List of payment methods
          */
-        fun setPaymentMethods(paymentMethods: List<PaymentMethod> = PaymentMethod.defaults) {
+        fun setPaymentMethods(
+            paymentMethods: List<PaymentMethod> = PaymentMethod.defaults,
+        ) {
             this.paymentMethods = paymentMethods
         }
 
         /**
          * Builds the MercadoPagoCheckout
          */
-        fun build(): MercadoPagoCheckout {
-            return MercadoPagoCheckout(
+        fun build(): MercadoPagoCheckout =
+            MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,
                 checkoutConfiguration = CheckoutConfiguration(
                     checkoutType = checkoutType,
-                    paymentMethods = paymentMethods
-                )
+                    paymentMethods = paymentMethods,
+                ),
             )
-        }
     }
 }

@@ -10,5 +10,5 @@ internal const val DEFAULT_INSTALLMENT_MAX = 180
  */
 data class Installment(
     val minInstallments: Int = DEFAULT_INSTALLMENT_MIN,
-    val maxInstallments: Int = DEFAULT_INSTALLMENT_MAX
+    val maxInstallments: Int = DEFAULT_INSTALLMENT_MAX,
 )

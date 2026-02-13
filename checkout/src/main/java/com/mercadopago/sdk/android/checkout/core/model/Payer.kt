@@ -5,5 +5,5 @@ package com.mercadopago.sdk.android.checkout.core.model
  * @param email String
  */
 class Payer(
-    val email: String
+    val email: String,
 )

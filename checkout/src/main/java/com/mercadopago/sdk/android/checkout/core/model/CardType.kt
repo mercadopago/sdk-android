@@ -20,5 +20,5 @@ enum class CardType {
     /**
      * PREPAID: Prepaid card.
      */
-    PREPAID
+    PREPAID,
 }
