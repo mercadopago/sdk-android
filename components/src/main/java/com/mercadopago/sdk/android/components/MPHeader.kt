@@ -106,10 +106,10 @@ private fun MPHeaderScrollOffContent(
     content: @Composable () -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    var scrollOffHeightPx by remember { mutableStateOf(0f) }
+    var titleBlockHeightPx by remember { mutableStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
-    val progress = if (scrollOffHeightPx > 0) {
-        (scrollOffset / scrollOffHeightPx).coerceIn(0f, 1f)
+    val progress = if (titleBlockHeightPx > 0) {
+        (scrollOffset / titleBlockHeightPx).coerceIn(0f, 1f)
     } else {
         0f
     }
@@ -124,14 +124,11 @@ private fun MPHeaderScrollOffContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny)
+                    .padding(top = MercadoPagoAndesTheme.spacing.gap.medium + MercadoPagoAndesTheme.spacing.paddings.xtiny * 2)
                     .onGloballyPositioned { coordinates ->
-                        scrollOffHeightPx = coordinates.size.height.toFloat()
+                        titleBlockHeightPx = coordinates.size.height.toFloat()
                     },
             ) {
-                HeaderBackButton {
-                    onBackClick.invoke()
-                }
-                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.tiny))
                 MPText(
                     text = title,
                     style = MercadoPagoAndesTheme.typography.heading.default.huge,
@@ -150,7 +147,6 @@ private fun MPHeaderScrollOffContent(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .fillMaxWidth()
-                .alpha(progress)
                 .background(color = MercadoPagoAndesTheme.color.background.primary)
                 .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -160,7 +156,9 @@ private fun MPHeaderScrollOffContent(
                 onBackClick.invoke()
             }
             MPText(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(progress),
                 text = title,
                 style = MercadoPagoAndesTheme.typography.heading.default.medium.copy(textAlign = TextAlign.Center),
             )

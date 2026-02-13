@@ -111,12 +111,18 @@ internal fun CardPaymentScreenContent(
     onTooltipClick: () -> Unit = {},
     onMessageClick: () -> Unit = {},
 ) {
-    Column {
-        MPHeader(
-            title = "Preencha os dados do\ncartão",
-            onBackClick = onBackClick,
-            headerType = MPHeaderType.ScrollOff,
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
         ) {
+            MPHeader(
+                modifier = Modifier.fillMaxSize(),
+                title = "Preencha os dados do\ncartão",
+                onBackClick = onBackClick,
+                headerType = MPHeaderType.ScrollOff,
+            ) {
             var containerBounds by remember { mutableStateOf(Rect.Zero) }
             var securityCodeBounds by remember { mutableStateOf(Rect.Zero) }
             val density = LocalDensity.current
@@ -246,6 +252,7 @@ internal fun CardPaymentScreenContent(
                     }
                 }
             }
+        }
         }
         MPFixedFooter(
             title = viewState.fixedFooterState.title,
