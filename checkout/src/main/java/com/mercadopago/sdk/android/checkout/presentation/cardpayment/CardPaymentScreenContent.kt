@@ -36,7 +36,6 @@ import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
-import com.mercadopago.sdk.android.components.MPHeaderType
 import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
 import com.mercadopago.sdk.android.components.MPPopover
@@ -121,7 +120,6 @@ internal fun CardPaymentScreenContent(
                 modifier = Modifier.fillMaxSize(),
                 title = "Preencha os dados do\ncartão",
                 onBackClick = onBackClick,
-                headerType = MPHeaderType.ScrollOff,
             ) {
                 var containerBounds by remember { mutableStateOf(Rect.Zero) }
                 var securityCodeBounds by remember { mutableStateOf(Rect.Zero) }
