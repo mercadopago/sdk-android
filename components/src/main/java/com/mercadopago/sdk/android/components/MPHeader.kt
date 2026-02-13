@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
@@ -83,7 +84,9 @@ fun MPHeader(
 
             MPHeaderType.ScrollOn -> {
                 Row(
-                    modifier = Modifier.padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
+                    modifier = Modifier
+                        .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -92,8 +95,9 @@ fun MPHeader(
                     }
                     Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
                     MPText(
+                        modifier = Modifier.fillMaxWidth(),
                         text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
+                        style = MercadoPagoAndesTheme.typography.heading.default.medium.copy(textAlign = TextAlign.Center),
                     )
                 }
             }
