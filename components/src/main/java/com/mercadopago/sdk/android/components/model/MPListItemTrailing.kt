@@ -8,11 +8,30 @@ import androidx.compose.ui.graphics.vector.ImageVector
  * This its used to change the component showed in trailing
  *
  * @param text: Trailing text
- * @param icon: Trailing icon
+ * @param type: Trailing type
  * @param textColor: Trailing text color
  */
 data class MPListItemTrailing(
     val text: String? = null,
-    val icon: ImageVector? = null,
+    val type: Type? = null,
     val textColor: Color? = null,
-)
+) {
+
+    /**
+     * Represents the trailing content type for components that support an optional trailing area.
+     *
+     * Use this sealed class to describe what should be rendered at the end (right side) of a row/item.
+     */
+    sealed class Type {
+
+        /**
+         *  Trailing icon.
+         */
+        data class Icon(val icon: ImageVector) : Type()
+
+        /**
+         * No trailing content.
+         */
+        data object None : Type()
+    }
+}
