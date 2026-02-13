@@ -38,6 +38,9 @@ sealed class PaymentMethod {
      * Default payment methods
      */
     companion object {
+        /**
+         * Default payment methods
+         */
         val defaults: List<PaymentMethod> = listOf(Card(), Pix, Boleto)
     }
 }
