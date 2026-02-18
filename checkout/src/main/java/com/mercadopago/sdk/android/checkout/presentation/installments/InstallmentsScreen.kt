@@ -29,8 +29,8 @@ import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
-import com.mercadopago.sdk.android.components.model.MPTrailing
-import com.mercadopago.sdk.android.components.model.MPTrailingType
+import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
+import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
@@ -92,19 +92,22 @@ private fun InstallmentsScreenContent(
                     ) {
                         items(viewState.installmentsState) { item ->
                             MPListItem(
-                                text = item.text,
+                                contentInfo = MPListItemContentInfo(
+                                    title = item.text,
+                                    description = item.description,
+                                ),
                                 modifier = Modifier.fillMaxWidth(),
-                                trailing = MPTrailing(
+                                trailing = MPListItemTrailing(
                                     text = item.trailing,
-                                    type = MPTrailingType.Text,
-                                    icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
+                                    type = MPListItemTrailing.Type.Icon(
+                                        icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
+                                    ),
                                     textColor = if (item.interestFree) {
                                         MercadoPagoAndesTheme.color.feedback.positive.textLoud
                                     } else {
                                         null
                                     },
                                 ),
-                                description = item.description,
                                 onClick = { onItemClick(item.number) },
                             )
                         }
