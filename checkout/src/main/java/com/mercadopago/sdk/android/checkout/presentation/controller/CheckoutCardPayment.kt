@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.controller
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
+import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -43,18 +45,18 @@ internal fun CardPaymentNavHost(
             CardPaymentScreen(
                 viewModel = koinViewModel(),
                 onBackClick = { navController.popBackStack() },
+                onPayClick = { navController.navigate(SampleDestination.Installment) },
             )
         }
 
         composable<SampleDestination.Installment> {
-            CardPaymentInstallmentScreen()
+            InstallmentsScreen(
+                viewModel = koinViewModel(),
+                onBackClick = { navController.popBackStack() },
+                onInstallmentSelected = { Log.i("InstallmentsScreen", "onItemClick: $it") },
+            )
         }
     }
-}
-
-@Composable
-internal fun CardPaymentInstallmentScreen() {
-    // Installment screen placeholder
 }
 
 @Serializable
