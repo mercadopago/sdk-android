@@ -2,10 +2,11 @@ package com.mercadopago.sdk.android.checkout.core
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.Stable
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
-import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.Configuration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
@@ -13,12 +14,15 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.core.Koin
 
+internal const val EXTRA_CONFIGURATION = "extra_configuration"
+
 /**
  * MercadoPagoCheckout class, used to configure the checkout
  */
+@Stable
 class MercadoPagoCheckout private constructor(
     private val context: Context,
-    private val checkoutConfiguration: CheckoutConfiguration,
+    private val configuration: Configuration,
     private val checkoutAppearance: CheckoutAppearance?,
     private val koin: Koin = Checkout.getInstance().koin,
 ) {
@@ -30,8 +34,9 @@ class MercadoPagoCheckout private constructor(
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
         }
-        // TODO - Send checkoutConfiguration to Checkout
-        val intent = Intent(context, CheckoutActivity::class.java)
+        val intent = Intent(context, CheckoutActivity::class.java).apply {
+            putExtra(EXTRA_CONFIGURATION, configuration)
+        }
         context.startActivity(intent)
     }
 
@@ -68,7 +73,7 @@ class MercadoPagoCheckout private constructor(
             MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,
-                checkoutConfiguration = CheckoutConfiguration(
+                configuration = Configuration(
                     checkoutType = checkoutType,
                     paymentMethods = paymentMethods,
                 ),

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
     id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin
+    id("kotlin-parcelize")
 }
 
 publishing {

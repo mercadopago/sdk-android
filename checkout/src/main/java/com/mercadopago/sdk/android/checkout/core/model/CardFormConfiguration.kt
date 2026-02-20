@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.core.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
 /**
@@ -7,7 +9,8 @@ import java.math.BigDecimal
  * @param amount BigDecimal
  * @param payer Payer
  */
+@Parcelize
 data class CardFormConfiguration(
     val amount: BigDecimal? = null,
     val payer: Payer? = null,
-)
+) : Parcelable
