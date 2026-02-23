@@ -29,7 +29,7 @@ class MercadoPagoCheckout private constructor(
     /**
      * Launches the checkout
      */
-    fun launchCheckout() {
+    fun start() {
         koin.get<CheckoutThemePreferences>().apply {
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
@@ -62,9 +62,7 @@ class MercadoPagoCheckout private constructor(
          */
         fun setPaymentMethods(
             paymentMethods: List<PaymentMethod> = PaymentMethod.defaults,
-        ) {
-            this.paymentMethods = paymentMethods
-        }
+        ) = apply { this.paymentMethods = paymentMethods }
 
         /**
          * Builds the MercadoPagoCheckout
