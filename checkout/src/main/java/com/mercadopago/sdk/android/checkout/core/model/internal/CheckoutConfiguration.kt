@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-internal data class Configuration(
+internal data class CheckoutConfiguration(
     val checkoutType: CheckoutType,
     val paymentMethods: List<PaymentMethod>,
 ) : Parcelable

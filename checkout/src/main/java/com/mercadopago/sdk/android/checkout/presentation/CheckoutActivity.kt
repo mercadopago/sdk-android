@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
-import com.mercadopago.sdk.android.checkout.core.model.internal.Configuration
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
@@ -21,8 +21,8 @@ internal class CheckoutActivity : ComponentActivity() {
     ) {
         super.onCreate(savedInstanceState)
 
-        val configuration = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(EXTRA_CONFIGURATION, Configuration::class.java)
+        val checkoutConfiguration = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(EXTRA_CONFIGURATION, CheckoutConfiguration::class.java)
         } else {
             @Suppress("DEPRECATION")
             intent.getParcelableExtra(EXTRA_CONFIGURATION)
@@ -34,7 +34,7 @@ internal class CheckoutActivity : ComponentActivity() {
                     theme = MercadoPagoThemes.Andes,
                     appearance = checkoutThemePreferences.getCurrentAppearance(),
                 ) {
-                    MPCardPayment(configuration = configuration)
+                    MPCardPayment(checkoutConfiguration = checkoutConfiguration)
                 }
             }
         }

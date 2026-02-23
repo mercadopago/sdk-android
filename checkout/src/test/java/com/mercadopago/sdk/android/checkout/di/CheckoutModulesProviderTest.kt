@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.internal.Configuration
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -48,14 +48,14 @@ internal class CheckoutModulesProviderTest {
         )
 
         // When
-        val configuration = Configuration(
+        val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = CheckoutType.CardForm(),
             paymentMethods = emptyList(),
         )
         val module = module {
             includes(modulesProvider.provideModules())
             includes(mercadoPagoSdkModulesProvider.provideModules())
-            single { configuration }
+            single { checkoutConfiguration }
         }
         val koin = koinApplication {
             androidContext(context)
@@ -63,9 +63,16 @@ internal class CheckoutModulesProviderTest {
         }
 
         // Then
-        module.verify(extraTypes = listOf(CoreMethods::class, CheckoutType::class, List::class, Configuration::class))
+        module.verify(
+            extraTypes = listOf(
+                CoreMethods::class,
+                CheckoutType::class,
+                List::class,
+                CheckoutConfiguration::class,
+            ),
+        )
         koin.checkModules {
-            withInstance<Configuration>(configuration)
+            withInstance<CheckoutConfiguration>(checkoutConfiguration)
         }
     }
 }

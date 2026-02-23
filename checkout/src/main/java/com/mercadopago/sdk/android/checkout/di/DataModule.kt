@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.checkout.di
 
-import com.mercadopago.sdk.android.checkout.core.model.internal.Configuration
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -12,7 +12,7 @@ internal fun provideDataModule() =
         single<CheckoutThemePreferences> {
             CheckoutThemePreferencesImpl()
         }
-        viewModel { (configuration: Configuration) ->
-            CardPaymentViewModel(configuration = configuration)
+        viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
+            CardPaymentViewModel(checkoutConfiguration = checkoutConfiguration)
         }
     }
