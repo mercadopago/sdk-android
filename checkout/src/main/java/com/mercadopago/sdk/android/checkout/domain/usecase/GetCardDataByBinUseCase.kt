@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.domain.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.flatMap
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
+import com.mercadopago.sdk.android.checkout.domain.mapper.hasIssuers
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
@@ -32,10 +33,12 @@ internal class GetCardDataByBinUseCase(
         paymentMethod: PaymentMethod,
     ): Result<CardData, ResultError> {
         val issuers = paymentMethod.id?.let {
-            getCardIssuersUseCase(bin, it).fold(
-                onSuccess = { it },
-                onError = { return Result.Error(it) },
-            )
+            if (paymentMethod.hasIssuers()) {
+                getCardIssuersUseCase(bin, it).fold(
+                    onSuccess = { it },
+                    onError = { return Result.Error(it) },
+                )
+            }
         }
 
         val installments = amount?.let {

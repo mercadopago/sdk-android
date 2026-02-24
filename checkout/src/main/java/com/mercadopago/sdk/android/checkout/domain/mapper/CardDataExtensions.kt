@@ -32,6 +32,7 @@ private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 private const val DEFAULT_SECURITY_CODE_LENGTH = 3
 private const val DEFAULT_SECURITY_CODE_MODE = "mandatory"
 private const val SECURITY_CODE_MODE_MANDATORY = "mandatory"
+private const val ISSUER_ID = "issuer_id"
 
 internal fun PaymentMethod.toSecurityCode(): SecurityCode =
     SecurityCode(
@@ -58,3 +59,5 @@ internal fun Int.toMask(): String =
         CARD_LENGTH_19 -> CARD_LENGTH_19_MASK
         else -> DEFAULT_CARD_MASK
     }
+
+internal fun PaymentMethod.hasIssuers(): Boolean = this.additionalInfoNeeded?.contains(ISSUER_ID) == true
