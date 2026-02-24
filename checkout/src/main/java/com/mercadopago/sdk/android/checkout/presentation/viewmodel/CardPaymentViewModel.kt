@@ -2,11 +2,18 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
+import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
+import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
+import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCountStringPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
@@ -33,17 +40,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-private const val SECURE_CODE_MIN_LENGTH = 3
-private const val CARD_LENGTH_8_MASK = "#### ####"
-private const val CARD_LENGTH_9_MASK = "#### #####"
-private const val CARD_LENGTH_10_MASK = "#### ######"
-private const val CARD_LENGTH_11_MASK = "#### #### ###"
-private const val CARD_LENGTH_12_MASK = "#### #### ####"
-private const val CARD_LENGTH_13_MASK = "#### ###### ###"
-private const val CARD_LENGTH_14_MASK = "#### ###### ####"
-private const val CARD_LENGTH_15_MASK = "#### ###### #####"
-private const val CARD_LENGTH_17_MASK = "#### #### #### #####"
-private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
+private const val HELPER_TEXT_OPTIONAL = "Dado opcional"
+private const val ERROR_GET_CARD_DATA = "Get card data error"
 
 @Suppress(
     "TooManyFunctions",
@@ -52,6 +50,7 @@ private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
+    private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
@@ -102,29 +101,6 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getInstallments(
-        bin: String,
-        amount: BigDecimal,
-    ) {
-        viewModelScope.launch {
-            val result = coreMethods.getInstallments(bin = bin, amount = amount)
-            when (result) {
-                is Result.Success -> {
-                    _viewState.value = _viewState.value.copy(
-                        installmentsState = _viewState.value.installmentsState.copy(
-                            showList = true,
-                            installments = result.data.getOrNull(0)?.payerCost.orEmpty(),
-                        ),
-                    )
-                }
-
-                is Result.Error -> {
-                    handleResultError(result.error, "Get Installment error")
-                }
-            }
-        }
-    }
-
     fun getIdentificationTypes() {
         viewModelScope.launch {
             val result = coreMethods.getIdentificationTypes()
@@ -145,61 +121,51 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getCardIssuers(
-        bin: String,
-        paymentMethodId: String,
-    ) {
-        viewModelScope.launch {
-            val result = coreMethods.getCardIssuers(bin, paymentMethodId)
-            when (result) {
-                is Result.Success -> {
-                    _viewState.value = _viewState.value.copy(
-                        cardIssuers = result.data,
-                        cardNumberState = _viewState.value.cardNumberState.copy(
-                            image = result.data.getOrNull(0)?.thumbnail,
-                        ),
-                    )
-                }
-
-                is Result.Error -> {
-                    handleResultError(result.error, "Get Card Issuer error")
-                }
-            }
-        }
-    }
-
     fun getPaymentMethods(
         bin: String,
+        amount: BigDecimal?,
     ) {
         viewModelScope.launch {
-            val result = coreMethods.getPaymentMethods(bin = bin)
-            when (result) {
-                is Result.Success -> {
-                    val paymentMethod = result.data.firstOrNull()
-                    val secureCodeNumber = paymentMethod?.card?.securityCode?.length ?: SECURE_CODE_MIN_LENGTH
-                    val secureCodeOptional = paymentMethod?.card?.securityCode?.mode != "mandatory"
-                    _viewState.value = _viewState.value.copy(
-                        secureCodeState = _viewState.value.secureCodeState.copy(
-                            secureCodeLength = secureCodeNumber,
-                            placeHolder = secureCodeNumber.toCountStringPlaceholder("Ex:"),
-                            optional = secureCodeOptional,
-                            helper = if (secureCodeOptional) "Dado opcional" else "",
-                        ),
-                    )
-                    paymentMethod?.id?.let { paymentMethodId ->
-                        getCardIssuers(bin = bin, paymentMethodId = paymentMethodId)
-                    }
-                    updateCardMaskState(
-                        paymentMethod?.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH,
-                    )
-                }
-
-                is Result.Error -> {
-                    handleResultError(result.error, "Get Payment methods error")
-                }
-            }
+            getCardDataByBinUseCase(bin, amount).fold(
+                onSuccess = { cardData ->
+                    updateStateWithCardData(cardData)
+                    updateCardMaskState(cardData.getLength())
+                },
+                onError = { error ->
+                    handleResultError(error, ERROR_GET_CARD_DATA)
+                },
+            )
         }
     }
+
+    private fun updateStateWithCardData(
+        cardData: CardData,
+    ) {
+        _viewState.value = _viewState.value.copy(
+            secureCodeState = buildSecurityCodeState(cardData.securityCode),
+            cardIssuers = listOfNotNull(cardData.cardIssuer),
+            cardNumberState = _viewState.value.cardNumberState.copy(
+                image = cardData.cardIssuer?.thumbnail,
+            ),
+            installmentsState = buildInstallmentsState(cardData.installments),
+        )
+    }
+
+    private fun buildSecurityCodeState(
+        securityCode: SecurityCode,
+    ) = _viewState.value.secureCodeState.copy(
+        secureCodeLength = securityCode.length,
+        placeHolder = securityCode.length.toCountStringPlaceholder("Ex:"),
+        optional = securityCode.isOptional(),
+        helper = if (securityCode.isOptional()) HELPER_TEXT_OPTIONAL else "",
+    )
+
+    private fun buildInstallmentsState(
+        installments: List<com.mercadopago.sdk.android.coremethods.domain.model.Installment>?,
+    ) = _viewState.value.installmentsState.copy(
+        showList = installments.isNullOrEmpty().not(),
+        installments = installments?.firstOrNull()?.payerCost.orEmpty(),
+    )
 
     fun onExpirationDateEvent(
         event: ExpirationDateTextFieldEvent,
@@ -443,8 +409,12 @@ internal class CardPaymentViewModel(
             )
             updateCardMaskState(DEFAULT_MAX_CARD_LENGTH)
         } else {
-            getInstallments(bin = cardBin.orEmpty(), amount = 1000.0.toBigDecimal())
-            getPaymentMethods(bin = cardBin.orEmpty())
+            if (checkoutConfiguration?.checkoutType is CheckoutType.CardForm) {
+                getPaymentMethods(
+                    bin = cardBin.orEmpty(),
+                    amount = checkoutConfiguration.checkoutType.cardFormConfiguration?.amount,
+                )
+            }
         }
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
@@ -514,20 +484,7 @@ internal class CardPaymentViewModel(
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 maxLength = cardLength,
-                mask = when (cardLength) {
-                    8 -> CARD_LENGTH_8_MASK
-                    9 -> CARD_LENGTH_9_MASK
-                    10 -> CARD_LENGTH_10_MASK
-                    11 -> CARD_LENGTH_11_MASK
-                    12 -> CARD_LENGTH_12_MASK
-                    13 -> CARD_LENGTH_13_MASK
-                    14 -> CARD_LENGTH_14_MASK
-                    15 -> CARD_LENGTH_15_MASK
-                    16 -> DEFAULT_CARD_MASK
-                    17 -> CARD_LENGTH_17_MASK
-                    19 -> CARD_LENGTH_19_MASK
-                    else -> DEFAULT_CARD_MASK
-                },
+                mask = cardLength.toMask(),
             ),
         )
     }
