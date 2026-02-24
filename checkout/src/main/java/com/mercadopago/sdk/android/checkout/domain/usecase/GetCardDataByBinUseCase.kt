@@ -4,8 +4,6 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.flatMap
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
-import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -23,12 +21,12 @@ internal class GetCardDataByBinUseCase(
         getPaymentMethodsUseCase(bin)
             .flatMap { paymentMethods ->
                 paymentMethods.firstOrNull()?.let { paymentMethod ->
-                    fetchCardDataParallel(bin = bin, amount = amount, paymentMethod = paymentMethod)
+                    fetchCardData(bin = bin, amount = amount, paymentMethod = paymentMethod)
                 } ?: Result.Error(ResultError.Validation("No payment method found"))
             }
 
     @Suppress("ReturnCount")
-    private suspend fun fetchCardDataParallel(
+    private suspend fun fetchCardData(
         bin: String,
         amount: BigDecimal?,
         paymentMethod: PaymentMethod,
@@ -47,15 +45,7 @@ internal class GetCardDataByBinUseCase(
             )
         }
 
-        return buildCardData(paymentMethod, issuers, installments)
-    }
-
-    private fun buildCardData(
-        paymentMethod: PaymentMethod,
-        issuers: List<CardIssuer>?,
-        installments: List<Installment>?,
-    ): Result<CardData, ResultError> =
-        Result.Success(
+        return Result.Success(
             CardData(
                 paymentMethod = paymentMethod,
                 securityCode = paymentMethod.toSecurityCode(),
@@ -63,4 +53,5 @@ internal class GetCardDataByBinUseCase(
                 installments = installments,
             ),
         )
+    }
 }
