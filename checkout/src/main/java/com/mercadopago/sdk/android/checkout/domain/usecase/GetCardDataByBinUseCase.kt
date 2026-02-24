@@ -32,13 +32,13 @@ internal class GetCardDataByBinUseCase(
         amount: BigDecimal?,
         paymentMethod: PaymentMethod,
     ): Result<CardData, ResultError> {
-        val issuers = paymentMethod.id?.let {
-            if (paymentMethod.hasIssuers()) {
-                getCardIssuersUseCase(bin, it).fold(
-                    onSuccess = { it },
-                    onError = { return Result.Error(it) },
-                )
-            }
+        val issuers = if (paymentMethod.hasIssuers()) {
+            getCardIssuersUseCase(bin, paymentMethod.id.orEmpty()).fold(
+                onSuccess = { it },
+                onError = { return Result.Error(it) },
+            )
+        } else {
+            null
         }
 
         val installments = amount?.let {

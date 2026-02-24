@@ -60,4 +60,6 @@ internal fun Int.toMask(): String =
         else -> DEFAULT_CARD_MASK
     }
 
-internal fun PaymentMethod.hasIssuers(): Boolean = this.additionalInfoNeeded?.contains(ISSUER_ID) == true
+internal fun PaymentMethod.hasIssuers() =
+    this.additionalInfoNeeded?.contains(ISSUER_ID) == true &&
+        this.id != null
