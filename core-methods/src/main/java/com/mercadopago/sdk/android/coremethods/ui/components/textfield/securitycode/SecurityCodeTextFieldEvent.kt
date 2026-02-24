@@ -89,4 +89,25 @@ interface SecurityCodeTextFieldEvent {
      * ```
      */
     data class OnFocusChanged(val isFocused: Boolean) : SecurityCodeTextFieldEvent
+
+    /**
+     * Event triggered when the security code number validation status changes.
+     * validation, helping to determine if the input is valid.
+     *
+     * @param isValid Whether the security code is valid according payment methods specification
+     *
+     * Example:
+     * ```kotlin
+     * when (event) {
+     *     is SecurityCodeTextFieldEvent.IsValid -> {
+     *         if (event.isValid) {
+     *             enableNextButton()
+     *         } else {
+     *             disableNextButton()
+     *         }
+     *     }
+     * }
+     * ```
+     */
+    data class IsValid(val isValid: Boolean) : SecurityCodeTextFieldEvent
 }

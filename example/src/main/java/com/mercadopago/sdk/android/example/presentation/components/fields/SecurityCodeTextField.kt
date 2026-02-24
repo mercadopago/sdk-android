@@ -70,7 +70,7 @@ internal fun SecurityCodeTextFieldExample(
                         Box(modifier = Modifier.weight(1f)) {
                             if (securityCodeState.length == 0) {
                                 PlaceHolder(
-                                    text = "123",
+                                    text = (1..securityCodeState.secureCodeLength).joinToString(""),
                                     modifier = Modifier.align(Alignment.CenterStart),
                                 )
                             }

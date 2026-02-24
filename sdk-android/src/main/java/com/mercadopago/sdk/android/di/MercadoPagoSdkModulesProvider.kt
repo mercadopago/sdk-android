@@ -29,6 +29,7 @@ class MercadoPagoSdkModulesProvider(
     )
 
     override fun provideModules(): List<Module> = listOf(
+        provideSessionIdModule(),
         provideNetworkModule(
             publicKey = publicKey,
             baseUrl = BuildConfig.MERCADO_PAGO_API_URL,

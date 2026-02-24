@@ -5,7 +5,10 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -15,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.Koin
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -32,6 +36,14 @@ internal class SecurityCodeTextFieldTest {
     fun start() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.getInstance() } returns mockk<MPAnalytics>(relaxed = true)
+        mockkObject(MercadoPagoSDK.Companion)
+        every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
+        mockkObject(CoreMethods.Companion)
+        val securityCodeLengthProvider: SecurityCodeLengthProvider = mockk(relaxed = true)
+        val koin: Koin = mockk(relaxed = true)
+        every { koin.get<SecurityCodeLengthProvider>() } returns securityCodeLengthProvider
+        val coreMethods: CoreMethods = CoreMethods(koin)
+        every { CoreMethods.getInstance() } returns coreMethods
     }
 
     @Test

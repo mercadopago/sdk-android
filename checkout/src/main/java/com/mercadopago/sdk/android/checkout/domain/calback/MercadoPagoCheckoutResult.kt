@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.calback
 
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 
 /**
  * Sealed interface representing the possible outcomes of a checkout flow.

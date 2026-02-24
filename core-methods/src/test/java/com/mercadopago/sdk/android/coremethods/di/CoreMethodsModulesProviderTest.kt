@@ -9,16 +9,15 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import org.junit.Test
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
-import org.koin.test.KoinTest
 import org.koin.test.check.checkModules
 import org.koin.test.verify.verify
-import kotlin.test.Test
 
-internal class CoreMethodsModulesProviderTest : KoinTest {
+internal class CoreMethodsModulesProviderTest {
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideModules is called Then modules should be verified`() {
@@ -27,12 +26,8 @@ internal class CoreMethodsModulesProviderTest : KoinTest {
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
         val context = mockk<Application>()
-        every {
-            context.applicationInfo
-        } returns mockk(relaxed = true)
-        every {
-            context.applicationContext
-        } returns context
+        every { context.applicationInfo } returns mockk(relaxed = true)
+        every { context.applicationContext } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.setKoinModules(any(), any()) } returns mockk()
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()

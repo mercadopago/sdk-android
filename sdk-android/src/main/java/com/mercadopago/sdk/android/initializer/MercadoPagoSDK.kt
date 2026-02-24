@@ -32,7 +32,8 @@ class MercadoPagoSDK private constructor(
     val koin: Koin,
     internal var publicKey: String,
     internal var countryCode: CountryCode,
-    private val sessionId: String,
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    internal val sessionId: String,
     private val applicationContext: Context,
 ) {
 

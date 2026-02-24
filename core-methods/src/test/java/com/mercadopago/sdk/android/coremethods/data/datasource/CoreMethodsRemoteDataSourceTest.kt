@@ -37,7 +37,7 @@ internal class CoreMethodsRemoteDataSourceTest {
             val cardTokenResponse = CardTokenResponse(id = "token_id")
             val mpResponse: Response<CardTokenResponse> = Response.success(cardTokenResponse)
 
-            coEvery { service.createToken(any()) } returns mpResponse
+            coEvery { service.createToken(any(), any(), any(), any()) } returns mpResponse
 
             val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
@@ -59,7 +59,7 @@ internal class CoreMethodsRemoteDataSourceTest {
 
             val mpResponse: Response<CardTokenResponse> = Response.error(400, responseBody)
 
-            coEvery { service.createToken(any()) } returns mpResponse
+            coEvery { service.createToken(any(), any(), any(), any()) } returns mpResponse
 
             val result = remoteDataSource.generateCardToken(cardTokenRequest)
 
