@@ -2,6 +2,8 @@ package com.mercadopago.sdk.android.checkout.di
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -15,6 +17,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.dsl.module
 import org.koin.test.check.checkModules
+import org.koin.test.mock.MockProvider
 import org.koin.test.verify.verify
 import kotlin.test.Test
 
@@ -23,9 +26,11 @@ internal class CheckoutModulesProviderTest {
     @Test
     fun `when provideModules is called Then modules should be verified`() {
         // Given
+        MockProvider.register { mockk(relaxed = true) }
         mockkObject(MercadoPagoSDK.Companion)
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
+        mockkObject(CheckoutType::class)
         val context = mockk<Application>()
         every {
             context.applicationInfo
@@ -43,9 +48,14 @@ internal class CheckoutModulesProviderTest {
         )
 
         // When
+        val checkoutConfiguration = CheckoutConfiguration(
+            checkoutType = CheckoutType.CardForm(),
+            paymentMethods = emptyList(),
+        )
         val module = module {
             includes(modulesProvider.provideModules())
             includes(mercadoPagoSdkModulesProvider.provideModules())
+            single { checkoutConfiguration }
         }
         val koin = koinApplication {
             androidContext(context)
@@ -53,7 +63,16 @@ internal class CheckoutModulesProviderTest {
         }
 
         // Then
-        module.verify(extraTypes = listOf(CoreMethods::class))
-        koin.checkModules()
+        module.verify(
+            extraTypes = listOf(
+                CoreMethods::class,
+                CheckoutType::class,
+                List::class,
+                CheckoutConfiguration::class,
+            ),
+        )
+        koin.checkModules {
+            withInstance<CheckoutConfiguration>(checkoutConfiguration)
+        }
     }
 }

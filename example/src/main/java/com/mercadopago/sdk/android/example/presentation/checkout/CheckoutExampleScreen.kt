@@ -9,22 +9,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.checkout.presentation.controller.rememberCheckout
+import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
+import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
+import java.math.BigDecimal
 
 @Composable
 internal fun CheckoutExampleScreen(
     modifier: Modifier = Modifier,
 ) {
-    val checkout = rememberCheckout()
+
+    val checkout = MercadoPagoCheckout.Builder(
+        context = LocalContext.current,
+        checkoutType = CheckoutType.CardForm(
+            CardFormConfiguration(
+                amount = BigDecimal(100.0)
+            )
+        )
+    ).setPaymentMethods(listOf(PaymentMethod.Card()))
+        .build()
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         CheckoutExampleScreen(
-            onOpenCheckoutClicked = checkout::launchCheckout,
+            onOpenCheckoutClicked = checkout::start,
             modifier = modifier,
         )
     }

@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCountStringPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -44,8 +45,12 @@ private const val CARD_LENGTH_15_MASK = "#### ###### #####"
 private const val CARD_LENGTH_17_MASK = "#### #### #### #####"
 private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 
-@Suppress("TooManyFunctions") // ViewModel requires multiple event handlers for card payment form
+@Suppress(
+    "TooManyFunctions",
+    "UnusedPrivateProperty",
+) // ViewModel requires multiple event handlers for card payment form
 internal class CardPaymentViewModel(
+    private val checkoutConfiguration: CheckoutConfiguration?,
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())

@@ -12,26 +12,32 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @SuppressLint("RestrictedApi")
 @Composable
-internal fun MPCardPayment() {
+internal fun MPCardPayment(
+    checkoutConfiguration: CheckoutConfiguration?,
+) {
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = currentBackStackEntry?.destination?.route
 
     CardPaymentNavHost(
         navController = navController,
+        checkoutConfiguration = checkoutConfiguration,
     )
 }
 
 @Composable
 internal fun CardPaymentNavHost(
     navController: NavHostController,
+    checkoutConfiguration: CheckoutConfiguration?,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -43,7 +49,7 @@ internal fun CardPaymentNavHost(
     ) {
         composable<SampleDestination.Form> {
             CardPaymentScreen(
-                viewModel = koinViewModel(),
+                viewModel = koinViewModel { parametersOf(checkoutConfiguration) },
                 onBackClick = { navController.popBackStack() },
                 onPayClick = { navController.navigate(SampleDestination.Installment) },
             )

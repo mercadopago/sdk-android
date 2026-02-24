@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.core
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.Stable
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
@@ -13,9 +14,12 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.core.Koin
 
+internal const val EXTRA_CONFIGURATION = "extra_configuration"
+
 /**
  * MercadoPagoCheckout class, used to configure the checkout
  */
+@Stable
 class MercadoPagoCheckout private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
@@ -25,13 +29,14 @@ class MercadoPagoCheckout private constructor(
     /**
      * Launches the checkout
      */
-    fun launchCheckout() {
+    fun start() {
         koin.get<CheckoutThemePreferences>().apply {
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
         }
-        // TODO - Send checkoutConfiguration to Checkout
-        val intent = Intent(context, CheckoutActivity::class.java)
+        val intent = Intent(context, CheckoutActivity::class.java).apply {
+            putExtra(EXTRA_CONFIGURATION, checkoutConfiguration)
+        }
         context.startActivity(intent)
     }
 
@@ -57,9 +62,7 @@ class MercadoPagoCheckout private constructor(
          */
         fun setPaymentMethods(
             paymentMethods: List<PaymentMethod> = PaymentMethod.defaults,
-        ) {
-            this.paymentMethods = paymentMethods
-        }
+        ) = apply { this.paymentMethods = paymentMethods }
 
         /**
          * Builds the MercadoPagoCheckout
