@@ -4,9 +4,9 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,9 +21,9 @@ internal fun provideDataModule() =
             CardPaymentViewModel(
                 checkoutConfiguration = checkoutConfiguration,
                 getCardDataByBinUseCase = GetCardDataByBinUseCase(
-                    getPaymentMethodsUseCase = GetPaymentMethodsByBinUseCase(),
-                    getCardIssuersUseCase = GetCardIssuersByBinUseCase(),
-                    getInstallmentsUseCase = GetInstallmentsByBinUseCase(),
+                    getPaymentMethodsUseCase = GetPaymentMethodsUseCase(),
+                    getCardIssuersUseCase = GetCardIssuersUseCase(),
+                    getInstallmentsUseCase = GetInstallmentsUseCase(),
                 ),
             )
         }

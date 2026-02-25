@@ -7,7 +7,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 
-internal class GetCardIssuersByBinUseCase(
+internal class GetCardIssuersUseCase(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) {
     suspend operator fun invoke(

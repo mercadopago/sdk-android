@@ -11,9 +11,9 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import java.math.BigDecimal
 
 internal class GetCardDataByBinUseCase(
-    private val getPaymentMethodsUseCase: GetPaymentMethodsByBinUseCase,
-    private val getCardIssuersUseCase: GetCardIssuersByBinUseCase,
-    private val getInstallmentsUseCase: GetInstallmentsByBinUseCase,
+    private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase,
+    private val getCardIssuersUseCase: GetCardIssuersUseCase,
+    private val getInstallmentsUseCase: GetInstallmentsUseCase,
 ) {
     suspend operator fun invoke(
         bin: String,
