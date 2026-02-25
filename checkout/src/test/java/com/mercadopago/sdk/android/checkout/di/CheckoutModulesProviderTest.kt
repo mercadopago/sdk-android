@@ -4,6 +4,13 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsByBinUseCase
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -69,6 +76,13 @@ internal class CheckoutModulesProviderTest {
                 CheckoutType::class,
                 List::class,
                 CheckoutConfiguration::class,
+                CheckoutThemePreferences::class,
+                CardPaymentViewModel::class,
+                InstallmentsViewModel::class,
+                GetCardDataByBinUseCase::class,
+                GetPaymentMethodsByBinUseCase::class,
+                GetCardIssuersByBinUseCase::class,
+                GetInstallmentsByBinUseCase::class,
             ),
         )
         koin.checkModules {
