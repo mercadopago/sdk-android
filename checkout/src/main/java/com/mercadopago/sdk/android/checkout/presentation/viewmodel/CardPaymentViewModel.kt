@@ -105,6 +105,7 @@ internal class CardPaymentViewModel(
 
     fun getIdentificationTypes() {
         viewModelScope.launch {
+            updateLoadingState(true)
             getIdentificationTypesUseCase().fold(
                 onSuccess = { data ->
                     _viewState.value = _viewState.value.copy(
@@ -117,7 +118,9 @@ internal class CardPaymentViewModel(
                 onError = { error ->
                     handleResultError(error, "Get Identification type")
                 },
-            )
+            ).apply {
+                updateLoadingState(false)
+            }
         }
     }
 
@@ -487,5 +490,11 @@ internal class CardPaymentViewModel(
                 mask = cardLength.toMask(),
             ),
         )
+    }
+
+    private fun updateLoadingState(
+        isLoading: Boolean,
+    ) {
+        _viewState.value = _viewState.value.copy(isLoading = isLoading)
     }
 }
