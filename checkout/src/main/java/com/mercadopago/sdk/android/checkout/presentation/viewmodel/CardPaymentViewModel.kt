@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_L
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
@@ -51,6 +52,7 @@ internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
+    private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
@@ -103,21 +105,19 @@ internal class CardPaymentViewModel(
 
     fun getIdentificationTypes() {
         viewModelScope.launch {
-            val result = coreMethods.getIdentificationTypes()
-            when (result) {
-                is Result.Success -> {
+            getIdentificationTypesUseCase().fold(
+                onSuccess = { data ->
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
-                            identificationTypes = result.data,
-                            selected = result.data.firstOrNull(),
+                            identificationTypes = data,
+                            selected = data.firstOrNull(),
                         ),
                     )
-                }
-
-                is Result.Error -> {
-                    handleResultError(result.error, "Get Identification type")
-                }
-            }
+                },
+                onError = { error ->
+                    handleResultError(error, "Get Identification type")
+                },
+            )
         }
     }
 
