@@ -176,8 +176,22 @@ private fun MPIdentificationTextFieldPreview() {
     ) {
         val identificationState = rememberPCIFieldState()
         val identificationTypes = listOf(
-            IdentificationType(id = "CPF", name = "CPF", type = "number", minLength = 11, maxLength = 11),
-            IdentificationType(id = "CNPJ", name = "CNPJ", type = "number", minLength = 14, maxLength = 14),
+            IdentificationType(
+                id = "CPF",
+                name = "CPF",
+                type = "number",
+                minLength = 11,
+                maxLength = 11,
+                mask = "###.###.###-##",
+            ),
+            IdentificationType(
+                id = "CNPJ",
+                name = "CNPJ",
+                type = "number",
+                minLength = 14,
+                maxLength = 14,
+                mask = "##.###.###/####-##",
+            ),
         )
         Column(
             modifier = Modifier.padding(10.dp),
