@@ -1,0 +1,27 @@
+package com.mercadopago.sdk.android.checkout.presentation.usecase
+
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
+import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
+import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+
+internal class GenerateCardTokenUseCase(
+    private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
+) {
+    suspend operator fun invoke(
+        cardNumberState: PCIFieldState,
+        expirationDateState: PCIFieldState,
+        securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification,
+    ): Result<CardToken, ResultError> =
+        coreMethods.generateCardToken(
+            cardNumberState = cardNumberState,
+            expirationDateState = expirationDateState,
+            securityCodeState = securityCodeState,
+            buyerIdentification = buyerIdentification,
+        )
+}
