@@ -11,11 +11,13 @@ sealed class PaymentMethod : Parcelable {
     /**
      * Card payment method
      * @param cardTypes List of card types
+     * @param cardBrands Lisg of card brancds
      * @param installment Installment
      */
     @Parcelize
     data class Card(
         val cardTypes: List<CardType> = listOf(CardType.CREDIT, CardType.DEBIT, CardType.PREPAID),
+        val cardBrands: List<CardBrand> = CardBrand.default,
         val installment: Installment? = Installment(),
     ) : PaymentMethod()
 
@@ -23,13 +25,13 @@ sealed class PaymentMethod : Parcelable {
      * Pix payment method
      */
     @Parcelize
-    object Pix : PaymentMethod()
+    internal object Pix : PaymentMethod()
 
     /**
      * Boleto payment method
      */
     @Parcelize
-    object Boleto : PaymentMethod()
+    internal object Boleto : PaymentMethod()
 
     /**
      * Loan payment method
