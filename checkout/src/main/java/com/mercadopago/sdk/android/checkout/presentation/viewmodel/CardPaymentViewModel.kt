@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
 import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
@@ -80,7 +79,11 @@ internal class CardPaymentViewModel(
         amount: BigDecimal?,
     ) {
         viewModelScope.launch {
-            getCardDataByBinUseCase(bin, amount).fold(
+            getCardDataByBinUseCase(
+                bin = bin,
+                amount = amount,
+                paymentMethod = checkoutConfiguration?.paymentMethods,
+            ).fold(
                 onSuccess = { cardData ->
                     updateStateWithCardData(cardData)
                     updateCardMaskState(cardData.getLength())
