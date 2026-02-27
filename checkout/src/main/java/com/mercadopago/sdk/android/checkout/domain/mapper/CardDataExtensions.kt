@@ -82,5 +82,5 @@ internal fun PaymentMethod.matchesCardFilters(
 
 internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
-    return cardPayment?.cardTypes.orEmpty() to cardPayment?.cardBrands.orEmpty()
+    return cardPayment?.allowedCardTypes.orEmpty() to cardPayment?.allowedCardBrands.orEmpty()
 }
