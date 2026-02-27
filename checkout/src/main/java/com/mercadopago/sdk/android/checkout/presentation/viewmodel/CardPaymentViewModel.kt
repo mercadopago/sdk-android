@@ -80,7 +80,11 @@ internal class CardPaymentViewModel(
         amount: BigDecimal?,
     ) {
         viewModelScope.launch {
-            getCardDataByBinUseCase(bin, amount).fold(
+            getCardDataByBinUseCase(
+                bin = bin,
+                amount = amount,
+                paymentMethods = checkoutConfiguration?.paymentMethods,
+            ).fold(
                 onSuccess = { cardData ->
                     updateStateWithCardData(cardData)
                     updateCardMaskState(cardData.getLength())
