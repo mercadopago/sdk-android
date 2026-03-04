@@ -19,7 +19,7 @@ internal object CardHolderVerifier {
         state: CardHolderState,
     ): String? {
         return if (state.value.isEmpty()) {
-            "Please, fill the cardholder name"
+            "Preencha este campo"
         } else {
             null
         }
@@ -29,7 +29,7 @@ internal object CardHolderVerifier {
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
-            "Please, complete the cardholder name"
+            "Insira conforme está no cartao"
         } else {
             null
         }
@@ -39,7 +39,7 @@ internal object CardHolderVerifier {
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
-            "Invalid format. Use only letters and spaces"
+            "Digite apenas letras e números"
         } else {
             null
         }

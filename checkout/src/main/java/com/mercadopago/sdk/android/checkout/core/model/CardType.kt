@@ -6,19 +6,19 @@ package com.mercadopago.sdk.android.checkout.core.model
  * This value is used to represent the selected card category and may affect
  * available payment options and UI/UX decisions during the checkout.
  */
-enum class CardType {
+enum class CardType(internal val value: String) {
     /**
      * CREDIT: Credit card.
      */
-    CREDIT,
+    CREDIT("credit_card"),
 
     /**
      * DEBIT: Debit card.
      */
-    DEBIT,
+    DEBIT("debit_card"),
 
     /**
      * PREPAID: Prepaid card.
      */
-    PREPAID,
+    PREPAID("prepaid"),
 }

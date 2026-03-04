@@ -15,7 +15,7 @@ internal object SecurityCodeVerifier {
         state: SecurityCodeState,
     ): String? {
         return if (state.length == 0) {
-            "Please, fill the security code"
+            "Preencha este campo"
         } else {
             null
         }
@@ -24,8 +24,8 @@ internal object SecurityCodeVerifier {
     private fun checkIncomplete(
         state: SecurityCodeState,
     ): String? {
-        return if (state.length > 0 && state.length < state.secureCodeLength) {
-            "Please, complete the security code"
+        return if (state.length > 0 && state.length < state.maxLength) {
+            "Insira o código completo"
         } else {
             null
         }

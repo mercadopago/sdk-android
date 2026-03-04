@@ -35,7 +35,7 @@ internal data class SecurityCodeState(
     override val showPlaceHolder: Boolean = true,
     val length: Int = 0,
     val optional: Boolean = false,
-    val secureCodeLength: Int = 3,
+    val maxLength: Int = 3,
 ) : FieldState
 
 internal data class ExpirationDateState(
@@ -67,6 +67,7 @@ internal data class CardNumberState(
     val mask: String = DEFAULT_CARD_MASK,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
+    val errorType: CardNumberErrorType = CardNumberErrorType.NONE,
 ) : FieldState
 
 internal data class CardHolderState(

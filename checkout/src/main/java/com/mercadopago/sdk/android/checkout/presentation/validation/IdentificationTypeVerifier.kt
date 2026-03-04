@@ -2,8 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.validation
 
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 
-private val SPECIAL_CHARACTERS_REGEX = Regex("[^a-zA-Z\\s]")
-
 internal object IdentificationTypeVerifier {
     fun verify(
         state: IdentificationTypeState,
@@ -11,14 +9,14 @@ internal object IdentificationTypeVerifier {
         listOfNotNull(
             checkEmpty(state),
             checkIncomplete(state),
-            checkFormat(state),
+            checkAllZeros(state),
         ).firstOrNull().orEmpty()
 
     private fun checkEmpty(
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isEmpty()) {
-            "Please, fill the identification"
+            "Preencha este campo"
         } else {
             null
         }
@@ -27,18 +25,19 @@ internal object IdentificationTypeVerifier {
     private fun checkIncomplete(
         state: IdentificationTypeState,
     ): String? {
-        return if (state.value.isNotEmpty() && !state.filled) {
-            "Please, complete the identification"
+        return if (state.value.isNotEmpty() && state.value.length < (state.selected?.maxLength ?: 0)
+        ) {
+            "Preencha este campo"
         } else {
             null
         }
     }
 
-    private fun checkFormat(
+    private fun checkAllZeros(
         state: IdentificationTypeState,
     ): String? {
-        return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
-            "Invalid format. Use only letters and numbers"
+        return if (state.value.isNotEmpty() && state.value.all { it == '0' }) {
+            "Insira-o conforme está no documento."
         } else {
             null
         }
