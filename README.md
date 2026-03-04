@@ -14,7 +14,7 @@ A mobile SDK whose main objective is to facilitate the integration of Mercado Pa
 https://mercadopago.github.io/sdk-android/
 
 ## Install
-
+TEst
 You need to add this to your settings.build.gradle file.
 ```kotlin
 pluginManagement {
