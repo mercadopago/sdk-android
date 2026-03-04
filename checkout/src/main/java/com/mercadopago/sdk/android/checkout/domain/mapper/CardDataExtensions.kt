@@ -1,10 +1,13 @@
 package com.mercadopago.sdk.android.checkout.domain.mapper
 
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
+import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
 
 private const val CARD_LENGTH_8 = 8
 private const val CARD_LENGTH_9 = 9
@@ -63,3 +66,21 @@ internal fun Int.toMask(): String =
 internal fun PaymentMethod.hasIssuers() =
     this.additionalInfoNeeded?.contains(ISSUER_ID) == true &&
         this.id != null
+
+internal fun PaymentMethod.matchesCardBrand(
+    cardBrands: List<CardBrand>,
+): Boolean = cardBrands.isEmpty() || cardBrands.any { it.name.equals(this.id, ignoreCase = true) }
+
+internal fun PaymentMethod.matchesCardType(
+    cardTypes: List<CardType>,
+): Boolean = cardTypes.isEmpty() || cardTypes.any { it.name.equals(this.paymentTypeId, ignoreCase = true) }
+
+internal fun PaymentMethod.matchesCardFilters(
+    cardTypes: List<CardType>,
+    cardBrands: List<CardBrand>,
+): Boolean = matchesCardBrand(cardBrands) && matchesCardType(cardTypes)
+
+internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
+    val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
+    return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
+}

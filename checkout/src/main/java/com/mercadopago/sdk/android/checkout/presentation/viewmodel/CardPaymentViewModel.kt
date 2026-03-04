@@ -16,26 +16,23 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_L
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
-import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -52,58 +49,12 @@ private const val LAST_FOUR_DIGITS = 4
 ) // ViewModel requires multiple event handlers for card payment form
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
+    private val generateCardTokenUseCase: GenerateCardTokenUseCase,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
-
-    fun generateToken(
-        cardNumberState: PCIFieldState,
-        expirationDateState: PCIFieldState,
-        securityCodeState: PCIFieldState,
-    ) {
-        viewModelScope.launch {
-            val currentState = _viewState.value
-            val hasErrors = currentState.cardNumberState.error.isNotEmpty() ||
-                currentState.expirationDateState.error.isNotEmpty() ||
-                currentState.secureCodeState.error.isNotEmpty() ||
-                currentState.cardHolderState.error.isNotEmpty() ||
-                currentState.identificationTypeState.error.isNotEmpty()
-            if (hasErrors) {
-                return@launch
-            }
-            if (currentState.cardNumberState.length != currentState.cardNumberState.maxLength) {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = currentState.cardNumberState.copy(
-                        error = "Please, fill the card number",
-                    ),
-                )
-                return@launch
-            }
-            _viewState.value = _viewState.value.copy(isLoading = true)
-            val result = coreMethods.generateCardToken(
-                cardNumberState = cardNumberState,
-                expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState,
-                buyerIdentification = BuyerIdentification(
-                    name = viewState.value.cardHolderState.value,
-                    number = viewState.value.identificationTypeState.value,
-                    type = viewState.value.identificationTypeState.selected?.name,
-                ),
-            )
-            _viewState.value = _viewState.value.copy(isLoading = false)
-            when (result) {
-                is Result.Success -> {
-                }
-
-                is Result.Error -> {
-                    handleResultError(result.error, "Generate Token Error")
-                }
-            }
-        }
-    }
 
     fun getIdentificationTypes() {
         viewModelScope.launch {
@@ -131,7 +82,11 @@ internal class CardPaymentViewModel(
         amount: BigDecimal?,
     ) {
         viewModelScope.launch {
-            getCardDataByBinUseCase(bin, amount).fold(
+            getCardDataByBinUseCase(
+                bin = bin,
+                amount = amount,
+                paymentMethods = checkoutConfiguration?.paymentMethods,
+            ).fold(
                 onSuccess = { cardData ->
                     updateStateWithCardData(cardData)
                     updateCardMaskState(cardData.getLength())
@@ -405,6 +360,67 @@ internal class CardPaymentViewModel(
                         selected = event.identificationType,
                     ),
                 )
+            }
+        }
+    }
+
+    @Suppress("UnusedPrivateMember")
+    private fun validateFields(
+        cardNumberState: PCIFieldState,
+        expirationDateState: PCIFieldState,
+        securityCodeState: PCIFieldState,
+    ) {
+        _viewState.value.let { state ->
+            val hasErrors = state.cardNumberState.error.isNotEmpty() ||
+                state.expirationDateState.error.isNotEmpty() ||
+                state.secureCodeState.error.isNotEmpty() ||
+                state.cardHolderState.error.isNotEmpty() ||
+                state.identificationTypeState.error.isNotEmpty()
+            if (state.cardNumberState.length != state.cardNumberState.maxLength) {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = state.cardNumberState.copy(
+                        error = "Please, fill the card number",
+                    ),
+                )
+            }
+            if (!hasErrors) {
+                generateToken(
+                    cardNumberState = cardNumberState,
+                    expirationDateState = expirationDateState,
+                    securityCodeState = securityCodeState,
+                    buyerIdentification = BuyerIdentification(
+                        name = state.cardHolderState.value,
+                        number = state.identificationTypeState.value,
+                        type = state.identificationTypeState.selected?.name,
+                    ),
+                )
+            }
+        }
+    }
+
+    private fun generateToken(
+        cardNumberState: PCIFieldState,
+        expirationDateState: PCIFieldState,
+        securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification,
+    ) {
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            updateLoadingState(true)
+            generateCardTokenUseCase(
+                cardNumberState = cardNumberState,
+                expirationDateState = expirationDateState,
+                securityCodeState = securityCodeState,
+                buyerIdentification = buyerIdentification,
+            ).fold(
+                onSuccess = {
+                    // TODO
+                },
+                onError = { error ->
+                    handleResultError(error, "Generate Token Error")
+                },
+            ).apply {
+                updateLoadingState(false)
             }
         }
     }

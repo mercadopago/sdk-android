@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCa
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
@@ -85,6 +86,7 @@ internal class CheckoutModulesProviderTest {
                 GetCardIssuersUseCase::class,
                 GetInstallmentsUseCase::class,
                 GetIdentificationTypesUseCase::class,
+                GenerateCardTokenUseCase::class,
             ),
         )
         koin.checkModules {
