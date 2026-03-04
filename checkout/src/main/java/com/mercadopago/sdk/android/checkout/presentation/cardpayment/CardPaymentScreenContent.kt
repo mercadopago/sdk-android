@@ -151,6 +151,7 @@ internal fun CardPaymentScreenContent(
                                 label = viewState.cardNumberState.label,
                                 helper = viewState.cardNumberState.helper,
                                 placeHolder = viewState.cardNumberState.placeHolder,
+                                maxLength = viewState.cardNumberState.maxLength,
                                 onEvent = onCardNumberEvent,
                             )
 

@@ -44,6 +44,8 @@ import java.math.BigDecimal
 private const val HELPER_TEXT_OPTIONAL = "Dado opcional"
 private const val ERROR_GET_CARD_DATA = "Get card data error"
 
+private const val LAST_FOUR_DIGITS = 4
+
 @Suppress(
     "TooManyFunctions",
     "UnusedPrivateProperty",
@@ -185,7 +187,7 @@ internal class CardPaymentViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        valid = event.isValid,
+                        isValid = event.isValid,
                         error = "Invalid expiration date",
                     ),
                 )
@@ -275,15 +277,20 @@ internal class CardPaymentViewModel(
                         lastFourDigits = event.lastFourDigits,
                     ),
                 )
+                if (event.lastFourDigits.length == LAST_FOUR_DIGITS) {
+                    handleCardNumberInputError()
+                }
             }
 
             is CardNumberTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         isValid = event.isValid,
-                        error = "Invalid card number",
                     ),
                 )
+                if (!event.isValid) {
+                    handleCardNumberInputError()
+                }
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
@@ -428,10 +435,17 @@ internal class CardPaymentViewModel(
 
     private fun handleCardNumberInputError() {
         val currentState = _viewState.value
-        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
-        _viewState.value = currentState.copy(
-            cardNumberState = currentState.cardNumberState.copy(error = cardNumberError),
-        )
+        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState).orEmpty()
+        updateError(cardNumberError) { error ->
+            copy(cardNumberState = cardNumberState.copy(error = error))
+        }
+    }
+
+    private fun updateError(
+        error: String,
+        updateState: CardPaymentScreenState.(String) -> CardPaymentScreenState,
+    ) {
+        _viewState.value = _viewState.value.updateState(error)
     }
 
     private fun handleExpirationDateInputError() {
@@ -461,7 +475,7 @@ internal class CardPaymentViewModel(
     private fun handleIdentificationTypeInputError() {
         val currentState = _viewState.value
         val identificationError =
-            IdentificationTypeVerifier.verify(currentState.identificationTypeState)
+            IdentificationTypeVerifier.verify(currentState.identificationTypeState).orEmpty()
         _viewState.value = currentState.copy(
             identificationTypeState = currentState.identificationTypeState.copy(error = identificationError),
         )
