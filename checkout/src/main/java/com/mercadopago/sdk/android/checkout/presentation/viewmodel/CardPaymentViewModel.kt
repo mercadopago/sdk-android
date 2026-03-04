@@ -478,7 +478,7 @@ internal class CardPaymentViewModel(
 
     private fun handleCardNumberInputError() {
         val currentState = _viewState.value
-        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState).orEmpty()
+        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
         if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
             updateError(cardNumberError) { error ->
                 copy(

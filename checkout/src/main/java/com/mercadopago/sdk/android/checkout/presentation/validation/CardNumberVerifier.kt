@@ -6,12 +6,12 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 internal object CardNumberVerifier {
     fun verify(
         state: CardNumberState,
-    ): String? =
+    ): String =
         listOfNotNull(
             checkEmpty(state),
             checkIncomplete(state),
             verifyAllSameDigits(state),
-        ).firstOrNull()
+        ).firstOrNull().orEmpty()
 
     private fun verifyAllSameDigits(
         state: CardNumberState,
