@@ -54,7 +54,7 @@ fun MPCardNumberTextField(
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
-    maxLength: Int? = null,
+    maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
@@ -73,7 +73,7 @@ fun MPCardNumberTextField(
             textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
             enabled = enabled,
             visualTransformation = visualTransformation,
-            maxLength = maxLength ?: DEFAULT_CARD_NUMBER_MAX_LENGTH,
+            maxLength = maxLength,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
