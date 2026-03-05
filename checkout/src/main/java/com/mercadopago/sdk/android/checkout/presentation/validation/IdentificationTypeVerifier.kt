@@ -25,11 +25,13 @@ internal object IdentificationTypeVerifier {
     private fun checkIncomplete(
         state: IdentificationTypeState,
     ): String? {
-        return if (state.value.isNotEmpty() && state.value.length < (state.selected?.maxLength ?: 0)
-        ) {
-            "Preencha este campo"
-        } else {
-            null
+        val minLength = state.selected?.minLength ?: 0
+        val maxLength = state.selected?.maxLength
+
+        return when {
+            maxLength == null -> null
+            state.value.length !in minLength..maxLength -> "Preencha este campo"
+            else -> null
         }
     }
 
