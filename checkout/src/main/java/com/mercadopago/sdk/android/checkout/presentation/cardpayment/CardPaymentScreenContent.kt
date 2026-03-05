@@ -151,6 +151,7 @@ internal fun CardPaymentScreenContent(
                                 label = viewState.cardNumberState.label,
                                 helper = viewState.cardNumberState.helper,
                                 placeHolder = viewState.cardNumberState.placeHolder,
+                                maxLength = viewState.cardNumberState.maxLength,
                                 onEvent = onCardNumberEvent,
                             )
 
@@ -191,7 +192,7 @@ internal fun CardPaymentScreenContent(
                             ) {
                                 MPSecurityCodeTextField(
                                     state = securityCodePCIState,
-                                    securityCodeSize = viewState.secureCodeState.secureCodeLength,
+                                    securityCodeSize = viewState.secureCodeState.maxLength,
                                     isFocused = viewState.secureCodeState.isFocused,
                                     showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
                                     error = viewState.secureCodeState.error,
@@ -236,7 +237,7 @@ internal fun CardPaymentScreenContent(
                             ) {
                                 MPPopover(
                                     description = "É um número de  " +
-                                        "${viewState.secureCodeState.secureCodeLength} dígitos." +
+                                        "${viewState.secureCodeState.maxLength} dígitos." +
                                         "Está atrás do cartão ou no app do seu banco.",
                                     onDismiss = onTooltipClick,
                                 )
@@ -305,7 +306,7 @@ private fun CardPaymentScreenContentPreview() {
                 secureCodeState = SecurityCodeState(
                     label = "Código de Segurança",
                     placeHolder = "123",
-                    secureCodeLength = 3,
+                    maxLength = 3,
                 ),
                 cardNumberState = CardNumberState(
                     label = "Número de tarjeta",
@@ -372,7 +373,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                 secureCodeState = SecurityCodeState(
                     label = "CVV",
                     placeHolder = "123",
-                    secureCodeLength = 3,
+                    maxLength = 3,
                 ),
                 cardNumberState = CardNumberState(
                     label = "Número de tarjeta",
@@ -422,7 +423,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                 secureCodeState = SecurityCodeState(
                     label = "CVV",
                     placeHolder = "123",
-                    secureCodeLength = 3,
+                    maxLength = 3,
                     error = "CVV inválido",
                 ),
                 cardNumberState = CardNumberState(

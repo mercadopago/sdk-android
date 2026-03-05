@@ -4,6 +4,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
@@ -73,14 +74,11 @@ internal fun PaymentMethod.matchesCardBrand(
 
 internal fun PaymentMethod.matchesCardType(
     cardTypes: List<CardType>,
-): Boolean = cardTypes.isEmpty() || cardTypes.any { it.name.equals(this.paymentTypeId, ignoreCase = true) }
-
-internal fun PaymentMethod.matchesCardFilters(
-    cardTypes: List<CardType>,
-    cardBrands: List<CardBrand>,
-): Boolean = matchesCardBrand(cardBrands) && matchesCardType(cardTypes)
+): Boolean = cardTypes.isEmpty() || cardTypes.any { it.value.equals(this.paymentTypeId, ignoreCase = true) }
 
 internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
     return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
 }
+
+internal fun CardNumberState.isComplete() = length == maxLength

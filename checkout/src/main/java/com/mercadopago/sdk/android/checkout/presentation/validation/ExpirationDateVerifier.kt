@@ -15,7 +15,7 @@ internal object ExpirationDateVerifier {
         state: ExpirationDateState,
     ): String? {
         return if (state.length == 0) {
-            "Please, fill the expiration date"
+            "Preencha este campo"
         } else {
             null
         }
@@ -25,7 +25,7 @@ internal object ExpirationDateVerifier {
         state: ExpirationDateState,
     ): String? {
         return if (state.length > 0 && !state.filled) {
-            "Please, complete the expiration date"
+            "Insira a data completa"
         } else {
             null
         }

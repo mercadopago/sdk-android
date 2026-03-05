@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
+import com.mercadopago.sdk.android.checkout.presentation.extensions.checkAllSameDigits
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 
 internal object CardNumberVerifier {
@@ -9,13 +10,24 @@ internal object CardNumberVerifier {
         listOfNotNull(
             checkEmpty(state),
             checkIncomplete(state),
+            verifyAllSameDigits(state),
         ).firstOrNull().orEmpty()
+
+    private fun verifyAllSameDigits(
+        state: CardNumberState,
+    ): String? {
+        return if (state.checkAllSameDigits()) {
+            "Insira-o conforme está no cartão."
+        } else {
+            null
+        }
+    }
 
     private fun checkEmpty(
         state: CardNumberState,
     ): String? {
         return if (state.length == 0) {
-            "Please, fill the card number"
+            "Preencha esse campo."
         } else {
             null
         }
@@ -25,7 +37,7 @@ internal object CardNumberVerifier {
         state: CardNumberState,
     ): String? {
         return if (state.length > 0 && state.length < state.maxLength) {
-            "Please, complete the card number"
+            "Insira o número completo"
         } else {
             null
         }

@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
-internal const val DEFAULT_MAX_CARD_LENGTH = 19
+internal const val DEFAULT_MAX_CARD_LENGTH = 16
 internal const val DEFAULT_CARD_MASK = "#### #### #### ####"
 
 internal data class CardPaymentScreenState(
@@ -24,77 +24,81 @@ internal data class CardPaymentScreenState(
 )
 
 internal data class SecurityCodeState(
-    val isFocused: Boolean = false,
-    val filled: Boolean = false,
-    val enabled: Boolean = true,
-    val helper: String = "",
-    val placeHolder: String = "Ex: 123",
-    val showPlaceHolder: Boolean = true,
-    val label: String = "Código de Segurança",
+    override val label: String = "Código de Segurança",
+    override val helper: String = "",
+    override val placeHolder: String = "Ex: 123",
+    override val error: String = "",
+    override val isFocused: Boolean = false,
+    override val filled: Boolean = false,
+    override val enabled: Boolean = true,
+    override val isValid: Boolean = true,
+    override val showPlaceHolder: Boolean = true,
     val length: Int = 0,
-    val error: String = "",
     val optional: Boolean = false,
-    val secureCodeLength: Int = 3,
-)
+    val maxLength: Int = 3,
+) : FieldState
 
 internal data class ExpirationDateState(
-    val isFocused: Boolean = false,
-    val filled: Boolean = false,
-    val enabled: Boolean = true,
-    val helper: String = "",
-    val placeHolder: String = "MM/YY",
-    val showPlaceHolder: Boolean = true,
-    val label: String = "Expiration date",
+    override val label: String = "Validade",
+    override val helper: String = "",
+    override val placeHolder: String = "MM/AA",
+    override val error: String = "",
+    override val isFocused: Boolean = false,
+    override val filled: Boolean = false,
+    override val enabled: Boolean = true,
+    override val isValid: Boolean = true,
+    override val showPlaceHolder: Boolean = true,
     val length: Int = 0,
-    val error: String = "",
-    val valid: Boolean = true,
-)
+) : FieldState
 
 internal data class CardNumberState(
+    override val label: String = "Número do cartão",
+    override val helper: String = "",
+    override val placeHolder: String = "0000 0000 0000 0000",
+    override val error: String = "",
+    override val isFocused: Boolean = false,
+    override val filled: Boolean = false,
+    override val enabled: Boolean = true,
+    override val isValid: Boolean = true,
+    override val showPlaceHolder: Boolean = true,
     val image: String? = null,
-    val isFocused: Boolean = false,
-    val filled: Boolean = false,
-    val enabled: Boolean = true,
-    val helper: String = "",
-    val placeHolder: String = "0000 0000 0000 0000",
-    val showPlaceHolder: Boolean = true,
-    val label: String = "Card number",
     val length: Int = 0,
     val maxLength: Int = DEFAULT_MAX_CARD_LENGTH,
     val mask: String = DEFAULT_CARD_MASK,
-    val error: String = "",
-    val isValid: Boolean = false,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
-)
+    val errorType: CardNumberErrorType = CardNumberErrorType.NONE,
+) : FieldState
 
 internal data class CardHolderState(
+    override val label: String = "Nome do titular",
+    override val helper: String = "",
+    override val placeHolder: String = "Nome completo",
+    override val error: String = "",
+    override val isFocused: Boolean = false,
+    override val filled: Boolean = false,
+    override val enabled: Boolean = true,
+    override val isValid: Boolean = true,
+    override val showPlaceHolder: Boolean = true,
     val show: Boolean = true,
-    val isFocused: Boolean = false,
-    val filled: Boolean = false,
-    val enabled: Boolean = true,
-    val error: String = "",
-    val helper: String = "",
-    val placeHolder: String = "As it appears on the card",
-    val showPlaceHolder: Boolean = true,
-    val label: String = "Cardholder name",
     val value: String = "",
-)
+) : FieldState
 
 internal data class IdentificationTypeState(
+    override val label: String = "Tipo de documento",
+    override val helper: String = "",
+    override val placeHolder: String = "",
+    override val error: String = "",
+    override val isFocused: Boolean = false,
+    override val filled: Boolean = false,
+    override val enabled: Boolean = true,
+    override val isValid: Boolean = true,
+    override val showPlaceHolder: Boolean = true,
     val show: Boolean = true,
     val identificationTypes: List<IdentificationType>? = null,
     val selected: IdentificationType? = null,
-    val isFocused: Boolean = false,
-    val filled: Boolean = false,
-    val enabled: Boolean = true,
-    val error: String = "",
-    val helper: String = "",
-    val placeHolder: String = "Identification number",
-    val showPlaceHolder: Boolean = true,
-    val label: String = "Identification",
     val value: String = "",
-)
+) : FieldState
 
 internal data class InstallmentsState(
     val showList: Boolean = false,
