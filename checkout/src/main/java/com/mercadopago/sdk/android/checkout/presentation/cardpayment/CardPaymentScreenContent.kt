@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -42,6 +41,7 @@ import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
 import com.mercadopago.sdk.android.components.MPPopover
+import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -284,7 +284,7 @@ internal fun CardPaymentScreenContent(
                     .background(Color.White.copy(alpha = 0.8f)),
                 contentAlignment = Alignment.Center,
             ) {
-                CircularProgressIndicator()
+                MPProgressIndicator()
             }
         }
     }
