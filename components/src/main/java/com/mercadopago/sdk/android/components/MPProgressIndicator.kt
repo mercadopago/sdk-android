@@ -38,7 +38,7 @@ fun MPProgressIndicator(
         modifier = modifier.size(size.circularSize),
         color = MercadoPagoAndesTheme.color.interactive.fillLoud.idle,
         strokeWidth = size.strokeWidth,
-        trackColor = MercadoPagoAndesTheme.color.fill.disabled,
+        trackColor = Color.Transparent,
         strokeCap = StrokeCap.Round,
     )
 }
