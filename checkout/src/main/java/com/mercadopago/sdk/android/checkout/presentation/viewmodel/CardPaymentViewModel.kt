@@ -70,7 +70,7 @@ internal class CardPaymentViewModel(
                     )
                 },
                 onError = { error ->
-                    handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
+                    handleResultError(error)
                 },
             ).apply {
                 updateLoadingState(false)
@@ -104,7 +104,7 @@ internal class CardPaymentViewModel(
                                 )
                             }
                         }
-                        else -> handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
+                        else -> handleResultError(error)
                     }
                 },
             )
@@ -437,7 +437,7 @@ internal class CardPaymentViewModel(
                     // TODO
                 },
                 onError = { error ->
-                    handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
+                    handleResultError(error)
                 },
             ).apply {
                 updateLoadingState(false)
@@ -557,7 +557,7 @@ internal class CardPaymentViewModel(
 
     private fun handleResultError(
         error: ResultError,
-        title: String,
+        title: String = GENERIC_ERROR_MESSAGE_FOR_CALLS,
     ) {
         val message = when (error) {
             is ResultError.Request -> error.message
