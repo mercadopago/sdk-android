@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 private const val HELPER_TEXT_OPTIONAL = "Dado opcional"
-private const val ERROR_GET_CARD_DATA = "Get card data error"
+private const val GENERIC_ERROR_MESSAGE_FOR_CALLS = "Ocorreu um erro. Por favor, tente novamente."
 
 @Suppress(
     "TooManyFunctions",
@@ -70,7 +70,7 @@ internal class CardPaymentViewModel(
                     )
                 },
                 onError = { error ->
-                    handleResultError(error, "Get Identification type")
+                    handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
                 },
             ).apply {
                 updateLoadingState(false)
@@ -104,7 +104,7 @@ internal class CardPaymentViewModel(
                                 )
                             }
                         }
-                        else -> handleResultError(error, ERROR_GET_CARD_DATA)
+                        else -> handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
                     }
                 },
             )
@@ -437,7 +437,7 @@ internal class CardPaymentViewModel(
                     // TODO
                 },
                 onError = { error ->
-                    handleResultError(error, "Generate Token Error")
+                    handleResultError(error, GENERIC_ERROR_MESSAGE_FOR_CALLS)
                 },
             ).apply {
                 updateLoadingState(false)
