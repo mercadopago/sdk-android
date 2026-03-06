@@ -236,9 +236,7 @@ internal fun CardPaymentScreenContent(
                                     .offset { IntOffset(0, popoverY) },
                             ) {
                                 MPPopover(
-                                    description = "É um número de  " +
-                                        "${viewState.secureCodeState.maxLength} dígitos." +
-                                        "Está atrás do cartão ou no app do seu banco.",
+                                    description = viewState.secureCodeState.messageTooltip,
                                     onDismiss = onTooltipClick,
                                 )
                             }

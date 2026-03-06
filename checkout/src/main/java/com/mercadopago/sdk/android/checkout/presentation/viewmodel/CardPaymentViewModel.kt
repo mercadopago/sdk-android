@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
+import com.mercadopago.sdk.android.checkout.domain.mapper.getMessage
 import com.mercadopago.sdk.android.checkout.domain.mapper.isComplete
 import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
 import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
@@ -132,6 +133,7 @@ internal class CardPaymentViewModel(
         placeHolder = securityCode.length.toCountStringPlaceholder("Ex:"),
         optional = securityCode.isOptional(),
         helper = if (securityCode.isOptional()) HELPER_TEXT_OPTIONAL else "",
+        messageTooltip = securityCode.getMessage(),
     )
 
     private fun buildInstallmentsState(
@@ -195,7 +197,7 @@ internal class CardPaymentViewModel(
                         isFocused = event.isFocused,
                     ),
                 )
-                if (!event.isFocused && !_viewState.value.secureCodeState.optional) {
+                if (!event.isFocused) {
                     handleSecurityCodeInputError()
                 }
             }
@@ -516,13 +518,15 @@ internal class CardPaymentViewModel(
 
     private fun handleSecurityCodeInputError() {
         val currentState = _viewState.value
-        val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
-        updateError(securityCodeError) { error ->
-            copy(
-                secureCodeState = secureCodeState.copy(
-                    error = error,
-                ),
-            )
+        if (!currentState.secureCodeState.optional) {
+            val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
+            updateError(securityCodeError) { error ->
+                copy(
+                    secureCodeState = secureCodeState.copy(
+                        error = error,
+                    ),
+                )
+            }
         }
     }
 
