@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import kotlinx.coroutines.delay
 
 /**
  * Fold the result into a single value by providing handlers for both success and error cases.
@@ -75,4 +77,29 @@ internal inline fun <A, B> Result<A, B>.onError(
         action(error)
     }
     return this
+}
+
+@Suppress("ReturnCount")
+internal suspend inline fun <T> retryOnError(
+    maxAttempts: Int = 2,
+    delayMillis: Long = 500L,
+    crossinline shouldRetry: (ResultError) -> Boolean = { it !is ResultError.Validation },
+    crossinline block: suspend () -> Result<T, ResultError>,
+): Result<T, ResultError> {
+    var lastResult: Result<T, ResultError>? = null
+
+    repeat(maxAttempts) { attempt ->
+        val result = block()
+        lastResult = result
+
+        when (result) {
+            is Result.Success -> return result
+            is Result.Error -> {
+                if (!shouldRetry(result.error)) return result
+                if (attempt < maxAttempts - 1) delay(delayMillis)
+            }
+        }
+    }
+
+    return lastResult ?: Result.Error(ResultError.Request("Unknown error", code = ""))
 }
