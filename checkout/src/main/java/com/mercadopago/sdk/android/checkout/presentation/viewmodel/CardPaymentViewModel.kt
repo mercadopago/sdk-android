@@ -45,8 +45,7 @@ private const val ERROR_GET_CARD_DATA = "Get card data error"
 
 @Suppress(
     "TooManyFunctions",
-    "UnusedPrivateProperty",
-) // ViewModel requires multiple event handlers for card payment form
+)
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
