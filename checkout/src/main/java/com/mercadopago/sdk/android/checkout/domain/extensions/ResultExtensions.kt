@@ -4,13 +4,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import kotlinx.coroutines.delay
 
-/**
- * Fold the result into a single value by providing handlers for both success and error cases.
- *
- * @param onSuccess Handler for success case, receives the success data
- * @param onError Handler for error case, receives the error
- * @return The result of applying the appropriate handler
- */
 internal inline fun <A, B, C> Result<A, B>.fold(
     onSuccess: (A) -> C,
     onError: (B) -> C,
@@ -20,13 +13,6 @@ internal inline fun <A, B, C> Result<A, B>.fold(
         is Result.Error -> onError(error)
     }
 
-/**
- * FlatMap allows chaining operations that return Results.
- * If this result is Success, applies transform. If Error, returns the error.
- *
- * @param transform Function that takes success value and returns a new Result
- * @return The result of transform if Success, or the original Error
- */
 internal inline fun <A, B, C> Result<A, B>.flatMap(
     transform: (A) -> Result<C, B>,
 ): Result<C, B> =
@@ -35,12 +21,6 @@ internal inline fun <A, B, C> Result<A, B>.flatMap(
         is Result.Error -> this
     }
 
-/**
- * Map the success value of the result.
- *
- * @param transform Function to transform the success value
- * @return A new result with the transformed success value, or the original error
- */
 internal inline fun <A, B, C> Result<A, B>.map(
     transform: (A) -> C,
 ): Result<C, B> =
@@ -49,12 +29,6 @@ internal inline fun <A, B, C> Result<A, B>.map(
         is Result.Error -> this
     }
 
-/**
- * Perform a side effect if the result is a success.
- *
- * @param action Action to perform with the success data
- * @return The original result
- */
 internal inline fun <A, B> Result<A, B>.onSuccess(
     action: (A) -> Unit,
 ): Result<A, B> {
@@ -64,12 +38,6 @@ internal inline fun <A, B> Result<A, B>.onSuccess(
     return this
 }
 
-/**
- * Perform a side effect if the result is an error.
- *
- * @param action Action to perform with the error
- * @return The original result
- */
 internal inline fun <A, B> Result<A, B>.onError(
     action: (B) -> Unit,
 ): Result<A, B> {
@@ -79,8 +47,23 @@ internal inline fun <A, B> Result<A, B>.onError(
     return this
 }
 
-@Suppress("ReturnCount")
-internal suspend inline fun <T> retryOnError(
+@Suppress("TooGenericExceptionCaught")
+internal suspend inline fun <T> withErrorHandling(
+    crossinline block: suspend () -> Result<T, ResultError>,
+): Result<T, ResultError> =
+    try {
+        block()
+    } catch (e: Exception) {
+        Result.Error(
+            ResultError.Request(
+                message = e.message ?: "An error occurred",
+                code = "EXCEPTION",
+            ),
+        )
+    }
+
+@Suppress("TooGenericExceptionCaught")
+internal suspend inline fun <T> withRetry(
     maxAttempts: Int = 2,
     delayMillis: Long = 500L,
     crossinline shouldRetry: (ResultError) -> Boolean = { it !is ResultError.Validation },
@@ -89,17 +72,36 @@ internal suspend inline fun <T> retryOnError(
     var lastResult: Result<T, ResultError>? = null
 
     repeat(maxAttempts) { attempt ->
-        val result = block()
+        val result = try {
+            block()
+        } catch (e: Exception) {
+            Result.Error(
+                ResultError.Request(
+                    message = e.message ?: "Network error occurred",
+                    code = "NETWORK_ERROR",
+                ),
+            )
+        }
+
         lastResult = result
 
-        when (result) {
-            is Result.Success -> return result
+        val shouldContinue = when (result) {
+            is Result.Success -> false
             is Result.Error -> {
-                if (!shouldRetry(result.error)) return result
-                if (attempt < maxAttempts - 1) delay(delayMillis)
+                val canRetry = shouldRetry(result.error)
+                val hasMoreAttempts = attempt < maxAttempts - 1
+                canRetry && hasMoreAttempts
             }
         }
+
+        if (!shouldContinue) {
+            return result
+        }
+
+        delay(delayMillis)
     }
 
-    return lastResult ?: Result.Error(ResultError.Request("Unknown error", code = ""))
+    return lastResult ?: Result.Error(
+        ResultError.Request("Max retry attempts reached", code = "RETRY_EXHAUSTED"),
+    )
 }
