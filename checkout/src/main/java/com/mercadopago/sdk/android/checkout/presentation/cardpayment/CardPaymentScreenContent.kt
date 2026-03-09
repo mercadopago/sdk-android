@@ -241,24 +241,25 @@ internal fun CardPaymentScreenContent(
                                 )
                             }
                         }
-
-                        if (viewState.showMessage) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(10.dp),
-                            ) {
-                                MPMessage(
-                                    text = viewState.messageError.description,
-                                    type = MPMessageType.Negative,
-                                ) {
-                                    onMessageClick()
-                                }
-                            }
-                        }
                     }
                 }
             }
+
+            if (viewState.showMessage) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                ) {
+                    MPMessage(
+                        text = viewState.messageError.description,
+                        type = MPMessageType.Negative,
+                    ) {
+                        onMessageClick()
+                    }
+                }
+            }
+
             MPFixedFooter(
                 title = viewState.fixedFooterState.title,
                 amount = MPAmountData(
