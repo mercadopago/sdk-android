@@ -8,6 +8,8 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallback
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
@@ -55,6 +57,7 @@ class MercadoPagoCheckout private constructor(
         ),
     ) {
         private var paymentMethods: List<PaymentMethod> = emptyList()
+        private var callback: CheckoutCallback? = null
 
         /**
          * Sets the payment methods
@@ -65,10 +68,22 @@ class MercadoPagoCheckout private constructor(
         ) = apply { this.paymentMethods = paymentMethods }
 
         /**
+         * Sets the callback to receive checkout results
+         * @param callback Callback to be invoked when checkout completes
+         */
+        fun setCallback(
+            callback: CheckoutCallback,
+        ) = apply {
+            this.callback = callback
+        }
+
+        /**
          * Builds the MercadoPagoCheckout
          */
-        fun build(): MercadoPagoCheckout =
-            MercadoPagoCheckout(
+        fun build(): MercadoPagoCheckout {
+            callback?.let { CheckoutCallbackHolder.setCallback(it) }
+
+            return MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,
                 checkoutConfiguration = CheckoutConfiguration(
@@ -76,5 +91,6 @@ class MercadoPagoCheckout private constructor(
                     paymentMethods = paymentMethods,
                 ),
             )
+        }
     }
 }

@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
 import com.mercadopago.sdk.android.checkout.domain.mapper.getMessage
 import com.mercadopago.sdk.android.checkout.domain.mapper.isComplete
 import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
 import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
@@ -430,11 +434,33 @@ internal class CardPaymentViewModel(
                 securityCodeState = securityCodeState,
                 buyerIdentification = buyerIdentification,
             ).fold(
-                onSuccess = {
-                    // TODO
+                onSuccess = { cardToken ->
+                    val paymentData = MPPaymentData(
+                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toInt() ?: 0,
+                        token = cardToken.cardId,
+                        installment = 1,
+                        paymentMethodId = _viewState.value.cardIssuers.firstOrNull()?.id,
+                        issuerId = _viewState.value.cardIssuers.firstOrNull()?.id,
+                        payer = Payer(
+                            documentType = buyerIdentification.type,
+                            documentNumber = buyerIdentification.number,
+                        ),
+                    )
+                    CheckoutCallbackHolder.notifySuccess(paymentData)
                 },
                 onError = { error ->
                     handleResultError(error)
+                    val checkoutError = MercadoPagoCheckoutError(
+                        serviceError = when (error) {
+                            is ResultError.Validation -> "validation_error"
+                            is ResultError.Request -> "request_error"
+                        },
+                        message = when (error) {
+                            is ResultError.Validation -> error.message
+                            is ResultError.Request -> GENERIC_ERROR_MESSAGE_FOR_CALLS
+                        },
+                    )
+                    CheckoutCallbackHolder.notifyError(checkoutError)
                 },
             ).apply {
                 updateLoadingState(false)

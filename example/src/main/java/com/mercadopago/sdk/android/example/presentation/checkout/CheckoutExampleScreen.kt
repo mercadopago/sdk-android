@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.example.presentation.checkout
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
 import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import java.math.BigDecimal
 
@@ -22,15 +24,38 @@ import java.math.BigDecimal
 internal fun CheckoutExampleScreen(
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
 
     val checkout = MercadoPagoCheckout.Builder(
-        context = LocalContext.current,
+        context = context,
         checkoutType = CheckoutType.CardForm(
             CardFormConfiguration(
                 amount = BigDecimal(100.0)
             )
         )
     ).setPaymentMethods(listOf(PaymentMethod.Card()))
+        .setCallback { result ->
+            when (result) {
+                is MercadoPagoCheckoutResult.Success -> {
+                    Log.d("CheckoutExample", "Payment successful!")
+                    Log.d("CheckoutExample", "Token: ${result.paymentData.token}")
+                    Log.d("CheckoutExample", "Amount: ${result.paymentData.transactionAmount}")
+                    Log.d("CheckoutExample", "Payment Method: ${result.paymentData.paymentMethodId}")
+                    Log.d("CheckoutExample", "Installments: ${result.paymentData.installment}")
+                    // TODO: Process payment with your backend
+                }
+                is MercadoPagoCheckoutResult.Error -> {
+                    Log.e("CheckoutExample", "Payment error!")
+                    Log.e("CheckoutExample", "Error code: ${result.error.serviceError}")
+                    Log.e("CheckoutExample", "Error message: ${result.error.message}")
+                    // TODO: Show error to user
+                }
+                is MercadoPagoCheckoutResult.UserCancelled -> {
+                    Log.i("CheckoutExample", "User cancelled the checkout")
+                    // TODO: Handle cancellation
+                }
+            }
+        }
         .build()
 
     Box(
