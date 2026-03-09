@@ -10,3 +10,8 @@ internal data class CheckoutConfiguration(
     val checkoutType: CheckoutType,
     val paymentMethods: List<PaymentMethod>,
 ) : Parcelable
+
+internal fun CheckoutConfiguration.getCardFormAmount() =
+    (checkoutType as? CheckoutType.CardForm)
+        ?.cardFormConfiguration
+        ?.amount

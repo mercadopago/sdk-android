@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
@@ -14,5 +15,8 @@ internal class GetInstallmentsUseCase(
     suspend operator fun invoke(
         bin: String,
         amount: BigDecimal,
-    ): Result<List<Installment>, ResultError> = coreMethods.getInstallments(bin = bin, amount = amount)
+    ): Result<List<Installment>, ResultError> =
+        withErrorHandling {
+            coreMethods.getInstallments(bin = bin, amount = amount)
+        }
 }
