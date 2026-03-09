@@ -103,7 +103,11 @@ internal class CardPaymentViewModel(
                                 )
                             }
                         }
-                        else -> handleResultError(error)
+                        else -> {
+                            if (_viewState.value.cardNumberState.isComplete()) {
+                                handleResultError(error)
+                            }
+                        }
                     }
                 },
             )
