@@ -52,9 +52,9 @@ internal fun CardData.getLength(): Int = paymentMethod.card?.length?.max ?: DEFA
 
 internal fun SecurityCode.getMessage(): String {
     val location = if (location == "back") {
-        "na parte da frente"
-    } else {
         "no verso"
+    } else {
+        "na parte da frente"
     }
     return "É um número de $length dígitos que está $location do seu cartão."
 }
