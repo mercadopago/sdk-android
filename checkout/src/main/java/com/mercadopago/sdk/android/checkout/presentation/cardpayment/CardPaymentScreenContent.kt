@@ -34,7 +34,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -263,13 +262,8 @@ internal fun CardPaymentScreenContent(
             }
             MPFixedFooter(
                 title = viewState.fixedFooterState.title,
-                amount = MPAmountData(
-                    currencySymbol = viewState.fixedFooterState.currencySymbol,
-                    integerPart = viewState.fixedFooterState.amountIntegerPart,
-                    decimalPart = viewState.fixedFooterState.amountDecimalPart,
-                ),
                 subtitle = viewState.fixedFooterState.subtitle,
-                buttonData = MPFixedFooterButtonData(
+                button = MPFixedFooterButtonData(
                     text = viewState.fixedFooterState.buttonText,
                     enabled = viewState.fixedFooterState.buttonEnabled,
                     onClick = onFooterButtonClick,

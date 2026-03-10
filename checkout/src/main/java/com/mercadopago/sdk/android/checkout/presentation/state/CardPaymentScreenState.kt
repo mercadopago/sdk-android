@@ -117,6 +117,6 @@ internal data class FixedFooterState(
     val amountIntegerPart: String = "0",
     val amountDecimalPart: String = "00",
     val subtitle: String? = null,
-    val buttonText: String = "Pagar",
+    val buttonText: String = "Salvar Cartao",
     val buttonEnabled: Boolean = true,
 )
