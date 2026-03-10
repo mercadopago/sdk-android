@@ -51,7 +51,6 @@ internal fun CardPaymentNavHost(
             CardPaymentScreen(
                 viewModel = koinViewModel { parametersOf(checkoutConfiguration) },
                 onBackClick = { navController.popBackStack() },
-                onPayClick = { navController.navigate(SampleDestination.Installment) },
             )
         }
 

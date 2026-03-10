@@ -381,8 +381,7 @@ internal class CardPaymentViewModel(
         installments = installments?.firstOrNull()?.payerCost.orEmpty(),
     )
 
-    @Suppress("UnusedPrivateMember")
-    private fun validateFields(
+    fun validateFieldsAndTokenize(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
@@ -393,13 +392,6 @@ internal class CardPaymentViewModel(
                 state.secureCodeState.error.isNotEmpty() ||
                 state.cardHolderState.error.isNotEmpty() ||
                 state.identificationTypeState.error.isNotEmpty()
-            if (state.cardNumberState.length != state.cardNumberState.maxLength) {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = state.cardNumberState.copy(
-                        error = "Please, fill the card number",
-                    ),
-                )
-            }
             if (!hasErrors) {
                 generateToken(
                     cardNumberState = cardNumberState,
@@ -431,10 +423,10 @@ internal class CardPaymentViewModel(
                 buyerIdentification = buyerIdentification,
             ).fold(
                 onSuccess = {
-                    // TODO
+                    // Implement Callback Success
                 },
                 onError = { error ->
-                    handleResultError(error)
+                    // Implement Callback Error
                 },
             ).apply {
                 updateLoadingState(false)
