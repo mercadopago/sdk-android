@@ -49,16 +49,11 @@ internal class CheckoutActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Notify cancellation only if checkout wasn't completed successfully or with error
         if (!checkoutCompleted && !isChangingConfigurations) {
             CheckoutCallbackHolder.notifyCanceled()
         }
     }
 
-    /**
-     * Marks the checkout as completed to prevent cancellation notification.
-     * Should be called when checkout completes successfully or with error.
-     */
     internal fun markCheckoutCompleted() {
         checkoutCompleted = true
     }
