@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -70,6 +72,7 @@ internal fun CardPaymentScreen(
     val securityCodePCIState = rememberPCIFieldState()
     val cardHolderPCIState = rememberPCIFieldState()
     val identificationPCIState = rememberPCIFieldState()
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         viewModel.getIdentificationTypes()
@@ -91,12 +94,12 @@ internal fun CardPaymentScreen(
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
+            focusManager.clearFocus()
             viewModel.validateFieldsAndTokenize(
                 cardNumberState = cardNumberPCIState,
                 expirationDateState = expirationDatePCIState,
                 securityCodeState = securityCodePCIState,
             )
-            // Return Success/Error Callback
         },
     )
 }
@@ -121,7 +124,11 @@ internal fun CardPaymentScreenContent(
     onMessageClick: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+        ) {
             Column(
                 modifier = Modifier
                     .weight(1f)

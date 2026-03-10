@@ -484,6 +484,7 @@ internal class CardPaymentViewModel(
                 )
             }
         }
+        hasFormErrors()
     }
 
     private fun updateError(
@@ -503,6 +504,7 @@ internal class CardPaymentViewModel(
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleSecurityCodeInputError() {
@@ -517,6 +519,7 @@ internal class CardPaymentViewModel(
                 )
             }
         }
+        hasFormErrors()
     }
 
     private fun handleCardHolderInputError() {
@@ -529,6 +532,7 @@ internal class CardPaymentViewModel(
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleIdentificationTypeInputError() {
@@ -542,6 +546,7 @@ internal class CardPaymentViewModel(
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleResultError(
@@ -567,6 +572,22 @@ internal class CardPaymentViewModel(
                 mask = cardLength.toMask(),
             ),
         )
+    }
+
+    private fun hasFormErrors() {
+        _viewState.value.let { state ->
+            val isFormValid = state.cardNumberState.error.isEmpty() &&
+                state.expirationDateState.error.isEmpty() &&
+                state.secureCodeState.error.isEmpty() &&
+                state.cardHolderState.error.isEmpty() &&
+                state.identificationTypeState.error.isEmpty()
+
+            _viewState.value = _viewState.value.copy(
+                fixedFooterState = state.fixedFooterState.copy(
+                    buttonEnabled = isFormValid,
+                ),
+            )
+        }
     }
 
     private fun updateLoadingState(
