@@ -36,6 +36,7 @@ internal data class SecurityCodeState(
     val length: Int = 0,
     val optional: Boolean = false,
     val maxLength: Int = 3,
+    val messageTooltip: String = "É um número de 3 dígitos que está na parte da frente do seu cartão.",
 ) : FieldState
 
 internal data class ExpirationDateState(

@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.usecase
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
@@ -18,10 +19,12 @@ internal class GenerateCardTokenUseCase(
         securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification,
     ): Result<CardToken, ResultError> =
-        coreMethods.generateCardToken(
-            cardNumberState = cardNumberState,
-            expirationDateState = expirationDateState,
-            securityCodeState = securityCodeState,
-            buyerIdentification = buyerIdentification,
-        )
+        withErrorHandling {
+            coreMethods.generateCardToken(
+                cardNumberState = cardNumberState,
+                expirationDateState = expirationDateState,
+                securityCodeState = securityCodeState,
+                buyerIdentification = buyerIdentification,
+            )
+        }
 }

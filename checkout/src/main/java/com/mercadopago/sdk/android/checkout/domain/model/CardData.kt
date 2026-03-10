@@ -14,4 +14,5 @@ internal data class CardData(
 internal data class SecurityCode(
     val length: Int,
     val mode: String,
+    val location: String,
 )

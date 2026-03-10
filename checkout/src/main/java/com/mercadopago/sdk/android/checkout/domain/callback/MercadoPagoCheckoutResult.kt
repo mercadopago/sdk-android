@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.checkout.domain.calback
+package com.mercadopago.sdk.android.checkout.domain.callback
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError

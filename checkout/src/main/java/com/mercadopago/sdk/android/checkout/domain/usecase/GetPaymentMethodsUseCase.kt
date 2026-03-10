@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.withRetry
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
@@ -12,5 +13,8 @@ internal class GetPaymentMethodsUseCase(
 ) {
     suspend operator fun invoke(
         bin: String,
-    ): Result<List<PaymentMethod>, ResultError> = coreMethods.getPaymentMethods(bin = bin)
+    ): Result<List<PaymentMethod>, ResultError> =
+        withRetry {
+            coreMethods.getPaymentMethods(bin = bin)
+        }
 }
