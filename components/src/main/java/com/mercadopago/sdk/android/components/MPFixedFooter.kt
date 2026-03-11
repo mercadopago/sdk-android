@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.components.extensions.isNotNull
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
@@ -53,18 +54,18 @@ data class MPFixedFooterButtonData(
  * and a call-to-action button
  *
  * @param title The title text displayed on the left side
- * @param amount The amount data containing currency symbol, integer and decimal parts
  * @param modifier The modifier to apply to this component
+ * @param amount The amount data containing currency symbol, integer and decimal parts
  * @param subtitle Optional subtitle text displayed below the amount
- * @param buttonData Optional button configuration. When null, no button is displayed
+ * @param button Optional button configuration. When null, no button is displayed
  */
 @Composable
 fun MPFixedFooter(
     title: String,
-    amount: MPAmountData,
     modifier: Modifier = Modifier,
+    amount: MPAmountData? = null,
     subtitle: String? = null,
-    buttonData: MPFixedFooterButtonData? = null,
+    button: MPFixedFooterButtonData? = null,
 ) {
     Column(
         modifier = modifier
@@ -75,19 +76,21 @@ fun MPFixedFooter(
                 vertical = MercadoPagoAndesTheme.spacing.paddings.xtiny,
             ),
     ) {
-        HeaderSection(
-            title = title,
-            amount = amount,
-            subtitle = subtitle,
-        )
-        if (buttonData != null) {
+        if (amount.isNotNull()) {
+            HeaderSection(
+                title = title,
+                amount = amount,
+                subtitle = subtitle,
+            )
+        }
+        button?.let {
             Spacer(modifier = Modifier.height(MercadoPagoAndesTheme.spacing.paddings.micro))
             MPButton(
-                text = buttonData.text,
+                text = it.text,
                 modifier = Modifier.fillMaxWidth(),
-                style = buttonData.style,
-                enabled = buttonData.enabled,
-                onClick = buttonData.onClick,
+                style = it.style,
+                enabled = it.enabled,
+                onClick = it.onClick,
             )
         }
     }
@@ -164,7 +167,7 @@ private fun MPFixedFooterWithButtonPreview() {
                 decimalPart = "00",
             ),
             subtitle = "Text",
-            buttonData = MPFixedFooterButtonData(
+            button = MPFixedFooterButtonData(
                 text = "Label",
                 onClick = {},
             ),
@@ -184,7 +187,7 @@ private fun MPFixedFooterWithoutButtonPreview() {
                 decimalPart = "00",
             ),
             subtitle = "Text",
-            buttonData = null,
+            button = null,
         )
     }
 }
@@ -204,7 +207,7 @@ private fun MPFixedFooterWithoutSubtitlePreview() {
                     decimalPart = "50",
                 ),
                 subtitle = null,
-                buttonData = MPFixedFooterButtonData(
+                button = MPFixedFooterButtonData(
                     text = "Pagar",
                     onClick = {},
                 ),
@@ -225,7 +228,7 @@ private fun MPFixedFooterDisabledButtonPreview() {
                 decimalPart = "99",
             ),
             subtitle = "em até 12x",
-            buttonData = MPFixedFooterButtonData(
+            button = MPFixedFooterButtonData(
                 text = "Continuar",
                 enabled = false,
                 onClick = {},
