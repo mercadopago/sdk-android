@@ -15,6 +15,7 @@ internal data class CardPaymentScreenState(
     val cardHolderState: CardHolderState = CardHolderState(),
     val identificationTypeState: IdentificationTypeState = IdentificationTypeState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
+    val paymentState: PaymentState = PaymentState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
     val messageError: MessageError = MessageError(),
@@ -120,4 +121,9 @@ internal data class FixedFooterState(
     val subtitle: String? = null,
     val buttonText: String = "Salvar Cartao",
     val buttonEnabled: Boolean = false,
+)
+
+internal data class PaymentState(
+    val paymentMethodId: String? = null,
+    val paymentTypeId: String? = null,
 )

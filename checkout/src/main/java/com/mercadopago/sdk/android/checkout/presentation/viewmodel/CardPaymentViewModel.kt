@@ -14,7 +14,6 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
 import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
@@ -25,6 +24,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorTy
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
+import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
@@ -359,6 +359,10 @@ internal class CardPaymentViewModel(
                 errorType = CardNumberErrorType.NONE,
             ),
             installmentsState = buildInstallmentsState(cardData.installments),
+            paymentState = PaymentState(
+                paymentTypeId = cardData.paymentMethod.paymentTypeId,
+                paymentMethodId = cardData.paymentMethod.id,
+            ),
         )
     }
 
@@ -423,10 +427,11 @@ internal class CardPaymentViewModel(
                 onSuccess = { cardToken ->
                     val paymentData = MPPaymentData(
                         transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toInt() ?: 0,
-                        token = cardToken.cardId,
+                        token = cardToken.token,
                         installment = 1,
-                        paymentMethodId = _viewState.value.cardIssuers.firstOrNull()?.id,
-                        issuerId = _viewState.value.cardIssuers.firstOrNull()?.id,
+                        paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                        paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                        issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
                         payer = Payer(
                             documentType = buyerIdentification.type,
                             documentNumber = buyerIdentification.number,
@@ -434,20 +439,8 @@ internal class CardPaymentViewModel(
                     )
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                 },
-                onError = { error ->
-                    // Implement Callback Error
-                    handleResultError(error)
-                    val checkoutError = MercadoPagoCheckoutError(
-                        serviceError = when (error) {
-                            is ResultError.Validation -> "validation_error"
-                            is ResultError.Request -> "request_error"
-                        },
-                        message = when (error) {
-                            is ResultError.Validation -> error.message
-                            is ResultError.Request -> GENERIC_ERROR_MESSAGE_FOR_CALLS
-                        },
-                    )
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
+                onError = { _ ->
+                    // TODO
                 },
             ).apply {
                 updateLoadingState(false)
