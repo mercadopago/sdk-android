@@ -94,10 +94,11 @@ internal class CardPaymentViewModel(
                 onError = { error ->
                     when (error) {
                         is ResultError.Validation -> {
-                            updateError(error.message) { error ->
+                            updateError(error.message) { error, isValid ->
                                 copy(
                                     cardNumberState = cardNumberState.copy(
                                         error = error,
+                                        isValid = isValid,
                                         errorType = CardNumberErrorType.BIN_VALIDATION,
                                     ),
                                 )
@@ -230,14 +231,6 @@ internal class CardPaymentViewModel(
                 if (_viewState.value.cardNumberState.isComplete()) {
                     handleCardNumberInputError()
                 }
-            }
-
-            is CardNumberTextFieldEvent.IsValid -> {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        isValid = event.isValid,
-                    ),
-                )
             }
 
             is CardNumberTextFieldEvent.OnBinChanged -> {
@@ -381,8 +374,7 @@ internal class CardPaymentViewModel(
         installments = installments?.firstOrNull()?.payerCost.orEmpty(),
     )
 
-    @Suppress("UnusedPrivateMember")
-    private fun validateFields(
+    fun validateFieldsAndTokenize(
         cardNumberState: PCIFieldState,
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
@@ -393,13 +385,6 @@ internal class CardPaymentViewModel(
                 state.secureCodeState.error.isNotEmpty() ||
                 state.cardHolderState.error.isNotEmpty() ||
                 state.identificationTypeState.error.isNotEmpty()
-            if (state.cardNumberState.length != state.cardNumberState.maxLength) {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = state.cardNumberState.copy(
-                        error = "Please, fill the card number",
-                    ),
-                )
-            }
             if (!hasErrors) {
                 generateToken(
                     cardNumberState = cardNumberState,
@@ -431,10 +416,10 @@ internal class CardPaymentViewModel(
                 buyerIdentification = buyerIdentification,
             ).fold(
                 onSuccess = {
-                    // TODO
+                    // Implement Callback Success
                 },
                 onError = { error ->
-                    handleResultError(error)
+                    // Implement Callback Error
                 },
             ).apply {
                 updateLoadingState(false)
@@ -479,10 +464,11 @@ internal class CardPaymentViewModel(
         val currentState = _viewState.value
         val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
         if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
-            updateError(cardNumberError) { error ->
+            updateError(cardNumberError) { error, isValid ->
                 copy(
                     cardNumberState = cardNumberState.copy(
                         error = error,
+                        isValid = isValid,
                         errorType = if (error.isEmpty()) {
                             CardNumberErrorType.NONE
                         } else {
@@ -492,64 +478,74 @@ internal class CardPaymentViewModel(
                 )
             }
         }
+        hasFormErrors()
     }
 
     private fun updateError(
         error: String,
-        updateState: CardPaymentScreenState.(String) -> CardPaymentScreenState,
+        updateState: CardPaymentScreenState.(String, Boolean) -> CardPaymentScreenState,
     ) {
-        _viewState.value = _viewState.value.updateState(error)
+        val isValid = error.isEmpty()
+        _viewState.value = _viewState.value.updateState(error, isValid)
     }
 
     private fun handleExpirationDateInputError() {
         val currentState = _viewState.value
         val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
-        updateError(expirationDateError) { error ->
+        updateError(expirationDateError) { error, isValid ->
             copy(
                 expirationDateState = expirationDateState.copy(
                     error = error,
+                    isValid = isValid,
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleSecurityCodeInputError() {
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
             val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
-            updateError(securityCodeError) { error ->
+            updateError(securityCodeError) { error, isValid ->
                 copy(
                     secureCodeState = secureCodeState.copy(
                         error = error,
+                        isValid = isValid,
                     ),
                 )
             }
         }
+        hasFormErrors()
     }
 
     private fun handleCardHolderInputError() {
         val currentState = _viewState.value
         val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
-        updateError(cardHolderError) { error ->
+        updateError(cardHolderError) { error, isValid ->
             copy(
                 cardHolderState = cardHolderState.copy(
                     error = error,
+                    isValid = isValid,
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleIdentificationTypeInputError() {
         val currentState = _viewState.value
         val identificationError =
             IdentificationTypeVerifier.verify(currentState.identificationTypeState).orEmpty()
-        updateError(identificationError) { error ->
+        updateError(identificationError) { error, isValid ->
             copy(
                 identificationTypeState = identificationTypeState.copy(
                     error = error,
+                    isValid = isValid,
                 ),
             )
         }
+        hasFormErrors()
     }
 
     private fun handleResultError(
@@ -575,6 +571,25 @@ internal class CardPaymentViewModel(
                 mask = cardLength.toMask(),
             ),
         )
+    }
+
+    private fun hasFormErrors() {
+        _viewState.value.let { state ->
+            val isFormValid = state.cardNumberState.error.isEmpty() &&
+                state.cardNumberState.isValid &&
+                state.expirationDateState.error.isEmpty() &&
+                state.expirationDateState.isValid &&
+                state.secureCodeState.error.isEmpty() &&
+                state.secureCodeState.isValid &&
+                state.cardHolderState.error.isEmpty() &&
+                state.identificationTypeState.error.isEmpty()
+
+            _viewState.value = _viewState.value.copy(
+                fixedFooterState = state.fixedFooterState.copy(
+                    buttonEnabled = isFormValid,
+                ),
+            )
+        }
     }
 
     private fun updateLoadingState(
