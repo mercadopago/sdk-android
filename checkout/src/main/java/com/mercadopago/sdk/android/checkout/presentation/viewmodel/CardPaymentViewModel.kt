@@ -5,12 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
 import com.mercadopago.sdk.android.checkout.domain.mapper.getMessage
 import com.mercadopago.sdk.android.checkout.domain.mapper.isComplete
 import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
 import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
@@ -427,7 +432,7 @@ internal class CardPaymentViewModel(
                             documentNumber = buyerIdentification.number,
                         ),
                     )
-                    CheckoutCallbackHolder.notifySuccess(paymentData)
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                 },
                 onError = { error ->
                     // Implement Callback Error
@@ -442,7 +447,7 @@ internal class CardPaymentViewModel(
                             is ResultError.Request -> GENERIC_ERROR_MESSAGE_FOR_CALLS
                         },
                     )
-                    CheckoutCallbackHolder.notifyError(checkoutError)
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
                 },
             ).apply {
                 updateLoadingState(false)

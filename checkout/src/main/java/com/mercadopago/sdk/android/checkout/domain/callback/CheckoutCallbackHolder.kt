@@ -1,14 +1,11 @@
 package com.mercadopago.sdk.android.checkout.domain.callback
 
-import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
-
 internal object CheckoutCallbackHolder {
-    private var callback: CheckoutCallback? = null
+    private var callback: ((MercadoPagoCheckoutResult) -> Unit)? = null
     private var activityCallback: (() -> Unit)? = null
 
     fun setCallback(
-        callback: CheckoutCallback?,
+        callback: ((MercadoPagoCheckoutResult) -> Unit)?,
     ) {
         this.callback = callback
     }
@@ -19,24 +16,13 @@ internal object CheckoutCallbackHolder {
         this.activityCallback = callback
     }
 
-    fun notifySuccess(
-        paymentData: MPPaymentData,
+    fun notify(
+        result: MercadoPagoCheckoutResult,
     ) {
-        activityCallback?.invoke()
-        callback?.onResult(MercadoPagoCheckoutResult.Success(paymentData))
-        clear()
-    }
-
-    fun notifyError(
-        error: MercadoPagoCheckoutError,
-    ) {
-        activityCallback?.invoke()
-        callback?.onResult(MercadoPagoCheckoutResult.Error(error))
-        clear()
-    }
-
-    fun notifyCanceled() {
-        callback?.onResult(MercadoPagoCheckoutResult.UserCancelled)
+        if (result !is MercadoPagoCheckoutResult.UserCancelled) {
+            activityCallback?.invoke()
+        }
+        callback?.invoke(result)
         clear()
     }
 

@@ -42,17 +42,14 @@ internal fun CheckoutExampleScreen(
                     Log.d("CheckoutExample", "Amount: ${result.paymentData.transactionAmount}")
                     Log.d("CheckoutExample", "Payment Method: ${result.paymentData.paymentMethodId}")
                     Log.d("CheckoutExample", "Installments: ${result.paymentData.installment}")
-                    // TODO: Process payment with your backend
                 }
                 is MercadoPagoCheckoutResult.Error -> {
                     Log.e("CheckoutExample", "Payment error!")
                     Log.e("CheckoutExample", "Error code: ${result.error.serviceError}")
                     Log.e("CheckoutExample", "Error message: ${result.error.message}")
-                    // TODO: Show error to user
                 }
                 is MercadoPagoCheckoutResult.UserCancelled -> {
                     Log.i("CheckoutExample", "User cancelled the checkout")
-                    // TODO: Handle cancellation
                 }
             }
         }

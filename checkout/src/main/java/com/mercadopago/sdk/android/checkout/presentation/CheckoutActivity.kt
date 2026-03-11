@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -50,7 +51,7 @@ internal class CheckoutActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (!checkoutCompleted && !isChangingConfigurations) {
-            CheckoutCallbackHolder.notifyCanceled()
+            CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled)
         }
     }
 

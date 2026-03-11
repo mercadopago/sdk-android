@@ -8,8 +8,8 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
-import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallback
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
@@ -57,7 +57,7 @@ class MercadoPagoCheckout private constructor(
         ),
     ) {
         private var paymentMethods: List<PaymentMethod> = emptyList()
-        private var callback: CheckoutCallback? = null
+        private var callback: ((MercadoPagoCheckoutResult) -> Unit)? = null
 
         /**
          * Sets the payment methods
@@ -68,11 +68,29 @@ class MercadoPagoCheckout private constructor(
         ) = apply { this.paymentMethods = paymentMethods }
 
         /**
-         * Sets the callback to receive checkout results
-         * @param callback Callback to be invoked when checkout completes
+         * Sets the callback to receive checkout results.
+         *
+         * Example usage:
+         * ```
+         * .setCallback { result ->
+         *     when (result) {
+         *         is MercadoPagoCheckoutResult.Success -> {
+         *             // Handle success with result.paymentData
+         *         }
+         *         is MercadoPagoCheckoutResult.Error -> {
+         *             // Handle error with result.error
+         *         }
+         *         is MercadoPagoCheckoutResult.UserCancelled -> {
+         *             // Handle user cancellation
+         *         }
+         *     }
+         * }
+         * ```
+         *
+         * @param callback Lambda to be invoked when checkout completes with the result
          */
         fun setCallback(
-            callback: CheckoutCallback,
+            callback: (MercadoPagoCheckoutResult) -> Unit,
         ) = apply {
             this.callback = callback
         }
