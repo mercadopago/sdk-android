@@ -35,7 +35,6 @@ private const val CARD_LENGTH_19_MASK = "#### #### #### #### ###"
 
 private const val DEFAULT_SECURITY_CODE_LENGTH = 3
 private const val DEFAULT_SECURITY_CODE_MODE = "mandatory"
-private const val SECURITY_CODE_MODE_MANDATORY = "mandatory"
 private const val SECURITY_CODE_LOCATION = "back"
 private const val ISSUER_ID = "issuer_id"
 
@@ -46,7 +45,7 @@ internal fun PaymentMethod.toSecurityCode(): SecurityCode =
         location = card?.securityCode?.location ?: SECURITY_CODE_LOCATION,
     )
 
-internal fun SecurityCode.isOptional(): Boolean = mode != SECURITY_CODE_MODE_MANDATORY
+internal fun SecurityCode.isOptional(): Boolean = length <= 0
 
 internal fun CardData.getLength(): Int = paymentMethod.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH
 

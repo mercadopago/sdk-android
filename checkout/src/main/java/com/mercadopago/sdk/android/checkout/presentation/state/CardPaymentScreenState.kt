@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
-internal const val DEFAULT_MAX_CARD_LENGTH = 16
+internal const val DEFAULT_MAX_CARD_LENGTH = 19
 internal const val DEFAULT_CARD_MASK = "#### #### #### ####"
 
 internal data class CardPaymentScreenState(
