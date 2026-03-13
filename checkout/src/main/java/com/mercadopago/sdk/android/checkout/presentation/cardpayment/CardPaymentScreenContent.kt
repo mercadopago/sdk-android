@@ -196,25 +196,27 @@ internal fun CardPaymentScreenContent(
                                 onEvent = onExpirationDateEvent,
                             )
 
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                            Box(
-                                modifier = Modifier.onGloballyPositioned {
-                                    securityCodeBounds = it.boundsInRoot()
-                                },
-                            ) {
-                                MPSecurityCodeTextField(
-                                    state = securityCodePCIState,
-                                    securityCodeSize = viewState.secureCodeState.maxLength,
-                                    isFocused = viewState.secureCodeState.isFocused,
-                                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                                    error = viewState.secureCodeState.error,
-                                    enabled = viewState.secureCodeState.enabled,
-                                    label = viewState.secureCodeState.label,
-                                    helper = viewState.secureCodeState.helper,
-                                    placeHolder = viewState.secureCodeState.placeHolder,
-                                    onClickTooltip = onTooltipClick,
-                                    onEvent = onSecurityCodeEvent,
-                                )
+                            if (!viewState.secureCodeState.optional) {
+                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                                Box(
+                                    modifier = Modifier.onGloballyPositioned {
+                                        securityCodeBounds = it.boundsInRoot()
+                                    },
+                                ) {
+                                    MPSecurityCodeTextField(
+                                        state = securityCodePCIState,
+                                        securityCodeSize = viewState.secureCodeState.maxLength,
+                                        isFocused = viewState.secureCodeState.isFocused,
+                                        showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                                        error = viewState.secureCodeState.error,
+                                        enabled = viewState.secureCodeState.enabled,
+                                        label = viewState.secureCodeState.label,
+                                        helper = viewState.secureCodeState.helper,
+                                        placeHolder = viewState.secureCodeState.placeHolder,
+                                        onClickTooltip = onTooltipClick,
+                                        onEvent = onSecurityCodeEvent,
+                                    )
+                                }
                             }
 
                             if (viewState.identificationTypeState.show) {

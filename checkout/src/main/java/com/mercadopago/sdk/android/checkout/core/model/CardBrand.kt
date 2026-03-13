@@ -125,7 +125,7 @@ sealed class CardBrand : Parcelable {
      */
     companion object {
         private const val VISA = "visa"
-        private const val MASTERCARD = "mastercard"
+        private const val MASTERCARD = "master"
         private const val AMEX = "amex"
         private const val ELO = "elo"
         private const val HIPERCARD = "hipercard"
