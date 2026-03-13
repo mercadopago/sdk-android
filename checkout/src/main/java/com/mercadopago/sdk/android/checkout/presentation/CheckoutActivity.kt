@@ -7,6 +7,8 @@ import androidx.activity.compose.setContent
 import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -15,11 +17,17 @@ import org.koin.compose.KoinContext
 
 internal class CheckoutActivity : ComponentActivity() {
     private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance().koin.inject()
+    private var checkoutCompleted = false
 
     override fun onCreate(
         savedInstanceState: Bundle?,
     ) {
         super.onCreate(savedInstanceState)
+
+        CheckoutCallbackHolder.setActivityCallback {
+            markCheckoutCompleted()
+            finish()
+        }
 
         val checkoutConfiguration = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(EXTRA_CONFIGURATION, CheckoutConfiguration::class.java)
@@ -38,5 +46,16 @@ internal class CheckoutActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!checkoutCompleted && !isChangingConfigurations) {
+            CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled)
+        }
+    }
+
+    internal fun markCheckoutCompleted() {
+        checkoutCompleted = true
     }
 }

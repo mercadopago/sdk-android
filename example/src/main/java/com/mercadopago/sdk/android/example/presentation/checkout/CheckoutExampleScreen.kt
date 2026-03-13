@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
 import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import java.math.BigDecimal
 
@@ -22,9 +23,10 @@ import java.math.BigDecimal
 internal fun CheckoutExampleScreen(
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
 
     val checkout = MercadoPagoCheckout.Builder(
-        context = LocalContext.current,
+        context = context,
         checkoutType = CheckoutType.CardForm(
             CardFormConfiguration(
                 amount = BigDecimal(100.0)
@@ -38,7 +40,21 @@ internal fun CheckoutExampleScreen(
         contentAlignment = Alignment.Center
     ) {
         CheckoutExampleScreen(
-            onOpenCheckoutClicked = checkout::start,
+            onOpenCheckoutClicked = {
+                checkout.show { result ->
+                    when (result) {
+                        is MercadoPagoCheckoutResult.Success -> {
+
+                        }
+                        is MercadoPagoCheckoutResult.Error -> {
+
+                        }
+                        is MercadoPagoCheckoutResult.UserCancelled -> {
+
+                        }
+                    }
+                }
+            },
             modifier = modifier,
         )
     }

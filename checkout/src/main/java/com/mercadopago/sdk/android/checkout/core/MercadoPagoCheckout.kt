@@ -8,6 +8,8 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
@@ -28,8 +30,12 @@ class MercadoPagoCheckout private constructor(
 ) {
     /**
      * Launches the checkout
+     * @param callback Lambda to be invoked when checkout completes with the result
      */
-    fun start() {
+    fun show(
+        callback: (MercadoPagoCheckoutResult) -> Unit,
+    ) {
+        CheckoutCallbackHolder.setCallback(callback)
         koin.get<CheckoutThemePreferences>().apply {
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
