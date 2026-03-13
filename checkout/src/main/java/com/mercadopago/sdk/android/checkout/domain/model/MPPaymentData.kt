@@ -13,7 +13,7 @@ package com.mercadopago.sdk.android.checkout.domain.model
  */
 data class MPPaymentData(
     val token: String,
-    val transactionAmount: Int,
+    val transactionAmount: Int?,
     val paymentMethodId: String,
     val paymentTypeId: String,
     val payer: Payer,
