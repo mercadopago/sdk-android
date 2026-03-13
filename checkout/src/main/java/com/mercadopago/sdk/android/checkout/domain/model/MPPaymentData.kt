@@ -16,7 +16,7 @@ data class MPPaymentData(
     val transactionAmount: Int?,
     val paymentMethodId: String,
     val paymentTypeId: String,
-    val payer: Payer,
+    val payer: Payer?,
     val installment: Int?,
     val issuerId: String?,
 )
