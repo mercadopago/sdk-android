@@ -73,8 +73,8 @@ class MercadoPagoCheckout private constructor(
         /**
          * Builds the MercadoPagoCheckout
          */
-        fun build(): MercadoPagoCheckout {
-            return MercadoPagoCheckout(
+        fun build(): MercadoPagoCheckout =
+            MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,
                 checkoutConfiguration = CheckoutConfiguration(
@@ -82,6 +82,5 @@ class MercadoPagoCheckout private constructor(
                     paymentMethods = paymentMethods,
                 ),
             )
-        }
     }
 }
