@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -64,7 +65,6 @@ import kotlin.math.roundToInt
 internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
     onBackClick: () -> Unit = {},
-    onPayClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
@@ -72,6 +72,7 @@ internal fun CardPaymentScreen(
     val securityCodePCIState = rememberPCIFieldState()
     val cardHolderPCIState = rememberPCIFieldState()
     val identificationPCIState = rememberPCIFieldState()
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         viewModel.getIdentificationTypes()
@@ -92,7 +93,14 @@ internal fun CardPaymentScreen(
         onBackClick = onBackClick,
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
-        onFooterButtonClick = onPayClick,
+        onFooterButtonClick = {
+            focusManager.clearFocus()
+            viewModel.validateFieldsAndTokenize(
+                cardNumberState = cardNumberPCIState,
+                expirationDateState = expirationDatePCIState,
+                securityCodeState = securityCodePCIState,
+            )
+        },
     )
 }
 
@@ -116,7 +124,11 @@ internal fun CardPaymentScreenContent(
     onMessageClick: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
+        ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -241,33 +253,29 @@ internal fun CardPaymentScreenContent(
                                 )
                             }
                         }
-
-                        if (viewState.showMessage) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.BottomCenter)
-                                    .padding(10.dp),
-                            ) {
-                                MPMessage(
-                                    text = viewState.messageError.description,
-                                    type = MPMessageType.Negative,
-                                ) {
-                                    onMessageClick()
-                                }
-                            }
-                        }
                     }
                 }
             }
+
+            if (viewState.showMessage) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                ) {
+                    MPMessage(
+                        text = viewState.messageError.description,
+                        type = MPMessageType.Negative,
+                    ) {
+                        onMessageClick()
+                    }
+                }
+            }
+
             MPFixedFooter(
                 title = viewState.fixedFooterState.title,
-                amount = MPAmountData(
-                    currencySymbol = viewState.fixedFooterState.currencySymbol,
-                    integerPart = viewState.fixedFooterState.amountIntegerPart,
-                    decimalPart = viewState.fixedFooterState.amountDecimalPart,
-                ),
                 subtitle = viewState.fixedFooterState.subtitle,
-                buttonData = MPFixedFooterButtonData(
+                button = MPFixedFooterButtonData(
                     text = viewState.fixedFooterState.buttonText,
                     enabled = viewState.fixedFooterState.buttonEnabled,
                     onClick = onFooterButtonClick,
