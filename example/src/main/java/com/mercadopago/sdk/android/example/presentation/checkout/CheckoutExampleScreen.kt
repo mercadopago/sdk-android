@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.example.presentation.checkout
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -34,25 +33,6 @@ internal fun CheckoutExampleScreen(
             )
         )
     ).setPaymentMethods(listOf(PaymentMethod.Card()))
-        .setCallback { result ->
-            when (result) {
-                is MercadoPagoCheckoutResult.Success -> {
-                    Log.d("CheckoutExample", "Payment successful!")
-                    Log.d("CheckoutExample", "Token: ${result.paymentData.token}")
-                    Log.d("CheckoutExample", "Amount: ${result.paymentData.transactionAmount}")
-                    Log.d("CheckoutExample", "Payment Method: ${result.paymentData.paymentMethodId}")
-                    Log.d("CheckoutExample", "Installments: ${result.paymentData.installment}")
-                }
-                is MercadoPagoCheckoutResult.Error -> {
-                    Log.e("CheckoutExample", "Payment error!")
-                    Log.e("CheckoutExample", "Error code: ${result.error.serviceError}")
-                    Log.e("CheckoutExample", "Error message: ${result.error.message}")
-                }
-                is MercadoPagoCheckoutResult.UserCancelled -> {
-                    Log.i("CheckoutExample", "User cancelled the checkout")
-                }
-            }
-        }
         .build()
 
     Box(
@@ -60,7 +40,21 @@ internal fun CheckoutExampleScreen(
         contentAlignment = Alignment.Center
     ) {
         CheckoutExampleScreen(
-            onOpenCheckoutClicked = checkout::start,
+            onOpenCheckoutClicked = {
+                checkout.show { result ->
+                    when (result) {
+                        is MercadoPagoCheckoutResult.Success -> {
+
+                        }
+                        is MercadoPagoCheckoutResult.Error -> {
+
+                        }
+                        is MercadoPagoCheckoutResult.UserCancelled -> {
+
+                        }
+                    }
+                }
+            },
             modifier = modifier,
         )
     }

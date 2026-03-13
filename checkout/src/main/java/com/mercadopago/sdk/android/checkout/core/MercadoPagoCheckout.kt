@@ -30,8 +30,12 @@ class MercadoPagoCheckout private constructor(
 ) {
     /**
      * Launches the checkout
+     * @param callback Lambda to be invoked when checkout completes with the result
      */
-    fun start() {
+    fun show(
+        callback: (MercadoPagoCheckoutResult) -> Unit,
+    ) {
+        CheckoutCallbackHolder.setCallback(callback)
         koin.get<CheckoutThemePreferences>().apply {
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
@@ -57,7 +61,6 @@ class MercadoPagoCheckout private constructor(
         ),
     ) {
         private var paymentMethods: List<PaymentMethod> = emptyList()
-        private var callback: ((MercadoPagoCheckoutResult) -> Unit)? = null
 
         /**
          * Sets the payment methods
@@ -68,39 +71,9 @@ class MercadoPagoCheckout private constructor(
         ) = apply { this.paymentMethods = paymentMethods }
 
         /**
-         * Sets the callback to receive checkout results.
-         *
-         * Example usage:
-         * ```
-         * .setCallback { result ->
-         *     when (result) {
-         *         is MercadoPagoCheckoutResult.Success -> {
-         *             // Handle success with result.paymentData
-         *         }
-         *         is MercadoPagoCheckoutResult.Error -> {
-         *             // Handle error with result.error
-         *         }
-         *         is MercadoPagoCheckoutResult.UserCancelled -> {
-         *             // Handle user cancellation
-         *         }
-         *     }
-         * }
-         * ```
-         *
-         * @param callback Lambda to be invoked when checkout completes with the result
-         */
-        fun setCallback(
-            callback: (MercadoPagoCheckoutResult) -> Unit,
-        ) = apply {
-            this.callback = callback
-        }
-
-        /**
          * Builds the MercadoPagoCheckout
          */
         fun build(): MercadoPagoCheckout {
-            callback?.let { CheckoutCallbackHolder.setCallback(it) }
-
             return MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,
