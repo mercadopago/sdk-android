@@ -130,7 +130,7 @@ internal class SecurityCodeTextFieldTest {
     @Test
     fun `when field has decoration box Then text should be visible`() {
         // Given
-        var input = "123"
+        val input = "123"
         val title = "Card Number Field"
 
         // When
@@ -153,9 +153,9 @@ internal class SecurityCodeTextFieldTest {
     }
 
     @Test
-    fun `when user types input and configuration is changed Then input should be restored`() {
+    fun `when user types input and configuration is changed Then input should be cleared for PCI compliance`() {
         // Given
-        var input = "123"
+        val input = "123"
         val stateRestorationTester = StateRestorationTester(composeTestRule)
 
         // When
@@ -163,18 +163,18 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(stateRestorationTester = stateRestorationTester)
             performTextInput(input)
 
-            // Perform configuration change
+            // Perform configuration change (simulates process death + Bundle restore)
             stateRestorationTester.emulateSavedInstanceStateRestore()
 
-            // Then
-            assertTextInput(input)
+            // Then - PCI data must NOT survive serialization to Bundle
+            assertTextInput("")
         }
     }
 
     @Test
-    fun `when user types text input and configuration is changed Then input should be restored`() {
+    fun `when user types text input and configuration is changed Then input should be cleared for PCI compliance`() {
         // Given
-        var input = "123"
+        val input = "123"
         val stateRestorationTester = StateRestorationTester(composeTestRule)
 
         // When
@@ -182,11 +182,11 @@ internal class SecurityCodeTextFieldTest {
             createSecurityField(stateRestorationTester = stateRestorationTester)
             performTextInput(input)
 
-            // Perform configuration change
+            // Perform configuration change (simulates process death + Bundle restore)
             stateRestorationTester.emulateSavedInstanceStateRestore()
 
-            // Then
-            assertTextInput(input)
+            // Then - PCI data must NOT survive serialization to Bundle
+            assertTextInput("")
         }
     }
 }
