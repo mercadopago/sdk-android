@@ -8,9 +8,14 @@
     <string name="card_form_holder_label">Cardholder name</string>
     <string name="card_form_holder_placeholder">E.g.: Maria Lopez</string>
     <string name="card_form_expiration_label">Expiration date</string>
+    <string name="card_form_expiration_short_label">Expiration date</string>
     <string name="card_form_expiration_placeholder">MM/YY</string>
     <string name="card_form_security_label">Security code</string>
     <string name="card_form_security_placeholder">E.g.: 123</string>
     <string name="card_form_document_label">Cardholder ID</string>
     <string name="card_form_document_placeholder">Tax ID/CPF/DNI</string>
+    <string name="card_form_document_example">Ej.: 00.000.000</string>
+    <string name="card_form_optional_field">Optional field</string>
+    <string name="card_form_generic_error">An error occurred. Please try again.</string>
+    <string name="card_form_save_button">Save card</string>
 </resources>

@@ -19,6 +19,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCountStringPlaceholder
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -46,19 +47,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-private const val HELPER_TEXT_OPTIONAL = "Dado opcional"
-private const val GENERIC_ERROR_MESSAGE_FOR_CALLS = "Ocorreu um erro. Por favor, tente novamente."
-
 @Suppress(
     "TooManyFunctions",
 )
 internal class CardPaymentViewModel(
+    private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateCardTokenUseCase: GenerateCardTokenUseCase,
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow(CardPaymentScreenState())
+    private val helperTextOptional: String
+        get() = stateFactory.getOptionalFieldText()
+
+    private val genericErrorMessage: String
+        get() = stateFactory.getGenericErrorMessage()
+
+    private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     fun getIdentificationTypes() {
@@ -372,7 +377,7 @@ internal class CardPaymentViewModel(
         maxLength = securityCode.length,
         placeHolder = securityCode.length.toCountStringPlaceholder("Ex:"),
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) HELPER_TEXT_OPTIONAL else "",
+        helper = if (securityCode.isOptional()) helperTextOptional else "",
         messageTooltip = securityCode.getMessage(),
     )
 
@@ -571,7 +576,7 @@ internal class CardPaymentViewModel(
 
     private fun handleResultError(
         error: ResultError,
-        title: String = GENERIC_ERROR_MESSAGE_FOR_CALLS,
+        title: String = genericErrorMessage,
     ) {
         val message = when (error) {
             is ResultError.Request -> title

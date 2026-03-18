@@ -15,4 +15,7 @@
     <string name="card_form_document_label">Documento do titular</string>
     <string name="card_form_document_placeholder">CPF / CNPJ/CEI, etc</string>
     <string name="card_form_document_example">Ex.: 00.000.000-0</string>
+    <string name="card_form_optional_field">Dado opcional</string>
+    <string name="card_form_generic_error">Ocorreu um erro. Por favor, tente novamente.</string>
+    <string name="card_form_save_button">Salvar cartão</string>
 </resources>

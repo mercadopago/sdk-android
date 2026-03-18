@@ -15,4 +15,7 @@
     <string name="card_form_document_label">Documento del titular</string>
     <string name="card_form_document_placeholder">CURP / RFC, etc</string>
     <string name="card_form_document_example">Ej.: AAAA000000AAAAAA00</string>
+    <string name="card_form_optional_field">Dato opcional</string>
+    <string name="card_form_generic_error">Ocurrió un error. Por favor, intenta de nuevo.</string>
+    <string name="card_form_save_button">Guardar tarjeta</string>
 </resources>
