@@ -55,4 +55,6 @@ internal class CardPaymentScreenStateFactory(
     fun getOptionalFieldText() = stringProvider.getString(R.string.card_form_optional_field)
 
     fun getGenericErrorMessage() = stringProvider.getString(R.string.card_form_generic_error)
+
+    fun getStringProvider() = stringProvider
 }

@@ -1,0 +1,36 @@
+package com.mercadopago.sdk.android.checkout.domain.extensions
+
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
+import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
+
+private const val DEFAULT_SECURITY_CODE_LENGTH = 3
+private const val DEFAULT_SECURITY_CODE_MODE = "mandatory"
+private const val SECURITY_CODE_LOCATION = "back"
+private const val ISSUER_ID = "issuer_id"
+
+internal fun PaymentMethod.matchesCardBrand(
+    cardBrands: List<CardBrand>,
+): Boolean = cardBrands.isEmpty() || cardBrands.any { it.name.equals(this.id, ignoreCase = true) }
+
+internal fun PaymentMethod.matchesCardType(
+    cardTypes: List<CardType>,
+): Boolean = cardTypes.isEmpty() || cardTypes.any { it.value.equals(this.paymentTypeId, ignoreCase = true) }
+
+internal fun PaymentMethod.hasIssuers() =
+    this.additionalInfoNeeded?.contains(ISSUER_ID) == true &&
+        this.id != null
+
+internal fun PaymentMethod.toSecurityCode(): SecurityCode =
+    SecurityCode(
+        length = card?.securityCode?.length ?: DEFAULT_SECURITY_CODE_LENGTH,
+        mode = card?.securityCode?.mode ?: DEFAULT_SECURITY_CODE_MODE,
+        location = card?.securityCode?.location ?: SECURITY_CODE_LOCATION,
+    )
+
+internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
+    val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
+    return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
+}

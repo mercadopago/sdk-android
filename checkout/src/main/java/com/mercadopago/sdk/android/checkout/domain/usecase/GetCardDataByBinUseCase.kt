@@ -1,16 +1,16 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
-import com.mercadopago.sdk.android.checkout.R
+import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.flatMap
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
-import com.mercadopago.sdk.android.checkout.domain.mapper.extractCardFilters
-import com.mercadopago.sdk.android.checkout.domain.mapper.hasIssuers
-import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardBrand
-import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardType
-import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCode
+import com.mercadopago.sdk.android.checkout.domain.extensions.hasIssuers
+import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
+import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
+import com.mercadopago.sdk.android.checkout.domain.extensions.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError

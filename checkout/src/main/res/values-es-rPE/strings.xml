@@ -29,4 +29,8 @@
     <string name="card_form_error_insufficient_amount">Verifica que la tarjeta tenga límite suficiente.</string>
     <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas (bandera).</string>
     <string name="card_form_error_card_type_not_accepted">La tienda no acepta (card type)</string>
+
+    <!-- Security Code Tooltip Messages -->
+    <string name="card_form_security_code_tooltip_back">Es un número de %d dígitos que está en el reverso de tu tarjeta.</string>
+    <string name="card_form_security_code_tooltip_front">Es un número de %d dígitos que está en el frente de tu tarjeta.</string>
 </resources>

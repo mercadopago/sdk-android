@@ -7,11 +7,11 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
-import com.mercadopago.sdk.android.checkout.domain.mapper.getLength
-import com.mercadopago.sdk.android.checkout.domain.mapper.getMessage
-import com.mercadopago.sdk.android.checkout.domain.mapper.isComplete
-import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
-import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
+import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
+import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
+import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
+import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
+import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
@@ -375,7 +375,7 @@ internal class CardPaymentViewModel(
         placeHolder = securityCode.length.toCountStringPlaceholder("Ex:"),
         optional = securityCode.isOptional(),
         helper = if (securityCode.isOptional()) helperTextOptional else "",
-        messageTooltip = securityCode.getMessage(),
+        messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
 
     private fun buildInstallmentsState(
