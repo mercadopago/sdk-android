@@ -12,8 +12,10 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseC
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -23,10 +25,16 @@ internal fun provideDataModule() =
             CheckoutThemePreferencesImpl()
         }
         single<StringProvider> {
-            AndroidStringProvider(context = get())
+            AndroidStringProvider(
+                context = get(),
+                countryCode = MercadoPagoSDK.countryCode,
+            )
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
+        }
+        factory {
+            CardPaymentValidator(stringProvider = get())
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
@@ -36,9 +44,11 @@ internal fun provideDataModule() =
                     getPaymentMethodsUseCase = GetPaymentMethodsUseCase(),
                     getCardIssuersUseCase = GetCardIssuersUseCase(),
                     getInstallmentsUseCase = GetInstallmentsUseCase(),
+                    stringProvider = get(),
                 ),
                 getIdentificationTypesUseCase = GetIdentificationTypesUseCase(),
                 generateCardTokenUseCase = GenerateCardTokenUseCase(),
+                validator = get(),
             )
         }
     }

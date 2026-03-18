@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.R
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
@@ -11,19 +12,17 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import java.math.BigDecimal
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod as ApiPaymentMethod
 
-private const val ERROR_NO_PAYMENT_METHOD = "Insira-o conforme está no cartão"
-private const val ERROR_CARD_TYPE_NOT_ALLOWED = "A loja não aceita cartões do tipo"
-private const val ERROR_CARD_BRAND_NOT_ALLOWED = "A loja não aceita cartões da bandeira"
-
 internal class GetCardDataByBinUseCase(
     private val getPaymentMethodsUseCase: GetPaymentMethodsUseCase,
     private val getCardIssuersUseCase: GetCardIssuersUseCase,
     private val getInstallmentsUseCase: GetInstallmentsUseCase,
+    private val stringProvider: StringProvider,
 ) {
     suspend operator fun invoke(
         bin: String,
@@ -34,7 +33,11 @@ internal class GetCardDataByBinUseCase(
             val (cardTypes, cardBrands) = paymentMethods.extractCardFilters()
             data.firstOrNull()?.let { paymentMethod ->
                 validateAndFetchCardData(paymentMethod, cardTypes, cardBrands, bin, amount)
-            } ?: Result.Error(ResultError.Validation(ERROR_NO_PAYMENT_METHOD))
+            } ?: Result.Error(
+                ResultError.Validation(
+                    stringProvider.getString(R.string.card_form_error_card_number_repeated),
+                ),
+            )
         }
 
     @Suppress("ReturnCount")
@@ -47,12 +50,14 @@ internal class GetCardDataByBinUseCase(
     ): Result<CardData, ResultError> {
         if (!paymentMethod.matchesCardType(cardTypes)) {
             val type = paymentMethod.paymentTypeId
-            return Result.Error(ResultError.Validation("$ERROR_CARD_TYPE_NOT_ALLOWED $type"))
+            val errorMessage = stringProvider.getString(R.string.card_form_error_card_type_not_accepted)
+            return Result.Error(ResultError.Validation("$errorMessage $type"))
         }
 
         if (!paymentMethod.matchesCardBrand(cardBrands)) {
             val brand = paymentMethod.id
-            return Result.Error(ResultError.Validation("$ERROR_CARD_BRAND_NOT_ALLOWED $brand"))
+            val errorMessage = stringProvider.getString(R.string.card_form_error_card_brand_not_accepted)
+            return Result.Error(ResultError.Validation("$errorMessage $brand"))
         }
 
         return fetchCardData(bin, amount, paymentMethod)

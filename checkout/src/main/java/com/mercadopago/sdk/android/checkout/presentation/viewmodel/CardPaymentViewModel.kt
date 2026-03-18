@@ -28,11 +28,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -56,6 +52,7 @@ internal class CardPaymentViewModel(
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateCardTokenUseCase: GenerateCardTokenUseCase,
+    private val validator: CardPaymentValidator,
 ) : ViewModel() {
     private val helperTextOptional: String
         get() = stateFactory.getOptionalFieldText()
@@ -488,7 +485,7 @@ internal class CardPaymentViewModel(
 
     private fun handleCardNumberInputError() {
         val currentState = _viewState.value
-        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
+        val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
         if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
             updateError(cardNumberError) { error, isValid ->
                 copy(
@@ -517,7 +514,7 @@ internal class CardPaymentViewModel(
 
     private fun handleExpirationDateInputError() {
         val currentState = _viewState.value
-        val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
+        val expirationDateError = validator.validateExpirationDate(currentState.expirationDateState)
         updateError(expirationDateError) { error, isValid ->
             copy(
                 expirationDateState = expirationDateState.copy(
@@ -532,7 +529,7 @@ internal class CardPaymentViewModel(
     private fun handleSecurityCodeInputError() {
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
-            val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
+            val securityCodeError = validator.validateSecurityCode(currentState.secureCodeState)
             updateError(securityCodeError) { error, isValid ->
                 copy(
                     secureCodeState = secureCodeState.copy(
@@ -547,7 +544,7 @@ internal class CardPaymentViewModel(
 
     private fun handleCardHolderInputError() {
         val currentState = _viewState.value
-        val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
+        val cardHolderError = validator.validateCardHolder(currentState.cardHolderState)
         updateError(cardHolderError) { error, isValid ->
             copy(
                 cardHolderState = cardHolderState.copy(
@@ -562,7 +559,7 @@ internal class CardPaymentViewModel(
     private fun handleIdentificationTypeInputError() {
         val currentState = _viewState.value
         val identificationError =
-            IdentificationTypeVerifier.verify(currentState.identificationTypeState).orEmpty()
+            validator.validateIdentificationType(currentState.identificationTypeState)
         updateError(identificationError) { error, isValid ->
             copy(
                 identificationTypeState = identificationTypeState.copy(

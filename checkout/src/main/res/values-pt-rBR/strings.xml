@@ -3,8 +3,7 @@
     <!-- Card Form Strings - Português (Brasil) - MLB -->
     <string name="card_form_title">Preencha os dados do cartão</string>
     <string name="card_form_number_label">Número do cartão</string>
-    <string name="card_form_number_placeholder">0000</string>
-    <string name="card_form_number_example">Ex.: 0000 0000 0000 0000</string>
+    <string name="card_form_number_placeholder">1234 1234 1234 1234</string>
     <string name="card_form_holder_label">Nome do titular</string>
     <string name="card_form_holder_placeholder">Ex.: Maria Lopez</string>
     <string name="card_form_expiration_label">Data de vencimento</string>
@@ -13,9 +12,21 @@
     <string name="card_form_security_label">Código de segurança</string>
     <string name="card_form_security_placeholder">Ex.: 123</string>
     <string name="card_form_document_label">Documento do titular</string>
-    <string name="card_form_document_placeholder">CPF / CNPJ/CEI, etc</string>
-    <string name="card_form_document_example">Ex.: 00.000.000-0</string>
+    <string name="card_form_document_example">999.999.999-99</string>
     <string name="card_form_optional_field">Dado opcional</string>
     <string name="card_form_generic_error">Ocorreu um erro. Por favor, tente novamente.</string>
     <string name="card_form_save_button">Salvar cartão</string>
+
+    <!-- Validation Error Messages -->
+    <string name="card_form_error_required_field">Preencha este campo</string>
+    <string name="card_form_error_cardholder_incomplete">Insira conforme está no cartão</string>
+    <string name="card_form_error_cardholder_format">Digite apenas letras e números</string>
+    <string name="card_form_error_card_number_repeated">Insira-o conforme está no cartão.</string>
+    <string name="card_form_error_card_number_incomplete">Insira o número completo</string>
+    <string name="card_form_error_document_all_zeros">Insira-o conforme está no documento.</string>
+    <string name="card_form_error_expiration_incomplete">Insira a data completa</string>
+    <string name="card_form_error_cvv_incomplete">Insira o código completo</string>
+    <string name="card_form_error_insufficient_amount">Verifique se o cartão tem limite suficiente.</string>
+    <string name="card_form_error_card_brand_not_accepted">A loja não aceita cartões (bandera).</string>
+    <string name="card_form_error_card_type_not_accepted">A loja não aceita (card type)</string>
 </resources>
