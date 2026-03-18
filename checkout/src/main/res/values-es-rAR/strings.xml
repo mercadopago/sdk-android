@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card Form Strings - Español (Argentina) - MLA -->
+    <string name="card_form_title">Ingresá tu tarjeta</string>
+    <string name="card_form_number_label">Número de tarjeta</string>
+    <string name="card_form_number_placeholder">0000</string>
+    <string name="card_form_number_example">Ej.: Banco del Sur</string>
+    <string name="card_form_holder_label">Titular de tarjeta</string>
+    <string name="card_form_holder_placeholder">Ej.: Maria Lopez</string>
+    <string name="card_form_expiration_label">Fecha de vencimiento</string>
+    <string name="card_form_expiration_short_label">Vencimiento</string>
+    <string name="card_form_expiration_placeholder">MM/AA</string>
+    <string name="card_form_security_label">Código de seguridad</string>
+    <string name="card_form_security_placeholder">Ej.: 123</string>
+    <string name="card_form_document_label">Documento del titular</string>
+    <string name="card_form_document_placeholder">DNI / CI/LC/LE, etc</string>
+    <string name="card_form_document_example">Ej.: 00.000.000</string>
+</resources>

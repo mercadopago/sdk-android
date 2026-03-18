@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card Form Strings - English (all sites) -->
+    <string name="card_form_title">Enter your card</string>
+    <string name="card_form_number_label">Card number</string>
+    <string name="card_form_number_placeholder">0000</string>
+    <string name="card_form_number_example">E.g.: Maria Lopez</string>
+    <string name="card_form_holder_label">Cardholder name</string>
+    <string name="card_form_holder_placeholder">E.g.: Maria Lopez</string>
+    <string name="card_form_expiration_label">Expiration date</string>
+    <string name="card_form_expiration_placeholder">MM/YY</string>
+    <string name="card_form_security_label">Security code</string>
+    <string name="card_form_security_placeholder">E.g.: 123</string>
+    <string name="card_form_document_label">Cardholder ID</string>
+    <string name="card_form_document_placeholder">Tax ID/CPF/DNI</string>
+</resources>
