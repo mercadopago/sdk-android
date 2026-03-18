@@ -70,8 +70,8 @@ internal object ExceptionFactory {
 
 internal fun <T> Result<T, ResultError>.mapToCheckoutError(
     localized: ErrorLocalized,
-): Result<T, MercadoPagoCheckoutError> {
-    return when (this) {
+): Result<T, MercadoPagoCheckoutError> =
+    when (this) {
         is Result.Success -> Result.Success(data)
         is Result.Error -> {
             val checkoutError = when (val error = this.error) {
@@ -81,4 +81,3 @@ internal fun <T> Result<T, ResultError>.mapToCheckoutError(
             Result.Error(checkoutError)
         }
     }
-}
