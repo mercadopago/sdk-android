@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.example.presentation.checkout
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -44,13 +45,36 @@ internal fun CheckoutExampleScreen(
                 checkout.show { result ->
                     when (result) {
                         is MercadoPagoCheckoutResult.Success -> {
-
+                            Log.i("CheckoutSuccess", "═══════════════════════════════════════")
+                            Log.i("CheckoutSuccess", "Payment completed successfully!")
+                            Log.i("CheckoutSuccess", "Token: ${result.paymentData.token}")
+                            Log.i("CheckoutSuccess", "Payment Method: ${result.paymentData.paymentMethodId}")
+                            Log.i("CheckoutSuccess", "Payment Type: ${result.paymentData.paymentTypeId}")
+                            Log.i("CheckoutSuccess", "Amount: ${result.paymentData.transactionAmount}")
+                            Log.i("CheckoutSuccess", "Installments: ${result.paymentData.installment ?: "N/A"}")
+                            Log.i("CheckoutSuccess", "Issuer ID: ${result.paymentData.issuerId ?: "N/A"}")
+                            result.paymentData.payer?.let { payer ->
+                                Log.i("CheckoutSuccess", "Payer - Document Type: ${payer.documentType ?: "N/A"}")
+                                Log.i("CheckoutSuccess", "Payer - Document Number: ${payer.documentNumber ?: "N/A"}")
+                            }
+                            Log.i("CheckoutSuccess", "═══════════════════════════════════════")
                         }
                         is MercadoPagoCheckoutResult.Error -> {
-
+                            Log.e("CheckoutError", "═══════════════════════════════════════")
+                            Log.e("CheckoutError", "Payment failed!")
+                            Log.e("CheckoutError", "Error Type: ${result.error::class.simpleName}")
+                            Log.e("CheckoutError", "Error Code: ${result.error.errorCode}")
+                            Log.e("CheckoutError", "Error Message: ${result.error.errorMessage}")
+                            Log.e("CheckoutError", "Error Localized: ${result.error.errorLocalized}")
+                            result.error.errorCause?.let { cause ->
+                                Log.e("CheckoutError", "Error Cause: $cause")
+                            }
+                            Log.e("CheckoutError", "═══════════════════════════════════════")
                         }
                         is MercadoPagoCheckoutResult.UserCancelled -> {
-
+                            Log.w("CheckoutCancelled", "═══════════════════════════════════════")
+                            Log.w("CheckoutCancelled", "User cancelled the checkout flow")
+                            Log.w("CheckoutCancelled", "═══════════════════════════════════════")
                         }
                     }
                 }

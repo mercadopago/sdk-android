@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.isOptional
 import com.mercadopago.sdk.android.checkout.domain.mapper.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
@@ -34,7 +35,6 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.Identificati
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
@@ -97,22 +97,19 @@ internal class CardPaymentViewModel(
                     updateCardMaskState(cardData.getLength())
                 },
                 onError = { error ->
-                    when (error) {
-                        is ResultError.Validation -> {
-                            updateError(error.message) { error, isValid ->
-                                copy(
-                                    cardNumberState = cardNumberState.copy(
-                                        error = error,
-                                        isValid = isValid,
-                                        errorType = CardNumberErrorType.BIN_VALIDATION,
-                                    ),
-                                )
-                            }
+                    if (error is MercadoPagoCheckoutError.ServiceError) {
+                        updateError(error.errorMessage) { errorMsg, isValid ->
+                            copy(
+                                cardNumberState = cardNumberState.copy(
+                                    error = errorMsg,
+                                    isValid = isValid,
+                                    errorType = CardNumberErrorType.BIN_VALIDATION,
+                                ),
+                            )
                         }
-                        else -> {
-                            if (_viewState.value.cardNumberState.isComplete()) {
-                                handleResultError(error)
-                            }
+                    } else {
+                        if (_viewState.value.cardNumberState.isComplete()) {
+                            handleResultError(error)
                         }
                     }
                 },
@@ -439,8 +436,8 @@ internal class CardPaymentViewModel(
                     )
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                 },
-                onError = { _ ->
-                    // TODO
+                onError = { checkoutError ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
                 },
             ).apply {
                 updateLoadingState(false)
@@ -570,15 +567,11 @@ internal class CardPaymentViewModel(
     }
 
     private fun handleResultError(
-        error: ResultError,
+        error: MercadoPagoCheckoutError,
         title: String = GENERIC_ERROR_MESSAGE_FOR_CALLS,
     ) {
-        val message = when (error) {
-            is ResultError.Request -> title
-            is ResultError.Validation -> error.message
-        }
         _viewState.value = _viewState.value.copy(
-            messageError = MessageError(title = title, description = message),
+            messageError = MessageError(title = title, description = error.errorMessage),
             showMessage = true,
         )
     }
