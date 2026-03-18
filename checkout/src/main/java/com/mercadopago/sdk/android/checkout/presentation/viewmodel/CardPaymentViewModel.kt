@@ -74,7 +74,7 @@ internal class CardPaymentViewModel(
                     )
                 },
                 onError = { error ->
-                    handleResultError(error)
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
                 },
             ).apply {
                 updateLoadingState(false)
@@ -568,10 +568,12 @@ internal class CardPaymentViewModel(
 
     private fun handleResultError(
         error: MercadoPagoCheckoutError,
-        title: String = GENERIC_ERROR_MESSAGE_FOR_CALLS,
     ) {
         _viewState.value = _viewState.value.copy(
-            messageError = MessageError(title = title, description = error.errorMessage),
+            messageError = MessageError(
+                title = error.message.orEmpty(),
+                description = GENERIC_ERROR_MESSAGE_FOR_CALLS,
+            ),
             showMessage = true,
         )
     }
@@ -596,7 +598,8 @@ internal class CardPaymentViewModel(
                 state.secureCodeState.error.isEmpty() &&
                 state.secureCodeState.isValid &&
                 state.cardHolderState.error.isEmpty() &&
-                state.identificationTypeState.error.isEmpty()
+                state.identificationTypeState.error.isEmpty() &&
+                state.identificationTypeState.isValid
 
             _viewState.value = _viewState.value.copy(
                 fixedFooterState = state.fixedFooterState.copy(
