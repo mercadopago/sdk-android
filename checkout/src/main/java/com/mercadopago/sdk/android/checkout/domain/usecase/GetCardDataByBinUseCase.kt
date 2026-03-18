@@ -3,6 +3,8 @@ package com.mercadopago.sdk.android.checkout.domain.usecase
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.extensions.flatMap
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
 import com.mercadopago.sdk.android.checkout.domain.mapper.extractCardFilters
@@ -11,7 +13,7 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.mapper.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import java.math.BigDecimal
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod as ApiPaymentMethod
@@ -29,12 +31,12 @@ internal class GetCardDataByBinUseCase(
         bin: String,
         amount: BigDecimal?,
         paymentMethods: List<PaymentMethod>?,
-    ): Result<CardData, ResultError> =
+    ): Result<CardData, MercadoPagoCheckoutError> =
         getPaymentMethodsUseCase(bin).flatMap { data ->
             val (cardTypes, cardBrands) = paymentMethods.extractCardFilters()
             data.firstOrNull()?.let { paymentMethod ->
                 validateAndFetchCardData(paymentMethod, cardTypes, cardBrands, bin, amount)
-            } ?: Result.Error(ResultError.Validation(ERROR_NO_PAYMENT_METHOD))
+            } ?: Result.Error(createValidationError(ERROR_NO_PAYMENT_METHOD))
         }
 
     @Suppress("ReturnCount")
@@ -44,15 +46,15 @@ internal class GetCardDataByBinUseCase(
         cardBrands: List<CardBrand>,
         bin: String,
         amount: BigDecimal?,
-    ): Result<CardData, ResultError> {
+    ): Result<CardData, MercadoPagoCheckoutError> {
         if (!paymentMethod.matchesCardType(cardTypes)) {
             val type = paymentMethod.paymentTypeId
-            return Result.Error(ResultError.Validation("$ERROR_CARD_TYPE_NOT_ALLOWED $type"))
+            return Result.Error(createValidationError("$ERROR_CARD_TYPE_NOT_ALLOWED $type"))
         }
 
         if (!paymentMethod.matchesCardBrand(cardBrands)) {
             val brand = paymentMethod.id
-            return Result.Error(ResultError.Validation("$ERROR_CARD_BRAND_NOT_ALLOWED $brand"))
+            return Result.Error(createValidationError("$ERROR_CARD_BRAND_NOT_ALLOWED $brand"))
         }
 
         return fetchCardData(bin, amount, paymentMethod)
@@ -63,7 +65,7 @@ internal class GetCardDataByBinUseCase(
         bin: String,
         amount: BigDecimal?,
         paymentMethod: ApiPaymentMethod,
-    ): Result<CardData, ResultError> {
+    ): Result<CardData, MercadoPagoCheckoutError> {
         val issuers = if (paymentMethod.hasIssuers()) {
             getCardIssuersUseCase(bin, paymentMethod.id.orEmpty()).fold(
                 onSuccess = { it },
@@ -89,4 +91,14 @@ internal class GetCardDataByBinUseCase(
             ),
         )
     }
+
+    private fun createValidationError(
+        message: String,
+    ): MercadoPagoCheckoutError.ServiceError =
+        MercadoPagoCheckoutError.ServiceError(
+            code = ErrorCode.SERVICE_ERROR,
+            messageError = message,
+            localized = ErrorLocalized.PAYMENT_METHODS.name,
+            throwable = null,
+        )
 }

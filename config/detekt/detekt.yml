@@ -787,5 +787,7 @@ style:
     excludeImports:
       - 'java.util.*'
 formatting:
+  Indentation:
+    active: false
   SpacingBetweenDeclarationsWithComments:
     active: false

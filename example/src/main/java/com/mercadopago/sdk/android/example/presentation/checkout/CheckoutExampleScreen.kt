@@ -5,8 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,6 +21,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 @Composable
@@ -24,6 +29,8 @@ internal fun CheckoutExampleScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     val checkout = MercadoPagoCheckout.Builder(
         context = context,
@@ -40,18 +47,17 @@ internal fun CheckoutExampleScreen(
         contentAlignment = Alignment.Center
     ) {
         CheckoutExampleScreen(
+            snackBar = snackbarHostState,
             onOpenCheckoutClicked = {
                 checkout.show { result ->
-                    when (result) {
-                        is MercadoPagoCheckoutResult.Success -> {
-
-                        }
-                        is MercadoPagoCheckoutResult.Error -> {
-
-                        }
-                        is MercadoPagoCheckoutResult.UserCancelled -> {
-
-                        }
+                    val message = when (result) {
+                        is MercadoPagoCheckoutResult.Success -> "✅ Pagamento realizado com sucesso!"
+                        is MercadoPagoCheckoutResult.Error -> "❌ Erro em ${result.error.errorLocalized} - message: ${result.error.errorMessage}"
+                        is MercadoPagoCheckoutResult.UserCancelled -> "⚠️ Checkout cancelado pelo usuário"
+                        else -> "❌ Erro desconhecido"
+                    }
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(message)
                     }
                 }
             },
@@ -62,10 +68,14 @@ internal fun CheckoutExampleScreen(
 
 @Composable
 private fun CheckoutExampleScreen(
+    snackBar: SnackbarHostState,
     onOpenCheckoutClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(hostState = snackBar) },
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -85,6 +95,7 @@ private fun CheckoutExampleScreen(
 fun CheckoutExampleScreenPreview() {
     MercadoPagoSampleTheme {
         CheckoutExampleScreen(
+            snackBar = remember { SnackbarHostState() },
             onOpenCheckoutClicked = { },
         )
     }
