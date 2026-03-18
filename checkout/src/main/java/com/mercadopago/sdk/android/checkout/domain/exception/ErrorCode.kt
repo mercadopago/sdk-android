@@ -1,5 +1,11 @@
 package com.mercadopago.sdk.android.checkout.domain.exception
 
+private const val CODE_NETWORK_CONNECTION_FAILED = -1009
+private const val CODE_NETWORK_TIMEOUT = -1001
+private const val CODE_SERVICE_ERROR = 2000
+private const val CODE_INTEGRATION_ERROR = 3000
+private const val CODE_UNKNOWN = 999
+
 /**
  * Stable error codes for monitoring and tracking checkout errors.
  *
@@ -9,7 +15,6 @@ package com.mercadopago.sdk.android.checkout.domain.exception
  *
  * @property value The numeric error code value used for logging and monitoring systems.
  */
-@Suppress("MagicNumber")
 enum class ErrorCode(val value: Int) {
     /**
      * Network connection failure.
@@ -21,7 +26,7 @@ enum class ErrorCode(val value: Int) {
      * - Network unreachable
      * - DNS resolution failures
      */
-    NETWORK_CONNECTION_FAILED(-1009),
+    NETWORK_CONNECTION_FAILED(CODE_NETWORK_CONNECTION_FAILED),
 
     /**
      * Network request timeout.
@@ -32,7 +37,7 @@ enum class ErrorCode(val value: Int) {
      * - Poor network quality
      * - Request took longer than configured timeout
      */
-    NETWORK_TIMEOUT(-1001),
+    NETWORK_TIMEOUT(CODE_NETWORK_TIMEOUT),
 
     /**
      * Service-side error.
@@ -44,7 +49,7 @@ enum class ErrorCode(val value: Int) {
      * - Invalid request parameters
      * - Business logic errors returned by the service
      */
-    SERVICE_ERROR(2000),
+    SERVICE_ERROR(CODE_SERVICE_ERROR),
 
     /**
      * SDK integration error.
@@ -55,7 +60,7 @@ enum class ErrorCode(val value: Int) {
      * - Invalid SDK initialization
      * - Incorrect API usage
      */
-    INTEGRATION_ERROR(3000),
+    INTEGRATION_ERROR(CODE_INTEGRATION_ERROR),
 
     /**
      * Unknown or unexpected error.
@@ -64,5 +69,5 @@ enum class ErrorCode(val value: Int) {
      * This is used as a fallback when the error type cannot be determined
      * or when an unexpected exception occurs.
      */
-    UNKNOWN(999),
+    UNKNOWN(CODE_UNKNOWN),
 }
