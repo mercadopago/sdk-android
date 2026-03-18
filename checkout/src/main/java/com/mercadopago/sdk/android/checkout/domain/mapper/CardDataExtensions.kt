@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.mercadopago.sdk.android.checkout.domain.mapper
 
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
@@ -7,6 +9,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_CARD_MASK
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
+import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
 
@@ -92,3 +95,7 @@ internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardTy
 }
 
 internal fun CardNumberState.isComplete() = length == maxLength
+
+internal fun IdentificationTypeState.isComplete(
+    length: Int,
+) = selected?.maxLength == length || selected?.minLength == length

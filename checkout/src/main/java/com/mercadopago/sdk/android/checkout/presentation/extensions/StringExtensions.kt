@@ -12,3 +12,7 @@ internal fun String.hasAllSameDigits(): Boolean {
     val digits = this.filter { it.isDigit() }
     return digits.isNotEmpty() && digits.all { it == digits.first() }
 }
+
+internal fun String.isBeingCleared(
+    previousValue: String,
+): Boolean = this.length < previousValue.length
