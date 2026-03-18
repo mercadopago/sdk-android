@@ -1,9 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
+import com.mercadopago.android.sdk.checkout.R
+import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.extensions.checkAllSameDigits
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 
-internal object CardNumberVerifier {
+internal class CardNumberVerifier(
+    private val stringProvider: StringProvider,
+) {
     fun verify(
         state: CardNumberState,
     ): String =
@@ -17,7 +21,7 @@ internal object CardNumberVerifier {
         state: CardNumberState,
     ): String? {
         return if (state.checkAllSameDigits()) {
-            "Insira-o conforme está no cartão."
+            stringProvider.getString(R.string.card_form_error_card_number_repeated)
         } else {
             null
         }
@@ -27,7 +31,7 @@ internal object CardNumberVerifier {
         state: CardNumberState,
     ): String? {
         return if (state.length == 0) {
-            "Preencha esse campo."
+            stringProvider.getString(R.string.card_form_error_required_field)
         } else {
             null
         }
@@ -37,7 +41,7 @@ internal object CardNumberVerifier {
         state: CardNumberState,
     ): String? {
         return if (state.length > 0 && state.length < state.maxLength) {
-            "Insira o número completo"
+            stringProvider.getString(R.string.card_form_error_card_number_incomplete)
         } else {
             null
         }

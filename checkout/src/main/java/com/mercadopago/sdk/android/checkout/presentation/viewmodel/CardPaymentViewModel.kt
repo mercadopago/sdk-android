@@ -20,7 +20,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
-import com.mercadopago.sdk.android.checkout.presentation.extensions.toCountStringPlaceholder
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -29,11 +29,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
-import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -46,19 +42,24 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-private const val HELPER_TEXT_OPTIONAL = "Dado opcional"
-private const val GENERIC_ERROR_MESSAGE_FOR_CALLS = "Ocorreu um erro. Por favor, tente novamente."
-
 @Suppress(
     "TooManyFunctions",
 )
 internal class CardPaymentViewModel(
+    private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateCardTokenUseCase: GenerateCardTokenUseCase,
+    private val validator: CardPaymentValidator,
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow(CardPaymentScreenState())
+    private val helperTextOptional: String
+        get() = stateFactory.getOptionalFieldText()
+
+    private val genericErrorMessage: String
+        get() = stateFactory.getGenericErrorMessage()
+
+    private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     fun getIdentificationTypes() {
@@ -349,10 +350,9 @@ internal class CardPaymentViewModel(
         securityCode: SecurityCode,
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
-        placeHolder = securityCode.length.toCountStringPlaceholder("Ex:"),
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) HELPER_TEXT_OPTIONAL else "",
-        messageTooltip = securityCode.getMessage(),
+        helper = if (securityCode.isOptional()) helperTextOptional else "",
+        messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
 
     private fun buildInstallmentsState(
@@ -464,7 +464,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val cardNumberError = CardNumberVerifier.verify(currentState.cardNumberState)
+        val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
         if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
             updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
                 copy(
@@ -500,7 +500,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val expirationDateError = ExpirationDateVerifier.verify(currentState.expirationDateState)
+        val expirationDateError = validator.validateExpirationDate(currentState.expirationDateState)
         updateFieldState(expirationDateError, shouldUpdateError) { error, isValid ->
             copy(
                 expirationDateState = expirationDateState.copy(
@@ -517,7 +517,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
-            val securityCodeError = SecurityCodeVerifier.verify(currentState.secureCodeState)
+            val securityCodeError = validator.validateSecurityCode(currentState.secureCodeState)
             updateFieldState(securityCodeError, shouldUpdateError) { error, isValid ->
                 copy(
                     secureCodeState = secureCodeState.copy(
@@ -534,7 +534,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val cardHolderError = CardHolderVerifier.verify(currentState.cardHolderState)
+        val cardHolderError = validator.validateCardHolder(currentState.cardHolderState)
         updateFieldState(cardHolderError, shouldUpdateError) { error, isValid ->
             copy(
                 cardHolderState = cardHolderState.copy(
@@ -551,7 +551,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val identificationError =
-            IdentificationTypeVerifier.verify(currentState.identificationTypeState)
+            validator.validateIdentificationType(currentState.identificationTypeState)
         updateFieldState(identificationError, shouldUpdateError) { error, isValid ->
             copy(
                 identificationTypeState = identificationTypeState.copy(
@@ -569,7 +569,7 @@ internal class CardPaymentViewModel(
         _viewState.value = _viewState.value.copy(
             messageError = MessageError(
                 title = error.message.orEmpty(),
-                description = GENERIC_ERROR_MESSAGE_FOR_CALLS,
+                description = genericErrorMessage,
             ),
             showMessage = true,
         )

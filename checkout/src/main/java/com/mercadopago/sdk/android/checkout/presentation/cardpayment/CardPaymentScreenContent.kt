@@ -136,7 +136,7 @@ internal fun CardPaymentScreenContent(
             ) {
                 MPHeader(
                     modifier = Modifier.fillMaxSize(),
-                    title = "Preencha os dados do\ncartão",
+                    title = viewState.title,
                     onBackClick = onBackClick,
                 ) {
                     var containerBounds by remember { mutableStateOf(Rect.Zero) }

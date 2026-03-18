@@ -1,8 +1,12 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
+import com.mercadopago.android.sdk.checkout.R
+import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 
-internal object IdentificationTypeVerifier {
+internal class IdentificationTypeVerifier(
+    private val stringProvider: StringProvider,
+) {
     fun verify(
         state: IdentificationTypeState,
     ): String =
@@ -16,7 +20,7 @@ internal object IdentificationTypeVerifier {
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isEmpty()) {
-            "Preencha este campo"
+            stringProvider.getString(R.string.card_form_error_required_field)
         } else {
             null
         }
@@ -30,7 +34,8 @@ internal object IdentificationTypeVerifier {
 
         return when {
             maxLength == null -> null
-            state.value.length !in minLength..maxLength -> "Preencha este campo"
+            state.value.length !in minLength..maxLength ->
+                stringProvider.getString(R.string.card_form_error_required_field)
             else -> null
         }
     }
@@ -39,7 +44,7 @@ internal object IdentificationTypeVerifier {
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.all { it == '0' }) {
-            "Insira-o conforme está no documento."
+            stringProvider.getString(R.string.card_form_error_document_all_zeros)
         } else {
             null
         }

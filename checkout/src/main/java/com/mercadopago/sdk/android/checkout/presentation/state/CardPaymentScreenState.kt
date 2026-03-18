@@ -9,6 +9,7 @@ internal const val DEFAULT_MAX_CARD_LENGTH = 19
 internal const val DEFAULT_CARD_MASK = "#### #### #### ####"
 
 internal data class CardPaymentScreenState(
+    val title: String = "",
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
     val secureCodeState: SecurityCodeState = SecurityCodeState(),
     val cardNumberState: CardNumberState = CardNumberState(),
@@ -25,9 +26,9 @@ internal data class CardPaymentScreenState(
 )
 
 internal data class SecurityCodeState(
-    override val label: String = "Código de Segurança",
+    override val label: String = "",
     override val helper: String = "",
-    override val placeHolder: String = "Ex: 123",
+    override val placeHolder: String = "",
     override val error: String = "",
     override val isFocused: Boolean = false,
     override val filled: Boolean = false,
@@ -37,13 +38,13 @@ internal data class SecurityCodeState(
     val length: Int = 0,
     val optional: Boolean = false,
     val maxLength: Int = 3,
-    val messageTooltip: String = "É um número de 3 dígitos que está na parte da frente do seu cartão.",
+    val messageTooltip: String = "",
 ) : FieldState
 
 internal data class ExpirationDateState(
-    override val label: String = "Validade",
+    override val label: String = "",
     override val helper: String = "",
-    override val placeHolder: String = "MM/AA",
+    override val placeHolder: String = "",
     override val error: String = "",
     override val isFocused: Boolean = false,
     override val filled: Boolean = false,
@@ -54,9 +55,9 @@ internal data class ExpirationDateState(
 ) : FieldState
 
 internal data class CardNumberState(
-    override val label: String = "Número do cartão",
+    override val label: String = "",
     override val helper: String = "",
-    override val placeHolder: String = "0000 0000 0000 0000",
+    override val placeHolder: String = "",
     override val error: String = "",
     override val isFocused: Boolean = false,
     override val filled: Boolean = false,
@@ -73,9 +74,9 @@ internal data class CardNumberState(
 ) : FieldState
 
 internal data class CardHolderState(
-    override val label: String = "Nome do titular",
+    override val label: String = "",
     override val helper: String = "",
-    override val placeHolder: String = "Nome completo",
+    override val placeHolder: String = "",
     override val error: String = "",
     override val isFocused: Boolean = false,
     override val filled: Boolean = false,
@@ -87,7 +88,7 @@ internal data class CardHolderState(
 ) : FieldState
 
 internal data class IdentificationTypeState(
-    override val label: String = "Tipo de documento",
+    override val label: String = "",
     override val helper: String = "",
     override val placeHolder: String = "",
     override val error: String = "",
@@ -114,12 +115,12 @@ internal data class MessageError(
 )
 
 internal data class FixedFooterState(
-    val title: String = "Total",
-    val currencySymbol: String = "$",
-    val amountIntegerPart: String = "0",
-    val amountDecimalPart: String = "00",
+    val title: String = "",
+    val currencySymbol: String = "",
+    val amountIntegerPart: String = "",
+    val amountDecimalPart: String = "",
     val subtitle: String? = null,
-    val buttonText: String = "Salvar Cartao",
+    val buttonText: String = "",
     val buttonEnabled: Boolean = false,
 )
 
