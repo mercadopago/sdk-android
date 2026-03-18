@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Card Form Strings - Español (Perú) - MPE -->
+    <string name="card_form_title">Ingresa tu tarjeta</string>
+    <string name="card_form_number_label">Número de tarjeta</string>
+    <string name="card_form_number_placeholder">1234 1234 1234 1234</string>
+    <string name="card_form_holder_label">Titular de tarjeta</string>
+    <string name="card_form_holder_placeholder">Ej.: Maria Lopez</string>
+    <string name="card_form_expiration_label">Fecha de vencimiento</string>
+    <string name="card_form_expiration_short_label">Vencimiento</string>
+    <string name="card_form_expiration_placeholder">MM/AA</string>
+    <string name="card_form_security_label">Código de seguridad</string>
+    <string name="card_form_security_placeholder">Ej.: 123</string>
+    <string name="card_form_document_label">Documento del titular</string>
+    <string name="card_form_document_example">99.999.999</string>
+    <string name="card_form_optional_field">Dato opcional</string>
+    <string name="card_form_generic_error">Ocurrió un error. Por favor, intenta de nuevo.</string>
+    <string name="card_form_save_button">Guardar tarjeta</string>
+
+    <!-- Validation Error Messages -->
+    <string name="card_form_error_required_field">Completa este campo</string>
+    <string name="card_form_error_cardholder_incomplete">Ingrésalo como aparece en la tarjeta</string>
+    <string name="card_form_error_cardholder_format">Ingresa solo letras y números</string>
+    <string name="card_form_error_card_number_repeated">Ingrésalo como aparece en la tarjeta.</string>
+    <string name="card_form_error_card_number_incomplete">Ingresa el número completo</string>
+    <string name="card_form_error_document_all_zeros">Ingrésalo como aparece en el documento.</string>
+    <string name="card_form_error_expiration_incomplete">Ingresa la fecha completa</string>
+    <string name="card_form_error_cvv_incomplete">Ingresa el código completo</string>
+    <string name="card_form_error_insufficient_amount">Verifica que la tarjeta tenga límite suficiente.</string>
+    <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas (bandera).</string>
+    <string name="card_form_error_card_type_not_accepted">La tienda no acepta (card type)</string>
+
+    <!-- Security Code Tooltip Messages -->
+    <string name="card_form_security_code_tooltip_back">Es un número de %d dígitos que está en el reverso de tu tarjeta.</string>
+    <string name="card_form_security_code_tooltip_front">Es un número de %d dígitos que está en el frente de tu tarjeta.</string>
+</resources>
