@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.di
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import android.content.res.Configuration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
@@ -9,9 +10,11 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCa
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
@@ -20,8 +23,10 @@ import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import org.junit.Before
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
@@ -32,22 +37,34 @@ import org.koin.test.verify.verify
 import kotlin.test.Test
 
 internal class CheckoutModulesProviderTest {
-    @OptIn(KoinExperimentalAPI::class)
-    @Test
-    fun `when provideModules is called Then modules should be verified`() {
-        // Given
+    @Before
+    fun setUp() {
         MockProvider.register { mockk(relaxed = true) }
         mockkObject(MercadoPagoSDK.Companion)
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
         mockkObject(CheckoutType::class)
-        val context = mockk<Application>()
-        every {
-            context.applicationInfo
-        } returns mockk(relaxed = true)
-        every {
-            context.applicationContext
-        } returns context
+        mockkObject(CardPaymentScreenStateFactory::class)
+        mockkObject(CardPaymentValidator::class)
+        mockkConstructor(Configuration::class)
+    }
+
+    @OptIn(KoinExperimentalAPI::class)
+    @Test
+    fun `when provideModules is called Then modules should be verified`() {
+        // Given
+        val configuration = mockk<Configuration>(relaxed = true)
+        every { configuration.setLocale(any()) } returns Unit
+        every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
+
+        val resources = mockk<android.content.res.Resources>(relaxed = true)
+        every { resources.configuration } returns configuration
+
+        val context = mockk<Application>(relaxed = true)
+        every { context.applicationInfo } returns mockk(relaxed = true)
+        every { context.applicationContext } returns context
+        every { context.resources } returns resources
+        every { context.createConfigurationContext(any()) } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.setKoinModules(any(), any()) } returns mockk()
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
@@ -88,6 +105,8 @@ internal class CheckoutModulesProviderTest {
                 GetInstallmentsUseCase::class,
                 GetIdentificationTypesUseCase::class,
                 GenerateCardTokenUseCase::class,
+                CardPaymentScreenStateFactory::class,
+                CardPaymentValidator::class,
                 CancelledFormContextUseCase::class,
             ),
         )
