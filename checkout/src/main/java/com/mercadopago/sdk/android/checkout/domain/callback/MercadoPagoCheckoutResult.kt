@@ -1,8 +1,8 @@
 package com.mercadopago.sdk.android.checkout.domain.callback
 
-import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFormContext
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 
 /**
  * Sealed interface representing the possible outcomes of a checkout flow.
@@ -33,5 +33,5 @@ interface MercadoPagoCheckoutResult {
      * @property context Information about the form state when cancelled, including
      * which fields were filled, empty, incomplete, or invalid
      */
-    data class UserCancelled(val context: MPCancelledFormContext) : MercadoPagoCheckoutResult
+    data class UserCancelled(val context: UserCancelledContext) : MercadoPagoCheckoutResult
 }

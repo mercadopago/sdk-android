@@ -2,17 +2,18 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.model.CancelledFieldState
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Field
-import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFormContext
 import com.mercadopago.sdk.android.checkout.domain.model.State
+import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 
 internal class CancelledFormContextUseCase {
     operator fun invoke(
         screenState: CardPaymentScreenState,
-    ): MPCancelledFormContext.CardForm {
+    ): UserCancelledContext.CardForm {
         val fields = buildCancelledFieldStates(screenState)
-        return MPCancelledFormContext.CardForm(fields)
+        return UserCancelledContext.CardForm(CardFormUserCancelledContext(fields))
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
