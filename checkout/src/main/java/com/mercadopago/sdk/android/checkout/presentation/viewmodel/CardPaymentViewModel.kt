@@ -24,9 +24,11 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
@@ -44,6 +46,7 @@ import java.math.BigDecimal
 
 @Suppress(
     "TooManyFunctions",
+    "LongParameterList",
 )
 internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
@@ -51,6 +54,7 @@ internal class CardPaymentViewModel(
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateCardTokenUseCase: GenerateCardTokenUseCase,
+    private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
     private val helperTextOptional: String
@@ -61,6 +65,9 @@ internal class CardPaymentViewModel(
 
     private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
+
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
 
     fun getIdentificationTypes() {
         viewModelScope.launch {
@@ -611,5 +618,14 @@ internal class CardPaymentViewModel(
         isLoading: Boolean,
     ) {
         _viewState.value = _viewState.value.copy(isLoading = isLoading)
+    }
+
+    fun onBackPressed() {
+        val currentState = _viewState.value
+        val context = cancelledFormContextUseCase(currentState)
+
+        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+
+        _viewEvent.value = CardPaymentViewEvent.OnBackPressed
     }
 }

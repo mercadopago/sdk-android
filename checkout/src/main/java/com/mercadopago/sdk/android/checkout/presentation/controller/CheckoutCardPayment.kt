@@ -50,7 +50,9 @@ internal fun CardPaymentNavHost(
         composable<SampleDestination.Form> {
             CardPaymentScreen(
                 viewModel = koinViewModel { parametersOf(checkoutConfiguration) },
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    navController.popBackStack()
+                },
             )
         }
 
