@@ -20,6 +20,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -53,7 +54,16 @@ internal fun CheckoutExampleScreen(
                     val message = when (result) {
                         is MercadoPagoCheckoutResult.Success -> "✅ Pagamento realizado com sucesso!"
                         is MercadoPagoCheckoutResult.Error -> "❌ Erro em ${result.error.errorLocalized} - message: ${result.error.errorMessage}"
-                        is MercadoPagoCheckoutResult.UserCancelled -> "⚠️ Checkout cancelado pelo usuário"
+                        is MercadoPagoCheckoutResult.UserCancelled -> {
+                            val fieldsInfo = when (val cancelContext = result.context) {
+                                is UserCancelledContext.CardForm -> {
+                                    cancelContext.context.fields.joinToString("\n") { field ->
+                                        "${field.field.name}: ${field.state::class.simpleName}"
+                                    }
+                                }
+                            }
+                            "⚠️ Checkout cancelado pelo usuário\n\nEstado dos campos:\n$fieldsInfo"
+                        }
                         else -> "❌ Erro desconhecido"
                     }
                     coroutineScope.launch {

@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
+import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 
@@ -20,6 +21,7 @@ internal class CardPaymentScreenStateFactory(
             expirationDateState = createExpirationDateState(),
             secureCodeState = createSecurityCodeState(),
             identificationTypeState = createIdentificationTypeState(),
+            fixedFooterState = createFixedFooterState(),
         )
     }
 
@@ -50,6 +52,12 @@ internal class CardPaymentScreenStateFactory(
     private fun createIdentificationTypeState() =
         IdentificationTypeState(
             label = stringProvider.getString(R.string.card_form_document_label),
+            placeHolder = stringProvider.getString(R.string.card_form_document_example),
+        )
+
+    private fun createFixedFooterState() =
+        FixedFooterState(
+            buttonText = stringProvider.getString(R.string.card_form_save_button),
         )
 
     fun getOptionalFieldText() = stringProvider.getString(R.string.card_form_optional_field)

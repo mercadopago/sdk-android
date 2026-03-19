@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.cardpayment
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
@@ -67,6 +69,7 @@ internal fun CardPaymentScreen(
     onBackClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val viewEvent by viewModel.viewEvent.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
     val expirationDatePCIState = rememberPCIFieldState()
     val securityCodePCIState = rememberPCIFieldState()
@@ -76,6 +79,18 @@ internal fun CardPaymentScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getIdentificationTypes()
+    }
+
+    LaunchedEffect(viewEvent) {
+        viewEvent?.let { event ->
+            when (event) {
+                CardPaymentViewEvent.OnBackPressed -> onBackClick.invoke()
+            }
+        }
+    }
+
+    BackHandler {
+        viewModel.onBackPressed()
     }
 
     CardPaymentScreenContent(
@@ -90,7 +105,9 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackClick = onBackClick,
+        onBackPressed = {
+            viewModel.onBackPressed()
+        },
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
@@ -119,7 +136,7 @@ internal fun CardPaymentScreenContent(
     onCardHolderEvent: (SimpleTextFieldEvent) -> Unit,
     onIdentificationEvent: (IdentificationTextFieldEvent) -> Unit,
     onFooterButtonClick: () -> Unit = {},
-    onBackClick: () -> Unit = {},
+    onBackPressed: () -> Unit = {},
     onTooltipClick: () -> Unit = {},
     onMessageClick: () -> Unit = {},
 ) {
@@ -137,7 +154,9 @@ internal fun CardPaymentScreenContent(
                 MPHeader(
                     modifier = Modifier.fillMaxSize(),
                     title = viewState.title,
-                    onBackClick = onBackClick,
+                    onBackClick = {
+                        onBackPressed()
+                    },
                 ) {
                     var containerBounds by remember { mutableStateOf(Rect.Zero) }
                     var securityCodeBounds by remember { mutableStateOf(Rect.Zero) }
@@ -360,7 +379,7 @@ private fun CardPaymentScreenContentPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
-            onBackClick = {},
+            onBackPressed = {},
         )
     }
 }
@@ -409,7 +428,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
-            onBackClick = {},
+            onBackPressed = {},
         )
     }
 }
@@ -480,7 +499,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
             onCardHolderEvent = {},
             onIdentificationEvent = {},
             onFooterButtonClick = {},
-            onBackClick = {},
+            onBackPressed = {},
         )
     }
 }
