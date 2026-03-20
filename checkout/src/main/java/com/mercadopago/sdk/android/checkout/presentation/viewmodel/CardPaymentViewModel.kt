@@ -76,6 +76,7 @@ internal class CardPaymentViewModel(
                 onSuccess = { data ->
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
+                            show = data.isNotEmpty(),
                             identificationTypes = data,
                             selected = data.firstOrNull(),
                         ),
@@ -375,11 +376,13 @@ internal class CardPaymentViewModel(
         securityCodeState: PCIFieldState,
     ) {
         _viewState.value.let { state ->
+            val hasIdentificationError = state.identificationTypeState.show &&
+                state.identificationTypeState.error.isNotEmpty()
             val hasErrors = state.cardNumberState.error.isNotEmpty() ||
                 state.expirationDateState.error.isNotEmpty() ||
                 state.secureCodeState.error.isNotEmpty() ||
                 state.cardHolderState.error.isNotEmpty() ||
-                state.identificationTypeState.error.isNotEmpty()
+                hasIdentificationError
             if (!hasErrors) {
                 generateToken(
                     cardNumberState = cardNumberState,
@@ -595,6 +598,8 @@ internal class CardPaymentViewModel(
 
     private fun hasFormErrors() {
         _viewState.value.let { state ->
+            val isIdentificationValid = !state.identificationTypeState.show ||
+                (state.identificationTypeState.error.isEmpty() && state.identificationTypeState.isValid)
             val isFormValid = state.cardNumberState.error.isEmpty() &&
                 state.cardNumberState.isValid &&
                 state.expirationDateState.error.isEmpty() &&
@@ -603,8 +608,7 @@ internal class CardPaymentViewModel(
                 state.secureCodeState.isValid &&
                 state.cardHolderState.error.isEmpty() &&
                 state.cardHolderState.isValid &&
-                state.identificationTypeState.error.isEmpty() &&
-                state.identificationTypeState.isValid
+                isIdentificationValid
 
             _viewState.value = _viewState.value.copy(
                 fixedFooterState = state.fixedFooterState.copy(
