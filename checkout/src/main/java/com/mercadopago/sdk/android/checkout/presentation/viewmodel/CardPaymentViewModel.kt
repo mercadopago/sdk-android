@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.extensions.detectCardNumberErrorType
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
 import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
@@ -24,7 +25,6 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
@@ -66,9 +66,6 @@ internal class CardPaymentViewModel(
     private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
-    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
-    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
-
     fun getIdentificationTypes() {
         viewModelScope.launch {
             updateLoadingState(true)
@@ -76,6 +73,7 @@ internal class CardPaymentViewModel(
                 onSuccess = { data ->
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
+                            show = data.isNotEmpty(),
                             identificationTypes = data,
                             selected = data.firstOrNull(),
                         ),
@@ -106,12 +104,16 @@ internal class CardPaymentViewModel(
                 },
                 onError = { error ->
                     if (error is MercadoPagoCheckoutError.ServiceError) {
+                        val errorType = detectCardNumberErrorType(
+                            errorMessage = error.errorMessage,
+                            stringProvider = stateFactory.getStringProvider(),
+                        )
                         updateFieldState(error.errorMessage, shouldUpdateError = true) { errorMsg, isValid ->
                             copy(
                                 cardNumberState = cardNumberState.copy(
                                     error = errorMsg,
                                     isValid = isValid,
-                                    errorType = CardNumberErrorType.BIN_VALIDATION,
+                                    errorType = errorType,
                                 ),
                             )
                         }
@@ -343,7 +345,7 @@ internal class CardPaymentViewModel(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 image = cardData.cardIssuer?.thumbnail,
                 error = "",
-                errorType = CardNumberErrorType.NONE,
+                errorType = CardNumberErrorType.None,
             ),
             installmentsState = buildInstallmentsState(cardData.installments),
             paymentState = PaymentState(
@@ -375,11 +377,13 @@ internal class CardPaymentViewModel(
         securityCodeState: PCIFieldState,
     ) {
         _viewState.value.let { state ->
+            val hasIdentificationError = state.identificationTypeState.show &&
+                state.identificationTypeState.error.isNotEmpty()
             val hasErrors = state.cardNumberState.error.isNotEmpty() ||
                 state.expirationDateState.error.isNotEmpty() ||
                 state.secureCodeState.error.isNotEmpty() ||
                 state.cardHolderState.error.isNotEmpty() ||
-                state.identificationTypeState.error.isNotEmpty()
+                hasIdentificationError
             if (!hasErrors) {
                 generateToken(
                     cardNumberState = cardNumberState,
@@ -442,12 +446,12 @@ internal class CardPaymentViewModel(
             _viewState.value = _viewState.value.copy(
                 cardNumberState = currentState.copy(
                     image = null,
-                    error = if (currentState.errorType == CardNumberErrorType.BIN_VALIDATION) {
+                    error = if (currentState.errorType == CardNumberErrorType.BinValidation) {
                         ""
                     } else {
                         currentState.error
                     },
-                    errorType = CardNumberErrorType.NONE,
+                    errorType = CardNumberErrorType.None,
                 ),
                 installmentsState = _viewState.value.installmentsState.copy(showList = false),
             )
@@ -472,16 +476,16 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
-        if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
+        if (currentState.cardNumberState.errorType != CardNumberErrorType.BinValidation) {
             updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
                 copy(
                     cardNumberState = cardNumberState.copy(
                         error = error,
                         isValid = isValid,
                         errorType = if (error.isEmpty()) {
-                            CardNumberErrorType.NONE
+                            CardNumberErrorType.None
                         } else {
-                            CardNumberErrorType.FIELD_VALIDATION
+                            CardNumberErrorType.FieldValidation
                         },
                     ),
                 )
@@ -595,6 +599,8 @@ internal class CardPaymentViewModel(
 
     private fun hasFormErrors() {
         _viewState.value.let { state ->
+            val isIdentificationValid = !state.identificationTypeState.show ||
+                (state.identificationTypeState.error.isEmpty() && state.identificationTypeState.isValid)
             val isFormValid = state.cardNumberState.error.isEmpty() &&
                 state.cardNumberState.isValid &&
                 state.expirationDateState.error.isEmpty() &&
@@ -603,8 +609,7 @@ internal class CardPaymentViewModel(
                 state.secureCodeState.isValid &&
                 state.cardHolderState.error.isEmpty() &&
                 state.cardHolderState.isValid &&
-                state.identificationTypeState.error.isEmpty() &&
-                state.identificationTypeState.isValid
+                isIdentificationValid
 
             _viewState.value = _viewState.value.copy(
                 fixedFooterState = state.fixedFooterState.copy(
@@ -625,7 +630,5 @@ internal class CardPaymentViewModel(
         val context = cancelledFormContextUseCase(currentState)
 
         CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
-
-        _viewEvent.value = CardPaymentViewEvent.OnBackPressed
     }
 }

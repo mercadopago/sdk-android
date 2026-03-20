@@ -154,5 +154,11 @@ sealed class CardBrand : Parcelable {
             Cabal,
             Naranja,
         )
+
+        internal fun fromString(
+            value: String,
+        ): CardBrand =
+            default.find { it.name.equals(value, ignoreCase = true) }
+                ?: Custom(value)
     }
 }

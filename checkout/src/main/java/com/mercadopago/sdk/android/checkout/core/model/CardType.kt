@@ -21,4 +21,15 @@ enum class CardType(internal val value: String) {
      * PREPAID: Prepaid card.
      */
     PREPAID("prepaid"),
+    ;
+
+    internal companion object {
+        internal fun fromString(
+            value: String,
+        ): CardType? =
+            entries.find {
+                it.value.equals(value, ignoreCase = true) ||
+                    it.name.equals(value, ignoreCase = true)
+            }
+    }
 }

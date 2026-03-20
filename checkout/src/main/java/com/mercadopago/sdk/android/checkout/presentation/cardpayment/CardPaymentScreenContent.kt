@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
@@ -66,10 +65,8 @@ import kotlin.math.roundToInt
 @Composable
 internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
-    onBackClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val viewEvent by viewModel.viewEvent.collectAsState()
     val cardNumberPCIState = rememberPCIFieldState()
     val expirationDatePCIState = rememberPCIFieldState()
     val securityCodePCIState = rememberPCIFieldState()
@@ -79,14 +76,6 @@ internal fun CardPaymentScreen(
 
     LaunchedEffect(Unit) {
         viewModel.getIdentificationTypes()
-    }
-
-    LaunchedEffect(viewEvent) {
-        viewEvent?.let { event ->
-            when (event) {
-                CardPaymentViewEvent.OnBackPressed -> onBackClick.invoke()
-            }
-        }
     }
 
     BackHandler {
@@ -105,9 +94,7 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackPressed = {
-            viewModel.onBackPressed()
-        },
+        onBackPressed = viewModel::onBackPressed,
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
