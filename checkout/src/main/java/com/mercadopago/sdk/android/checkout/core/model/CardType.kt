@@ -28,7 +28,7 @@ enum class CardType(internal val value: String) {
             value: String,
         ): CardType? =
             entries.find {
-                it.value.equasls(value, ignoreCase = true) ||
+                it.value.equals(value, ignoreCase = true) ||
                     it.name.equals(value, ignoreCase = true)
             }
     }
