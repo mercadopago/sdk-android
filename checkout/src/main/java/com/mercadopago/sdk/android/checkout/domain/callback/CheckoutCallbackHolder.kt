@@ -19,9 +19,7 @@ internal object CheckoutCallbackHolder {
     fun notify(
         result: MercadoPagoCheckoutResult,
     ) {
-        if (result !is MercadoPagoCheckoutResult.UserCancelled) {
-            activityCallback?.invoke()
-        }
+        activityCallback?.invoke()
         callback?.invoke(result)
         clear()
     }

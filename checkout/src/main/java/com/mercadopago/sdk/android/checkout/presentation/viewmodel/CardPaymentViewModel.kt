@@ -25,7 +25,6 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
@@ -66,9 +65,6 @@ internal class CardPaymentViewModel(
 
     private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
-
-    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
-    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
 
     fun getIdentificationTypes() {
         viewModelScope.launch {
@@ -634,7 +630,5 @@ internal class CardPaymentViewModel(
         val context = cancelledFormContextUseCase(currentState)
 
         CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
-
-        _viewEvent.value = CardPaymentViewEvent.OnBackPressed
     }
 }
