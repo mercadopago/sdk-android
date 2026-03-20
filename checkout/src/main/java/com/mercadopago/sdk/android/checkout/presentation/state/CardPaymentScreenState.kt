@@ -70,7 +70,7 @@ internal data class CardNumberState(
     val mask: String = DEFAULT_CARD_MASK,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
-    val errorType: CardNumberErrorType = CardNumberErrorType.NONE,
+    val errorType: CardNumberErrorType = CardNumberErrorType.None,
 ) : FieldState
 
 internal data class CardHolderState(

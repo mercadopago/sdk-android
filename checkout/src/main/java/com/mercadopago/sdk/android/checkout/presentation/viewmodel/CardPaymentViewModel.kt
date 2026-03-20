@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.extensions.detectCardNumberErrorType
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
 import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
@@ -107,12 +108,16 @@ internal class CardPaymentViewModel(
                 },
                 onError = { error ->
                     if (error is MercadoPagoCheckoutError.ServiceError) {
+                        val errorType = detectCardNumberErrorType(
+                            errorMessage = error.errorMessage,
+                            stringProvider = stateFactory.getStringProvider(),
+                        )
                         updateFieldState(error.errorMessage, shouldUpdateError = true) { errorMsg, isValid ->
                             copy(
                                 cardNumberState = cardNumberState.copy(
                                     error = errorMsg,
                                     isValid = isValid,
-                                    errorType = CardNumberErrorType.BIN_VALIDATION,
+                                    errorType = errorType,
                                 ),
                             )
                         }
@@ -344,7 +349,7 @@ internal class CardPaymentViewModel(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 image = cardData.cardIssuer?.thumbnail,
                 error = "",
-                errorType = CardNumberErrorType.NONE,
+                errorType = CardNumberErrorType.None,
             ),
             installmentsState = buildInstallmentsState(cardData.installments),
             paymentState = PaymentState(
@@ -445,12 +450,12 @@ internal class CardPaymentViewModel(
             _viewState.value = _viewState.value.copy(
                 cardNumberState = currentState.copy(
                     image = null,
-                    error = if (currentState.errorType == CardNumberErrorType.BIN_VALIDATION) {
+                    error = if (currentState.errorType == CardNumberErrorType.BinValidation) {
                         ""
                     } else {
                         currentState.error
                     },
-                    errorType = CardNumberErrorType.NONE,
+                    errorType = CardNumberErrorType.None,
                 ),
                 installmentsState = _viewState.value.installmentsState.copy(showList = false),
             )
@@ -475,16 +480,16 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
-        if (currentState.cardNumberState.errorType != CardNumberErrorType.BIN_VALIDATION) {
+        if (currentState.cardNumberState.errorType != CardNumberErrorType.BinValidation) {
             updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
                 copy(
                     cardNumberState = cardNumberState.copy(
                         error = error,
                         isValid = isValid,
                         errorType = if (error.isEmpty()) {
-                            CardNumberErrorType.NONE
+                            CardNumberErrorType.None
                         } else {
-                            CardNumberErrorType.FIELD_VALIDATION
+                            CardNumberErrorType.FieldValidation
                         },
                     ),
                 )

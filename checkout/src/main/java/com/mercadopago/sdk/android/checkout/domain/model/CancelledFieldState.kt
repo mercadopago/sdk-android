@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 
 /**
@@ -63,9 +64,9 @@ sealed class State {
 
     /**
      * The card brand is not accepted by the seller.
-     * @property brand The card brand that is not accepted (e.g., "visa", "mastercard")
+     * @property brand The card brand that is not accepted
      */
-    data class CardBrandNotAccepted(val brand: String) : State()
+    data class CardBrandNotAccepted(val brand: CardBrand) : State()
 
     /**
      * The card type is not accepted by the seller.
