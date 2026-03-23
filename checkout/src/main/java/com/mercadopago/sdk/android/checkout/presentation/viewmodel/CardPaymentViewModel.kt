@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
@@ -28,6 +29,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
+import com.mercadopago.sdk.android.checkout.presentation.state.isPaymentNotFound
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
@@ -108,7 +110,12 @@ internal class CardPaymentViewModel(
                             errorMessage = error.errorMessage,
                             stringProvider = stateFactory.getStringProvider(),
                         )
-                        updateFieldState(error.errorMessage, shouldUpdateError = true) { errorMsg, isValid ->
+                        val message = if (errorType.isPaymentNotFound()) {
+                            stateFactory.getStringProvider().getString(R.string.card_form_error_card_number_repeated)
+                        } else {
+                            error.errorMessage
+                        }
+                        updateFieldState(message, shouldUpdateError = true) { errorMsg, isValid ->
                             copy(
                                 cardNumberState = cardNumberState.copy(
                                     error = errorMsg,
@@ -446,7 +453,7 @@ internal class CardPaymentViewModel(
             _viewState.value = _viewState.value.copy(
                 cardNumberState = currentState.copy(
                     image = null,
-                    error = if (currentState.errorType == CardNumberErrorType.BinValidation) {
+                    error = if (currentState.errorType == CardNumberErrorType.PaymentMethodNotFound) {
                         ""
                     } else {
                         currentState.error
@@ -476,7 +483,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
-        if (currentState.cardNumberState.errorType != CardNumberErrorType.BinValidation) {
+        if (currentState.cardNumberState.errorType == CardNumberErrorType.FieldValidation) {
             updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
                 copy(
                     cardNumberState = cardNumberState.copy(

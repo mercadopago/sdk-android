@@ -13,6 +13,8 @@ internal fun SecurityCode.isOptional(): Boolean = length <= 0
 
 internal fun CardData.getLength(): Int = paymentMethod.card?.length?.max ?: DEFAULT_MAX_CARD_LENGTH
 
+internal const val NOT_FOUND = "not found"
+
 internal fun SecurityCode.getMessage(
     stringProvider: StringProvider,
 ): String {
@@ -32,6 +34,9 @@ internal fun detectCardNumberErrorType(
     val typeErrorPrefix = stringProvider.getString(R.string.card_form_error_card_type_not_accepted)
 
     return when {
+        errorMessage.contains(NOT_FOUND, ignoreCase = true) -> {
+            CardNumberErrorType.PaymentMethodNotFound
+        }
         errorMessage.startsWith(brandErrorPrefix) -> {
             val brandString = errorMessage.removePrefix(brandErrorPrefix).trim()
             val brand = CardBrand.fromString(brandString)
@@ -42,6 +47,6 @@ internal fun detectCardNumberErrorType(
             val cardType = CardType.fromString(typeString)
             CardNumberErrorType.CardTypeNotAccepted(cardType)
         }
-        else -> CardNumberErrorType.BinValidation
+        else -> CardNumberErrorType.None
     }
 }
