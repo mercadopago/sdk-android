@@ -29,6 +29,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
+import com.mercadopago.sdk.android.checkout.presentation.state.isFieldValidationOrNone
 import com.mercadopago.sdk.android.checkout.presentation.state.isPaymentNotFound
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
@@ -483,7 +484,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
-        if (currentState.cardNumberState.errorType == CardNumberErrorType.FieldValidation) {
+        if (currentState.cardNumberState.errorType.isFieldValidationOrNone()) {
             updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
                 copy(
                     cardNumberState = cardNumberState.copy(

@@ -16,3 +16,6 @@ internal sealed class CardNumberErrorType {
 }
 
 internal fun CardNumberErrorType.isPaymentNotFound() = this == CardNumberErrorType.PaymentMethodNotFound
+
+internal fun CardNumberErrorType.isFieldValidationOrNone(): Boolean =
+    this == CardNumberErrorType.FieldValidation || this == CardNumberErrorType.None
