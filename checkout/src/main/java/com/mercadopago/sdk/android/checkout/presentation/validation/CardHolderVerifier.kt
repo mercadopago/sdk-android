@@ -48,6 +48,6 @@ internal class CardHolderVerifier(
 
     companion object {
         private val SPECIAL_CHARACTERS_REGEX = Regex("[^a-zA-Z\\s]")
-        private const val MIN_CHARACTERS = 12
+        private const val MIN_CHARACTERS = 3
     }
 }
