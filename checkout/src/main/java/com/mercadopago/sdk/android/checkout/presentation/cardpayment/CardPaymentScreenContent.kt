@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInRoot
@@ -127,7 +131,18 @@ internal fun CardPaymentScreenContent(
     onTooltipClick: () -> Unit = {},
     onMessageClick: () -> Unit = {},
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val cardNumberFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        cardNumberFocusRequester.requestFocus()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -160,7 +175,9 @@ internal fun CardPaymentScreenContent(
                         ) {
                             Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                             MPCardNumberTextField(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(cardNumberFocusRequester),
                                 state = cardNumberPCIState,
                                 isFocused = viewState.cardNumberState.isFocused,
                                 showPlaceHolder = viewState.cardNumberState.showPlaceHolder,

@@ -8,9 +8,14 @@ internal sealed class CardNumberErrorType {
 
     data object FieldValidation : CardNumberErrorType()
 
-    data object BinValidation : CardNumberErrorType()
+    data object PaymentMethodNotFound : CardNumberErrorType()
 
     data class CardBrandNotAccepted(val brand: CardBrand) : CardNumberErrorType()
 
     data class CardTypeNotAccepted(val cardType: CardType?) : CardNumberErrorType()
 }
+
+internal fun CardNumberErrorType.isPaymentNotFound() = this == CardNumberErrorType.PaymentMethodNotFound
+
+internal fun CardNumberErrorType.isFieldValidationOrNone(): Boolean =
+    this == CardNumberErrorType.FieldValidation || this == CardNumberErrorType.None
