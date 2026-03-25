@@ -627,7 +627,7 @@ internal class CardPaymentViewModel(
 
             _viewState.value = _viewState.value.copy(
                 fixedFooterState = state.fixedFooterState.copy(
-                    buttonEnabled = isFormValid,
+                    buttonVisible = isFormValid,
                 ),
             )
         }

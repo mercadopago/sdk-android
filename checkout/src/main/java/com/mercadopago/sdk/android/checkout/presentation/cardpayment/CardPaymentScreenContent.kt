@@ -300,11 +300,15 @@ internal fun CardPaymentScreenContent(
             MPFixedFooter(
                 title = viewState.fixedFooterState.title,
                 subtitle = viewState.fixedFooterState.subtitle,
-                button = MPFixedFooterButtonData(
-                    text = viewState.fixedFooterState.buttonText,
-                    enabled = viewState.fixedFooterState.buttonEnabled,
-                    onClick = onFooterButtonClick,
-                ),
+                button = if (viewState.fixedFooterState.buttonVisible) {
+                    MPFixedFooterButtonData(
+                        text = viewState.fixedFooterState.buttonText,
+                        enabled = true,
+                        onClick = onFooterButtonClick,
+                    )
+                } else {
+                    null
+                },
             )
         }
 
@@ -369,7 +373,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonText = "Pagar",
-                    buttonEnabled = true,
+                    buttonVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -418,7 +422,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonText = "Continuar",
-                    buttonEnabled = true,
+                    buttonVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -489,7 +493,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonText = "Pagar",
-                    buttonEnabled = false,
+                    buttonVisible = false,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),

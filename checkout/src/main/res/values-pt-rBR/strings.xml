@@ -6,6 +6,7 @@
     <string name="card_form_number_placeholder">1234 1234 1234 1234</string>
     <string name="card_form_holder_label">Nome do titular</string>
     <string name="card_form_holder_placeholder">Ex.: Maria Lopez</string>
+    <string name="card_form_holder_helper">Conforme aparece no cartão</string>
     <string name="card_form_expiration_label">Data de vencimento</string>
     <string name="card_form_expiration_short_label">Vencimento</string>
     <string name="card_form_expiration_placeholder">MM/AA</string>
