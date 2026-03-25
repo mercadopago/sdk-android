@@ -10,6 +10,8 @@ internal sealed class CardNumberErrorType {
 
     data object PaymentMethodNotFound : CardNumberErrorType()
 
+    data object LuhnValidation : CardNumberErrorType()
+
     data class CardBrandNotAccepted(val brand: CardBrand) : CardNumberErrorType()
 
     data class CardTypeNotAccepted(val cardType: CardType?) : CardNumberErrorType()
