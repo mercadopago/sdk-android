@@ -21,28 +21,55 @@ We strongly recommend always using the latest version of the BOM (`sdk-android-b
 To report a security issue, please use one of the following channels:
 
 - **GitHub Private Security Advisory:** [Report a vulnerability](../../security/advisories/new) *(preferred)*
+- **Email:** developers@mercadopago.com (Subject: [SECURITY] bricks-sdk-android - [description])
 
 ### What to include
 
 Please provide as much of the following information as possible to help us triage and resolve the issue quickly:
 
-- Type of vulnerability (e.g., CWE identifier if known)
-- Affected component or module (`checkout`, `core-methods`, `core`, etc.)
-- Steps to reproduce or a minimal proof of concept
-- Android API level and device/emulator details (if relevant)
-- Potential impact assessment
-- Any suggested mitigations
+```text
+**Vulnerability type:**
+[Type of vulnerability (e.g., CWE identifier if known)]
+
+**Affected component or module:**
+[Affected component or module (`checkout`, `core-methods`, `core`, etc.)]
+
+**Affected versions:**
+[e.g., 0.1.0 - 0.1.1]
+
+**Description:**
+[Detailed description of the vulnerability]
+
+**Steps to reproduce:**
+1. ...
+2. ...
+3. ...
+
+**Impact:**
+[What can an attacker do with this?]
+
+**Suggested severity:**
+[Critical / High / Medium / Low]
+
+**Android API level and device/emulator details (opcional)**
+
+**Proof of concept (optional):**
+[Code or screenshots demonstrating the issue]
+
+**Suggested fix (optional):**
+[If you have ideas on how to fix it]
+```
 
 ---
 
 ## Response Timeline
 
-| Stage | Target |
-|-------|--------|
-| Acknowledgement | 2 business days |
-| Initial triage | 5 business days |
-| Status update | 10 business days |
-| Patch release (critical) | 15 business days |
+| Severity | Initial Response | Fix Target |
+|---|---|---|
+| Critical | 24 hours | 48–72 hours |
+| High | 48 hours | 1 week |
+| Medium | 1 week | 2–4 weeks |
+| Low | 2 weeks | Next release |
 
 We will notify you when the vulnerability is fixed and coordinate a disclosure date if applicable.
 
