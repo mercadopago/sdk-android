@@ -31,7 +31,7 @@ internal class GetCardDataByBinUseCase(
                 fetchCardData(bin, amount, paymentMethod)
             } ?: Result.Error(
                 createValidationError(
-                    stringProvider.getString(R.string.card_form_error_card_number_repeated),
+                    stringProvider.getString(R.string.card_form_error_card_number_invalid),
                 ),
             )
         }

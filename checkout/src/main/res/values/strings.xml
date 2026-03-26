@@ -6,6 +6,7 @@
     <string name="card_form_number_placeholder">1234 1234 1234 1234</string>
     <string name="card_form_holder_label">Titular de tarjeta</string>
     <string name="card_form_holder_placeholder">Ej.: Maria Lopez</string>
+    <string name="card_form_holder_helper">Como figura en la tarjeta</string>
     <string name="card_form_expiration_label">Fecha de vencimiento</string>
     <string name="card_form_expiration_short_label">Vencimiento</string>
     <string name="card_form_expiration_placeholder">MM/AA</string>
@@ -21,7 +22,7 @@
     <string name="card_form_error_required_field">Completá este campo</string>
     <string name="card_form_error_cardholder_incomplete">Ingresalo como figura en la tarjeta</string>
     <string name="card_form_error_cardholder_format">Ingresá solo letras y números</string>
-    <string name="card_form_error_card_number_repeated">Ingresalo como figura en la tarjeta.</string>
+    <string name="card_form_error_card_number_invalid">Ingresalo como figura en la tarjeta.</string>
     <string name="card_form_error_card_number_incomplete">Ingresá el número completo</string>
     <string name="card_form_error_document_all_zeros">Ingresalo como figura en el documento.</string>
     <string name="card_form_error_expiration_incomplete">Ingresá la fecha completa</string>

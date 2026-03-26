@@ -402,12 +402,12 @@ internal class CardPaymentViewModel(
         val errorMessage: String = when {
             errors.any { it is CardNumberErrorType.LuhnValidation && cardNumberState.isComplete() } -> {
                 stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_repeated)
+                    .getString(R.string.card_form_error_card_number_invalid)
             }
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } -> {
                 stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_repeated)
+                    .getString(R.string.card_form_error_card_number_invalid)
             }
 
             errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
