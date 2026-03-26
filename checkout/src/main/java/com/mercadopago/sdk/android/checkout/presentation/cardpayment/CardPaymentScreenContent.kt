@@ -63,6 +63,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
@@ -189,6 +190,7 @@ internal fun CardPaymentScreenContent(
                                 helper = viewState.cardNumberState.helper,
                                 placeHolder = viewState.cardNumberState.placeHolder,
                                 maxLength = viewState.cardNumberState.maxLength,
+                                visualTransformation = MaskVisualTransformation(viewState.cardNumberState.mask),
                                 onEvent = onCardNumberEvent,
                             )
 
