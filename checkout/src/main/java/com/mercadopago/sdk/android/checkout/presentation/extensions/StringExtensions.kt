@@ -1,5 +1,9 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
+import com.mercadopago.android.sdk.checkout.R
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
+import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -16,3 +20,26 @@ internal fun String.hasAllSameDigits(): Boolean {
 internal fun String.isBeingCleared(
     previousValue: String,
 ): Boolean = this.length < previousValue.length
+
+internal fun String.removeUnderscore(): String = this.replace("_", " ")
+
+internal fun String.toCardTypeErrorMessage(
+    stringProvider: StringProvider,
+): String {
+    val baseMessage = stringProvider.getString(R.string.card_form_error_card_type_not_accepted)
+    val cardTypeStringId = when (this) {
+        CardType.CREDIT.value -> R.string.card_type_credit_card
+        CardType.DEBIT.value -> R.string.card_type_debit_card
+        CardType.PREPAID.value -> R.string.card_type_prepaid
+        else -> null
+    }
+    val translatedType = cardTypeStringId?.let { stringProvider.getString(it) } ?: this.removeUnderscore()
+    return "$baseMessage $translatedType"
+}
+
+internal fun CardBrand.toCardBrandErrorMessage(
+    stringProvider: StringProvider,
+): String {
+    val baseMessage = stringProvider.getString(R.string.card_form_error_card_brand_not_accepted)
+    return "$baseMessage $name"
+}

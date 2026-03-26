@@ -24,6 +24,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
@@ -411,13 +413,13 @@ internal class CardPaymentViewModel(
             }
 
             errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_brand_not_accepted)
+                val error = errors.filterIsInstance<CardNumberErrorType.CardBrandNotAccepted>().first()
+                error.brand.toCardBrandErrorMessage(stateFactory.getStringProvider())
             }
 
             errors.any { it is CardNumberErrorType.CardTypeNotAccepted } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_type_not_accepted)
+                val error = errors.filterIsInstance<CardNumberErrorType.CardTypeNotAccepted>().first()
+                error.cardType?.value?.toCardTypeErrorMessage(stateFactory.getStringProvider()) ?: ""
             }
 
             errors.any { it is CardNumberErrorType.FieldValidation } -> {

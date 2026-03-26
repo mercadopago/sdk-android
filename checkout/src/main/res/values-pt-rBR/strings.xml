@@ -18,6 +18,11 @@
     <string name="card_form_generic_error">Ocorreu um erro. Por favor, tente novamente.</string>
     <string name="card_form_save_button">Salvar cartão</string>
 
+    <!-- Card Type Translations -->
+    <string name="card_type_credit_card">de crédito</string>
+    <string name="card_type_debit_card">de débito</string>
+    <string name="card_type_prepaid">prepago</string>
+
     <!-- Validation Error Messages -->
     <string name="card_form_error_required_field">Preencha este campo</string>
     <string name="card_form_error_cardholder_incomplete">Insira conforme está no cartão</string>
@@ -28,8 +33,8 @@
     <string name="card_form_error_expiration_incomplete">Insira a data completa</string>
     <string name="card_form_error_cvv_incomplete">Insira o código completo</string>
     <string name="card_form_error_insufficient_amount">Verifique se o cartão tem limite suficiente.</string>
-    <string name="card_form_error_card_brand_not_accepted">A loja não aceita cartões (bandera).</string>
-    <string name="card_form_error_card_type_not_accepted">A loja não aceita (card type)</string>
+    <string name="card_form_error_card_brand_not_accepted">A loja não aceita cartões</string>
+    <string name="card_form_error_card_type_not_accepted">A loja não aceita cartões</string>
 
     <!-- Security Code Tooltip Messages -->
     <string name="card_form_security_code_tooltip_back">É um número de %d dígitos que está no verso do seu cartão.</string>
