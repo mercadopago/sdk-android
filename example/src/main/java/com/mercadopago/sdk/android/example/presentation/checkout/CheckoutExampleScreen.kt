@@ -16,9 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
-import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
