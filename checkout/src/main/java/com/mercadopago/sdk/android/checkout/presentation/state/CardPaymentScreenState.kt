@@ -1,12 +1,12 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
+import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
-internal const val DEFAULT_MAX_CARD_LENGTH = 19
-internal const val DEFAULT_CARD_MASK = "#### #### #### ####"
 
 internal data class CardPaymentScreenState(
     val title: String = "",
@@ -66,11 +66,11 @@ internal data class CardNumberState(
     override val showPlaceHolder: Boolean = true,
     val image: String? = null,
     val length: Int = 0,
-    val maxLength: Int = DEFAULT_MAX_CARD_LENGTH,
-    val mask: String = DEFAULT_CARD_MASK,
+    val maxLength: Int = CARD_LENGTH_19,
+    val mask: String = CARD_LENGTH_19_MASK,
     val lastFourDigits: String = "",
     val cardBin: String? = null,
-    val errorType: CardNumberErrorType = CardNumberErrorType.None,
+    val errorTypes: List<CardNumberErrorType> = listOf(),
 ) : FieldState
 
 internal data class CardHolderState(

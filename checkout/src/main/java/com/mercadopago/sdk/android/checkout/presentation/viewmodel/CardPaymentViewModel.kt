@@ -2,17 +2,19 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
-import com.mercadopago.sdk.android.checkout.domain.extensions.getCardNumberErrorInfo
+import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
 import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
+import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
+import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
@@ -26,10 +28,8 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.DEFAULT_MAX_CARD_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
-import com.mercadopago.sdk.android.checkout.presentation.state.isFieldValidationOrNone
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
@@ -44,7 +44,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletex
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 @Suppress(
     "TooManyFunctions",
@@ -90,38 +89,48 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun getPaymentMethods(
-        bin: String,
-        amount: BigDecimal?,
+    fun onCardNumberEvent(
+        event: CardNumberTextFieldEvent,
     ) {
-        viewModelScope.launch {
-            getCardDataByBinUseCase(
-                bin = bin,
-                amount = amount,
-                paymentMethods = checkoutConfiguration?.paymentMethods,
-            ).fold(
-                onSuccess = { cardData ->
-                    updateStateWithCardData(cardData)
-                    updateCardMaskState(cardData.getLength())
-                },
-                onError = { error ->
-                    when {
-                        error is MercadoPagoCheckoutError.ServiceError &&
-                            error.message.orEmpty().isPaymentMethodNotFound() -> {
-                            handleCardNumberServiceError(error)
-                        }
-                        error is MercadoPagoCheckoutError.ServiceError ||
-                            _viewState.value.cardNumberState.isComplete() -> {
-                            handleResultError(error)
-                        }
-                        else -> {
-                            if (viewState.value.cardNumberState.isComplete()) {
-                                handleResultError(error)
-                            }
-                        }
-                    }
-                },
-            )
+        when (event) {
+            is CardNumberTextFieldEvent.OnFocusChanged -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        isFocused = event.isFocused,
+                    ),
+                )
+                if (!event.isFocused) {
+                    handleCardNumberInputError()
+                }
+            }
+
+            is CardNumberTextFieldEvent.OnLengthChanged -> {
+                val previousLength = _viewState.value.cardNumberState.length
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        length = event.length,
+                    ),
+                )
+                if (event.length.isBeingCleared(previousLength)) {
+                    updateCardNumberErrorState(emptyList())
+                }
+            }
+
+            is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        lastFourDigits = event.lastFourDigits,
+                    ),
+                )
+            }
+
+            is CardNumberTextFieldEvent.IsValid -> {
+                handleCardNumberLuhnValidation(event.isValid)
+            }
+
+            is CardNumberTextFieldEvent.OnBinChanged -> {
+                handleBinChanged(event.cardBin)
+            }
         }
     }
 
@@ -201,51 +210,6 @@ internal class CardPaymentViewModel(
                         filled = event.isFilled,
                     ),
                 )
-            }
-        }
-    }
-
-    fun onCardNumberEvent(
-        event: CardNumberTextFieldEvent,
-    ) {
-        when (event) {
-            is CardNumberTextFieldEvent.OnFocusChanged -> {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        isFocused = event.isFocused,
-                    ),
-                )
-                if (!event.isFocused) {
-                    handleCardNumberInputError()
-                    val cardNumberState = _viewState.value.cardNumberState
-                    checkoutConfiguration?.takeIf { cardNumberState.isComplete() }?.let {
-                        getPaymentMethods(cardNumberState.cardBin.orEmpty(), it.getCardFormAmount())
-                    }
-                }
-            }
-
-            is CardNumberTextFieldEvent.OnLengthChanged -> {
-                val previousLength = _viewState.value.cardNumberState.length
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        length = event.length,
-                    ),
-                )
-                if (event.length.isBeingCleared(previousLength)) {
-                    handleCardNumberInputError(shouldUpdateError = false)
-                }
-            }
-
-            is CardNumberTextFieldEvent.OnLastFourDigitsFilled -> {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        lastFourDigits = event.lastFourDigits,
-                    ),
-                )
-            }
-
-            is CardNumberTextFieldEvent.OnBinChanged -> {
-                handleBinChanged(event.cardBin)
             }
         }
     }
@@ -331,6 +295,150 @@ internal class CardPaymentViewModel(
         }
     }
 
+    fun onBackPressed() {
+        val currentState = _viewState.value
+        val context = cancelledFormContextUseCase(currentState)
+
+        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+    }
+
+    private fun getPaymentMethods() {
+        viewModelScope.launch {
+            val cardNumberState = _viewState.value.cardNumberState
+            getCardDataByBinUseCase(
+                bin = cardNumberState.cardBin.orEmpty(),
+                amount = checkoutConfiguration?.getCardFormAmount(),
+                paymentMethods = checkoutConfiguration?.paymentMethods,
+            ).fold(
+                onSuccess = { cardData ->
+                    updateStateWithCardData(cardData)
+                    handleCardBrandValidation(cardData)
+                    handleCardTypeValidation(cardData)
+                },
+                onError = { error ->
+                    when {
+                        error is MercadoPagoCheckoutError.ServiceError &&
+                            error.message.orEmpty().isPaymentMethodNotFound() -> {
+                            handleCardNumberServiceError(error)
+                        }
+
+                        error is MercadoPagoCheckoutError.ServiceError ||
+                            _viewState.value.cardNumberState.isComplete() -> {
+                            handleResultError(error)
+                        }
+
+                        else -> {
+                            handleResultError(error)
+                        }
+                    }
+                },
+            )
+        }
+    }
+
+    private fun handleCardNumberLuhnValidation(
+        isValid: Boolean,
+    ) {
+        updateCardNumberError<CardNumberErrorType.LuhnValidation> {
+            if (!isValid) CardNumberErrorType.LuhnValidation else null
+        }
+    }
+
+    private fun handleCardNumberInputError() {
+        updateCardNumberError<CardNumberErrorType.FieldValidation> {
+            val error = validator.validateCardNumber(viewState.value.cardNumberState)
+            if (error.isNotEmpty()) CardNumberErrorType.FieldValidation(error) else null
+        }
+    }
+
+    private fun handleCardNumberServiceError(
+        error: MercadoPagoCheckoutError.ServiceError,
+    ) {
+        updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound> {
+            if (error.message.orEmpty().isPaymentMethodNotFound()) {
+                CardNumberErrorType.PaymentMethodNotFound
+            } else {
+                null
+            }
+        }
+    }
+
+    private fun handleCardBrandValidation(
+        cardData: CardData,
+    ) {
+        updateCardNumberError<CardNumberErrorType.CardBrandNotAccepted> {
+            val (_, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+            if (!cardData.paymentMethod.matchesCardBrand(cardBrands)) {
+                val brand = com.mercadopago.sdk.android.checkout.core.model.CardBrand.fromString(
+                    cardData.paymentMethod.id.orEmpty(),
+                )
+                CardNumberErrorType.CardBrandNotAccepted(brand)
+            } else {
+                null
+            }
+        }
+    }
+
+    private fun handleCardTypeValidation(
+        cardData: CardData,
+    ) {
+        updateCardNumberError<CardNumberErrorType.CardTypeNotAccepted> {
+            val (cardTypes, _) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+            if (!cardData.paymentMethod.matchesCardType(cardTypes)) {
+                val cardType = com.mercadopago.sdk.android.checkout.core.model.CardType.fromString(
+                    cardData.paymentMethod.paymentTypeId.orEmpty(),
+                )
+                CardNumberErrorType.CardTypeNotAccepted(cardType)
+            } else {
+                null
+            }
+        }
+    }
+
+    private fun updateCardNumberErrorState(
+        errors: List<CardNumberErrorType>,
+    ) {
+        val cardNumberState = viewState.value.cardNumberState
+        val errorMessage: String = when {
+            errors.any { it is CardNumberErrorType.LuhnValidation && cardNumberState.isComplete() } -> {
+                stateFactory.getStringProvider()
+                    .getString(R.string.card_form_error_card_number_repeated)
+            }
+
+            errors.any { it is CardNumberErrorType.PaymentMethodNotFound } -> {
+                stateFactory.getStringProvider()
+                    .getString(R.string.card_form_error_card_number_repeated)
+            }
+
+            errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
+                stateFactory.getStringProvider()
+                    .getString(R.string.card_form_error_card_brand_not_accepted)
+            }
+
+            errors.any { it is CardNumberErrorType.CardTypeNotAccepted } -> {
+                stateFactory.getStringProvider()
+                    .getString(R.string.card_form_error_card_type_not_accepted)
+            }
+
+            errors.any { it is CardNumberErrorType.FieldValidation } -> {
+                errors.filterIsInstance<CardNumberErrorType.FieldValidation>()
+                    .first().message
+            }
+
+            else -> ""
+        }
+
+        _viewState.value = _viewState.value.copy(
+            cardNumberState = _viewState.value.cardNumberState.copy(
+                error = errorMessage,
+                isValid = errors.isEmpty(),
+                errorTypes = errors,
+            ),
+        )
+
+        hasFormErrors()
+    }
+
     private fun updateStateWithCardData(
         cardData: CardData,
     ) {
@@ -339,8 +447,8 @@ internal class CardPaymentViewModel(
             cardIssuers = listOfNotNull(cardData.cardIssuer),
             cardNumberState = _viewState.value.cardNumberState.copy(
                 image = cardData.cardIssuer?.thumbnail,
-                error = "",
-                errorType = CardNumberErrorType.None,
+                mask = cardData.getLength().toMask(),
+                maxLength = cardData.getLength(),
             ),
             installmentsState = buildInstallmentsState(cardData.installments),
             paymentState = PaymentState(
@@ -436,74 +544,22 @@ internal class CardPaymentViewModel(
     private fun handleBinChanged(
         cardBin: String?,
     ) {
-        if ((cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
-            handleCardNumberInputError()
-            val currentState = _viewState.value.cardNumberState
-            _viewState.value = _viewState.value.copy(
-                cardNumberState = currentState.copy(
-                    image = null,
-                    error = if (currentState.errorType == CardNumberErrorType.PaymentMethodNotFound) {
-                        ""
-                    } else {
-                        currentState.error
-                    },
-                    errorType = CardNumberErrorType.None,
-                ),
-                installmentsState = _viewState.value.installmentsState.copy(showList = false),
-            )
-            updateCardMaskState(DEFAULT_MAX_CARD_LENGTH)
-        } else {
-            if (checkoutConfiguration?.checkoutType is CheckoutType.CardForm) {
-                getPaymentMethods(
-                    bin = cardBin.orEmpty(),
-                    amount = checkoutConfiguration.checkoutType.cardFormConfiguration?.amount,
-                )
-            }
-        }
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 cardBin = cardBin,
             ),
         )
-    }
-
-    private fun handleCardNumberInputError(
-        shouldUpdateError: Boolean = true,
-    ) {
-        val currentState = _viewState.value
-        val cardNumberError = validator.validateCardNumber(currentState.cardNumberState)
-        if (currentState.cardNumberState.errorType.isFieldValidationOrNone()) {
-            updateFieldState(cardNumberError, shouldUpdateError) { error, isValid ->
-                copy(
-                    cardNumberState = cardNumberState.copy(
-                        error = error,
-                        isValid = isValid,
-                        errorType = if (error.isEmpty()) {
-                            CardNumberErrorType.None
-                        } else {
-                            CardNumberErrorType.FieldValidation
-                        },
-                    ),
-                )
-            }
-        }
-        hasFormErrors()
-    }
-
-    private fun handleCardNumberServiceError(
-        error: MercadoPagoCheckoutError.ServiceError,
-    ) {
-        val (errorType, message) = error.getCardNumberErrorInfo(
-            stateFactory.getStringProvider(),
-        )
-        updateFieldState(message, shouldUpdateError = true) { message, isValid ->
-            copy(
-                cardNumberState = cardNumberState.copy(
-                    error = message,
-                    isValid = isValid,
-                    errorType = errorType,
+        if ((cardBin?.length ?: 0) < CARD_NUMBER_BIN_LENGTH) {
+            val currentState = _viewState.value.cardNumberState
+            _viewState.value = _viewState.value.copy(
+                cardNumberState = currentState.copy(
+                    image = null,
+                    mask = currentState.maxLength.toMask(),
                 ),
+                installmentsState = _viewState.value.installmentsState.copy(showList = false),
             )
+        } else {
+            getPaymentMethods()
         }
     }
 
@@ -599,17 +655,6 @@ internal class CardPaymentViewModel(
         )
     }
 
-    private fun updateCardMaskState(
-        cardLength: Int,
-    ) {
-        _viewState.value = _viewState.value.copy(
-            cardNumberState = _viewState.value.cardNumberState.copy(
-                maxLength = cardLength,
-                mask = cardLength.toMask(),
-            ),
-        )
-    }
-
     private fun hasFormErrors() {
         _viewState.value.let { state ->
             val isIdentificationValid = !state.identificationTypeState.show ||
@@ -638,10 +683,12 @@ internal class CardPaymentViewModel(
         _viewState.value = _viewState.value.copy(isLoading = isLoading)
     }
 
-    fun onBackPressed() {
-        val currentState = _viewState.value
-        val context = cancelledFormContextUseCase(currentState)
-
-        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+    private inline fun <reified T : CardNumberErrorType> updateCardNumberError(
+        errorFactory: () -> T?,
+    ) {
+        val currentErrors = _viewState.value.cardNumberState.errorTypes.toMutableList()
+        currentErrors.removeAll { it is T }
+        errorFactory()?.let { currentErrors.add(it) }
+        updateCardNumberErrorState(currentErrors)
     }
 }
