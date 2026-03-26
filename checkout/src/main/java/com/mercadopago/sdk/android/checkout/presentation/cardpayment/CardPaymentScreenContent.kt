@@ -297,15 +297,17 @@ internal fun CardPaymentScreenContent(
                 }
             }
 
-            MPFixedFooter(
-                title = viewState.fixedFooterState.title,
-                subtitle = viewState.fixedFooterState.subtitle,
-                button = MPFixedFooterButtonData(
-                    text = viewState.fixedFooterState.buttonText,
-                    enabled = viewState.fixedFooterState.buttonEnabled,
-                    onClick = onFooterButtonClick,
-                ),
-            )
+            if (viewState.fixedFooterState.isVisible) {
+                MPFixedFooter(
+                    title = viewState.fixedFooterState.title,
+                    subtitle = viewState.fixedFooterState.subtitle,
+                    button = MPFixedFooterButtonData(
+                        text = viewState.fixedFooterState.buttonText,
+                        enabled = true,
+                        onClick = onFooterButtonClick,
+                    ),
+                )
+            }
         }
 
         if (viewState.isLoading) {
@@ -369,7 +371,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonText = "Pagar",
-                    buttonEnabled = true,
+                    isVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -418,7 +420,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonText = "Continuar",
-                    buttonEnabled = true,
+                    isVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -489,7 +491,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonText = "Pagar",
-                    buttonEnabled = false,
+                    isVisible = false,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
