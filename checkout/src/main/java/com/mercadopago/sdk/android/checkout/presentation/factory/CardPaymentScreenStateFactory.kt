@@ -35,6 +35,7 @@ internal class CardPaymentScreenStateFactory(
         CardHolderState(
             label = stringProvider.getString(R.string.card_form_holder_label),
             placeHolder = stringProvider.getString(R.string.card_form_holder_placeholder),
+            helper = stringProvider.getString(R.string.card_form_holder_helper),
         )
 
     private fun createExpirationDateState() =
