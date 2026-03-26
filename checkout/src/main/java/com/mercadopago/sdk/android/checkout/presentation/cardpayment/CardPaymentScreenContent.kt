@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -260,6 +262,7 @@ internal fun CardPaymentScreenContent(
                                         onEvent = onIdentificationEvent,
                                     )
                                 }
+                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                             }
                         }
                         if (viewState.showTooltip && securityCodeBounds != Rect.Zero && containerBounds != Rect.Zero) {
@@ -298,15 +301,20 @@ internal fun CardPaymentScreenContent(
             }
 
             if (viewState.fixedFooterState.isVisible) {
-                MPFixedFooter(
-                    title = viewState.fixedFooterState.title,
-                    subtitle = viewState.fixedFooterState.subtitle,
-                    button = MPFixedFooterButtonData(
-                        text = viewState.fixedFooterState.buttonText,
-                        enabled = true,
-                        onClick = onFooterButtonClick,
-                    ),
-                )
+                Surface(
+                    shadowElevation = 8.dp,
+                    tonalElevation = 0.dp,
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                ) {
+                    MPFixedFooter(
+                        title = viewState.fixedFooterState.title,
+                        subtitle = viewState.fixedFooterState.subtitle,
+                        button = MPFixedFooterButtonData(
+                            text = viewState.fixedFooterState.buttonText,
+                            onClick = onFooterButtonClick,
+                        ),
+                    )
+                }
             }
         }
 
