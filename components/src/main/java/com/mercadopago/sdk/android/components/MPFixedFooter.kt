@@ -82,9 +82,9 @@ fun MPFixedFooter(
                 amount = amount,
                 subtitle = subtitle,
             )
+            Spacer(modifier = Modifier.height(MercadoPagoAndesTheme.spacing.paddings.micro))
         }
         button?.let {
-            Spacer(modifier = Modifier.height(MercadoPagoAndesTheme.spacing.paddings.micro))
             MPButton(
                 text = it.text,
                 modifier = Modifier.fillMaxWidth(),

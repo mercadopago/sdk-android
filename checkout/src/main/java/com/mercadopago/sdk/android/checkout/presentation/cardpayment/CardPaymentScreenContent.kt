@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -260,6 +262,7 @@ internal fun CardPaymentScreenContent(
                                         onEvent = onIdentificationEvent,
                                     )
                                 }
+                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                             }
                         }
                         if (viewState.showTooltip && securityCodeBounds != Rect.Zero && containerBounds != Rect.Zero) {
@@ -297,15 +300,22 @@ internal fun CardPaymentScreenContent(
                 }
             }
 
-            MPFixedFooter(
-                title = viewState.fixedFooterState.title,
-                subtitle = viewState.fixedFooterState.subtitle,
-                button = MPFixedFooterButtonData(
-                    text = viewState.fixedFooterState.buttonText,
-                    enabled = viewState.fixedFooterState.buttonEnabled,
-                    onClick = onFooterButtonClick,
-                ),
-            )
+            if (viewState.fixedFooterState.isVisible) {
+                Surface(
+                    shadowElevation = 8.dp,
+                    tonalElevation = 0.dp,
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                ) {
+                    MPFixedFooter(
+                        title = viewState.fixedFooterState.title,
+                        subtitle = viewState.fixedFooterState.subtitle,
+                        button = MPFixedFooterButtonData(
+                            text = viewState.fixedFooterState.buttonText,
+                            onClick = onFooterButtonClick,
+                        ),
+                    )
+                }
+            }
         }
 
         if (viewState.isLoading) {
@@ -369,7 +379,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonText = "Pagar",
-                    buttonEnabled = true,
+                    isVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -418,7 +428,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonText = "Continuar",
-                    buttonEnabled = true,
+                    isVisible = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -489,7 +499,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonText = "Pagar",
-                    buttonEnabled = false,
+                    isVisible = false,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
