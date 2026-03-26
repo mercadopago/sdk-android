@@ -33,7 +33,7 @@
     <string name="card_form_error_expiration_incomplete">Ingresa la fecha completa</string>
     <string name="card_form_error_cvv_incomplete">Ingresa el código completo</string>
     <string name="card_form_error_insufficient_amount">Verifica que la tarjeta tenga límite suficiente.</string>
-    <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas (bandera).</string>
+    <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas</string>
     <string name="card_form_error_card_type_not_accepted">La tienda no acepta tarjetas</string>
 
     <!-- Security Code Tooltip Messages -->
