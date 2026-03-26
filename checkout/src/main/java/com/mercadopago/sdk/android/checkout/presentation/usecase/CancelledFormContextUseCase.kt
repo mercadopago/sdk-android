@@ -36,20 +36,24 @@ internal class CancelledFormContextUseCase {
 
     private fun buildCardNumberFieldState(
         screenState: CardPaymentScreenState,
-    ): CancelledFieldState =
-        CancelledFieldState(
-            field = Field.CARD_NUMBER,
-            state = when (val errorType = screenState.cardNumberState.errorType) {
-                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(errorType.brand)
-                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(errorType.cardType)
-                else -> when {
-                    screenState.cardNumberState.error.isNotEmpty() -> State.Invalid
-                    screenState.cardNumberState.length == 0 -> State.Empty
-                    screenState.cardNumberState.length < screenState.cardNumberState.maxLength -> State.Incomplete
-                    else -> State.Valid
-                }
-            },
-        )
+    ): CancelledFieldState {
+        val errorTypes = screenState.cardNumberState.errorTypes
+        val state = when {
+            errorTypes.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
+                val error = errorTypes.filterIsInstance<CardNumberErrorType.CardBrandNotAccepted>().first()
+                State.CardBrandNotAccepted(error.brand)
+            }
+            errorTypes.any { it is CardNumberErrorType.CardTypeNotAccepted } -> {
+                val error = errorTypes.filterIsInstance<CardNumberErrorType.CardTypeNotAccepted>().first()
+                State.CardTypeNotAccepted(error.cardType)
+            }
+            screenState.cardNumberState.error.isNotEmpty() -> State.Invalid
+            screenState.cardNumberState.length == 0 -> State.Empty
+            screenState.cardNumberState.length < screenState.cardNumberState.maxLength -> State.Incomplete
+            else -> State.Valid
+        }
+        return CancelledFieldState(field = Field.CARD_NUMBER, state = state)
+    }
 
     private fun buildCardHolderFieldState(
         screenState: CardPaymentScreenState,

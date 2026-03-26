@@ -1,17 +1,12 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
 import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
-import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.flatMap
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
 import com.mercadopago.sdk.android.checkout.domain.extensions.hasIssuers
-import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
-import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toSecurityCode
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -32,38 +27,14 @@ internal class GetCardDataByBinUseCase(
         paymentMethods: List<PaymentMethod>?,
     ): Result<CardData, MercadoPagoCheckoutError> =
         getPaymentMethodsUseCase(bin).flatMap { data ->
-            val (cardTypes, cardBrands) = paymentMethods.extractCardFilters()
             data.firstOrNull()?.let { paymentMethod ->
-                validateAndFetchCardData(paymentMethod, cardTypes, cardBrands, bin, amount)
+                fetchCardData(bin, amount, paymentMethod)
             } ?: Result.Error(
                 createValidationError(
                     stringProvider.getString(R.string.card_form_error_card_number_repeated),
                 ),
             )
         }
-
-    @Suppress("ReturnCount")
-    private suspend fun validateAndFetchCardData(
-        paymentMethod: ApiPaymentMethod,
-        cardTypes: List<CardType>,
-        cardBrands: List<CardBrand>,
-        bin: String,
-        amount: BigDecimal?,
-    ): Result<CardData, MercadoPagoCheckoutError> {
-        if (!paymentMethod.matchesCardType(cardTypes)) {
-            val type = paymentMethod.paymentTypeId
-            val errorMessage = stringProvider.getString(R.string.card_form_error_card_type_not_accepted)
-            return Result.Error(createValidationError("$errorMessage $type"))
-        }
-
-        if (!paymentMethod.matchesCardBrand(cardBrands)) {
-            val brand = paymentMethod.id
-            val errorMessage = stringProvider.getString(R.string.card_form_error_card_brand_not_accepted)
-            return Result.Error(createValidationError("$errorMessage $brand"))
-        }
-
-        return fetchCardData(bin, amount, paymentMethod)
-    }
 
     @Suppress("ReturnCount")
     private suspend fun fetchCardData(

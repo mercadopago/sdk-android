@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.validation
 
 import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
-import com.mercadopago.sdk.android.checkout.presentation.extensions.checkAllSameDigits
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 
 internal class CardNumberVerifier(
@@ -14,18 +13,7 @@ internal class CardNumberVerifier(
         listOfNotNull(
             checkEmpty(state),
             checkIncomplete(state),
-            verifyAllSameDigits(state),
         ).firstOrNull().orEmpty()
-
-    private fun verifyAllSameDigits(
-        state: CardNumberState,
-    ): String? {
-        return if (state.checkAllSameDigits()) {
-            stringProvider.getString(R.string.card_form_error_card_number_repeated)
-        } else {
-            null
-        }
-    }
 
     private fun checkEmpty(
         state: CardNumberState,
