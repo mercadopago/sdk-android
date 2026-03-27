@@ -47,7 +47,7 @@ internal class CardPaymentScreenStateFactory(
     private fun createSecurityCodeState() =
         SecurityCodeState(
             label = stringProvider.getString(R.string.card_form_security_label),
-            placeHolder = stringProvider.getString(R.string.card_form_security_placeholder),
+            placeHolder = stringProvider.getString(R.string.card_form_security_placeholder_three_digits),
             messageTooltip = stringProvider.getString(R.string.card_form_security_code_tooltip_back),
         )
 
