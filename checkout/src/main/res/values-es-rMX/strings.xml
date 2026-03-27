@@ -3,17 +3,13 @@
     <!-- Card Form Strings - Español (México) - MLM -->
     <string name="card_form_title">Ingresa tu tarjeta</string>
     <string name="card_form_number_label">Número de tarjeta</string>
-    <string name="card_form_number_placeholder">1234 1234 1234 1234</string>
     <string name="card_form_holder_label">Titular de tarjeta</string>
     <string name="card_form_holder_placeholder">Ej.: Maria Lopez</string>
     <string name="card_form_holder_helper">Como aparece en la tarjeta</string>
     <string name="card_form_expiration_label">Fecha de vencimiento</string>
     <string name="card_form_expiration_short_label">Vencimiento</string>
-    <string name="card_form_expiration_placeholder">MM/AA</string>
     <string name="card_form_security_label">Código de seguridad</string>
-    <string name="card_form_security_placeholder">Ej.: 123</string>
     <string name="card_form_document_label">Documento del titular</string>
-    <string name="card_form_document_example">N/A</string>
     <string name="card_form_optional_field">Dato opcional</string>
     <string name="card_form_generic_error">Ocurrió un error. Por favor, intenta de nuevo.</string>
     <string name="card_form_save_button">Guardar tarjeta</string>

@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutR
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
 import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
+import com.mercadopago.sdk.android.checkout.domain.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
@@ -466,6 +467,7 @@ internal class CardPaymentViewModel(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
         helper = if (securityCode.isOptional()) helperTextOptional else "",
+        placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
         messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
 
