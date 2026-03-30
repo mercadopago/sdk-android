@@ -17,7 +17,7 @@ class GetPaymentMethodUseCaseTest {
     @Test
     fun `getPaymentMethods should call repository with correct parameters`() =
         runBlocking {
-            val bin = "12345"
+            val bin = "123456"
 
             val expectedResult = Result.Success(listOf(PaymentMethod()))
             coEvery { repository.getPaymentMethods(any()) } returns expectedResult
@@ -30,7 +30,7 @@ class GetPaymentMethodUseCaseTest {
     @Test
     fun `getPaymentMethods should return error when repository fails`() =
         runBlocking {
-            val bin = "12345"
+            val bin = "123456"
 
             val expectedErrorResult = Result.Error(
                 ResultError.Request(code = "400", message = "Repository error"),
@@ -40,5 +40,44 @@ class GetPaymentMethodUseCaseTest {
             val result = useCase(bin)
 
             assertEquals(expectedErrorResult, result)
+        }
+
+    @Test
+    fun `getPaymentMethods should return validation error when bin has less than 6 digits`() =
+        runBlocking {
+            val bin = "12345"
+
+            val result = useCase(bin)
+
+            assertEquals(
+                Result.Error(ResultError.Validation(message = "BIN must have at least 6 digits")),
+                result,
+            )
+        }
+
+    @Test
+    fun `getPaymentMethods should call repository when bin has exactly 6 digits`() =
+        runBlocking {
+            val bin = "123456"
+
+            val expectedResult = Result.Success(listOf(PaymentMethod()))
+            coEvery { repository.getPaymentMethods(any()) } returns expectedResult
+
+            val result = useCase(bin)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `getPaymentMethods should call repository when bin has more than 6 digits`() =
+        runBlocking {
+            val bin = "12345678"
+
+            val expectedResult = Result.Success(listOf(PaymentMethod()))
+            coEvery { repository.getPaymentMethods(any()) } returns expectedResult
+
+            val result = useCase(bin)
+
+            assertEquals(expectedResult, result)
         }
 }
