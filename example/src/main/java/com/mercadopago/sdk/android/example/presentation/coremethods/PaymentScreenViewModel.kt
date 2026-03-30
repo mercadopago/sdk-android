@@ -43,6 +43,10 @@ internal class PaymentScreenViewModel(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) : ViewModel() {
 
+    val cardNumberPCIState = PCIFieldState.create()
+    val expirationDatePCIState = PCIFieldState.create()
+    val securityCodePCIState = PCIFieldState.create()
+
     private val _viewState = MutableStateFlow(PaymentScreenViewState())
     val viewState: StateFlow<PaymentScreenViewState> = _viewState
 
@@ -51,9 +55,9 @@ internal class PaymentScreenViewModel(
         .create()
 
     fun generateToken(
-        cardNumberState: PCIFieldState,
-        expirationDateState: PCIFieldState,
-        securityCodeState: PCIFieldState,
+        cardNumberState: PCIFieldState = cardNumberPCIState,
+        expirationDateState: PCIFieldState = expirationDatePCIState,
+        securityCodeState: PCIFieldState = securityCodePCIState,
     ) {
         viewModelScope.launch {
             if (viewState.value.cardNumberState.length != viewState.value.cardNumberState.maxLength) {

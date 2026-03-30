@@ -17,7 +17,7 @@ class GetPaymentMethodUseCaseTest {
     @Test
     fun `getPaymentMethods should call repository with correct parameters`() =
         runBlocking {
-            val bin = "12345"
+            val bin = "123456"
 
             val expectedResult = Result.Success(listOf(PaymentMethod()))
             coEvery { repository.getPaymentMethods(any()) } returns expectedResult
@@ -30,7 +30,7 @@ class GetPaymentMethodUseCaseTest {
     @Test
     fun `getPaymentMethods should return error when repository fails`() =
         runBlocking {
-            val bin = "12345"
+            val bin = "123456"
 
             val expectedErrorResult = Result.Error(
                 ResultError.Request(code = "400", message = "Repository error"),

@@ -74,7 +74,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 15), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),
@@ -108,7 +108,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 15), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),
@@ -139,7 +139,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 16), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),
@@ -170,7 +170,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 19), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),
@@ -201,7 +201,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 14), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),
@@ -238,7 +238,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = maxLength), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = inputWithMaxLength.takeLast(LAST_DIGITS_LENGTH),
@@ -268,7 +268,7 @@ internal class CardNumberTextFieldTest {
             events.receiveAsFlow().test {
                 assertEquals(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true), awaitItem())
                 assertEquals(CardNumberTextFieldEvent.OnLengthChanged(length = 14), awaitItem())
-                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(BIN_LENGTH)), awaitItem())
+                assertEquals(CardNumberTextFieldEvent.OnBinChanged(cardBin = input.take(CARD_BIN_LENGTH)), awaitItem())
                 assertEquals(
                     CardNumberTextFieldEvent.OnLastFourDigitsFilled(
                         lastFourDigits = input.takeLast(LAST_DIGITS_LENGTH),

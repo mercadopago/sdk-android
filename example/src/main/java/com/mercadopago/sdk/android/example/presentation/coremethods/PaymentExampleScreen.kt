@@ -32,7 +32,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.example.R
 import com.mercadopago.sdk.android.example.data.model.Installment
@@ -56,9 +55,6 @@ internal fun PaymentExampleScreen(
     viewModel: PaymentScreenViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberState = rememberPCIFieldState()
-    val expirationDateState = rememberPCIFieldState()
-    val securityCodeState = rememberPCIFieldState()
 
     LaunchedEffect(key1 = true) {
         viewModel.getIdentificationTypes()
@@ -66,16 +62,10 @@ internal fun PaymentExampleScreen(
 
     PaymentExampleScreenContent(
         viewState = viewState,
-        cardNumberState = cardNumberState,
-        expirationDateState = expirationDateState,
-        securityCodeState = securityCodeState,
-        onGenerateCardToken = {
-            viewModel.generateToken(
-                cardNumberState = cardNumberState,
-                expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState,
-            )
-        },
+        cardNumberState = viewModel.cardNumberPCIState,
+        expirationDateState = viewModel.expirationDatePCIState,
+        securityCodeState = viewModel.securityCodePCIState,
+        onGenerateCardToken = { viewModel.generateToken() },
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardNumberEvent = viewModel::onCardNumberEvent,

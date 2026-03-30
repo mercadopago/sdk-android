@@ -34,3 +34,9 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Claude
+meli
+CLAUDE.md
+.claude
+docs
