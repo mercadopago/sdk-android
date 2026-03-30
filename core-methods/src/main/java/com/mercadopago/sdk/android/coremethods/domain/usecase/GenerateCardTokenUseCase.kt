@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.coremethods.domain.usecase
 
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.BuildConfig
-import com.mercadopago.sdk.android.coremethods.data.remote.utils.CARD_BIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_EMPTY
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_EXPIRATION_DATE_LENGTH
 import com.mercadopago.sdk.android.coremethods.data.remote.utils.ERROR_SECURITY_CODE_MIN_LENGTH
@@ -18,6 +17,7 @@ import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepo
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.INT_TWO
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.BIN_LENGTH
 import com.mercadopago.sdk.android.di.SessionIdProvider
 
 @Suppress("ReturnCount", "NoEmptyFirstLineInMethodBlock")
@@ -43,7 +43,7 @@ internal class GenerateCardTokenUseCase(
             }
 
             val securityCodeLength: Int =
-                when (val result = paymentMethodsUseCase(cardNumber.take(CARD_BIN_LENGTH))) {
+                when (val result = paymentMethodsUseCase(cardNumber.take(BIN_LENGTH))) {
                     is Result.Success -> result.data.firstOrNull()?.card?.securityCode?.length
                         ?: SECURITY_CODE_MIN_LENGTH
 

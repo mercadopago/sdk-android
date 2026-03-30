@@ -12,17 +12,10 @@ internal class GetPaymentMethodsUseCase(
     suspend operator fun invoke(
         bin: String,
     ): Result<List<PaymentMethod>, ResultError> {
-        if (bin.length < MIN_BIN_LENGTH) {
-            return Result.Error(ResultError.Validation(message = "BIN must have at least 6 digits"))
-        }
         return repository.getPaymentMethods(
             GetPaymentMethodsParams(
                 bin = bin.toIntOrNull(),
             ),
         )
-    }
-
-    companion object {
-        const val MIN_BIN_LENGTH = 6
     }
 }
