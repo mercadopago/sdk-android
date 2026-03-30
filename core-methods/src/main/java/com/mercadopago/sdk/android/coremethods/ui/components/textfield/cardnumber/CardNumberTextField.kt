@@ -27,7 +27,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 
 internal const val COMPONENT_NAME_CARD_NUMBER = "cardNumber"
-internal const val BIN_LENGTH = 8
+internal const val CARD_BIN_LENGTH = 8
 internal const val DEFAULT_CARD_NUMBER_MAX_LENGTH = 19
 internal const val LAST_DIGITS_LENGTH = 4
 internal const val MIN_CARD_LENGTH = 8L
@@ -95,10 +95,10 @@ fun CardNumberTextField(
         onValueChange = { value ->
             val inputDigits = value.filter { it.isDigit() }.take(maxLength)
             onEvent(CardNumberTextFieldEvent.OnLengthChanged(length = inputDigits.length))
-            if (inputDigits.length >= BIN_LENGTH && state.input.length < BIN_LENGTH) {
-                onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = inputDigits.take(BIN_LENGTH)))
+            if (inputDigits.length >= CARD_BIN_LENGTH && state.input.length < CARD_BIN_LENGTH) {
+                onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = inputDigits.take(CARD_BIN_LENGTH)))
             }
-            if (inputDigits.length < BIN_LENGTH && state.input.length >= BIN_LENGTH) {
+            if (inputDigits.length < CARD_BIN_LENGTH && state.input.length >= CARD_BIN_LENGTH) {
                 onEvent(CardNumberTextFieldEvent.OnBinChanged(cardBin = null))
             }
             val isValid = isCardNumberValidUseCase(inputDigits)
