@@ -294,13 +294,13 @@ internal class GenerateCardTokenPCIUseCaseTest {
                 card = CardModel(securityCode = SecurityCodeModel(length = 3)),
             )
             every { isSecurityCodeValidUseCase(any<Int>(), any<Int>()) } returns true
-            coEvery { paymentMethodsUseCase("411111") } returns Result.Success(listOf(mockPaymentMethod))
+            coEvery { paymentMethodsUseCase("41111111") } returns Result.Success(listOf(mockPaymentMethod))
             coEvery { repository.generateCardToken(any()) } returns Result.Success(expectedCardToken)
             useCase(
                 cardNumber = inputCardNumber,
                 securityCode = inputSecurityCode,
                 expirationDate = inputExpirationDate,
             )
-            coVerify { paymentMethodsUseCase("411111") }
+            coVerify { paymentMethodsUseCase("41111111") }
         }
 }
