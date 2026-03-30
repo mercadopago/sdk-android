@@ -14,7 +14,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.mercadopago.sdk.android.coremethods.R
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.MIN_LENGTH
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SECURITY_CODE_MIN_LENGTH
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 
@@ -88,7 +88,7 @@ class SecurityCodeTextField @JvmOverloads constructor(
      * This value determines the length of the security code input
      * (typically 3 for most cards, 4 for American Express).
      */
-    var securityCodeSize: Int = MIN_LENGTH
+    var securityCodeSize: Int = SECURITY_CODE_MIN_LENGTH
 
     /**
      * Whether the field is read-only.
@@ -131,7 +131,7 @@ class SecurityCodeTextField @JvmOverloads constructor(
             try {
                 securityCodeSize = getInteger(
                     R.styleable.MPSecurityFieldTextFieldXML_securityCodeSize,
-                    MIN_LENGTH,
+                    SECURITY_CODE_MIN_LENGTH,
                 )
 
                 readOnly = getBoolean(R.styleable.MPSecurityFieldTextFieldXML_readOnly, false)
