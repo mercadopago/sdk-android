@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.components
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,26 +38,29 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 /**
  * A header component that provides different layout styles for page headers.
  *
- * The component supports  expanded header (back button, large title, optional subtitle) is placed
- *  above the content and scrolls up with it. A collapsed bar (back + medium title) is shown as an overlay
- *  at the top, fading from transparent to fully visible as the user scrolls.
+ * Displays an expanded header (back button, large title, optional subtitle) above the content that
+ * scrolls up with it. A collapsed bar (back + medium title) is shown as an overlay at the top,
+ * fading from transparent to fully visible as the user scrolls.
  *
  * @param modifier Modifier to be applied to the header container.
- * @param title The title text displayed in the header. Required parameter.
+ * @param scrollState The [ScrollState] driving the internal scroll. Hoist this state when callers
+ * need to observe or react to the scroll offset (e.g. to position overlays relative to scrollable
+ * content). Defaults to an internally-owned [rememberScrollState].
+ * @param title The title text displayed in the header.
  * @param subtitle Optional subtitle text displayed below the title.
  * @param onBackClick Callback invoked when the back button is clicked.
- * @param content The composable content to display below the header.
- * this content is placed inside the same scroll as the expanded header; do not add verticalScroll to it.
+ * @param content Composable content placed below the expanded title, inside the same scroll
+ * container. Do not apply [androidx.compose.foundation.verticalScroll] to this content.
  */
 @Composable
 fun MPHeader(
     modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(),
     title: String,
     subtitle: String = "",
     onBackClick: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    val scrollState = rememberScrollState()
     var titleBlockHeightPx by remember { mutableFloatStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
     val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
