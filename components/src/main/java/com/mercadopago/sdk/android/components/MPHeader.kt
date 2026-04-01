@@ -32,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.scrollProgressRatio
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 /**
@@ -65,12 +64,12 @@ fun MPHeader(
     val scrollOffset = scrollState.value.toFloat()
     val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
     Column(
-        modifier = modifier.background(color = MercadoPagoAndesTheme.color.background.primary),
+        modifier = modifier.background(color = MercadoPagoTheme.color.background.primary),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = MercadoPagoAndesTheme.color.background.primary)
+                .background(color = MercadoPagoTheme.color.background.primary)
                 .padding(MercadoPagoTheme.spacing.paddings.xtiny),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -110,7 +109,7 @@ private fun MPHeaderExpandedTitle(
             fontWeight = FontWeight.Bold,
         )
         if (subtitle.isNotBlank()) {
-            Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
+            Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
             MPText(
                 text = subtitle,
                 style = MercadoPagoTheme.typography.body.default.medium,
@@ -129,7 +128,7 @@ private fun MPHeaderCollapsedTitle(
             .fillMaxWidth()
             .alpha(progress),
     ) {
-        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
+        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
         MPText(
             text = title,
             style = MercadoPagoTheme.typography.heading.default.medium,
