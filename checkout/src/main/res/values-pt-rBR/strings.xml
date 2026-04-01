@@ -15,9 +15,9 @@
     <string name="card_form_save_button">Salvar cartão</string>
 
     <!-- Card Type Translations -->
-    <string name="card_type_credit_card">Cartão de crédito</string>
-    <string name="card_type_debit_card">Cartão de débito</string>
-    <string name="card_type_prepaid">Cartão prepago</string>
+    <string name="card_type_credit_card">cartão de crédito.</string>
+    <string name="card_type_debit_card">cartão de débito.</string>
+    <string name="card_type_prepaid">cartão prepago.</string>
 
     <!-- Validation Error Messages -->
     <string name="card_form_error_required_field">Preencha este campo</string>
