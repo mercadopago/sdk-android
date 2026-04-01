@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.scrollProgressRatio
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 /**
@@ -63,10 +64,21 @@ fun MPHeader(
     var titleBlockHeightPx by remember { mutableFloatStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
     val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
-    Box(
-        modifier = modifier
-            .background(color = MercadoPagoTheme.color.background.primary),
+    Column(
+        modifier = modifier.background(color = MercadoPagoAndesTheme.color.background.primary),
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MercadoPagoAndesTheme.color.background.primary)
+                .padding(MercadoPagoTheme.spacing.paddings.xtiny),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HeaderBackButton(onClick = onBackClick)
+            MPHeaderCollapsedTitle(title = title, progress = progress)
+        }
+
         Column(modifier = Modifier.verticalScroll(scrollState)) {
             MPHeaderExpandedTitle(
                 title = title,
@@ -74,18 +86,6 @@ fun MPHeader(
                 onHeightMeasured = { titleBlockHeightPx = it },
             )
             content.invoke()
-        }
-        Row(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .fillMaxWidth()
-                .background(color = MercadoPagoTheme.color.background.primary)
-                .padding(MercadoPagoTheme.spacing.paddings.xtiny),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            HeaderBackButton(onClick = onBackClick)
-            MPHeaderCollapsedTitle(title = title, progress = progress)
         }
     }
 }
@@ -100,10 +100,6 @@ private fun MPHeaderExpandedTitle(
         modifier = Modifier
             .fillMaxWidth()
             .padding(MercadoPagoTheme.spacing.paddings.xtiny)
-            .padding(
-                top = MercadoPagoTheme.spacing.gap.medium +
-                    MercadoPagoTheme.spacing.paddings.xtiny * 2,
-            )
             .onGloballyPositioned { coordinates ->
                 onHeightMeasured(coordinates.size.height.toFloat())
             },
@@ -114,7 +110,7 @@ private fun MPHeaderExpandedTitle(
             fontWeight = FontWeight.Bold,
         )
         if (subtitle.isNotBlank()) {
-            Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
+            Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
             MPText(
                 text = subtitle,
                 style = MercadoPagoTheme.typography.body.default.medium,
@@ -128,15 +124,16 @@ private fun MPHeaderCollapsedTitle(
     title: String,
     progress: Float,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .alpha(progress),
-        contentAlignment = Alignment.Center,
     ) {
+        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
         MPText(
             text = title,
             style = MercadoPagoTheme.typography.heading.default.medium,
+            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -150,7 +147,7 @@ private fun HeaderBackButton(
     Box(
         modifier = modifier
             .size(MercadoPagoTheme.spacing.gap.medium)
-            .clip(MercadoPagoTheme.shape.tiny)
+            .clip(MercadoPagoTheme.shape.medium)
             .background(defaults.colors.backButtonBackground)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
