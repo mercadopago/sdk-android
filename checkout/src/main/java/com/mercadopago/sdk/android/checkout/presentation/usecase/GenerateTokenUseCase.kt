@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.exception.mapToCheckoutError
-import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
+import com.mercadopago.sdk.android.checkout.domain.extensions.withRetry
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
@@ -21,7 +21,7 @@ internal class GenerateTokenUseCase(
         securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification,
     ): Result<CardToken, MercadoPagoCheckoutError> =
-        withErrorHandling {
+        withRetry {
             coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,

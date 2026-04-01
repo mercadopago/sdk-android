@@ -24,6 +24,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
@@ -76,11 +77,14 @@ internal class CardPaymentViewModel(
             updateLoadingState(true)
             getIdentificationTypesUseCase().fold(
                 onSuccess = { data ->
+                    val firstType = data.firstOrNull()
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
                             show = data.isNotEmpty(),
                             identificationTypes = data,
-                            selected = data.firstOrNull(),
+                            selected = firstType,
+                            placeHolder = firstType.getPlaceholder() ?: stateFactory.getStringProvider()
+                                .getString(R.string.card_form_document_example),
                         ),
                     )
                 },
@@ -301,6 +305,8 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
+                        placeHolder = event.identificationType.getPlaceholder() ?: stateFactory.getStringProvider()
+                            .getString(R.string.card_form_document_example),
                     ),
                 )
             }
