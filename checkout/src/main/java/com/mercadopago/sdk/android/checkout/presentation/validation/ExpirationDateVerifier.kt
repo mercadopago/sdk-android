@@ -39,7 +39,7 @@ internal class ExpirationDateVerifier(
     private fun checkInvalid(
         state: ExpirationDateState,
     ): String? {
-        return if (state.filled && !state.isDateValid) {
+        return if (state.filled && !state.isValid) {
             stringProvider.getString(R.string.card_form_error_expiration_invalid)
         } else {
             null

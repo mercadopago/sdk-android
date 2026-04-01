@@ -34,18 +34,18 @@ internal class ExpirationDateVerifierTest {
     }
 
     @Test
-    fun `when filled and isDateValid is false then returns invalid date error`() {
+    fun `when filled and isValid is false then returns invalid date error`() {
         every { stringProvider.getString(R.string.card_form_error_expiration_invalid) } returns "invalid date"
 
-        val state = ExpirationDateState(length = 4, filled = true, isDateValid = false)
+        val state = ExpirationDateState(length = 4, filled = true, isValid = false)
         val result = verifier.verify(state)
 
         assertEquals("invalid date", result)
     }
 
     @Test
-    fun `when filled and isDateValid is true then returns empty string`() {
-        val state = ExpirationDateState(length = 4, filled = true, isDateValid = true)
+    fun `when filled and isValid is true then returns empty string`() {
+        val state = ExpirationDateState(length = 4, filled = true, isValid = true)
         val result = verifier.verify(state)
 
         assertTrue(result.isEmpty())

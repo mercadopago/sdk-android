@@ -52,7 +52,6 @@ internal data class ExpirationDateState(
     override val isValid: Boolean = false,
     override val showPlaceHolder: Boolean = true,
     val length: Int = 0,
-    val isDateValid: Boolean = true,
 ) : FieldState
 
 internal data class CardNumberState(

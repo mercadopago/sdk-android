@@ -179,10 +179,9 @@ internal class CardPaymentViewModel(
             is ExpirationDateTextFieldEvent.IsValid -> {
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
-                        isDateValid = event.isValid,
+                        isValid = event.isValid,
                     ),
                 )
-                handleExpirationDateInputError()
             }
         }
     }
