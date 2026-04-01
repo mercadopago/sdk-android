@@ -64,21 +64,11 @@ fun MPHeader(
     var titleBlockHeightPx by remember { mutableFloatStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
     val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
-    Box(
-        modifier = modifier
-            .background(color = MercadoPagoAndesTheme.color.background.primary),
+    Column(
+        modifier = modifier.background(color = MercadoPagoAndesTheme.color.background.primary),
     ) {
-        Column(modifier = Modifier.verticalScroll(scrollState)) {
-            MPHeaderExpandedTitle(
-                title = title,
-                subtitle = subtitle,
-                onHeightMeasured = { titleBlockHeightPx = it },
-            )
-            content.invoke()
-        }
         Row(
             modifier = Modifier
-                .align(Alignment.TopStart)
                 .fillMaxWidth()
                 .background(color = MercadoPagoAndesTheme.color.background.primary)
                 .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny),
@@ -87,6 +77,15 @@ fun MPHeader(
         ) {
             HeaderBackButton(onClick = onBackClick)
             MPHeaderCollapsedTitle(title = title, progress = progress)
+        }
+
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
+            MPHeaderExpandedTitle(
+                title = title,
+                subtitle = subtitle,
+                onHeightMeasured = { titleBlockHeightPx = it },
+            )
+            content.invoke()
         }
     }
 }
@@ -101,10 +100,6 @@ private fun MPHeaderExpandedTitle(
         modifier = Modifier
             .fillMaxWidth()
             .padding(MercadoPagoAndesTheme.spacing.paddings.xtiny)
-            .padding(
-                top = MercadoPagoAndesTheme.spacing.gap.medium +
-                    MercadoPagoAndesTheme.spacing.paddings.xtiny * 2,
-            )
             .onGloballyPositioned { coordinates ->
                 onHeightMeasured(coordinates.size.height.toFloat())
             },
@@ -129,15 +124,16 @@ private fun MPHeaderCollapsedTitle(
     title: String,
     progress: Float,
 ) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .alpha(progress),
-        contentAlignment = Alignment.Center,
     ) {
+        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xmicro))
         MPText(
             text = title,
             style = MercadoPagoAndesTheme.typography.heading.default.medium,
+            fontWeight = FontWeight.Bold,
         )
     }
 }
@@ -151,7 +147,7 @@ private fun HeaderBackButton(
     Box(
         modifier = modifier
             .size(MercadoPagoAndesTheme.spacing.gap.medium)
-            .clip(MercadoPagoAndesTheme.shape.tiny)
+            .clip(MercadoPagoAndesTheme.shape.medium)
             .background(defaults.colors.backButtonBackground)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
