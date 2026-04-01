@@ -27,6 +27,7 @@
     <string name="card_form_error_card_number_incomplete">Ingresá el número completo</string>
     <string name="card_form_error_document_all_zeros">Ingresalo como figura en el documento.</string>
     <string name="card_form_error_expiration_incomplete">Ingresá la fecha completa</string>
+    <string name="card_form_error_expiration_invalid">Ingresá una fecha válida.</string>
     <string name="card_form_error_cvv_incomplete">Ingresá el código completo</string>
     <string name="card_form_error_insufficient_amount">Verificá que la tarjeta tenga límite suficiente.</string>
     <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas</string>

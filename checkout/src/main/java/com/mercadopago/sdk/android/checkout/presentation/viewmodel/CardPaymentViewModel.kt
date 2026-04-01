@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 @Suppress(
     "TooManyFunctions",
     "LongParameterList",
+    "LargeClass",
 )
 internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
@@ -173,6 +174,15 @@ internal class CardPaymentViewModel(
                 if (event.length.isBeingCleared(previousLength)) {
                     handleExpirationDateInputError(shouldUpdateError = false)
                 }
+            }
+
+            is ExpirationDateTextFieldEvent.IsValid -> {
+                _viewState.value = _viewState.value.copy(
+                    expirationDateState = _viewState.value.expirationDateState.copy(
+                        isDateValid = event.isValid,
+                    ),
+                )
+                handleExpirationDateInputError()
             }
         }
     }

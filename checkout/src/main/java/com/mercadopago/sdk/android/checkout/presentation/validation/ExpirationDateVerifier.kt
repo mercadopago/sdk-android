@@ -13,6 +13,7 @@ internal class ExpirationDateVerifier(
         listOfNotNull(
             checkEmpty(state),
             checkIncomplete(state),
+            checkInvalid(state),
         ).firstOrNull().orEmpty()
 
     private fun checkEmpty(
@@ -30,6 +31,16 @@ internal class ExpirationDateVerifier(
     ): String? {
         return if (state.length > 0 && !state.filled) {
             stringProvider.getString(R.string.card_form_error_expiration_incomplete)
+        } else {
+            null
+        }
+    }
+
+    private fun checkInvalid(
+        state: ExpirationDateState,
+    ): String? {
+        return if (state.filled && !state.isDateValid) {
+            stringProvider.getString(R.string.card_form_error_expiration_invalid)
         } else {
             null
         }
