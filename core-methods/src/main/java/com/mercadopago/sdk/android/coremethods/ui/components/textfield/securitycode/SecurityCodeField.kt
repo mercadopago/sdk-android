@@ -27,7 +27,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 
 internal const val COMPONENT_NAME_SECURITY_CODE = "securityCode"
-internal const val MIN_LENGTH = 3
+internal const val SECURITY_CODE_MIN_LENGTH = 3
 
 /**
  * A PCI-compliant security code input component for entering card CVV/CVC codes.
@@ -92,7 +92,7 @@ fun SecurityCodeTextField(
     modifier: Modifier = Modifier,
     state: PCIFieldState,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
-    securityCodeSize: Int = MIN_LENGTH,
+    securityCodeSize: Int = SECURITY_CODE_MIN_LENGTH,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     decorationBox: @Composable (
@@ -164,7 +164,7 @@ internal fun SecurityCodeEmptyPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = MIN_LENGTH,
+        securityCodeSize = SECURITY_CODE_MIN_LENGTH,
     )
 }
 
@@ -182,6 +182,6 @@ internal fun SecurityCodeFilledPreview() {
         state = state,
         onEvent = { securityCodeFieldEvent ->
         },
-        securityCodeSize = MIN_LENGTH,
+        securityCodeSize = SECURITY_CODE_MIN_LENGTH,
     )
 }

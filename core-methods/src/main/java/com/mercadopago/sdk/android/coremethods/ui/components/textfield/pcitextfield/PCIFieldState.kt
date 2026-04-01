@@ -4,8 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 /**
@@ -13,23 +12,22 @@ import androidx.compose.runtime.setValue
  * This class manages the state of secure input fields that handle sensitive payment information,
  * ensuring compliance with Payment Card Industry (PCI) security standards.
  *
- * The state is preserved across configuration changes and process death using Compose's
- * state restoration system. It provides a secure way to handle sensitive payment data
- * while maintaining state consistency throughout the payment flow.
+ * **Security note**: PCI field data (card number, CVV, expiration date) is intentionally NOT
+ * persisted to the Android Bundle or disk. This means data will be lost on process death.
+ * This is the expected behavior to comply with PCI DSS — sensitive card data must never be
+ * written to persistent storage.
  *
- * Example:
+ * To preserve PCI field state across configuration changes (e.g., screen rotation),
+ * host the [PCIFieldState] instances in your ViewModel:
+ *
  * ```kotlin
- * // Create a PCI field state
- * val state = rememberPCIFieldState()
- *
- * // Use the state in a PCI-compliant text field
- * CardNumberTextField(
- *     state = state,
- *     onEvent = { event ->
- *         // Handle events
- *     }
- * )
+ * class PaymentViewModel : ViewModel() {
+ *     val cardNumberState = PCIFieldState.create()
+ *     val expirationDateState = PCIFieldState.create()
+ *     val securityCodeState = PCIFieldState.create()
+ * }
  * ```
+ *
  * @see rememberPCIFieldState
  */
 @Stable
@@ -43,57 +41,49 @@ class PCIFieldState internal constructor() {
     val isEmpty: Boolean
         get() = input.isEmpty()
 
-    /**
-     * Companion object providing state restoration functionality.
-     * This allows the PCI field state to be preserved across configuration changes
-     * and process death using Compose's state restoration system.
-     *
-     * The saver handles:
-     * - Saving the current input value
-     * - Restoring the state with the saved input value
-     * - Creating a new state instance if needed
-     */
+    /** Factory methods for creating [PCIFieldState] instances outside of a Composable context. */
     companion object {
-        internal val Saver: Saver<PCIFieldState, String> = Saver<PCIFieldState, String>(
-            save = { it.input },
-            restore = { restored ->
-                PCIFieldState().apply {
-                    input = restored
-                }
-            },
-        )
+        /**
+         * Creates a new [PCIFieldState] instance.
+         * Use this factory method when you need to create PCI field states outside of a Composable,
+         * for example in a ViewModel to survive configuration changes.
+         *
+         * ```kotlin
+         * class PaymentViewModel : ViewModel() {
+         *     val cardNumberState = PCIFieldState.create()
+         * }
+         * ```
+         */
+        fun create(): PCIFieldState = PCIFieldState()
     }
 }
 
 /**
- * Creates a new instance of PCIFieldState that persists across configuration changes.
- * This composable function should be used to create state holders for PCI-compliant
- * input fields in the payment form.
+ * Creates a new instance of [PCIFieldState] that is remembered across recompositions.
  *
- * The state is automatically preserved across:
- * - Configuration changes (e.g., screen rotation)
- * - Process death and recreation
- * - Navigation events
+ * **Important**: This state is NOT preserved across process death or configuration changes
+ * (e.g., screen rotation). This is intentional for PCI DSS compliance — sensitive card data
+ * (card number, CVV, expiration date) must never be serialized to Bundle or disk.
  *
- * Example:
+ * To preserve state across configuration changes, host [PCIFieldState] in your ViewModel instead:
+ *
  * ```kotlin
- * @Composable
- * fun PaymentForm() {
- *     val cardNumberState = rememberPCIFieldState()
- *     val expirationState = rememberPCIFieldState()
+ * class PaymentViewModel : ViewModel() {
+ *     val cardNumberState = PCIFieldState.create()
+ *     val expirationDateState = PCIFieldState.create()
+ *     val securityCodeState = PCIFieldState.create()
+ * }
  *
- *     Column {
- *         CardNumberTextField(state = cardNumberState)
- *         ExpirationDateTextField(state = expirationState)
- *     }
+ * @Composable
+ * fun PaymentForm(viewModel: PaymentViewModel) {
+ *     CardNumberTextField(state = viewModel.cardNumberState)
+ *     ExpirationDateTextField(state = viewModel.expirationDateState)
  * }
  * ```
  *
- * @return A new PCIFieldState instance that will be preserved across configuration changes
+ * @return A new [PCIFieldState] instance remembered for the current composition
  */
 @Composable
 fun rememberPCIFieldState(): PCIFieldState {
-    return rememberSaveable<PCIFieldState>(saver = PCIFieldState.Saver) {
-        PCIFieldState()
-    }
+    return remember { PCIFieldState() }
 }

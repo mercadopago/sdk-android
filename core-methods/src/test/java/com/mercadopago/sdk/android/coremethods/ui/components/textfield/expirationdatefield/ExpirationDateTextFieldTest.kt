@@ -143,10 +143,9 @@ internal class ExpirationDateTextFieldTest {
     }
 
     @Test
-    fun `when user types input and configuration is changed Then input should be restored`() {
+    fun `when user types input and configuration is changed Then input should be cleared for PCI compliance`() {
         // Given
         val input = "123"
-        val maskedInput = "12/3"
         val stateRestorationTester = StateRestorationTester(composeTestRule)
 
         // When
@@ -154,19 +153,18 @@ internal class ExpirationDateTextFieldTest {
             createExpirationDateField(stateRestorationTester = stateRestorationTester)
             performTextInput(input)
 
-            // Perform configuration change
+            // Perform configuration change (simulates process death + Bundle restore)
             stateRestorationTester.emulateSavedInstanceStateRestore()
 
-            // Then
-            assetTextVisualTransformation(input, maskedInput)
+            // Then - PCI data must NOT survive serialization to Bundle
+            assetTextVisualTransformation("", "")
         }
     }
 
     @Test
-    fun `when user types text input and configuration is changed Then input should be restored`() {
+    fun `when user types text input and configuration is changed Then input should be cleared for PCI compliance`() {
         // Given
         val input = "123"
-        val maskedInput = "12/3"
         val stateRestorationTester = StateRestorationTester(composeTestRule)
 
         // When
@@ -174,11 +172,11 @@ internal class ExpirationDateTextFieldTest {
             createExpirationDateField(stateRestorationTester = stateRestorationTester)
             performTextInput(input)
 
-            // Perform configuration change
+            // Perform configuration change (simulates process death + Bundle restore)
             stateRestorationTester.emulateSavedInstanceStateRestore()
 
-            // Then
-            assetTextVisualTransformation(input, maskedInput)
+            // Then - PCI data must NOT survive serialization to Bundle
+            assetTextVisualTransformation("", "")
         }
     }
 }
