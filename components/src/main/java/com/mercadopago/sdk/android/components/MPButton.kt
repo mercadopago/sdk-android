@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -81,36 +80,36 @@ internal data class MPButtonDefaults(
 private fun getMPButtonDefaults(): MPButtonDefaults {
     return MPButtonDefaults(
         colors = MPButtonColorDefaults(
-            loudIdle = MercadoPagoAndesTheme.color.interactive.fillLoud.idle,
-            loudActive = MercadoPagoAndesTheme.color.interactive.fillLoud.active,
-            quietIdle = MercadoPagoAndesTheme.color.interactive.fillQuiet.idle,
-            quietActive = MercadoPagoAndesTheme.color.interactive.fillQuiet.active,
-            disabled = MercadoPagoAndesTheme.color.fill.disabled,
-            iconInverse = MercadoPagoAndesTheme.color.icon.inverse,
-            iconAccent = MercadoPagoAndesTheme.color.icon.accent,
-            iconDisabled = MercadoPagoAndesTheme.color.icon.disabled,
-            borderAccent = MercadoPagoAndesTheme.color.border.accent,
-            fillPrimary = MercadoPagoAndesTheme.color.fill.primary,
-            textInverse = MercadoPagoAndesTheme.color.text.inverse,
-            textAccent = MercadoPagoAndesTheme.color.text.accent,
+            loudIdle = MercadoPagoTheme.color.interactive.fillLoud.idle,
+            loudActive = MercadoPagoTheme.color.interactive.fillLoud.active,
+            quietIdle = MercadoPagoTheme.color.interactive.fillQuiet.idle,
+            quietActive = MercadoPagoTheme.color.interactive.fillQuiet.active,
+            disabled = MercadoPagoTheme.color.fill.disabled,
+            iconInverse = MercadoPagoTheme.color.icon.inverse,
+            iconAccent = MercadoPagoTheme.color.icon.accent,
+            iconDisabled = MercadoPagoTheme.color.icon.disabled,
+            borderAccent = MercadoPagoTheme.color.border.accent,
+            fillPrimary = MercadoPagoTheme.color.fill.primary,
+            textInverse = MercadoPagoTheme.color.text.inverse,
+            textAccent = MercadoPagoTheme.color.text.accent,
         ),
         spacing = MPButtonSpacingDefaults(
-            horizontalLarge = MercadoPagoAndesTheme.spacing.paddings.xsmall,
-            horizontalMedium = MercadoPagoAndesTheme.spacing.paddings.micro,
-            heightLarge = MercadoPagoAndesTheme.spacing.paddings.large,
-            heightMedium = MercadoPagoAndesTheme.spacing.paddings.small,
-            iconSpacingLarge = MercadoPagoAndesTheme.spacing.paddings.xmicro,
-            iconSpacingMedium = MercadoPagoAndesTheme.spacing.paddings.xnano,
-            focusPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            horizontalLarge = MercadoPagoTheme.spacing.paddings.xsmall,
+            horizontalMedium = MercadoPagoTheme.spacing.paddings.micro,
+            heightLarge = MercadoPagoTheme.spacing.paddings.large,
+            heightMedium = MercadoPagoTheme.spacing.paddings.small,
+            iconSpacingLarge = MercadoPagoTheme.spacing.paddings.xmicro,
+            iconSpacingMedium = MercadoPagoTheme.spacing.paddings.xnano,
+            focusPadding = MercadoPagoTheme.spacing.paddings.xnano,
         ),
         shape = MPButtonShapeDefaults(
-            medium = MercadoPagoAndesTheme.shape.medium,
-            small = MercadoPagoAndesTheme.shape.small,
+            medium = MercadoPagoTheme.shape.medium,
+            small = MercadoPagoTheme.shape.small,
         ),
         borderWidth = MPButtonBorderWidthDefaults(
-            medium = MercadoPagoAndesTheme.borderWidth.medium,
-            large = MercadoPagoAndesTheme.borderWidth.large,
-            xlarge = MercadoPagoAndesTheme.borderWidth.xlarge,
+            medium = MercadoPagoTheme.borderWidth.medium,
+            large = MercadoPagoTheme.borderWidth.large,
+            xlarge = MercadoPagoTheme.borderWidth.xlarge,
         ),
     )
 }
@@ -399,9 +398,9 @@ fun MPButton(
             MPText(
                 text = text,
                 style = if (size == MPButtonSize.Large) {
-                    MercadoPagoAndesTheme.typography.body.emphasis.medium
+                    MercadoPagoTheme.typography.body.emphasis.medium
                 } else {
-                    MercadoPagoAndesTheme.typography.body.emphasis.small
+                    MercadoPagoTheme.typography.body.emphasis.small
                 },
                 color = textColor,
             )
@@ -417,7 +416,7 @@ fun MPButton(
 @Composable
 private fun MPButtonStylesLargePreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -439,7 +438,7 @@ private fun MPButtonStylesLargePreview() {
 @Composable
 private fun MPButtonStylesMediumPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -470,7 +469,7 @@ private fun MPButtonStylesMediumPreview() {
 @Composable
 private fun MPButtonIconLeftLargePreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -513,7 +512,7 @@ private fun MPButtonIconLeftLargePreview() {
 @Composable
 private fun MPButtonIconLeftMediumPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -560,7 +559,7 @@ private fun MPButtonIconLeftMediumPreview() {
 @Composable
 private fun MPButtonIconRightLargePreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -603,7 +602,7 @@ private fun MPButtonIconRightLargePreview() {
 @Composable
 private fun MPButtonIconRightMediumPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier

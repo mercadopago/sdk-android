@@ -17,7 +17,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumbe
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -70,7 +69,7 @@ fun MPCardNumberTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
-            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
             enabled = enabled,
             visualTransformation = visualTransformation,
             maxLength = maxLength,
@@ -84,7 +83,7 @@ fun MPCardNumberTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                style = MercadoPagoTheme.typography.body.default.medium,
                                 color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -101,7 +100,7 @@ fun MPCardNumberTextField(
 @Composable
 private fun MPCardNumberTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         val cardNumberState = rememberPCIFieldState()
         Column(

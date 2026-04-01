@@ -22,7 +22,6 @@ import com.mercadopago.sdk.android.components.extensions.isNotNull
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
@@ -49,9 +48,9 @@ fun MPListItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(MercadoPagoAndesTheme.spacing.paddings.xmicro),
+            .padding(MercadoPagoTheme.spacing.paddings.xmicro),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MercadoPagoAndesTheme.spacing.paddings.xmicro),
+        horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xmicro),
     ) {
         if (type is MPListItemType.RadioButton) {
             MPRadioButton(
@@ -64,7 +63,7 @@ fun MPListItem(
             Icon(
                 imageVector = leftImage,
                 contentDescription = null,
-                tint = MercadoPagoAndesTheme.color.icon.accent,
+                tint = MercadoPagoTheme.color.icon.accent,
                 modifier = Modifier.size(40.dp),
             )
         }
@@ -76,7 +75,7 @@ fun MPListItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(MercadoPagoAndesTheme.spacing.paddings.xnano),
+            horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xnano),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MPListItemTrailing(trailing = trailing)
@@ -91,21 +90,21 @@ private fun MPListItemContentInfo(
     if (contentInfo.header.isNotNull()) {
         MPText(
             text = contentInfo.header,
-            style = MercadoPagoAndesTheme.typography.body.default.medium,
-            color = MercadoPagoAndesTheme.color.text.primary,
+            style = MercadoPagoTheme.typography.body.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
         )
     }
     MPText(
         text = contentInfo.title.orEmpty(),
-        style = MercadoPagoAndesTheme.typography.body.default.medium,
-        color = MercadoPagoAndesTheme.color.text.primary,
+        style = MercadoPagoTheme.typography.body.default.medium,
+        color = MercadoPagoTheme.color.text.primary,
         fontWeight = FontWeight.Bold,
     )
     if (contentInfo.description.isNotNull()) {
         MPText(
             text = contentInfo.description,
-            style = MercadoPagoAndesTheme.typography.body.default.small,
-            color = MercadoPagoAndesTheme.color.text.secondary,
+            style = MercadoPagoTheme.typography.body.default.small,
+            color = MercadoPagoTheme.color.text.secondary,
         )
     }
 }
@@ -118,8 +117,8 @@ private fun MPListItemTrailing(
         if (it.text.isNotNull()) {
             MPText(
                 text = it.text,
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = it.textColor ?: MercadoPagoAndesTheme.color.text.secondary,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = it.textColor ?: MercadoPagoTheme.color.text.secondary,
             )
         }
 
@@ -128,7 +127,7 @@ private fun MPListItemTrailing(
                 Icon(
                     imageVector = it.type.icon,
                     contentDescription = null,
-                    tint = MercadoPagoAndesTheme.color.icon.secondary,
+                    tint = MercadoPagoTheme.color.icon.secondary,
                     modifier = Modifier.size(20.dp),
                 )
             is MPListItemTrailing.Type.None, null -> Unit
@@ -151,7 +150,7 @@ private fun MPListItemPreview() {
                 trailing = MPListItemTrailing(
                     type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
                     text = "$ 1.000",
-                    textColor = MercadoPagoAndesTheme.color.fill.accentLoud,
+                    textColor = MercadoPagoTheme.color.fill.accentLoud,
                 ),
             )
         }

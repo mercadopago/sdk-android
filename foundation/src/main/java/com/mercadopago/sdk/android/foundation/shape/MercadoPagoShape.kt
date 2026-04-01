@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.Dp
  * @property xlarge Extra large radius (20)
  * @property full Full radius (9999)
  */
-data class MercadoPagoAndesRadius(
+data class MercadoPagoRadius(
     val none: Dp,
     val tiny: Dp,
     val xsmall: Dp,
@@ -40,7 +40,7 @@ data class MercadoPagoAndesRadius(
  * @property xlarge Extra large corner shape
  * @property full Fully rounded shape (circular)
  */
-data class MercadoPagoAndesShape(
+data class MercadoPagoShape(
     val none: Shape,
     val tiny: Shape,
     val xsmall: Shape,

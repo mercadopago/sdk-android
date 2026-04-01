@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.Dp
  * @property large Large border (3)
  * @property xlarge Extra large border (4)
  */
-data class MercadoPagoAndesBorderWidth(
+data class MercadoPagoBorderWidth(
     val none: Dp,
     val small: Dp,
     val medium: Dp,

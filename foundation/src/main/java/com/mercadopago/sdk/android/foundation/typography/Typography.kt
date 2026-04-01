@@ -17,10 +17,10 @@ private const val TYPOGRAPHY_BODY_GROUP = "Body"
  * @property body Body typography configuration
  * @property title Title typography configuration (deprecated, use heading instead)
  */
-data class MercadoPagoAndesTypography(
-    val heading: AndesHeadingTypography,
-    val body: AndesBodyTypography,
-    val title: AndesTitleTypography = AndesTitleTypography(
+data class MercadoPagoTypography(
+    val heading: HeadingTypography,
+    val body: BodyTypography,
+    val title: TitleTypography = TitleTypography(
         title = TextStyle.Default,
     ),
 )
@@ -31,9 +31,9 @@ data class MercadoPagoAndesTypography(
  * @property default Default heading style configuration
  * @property narrow Narrow heading style configuration
  */
-data class AndesHeadingTypography(
-    val default: AndesHeadingStyle,
-    val narrow: AndesHeadingStyle,
+data class HeadingTypography(
+    val default: HeadingStyle,
+    val narrow: HeadingStyle,
 )
 
 /**
@@ -43,7 +43,7 @@ data class AndesHeadingTypography(
  * @property medium Medium heading text style
  * @property huge Huge heading text style
  */
-data class AndesHeadingStyle(
+data class HeadingStyle(
     val small: TextStyle,
     val medium: TextStyle,
     val huge: TextStyle,
@@ -51,12 +51,12 @@ data class AndesHeadingStyle(
 
 /**
  * Represents the title typography configuration.
- * @deprecated Use [AndesHeadingTypography] instead. This is kept for backward compatibility.
+ * @deprecated Use [HeadingTypography] instead. This is kept for backward compatibility.
  *
  * @property title Title text style
  */
-@Deprecated("Use AndesHeadingTypography instead", ReplaceWith("AndesHeadingTypography"))
-data class AndesTitleTypography(
+@Deprecated("Use HeadingTypography instead", ReplaceWith("HeadingTypography"))
+data class TitleTypography(
     val title: TextStyle,
 )
 
@@ -67,10 +67,10 @@ data class AndesTitleTypography(
  * @property emphasis Emphasis body style configuration
  * @property textlink Textlink body style configuration
  */
-data class AndesBodyTypography(
-    val default: AndesBodyStyle,
-    val emphasis: AndesBodyStyle,
-    val textlink: AndesBodyStyle,
+data class BodyTypography(
+    val default: BodyStyle,
+    val emphasis: BodyStyle,
+    val textlink: BodyStyle,
 )
 
 /**
@@ -80,14 +80,14 @@ data class AndesBodyTypography(
  * @property medium Medium body text style
  * @property large Large body text style
  */
-data class AndesBodyStyle(
+data class BodyStyle(
     val small: TextStyle,
     val medium: TextStyle,
     val large: TextStyle,
 )
 
 @ShowkaseTypography(name = "Heading Small Default", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingSmallDefault = TextStyle(
+internal val HeadingSmallDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
     fontSize = 16.sp,
@@ -96,7 +96,7 @@ internal val AndesHeadingSmallDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Heading Small Narrow", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingSmallNarrow = TextStyle(
+internal val HeadingSmallNarrow = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp,
@@ -105,7 +105,7 @@ internal val AndesHeadingSmallNarrow = TextStyle(
 )
 
 @ShowkaseTypography(name = "Heading Medium Default", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingMediumDefault = TextStyle(
+internal val HeadingMediumDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
     fontSize = 20.sp,
@@ -114,7 +114,7 @@ internal val AndesHeadingMediumDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Heading Medium Narrow", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingMediumNarrow = TextStyle(
+internal val HeadingMediumNarrow = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 20.sp,
@@ -123,7 +123,7 @@ internal val AndesHeadingMediumNarrow = TextStyle(
 )
 
 @ShowkaseTypography(name = "Heading Huge Default", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingHugeDefault = TextStyle(
+internal val HeadingHugeDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W700,
     fontSize = 24.sp,
@@ -132,7 +132,7 @@ internal val AndesHeadingHugeDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Heading Huge Narrow", group = TYPOGRAPHY_HEADING_GROUP)
-internal val AndesHeadingHugeNarrow = TextStyle(
+internal val HeadingHugeNarrow = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 48.sp,
@@ -141,7 +141,7 @@ internal val AndesHeadingHugeNarrow = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Small Default", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodySmallDefault = TextStyle(
+internal val BodySmallDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 14.sp,
@@ -150,7 +150,7 @@ internal val AndesBodySmallDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Small Emphasis", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodySmallEmphasis = TextStyle(
+internal val BodySmallEmphasis = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 14.sp,
@@ -159,7 +159,7 @@ internal val AndesBodySmallEmphasis = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Small Textlink", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodySmallTextlink = TextStyle(
+internal val BodySmallTextlink = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 14.sp,
@@ -168,7 +168,7 @@ internal val AndesBodySmallTextlink = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Medium Default", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyMediumDefault = TextStyle(
+internal val BodyMediumDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp,
@@ -177,7 +177,7 @@ internal val AndesBodyMediumDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Medium Emphasis", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyMediumEmphasis = TextStyle(
+internal val BodyMediumEmphasis = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 16.sp,
@@ -186,7 +186,7 @@ internal val AndesBodyMediumEmphasis = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Medium Textlink", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyMediumTextlink = TextStyle(
+internal val BodyMediumTextlink = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 16.sp,
@@ -195,7 +195,7 @@ internal val AndesBodyMediumTextlink = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Large Default", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyLargeDefault = TextStyle(
+internal val BodyLargeDefault = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W400,
     fontSize = 18.sp,
@@ -204,7 +204,7 @@ internal val AndesBodyLargeDefault = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Large Emphasis", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyLargeEmphasis = TextStyle(
+internal val BodyLargeEmphasis = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 18.sp,
@@ -213,7 +213,7 @@ internal val AndesBodyLargeEmphasis = TextStyle(
 )
 
 @ShowkaseTypography(name = "Body Large Textlink", group = TYPOGRAPHY_BODY_GROUP)
-internal val AndesBodyLargeTextlink = TextStyle(
+internal val BodyLargeTextlink = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 18.sp,
@@ -221,7 +221,7 @@ internal val AndesBodyLargeTextlink = TextStyle(
     letterSpacing = 0.sp,
 )
 
-internal val AndesTitle = TextStyle(
+internal val Title = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.W600,
     fontSize = 20.sp,
@@ -229,37 +229,37 @@ internal val AndesTitle = TextStyle(
     letterSpacing = 0.sp,
 )
 
-internal val AndesDefaultTypography = MercadoPagoAndesTypography(
-    heading = AndesHeadingTypography(
-        default = AndesHeadingStyle(
-            small = AndesHeadingSmallDefault,
-            medium = AndesHeadingMediumDefault,
-            huge = AndesHeadingHugeDefault,
+internal val DefaultTypography = MercadoPagoTypography(
+    heading = HeadingTypography(
+        default = HeadingStyle(
+            small = HeadingSmallDefault,
+            medium = HeadingMediumDefault,
+            huge = HeadingHugeDefault,
         ),
-        narrow = AndesHeadingStyle(
-            small = AndesHeadingSmallNarrow,
-            medium = AndesHeadingMediumNarrow,
-            huge = AndesHeadingHugeNarrow,
-        ),
-    ),
-    body = AndesBodyTypography(
-        default = AndesBodyStyle(
-            small = AndesBodySmallDefault,
-            medium = AndesBodyMediumDefault,
-            large = AndesBodyLargeDefault,
-        ),
-        emphasis = AndesBodyStyle(
-            small = AndesBodySmallEmphasis,
-            medium = AndesBodyMediumEmphasis,
-            large = AndesBodyLargeEmphasis,
-        ),
-        textlink = AndesBodyStyle(
-            small = AndesBodySmallTextlink,
-            medium = AndesBodyMediumTextlink,
-            large = AndesBodyLargeTextlink,
+        narrow = HeadingStyle(
+            small = HeadingSmallNarrow,
+            medium = HeadingMediumNarrow,
+            huge = HeadingHugeNarrow,
         ),
     ),
-    title = AndesTitleTypography(
-        title = AndesTitle,
+    body = BodyTypography(
+        default = BodyStyle(
+            small = BodySmallDefault,
+            medium = BodyMediumDefault,
+            large = BodyLargeDefault,
+        ),
+        emphasis = BodyStyle(
+            small = BodySmallEmphasis,
+            medium = BodyMediumEmphasis,
+            large = BodyLargeEmphasis,
+        ),
+        textlink = BodyStyle(
+            small = BodySmallTextlink,
+            medium = BodyMediumTextlink,
+            large = BodyLargeTextlink,
+        ),
+    ),
+    title = TitleTypography(
+        title = Title,
     ),
 )

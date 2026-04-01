@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val RADIO_GROUP = "RadioButton"
@@ -45,13 +44,13 @@ fun MPRadioButton(
     RadioButton(
         selected = selected,
         onClick = onClick,
-        modifier = modifier.size(MercadoPagoAndesTheme.spacing.paddings.xsmall),
+        modifier = modifier.size(MercadoPagoTheme.spacing.paddings.xsmall),
         enabled = enabled,
         colors = RadioButtonColors(
             selectedColor = getRadioColor(error),
             unselectedColor = getRadioColor(error),
-            disabledSelectedColor = MercadoPagoAndesTheme.color.text.disabled,
-            disabledUnselectedColor = MercadoPagoAndesTheme.color.text.disabled,
+            disabledSelectedColor = MercadoPagoTheme.color.text.disabled,
+            disabledUnselectedColor = MercadoPagoTheme.color.text.disabled,
         ),
         interactionSource = interactionSource,
     )
@@ -62,9 +61,9 @@ private fun getRadioColor(
     error: Boolean,
 ): Color {
     return if (error) {
-        MercadoPagoAndesTheme.color.feedback.negative.textLoud
+        MercadoPagoTheme.color.feedback.negative.textLoud
     } else {
-        MercadoPagoAndesTheme.color.text.accent
+        MercadoPagoTheme.color.text.accent
     }
 }
 

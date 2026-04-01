@@ -38,7 +38,7 @@ class MercadoPagoCheckout private constructor(
         CheckoutCallbackHolder.setCallback(callback)
         koin.get<CheckoutThemePreferences>().apply {
             setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
-            setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Andes)
+            setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Default)
         }
         val intent = Intent(context, CheckoutActivity::class.java).apply {
             putExtra(EXTRA_CONFIGURATION, checkoutConfiguration)
@@ -56,7 +56,7 @@ class MercadoPagoCheckout private constructor(
         private val context: Context,
         private val checkoutType: CheckoutType,
         private val checkoutAppearance: CheckoutAppearance? = CheckoutAppearance(
-            theme = MercadoPagoThemes.Andes,
+            theme = MercadoPagoThemes.Default,
             appearance = MercadoPagoThemeAppearance.System,
         ),
     ) {

@@ -15,7 +15,7 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `when class is created Then getCurrentThemeScheme returns default theme`() {
         // Given
-        val expectedTheme = MercadoPagoThemes.Andes
+        val expectedTheme = MercadoPagoThemes.Default
 
         // When
         val actualTheme = checkoutThemePreferences.getCurrentThemeScheme()
@@ -39,8 +39,8 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given a new theme when setCurrentThemeScheme is called Then getCurrentThemeScheme returns that theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Andes.lightTheme as MercadoPagoThemeProvider.Andes
-        val newTheme = MercadoPagoThemes.Andes.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val newTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
                     fill = defaultLightTheme.color.fill.copy(
@@ -74,8 +74,8 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given multiple theme changes when setCurrentThemeScheme is called sequentially Then getCurrentThemeScheme returns the last set theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Andes.lightTheme as MercadoPagoThemeProvider.Andes
-        val firstTheme = MercadoPagoThemes.Andes.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val firstTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
                     fill = defaultLightTheme.color.fill.copy(
@@ -84,7 +84,7 @@ internal class CheckoutThemePreferencesTest {
                 ),
             ),
         )
-        val secondTheme = MercadoPagoThemes.Andes
+        val secondTheme = MercadoPagoThemes.Default
 
         // When
         checkoutThemePreferences.setCurrentThemeScheme(firstTheme)

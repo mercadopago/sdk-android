@@ -16,7 +16,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expiratio
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -66,7 +65,7 @@ fun MPExpirationDateTextField(
             enabled = enabled,
             dateFormat = dateFormat,
             onEvent = onEvent,
-            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
@@ -77,7 +76,7 @@ fun MPExpirationDateTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                style = MercadoPagoTheme.typography.body.default.medium,
                                 color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -94,7 +93,7 @@ fun MPExpirationDateTextField(
 @Composable
 private fun MPExpirationDateTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         val expirationDateState = rememberPCIFieldState()
         Column(

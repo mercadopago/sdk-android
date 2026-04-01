@@ -16,7 +16,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -72,7 +71,7 @@ fun MPSecurityCodeTextField(
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
             securityCodeSize = securityCodeSize,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
@@ -85,7 +84,7 @@ fun MPSecurityCodeTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                style = MercadoPagoTheme.typography.body.default.medium,
                                 color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -102,7 +101,7 @@ fun MPSecurityCodeTextField(
 @Composable
 private fun MPSecurityCodeTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         val securityCodeState = rememberPCIFieldState()
         Column(
