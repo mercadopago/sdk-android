@@ -53,7 +53,7 @@ internal fun CheckoutExampleScreen(
                 checkout.show { result ->
                     val message = when (result) {
                         is MercadoPagoCheckoutResult.Success -> "✅ Pagamento realizado com sucesso!"
-                        is MercadoPagoCheckoutResult.Error -> "❌ Erro em ${result.error.errorLocalized} - message: ${result.error.errorMessage}"
+                        is MercadoPagoCheckoutResult.Error -> "❌ Erro em ${result.error.errorLocalized} - code: ${result.error.errorCode} - message: ${result.error.errorMessage}"
                         is MercadoPagoCheckoutResult.UserCancelled -> {
                             val fieldsInfo = when (val cancelContext = result.context) {
                                 is UserCancelledContext.CardForm -> {
