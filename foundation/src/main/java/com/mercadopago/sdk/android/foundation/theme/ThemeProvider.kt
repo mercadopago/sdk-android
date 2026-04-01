@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
  */
 sealed class MercadoPagoThemeProvider {
     /**
-     * Represents the Andes theme configuration for MercadoPago UI components.
+     * Represents the theme configuration for MercadoPago UI components.
      *
      * @property color The color palette configuration for the theme
      * @property spacing The spacing system configuration for the theme

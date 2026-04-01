@@ -107,7 +107,7 @@ private fun getHelperDefaults(
 
 /**
  * Helper component - Displays feedback messages with different hierarchies and types
- * This component uses Andes design tokens for colors, typography, and spacing
+ * This component uses design tokens for colors, typography, and spacing
  *
  * @param text: Helper text to display
  * @param modifier: Component modifier

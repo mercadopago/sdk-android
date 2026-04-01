@@ -39,8 +39,8 @@ import com.mercadopago.sdk.android.foundation.typography.TitleTypography
 
 /**
  * @suppress
- * CompositionLocal that provides the current MercadoPago Andes theme configuration.
- * This is used to propagate Andes theme values down the composition tree.
+ * CompositionLocal that provides the current MercadoPago theme configuration.
+ * This is used to propagate theme values down the composition tree.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 internal val LocalMercadoPagoTheme = compositionLocalOf<MercadoPagoThemeProvider.Default> {
@@ -259,48 +259,48 @@ internal val LocalMercadoPagoTheme = compositionLocalOf<MercadoPagoThemeProvider
 
 /**
  * @suppress
- * Object that provides access to the current MercadoPago Andes theme values.
- * This is the main entry point for accessing Andes theme values in composables.
+ * Object that provides access to the current MercadoPago theme values.
+ * This is the main entry point for accessing theme values in composables.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object MercadoPagoTheme {
     /**
-     * Gets the current Andes color configuration from the theme.
+     * Gets the current color configuration from the theme.
      */
     val color: MercadoPagoColor
         @Composable
         get() = LocalMercadoPagoTheme.current.color
 
     /**
-     * Gets the current Andes spacing configuration from the theme.
+     * Gets the current spacing configuration from the theme.
      */
     val spacing: MercadoPagoSpacing
         @Composable
         get() = LocalMercadoPagoTheme.current.spacing
 
     /**
-     * Gets the current Andes shape configuration from the theme.
+     * Gets the current shape configuration from the theme.
      */
     val shape: MercadoPagoShape
         @Composable
         get() = LocalMercadoPagoTheme.current.shape
 
     /**
-     * Gets the current Andes radius configuration from the theme.
+     * Gets the current radius configuration from the theme.
      */
     val radius: MercadoPagoRadius
         @Composable
         get() = LocalMercadoPagoTheme.current.radius
 
     /**
-     * Gets the current Andes border width configuration from the theme.
+     * Gets the current border width configuration from the theme.
      */
     val borderWidth: MercadoPagoBorderWidth
         @Composable
         get() = LocalMercadoPagoTheme.current.borderWidth
 
     /**
-     * Gets the current Andes typography configuration from the theme.
+     * Gets the current typography configuration from the theme.
      */
     val typography: MercadoPagoTypography
         @Composable

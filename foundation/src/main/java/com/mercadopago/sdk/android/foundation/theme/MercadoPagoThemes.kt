@@ -8,7 +8,7 @@ import com.mercadopago.sdk.android.foundation.theme.andes.MercadoPagoDefaultLigh
  */
 object MercadoPagoThemes {
     /**
-     * The Andes theme scheme that defines the visual appearance for both light and dark modes.
+     * The theme scheme that defines the visual appearance for both light and dark modes.
      */
     val Default = MercadoPagoThemeProviderScheme(
         lightTheme = MercadoPagoDefaultLightTheme,

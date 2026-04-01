@@ -83,7 +83,7 @@ enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
 
 /**
  * Message component - Displays toast-like messages with different types
- * This component uses Andes design tokens for colors, typography, and spacing
+ * This component uses design tokens for colors, typography, and spacing
  *
  * @param text: Message text to display
  * @param modifier: Component modifier

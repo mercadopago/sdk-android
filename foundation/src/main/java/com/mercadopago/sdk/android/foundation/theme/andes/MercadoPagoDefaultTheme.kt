@@ -259,7 +259,7 @@ internal val DefaultInteractiveIconActiveAccent = Color(0xFF272C96)
 // Transparent Color
 internal val DefaultTransparent = Color(0x00FFFFFF)
 
-// Andes Default Colors Configuration
+// Default Colors Configuration
 internal val DefaultLightColors = MercadoPagoColor(
     background = MercadoPagoBackgroundColor(
         primary = DefaultBackgroundPrimary,
