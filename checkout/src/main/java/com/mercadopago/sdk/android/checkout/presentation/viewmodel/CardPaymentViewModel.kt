@@ -34,7 +34,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
@@ -58,7 +58,7 @@ internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
-    private val generateCardTokenUseCase: GenerateCardTokenUseCase,
+    private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
@@ -524,7 +524,7 @@ internal class CardPaymentViewModel(
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
             updateLoadingState(true)
-            generateCardTokenUseCase(
+            generateTokenUseCase(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
                 securityCodeState = securityCodeState,

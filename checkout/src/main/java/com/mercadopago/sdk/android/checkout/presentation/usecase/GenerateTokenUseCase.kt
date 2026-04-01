@@ -12,7 +12,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 
-internal class GenerateCardTokenUseCase(
+internal class GenerateTokenUseCase(
     private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
 ) {
     suspend operator fun invoke(
