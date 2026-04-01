@@ -36,6 +36,7 @@ google-services.json
 *.hprof
 
 # Claude
+.meli
 meli
 CLAUDE.md
 .claude

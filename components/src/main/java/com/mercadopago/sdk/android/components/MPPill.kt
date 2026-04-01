@@ -32,12 +32,12 @@ fun MPPill(
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .height(MercadoPagoTheme.spacing.m)
+            .height(MercadoPagoAndesTheme.spacing.paddings.xtiny)
             .background(
-                color = MercadoPagoTheme.color.feedback.positiveSecondary,
-                shape = RoundedCornerShape(MercadoPagoTheme.spacing.m),
+                color = MercadoPagoAndesTheme.color.feedback.positive.fillQuiet,
+                shape = RoundedCornerShape(MercadoPagoAndesTheme.spacing.paddings.xtiny),
             )
-            .padding(horizontal = MercadoPagoTheme.spacing.xs),
+            .padding(horizontal = MercadoPagoAndesTheme.spacing.paddings.xmicro),
     ) {
         MPText(
             text = text,

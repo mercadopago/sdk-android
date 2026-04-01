@@ -49,9 +49,9 @@ fun MPListItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(MercadoPagoTheme.spacing.xs),
+            .padding(MercadoPagoAndesTheme.spacing.paddings.xmicro),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.xs),
+        horizontalArrangement = Arrangement.spacedBy(MercadoPagoAndesTheme.spacing.paddings.xmicro),
     ) {
         if (type is MPListItemType.RadioButton) {
             MPRadioButton(
@@ -76,7 +76,7 @@ fun MPListItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.xxs),
+            horizontalArrangement = Arrangement.spacedBy(MercadoPagoAndesTheme.spacing.paddings.xnano),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MPListItemTrailing(trailing = trailing)

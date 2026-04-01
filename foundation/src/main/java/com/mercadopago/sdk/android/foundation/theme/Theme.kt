@@ -9,8 +9,6 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.color.BackgroundColor
-import com.mercadopago.sdk.android.foundation.color.FeedbackColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBackgroundColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBorderColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesBrandColor
@@ -26,108 +24,18 @@ import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesInteractiveI
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesSurfaceColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTextColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoAndesTransparentColor
-import com.mercadopago.sdk.android.foundation.color.MercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.OutlineColor
-import com.mercadopago.sdk.android.foundation.color.TextColor
 import com.mercadopago.sdk.android.foundation.outline.MercadoPagoAndesBorderWidth
-import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoAndesShape
-import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
-import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingGap
 import com.mercadopago.sdk.android.foundation.spacing.AndesSpacingPaddings
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoAndesSpacing
-import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyStyle
 import com.mercadopago.sdk.android.foundation.typography.AndesBodyTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesHeadingStyle
 import com.mercadopago.sdk.android.foundation.typography.AndesHeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.AndesTitleTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoAndesTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTitleTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
-
-/**
- * @suppress
- * CompositionLocal that provides the current MercadoPago legacy theme configuration.
- * This is used to propagate legacy theme values down the composition tree.
- */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-internal val LocalMercadoPagoLegacyTheme = compositionLocalOf<MercadoPagoThemeProvider.Legacy> {
-    MercadoPagoThemeProvider.Legacy(
-        color = MercadoPagoColor(
-            accent = Color.Unspecified,
-            accentFirstVariant = Color.Unspecified,
-            accentSecondVariant = Color.Unspecified,
-            accentYellow = Color.Unspecified,
-            accentPositive = Color.Unspecified,
-            accentNegative = Color.Unspecified,
-            background = BackgroundColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-                tertiary = Color.Unspecified,
-                inverted = Color.Unspecified,
-            ),
-            text = TextColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-                accent = Color.Unspecified,
-                disabled = Color.Unspecified,
-                negative = Color.Unspecified,
-                inverted = Color.Unspecified,
-            ),
-            secondary = Color.Unspecified,
-            secondaryFirstVariant = Color.Unspecified,
-            secondarySecondVariant = Color.Unspecified,
-            outline = OutlineColor(
-                primary = Color.Unspecified,
-                secondary = Color.Unspecified,
-            ),
-            feedback = FeedbackColor(
-                positive = Color.Unspecified,
-                negative = Color.Unspecified,
-                positiveSecondary = Color.Unspecified,
-            ),
-        ),
-        spacing = MercadoPagoSpacing(
-            xxs = 0.dp,
-            xs = 0.dp,
-            s = 0.dp,
-            m = 0.dp,
-            l = 0.dp,
-            xl = 0.dp,
-            xxl = 0.dp,
-        ),
-        shape = MercadoPagoShape(
-            xxs = RoundedCornerShape(0.dp),
-            xs = RoundedCornerShape(0.dp),
-            s = RoundedCornerShape(0.dp),
-        ),
-        radius = MercadoPagoRadius(
-            xxs = 0.dp,
-            xs = 0.dp,
-            s = 0.dp,
-        ),
-        outline = MercadoPagoOutline(
-            xxs = 0.dp,
-            xs = 0.dp,
-        ),
-        typography = MercadoPagoTypography(
-            title = MercadoPagoTitleTypography(
-                smallSemibold = TextStyle.Default,
-            ),
-            body = MercadoPagoBodyTypography(
-                mediumSemibold = TextStyle.Default,
-                mediumRegular = TextStyle.Default,
-                smallSemibold = TextStyle.Default,
-                smallRegular = TextStyle.Default,
-                extraSmallSemibold = TextStyle.Default,
-            ),
-        ),
-    )
-}
 
 /**
  * @suppress
@@ -351,60 +259,8 @@ internal val LocalMercadoPagoAndesTheme = compositionLocalOf<MercadoPagoThemePro
 
 /**
  * @suppress
- * Object that provides access to the current MercadoPago legacy theme values.
- * This is the main entry point for accessing legacy theme values in composables.
- * Use this object when working with the legacy design system.
- */
-@RestrictTo(RestrictTo.Scope.LIBRARY)
-object MercadoPagoTheme {
-    /**
-     * Gets the current color configuration from the theme (legacy).
-     */
-    val color: MercadoPagoColor
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.color
-
-    /**
-     * Gets the current spacing configuration from the theme (legacy).
-     */
-    val spacing: MercadoPagoSpacing
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.spacing
-
-    /**
-     * Gets the current shape configuration from the theme (legacy).
-     */
-    val shape: MercadoPagoShape
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.shape
-
-    /**
-     * Gets the current radius configuration from the theme (legacy).
-     */
-    val radius: MercadoPagoRadius
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.radius
-
-    /**
-     * Gets the current outline configuration from the theme (legacy).
-     */
-    val outline: MercadoPagoOutline
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.outline
-
-    /**
-     * Gets the current typography configuration from the theme (legacy).
-     */
-    val typography: MercadoPagoTypography
-        @Composable
-        get() = LocalMercadoPagoLegacyTheme.current.typography
-}
-
-/**
- * @suppress
  * Object that provides access to the current MercadoPago Andes theme values.
  * This is the main entry point for accessing Andes theme values in composables.
- * Use this object when working with the Andes design system.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object MercadoPagoAndesTheme {
@@ -454,9 +310,8 @@ object MercadoPagoAndesTheme {
 /**
  * @suppress
  * Composable function that provides the MercadoPago theme to its content.
- * This is the main entry point for applying the theme to a composition.
  *
- * @param theme The theme scheme to be applied, defaults to [MercadoPagoThemes.Legacy]
+ * @param theme The theme scheme to be applied, defaults to [MercadoPagoThemes.Andes]
  * @param appearance The appearance mode to be used, defaults to [MercadoPagoThemeAppearance.System]
  * @param content The content to be themed
  */
@@ -476,18 +331,8 @@ fun MercadoPagoTheme(
         MercadoPagoThemeAppearance.Light -> theme.lightTheme
         MercadoPagoThemeAppearance.Dark -> theme.darkTheme
     }
-    when (themeScheme) {
-        is MercadoPagoThemeProvider.Legacy -> {
-            CompositionLocalProvider(
-                LocalMercadoPagoLegacyTheme provides themeScheme,
-                content = content,
-            )
-        }
-        is MercadoPagoThemeProvider.Andes -> {
-            CompositionLocalProvider(
-                LocalMercadoPagoAndesTheme provides themeScheme,
-                content = content,
-            )
-        }
-    }
+    CompositionLocalProvider(
+        LocalMercadoPagoAndesTheme provides themeScheme as MercadoPagoThemeProvider.Andes,
+        content = content,
+    )
 }
