@@ -21,8 +21,6 @@ internal fun String.isBeingCleared(
     previousValue: String,
 ): Boolean = this.length < previousValue.length
 
-internal fun String.removeUnderscore(): String = this.replace("_", " ")
-
 internal fun String.toCardTypeErrorMessage(
     stringProvider: StringProvider,
 ): String {
@@ -31,10 +29,9 @@ internal fun String.toCardTypeErrorMessage(
         CardType.CREDIT.value -> R.string.card_type_credit_card
         CardType.DEBIT.value -> R.string.card_type_debit_card
         CardType.PREPAID.value -> R.string.card_type_prepaid
-        else -> null
+        else -> return baseMessage
     }
-    val translatedType = cardTypeStringId?.let { stringProvider.getString(it) } ?: this.removeUnderscore()
-    return "$baseMessage $translatedType"
+    return "$baseMessage ${stringProvider.getString(cardTypeStringId)}"
 }
 
 internal fun CardBrand.toCardBrandErrorMessage(

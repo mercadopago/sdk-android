@@ -20,9 +20,9 @@
     <string name="card_form_save_button">Guardar tarjeta</string>
 
     <!-- Card Type Translations -->
-    <string name="card_type_credit_card">de crédito</string>
-    <string name="card_type_debit_card">de débito</string>
-    <string name="card_type_prepaid">prepago</string>
+    <string name="card_type_credit_card">tarjeta de crédito.</string>
+    <string name="card_type_debit_card">tarjeta de débito.</string>
+    <string name="card_type_prepaid">tarjeta prepago.</string>
 
     <!-- Validation Error Messages -->
     <string name="card_form_error_required_field">Completá este campo</string>
@@ -36,7 +36,7 @@
     <string name="card_form_error_cvv_incomplete">Ingresá el código completo</string>
     <string name="card_form_error_insufficient_amount">Verificá que la tarjeta tenga límite suficiente.</string>
     <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas</string>
-    <string name="card_form_error_card_type_not_accepted">La tienda no acepta tarjetas</string>
+    <string name="card_form_error_card_type_not_accepted">La tienda no acepta</string>
 
     <!-- Security Code Tooltip Messages -->
     <string name="card_form_security_code_tooltip_back">Es un número de %d dígitos que está en el reverso de tu tarjeta.</string>
