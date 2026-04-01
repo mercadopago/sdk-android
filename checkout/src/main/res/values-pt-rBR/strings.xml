@@ -25,7 +25,7 @@
     <string name="card_form_error_cardholder_format">Digite apenas letras e números</string>
     <string name="card_form_error_card_number_invalid">Insira-o conforme está no cartão.</string>
     <string name="card_form_error_card_number_incomplete">Insira o número completo</string>
-    <string name="card_form_error_document_all_zeros">Insira-o conforme está no documento.</string>
+    <string name="card_form_error_document_all_zeros">Insira um documento válido.</string>
     <string name="card_form_error_expiration_incomplete">Insira a data completa</string>
     <string name="card_form_error_expiration_invalid">Insira uma data válida.</string>
     <string name="card_form_error_cvv_incomplete">Insira o código completo</string>
