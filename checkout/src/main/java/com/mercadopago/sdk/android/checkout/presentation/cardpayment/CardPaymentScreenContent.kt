@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -19,21 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
@@ -67,7 +60,6 @@ import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-import kotlin.math.roundToInt
 
 @Composable
 internal fun CardPaymentScreen(
@@ -163,125 +155,110 @@ internal fun CardPaymentScreenContent(
                         onBackPressed()
                     },
                 ) {
-                    var containerBounds by remember { mutableStateOf(Rect.Zero) }
-                    var securityCodeBounds by remember { mutableStateOf(Rect.Zero) }
-                    val density = LocalDensity.current
-                    val popoverHeightPx = with(density) { 80.dp.toPx() }
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .onGloballyPositioned { containerBounds = it.boundsInRoot() },
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                     ) {
-                        Column(
+                        Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                        MPCardNumberTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                        ) {
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                            MPCardNumberTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .focusRequester(cardNumberFocusRequester),
-                                state = cardNumberPCIState,
-                                isFocused = viewState.cardNumberState.isFocused,
-                                showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
-                                error = viewState.cardNumberState.error,
-                                enabled = viewState.cardNumberState.enabled,
-                                label = viewState.cardNumberState.label,
-                                helper = viewState.cardNumberState.helper,
-                                placeHolder = viewState.cardNumberState.placeHolder,
-                                maxLength = viewState.cardNumberState.maxLength,
-                                visualTransformation = MaskVisualTransformation(viewState.cardNumberState.mask),
-                                onEvent = onCardNumberEvent,
-                            )
+                                .focusRequester(cardNumberFocusRequester),
+                            state = cardNumberPCIState,
+                            isFocused = viewState.cardNumberState.isFocused,
+                            showPlaceHolder = viewState.cardNumberState.showPlaceHolder,
+                            error = viewState.cardNumberState.error,
+                            enabled = viewState.cardNumberState.enabled,
+                            label = viewState.cardNumberState.label,
+                            helper = viewState.cardNumberState.helper,
+                            placeHolder = viewState.cardNumberState.placeHolder,
+                            maxLength = viewState.cardNumberState.maxLength,
+                            visualTransformation = MaskVisualTransformation(viewState.cardNumberState.mask),
+                            onEvent = onCardNumberEvent,
+                        )
 
-                            if (viewState.cardHolderState.show) {
-                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                                MPSimpleTextField(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    state = cardHolderPCIState,
-                                    isFocused = viewState.cardHolderState.isFocused,
-                                    showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
-                                    error = viewState.cardHolderState.error,
-                                    enabled = viewState.cardHolderState.enabled,
-                                    label = viewState.cardHolderState.label,
-                                    helper = viewState.cardHolderState.helper,
-                                    placeHolder = viewState.cardHolderState.placeHolder,
-                                    onEvent = onCardHolderEvent,
+                        if (viewState.cardHolderState.show) {
+                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            MPSimpleTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                state = cardHolderPCIState,
+                                isFocused = viewState.cardHolderState.isFocused,
+                                showPlaceHolder = viewState.cardHolderState.showPlaceHolder,
+                                error = viewState.cardHolderState.error,
+                                enabled = viewState.cardHolderState.enabled,
+                                label = viewState.cardHolderState.label,
+                                helper = viewState.cardHolderState.helper,
+                                placeHolder = viewState.cardHolderState.placeHolder,
+                                onEvent = onCardHolderEvent,
+                            )
+                        }
+
+                        Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                        MPExpirationDateTextField(
+                            state = expirationDatePCIState,
+                            isFocused = viewState.expirationDateState.isFocused,
+                            showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
+                            error = viewState.expirationDateState.error,
+                            enabled = viewState.expirationDateState.enabled,
+                            label = viewState.expirationDateState.label,
+                            helper = viewState.expirationDateState.helper,
+                            placeHolder = viewState.expirationDateState.placeHolder,
+                            onEvent = onExpirationDateEvent,
+                        )
+
+                        if (!viewState.secureCodeState.optional) {
+                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            Box {
+                                MPSecurityCodeTextField(
+                                    state = securityCodePCIState,
+                                    securityCodeSize = viewState.secureCodeState.maxLength,
+                                    isFocused = viewState.secureCodeState.isFocused,
+                                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                                    error = viewState.secureCodeState.error,
+                                    enabled = viewState.secureCodeState.enabled,
+                                    label = viewState.secureCodeState.label,
+                                    helper = viewState.secureCodeState.helper,
+                                    placeHolder = viewState.secureCodeState.placeHolder,
+                                    onClickTooltip = onTooltipClick,
+                                    onEvent = onSecurityCodeEvent,
                                 )
-                            }
-
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                            MPExpirationDateTextField(
-                                state = expirationDatePCIState,
-                                isFocused = viewState.expirationDateState.isFocused,
-                                showPlaceHolder = viewState.expirationDateState.showPlaceHolder,
-                                error = viewState.expirationDateState.error,
-                                enabled = viewState.expirationDateState.enabled,
-                                label = viewState.expirationDateState.label,
-                                helper = viewState.expirationDateState.helper,
-                                placeHolder = viewState.expirationDateState.placeHolder,
-                                onEvent = onExpirationDateEvent,
-                            )
-
-                            if (!viewState.secureCodeState.optional) {
-                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                                Box(
-                                    modifier = Modifier.onGloballyPositioned {
-                                        securityCodeBounds = it.boundsInRoot()
-                                    },
-                                ) {
-                                    MPSecurityCodeTextField(
-                                        state = securityCodePCIState,
-                                        securityCodeSize = viewState.secureCodeState.maxLength,
-                                        isFocused = viewState.secureCodeState.isFocused,
-                                        showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                                        error = viewState.secureCodeState.error,
-                                        enabled = viewState.secureCodeState.enabled,
-                                        label = viewState.secureCodeState.label,
-                                        helper = viewState.secureCodeState.helper,
-                                        placeHolder = viewState.secureCodeState.placeHolder,
-                                        onClickTooltip = onTooltipClick,
-                                        onEvent = onSecurityCodeEvent,
+                                if (viewState.showTooltip) {
+                                    MPPopover(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .layout { measurable, constraints ->
+                                                val placeable = measurable.measure(constraints)
+                                                layout(placeable.width, 0) {
+                                                    placeable.placeRelative(0, -placeable.height)
+                                                }
+                                            },
+                                        description = viewState.secureCodeState.messageTooltip,
+                                        onDismiss = onTooltipClick,
                                     )
                                 }
-                            }
-
-                            if (viewState.identificationTypeState.show) {
-                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
-                                viewState.identificationTypeState.identificationTypes?.let { types ->
-                                    MPIdentificationTextField(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        state = identificationPCIState,
-                                        identificationTypes = types,
-                                        selectedIdentificationType = viewState.identificationTypeState.selected,
-                                        isFocused = viewState.identificationTypeState.isFocused,
-                                        showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
-                                        error = viewState.identificationTypeState.error,
-                                        enabled = viewState.identificationTypeState.enabled,
-                                        label = viewState.identificationTypeState.label,
-                                        helper = viewState.identificationTypeState.helper,
-                                        placeHolder = viewState.identificationTypeState.placeHolder,
-                                        onEvent = onIdentificationEvent,
-                                    )
-                                }
-                                Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                             }
                         }
-                        if (viewState.showTooltip && securityCodeBounds != Rect.Zero && containerBounds != Rect.Zero) {
-                            val relativeSecurityCodeTop =
-                                securityCodeBounds.top - containerBounds.top
-                            val popoverY = (relativeSecurityCodeTop - popoverHeightPx).roundToInt()
-                                .coerceAtLeast(0)
-                            Box(
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
-                                    .offset { IntOffset(0, popoverY) },
-                            ) {
-                                MPPopover(
-                                    description = viewState.secureCodeState.messageTooltip,
-                                    onDismiss = onTooltipClick,
+
+                        if (viewState.identificationTypeState.show) {
+                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            viewState.identificationTypeState.identificationTypes?.let { types ->
+                                MPIdentificationTextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    state = identificationPCIState,
+                                    identificationTypes = types,
+                                    selectedIdentificationType = viewState.identificationTypeState.selected,
+                                    isFocused = viewState.identificationTypeState.isFocused,
+                                    showPlaceHolder = viewState.identificationTypeState.showPlaceHolder,
+                                    error = viewState.identificationTypeState.error,
+                                    enabled = viewState.identificationTypeState.enabled,
+                                    label = viewState.identificationTypeState.label,
+                                    helper = viewState.identificationTypeState.helper,
+                                    placeHolder = viewState.identificationTypeState.placeHolder,
+                                    onEvent = onIdentificationEvent,
                                 )
                             }
+                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
                         }
                     }
                 }
