@@ -33,6 +33,10 @@
     <string name="card_form_error_card_brand_not_accepted">A loja não aceita cartões</string>
     <string name="card_form_error_card_type_not_accepted">A loja não aceita</string>
 
+    <!-- Security Code Placeholder -->
+    <string name="card_form_security_placeholder_three_digits">Ex.: 123</string>
+    <string name="card_form_security_placeholder_four_digits">Ex.: 1234</string>
+
     <!-- Security Code Tooltip Messages -->
     <string name="card_form_security_code_tooltip_back">É um número de %d dígitos que está no verso do seu cartão.</string>
     <string name="card_form_security_code_tooltip_front">É um número de %d dígitos que está na parte da frente do seu cartão.</string>

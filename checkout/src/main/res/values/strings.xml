@@ -11,8 +11,8 @@
     <string name="card_form_expiration_short_label">Vencimiento</string>
     <string name="card_form_expiration_placeholder" translatable="false">MM/AA</string>
     <string name="card_form_security_label">Código de seguridad</string>
-    <string name="card_form_security_placeholder_three_digits" translatable="false">Ej.: 123</string>
-    <string name="card_form_security_placeholder_four_digits" translatable="false">Ej.: 1234</string>
+    <string name="card_form_security_placeholder_three_digits">Ej.: 123</string>
+    <string name="card_form_security_placeholder_four_digits">Ej.: 1234</string>
     <string name="card_form_document_label">Documento del titular</string>
     <string name="card_form_document_example" translatable="false">99.999.999</string>
     <string name="card_form_optional_field">Dato opcional</string>
