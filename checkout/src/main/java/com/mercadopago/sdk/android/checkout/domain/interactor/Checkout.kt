@@ -39,7 +39,10 @@ class Checkout internal constructor(
          */
         @RestrictTo(RestrictTo.Scope.LIBRARY)
         fun clearInstance() {
-            instance = null
+            synchronized(this) {
+                instance?.koin?.close()
+                instance = null
+            }
         }
     }
 }

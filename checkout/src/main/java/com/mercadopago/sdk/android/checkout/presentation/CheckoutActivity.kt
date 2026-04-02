@@ -44,4 +44,9 @@ internal class CheckoutActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Checkout.clearInstance()
+    }
 }
