@@ -26,7 +26,7 @@ class MercadoPagoCheckout private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
     private val checkoutAppearance: CheckoutAppearance?,
-    private val koin: Koin = Checkout.getInstance().koin,
+    private val koin: Koin = Checkout.getInstance(context).koin,
 ) {
     /**
      * Launches the checkout

@@ -15,7 +15,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.compose.KoinContext
 
 internal class CheckoutActivity : ComponentActivity() {
-    private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance().koin.inject()
+    private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance(this).koin.inject()
 
     override fun onCreate(
         savedInstanceState: Bundle?,
@@ -34,7 +34,7 @@ internal class CheckoutActivity : ComponentActivity() {
         }
 
         setContent {
-            KoinContext(context = Checkout.getInstance().koin) {
+            KoinContext(context = Checkout.getInstance(this).koin) {
                 MercadoPagoTheme(
                     theme = MercadoPagoThemes.Default,
                     appearance = checkoutThemePreferences.getCurrentAppearance(),

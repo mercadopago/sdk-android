@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.interactor
 
+import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.checkout.di.CheckoutModulesProvider
 import org.koin.core.Koin
@@ -19,10 +20,12 @@ class Checkout internal constructor(
         @Volatile
         private var instance: Checkout? = null
 
-        internal fun getInstance(): Checkout {
+        internal fun getInstance(
+            context: Context,
+        ): Checkout {
             return instance ?: synchronized(this) {
                 instance ?: Checkout(
-                    koin = CheckoutModulesProvider().koinApp,
+                    koin = CheckoutModulesProvider(context.applicationContext).koinApp,
                 ).also {
                     instance = it
                 }
