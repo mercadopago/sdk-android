@@ -16,6 +16,7 @@ internal class CheckoutModulesProvider : CoreKoinModuleProvider, MercadoPagoKoin
         return listOf(
             provideDataModule(),
             provideInstallmentsModule(),
+            provideNetworkModule(),
         )
     }
 }

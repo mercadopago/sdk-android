@@ -17,4 +17,11 @@ internal object CountryCodeToLocaleMapper {
             CountryCode.CHL -> Locale("es", "CL")
             else -> Locale.getDefault()
         }
+
+    fun toLocaleString(
+        countryCode: CountryCode?,
+    ): String =
+        map(countryCode = countryCode).let {
+            "${it.language}_${it.country}"
+        }
 }
