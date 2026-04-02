@@ -55,7 +55,6 @@ internal class CardPaymentScreenStateFactory(
     private fun createIdentificationTypeState() =
         IdentificationTypeState(
             label = stringProvider.getString(R.string.card_form_document_label),
-            placeHolder = stringProvider.getString(R.string.card_form_document_example),
         )
 
     private fun createFixedFooterState() =

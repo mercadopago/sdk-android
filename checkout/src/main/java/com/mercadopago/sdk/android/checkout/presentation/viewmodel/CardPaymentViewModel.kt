@@ -83,8 +83,7 @@ internal class CardPaymentViewModel(
                             show = data.isNotEmpty(),
                             identificationTypes = data,
                             selected = firstType,
-                            placeHolder = firstType.getPlaceholder() ?: stateFactory.getStringProvider()
-                                .getString(R.string.card_form_document_example),
+                            placeHolder = firstType.getPlaceholder().orEmpty(),
                         ),
                     )
                 },
@@ -305,8 +304,7 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = event.identificationType.getPlaceholder() ?: stateFactory.getStringProvider()
-                            .getString(R.string.card_form_document_example),
+                        placeHolder = event.identificationType.getPlaceholder().orEmpty(),
                     ),
                 )
             }
