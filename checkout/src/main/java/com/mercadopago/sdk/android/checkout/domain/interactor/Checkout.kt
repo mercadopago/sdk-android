@@ -34,8 +34,9 @@ class Checkout internal constructor(
 
         /**
          * @suppress
-         * Only for internal usage. DO NOT USE IN PRODUCTION.
-         * Clear the current instance of the Checkout for testing purposes.
+         * Closes the current Koin session and clears the instance.
+         * Called by CheckoutActivity.onDestroy to clean up after each session.
+         * Also available for testing purposes.
          */
         @RestrictTo(RestrictTo.Scope.LIBRARY)
         fun clearInstance() {

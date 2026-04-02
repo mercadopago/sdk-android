@@ -57,6 +57,12 @@ internal class CheckoutTest {
     }
 
     @Test
+    fun `clearInstance is idempotent when no instance exists`() {
+        // Should not throw when called with no active session
+        Checkout.clearInstance()
+    }
+
+    @Test
     fun `clearInstance nulls the instance so next getInstance creates fresh`() {
         Checkout.getInstance(context)
         Checkout.clearInstance()
