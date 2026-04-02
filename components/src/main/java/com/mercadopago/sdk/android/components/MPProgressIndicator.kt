@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.circularSize
 import com.mercadopago.sdk.android.components.extensions.strokeWidth
 import com.mercadopago.sdk.android.components.model.MPProgressIndicatorSize
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -36,7 +35,7 @@ fun MPProgressIndicator(
 ) {
     CircularProgressIndicator(
         modifier = modifier.size(size.circularSize),
-        color = MercadoPagoAndesTheme.color.interactive.fillLoud.idle,
+        color = MercadoPagoTheme.color.interactive.fillLoud.idle,
         strokeWidth = size.strokeWidth,
         trackColor = Color.Transparent,
         strokeCap = StrokeCap.Round,
@@ -47,7 +46,7 @@ fun MPProgressIndicator(
 @Composable
 private fun MPProgressIndicatorPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier

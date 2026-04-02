@@ -10,6 +10,6 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param appearance MercadoPagoThemeAppearance
  */
 data class CheckoutAppearance(
-    val theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Legacy,
+    val theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Default,
     val appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
 )

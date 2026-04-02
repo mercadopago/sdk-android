@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 internal data class MPInputDefaults(
     val colors: MPInputColorDefaults,
@@ -40,24 +40,24 @@ internal data class MPInputBorderDefaults(
 internal fun getMPInputDefaults(): MPInputDefaults {
     return MPInputDefaults(
         colors = MPInputColorDefaults(
-            borderIdle = MercadoPagoAndesTheme.color.interactive.border.idle,
-            borderActive = MercadoPagoAndesTheme.color.interactive.border.active,
-            borderError = MercadoPagoAndesTheme.color.feedback.negative.borderLoud,
-            cursor = MercadoPagoAndesTheme.color.interactive.border.active,
-            textPrimary = MercadoPagoAndesTheme.color.text.primary,
-            textSecondary = MercadoPagoAndesTheme.color.text.secondary,
-            textDisabled = MercadoPagoAndesTheme.color.text.disabled,
-            textError = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
+            borderIdle = MercadoPagoTheme.color.interactive.border.idle,
+            borderActive = MercadoPagoTheme.color.interactive.border.active,
+            borderError = MercadoPagoTheme.color.feedback.negative.borderLoud,
+            cursor = MercadoPagoTheme.color.interactive.border.active,
+            textPrimary = MercadoPagoTheme.color.text.primary,
+            textSecondary = MercadoPagoTheme.color.text.secondary,
+            textDisabled = MercadoPagoTheme.color.text.disabled,
+            textError = MercadoPagoTheme.color.feedback.negative.textLoud,
         ),
         spacing = MPInputSpacingDefaults(
-            labelPadding = MercadoPagoAndesTheme.spacing.paddings.pico,
-            helperPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            labelPadding = MercadoPagoTheme.spacing.paddings.pico,
+            helperPadding = MercadoPagoTheme.spacing.paddings.xnano,
             horizontalPadding = 16.dp,
         ),
         border = MPInputBorderDefaults(
-            widthIdle = MercadoPagoAndesTheme.borderWidth.small,
-            widthFocused = MercadoPagoAndesTheme.borderWidth.medium,
-            shape = MercadoPagoAndesTheme.shape.medium,
+            widthIdle = MercadoPagoTheme.borderWidth.small,
+            widthFocused = MercadoPagoTheme.borderWidth.medium,
+            shape = MercadoPagoTheme.shape.medium,
         ),
     )
 }

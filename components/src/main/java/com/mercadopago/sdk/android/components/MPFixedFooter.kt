@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.components.extensions.isNotNull
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
@@ -70,10 +69,10 @@ fun MPFixedFooter(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MercadoPagoAndesTheme.color.background.primary)
+            .background(MercadoPagoTheme.color.background.primary)
             .padding(
-                horizontal = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-                vertical = MercadoPagoAndesTheme.spacing.paddings.xtiny,
+                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+                vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
     ) {
         if (amount.isNotNull()) {
@@ -82,7 +81,7 @@ fun MPFixedFooter(
                 amount = amount,
                 subtitle = subtitle,
             )
-            Spacer(modifier = Modifier.height(MercadoPagoAndesTheme.spacing.paddings.micro))
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
         }
         button?.let {
             MPButton(
@@ -112,8 +111,8 @@ private fun HeaderSection(
         ) {
             MPText(
                 text = title,
-                style = MercadoPagoAndesTheme.typography.body.emphasis.large,
-                color = MercadoPagoAndesTheme.color.text.primary,
+                style = MercadoPagoTheme.typography.body.emphasis.large,
+                color = MercadoPagoTheme.color.text.primary,
             )
             Column(
                 horizontalAlignment = Alignment.End,
@@ -122,8 +121,8 @@ private fun HeaderSection(
                 if (subtitle != null) {
                     MPText(
                         text = subtitle,
-                        style = MercadoPagoAndesTheme.typography.body.default.medium,
-                        color = MercadoPagoAndesTheme.color.text.secondary,
+                        style = MercadoPagoTheme.typography.body.default.medium,
+                        color = MercadoPagoTheme.color.text.secondary,
                     )
                 }
             }
@@ -138,19 +137,19 @@ private fun AmountText(
     Row {
         MPText(
             text = amount.currencySymbol,
-            style = MercadoPagoAndesTheme.typography.heading.default.medium,
-            color = MercadoPagoAndesTheme.color.text.primary,
+            style = MercadoPagoTheme.typography.heading.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
         )
         MPText(
             text = amount.integerPart,
-            style = MercadoPagoAndesTheme.typography.heading.default.medium,
-            color = MercadoPagoAndesTheme.color.text.primary,
+            style = MercadoPagoTheme.typography.heading.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
         )
-        Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
         MPText(
             text = amount.decimalPart,
-            style = MercadoPagoAndesTheme.typography.body.emphasis.small,
-            color = MercadoPagoAndesTheme.color.text.primary,
+            style = MercadoPagoTheme.typography.body.emphasis.small,
+            color = MercadoPagoTheme.color.text.primary,
         )
     }
 }

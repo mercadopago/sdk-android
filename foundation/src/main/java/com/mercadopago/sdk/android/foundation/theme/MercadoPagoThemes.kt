@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.foundation.theme
 
-import com.mercadopago.sdk.android.foundation.theme.andes.MercadoPagoAndesDefaultLightTheme
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultLightTheme
+import com.mercadopago.sdk.android.foundation.theme.andes.MercadoPagoDefaultLightTheme
 
 /**
  * Default theme configuration for MercadoPago UI components.
@@ -9,21 +8,10 @@ import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultLi
  */
 object MercadoPagoThemes {
     /**
-     * The default theme scheme that defines the visual appearance for both light and dark modes.
-     * This is the standard theme used throughout the MercadoPago SDK.
-     * Uses the legacy color system (MercadoPagoColor) as primary.
+     * The theme scheme that defines the visual appearance for both light and dark modes.
      */
-    val Legacy = MercadoPagoThemeProviderScheme(
+    val Default = MercadoPagoThemeProviderScheme(
         lightTheme = MercadoPagoDefaultLightTheme,
         darkTheme = MercadoPagoDefaultLightTheme,
-    )
-
-    /**
-     * The Andes theme scheme that defines the visual appearance for both light and dark modes.
-     * This theme uses the new Andes color system (MercadoPagoAndesColor) as primary.
-     */
-    val Andes = MercadoPagoThemeProviderScheme(
-        lightTheme = MercadoPagoAndesDefaultLightTheme,
-        darkTheme = MercadoPagoAndesDefaultLightTheme,
     )
 }

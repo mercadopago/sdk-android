@@ -15,7 +15,7 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `when class is created Then getCurrentThemeScheme returns default theme`() {
         // Given
-        val expectedTheme = MercadoPagoThemes.Legacy
+        val expectedTheme = MercadoPagoThemes.Default
 
         // When
         val actualTheme = checkoutThemePreferences.getCurrentThemeScheme()
@@ -39,11 +39,13 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given a new theme when setCurrentThemeScheme is called Then getCurrentThemeScheme returns that theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
-        val newTheme = MercadoPagoThemes.Legacy.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val newTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
-                    accent = Color.Red,
+                    fill = defaultLightTheme.color.fill.copy(
+                        accentLoud = Color.Red,
+                    ),
                 ),
             ),
         )
@@ -72,15 +74,17 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `given multiple theme changes when setCurrentThemeScheme is called sequentially Then getCurrentThemeScheme returns the last set theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
-        val firstTheme = MercadoPagoThemes.Legacy.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val firstTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
-                    accent = Color.Red,
+                    fill = defaultLightTheme.color.fill.copy(
+                        accentLoud = Color.Red,
+                    ),
                 ),
             ),
         )
-        val secondTheme = MercadoPagoThemes.Legacy
+        val secondTheme = MercadoPagoThemes.Default
 
         // When
         checkoutThemePreferences.setCurrentThemeScheme(firstTheme)

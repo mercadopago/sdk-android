@@ -31,7 +31,6 @@ import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import java.math.BigDecimal
@@ -103,7 +102,7 @@ private fun InstallmentsScreenContent(
                                         icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
                                     ),
                                     textColor = if (item.interestFree) {
-                                        MercadoPagoAndesTheme.color.feedback.positive.textLoud
+                                        MercadoPagoTheme.color.feedback.positive.textLoud
                                     } else {
                                         null
                                     },
@@ -134,7 +133,7 @@ private fun InstallmentsScreenContent(
 @Composable
 private fun InstallmentsScreenPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(

@@ -21,7 +21,7 @@ import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.components.extensions.addBorder
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 @Composable
 internal fun MPInputDecorationBox(
@@ -64,18 +64,18 @@ internal fun MPInputBody(
                 MPText(
                     text = label,
                     modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
-                    style = MercadoPagoAndesTheme.typography.body.default.medium,
+                    style = MercadoPagoTheme.typography.body.default.medium,
                     color = defaults.colors.textPrimary,
                 )
                 if (showTooltipIcon) {
-                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+                    Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
                     Icon(
                         painter = painterResource(R.drawable.ic_tooltip),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(MercadoPagoAndesTheme.radius.xlarge)
+                            .size(MercadoPagoTheme.radius.xlarge)
                             .clickable { onClickTooltip.invoke() },
-                        tint = MercadoPagoAndesTheme.color.icon.accent,
+                        tint = MercadoPagoTheme.color.icon.accent,
                     )
                 }
             }
@@ -83,7 +83,7 @@ internal fun MPInputBody(
         content()
         when {
             error.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
                 MPInputMessage(
                     text = error,
                     state = InputLabelState.Error,
@@ -92,7 +92,7 @@ internal fun MPInputBody(
             }
 
             helper.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
                 MPInputMessage(
                     text = helper,
                     state = state,

@@ -57,7 +57,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformation
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -160,7 +159,7 @@ internal fun CardPaymentScreenContent(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                     ) {
-                        Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                        Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                         MPCardNumberTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -179,7 +178,7 @@ internal fun CardPaymentScreenContent(
                         )
 
                         if (viewState.cardHolderState.show) {
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                             MPSimpleTextField(
                                 modifier = Modifier.fillMaxWidth(),
                                 state = cardHolderPCIState,
@@ -194,7 +193,7 @@ internal fun CardPaymentScreenContent(
                             )
                         }
 
-                        Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                        Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                         MPExpirationDateTextField(
                             state = expirationDatePCIState,
                             isFocused = viewState.expirationDateState.isFocused,
@@ -208,7 +207,7 @@ internal fun CardPaymentScreenContent(
                         )
 
                         if (!viewState.secureCodeState.optional) {
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                             Box {
                                 MPSecurityCodeTextField(
                                     state = securityCodePCIState,
@@ -241,7 +240,7 @@ internal fun CardPaymentScreenContent(
                         }
 
                         if (viewState.identificationTypeState.show) {
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                             viewState.identificationTypeState.identificationTypes?.let { types ->
                                 MPIdentificationTextField(
                                     modifier = Modifier.fillMaxWidth(),
@@ -258,7 +257,7 @@ internal fun CardPaymentScreenContent(
                                     onEvent = onIdentificationEvent,
                                 )
                             }
-                            Spacer(Modifier.size(MercadoPagoAndesTheme.spacing.gap.xsmall))
+                            Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
                         }
                     }
                 }
@@ -315,7 +314,7 @@ internal fun CardPaymentScreenContent(
 @Composable
 private fun CardPaymentScreenContentPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(
@@ -382,7 +381,7 @@ private fun CardPaymentScreenContentPreview() {
 @Composable
 private fun CardPaymentScreenContentWithoutCardHolderPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(
@@ -431,7 +430,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
 @Composable
 private fun CardPaymentScreenContentWithErrorPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         CardPaymentScreenContent(
             viewState = CardPaymentScreenState(

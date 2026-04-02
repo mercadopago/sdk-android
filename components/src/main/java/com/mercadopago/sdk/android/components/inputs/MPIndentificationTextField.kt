@@ -32,7 +32,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -86,7 +85,7 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoAndesTheme.typography.body.default.medium,
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
@@ -108,7 +107,7 @@ fun MPIdentificationTextField(
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                style = MercadoPagoTheme.typography.body.default.medium,
                                 color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
@@ -140,7 +139,7 @@ internal fun MPIdentificationTypeSelector(
         ) {
             MPText(
                 text = selectedIdentificationType?.name.orEmpty(),
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                style = MercadoPagoTheme.typography.body.default.medium,
                 color = defaults.colors.textPrimary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
@@ -153,7 +152,7 @@ internal fun MPIdentificationTypeSelector(
                         identificationType.name?.let {
                             MPText(
                                 text = it,
-                                style = MercadoPagoAndesTheme.typography.body.default.medium,
+                                style = MercadoPagoTheme.typography.body.default.medium,
                                 color = defaults.colors.textPrimary,
                             )
                         }
@@ -172,7 +171,7 @@ internal fun MPIdentificationTypeSelector(
 @Composable
 private fun MPIdentificationTextFieldPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         val identificationState = rememberPCIFieldState()
         val identificationTypes = listOf(

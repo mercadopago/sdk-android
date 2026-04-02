@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -35,10 +34,10 @@ fun MPBadgeIcon(
     }
 
     val color: Color = when (badgeType) {
-        BadgeType.Positive -> MercadoPagoAndesTheme.color.feedback.positive.iconLoud
-        BadgeType.Negative -> MercadoPagoAndesTheme.color.feedback.negative.iconLoud
-        BadgeType.Caution -> MercadoPagoAndesTheme.color.feedback.caution.iconLoud
-        BadgeType.Informative -> MercadoPagoAndesTheme.color.feedback.informative.iconLoud
+        BadgeType.Positive -> MercadoPagoTheme.color.feedback.positive.iconLoud
+        BadgeType.Negative -> MercadoPagoTheme.color.feedback.negative.iconLoud
+        BadgeType.Caution -> MercadoPagoTheme.color.feedback.caution.iconLoud
+        BadgeType.Informative -> MercadoPagoTheme.color.feedback.informative.iconLoud
     }
 
     Icon(
@@ -49,7 +48,7 @@ fun MPBadgeIcon(
                 color = color,
                 shape = CircleShape,
             ),
-        tint = MercadoPagoAndesTheme.color.text.inverse,
+        tint = MercadoPagoTheme.color.text.inverse,
     )
 }
 
@@ -57,7 +56,7 @@ fun MPBadgeIcon(
 @Composable
 private fun MPBadgeIconPreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier

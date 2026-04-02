@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import kotlinx.coroutines.delay
@@ -84,7 +83,7 @@ enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
 
 /**
  * Message component - Displays toast-like messages with different types
- * This component uses Andes design tokens for colors, typography, and spacing
+ * This component uses design tokens for colors, typography, and spacing
  *
  * @param text: Message text to display
  * @param modifier: Component modifier
@@ -118,7 +117,7 @@ fun MPMessage(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MercadoPagoAndesTheme.shape.xlarge)
+            .clip(MercadoPagoTheme.shape.xlarge)
             .background(defaults.colors.backgroundColor)
             .padding(
                 horizontal = defaults.spacing.horizontalPadding,
@@ -130,7 +129,7 @@ fun MPMessage(
         Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
         MPText(
             text = text,
-            style = MercadoPagoAndesTheme.typography.body.default.medium,
+            style = MercadoPagoTheme.typography.body.default.medium,
             color = defaults.colors.textColor,
             modifier = Modifier.weight(1f),
         )
@@ -146,7 +145,7 @@ fun MPMessage(
                 "",
                 tint = defaults.colors.closeIconColor,
                 modifier = Modifier.size(
-                    MercadoPagoAndesTheme.spacing.paddings.xtiny,
+                    MercadoPagoTheme.spacing.paddings.xtiny,
                 ).padding(start = defaults.spacing.closeIconPadding),
             )
         }
@@ -156,7 +155,7 @@ fun MPMessage(
 @Preview(name = "Message All Variations", group = MESSAGE_GROUP)
 @Composable
 internal fun MessageAllVariationsPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
