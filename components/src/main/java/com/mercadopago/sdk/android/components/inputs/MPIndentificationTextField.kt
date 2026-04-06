@@ -140,12 +140,16 @@ internal fun MPIdentificationTypeSelector(
             MPText(
                 text = selectedIdentificationType?.name.orEmpty(),
                 style = MercadoPagoTheme.typography.body.default.medium,
-                color = defaults.colors.textPrimary,
+                color = defaults.colors.textSecondary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
         }
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            matchTextFieldWidth = false,
+        ) {
             identificationTypes.forEach { identificationType ->
                 DropdownMenuItem(
                     text = {

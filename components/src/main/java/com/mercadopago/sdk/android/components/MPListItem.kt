@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.isNotNull
@@ -96,9 +95,8 @@ private fun MPListItemContentInfo(
     }
     MPText(
         text = contentInfo.title.orEmpty(),
-        style = MercadoPagoTheme.typography.body.default.medium,
+        style = MercadoPagoTheme.typography.body.emphasis.medium,
         color = MercadoPagoTheme.color.text.primary,
-        fontWeight = FontWeight.Bold,
     )
     if (contentInfo.description.isNotNull()) {
         MPText(

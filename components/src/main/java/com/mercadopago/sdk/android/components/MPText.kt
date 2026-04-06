@@ -33,7 +33,7 @@ fun MPText(
     modifier: Modifier = Modifier,
     style: TextStyle = MercadoPagoTheme.typography.body.default.small,
     color: Color = MercadoPagoTheme.color.text.primary,
-    fontWeight: FontWeight = FontWeight.Normal,
+    fontWeight: FontWeight? = null,
 ) {
     Text(
         text = text,

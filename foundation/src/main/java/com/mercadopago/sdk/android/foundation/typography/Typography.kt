@@ -1,10 +1,18 @@
 package com.mercadopago.sdk.android.foundation.typography
 
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseTypography
+import com.mercadopago.sdk.android.foundation.R
+
+internal val InterFontFamily = FontFamily(
+    Font(R.font.inter_regular, FontWeight.W400),
+    Font(R.font.inter_semi_bold, FontWeight.W600),
+    Font(R.font.inter_bold, FontWeight.W700),
+)
 
 private const val TYPOGRAPHY_HEADING_GROUP = "Heading"
 private const val TYPOGRAPHY_BODY_GROUP = "Body"
@@ -88,7 +96,7 @@ data class BodyStyle(
 
 @ShowkaseTypography(name = "Heading Small Default", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingSmallDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W700,
     fontSize = 16.sp,
     lineHeight = 22.sp,
@@ -97,7 +105,7 @@ internal val HeadingSmallDefault = TextStyle(
 
 @ShowkaseTypography(name = "Heading Small Narrow", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingSmallNarrow = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp,
     lineHeight = 22.sp,
@@ -106,7 +114,7 @@ internal val HeadingSmallNarrow = TextStyle(
 
 @ShowkaseTypography(name = "Heading Medium Default", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingMediumDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W700,
     fontSize = 20.sp,
     lineHeight = 28.sp,
@@ -115,7 +123,7 @@ internal val HeadingMediumDefault = TextStyle(
 
 @ShowkaseTypography(name = "Heading Medium Narrow", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingMediumNarrow = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 20.sp,
     lineHeight = 28.sp,
@@ -124,7 +132,7 @@ internal val HeadingMediumNarrow = TextStyle(
 
 @ShowkaseTypography(name = "Heading Huge Default", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingHugeDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W700,
     fontSize = 24.sp,
     lineHeight = 28.sp,
@@ -133,7 +141,7 @@ internal val HeadingHugeDefault = TextStyle(
 
 @ShowkaseTypography(name = "Heading Huge Narrow", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingHugeNarrow = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 48.sp,
     lineHeight = 56.sp,
@@ -142,7 +150,7 @@ internal val HeadingHugeNarrow = TextStyle(
 
 @ShowkaseTypography(name = "Body Small Default", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodySmallDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 14.sp,
     lineHeight = 20.sp,
@@ -151,7 +159,7 @@ internal val BodySmallDefault = TextStyle(
 
 @ShowkaseTypography(name = "Body Small Emphasis", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodySmallEmphasis = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 14.sp,
     lineHeight = 20.sp,
@@ -160,7 +168,7 @@ internal val BodySmallEmphasis = TextStyle(
 
 @ShowkaseTypography(name = "Body Small Textlink", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodySmallTextlink = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 14.sp,
     lineHeight = 20.sp,
@@ -169,7 +177,7 @@ internal val BodySmallTextlink = TextStyle(
 
 @ShowkaseTypography(name = "Body Medium Default", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyMediumDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 16.sp,
     lineHeight = 24.sp,
@@ -178,7 +186,7 @@ internal val BodyMediumDefault = TextStyle(
 
 @ShowkaseTypography(name = "Body Medium Emphasis", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyMediumEmphasis = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 16.sp,
     lineHeight = 24.sp,
@@ -187,7 +195,7 @@ internal val BodyMediumEmphasis = TextStyle(
 
 @ShowkaseTypography(name = "Body Medium Textlink", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyMediumTextlink = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 16.sp,
     lineHeight = 24.sp,
@@ -196,7 +204,7 @@ internal val BodyMediumTextlink = TextStyle(
 
 @ShowkaseTypography(name = "Body Large Default", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyLargeDefault = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 18.sp,
     lineHeight = 28.sp,
@@ -205,7 +213,7 @@ internal val BodyLargeDefault = TextStyle(
 
 @ShowkaseTypography(name = "Body Large Emphasis", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyLargeEmphasis = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 18.sp,
     lineHeight = 28.sp,
@@ -214,7 +222,7 @@ internal val BodyLargeEmphasis = TextStyle(
 
 @ShowkaseTypography(name = "Body Large Textlink", group = TYPOGRAPHY_BODY_GROUP)
 internal val BodyLargeTextlink = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 18.sp,
     lineHeight = 28.sp,
@@ -222,7 +230,7 @@ internal val BodyLargeTextlink = TextStyle(
 )
 
 internal val Title = TextStyle(
-    fontFamily = FontFamily.Default,
+    fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
     fontSize = 20.sp,
     lineHeight = 28.sp,

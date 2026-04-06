@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.scrollProgressRatio
@@ -106,7 +105,6 @@ private fun MPHeaderExpandedTitle(
         MPText(
             text = title,
             style = MercadoPagoTheme.typography.heading.default.huge,
-            fontWeight = FontWeight.Bold,
         )
         if (subtitle.isNotBlank()) {
             Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
@@ -132,7 +130,6 @@ private fun MPHeaderCollapsedTitle(
         MPText(
             text = title,
             style = MercadoPagoTheme.typography.heading.default.medium,
-            fontWeight = FontWeight.Bold,
         )
     }
 }
