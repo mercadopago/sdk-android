@@ -108,6 +108,9 @@ internal class CardPaymentViewModel(
                 )
                 if (!event.isFocused) {
                     handleCardNumberInputError()
+                    if (_viewState.value.messageError.description.isNotEmpty()) {
+                        _viewState.value = _viewState.value.copy(showMessage = true)
+                    }
                 }
             }
 
@@ -238,6 +241,7 @@ internal class CardPaymentViewModel(
     fun onMessageClick() {
         _viewState.value = _viewState.value.copy(
             showMessage = false,
+            messageError = MessageError(),
         )
     }
 
@@ -663,12 +667,13 @@ internal class CardPaymentViewModel(
     private fun handleResultError(
         error: MercadoPagoCheckoutError,
     ) {
+        val isCardNumberFocused = _viewState.value.cardNumberState.isFocused
         _viewState.value = _viewState.value.copy(
             messageError = MessageError(
                 title = error.message.orEmpty(),
                 description = genericErrorMessage,
             ),
-            showMessage = true,
+            showMessage = !isCardNumberFocused,
         )
     }
 
