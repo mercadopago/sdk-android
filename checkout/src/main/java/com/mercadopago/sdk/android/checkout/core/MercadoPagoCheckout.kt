@@ -14,7 +14,6 @@ import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-import org.koin.core.Koin
 
 internal const val EXTRA_CONFIGURATION = "extra_configuration"
 
@@ -26,7 +25,6 @@ class MercadoPagoCheckout private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
     private val checkoutAppearance: CheckoutAppearance?,
-    private val koin: Koin = Checkout.getInstance().koin,
 ) {
     /**
      * Launches the checkout
@@ -36,8 +34,10 @@ class MercadoPagoCheckout private constructor(
         callback: (MercadoPagoCheckoutResult) -> Unit,
     ) {
         CheckoutCallbackHolder.setCallback(callback)
-        koin.get<CheckoutThemePreferences>().apply {
-            setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
+        Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
+            setCurrentAppearance(
+                checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System,
+            )
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Default)
         }
         val intent = Intent(context, CheckoutActivity::class.java).apply {

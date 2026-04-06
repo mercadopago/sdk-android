@@ -11,11 +11,10 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import org.koin.compose.KoinContext
 
 internal class CheckoutActivity : ComponentActivity() {
-    private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance().koin.inject()
+    private val checkoutThemePreferences: CheckoutThemePreferences by Checkout.getInstance(this).koin.inject()
 
     override fun onCreate(
         savedInstanceState: Bundle?,
@@ -34,14 +33,19 @@ internal class CheckoutActivity : ComponentActivity() {
         }
 
         setContent {
-            KoinContext(context = Checkout.getInstance().koin) {
+            KoinContext(context = Checkout.getInstance(this).koin) {
                 MercadoPagoTheme(
-                    theme = MercadoPagoThemes.Default,
+                    theme = checkoutThemePreferences.getCurrentThemeScheme(),
                     appearance = checkoutThemePreferences.getCurrentAppearance(),
                 ) {
                     MPCardPayment(checkoutConfiguration = checkoutConfiguration)
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Checkout.clearInstance()
     }
 }
