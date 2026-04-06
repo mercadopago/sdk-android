@@ -99,18 +99,17 @@ fun IdentificationTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
 ) {
     val maxLength = identificationType?.maxLength ?: Int.MAX_VALUE
-    val keyboardType = if (identificationType?.type == "number") {
-        KeyboardType.Number
-    } else {
-        KeyboardType.Text
-    }
+    val isNumeric = (identificationType?.type == "number")
+    val keyboardType = if (isNumeric) KeyboardType.Number else KeyboardType.Text
 
     PCITextField(
         value = state.input,
         onValueChange = { value ->
-            if (value.length <= maxLength) {
-                state.input = value
-                onEvent(IdentificationTextFieldEvent.OnValueChanged(value = value))
+            val filteredValue = if (isNumeric) value.filter { it.isDigit() } else value
+
+            if (filteredValue.length <= maxLength) {
+                state.input = filteredValue
+                onEvent(IdentificationTextFieldEvent.OnValueChanged(value = filteredValue))
             }
         },
         onFocusChanged = { isFocused ->
