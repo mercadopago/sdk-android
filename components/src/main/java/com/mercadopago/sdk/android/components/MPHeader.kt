@@ -129,7 +129,7 @@ private fun MPHeaderCollapsedTitle(
         Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
         MPText(
             text = title,
-            style = MercadoPagoTheme.typography.heading.default.medium,
+            style = MercadoPagoTheme.typography.heading.default.small,
         )
     }
 }

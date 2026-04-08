@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +26,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 internal fun MPInputDecorationBox(
     isFocused: Boolean,
     error: Boolean,
+    enabled: Boolean = true,
     defaults: MPInputDefaults,
     content: @Composable (RowScope.() -> Unit),
 ) {
@@ -36,9 +36,10 @@ internal fun MPInputDecorationBox(
             .addBorder(
                 isFocused = isFocused,
                 error = error,
+                enabled = enabled,
                 defaults = defaults,
             )
-            .height(OutlinedTextFieldDefaults.MinHeight)
+            .height(MercadoPagoTheme.spacing.paddings.xlarge)
             .padding(horizontal = defaults.spacing.horizontalPadding),
     ) {
         content()

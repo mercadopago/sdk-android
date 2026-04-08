@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,7 +45,7 @@ fun MPBadgeIcon(
         modifier
             .background(
                 color = color,
-                shape = CircleShape,
+                shape = MercadoPagoTheme.shape.full,
             ),
         tint = MercadoPagoTheme.color.text.inverse,
     )

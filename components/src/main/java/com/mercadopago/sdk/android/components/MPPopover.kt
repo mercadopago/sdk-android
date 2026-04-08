@@ -52,7 +52,7 @@ fun MPPopover(
 
     Surface(
         modifier = modifier
-            .defaultMinSize(minWidth = 240.dp, minHeight = 86.dp)
+            .defaultMinSize(minWidth = 380.dp, minHeight = 86.dp)
             .padding(defaults.spacing.surfacePadding),
         color = defaults.colors.backgroundColor,
         shape = bubbleShape,
@@ -137,7 +137,7 @@ private fun getPopoverDefaults(): PopoverDefaults {
             closeIconColor = MercadoPagoTheme.color.interactive.icon.idle,
         ),
         spacing = PopoverSpacingDefaults(
-            cornerRadius = MercadoPagoTheme.radius.medium,
+            cornerRadius = MercadoPagoTheme.radius.xlarge,
             pointerWidth = MercadoPagoTheme.spacing.paddings.xtiny,
             pointerHeight = MercadoPagoTheme.spacing.paddings.xnano,
             pointerEndOffset = MercadoPagoTheme.spacing.gap.micro,
