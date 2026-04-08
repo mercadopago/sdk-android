@@ -116,12 +116,14 @@ internal class CardPaymentViewModel(
     ) {
         when (event) {
             is CardNumberTextFieldEvent.OnFocusChanged -> {
+                val isValid = _viewState.value.cardNumberState.isValid
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         isFocused = event.isFocused,
                     ),
                 )
                 if (!event.isFocused) {
+                    trackInputValidation("card_number", isValid)
                     handleCardNumberInputError()
                     if (_viewState.value.messageError.description.isNotEmpty()) {
                         _viewState.value = _viewState.value.copy(showMessage = true)
@@ -150,7 +152,11 @@ internal class CardPaymentViewModel(
             }
 
             is CardNumberTextFieldEvent.IsValid -> {
-                trackInputValidation("card_number", event.isValid)
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        isValid = event.isValid,
+                    ),
+                )
                 handleCardNumberLuhnValidation(event.isValid)
             }
 

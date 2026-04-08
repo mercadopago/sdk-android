@@ -134,10 +134,11 @@ internal class CardPaymentViewModelTrackingTest {
     // region Input Validation
 
     @Test
-    fun `when card number IsValid event then tracks input_validation`() = runTest {
+    fun `when card number loses focus then tracks input_validation`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.IsValid(isValid = true))
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false))
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
