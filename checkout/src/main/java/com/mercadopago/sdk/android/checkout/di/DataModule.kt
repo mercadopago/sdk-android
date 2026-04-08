@@ -51,6 +51,7 @@ internal fun provideDataModule() =
                 generateTokenUseCase = GenerateTokenUseCase(),
                 cancelledFormContextUseCase = CancelledFormContextUseCase(),
                 validator = get(),
+                themePreferences = get(),
             )
         }
     }

@@ -1,0 +1,55 @@
+package com.mercadopago.sdk.android.checkout.analytics
+
+import com.google.gson.annotations.SerializedName
+import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
+import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
+import com.mercadopago.sdk.android.analytics.domain.models.EventData
+import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.domain.models.TrackType
+import com.mercadopago.sdk.android.checkout.analytics.CheckoutAnalyticsConstants.CHECKOUT_CARD_FORM_PATH
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
+import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
+
+private const val INITIALIZE_PATH = "/initialize"
+
+@KoverIgnore("in development")
+internal fun metricCardFormInitialize(
+    checkoutType: String,
+    appearance: String,
+    sellerCustomization: List<String>,
+    allowedPaymentTypes: List<String>,
+    allowedPaymentMethods: List<String>,
+) = Metric(
+    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_PATH",
+    type = TrackType.EVENT,
+    data = CardFormInitEventData(
+        checkoutType = checkoutType,
+        appearance = appearance,
+        sellerCustomization = sellerCustomization,
+        allowedPaymentTypes = allowedPaymentTypes,
+        allowedPaymentMethods = allowedPaymentMethods,
+    ),
+)
+
+@KoverIgnore("in development")
+internal fun metricCardFormInitializeError(
+    errorType: String,
+) = Metric(
+    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_PATH$ERROR_PATH",
+    type = TrackType.EVENT,
+    data = MetricErrorData(errorType = errorType),
+)
+
+@KoverIgnore("in development")
+internal data class CardFormInitEventData(
+    @SerializedName("checkout_type")
+    val checkoutType: String,
+    @SerializedName("appearance")
+    val appearance: String,
+    @SerializedName("seller_customization")
+    val sellerCustomization: List<String>,
+    @SerializedName("allowed_payment_types")
+    val allowedPaymentTypes: List<String>,
+    @SerializedName("allowed_payment_methods")
+    val allowedPaymentMethods: List<String>,
+) : EventData
