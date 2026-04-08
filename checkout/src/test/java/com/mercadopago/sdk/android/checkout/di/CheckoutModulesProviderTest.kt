@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
+import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
@@ -75,7 +76,7 @@ internal class CheckoutModulesProviderTest {
 
         // When
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardForm(),
+            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
             paymentMethods = emptyList(),
         )
         val module = module {
