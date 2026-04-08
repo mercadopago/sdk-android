@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormDropdownSelection
-import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitialize
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitializeError
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInputValidation
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmit
@@ -16,7 +15,6 @@ import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
-import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -74,7 +72,6 @@ internal class CardPaymentViewModel(
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
-    private val themePreferences: CheckoutThemePreferences,
 ) : ViewModel() {
     private val helperTextOptional: String
         get() = stateFactory.getOptionalFieldText()
@@ -90,7 +87,6 @@ internal class CardPaymentViewModel(
             updateLoadingState(true)
             getIdentificationTypesUseCase().fold(
                 onSuccess = { data ->
-                    trackInitialize()
                     val firstType = data.firstOrNull()
                     _viewState.value = _viewState.value.copy(
                         identificationTypeState = _viewState.value.identificationTypeState.copy(
@@ -746,19 +742,6 @@ internal class CardPaymentViewModel(
     }
 
     // region Analytics Tracking
-
-    private fun trackInitialize() {
-        val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricCardFormInitialize(
-                checkoutType = "card_form",
-                appearance = themePreferences.getCurrentStyle().toAnalyticsString(),
-                sellerCustomization = emptyList(),
-                allowedPaymentTypes = cardTypes.map { it.toAnalyticsString() },
-                allowedPaymentMethods = cardBrands.map { it.name },
-            ),
-        )
-    }
 
     private fun trackInitializeError(
         error: MercadoPagoCheckoutError,

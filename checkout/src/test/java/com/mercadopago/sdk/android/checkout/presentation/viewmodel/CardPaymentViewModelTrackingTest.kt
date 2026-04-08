@@ -2,13 +2,11 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -24,7 +22,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +35,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -53,7 +49,6 @@ internal class CardPaymentViewModelTrackingTest {
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
     private val validator = mockk<CardPaymentValidator>(relaxed = true)
-    private val themePreferences = mockk<CheckoutThemePreferences>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -69,7 +64,6 @@ internal class CardPaymentViewModelTrackingTest {
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        every { themePreferences.getCurrentStyle() } returns MercadoPagoUserInterfaceStyle.Light
         every { stateFactory.createInitialState() } returns CardPaymentScreenState()
         every { stateFactory.getOptionalFieldText() } returns ""
         every { stateFactory.getGenericErrorMessage() } returns "Error"
@@ -93,23 +87,9 @@ internal class CardPaymentViewModelTrackingTest {
         generateTokenUseCase = generateTokenUseCase,
         cancelledFormContextUseCase = cancelledFormContextUseCase,
         validator = validator,
-        themePreferences = themePreferences,
     )
 
     // region Initialize
-
-    @Test
-    fun `when getIdentificationTypes succeeds then tracks initialize event`() = runTest {
-        coEvery { getIdentificationTypesUseCase() } returns Result.Success(emptyList())
-        val viewModel = makeViewModel()
-
-        viewModel.getIdentificationTypes()
-
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/initialize"))
-        assertEquals(TrackType.EVENT, metricSlot.captured.type)
-    }
 
     @Test
     fun `when getIdentificationTypes fails then tracks initialize_error event`() = runTest {
