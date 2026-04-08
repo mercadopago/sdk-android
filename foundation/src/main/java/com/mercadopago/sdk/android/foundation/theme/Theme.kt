@@ -311,25 +311,25 @@ object MercadoPagoTheme {
  * @suppress
  * Composable function that provides the MercadoPago theme to its content.
  *
- * @param theme The theme scheme to be applied, defaults to [MercadoPagoThemes.Default]
- * @param appearance The appearance mode to be used, defaults to [MercadoPagoThemeAppearance.System]
+ * @param theme The theme configuration to be applied, defaults to [MercadoPagoThemes.Default]
+ * @param style The user interface style to be used, defaults to [MercadoPagoUserInterfaceStyle.System]
  * @param content The content to be themed
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Default,
-    appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
+    theme: MercadoPagoThemeConfiguration = MercadoPagoThemes.Default,
+    style: MercadoPagoUserInterfaceStyle = MercadoPagoUserInterfaceStyle.System,
     content: @Composable () -> Unit,
 ) {
-    val themeScheme = when (appearance) {
-        MercadoPagoThemeAppearance.System -> if (isSystemInDarkTheme()) {
+    val themeScheme = when (style) {
+        MercadoPagoUserInterfaceStyle.System -> if (isSystemInDarkTheme()) {
             theme.darkTheme
         } else {
             theme.lightTheme
         }
-        MercadoPagoThemeAppearance.Light -> theme.lightTheme
-        MercadoPagoThemeAppearance.Dark -> theme.darkTheme
+        MercadoPagoUserInterfaceStyle.Light -> theme.lightTheme
+        MercadoPagoUserInterfaceStyle.Dark -> theme.darkTheme
     }
     CompositionLocalProvider(
         LocalMercadoPagoTheme provides themeScheme as MercadoPagoThemeProvider.Default,

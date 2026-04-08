@@ -3,9 +3,9 @@
 package com.mercadopago.sdk.android.checkout.data.preferences
 
 import androidx.compose.ui.graphics.Color
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -25,15 +25,15 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `when class is created Then getCurrentAppearance returns System appearance`() {
+    fun `when class is created Then getCurrentStyle returns System style`() {
         // Given
-        val expectedAppearance = MercadoPagoThemeAppearance.System
+        val expectedStyle = MercadoPagoUserInterfaceStyle.System
 
         // When
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(expectedAppearance, actualAppearance)
+        assertEquals(expectedStyle, actualStyle)
     }
 
     @Test
@@ -59,16 +59,16 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `given a new appearance when setCurrentAppearance is called Then getCurrentAppearance returns that appearance`() {
+    fun `given a new style when setCurrentStyle is called Then getCurrentStyle returns that style`() {
         // Given
-        val newAppearance = MercadoPagoThemeAppearance.Light
+        val newStyle = MercadoPagoUserInterfaceStyle.Light
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(newAppearance)
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        checkoutThemePreferences.setCurrentStyle(newStyle)
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(newAppearance, actualAppearance)
+        assertEquals(newStyle, actualStyle)
     }
 
     @Test
@@ -101,22 +101,22 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `given multiple appearance changes when setCurrentAppearance is called sequentially Then getCurrentAppearance returns the last set appearance`() {
+    fun `given multiple style changes when setCurrentStyle is called sequentially Then getCurrentStyle returns the last set style`() {
         // Given
-        val firstAppearance = MercadoPagoThemeAppearance.Light
-        val secondAppearance = MercadoPagoThemeAppearance.Dark
+        val firstStyle = MercadoPagoUserInterfaceStyle.Light
+        val secondStyle = MercadoPagoUserInterfaceStyle.Dark
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(firstAppearance)
+        checkoutThemePreferences.setCurrentStyle(firstStyle)
 
         // Then
-        assertEquals(firstAppearance, checkoutThemePreferences.getCurrentAppearance())
+        assertEquals(firstStyle, checkoutThemePreferences.getCurrentStyle())
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(secondAppearance)
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        checkoutThemePreferences.setCurrentStyle(secondStyle)
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(secondAppearance, actualAppearance)
+        assertEquals(secondStyle, actualStyle)
     }
 }

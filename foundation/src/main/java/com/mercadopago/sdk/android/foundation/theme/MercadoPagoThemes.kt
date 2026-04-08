@@ -10,7 +10,7 @@ object MercadoPagoThemes {
     /**
      * The theme scheme that defines the visual appearance for both light and dark modes.
      */
-    val Default = MercadoPagoThemeProviderScheme(
+    val Default = MercadoPagoThemeConfiguration(
         lightTheme = MercadoPagoDefaultLightTheme,
         darkTheme = MercadoPagoDefaultLightTheme,
     )
