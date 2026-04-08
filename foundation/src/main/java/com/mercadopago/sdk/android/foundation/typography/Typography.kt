@@ -152,8 +152,8 @@ internal val HeadingHugeNarrow = TextStyle(
 internal val BodySmallDefault = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
     letterSpacing = 0.sp,
 )
 
@@ -161,8 +161,8 @@ internal val BodySmallDefault = TextStyle(
 internal val BodySmallEmphasis = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
     letterSpacing = 0.sp,
 )
 
@@ -170,8 +170,8 @@ internal val BodySmallEmphasis = TextStyle(
 internal val BodySmallTextlink = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
     letterSpacing = 0.sp,
 )
 
@@ -179,8 +179,8 @@ internal val BodySmallTextlink = TextStyle(
 internal val BodyMediumDefault = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
     letterSpacing = 0.sp,
 )
 
@@ -188,8 +188,8 @@ internal val BodyMediumDefault = TextStyle(
 internal val BodyMediumEmphasis = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
     letterSpacing = 0.sp,
 )
 
@@ -197,8 +197,8 @@ internal val BodyMediumEmphasis = TextStyle(
 internal val BodyMediumTextlink = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 16.sp,
-    lineHeight = 24.sp,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
     letterSpacing = 0.sp,
 )
 
@@ -206,8 +206,8 @@ internal val BodyMediumTextlink = TextStyle(
 internal val BodyLargeDefault = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
-    fontSize = 18.sp,
-    lineHeight = 28.sp,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
     letterSpacing = 0.sp,
 )
 
@@ -215,8 +215,8 @@ internal val BodyLargeDefault = TextStyle(
 internal val BodyLargeEmphasis = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 18.sp,
-    lineHeight = 28.sp,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
     letterSpacing = 0.sp,
 )
 
@@ -224,8 +224,8 @@ internal val BodyLargeEmphasis = TextStyle(
 internal val BodyLargeTextlink = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W600,
-    fontSize = 18.sp,
-    lineHeight = 28.sp,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
     letterSpacing = 0.sp,
 )
 

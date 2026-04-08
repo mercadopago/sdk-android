@@ -69,6 +69,7 @@ fun MPSimpleTextField(
                 MPInputDecorationBox(
                     isFocused = isFocused,
                     error = error.isNotBlank(),
+                    enabled = enabled,
                     defaults = defaults,
                 ) {
                     Box {

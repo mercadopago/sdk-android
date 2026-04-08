@@ -41,16 +41,16 @@ internal fun getMPHeaderDefaults(): MPHeaderDefaults {
     return MPHeaderDefaults(
         colors = MPHeaderColorDefaults(
             backgroundPrimary = MercadoPagoTheme.color.background.primary,
-            backButtonBackground = MercadoPagoTheme.color.surface.primaryActive,
+            backButtonBackground = MercadoPagoTheme.color.interactive.fillQuiet.idle,
             backButtonIcon = MercadoPagoTheme.color.icon.accent,
             titleText = MercadoPagoTheme.color.text.primary,
         ),
         spacing = MPHeaderSpacingDefaults(
-            backButtonCornerRadius = MercadoPagoTheme.radius.xsmall,
+            backButtonCornerRadius = MercadoPagoTheme.radius.medium,
             fadeOverlayExtraHeight = MercadoPagoTheme.spacing.paddings.xtiny,
         ),
         shape = MPHeaderShapeDefaults(
-            backButtonShape = MercadoPagoTheme.shape.xsmall,
+            backButtonShape = MercadoPagoTheme.shape.medium,
         ),
         typography = MPHeaderTypographyDefaults(
             titleExpanded = MercadoPagoTheme.typography.heading.default.huge,
