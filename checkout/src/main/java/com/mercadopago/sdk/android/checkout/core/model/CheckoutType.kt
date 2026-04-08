@@ -12,5 +12,5 @@ sealed class CheckoutType : Parcelable {
      * @param cardFormConfiguration CardFormConfiguration
      */
     @Parcelize
-    data class CardForm(val cardFormConfiguration: CardFormConfiguration? = null) : CheckoutType()
+    data class CardForm(val cardFormConfiguration: CardFormConfiguration = CardFormConfiguration()) : CheckoutType()
 }

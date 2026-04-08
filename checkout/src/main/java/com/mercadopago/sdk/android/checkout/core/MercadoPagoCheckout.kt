@@ -12,8 +12,8 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 
 internal const val EXTRA_CONFIGURATION = "extra_configuration"
 
@@ -35,8 +35,8 @@ class MercadoPagoCheckout private constructor(
     ) {
         CheckoutCallbackHolder.setCallback(callback)
         Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
-            setCurrentAppearance(
-                checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System,
+            setCurrentStyle(
+                checkoutAppearance?.style ?: MercadoPagoUserInterfaceStyle.System,
             )
             setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Default)
         }
@@ -57,7 +57,7 @@ class MercadoPagoCheckout private constructor(
         private val checkoutType: CheckoutType,
         private val checkoutAppearance: CheckoutAppearance? = CheckoutAppearance(
             theme = MercadoPagoThemes.Default,
-            appearance = MercadoPagoThemeAppearance.System,
+            style = MercadoPagoUserInterfaceStyle.System,
         ),
     ) {
         private var paymentMethods: List<PaymentMethod> = emptyList()

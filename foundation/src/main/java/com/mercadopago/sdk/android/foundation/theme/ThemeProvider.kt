@@ -38,7 +38,7 @@ sealed class MercadoPagoThemeProvider {
  * @property lightTheme The theme configuration for light mode
  * @property darkTheme The theme configuration for dark mode
  */
-data class MercadoPagoThemeProviderScheme(
+data class MercadoPagoThemeConfiguration(
     val lightTheme: MercadoPagoThemeProvider,
     val darkTheme: MercadoPagoThemeProvider,
 )

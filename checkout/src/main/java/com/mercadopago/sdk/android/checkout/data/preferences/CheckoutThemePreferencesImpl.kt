@@ -1,26 +1,26 @@
 package com.mercadopago.sdk.android.checkout.data.preferences
 
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProviderScheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeConfiguration
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 
 internal class CheckoutThemePreferencesImpl : CheckoutThemePreferences {
-    private var theme: MercadoPagoThemeProviderScheme = MercadoPagoThemes.Default
-    private var appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System
+    private var theme: MercadoPagoThemeConfiguration = MercadoPagoThemes.Default
+    private var style: MercadoPagoUserInterfaceStyle = MercadoPagoUserInterfaceStyle.System
 
-    override fun getCurrentThemeScheme(): MercadoPagoThemeProviderScheme = theme
+    override fun getCurrentThemeScheme(): MercadoPagoThemeConfiguration = theme
 
-    override fun getCurrentAppearance(): MercadoPagoThemeAppearance = appearance
+    override fun getCurrentStyle(): MercadoPagoUserInterfaceStyle = style
 
     override fun setCurrentThemeScheme(
-        theme: MercadoPagoThemeProviderScheme,
+        theme: MercadoPagoThemeConfiguration,
     ) {
         this.theme = theme
     }
 
-    override fun setCurrentAppearance(
-        appearance: MercadoPagoThemeAppearance,
+    override fun setCurrentStyle(
+        style: MercadoPagoUserInterfaceStyle,
     ) {
-        this.appearance = appearance
+        this.style = style
     }
 }

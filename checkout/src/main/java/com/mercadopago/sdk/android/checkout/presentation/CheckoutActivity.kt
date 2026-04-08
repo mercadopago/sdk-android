@@ -36,7 +36,7 @@ internal class CheckoutActivity : ComponentActivity() {
             KoinContext(context = Checkout.getInstance(this).koin) {
                 MercadoPagoTheme(
                     theme = checkoutThemePreferences.getCurrentThemeScheme(),
-                    appearance = checkoutThemePreferences.getCurrentAppearance(),
+                    style = checkoutThemePreferences.getCurrentStyle(),
                 ) {
                     MPCardPayment(checkoutConfiguration = checkoutConfiguration)
                 }
