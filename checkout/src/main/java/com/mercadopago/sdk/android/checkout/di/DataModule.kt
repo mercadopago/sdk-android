@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
+import com.mercadopago.sdk.android.checkout.domain.usecase.CardFormInitUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
@@ -37,10 +38,17 @@ internal fun provideDataModule() =
         factory {
             CardPaymentValidator(stringProvider = get())
         }
+        factory {
+            CardFormInitUseCase(
+                countryCode = MercadoPagoSDK.countryCode,
+                cardFormService = get(),
+            )
+        }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
                 stateFactory = get(),
                 checkoutConfiguration = checkoutConfiguration,
+                cardFormInitUseCase = get(),
                 getCardDataByBinUseCase = GetCardDataByBinUseCase(
                     getPaymentMethodsUseCase = GetPaymentMethodsUseCase(),
                     getCardIssuersUseCase = GetCardIssuersUseCase(),

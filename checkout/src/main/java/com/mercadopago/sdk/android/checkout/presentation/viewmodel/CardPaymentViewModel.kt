@@ -22,6 +22,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.checkout.domain.usecase.CardFormInitUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
@@ -57,12 +58,17 @@ import kotlinx.coroutines.launch
 internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
+    private val cardFormInitUseCase: CardFormInitUseCase,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
+    init {
+        viewModelScope.launch { cardFormInitUseCase() }
+    }
+
     private val helperTextOptional: String
         get() = stateFactory.getOptionalFieldText()
 
