@@ -12,9 +12,8 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-import org.koin.core.Koin
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 
 internal const val EXTRA_CONFIGURATION = "extra_configuration"
 
@@ -26,7 +25,6 @@ class MercadoPagoCheckout private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
     private val checkoutAppearance: CheckoutAppearance?,
-    private val koin: Koin = Checkout.getInstance().koin,
 ) {
     /**
      * Launches the checkout
@@ -36,9 +34,11 @@ class MercadoPagoCheckout private constructor(
         callback: (MercadoPagoCheckoutResult) -> Unit,
     ) {
         CheckoutCallbackHolder.setCallback(callback)
-        koin.get<CheckoutThemePreferences>().apply {
-            setCurrentAppearance(checkoutAppearance?.appearance ?: MercadoPagoThemeAppearance.System)
-            setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Legacy)
+        Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
+            setCurrentStyle(
+                checkoutAppearance?.style ?: MercadoPagoUserInterfaceStyle.System,
+            )
+            setCurrentThemeScheme(checkoutAppearance?.theme ?: MercadoPagoThemes.Default)
         }
         val intent = Intent(context, CheckoutActivity::class.java).apply {
             putExtra(EXTRA_CONFIGURATION, checkoutConfiguration)
@@ -56,8 +56,8 @@ class MercadoPagoCheckout private constructor(
         private val context: Context,
         private val checkoutType: CheckoutType,
         private val checkoutAppearance: CheckoutAppearance? = CheckoutAppearance(
-            theme = MercadoPagoThemes.Legacy,
-            appearance = MercadoPagoThemeAppearance.System,
+            theme = MercadoPagoThemes.Default,
+            style = MercadoPagoUserInterfaceStyle.System,
         ),
     ) {
         private var paymentMethods: List<PaymentMethod> = emptyList()

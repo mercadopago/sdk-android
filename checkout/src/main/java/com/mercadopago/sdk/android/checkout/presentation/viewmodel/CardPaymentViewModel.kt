@@ -83,8 +83,7 @@ internal class CardPaymentViewModel(
                             show = data.isNotEmpty(),
                             identificationTypes = data,
                             selected = firstType,
-                            placeHolder = firstType.getPlaceholder() ?: stateFactory.getStringProvider()
-                                .getString(R.string.card_form_document_example),
+                            placeHolder = firstType.getPlaceholder().orEmpty(),
                         ),
                     )
                 },
@@ -109,6 +108,9 @@ internal class CardPaymentViewModel(
                 )
                 if (!event.isFocused) {
                     handleCardNumberInputError()
+                    if (_viewState.value.messageError.description.isNotEmpty()) {
+                        _viewState.value = _viewState.value.copy(showMessage = true)
+                    }
                 }
             }
 
@@ -239,6 +241,7 @@ internal class CardPaymentViewModel(
     fun onMessageClick() {
         _viewState.value = _viewState.value.copy(
             showMessage = false,
+            messageError = MessageError(),
         )
     }
 
@@ -305,8 +308,7 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = event.identificationType.getPlaceholder() ?: stateFactory.getStringProvider()
-                            .getString(R.string.card_form_document_example),
+                        placeHolder = event.identificationType.getPlaceholder().orEmpty(),
                     ),
                 )
             }
@@ -538,7 +540,7 @@ internal class CardPaymentViewModel(
             ).fold(
                 onSuccess = { cardToken ->
                     val paymentData = MPPaymentData(
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toInt() ?: 0,
+                        transactionAmount = checkoutConfiguration?.getCardFormAmount(),
                         token = cardToken.token,
                         installment = 1,
                         paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
@@ -665,12 +667,13 @@ internal class CardPaymentViewModel(
     private fun handleResultError(
         error: MercadoPagoCheckoutError,
     ) {
+        val isCardNumberFocused = _viewState.value.cardNumberState.isFocused
         _viewState.value = _viewState.value.copy(
             messageError = MessageError(
                 title = error.message.orEmpty(),
                 description = genericErrorMessage,
             ),
-            showMessage = true,
+            showMessage = !isCardNumberFocused,
         )
     }
 

@@ -1,10 +1,12 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
+import java.math.BigDecimal
+
 /**
  * Contains the payment data resulting from a successful checkout.
  *
  * @property token Optional payment token generated for the transaction.
- * @property transactionAmount Total amount of the transaction in the smallest currency unit.
+ * @property transactionAmount Total amount of the transaction.
  * @property paymentMethodId Optional identifier of the selected payment method.
  * @property paymentTypeId Optional identifier of the selected payment method.
  * @property payer Payer information associated with the payment.
@@ -13,7 +15,7 @@ package com.mercadopago.sdk.android.checkout.domain.model
  */
 data class MPPaymentData(
     val token: String,
-    val transactionAmount: Int?,
+    val transactionAmount: BigDecimal?,
     val paymentMethodId: String,
     val paymentTypeId: String,
     val payer: Payer?,

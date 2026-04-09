@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 internal data class MPHeaderDefaults(
     val colors: MPHeaderColorDefaults,
@@ -40,22 +40,22 @@ internal data class MPHeaderTypographyDefaults(
 internal fun getMPHeaderDefaults(): MPHeaderDefaults {
     return MPHeaderDefaults(
         colors = MPHeaderColorDefaults(
-            backgroundPrimary = MercadoPagoAndesTheme.color.background.primary,
-            backButtonBackground = MercadoPagoAndesTheme.color.surface.primaryActive,
-            backButtonIcon = MercadoPagoAndesTheme.color.icon.accent,
-            titleText = MercadoPagoAndesTheme.color.text.primary,
+            backgroundPrimary = MercadoPagoTheme.color.background.primary,
+            backButtonBackground = MercadoPagoTheme.color.interactive.fillQuiet.idle,
+            backButtonIcon = MercadoPagoTheme.color.icon.accent,
+            titleText = MercadoPagoTheme.color.text.primary,
         ),
         spacing = MPHeaderSpacingDefaults(
-            backButtonCornerRadius = MercadoPagoAndesTheme.radius.xsmall,
-            fadeOverlayExtraHeight = MercadoPagoAndesTheme.spacing.paddings.xtiny,
+            backButtonCornerRadius = MercadoPagoTheme.radius.medium,
+            fadeOverlayExtraHeight = MercadoPagoTheme.spacing.paddings.xtiny,
         ),
         shape = MPHeaderShapeDefaults(
-            backButtonShape = MercadoPagoAndesTheme.shape.xsmall,
+            backButtonShape = MercadoPagoTheme.shape.medium,
         ),
         typography = MPHeaderTypographyDefaults(
-            titleExpanded = MercadoPagoAndesTheme.typography.heading.default.huge,
-            titleCollapsed = MercadoPagoAndesTheme.typography.heading.default.medium,
-            subtitleExpanded = MercadoPagoAndesTheme.typography.body.default.medium,
+            titleExpanded = MercadoPagoTheme.typography.heading.default.huge,
+            titleCollapsed = MercadoPagoTheme.typography.heading.default.medium,
+            subtitleExpanded = MercadoPagoTheme.typography.body.default.medium,
         ),
     )
 }

@@ -11,7 +11,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -32,9 +31,9 @@ private const val TEXT_GROUP = "Text"
 fun MPText(
     text: String,
     modifier: Modifier = Modifier,
-    style: TextStyle = MercadoPagoAndesTheme.typography.body.default.small,
-    color: Color = MercadoPagoAndesTheme.color.text.primary,
-    fontWeight: FontWeight = FontWeight.Normal,
+    style: TextStyle = MercadoPagoTheme.typography.body.default.small,
+    color: Color = MercadoPagoTheme.color.text.primary,
+    fontWeight: FontWeight? = null,
 ) {
     Text(
         text = text,
@@ -49,7 +48,7 @@ fun MPText(
 @Composable
 internal fun TextTittlePreview() {
     MercadoPagoTheme(
-        theme = MercadoPagoThemes.Andes,
+        theme = MercadoPagoThemes.Default,
     ) {
         Column(
             modifier = Modifier
@@ -58,38 +57,38 @@ internal fun TextTittlePreview() {
         ) {
             MPText(
                 text = "My Tittle Primary Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.primary,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.primary,
             )
             MPText(
                 text = "My Tittle Secondary Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.secondary,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.secondary,
             )
             MPText(
                 text = "My Tittle Accent Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.accent,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.accent,
             )
             MPText(
                 text = "My Tittle Inverted Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.feedback.negative.textLoud,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.feedback.negative.textLoud,
             )
             MPText(
                 text = "My Tittle Negative Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.inverse,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.inverse,
             )
             MPText(
                 text = "My Tittle Disabled Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.text.disabled,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.disabled,
             )
             MPText(
                 text = "My Tittle Positive Text",
-                style = MercadoPagoAndesTheme.typography.body.default.medium,
-                color = MercadoPagoAndesTheme.color.feedback.positive.textLoud,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.feedback.positive.textLoud,
             )
         }
     }

@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 internal data class MessageColorDefaults(
     val backgroundColor: Color,
@@ -28,14 +28,14 @@ internal fun getMessageDefaults(
     type: MPMessageType,
 ): MessageDefaults {
     val feedbackColors = when (type) {
-        MPMessageType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
-        MPMessageType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
-        MPMessageType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
-        MPMessageType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
+        MPMessageType.Informative -> MercadoPagoTheme.color.feedback.informative
+        MPMessageType.Positive -> MercadoPagoTheme.color.feedback.positive
+        MPMessageType.Caution -> MercadoPagoTheme.color.feedback.caution
+        MPMessageType.Negative -> MercadoPagoTheme.color.feedback.negative
     }
     val backgroundColor = feedbackColors.fillQuiet
-    val textColor = MercadoPagoAndesTheme.color.text.primary
-    val closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idle
+    val textColor = MercadoPagoTheme.color.text.primary
+    val closeIconColor = MercadoPagoTheme.color.interactive.icon.idle
     return MessageDefaults(
         colors = MessageColorDefaults(
             backgroundColor = backgroundColor,
@@ -43,11 +43,11 @@ internal fun getMessageDefaults(
             closeIconColor = closeIconColor,
         ),
         spacing = MessageSpacingDefaults(
-            horizontalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-            verticalPadding = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-            iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.micro,
-            closeIconSize = MercadoPagoAndesTheme.spacing.paddings.xsmall,
-            closeIconPadding = MercadoPagoAndesTheme.spacing.paddings.xnano,
+            horizontalPadding = MercadoPagoTheme.spacing.paddings.xtiny,
+            verticalPadding = MercadoPagoTheme.spacing.paddings.xtiny,
+            iconTextSpacing = MercadoPagoTheme.spacing.gap.micro,
+            closeIconSize = MercadoPagoTheme.spacing.paddings.xsmall,
+            closeIconPadding = MercadoPagoTheme.spacing.paddings.xnano,
         ),
     )
 }

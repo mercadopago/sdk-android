@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -53,7 +52,7 @@ fun MPPopover(
 
     Surface(
         modifier = modifier
-            .defaultMinSize(minWidth = 240.dp, minHeight = 86.dp)
+            .defaultMinSize(minWidth = 380.dp, minHeight = 86.dp)
             .padding(defaults.spacing.surfacePadding),
         color = defaults.colors.backgroundColor,
         shape = bubbleShape,
@@ -76,15 +75,15 @@ fun MPPopover(
                 if (title.isNotBlank()) {
                     MPText(
                         text = title,
-                        style = MercadoPagoAndesTheme.typography.heading.default.medium,
-                        color = MercadoPagoAndesTheme.color.text.primary,
+                        style = MercadoPagoTheme.typography.heading.default.medium,
+                        color = MercadoPagoTheme.color.text.primary,
                     )
                 }
                 if (description.isNotBlank()) {
                     MPText(
                         text = description,
-                        style = MercadoPagoAndesTheme.typography.body.default.medium,
-                        color = MercadoPagoAndesTheme.color.text.primary,
+                        style = MercadoPagoTheme.typography.body.default.medium,
+                        color = MercadoPagoTheme.color.text.primary,
                     )
                 }
             }
@@ -132,22 +131,22 @@ internal data class PopoverSpacingDefaults(
 private fun getPopoverDefaults(): PopoverDefaults {
     return PopoverDefaults(
         colors = PopoverColorDefaults(
-            backgroundColor = MercadoPagoAndesTheme.color.surface.primaryIdle,
-            titleTextColor = MercadoPagoAndesTheme.color.text.primary,
-            descriptionTextColor = MercadoPagoAndesTheme.color.text.secondary,
-            closeIconColor = MercadoPagoAndesTheme.color.interactive.icon.idle,
+            backgroundColor = MercadoPagoTheme.color.surface.primaryIdle,
+            titleTextColor = MercadoPagoTheme.color.text.primary,
+            descriptionTextColor = MercadoPagoTheme.color.text.secondary,
+            closeIconColor = MercadoPagoTheme.color.interactive.icon.idle,
         ),
         spacing = PopoverSpacingDefaults(
-            cornerRadius = MercadoPagoAndesTheme.radius.medium,
-            pointerWidth = MercadoPagoAndesTheme.spacing.paddings.xtiny,
-            pointerHeight = MercadoPagoAndesTheme.spacing.paddings.xnano,
-            pointerEndOffset = MercadoPagoAndesTheme.spacing.gap.micro,
-            surfacePadding = MercadoPagoAndesTheme.spacing.paddings.micro,
-            contentPaddingHorizontal = MercadoPagoAndesTheme.spacing.paddings.micro,
-            contentPaddingVertical = MercadoPagoAndesTheme.spacing.paddings.micro,
-            contentGap = MercadoPagoAndesTheme.spacing.gap.nano,
-            iconSize = MercadoPagoAndesTheme.spacing.paddings.micro,
-            iconPadding = MercadoPagoAndesTheme.spacing.paddings.pico,
+            cornerRadius = MercadoPagoTheme.radius.xlarge,
+            pointerWidth = MercadoPagoTheme.spacing.paddings.xtiny,
+            pointerHeight = MercadoPagoTheme.spacing.paddings.xnano,
+            pointerEndOffset = MercadoPagoTheme.spacing.gap.micro,
+            surfacePadding = MercadoPagoTheme.spacing.paddings.micro,
+            contentPaddingHorizontal = MercadoPagoTheme.spacing.paddings.micro,
+            contentPaddingVertical = MercadoPagoTheme.spacing.paddings.micro,
+            contentGap = MercadoPagoTheme.spacing.gap.nano,
+            iconSize = MercadoPagoTheme.spacing.paddings.micro,
+            iconPadding = MercadoPagoTheme.spacing.paddings.pico,
         ),
     )
 }
@@ -211,7 +210,7 @@ private class PopoverBubbleShape(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewMPPopover() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         MPPopover(
             title = "Title",
             description = "This can be a single or multiline message",

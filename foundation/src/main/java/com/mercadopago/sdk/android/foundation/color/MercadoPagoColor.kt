@@ -17,17 +17,17 @@ import androidx.compose.ui.graphics.Color
  * @property interactive Interactive color configuration
  * @property transparent Transparent color configuration
  */
-data class MercadoPagoAndesColor(
-    val background: MercadoPagoAndesBackgroundColor,
-    val surface: MercadoPagoAndesSurfaceColor,
-    val fill: MercadoPagoAndesFillColor,
-    val border: MercadoPagoAndesBorderColor,
-    val icon: MercadoPagoAndesIconColor,
-    val text: MercadoPagoAndesTextColor,
-    val brand: MercadoPagoAndesBrandColor,
-    val feedback: MercadoPagoAndesFeedbackColor,
-    val interactive: MercadoPagoAndesInteractiveColor,
-    val transparent: MercadoPagoAndesTransparentColor,
+data class MercadoPagoColor(
+    val background: MercadoPagoBackgroundColor,
+    val surface: MercadoPagoSurfaceColor,
+    val fill: MercadoPagoFillColor,
+    val border: MercadoPagoBorderColor,
+    val icon: MercadoPagoIconColor,
+    val text: MercadoPagoTextColor,
+    val brand: MercadoPagoBrandColor,
+    val feedback: MercadoPagoFeedbackColor,
+    val interactive: MercadoPagoInteractiveColor,
+    val transparent: MercadoPagoTransparentColor,
 )
 
 /**
@@ -36,7 +36,7 @@ data class MercadoPagoAndesColor(
  * @property primary Primary background color
  * @property secondary Secondary background color
  */
-data class MercadoPagoAndesBackgroundColor(
+data class MercadoPagoBackgroundColor(
     val primary: Color,
     val secondary: Color,
 )
@@ -48,7 +48,7 @@ data class MercadoPagoAndesBackgroundColor(
  * @property primaryActive Primary surface color in active state
  * @property primaryDisabled Primary surface color in disabled state
  */
-data class MercadoPagoAndesSurfaceColor(
+data class MercadoPagoSurfaceColor(
     val primaryIdle: Color,
     val primaryActive: Color,
     val primaryDisabled: Color,
@@ -65,7 +65,7 @@ data class MercadoPagoAndesSurfaceColor(
  * @property accentQuiet Quiet accent fill color
  * @property defaultOnScroll Default fill color on scroll
  */
-data class MercadoPagoAndesFillColor(
+data class MercadoPagoFillColor(
     val primary: Color,
     val secondary: Color,
     val inverse: Color,
@@ -83,7 +83,7 @@ data class MercadoPagoAndesFillColor(
  * @property inverse Inverse border color
  * @property disabled Disabled border color
  */
-data class MercadoPagoAndesBorderColor(
+data class MercadoPagoBorderColor(
     val primary: Color,
     val accent: Color,
     val inverse: Color,
@@ -99,7 +99,7 @@ data class MercadoPagoAndesBorderColor(
  * @property inverse Inverse icon color
  * @property disabled Disabled icon color
  */
-data class MercadoPagoAndesIconColor(
+data class MercadoPagoIconColor(
     val primary: Color,
     val secondary: Color,
     val accent: Color,
@@ -118,7 +118,7 @@ data class MercadoPagoAndesIconColor(
  * @property linkIdle Link text color in idle state
  * @property linkActive Link text color in active state
  */
-data class MercadoPagoAndesTextColor(
+data class MercadoPagoTextColor(
     val primary: Color,
     val secondary: Color,
     val accent: Color,
@@ -136,7 +136,7 @@ data class MercadoPagoAndesTextColor(
  * @property gradientStart Brand gradient start color
  * @property gradientEnd Brand gradient end color
  */
-data class MercadoPagoAndesBrandColor(
+data class MercadoPagoBrandColor(
     val fillLoud: Color,
     val fillQuiet: Color,
     val gradientStart: Color,
@@ -151,11 +151,11 @@ data class MercadoPagoAndesBrandColor(
  * @property caution Caution feedback colors
  * @property negative Negative feedback colors
  */
-data class MercadoPagoAndesFeedbackColor(
-    val informative: MercadoPagoAndesFeedbackTypeColor,
-    val positive: MercadoPagoAndesFeedbackTypeColor,
-    val caution: MercadoPagoAndesFeedbackTypeColor,
-    val negative: MercadoPagoAndesFeedbackTypeColor,
+data class MercadoPagoFeedbackColor(
+    val informative: MercadoPagoFeedbackTypeColor,
+    val positive: MercadoPagoFeedbackTypeColor,
+    val caution: MercadoPagoFeedbackTypeColor,
+    val negative: MercadoPagoFeedbackTypeColor,
 )
 
 /**
@@ -167,7 +167,7 @@ data class MercadoPagoAndesFeedbackColor(
  * @property borderLoud Loud border color
  * @property iconLoud Loud icon color
  */
-data class MercadoPagoAndesFeedbackTypeColor(
+data class MercadoPagoFeedbackTypeColor(
     val fillLoud: Color,
     val fillQuiet: Color,
     val textLoud: Color,
@@ -184,12 +184,12 @@ data class MercadoPagoAndesFeedbackTypeColor(
  * @property border Interactive border colors
  * @property icon Interactive icon colors
  */
-data class MercadoPagoAndesInteractiveColor(
-    val fillLoud: MercadoPagoAndesInteractiveFillColor,
-    val fillQuiet: MercadoPagoAndesInteractiveFillColor,
-    val fillMute: MercadoPagoAndesInteractiveFillColor,
-    val border: MercadoPagoAndesInteractiveBorderColor,
-    val icon: MercadoPagoAndesInteractiveIconColor,
+data class MercadoPagoInteractiveColor(
+    val fillLoud: MercadoPagoInteractiveFillColor,
+    val fillQuiet: MercadoPagoInteractiveFillColor,
+    val fillMute: MercadoPagoInteractiveFillColor,
+    val border: MercadoPagoInteractiveBorderColor,
+    val icon: MercadoPagoInteractiveIconColor,
 )
 
 /**
@@ -199,7 +199,7 @@ data class MercadoPagoAndesInteractiveColor(
  * @property hover Hover state color
  * @property active Active state color
  */
-data class MercadoPagoAndesInteractiveFillColor(
+data class MercadoPagoInteractiveFillColor(
     val idle: Color,
     val hover: Color,
     val active: Color,
@@ -211,7 +211,7 @@ data class MercadoPagoAndesInteractiveFillColor(
  * @property idle Idle state color
  * @property active Active state color
  */
-data class MercadoPagoAndesInteractiveBorderColor(
+data class MercadoPagoInteractiveBorderColor(
     val idle: Color,
     val active: Color,
 )
@@ -224,7 +224,7 @@ data class MercadoPagoAndesInteractiveBorderColor(
  * @property idleAccent Idle accent state color
  * @property activeAccent Active accent state color
  */
-data class MercadoPagoAndesInteractiveIconColor(
+data class MercadoPagoInteractiveIconColor(
     val idle: Color,
     val active: Color,
     val idleAccent: Color,
@@ -236,6 +236,6 @@ data class MercadoPagoAndesInteractiveIconColor(
  *
  * @property transparent Fully transparent color
  */
-data class MercadoPagoAndesTransparentColor(
+data class MercadoPagoTransparentColor(
     val transparent: Color,
 )

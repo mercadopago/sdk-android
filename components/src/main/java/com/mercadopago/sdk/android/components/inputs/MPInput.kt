@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,12 +20,13 @@ import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.components.extensions.addBorder
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 @Composable
 internal fun MPInputDecorationBox(
     isFocused: Boolean,
     error: Boolean,
+    enabled: Boolean = true,
     defaults: MPInputDefaults,
     content: @Composable (RowScope.() -> Unit),
 ) {
@@ -36,9 +36,10 @@ internal fun MPInputDecorationBox(
             .addBorder(
                 isFocused = isFocused,
                 error = error,
+                enabled = enabled,
                 defaults = defaults,
             )
-            .height(OutlinedTextFieldDefaults.MinHeight)
+            .height(MercadoPagoTheme.spacing.paddings.xlarge)
             .padding(horizontal = defaults.spacing.horizontalPadding),
     ) {
         content()
@@ -64,18 +65,18 @@ internal fun MPInputBody(
                 MPText(
                     text = label,
                     modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
-                    style = MercadoPagoAndesTheme.typography.body.default.medium,
+                    style = MercadoPagoTheme.typography.body.default.medium,
                     color = defaults.colors.textPrimary,
                 )
                 if (showTooltipIcon) {
-                    Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.xnano))
+                    Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
                     Icon(
                         painter = painterResource(R.drawable.ic_tooltip),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(MercadoPagoAndesTheme.radius.xlarge)
+                            .size(MercadoPagoTheme.radius.xlarge)
                             .clickable { onClickTooltip.invoke() },
-                        tint = MercadoPagoAndesTheme.color.icon.accent,
+                        tint = MercadoPagoTheme.color.icon.accent,
                     )
                 }
             }
@@ -83,7 +84,7 @@ internal fun MPInputBody(
         content()
         when {
             error.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
                 MPInputMessage(
                     text = error,
                     state = InputLabelState.Error,
@@ -92,7 +93,7 @@ internal fun MPInputBody(
             }
 
             helper.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoAndesTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
                 MPInputMessage(
                     text = helper,
                     state = state,

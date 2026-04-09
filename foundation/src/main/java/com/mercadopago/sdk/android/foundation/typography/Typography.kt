@@ -1,201 +1,273 @@
 package com.mercadopago.sdk.android.foundation.typography
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.airbnb.android.showkase.annotation.ShowkaseTypography
 import com.mercadopago.sdk.android.foundation.R
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
-private const val TYPOGRAPHY_GROUP = "Typography"
-private const val TYPOGRAPHY_TITLE_GROUP = "Title"
+internal val InterFontFamily = FontFamily(
+    Font(R.font.inter_regular, FontWeight.W400),
+    Font(R.font.inter_semi_bold, FontWeight.W600),
+    Font(R.font.inter_bold, FontWeight.W700),
+)
+
+private const val TYPOGRAPHY_HEADING_GROUP = "Heading"
 private const val TYPOGRAPHY_BODY_GROUP = "Body"
 
 /**
- * Defines the set of text styles for Mercado Pago.
- * This structure is based on the provided design specifications.
+ * Represents the new typography system configuration for MercadoPago UI components.
+ * This class defines the updated text style values used throughout the application.
  *
- * @property title Title text styles.
- * @property body Body text styles.
+ * @property heading Heading typography configuration
+ * @property body Body typography configuration
+ * @property title Title typography configuration (deprecated, use heading instead)
  */
 data class MercadoPagoTypography(
-    val title: MercadoPagoTitleTypography,
-    val body: MercadoPagoBodyTypography,
+    val heading: HeadingTypography,
+    val body: BodyTypography,
+    val title: TitleTypography = TitleTypography(
+        title = TextStyle.Default,
+    ),
 )
 
 /**
- * Defines the set of text styles for Mercado Pago.
- * This structure is based on the provided design specifications.
+ * Represents the heading typography configuration.
  *
- * @property smallSemibold Style for Title S Semibold.
+ * @property default Default heading style configuration
+ * @property narrow Narrow heading style configuration
  */
-data class MercadoPagoTitleTypography(
-    val smallSemibold: TextStyle,
+data class HeadingTypography(
+    val default: HeadingStyle,
+    val narrow: HeadingStyle,
 )
 
 /**
- * Defines the set of text styles for Mercado Pago.
- * This structure is based on the provided design specifications.
+ * Represents the heading style configuration with different sizes.
  *
- * @property mediumSemibold Style for Body M Semibold.
- * @property mediumRegular Style for Body M Regular.
- * @property smallSemibold Style for Body S Semibold.
- * @property smallRegular Style for Body S Regular.
- * @property extraSmallSemibold Style for Body XS Semibold.
+ * @property small Small heading text style
+ * @property medium Medium heading text style
+ * @property huge Huge heading text style
  */
-data class MercadoPagoBodyTypography(
-    val mediumSemibold: TextStyle,
-    val mediumRegular: TextStyle,
-    val smallSemibold: TextStyle,
-    val smallRegular: TextStyle,
-    val extraSmallSemibold: TextStyle,
+data class HeadingStyle(
+    val small: TextStyle,
+    val medium: TextStyle,
+    val huge: TextStyle,
 )
 
-internal val ProximaNovaFontFamily = FontFamily(
-    Font(R.font.proxima_nova_thin, FontWeight.Thin, FontStyle.Normal),
-    Font(R.font.proxima_nova_thin_italic, FontWeight.Thin, FontStyle.Italic),
-    Font(R.font.proxima_nova_light, FontWeight.Light, FontStyle.Normal),
-    Font(R.font.proxima_nova_light_italic, FontWeight.Light, FontStyle.Italic),
-    Font(R.font.proxima_nova_regular, FontWeight.Normal, FontStyle.Normal),
-    Font(R.font.proxima_nova_regular_italic, FontWeight.Normal, FontStyle.Italic),
-    Font(R.font.proxima_nova_medium, FontWeight.Medium, FontStyle.Normal),
-    Font(R.font.proxima_nova_medium_italic, FontWeight.Medium, FontStyle.Italic),
-    Font(R.font.proxima_nova_semi_bold, FontWeight.SemiBold, FontStyle.Normal),
-    Font(R.font.proxima_nova_semi_bold_italic, FontWeight.SemiBold, FontStyle.Italic),
-    Font(R.font.proxima_nova_bold, FontWeight.Bold, FontStyle.Normal),
-    Font(R.font.proxima_nova_bold_italic, FontWeight.Bold, FontStyle.Italic),
-    Font(R.font.proxima_nova_extra_bold, FontWeight.ExtraBold, FontStyle.Normal),
-    Font(R.font.proxima_nova_extra_bold_italic, FontWeight.ExtraBold, FontStyle.Italic),
-    Font(R.font.proxima_nova_black, FontWeight.Black, FontStyle.Normal),
-    Font(R.font.proxima_nova_black_italic, FontWeight.Black, FontStyle.Italic),
+/**
+ * Represents the title typography configuration.
+ * @deprecated Use [HeadingTypography] instead. This is kept for backward compatibility.
+ *
+ * @property title Title text style
+ */
+@Deprecated("Use HeadingTypography instead", ReplaceWith("HeadingTypography"))
+data class TitleTypography(
+    val title: TextStyle,
 )
 
-@ShowkaseTypography(name = "Title Small Semibold", group = TYPOGRAPHY_TITLE_GROUP)
-internal val ProximaNovaTitleSmallSemibold = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.SemiBold,
+/**
+ * Represents the body typography configuration.
+ *
+ * @property default Default body style configuration
+ * @property emphasis Emphasis body style configuration
+ * @property textlink Textlink body style configuration
+ */
+data class BodyTypography(
+    val default: BodyStyle,
+    val emphasis: BodyStyle,
+    val textlink: BodyStyle,
+)
+
+/**
+ * Represents the body style configuration with different sizes.
+ *
+ * @property small Small body text style
+ * @property medium Medium body text style
+ * @property large Large body text style
+ */
+data class BodyStyle(
+    val small: TextStyle,
+    val medium: TextStyle,
+    val large: TextStyle,
+)
+
+@ShowkaseTypography(name = "Heading Small Default", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingSmallDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W700,
+    fontSize = 16.sp,
+    lineHeight = 22.sp,
+    letterSpacing = 0.sp,
+)
+
+@ShowkaseTypography(name = "Heading Small Narrow", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingSmallNarrow = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
+    fontSize = 16.sp,
+    lineHeight = 22.sp,
+    letterSpacing = (-1).sp,
+)
+
+@ShowkaseTypography(name = "Heading Medium Default", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingMediumDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W700,
     fontSize = 20.sp,
-    lineHeight = 24.sp,
+    lineHeight = 28.sp,
     letterSpacing = 0.sp,
 )
 
-@ShowkaseTypography(name = "Body Small Regular", group = TYPOGRAPHY_BODY_GROUP)
-internal val ProximaNovaBodySmallRegular = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
+@ShowkaseTypography(name = "Heading Medium Narrow", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingMediumNarrow = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
+    fontSize = 20.sp,
+    lineHeight = 28.sp,
+    letterSpacing = (-1).sp,
+)
+
+@ShowkaseTypography(name = "Heading Huge Default", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingHugeDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W700,
+    fontSize = 24.sp,
+    lineHeight = 28.sp,
     letterSpacing = 0.sp,
 )
 
-@ShowkaseTypography(name = "Body Small Semibold", group = TYPOGRAPHY_BODY_GROUP)
-internal val ProximaNovaBodySmallSemibold = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.SemiBold,
-    fontSize = 14.sp,
-    lineHeight = 20.sp,
-    letterSpacing = 0.sp,
+@ShowkaseTypography(name = "Heading Huge Narrow", group = TYPOGRAPHY_HEADING_GROUP)
+internal val HeadingHugeNarrow = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
+    fontSize = 48.sp,
+    lineHeight = 56.sp,
+    letterSpacing = (-1).sp,
 )
 
-@ShowkaseTypography(name = "Body Extra Small Semibold", group = TYPOGRAPHY_BODY_GROUP)
-internal val ProximaNovaBodyExtraSmallSemibold = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.SemiBold,
+@ShowkaseTypography(name = "Body Small Default", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodySmallDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
     fontSize = 12.sp,
     lineHeight = 16.sp,
     letterSpacing = 0.sp,
 )
 
-@ShowkaseTypography(name = "Body Medium Regular", group = TYPOGRAPHY_BODY_GROUP)
-internal val ProximaNovaBodyMediumRegular = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
+@ShowkaseTypography(name = "Body Small Emphasis", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodySmallEmphasis = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp,
+)
+
+@ShowkaseTypography(name = "Body Small Textlink", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodySmallTextlink = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.sp,
+)
+
+@ShowkaseTypography(name = "Body Medium Default", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyMediumDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
+    fontSize = 14.sp,
     lineHeight = 20.sp,
     letterSpacing = 0.sp,
 )
 
-@ShowkaseTypography(name = "Body Medium Semibold", group = TYPOGRAPHY_BODY_GROUP)
-internal val ProximaNovaMediumSemibold = TextStyle(
-    fontFamily = ProximaNovaFontFamily,
-    fontWeight = FontWeight.SemiBold,
+@ShowkaseTypography(name = "Body Medium Emphasis", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyMediumEmphasis = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp,
+)
+
+@ShowkaseTypography(name = "Body Medium Textlink", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyMediumTextlink = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 14.sp,
+    lineHeight = 20.sp,
+    letterSpacing = 0.sp,
+)
+
+@ShowkaseTypography(name = "Body Large Default", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyLargeDefault = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W400,
     fontSize = 16.sp,
     lineHeight = 24.sp,
     letterSpacing = 0.sp,
 )
 
-internal val MercadoPagoProximaNovaTypography = MercadoPagoTypography(
-    title = MercadoPagoTitleTypography(
-        smallSemibold = ProximaNovaTitleSmallSemibold,
-    ),
-    body = MercadoPagoBodyTypography(
-        smallRegular = ProximaNovaBodySmallRegular,
-        smallSemibold = ProximaNovaBodySmallSemibold,
-        extraSmallSemibold = ProximaNovaBodyExtraSmallSemibold,
-        mediumRegular = ProximaNovaBodyMediumRegular,
-        mediumSemibold = ProximaNovaMediumSemibold,
-    ),
+@ShowkaseTypography(name = "Body Large Emphasis", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyLargeEmphasis = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.sp,
 )
 
-@Preview(name = "Proxima Nova Title Typography", group = TYPOGRAPHY_GROUP)
-@Composable
-internal fun TitleTypographyPreview() {
-    MercadoPagoTheme {
-        Box(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            Text(
-                text = "Title Small Semibold",
-                style = MercadoPagoProximaNovaTypography.title.smallSemibold,
-            )
-        }
-    }
-}
+@ShowkaseTypography(name = "Body Large Textlink", group = TYPOGRAPHY_BODY_GROUP)
+internal val BodyLargeTextlink = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 16.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.sp,
+)
 
-@Preview(name = "Proxima Nova Body Typography", group = TYPOGRAPHY_GROUP)
-@Composable
-internal fun BodyTypographyPreview() {
-    MercadoPagoTheme {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .background(Color.White),
-        ) {
-            Text(
-                text = "Body Small Regular",
-                style = MercadoPagoProximaNovaTypography.body.smallRegular,
-            )
-            Text(
-                text = "Body Small Semibold",
-                style = MercadoPagoProximaNovaTypography.body.smallSemibold,
-            )
-            Text(
-                text = "Body Extra Small Semibold",
-                style = MercadoPagoProximaNovaTypography.body.extraSmallSemibold,
-            )
-            Text(
-                text = "Body Medium Regular",
-                style = MercadoPagoProximaNovaTypography.body.mediumRegular,
-            )
-            Text(
-                text = "Body Medium Semibold",
-                style = MercadoPagoProximaNovaTypography.body.mediumSemibold,
-            )
-        }
-    }
-}
+internal val Title = TextStyle(
+    fontFamily = InterFontFamily,
+    fontWeight = FontWeight.W600,
+    fontSize = 20.sp,
+    lineHeight = 28.sp,
+    letterSpacing = 0.sp,
+)
+
+internal val DefaultTypography = MercadoPagoTypography(
+    heading = HeadingTypography(
+        default = HeadingStyle(
+            small = HeadingSmallDefault,
+            medium = HeadingMediumDefault,
+            huge = HeadingHugeDefault,
+        ),
+        narrow = HeadingStyle(
+            small = HeadingSmallNarrow,
+            medium = HeadingMediumNarrow,
+            huge = HeadingHugeNarrow,
+        ),
+    ),
+    body = BodyTypography(
+        default = BodyStyle(
+            small = BodySmallDefault,
+            medium = BodyMediumDefault,
+            large = BodyLargeDefault,
+        ),
+        emphasis = BodyStyle(
+            small = BodySmallEmphasis,
+            medium = BodyMediumEmphasis,
+            large = BodyLargeEmphasis,
+        ),
+        textlink = BodyStyle(
+            small = BodySmallTextlink,
+            medium = BodyMediumTextlink,
+            large = BodyLargeTextlink,
+        ),
+    ),
+    title = TitleTypography(
+        title = Title,
+    ),
+)

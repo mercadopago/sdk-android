@@ -10,10 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoAndesTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -83,14 +81,14 @@ private fun getHelperDefaults(
     type: MPHelperType,
 ): HelperDefaults {
     val feedbackColors = when (type) {
-        MPHelperType.Informative -> MercadoPagoAndesTheme.color.feedback.informative
-        MPHelperType.Positive -> MercadoPagoAndesTheme.color.feedback.positive
-        MPHelperType.Caution -> MercadoPagoAndesTheme.color.feedback.caution
-        MPHelperType.Negative -> MercadoPagoAndesTheme.color.feedback.negative
+        MPHelperType.Informative -> MercadoPagoTheme.color.feedback.informative
+        MPHelperType.Positive -> MercadoPagoTheme.color.feedback.positive
+        MPHelperType.Caution -> MercadoPagoTheme.color.feedback.caution
+        MPHelperType.Negative -> MercadoPagoTheme.color.feedback.negative
     }
 
     val textColorLoud = feedbackColors.textLoud
-    val textColor = MercadoPagoAndesTheme.color.text.secondary
+    val textColor = MercadoPagoTheme.color.text.secondary
 
     return HelperDefaults(
         colors = HelperColorDefaults(
@@ -98,9 +96,9 @@ private fun getHelperDefaults(
             textColorLoud = textColorLoud,
         ),
         spacing = HelperSpacingDefaults(
-            horizontalPadding = MercadoPagoAndesTheme.spacing.gap.xmicro,
-            verticalPadding = MercadoPagoAndesTheme.spacing.gap.xnano,
-            iconTextSpacing = MercadoPagoAndesTheme.spacing.gap.xnano,
+            horizontalPadding = MercadoPagoTheme.spacing.gap.xmicro,
+            verticalPadding = MercadoPagoTheme.spacing.gap.xnano,
+            iconTextSpacing = MercadoPagoTheme.spacing.gap.xnano,
             iconSize = 16.dp,
         ),
     )
@@ -108,7 +106,7 @@ private fun getHelperDefaults(
 
 /**
  * Helper component - Displays feedback messages with different hierarchies and types
- * This component uses Andes design tokens for colors, typography, and spacing
+ * This component uses design tokens for colors, typography, and spacing
  *
  * @param text: Helper text to display
  * @param modifier: Component modifier
@@ -144,10 +142,9 @@ fun MPHelper(
         MPText(
             text = text,
             style = when (hierarchy) {
-                MPHelperHierarchy.Quiet -> MercadoPagoAndesTheme.typography.body.default.small
-                MPHelperHierarchy.Loud -> MercadoPagoAndesTheme.typography.body.emphasis.small
+                MPHelperHierarchy.Quiet -> MercadoPagoTheme.typography.body.default.small
+                MPHelperHierarchy.Loud -> MercadoPagoTheme.typography.body.emphasis.small
             },
-            fontWeight = if (hierarchy == MPHelperHierarchy.Loud) FontWeight.Bold else FontWeight.Normal,
             color = when (hierarchy) {
                 MPHelperHierarchy.Quiet -> defaults.colors.textColor
                 MPHelperHierarchy.Loud -> defaults.colors.textColorLoud
@@ -159,7 +156,7 @@ fun MPHelper(
 @Preview(name = "Helper Informative Quiet", group = HELPER_GROUP)
 @Composable
 internal fun HelperInformativeQuietPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -177,7 +174,7 @@ internal fun HelperInformativeQuietPreview() {
 @Preview(name = "Helper Informative Loud", group = HELPER_GROUP)
 @Composable
 internal fun HelperInformativeLoudPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -195,7 +192,7 @@ internal fun HelperInformativeLoudPreview() {
 @Preview(name = "Helper Positive Quiet", group = HELPER_GROUP)
 @Composable
 internal fun HelperPositiveQuietPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -213,7 +210,7 @@ internal fun HelperPositiveQuietPreview() {
 @Preview(name = "Helper Positive Loud", group = HELPER_GROUP)
 @Composable
 internal fun HelperPositiveLoudPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -231,7 +228,7 @@ internal fun HelperPositiveLoudPreview() {
 @Preview(name = "Helper Caution Quiet", group = HELPER_GROUP)
 @Composable
 internal fun HelperCautionQuietPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -249,7 +246,7 @@ internal fun HelperCautionQuietPreview() {
 @Preview(name = "Helper Caution Loud", group = HELPER_GROUP)
 @Composable
 internal fun HelperCautionLoudPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -267,7 +264,7 @@ internal fun HelperCautionLoudPreview() {
 @Preview(name = "Helper Negative Quiet", group = HELPER_GROUP)
 @Composable
 internal fun HelperNegativeQuietPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -285,7 +282,7 @@ internal fun HelperNegativeQuietPreview() {
 @Preview(name = "Helper Negative Loud", group = HELPER_GROUP)
 @Composable
 internal fun HelperNegativeLoudPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -303,7 +300,7 @@ internal fun HelperNegativeLoudPreview() {
 @Preview(name = "Helper All Variations", group = HELPER_GROUP)
 @Composable
 internal fun HelperAllVariationsPreview() {
-    MercadoPagoTheme(theme = MercadoPagoThemes.Andes) {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         Column(
             modifier = Modifier
                 .padding(16.dp)

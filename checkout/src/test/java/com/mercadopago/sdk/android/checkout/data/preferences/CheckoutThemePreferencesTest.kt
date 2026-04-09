@@ -3,9 +3,9 @@
 package com.mercadopago.sdk.android.checkout.data.preferences
 
 import androidx.compose.ui.graphics.Color
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeAppearance
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemeProvider
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +15,7 @@ internal class CheckoutThemePreferencesTest {
     @Test
     fun `when class is created Then getCurrentThemeScheme returns default theme`() {
         // Given
-        val expectedTheme = MercadoPagoThemes.Legacy
+        val expectedTheme = MercadoPagoThemes.Default
 
         // When
         val actualTheme = checkoutThemePreferences.getCurrentThemeScheme()
@@ -25,25 +25,27 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `when class is created Then getCurrentAppearance returns System appearance`() {
+    fun `when class is created Then getCurrentStyle returns System style`() {
         // Given
-        val expectedAppearance = MercadoPagoThemeAppearance.System
+        val expectedStyle = MercadoPagoUserInterfaceStyle.System
 
         // When
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(expectedAppearance, actualAppearance)
+        assertEquals(expectedStyle, actualStyle)
     }
 
     @Test
     fun `given a new theme when setCurrentThemeScheme is called Then getCurrentThemeScheme returns that theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
-        val newTheme = MercadoPagoThemes.Legacy.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val newTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
-                    accent = Color.Red,
+                    fill = defaultLightTheme.color.fill.copy(
+                        accentLoud = Color.Red,
+                    ),
                 ),
             ),
         )
@@ -57,30 +59,32 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `given a new appearance when setCurrentAppearance is called Then getCurrentAppearance returns that appearance`() {
+    fun `given a new style when setCurrentStyle is called Then getCurrentStyle returns that style`() {
         // Given
-        val newAppearance = MercadoPagoThemeAppearance.Light
+        val newStyle = MercadoPagoUserInterfaceStyle.Light
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(newAppearance)
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        checkoutThemePreferences.setCurrentStyle(newStyle)
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(newAppearance, actualAppearance)
+        assertEquals(newStyle, actualStyle)
     }
 
     @Test
     fun `given multiple theme changes when setCurrentThemeScheme is called sequentially Then getCurrentThemeScheme returns the last set theme`() {
         // Given
-        val defaultLightTheme = MercadoPagoThemes.Legacy.lightTheme as MercadoPagoThemeProvider.Legacy
-        val firstTheme = MercadoPagoThemes.Legacy.copy(
+        val defaultLightTheme = MercadoPagoThemes.Default.lightTheme as MercadoPagoThemeProvider.Default
+        val firstTheme = MercadoPagoThemes.Default.copy(
             lightTheme = defaultLightTheme.copy(
                 color = defaultLightTheme.color.copy(
-                    accent = Color.Red,
+                    fill = defaultLightTheme.color.fill.copy(
+                        accentLoud = Color.Red,
+                    ),
                 ),
             ),
         )
-        val secondTheme = MercadoPagoThemes.Legacy
+        val secondTheme = MercadoPagoThemes.Default
 
         // When
         checkoutThemePreferences.setCurrentThemeScheme(firstTheme)
@@ -97,22 +101,22 @@ internal class CheckoutThemePreferencesTest {
     }
 
     @Test
-    fun `given multiple appearance changes when setCurrentAppearance is called sequentially Then getCurrentAppearance returns the last set appearance`() {
+    fun `given multiple style changes when setCurrentStyle is called sequentially Then getCurrentStyle returns the last set style`() {
         // Given
-        val firstAppearance = MercadoPagoThemeAppearance.Light
-        val secondAppearance = MercadoPagoThemeAppearance.Dark
+        val firstStyle = MercadoPagoUserInterfaceStyle.Light
+        val secondStyle = MercadoPagoUserInterfaceStyle.Dark
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(firstAppearance)
+        checkoutThemePreferences.setCurrentStyle(firstStyle)
 
         // Then
-        assertEquals(firstAppearance, checkoutThemePreferences.getCurrentAppearance())
+        assertEquals(firstStyle, checkoutThemePreferences.getCurrentStyle())
 
         // When
-        checkoutThemePreferences.setCurrentAppearance(secondAppearance)
-        val actualAppearance = checkoutThemePreferences.getCurrentAppearance()
+        checkoutThemePreferences.setCurrentStyle(secondStyle)
+        val actualStyle = checkoutThemePreferences.getCurrentStyle()
 
         // Then
-        assertEquals(secondAppearance, actualAppearance)
+        assertEquals(secondStyle, actualStyle)
     }
 }

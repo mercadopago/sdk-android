@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.components.inputs.MPInputDefaults
 internal fun Modifier.addBorder(
     isFocused: Boolean,
     error: Boolean = false,
+    enabled: Boolean = true,
     defaults: MPInputDefaults,
 ): Modifier {
     return border(
@@ -17,7 +18,9 @@ internal fun Modifier.addBorder(
         } else {
             defaults.border.widthIdle
         },
-        color = if (error) {
+        color = if (!enabled) {
+            defaults.colors.borderDisabled
+        } else if (error) {
             defaults.colors.borderError
         } else if (isFocused) {
             defaults.colors.borderActive

@@ -44,17 +44,17 @@ internal class CardPaymentScreenStateFactory(
             placeHolder = stringProvider.getString(R.string.card_form_expiration_placeholder),
         )
 
-    private fun createSecurityCodeState() =
+    private fun createSecurityCodeState(): SecurityCodeState =
         SecurityCodeState(
             label = stringProvider.getString(R.string.card_form_security_label),
             placeHolder = stringProvider.getString(R.string.card_form_security_placeholder_three_digits),
-            messageTooltip = stringProvider.getString(R.string.card_form_security_code_tooltip_back),
+            messageTooltip = stringProvider.getString(R.string.card_form_security_code_tooltip_back)
+                .format(SecurityCodeState().maxLength),
         )
 
     private fun createIdentificationTypeState() =
         IdentificationTypeState(
             label = stringProvider.getString(R.string.card_form_document_label),
-            placeHolder = stringProvider.getString(R.string.card_form_document_example),
         )
 
     private fun createFixedFooterState() =
