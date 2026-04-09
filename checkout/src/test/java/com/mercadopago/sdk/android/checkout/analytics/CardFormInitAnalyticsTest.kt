@@ -43,7 +43,7 @@ internal class CardFormInitAnalyticsTest {
     fun `when metricCardFormInitializeError called then returns error path with MetricErrorData`() {
         val metric = metricCardFormInitializeError(errorType = "network_error")
 
-        assertEquals("/checkout_api_native/checkout/card_form/initialize/error", metric.path)
+        assertEquals("/checkout_api_native/checkout/card_form/initialize_error", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
         val data = assertIs<MetricErrorData>(metric.data)
         assertEquals("network_error", data.errorType)
