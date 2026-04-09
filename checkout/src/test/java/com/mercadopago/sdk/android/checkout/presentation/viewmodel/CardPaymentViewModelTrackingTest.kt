@@ -18,6 +18,7 @@ import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUs
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
+import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -106,7 +107,7 @@ internal class CardPaymentViewModelTrackingTest {
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/initialize/error"))
+        assertTrue(metricSlot.captured.path.endsWith("/initialize_error"))
     }
 
     // endregion
@@ -158,9 +159,9 @@ internal class CardPaymentViewModelTrackingTest {
 
     @Test
     fun `when validateFieldsAndTokenize called then tracks submit event`() = runTest {
-        every { stateFactory.createInitialState() } returns CardPaymentScreenState(
-            cardNumberState = CardPaymentScreenState().cardNumberState.copy(error = "forced"),
-        )
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token123"))
         val viewModel = makeViewModel()
 
         viewModel.validateFieldsAndTokenize(
