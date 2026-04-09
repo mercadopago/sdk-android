@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
 import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -11,6 +10,7 @@ import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 private const val SUBMIT_PATH = "/submit"
+private const val SUBMIT_ERROR_PATH = "/submit_error"
 private const val USER_CANCELED_PATH = "/user_canceled_error"
 
 @KoverIgnore("in development")
@@ -34,7 +34,7 @@ internal fun metricCardFormSubmit(
 internal fun metricCardFormSubmitError(
     errorType: String,
 ) = Metric(
-    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$SUBMIT_PATH$ERROR_PATH",
+    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$SUBMIT_ERROR_PATH",
     type = TrackType.EVENT,
     data = MetricErrorData(errorType = errorType),
 )

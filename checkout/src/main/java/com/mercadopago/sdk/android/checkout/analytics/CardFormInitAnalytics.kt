@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
 import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -11,6 +10,7 @@ import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 private const val INITIALIZE_PATH = "/initialize"
+private const val INITIALIZE_ERROR_PATH = "/initialize_error"
 
 @KoverIgnore("in development")
 internal fun metricCardFormInitialize(
@@ -35,7 +35,7 @@ internal fun metricCardFormInitialize(
 internal fun metricCardFormInitializeError(
     errorType: String,
 ) = Metric(
-    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_PATH$ERROR_PATH",
+    path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_ERROR_PATH",
     type = TrackType.EVENT,
     data = MetricErrorData(errorType = errorType),
 )

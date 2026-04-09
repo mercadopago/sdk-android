@@ -82,6 +82,13 @@ internal class CardPaymentViewModel(
     private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
+    private var isCancelling = false
+
+    enum class CancelReason(val analyticsValue: String) {
+        SystemBack("user_tapped_back_button"),
+        UiButton("user_tapped_ui_back_button"),
+    }
+
     fun getIdentificationTypes() {
         viewModelScope.launch {
             updateLoadingState(true)
@@ -324,7 +331,7 @@ internal class CardPaymentViewModel(
             }
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
-                trackDropdownSelection("document_type")
+                trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
@@ -335,8 +342,11 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onBackPressed() {
-        trackUserCanceled()
+    fun onBackPressed(
+        reason: CancelReason = CancelReason.SystemBack,
+    ) {
+        isCancelling = true
+        trackUserCanceled(reason)
         val currentState = _viewState.value
         val context = cancelledFormContextUseCase(currentState)
 
@@ -521,7 +531,6 @@ internal class CardPaymentViewModel(
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
     ) {
-        trackSubmit()
         _viewState.value.let { state ->
             val hasIdentificationError = state.identificationTypeState.show &&
                 state.identificationTypeState.error.isNotEmpty()
@@ -755,6 +764,7 @@ internal class CardPaymentViewModel(
         field: String,
         isValid: Boolean,
     ) {
+        if (isCancelling || _viewState.value.isLoading) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormInputValidation(field = field, isInputValid = isValid),
         )
@@ -763,6 +773,7 @@ internal class CardPaymentViewModel(
     private fun trackDropdownSelection(
         type: String,
     ) {
+        if (isCancelling || _viewState.value.isLoading) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormDropdownSelection(dropdownSelectionType = type),
         )
@@ -790,9 +801,11 @@ internal class CardPaymentViewModel(
         )
     }
 
-    private fun trackUserCanceled() {
+    private fun trackUserCanceled(
+        reason: CancelReason,
+    ) {
         MPAnalytics.tryGetInstance()?.trackMetric(
-            metricCardFormUserCanceledError(),
+            metricCardFormUserCanceledError(errorType = reason.analyticsValue),
         )
     }
 
