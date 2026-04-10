@@ -3,6 +3,16 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.android.sdk.checkout.R
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormDropdownSelection
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitializeError
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInputValidation
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmit
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmitError
+import com.mercadopago.sdk.android.checkout.analytics.metricCardFormUserCanceledError
+import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
+import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
+import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -72,6 +82,13 @@ internal class CardPaymentViewModel(
     private val _viewState = MutableStateFlow(stateFactory.createInitialState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
+    private var isCancelling = false
+
+    enum class CancelReason(val analyticsValue: String) {
+        SystemBack("user_tapped_back_button"),
+        UiButton("user_tapped_ui_back_button"),
+    }
+
     fun getIdentificationTypes() {
         viewModelScope.launch {
             updateLoadingState(true)
@@ -88,6 +105,7 @@ internal class CardPaymentViewModel(
                     )
                 },
                 onError = { error ->
+                    trackInitializeError(error)
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
                 },
             ).apply {
@@ -101,12 +119,14 @@ internal class CardPaymentViewModel(
     ) {
         when (event) {
             is CardNumberTextFieldEvent.OnFocusChanged -> {
+                val isValid = _viewState.value.cardNumberState.isValid
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         isFocused = event.isFocused,
                     ),
                 )
                 if (!event.isFocused) {
+                    trackInputValidation("card_number", isValid)
                     handleCardNumberInputError()
                     if (_viewState.value.messageError.description.isNotEmpty()) {
                         _viewState.value = _viewState.value.copy(showMessage = true)
@@ -135,6 +155,11 @@ internal class CardPaymentViewModel(
             }
 
             is CardNumberTextFieldEvent.IsValid -> {
+                _viewState.value = _viewState.value.copy(
+                    cardNumberState = _viewState.value.cardNumberState.copy(
+                        isValid = event.isValid,
+                    ),
+                )
                 handleCardNumberLuhnValidation(event.isValid)
             }
 
@@ -183,6 +208,7 @@ internal class CardPaymentViewModel(
             }
 
             is ExpirationDateTextFieldEvent.IsValid -> {
+                trackInputValidation("expiration_date", event.isValid)
                 _viewState.value = _viewState.value.copy(
                     expirationDateState = _viewState.value.expirationDateState.copy(
                         isValid = event.isValid,
@@ -305,6 +331,7 @@ internal class CardPaymentViewModel(
             }
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
+                trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
@@ -315,7 +342,11 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onBackPressed() {
+    fun onBackPressed(
+        reason: CancelReason = CancelReason.SystemBack,
+    ) {
+        isCancelling = true
+        trackUserCanceled(reason)
         val currentState = _viewState.value
         val context = cancelledFormContextUseCase(currentState)
 
@@ -551,9 +582,11 @@ internal class CardPaymentViewModel(
                             documentNumber = buyerIdentification.number,
                         ),
                     )
+                    trackSubmit()
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                 },
                 onError = { checkoutError ->
+                    trackSubmitError(checkoutError)
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
                 },
             ).apply {
@@ -619,6 +652,7 @@ internal class CardPaymentViewModel(
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
             val securityCodeError = validator.validateSecurityCode(currentState.secureCodeState)
+            if (shouldUpdateError) trackInputValidation("cvv", securityCodeError.isEmpty())
             updateFieldState(securityCodeError, shouldUpdateError) { error, isValid ->
                 copy(
                     secureCodeState = secureCodeState.copy(
@@ -636,6 +670,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val cardHolderError = validator.validateCardHolder(currentState.cardHolderState)
+        if (shouldUpdateError) trackInputValidation("card_holder", cardHolderError.isEmpty())
         updateFieldState(cardHolderError, shouldUpdateError) { error, isValid ->
             copy(
                 cardHolderState = cardHolderState.copy(
@@ -653,6 +688,7 @@ internal class CardPaymentViewModel(
         val currentState = _viewState.value
         val identificationError =
             validator.validateIdentificationType(currentState.identificationTypeState)
+        if (shouldUpdateError) trackInputValidation("document", identificationError.isEmpty())
         updateFieldState(identificationError, shouldUpdateError) { error, isValid ->
             copy(
                 identificationTypeState = identificationTypeState.copy(
@@ -713,4 +749,65 @@ internal class CardPaymentViewModel(
         errorFactory()?.let { currentErrors.add(it) }
         updateCardNumberErrorState(currentErrors)
     }
+
+    // region Analytics Tracking
+
+    private fun trackInitializeError(
+        error: MercadoPagoCheckoutError,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormInitializeError(errorType = error.toErrorTypeString()),
+        )
+    }
+
+    private fun trackInputValidation(
+        field: String,
+        isValid: Boolean,
+    ) {
+        if (isCancelling || _viewState.value.isLoading) return
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormInputValidation(field = field, isInputValid = isValid),
+        )
+    }
+
+    private fun trackDropdownSelection(
+        type: String,
+    ) {
+        if (isCancelling || _viewState.value.isLoading) return
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormDropdownSelection(dropdownSelectionType = type),
+        )
+    }
+
+    private fun trackSubmit() {
+        val state = _viewState.value
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormSubmit(
+                cardBrand = state.paymentState.paymentMethodId.orEmpty(),
+                transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble(),
+                issuer = state.cardIssuers.firstOrNull()?.id.orEmpty(),
+                paymentType = CardType.fromString(
+                    state.paymentState.paymentTypeId.orEmpty(),
+                )?.toAnalyticsString(),
+            ),
+        )
+    }
+
+    private fun trackSubmitError(
+        error: MercadoPagoCheckoutError,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormSubmitError(errorType = error.toErrorTypeString()),
+        )
+    }
+
+    private fun trackUserCanceled(
+        reason: CancelReason,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricCardFormUserCanceledError(errorType = reason.analyticsValue),
+        )
+    }
+
+    // endregion
 }
