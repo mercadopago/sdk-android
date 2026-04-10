@@ -68,6 +68,10 @@ android {
     }
 }
 
+ksp {
+    arg("skipPrivatePreviews", "true")
+}
+
 kover.reports.filters.excludes {
     // Disabled reports for sample app
     classes("*")
@@ -91,6 +95,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.navigation.compose)
