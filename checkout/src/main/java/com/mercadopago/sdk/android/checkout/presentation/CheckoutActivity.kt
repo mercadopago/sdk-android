@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitialize
+import com.mercadopago.sdk.android.checkout.analytics.sellerCustomization
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
@@ -68,7 +69,7 @@ internal class CheckoutActivity : ComponentActivity() {
             metricCardFormInitialize(
                 checkoutType = checkoutType,
                 appearance = checkoutThemePreferences.getCurrentStyle().toAnalyticsString(),
-                sellerCustomization = emptyList(),
+                sellerCustomization = checkoutThemePreferences.getCurrentThemeScheme().sellerCustomization,
                 allowedPaymentTypes = cardTypes.map { it.toAnalyticsString() },
                 allowedPaymentMethods = cardBrands.map { it.name },
             ),
