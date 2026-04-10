@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.example.presentation.coremethods
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,7 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -116,12 +121,36 @@ internal fun PaymentExampleScreenContent(
         PaymentScreenDialogState.Hidden -> Unit
     }
 
-    BottomSheetScaffold(
-        sheetContent = {
-            DebugLogsScreen()
-        }
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .border(width = 3.dp, color = Color.Red),
     ) {
-        Scaffold(modifier = modifier.fillMaxSize()) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Red)
+                .padding(vertical = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "example screen",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                letterSpacing = 1.sp,
+            )
+        }
+
+        BottomSheetScaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            sheetContent = {
+                DebugLogsScreen()
+            },
+        ) {
+            Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
             Box(
                 Modifier
                     .fillMaxSize()
@@ -198,6 +227,7 @@ internal fun PaymentExampleScreenContent(
                 }
             }
         }
+    }
     }
 }
 
