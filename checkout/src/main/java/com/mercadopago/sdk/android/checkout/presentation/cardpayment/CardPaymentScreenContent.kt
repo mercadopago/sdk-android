@@ -77,7 +77,7 @@ internal fun CardPaymentScreen(
     }
 
     BackHandler {
-        viewModel.onBackPressed()
+        viewModel.onBackPressed(CardPaymentViewModel.CancelReason.SystemBack)
     }
 
     CardPaymentScreenContent(
@@ -92,7 +92,7 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackPressed = viewModel::onBackPressed,
+        onBackPressed = { viewModel.onBackPressed(CardPaymentViewModel.CancelReason.UiButton) },
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
