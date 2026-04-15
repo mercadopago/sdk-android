@@ -6,4 +6,5 @@ internal enum class ErrorLocalized {
     PAYMENT_METHODS,
     ISSUERS,
     INSTALLMENTS,
+    CARD_BIN,
 }

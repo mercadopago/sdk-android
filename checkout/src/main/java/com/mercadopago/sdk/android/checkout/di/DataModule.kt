@@ -4,7 +4,10 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
@@ -31,6 +34,12 @@ internal fun provideDataModule() =
                 countryCode = MercadoPagoSDK.countryCode,
             )
         }
+        factory<CardFormRemoteDataSource> {
+            CardFormRemoteDataSourceImpl(service = get())
+        }
+        factory {
+            GetCardBinUseCase(cardFormRemoteDataSource = get())
+        }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
@@ -47,6 +56,7 @@ internal fun provideDataModule() =
                     getInstallmentsUseCase = GetInstallmentsUseCase(),
                     stringProvider = get(),
                 ),
+                getCardBinUseCase = get(),
                 getIdentificationTypesUseCase = GetIdentificationTypesUseCase(),
                 generateTokenUseCase = GenerateTokenUseCase(),
                 cancelledFormContextUseCase = CancelledFormContextUseCase(),

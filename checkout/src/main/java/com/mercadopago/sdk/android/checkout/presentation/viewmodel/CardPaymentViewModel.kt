@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -27,11 +28,13 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNot
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
@@ -55,6 +58,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -68,6 +72,7 @@ internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
+    private val getCardBinUseCase: GetCardBinUseCase,
     private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
@@ -614,6 +619,26 @@ internal class CardPaymentViewModel(
             )
         } else {
             getPaymentMethods()
+            getCardBin(cardBin.orEmpty())
+        }
+    }
+
+    private fun getCardBin(
+        bin: String,
+    ) {
+        val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+        val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).let {
+            "${it.language}_${it.country}"
+        }
+        viewModelScope.launch {
+            getCardBinUseCase(
+                bin = bin,
+                amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty(),
+                processingMode = PROCESSING_MODE,
+                locale = locale,
+                allowCardTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
+                allowCardBrands = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
+            )
         }
     }
 
