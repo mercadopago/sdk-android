@@ -1,8 +1,25 @@
 package com.mercadopago.sdk.android.checkout.di
 
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
+import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
+import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardFormInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -11,5 +28,43 @@ internal fun provideDataModule() =
         single<CheckoutThemePreferences> {
             CheckoutThemePreferencesImpl()
         }
-        viewModel { CardPaymentViewModel() }
+        single<StringProvider> {
+            AndroidStringProvider(
+                context = get(),
+                countryCode = MercadoPagoSDK.countryCode,
+            )
+        }
+        factory<CardFormRemoteDataSource> {
+            CardFormRemoteDataSourceImpl(service = get())
+        }
+        factory {
+            GetCardFormInitializationUseCase(cardFormRemoteDataSource = get())
+        }
+        factory {
+            CardPaymentScreenStateFactory(stringProvider = get())
+        }
+        factory {
+            CardPaymentValidator(stringProvider = get())
+        }
+        viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
+            CardPaymentViewModel(
+                stateFactory = get(),
+                checkoutConfiguration = checkoutConfiguration,
+                getCardDataByBinUseCase = GetCardDataByBinUseCase(
+                    getPaymentMethodsUseCase = GetPaymentMethodsUseCase(),
+                    getCardIssuersUseCase = GetCardIssuersUseCase(),
+                    getInstallmentsUseCase = GetInstallmentsUseCase(),
+                    stringProvider = get(),
+                ),
+                getIdentificationTypesUseCase = GetIdentificationTypesUseCase(),
+                generateTokenUseCase = GenerateTokenUseCase(),
+                cancelledFormContextUseCase = CancelledFormContextUseCase(),
+                validator = get(),
+            )
+        }
+    }
+
+internal fun provideInstallmentsModule() =
+    module {
+        viewModel { InstallmentsViewModel() }
     }

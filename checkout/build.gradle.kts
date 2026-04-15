@@ -1,4 +1,6 @@
 import com.mercadopago.sdk.android.CheckoutSDKConfig
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -8,6 +10,7 @@ plugins {
     alias(libs.plugins.google.ksp)
     id(MavenConfig.MAVEN_PUBLISH)
     id("org.jetbrains.kotlin.plugin.serialization") version libs.versions.kotlin
+    id("kotlin-parcelize")
 }
 
 publishing {
@@ -37,9 +40,22 @@ android {
     namespace = "com.mercadopago.android.sdk.checkout"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
+    val secretPropertiesFile = rootProject.file("secrets.properties")
+    val secretProperties = Properties()
+    runCatching {
+        secretProperties.load(FileInputStream(secretPropertiesFile))
+    }
+
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreMethodsSDKConfig.VERSION_NAME
+
+        buildConfigField(
+            "String",
+            "CHECKOUT_PRODUCT_ID",
+            secretProperties.getProperty("checkout.productId")
+                ?: secretProperties.getProperty("coreMethods.productId", "\"\""),
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -109,6 +125,7 @@ dependencies {
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlin.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

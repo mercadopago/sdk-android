@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.interactor
 
+import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.checkout.di.CheckoutModulesProvider
 import org.koin.core.Koin
@@ -19,10 +20,16 @@ class Checkout internal constructor(
         @Volatile
         private var instance: Checkout? = null
 
-        internal fun getInstance(): Checkout {
+        internal fun getInstance(
+            context: Context,
+        ): Checkout {
             return instance ?: synchronized(this) {
                 instance ?: Checkout(
-                    koin = CheckoutModulesProvider().koinApp,
+                    koin = CheckoutModulesProvider(
+                        context = context.applicationContext,
+                        // TECH DEBT
+                        publicKey = "",
+                    ).koinApp,
                 ).also {
                     instance = it
                 }
@@ -31,12 +38,16 @@ class Checkout internal constructor(
 
         /**
          * @suppress
-         * Only for internal usage. DO NOT USE IN PRODUCTION.
-         * Clear the current instance of the Checkout for testing purposes.
+         * Closes the current Koin session and clears the instance.
+         * Called by CheckoutActivity.onDestroy to clean up after each session.
+         * Also available for testing purposes.
          */
         @RestrictTo(RestrictTo.Scope.LIBRARY)
         fun clearInstance() {
-            instance = null
+            synchronized(this) {
+                instance?.koin?.close()
+                instance = null
+            }
         }
     }
 }
