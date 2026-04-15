@@ -11,5 +11,7 @@ internal interface CardFormService {
     suspend fun initialization(
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("locale") locale: String,
+        @Query("amount") amount: String,
+        @Query("checkout_type") checkoutType: String,
     ): Response<CardFormInitResponse>
 }

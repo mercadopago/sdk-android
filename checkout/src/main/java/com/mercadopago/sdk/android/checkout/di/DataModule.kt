@@ -4,8 +4,11 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferencesImpl
 import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardFormInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
@@ -30,6 +33,12 @@ internal fun provideDataModule() =
                 context = get(),
                 countryCode = MercadoPagoSDK.countryCode,
             )
+        }
+        factory<CardFormRemoteDataSource> {
+            CardFormRemoteDataSourceImpl(service = get())
+        }
+        factory {
+            GetCardFormInitializationUseCase(cardFormRemoteDataSource = get())
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
