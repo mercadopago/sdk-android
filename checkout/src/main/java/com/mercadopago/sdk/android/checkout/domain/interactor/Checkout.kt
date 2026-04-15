@@ -25,7 +25,11 @@ class Checkout internal constructor(
         ): Checkout {
             return instance ?: synchronized(this) {
                 instance ?: Checkout(
-                    koin = CheckoutModulesProvider(context.applicationContext).koinApp,
+                    koin = CheckoutModulesProvider(
+                        context = context.applicationContext,
+                        // TECH DEBT
+                        publicKey = "",
+                    ).koinApp,
                 ).also {
                     instance = it
                 }
