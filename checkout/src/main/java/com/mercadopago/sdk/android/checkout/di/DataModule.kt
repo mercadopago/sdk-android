@@ -46,6 +46,12 @@ internal fun provideDataModule() =
         factory {
             CardPaymentValidator(stringProvider = get())
         }
+        factory<CardFormRemoteDataSource> {
+            CardFormRemoteDataSourceImpl(service = get())
+        }
+        factory {
+            GetCardFormInitializationUseCase(cardFormRemoteDataSource = get())
+        }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
                 stateFactory = get(),
