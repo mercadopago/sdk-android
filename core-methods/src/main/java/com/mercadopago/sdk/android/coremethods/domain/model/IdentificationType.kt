@@ -11,6 +11,8 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param type The category or classification of the identification type
  * @param minLength The minimum number of characters required for this identification type
  * @param maxLength The maximum number of characters allowed for this identification type
+ * @param mask Optional mask pattern for formatting the identification number. Use '#' for digit placeholders
+ *             and any other character as fixed separators (e.g., "###.###.###-##" for CPF)
  */
 data class IdentificationType(
     val id: String? = null,
@@ -18,4 +20,5 @@ data class IdentificationType(
     val type: String? = null,
     val minLength: Int? = null,
     val maxLength: Int? = null,
+    val mask: String? = null,
 )

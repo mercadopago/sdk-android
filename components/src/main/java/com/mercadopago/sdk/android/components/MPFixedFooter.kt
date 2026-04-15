@@ -8,22 +8,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.InlineTextContent
-import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.Placeholder
-import androidx.compose.ui.text.PlaceholderVerticalAlign
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import com.mercadopago.sdk.android.components.extensions.isNotNull
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
-private const val SUPERSCRIPT_ID = "superscript"
 
 /**
  * Data class representing the amount display configuration
@@ -59,49 +53,48 @@ data class MPFixedFooterButtonData(
  * and a call-to-action button
  *
  * @param title The title text displayed on the left side
- * @param amount The amount data containing currency symbol, integer and decimal parts
  * @param modifier The modifier to apply to this component
+ * @param amount The amount data containing currency symbol, integer and decimal parts
  * @param subtitle Optional subtitle text displayed below the amount
- * @param buttonData Optional button configuration. When null, no button is displayed
+ * @param button Optional button configuration. When null, no button is displayed
  */
 @Composable
 fun MPFixedFooter(
     title: String,
-    amount: MPAmountData,
     modifier: Modifier = Modifier,
+    amount: MPAmountData? = null,
     subtitle: String? = null,
-    buttonData: MPFixedFooterButtonData? = null,
+    button: MPFixedFooterButtonData? = null,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .background(MercadoPagoTheme.color.background.primary)
             .padding(
-                horizontal = MercadoPagoTheme.spacing.m,
-                vertical = MercadoPagoTheme.spacing.m,
+                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+                vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
     ) {
-        HeaderSection(
-            title = title,
-            amount = amount,
-            subtitle = subtitle,
-        )
-        if (buttonData != null) {
-            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.m))
+        if (amount.isNotNull()) {
+            HeaderSection(
+                title = title,
+                amount = amount,
+                subtitle = subtitle,
+            )
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
+        }
+        button?.let {
             MPButton(
-                text = buttonData.text,
+                text = it.text,
                 modifier = Modifier.fillMaxWidth(),
-                style = buttonData.style,
-                enabled = buttonData.enabled,
-                onClick = buttonData.onClick,
+                style = it.style,
+                enabled = it.enabled,
+                onClick = it.onClick,
             )
         }
     }
 }
 
-/**
- * Header section containing title and amount on the same line, with subtitle below aligned to the right
- */
 @Composable
 private fun HeaderSection(
     title: String,
@@ -114,60 +107,51 @@ private fun HeaderSection(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
             MPText(
                 text = title,
-                textStyle = MPTextStyle.BodyMediumRegular,
-                colorType = MPTextColorType.Primary,
+                style = MercadoPagoTheme.typography.body.emphasis.large,
+                color = MercadoPagoTheme.color.text.primary,
             )
-            AmountText(amount = amount)
-        }
-        if (subtitle != null) {
-            MPText(
-                text = subtitle,
-                textStyle = MPTextStyle.BodySmallRegular,
-                colorType = MPTextColorType.Accent,
-                modifier = Modifier.align(Alignment.End),
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+            ) {
+                AmountText(amount = amount)
+                if (subtitle != null) {
+                    MPText(
+                        text = subtitle,
+                        style = MercadoPagoTheme.typography.body.default.medium,
+                        color = MercadoPagoTheme.color.text.secondary,
+                    )
+                }
+            }
         }
     }
 }
 
-/**
- * Amount text with superscript decimal part
- */
 @Composable
 private fun AmountText(
     amount: MPAmountData,
 ) {
-    val annotatedString = buildAnnotatedString {
-        append("${amount.currencySymbol} ${amount.integerPart} ")
-        appendInlineContent(SUPERSCRIPT_ID, amount.decimalPart)
+    Row {
+        MPText(
+            text = amount.currencySymbol,
+            style = MercadoPagoTheme.typography.heading.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
+        )
+        MPText(
+            text = amount.integerPart,
+            style = MercadoPagoTheme.typography.heading.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
+        )
+        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
+        MPText(
+            text = amount.decimalPart,
+            style = MercadoPagoTheme.typography.body.emphasis.small,
+            color = MercadoPagoTheme.color.text.primary,
+        )
     }
-
-    val inlineContent = mapOf(
-        SUPERSCRIPT_ID to InlineTextContent(
-            placeholder = Placeholder(
-                width = (amount.decimalPart.length * 10).sp,
-                height = 14.sp,
-                placeholderVerticalAlign = PlaceholderVerticalAlign.Top,
-            ),
-        ) {
-            Text(
-                text = amount.decimalPart,
-                style = MercadoPagoTheme.typography.body.extraSmallSemibold,
-                color = MercadoPagoTheme.color.text.primary,
-            )
-        },
-    )
-
-    Text(
-        text = annotatedString,
-        inlineContent = inlineContent,
-        style = MercadoPagoTheme.typography.title.smallSemibold,
-        color = MercadoPagoTheme.color.text.primary,
-    )
 }
 
 @Preview(name = "Fixed Footer with Button", group = FIXED_FOOTER_GROUP)
@@ -182,7 +166,7 @@ private fun MPFixedFooterWithButtonPreview() {
                 decimalPart = "00",
             ),
             subtitle = "Text",
-            buttonData = MPFixedFooterButtonData(
+            button = MPFixedFooterButtonData(
                 text = "Label",
                 onClick = {},
             ),
@@ -202,7 +186,7 @@ private fun MPFixedFooterWithoutButtonPreview() {
                 decimalPart = "00",
             ),
             subtitle = "Text",
-            buttonData = null,
+            button = null,
         )
     }
 }
@@ -222,7 +206,7 @@ private fun MPFixedFooterWithoutSubtitlePreview() {
                     decimalPart = "50",
                 ),
                 subtitle = null,
-                buttonData = MPFixedFooterButtonData(
+                button = MPFixedFooterButtonData(
                     text = "Pagar",
                     onClick = {},
                 ),
@@ -243,7 +227,7 @@ private fun MPFixedFooterDisabledButtonPreview() {
                 decimalPart = "99",
             ),
             subtitle = "em até 12x",
-            buttonData = MPFixedFooterButtonData(
+            button = MPFixedFooterButtonData(
                 text = "Continuar",
                 enabled = false,
                 onClick = {},

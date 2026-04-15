@@ -1,22 +1,24 @@
 package com.mercadopago.sdk.android.components.inputs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.components.MPHelper
+import com.mercadopago.sdk.android.components.MPHelperHierarchy
+import com.mercadopago.sdk.android.components.MPHelperType
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextColorType
-import com.mercadopago.sdk.android.components.MPTextStyle
-import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
+import com.mercadopago.sdk.android.components.R
 import com.mercadopago.sdk.android.components.extensions.addBorder
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
@@ -24,6 +26,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 internal fun MPInputDecorationBox(
     isFocused: Boolean,
     error: Boolean,
+    enabled: Boolean = true,
+    defaults: MPInputDefaults,
     content: @Composable (RowScope.() -> Unit),
 ) {
     Row(
@@ -32,9 +36,11 @@ internal fun MPInputDecorationBox(
             .addBorder(
                 isFocused = isFocused,
                 error = error,
+                enabled = enabled,
+                defaults = defaults,
             )
-            .height(OutlinedTextFieldDefaults.MinHeight)
-            .padding(horizontal = 16.dp),
+            .height(MercadoPagoTheme.spacing.paddings.xlarge)
+            .padding(horizontal = defaults.spacing.horizontalPadding),
     ) {
         content()
     }
@@ -43,91 +49,117 @@ internal fun MPInputDecorationBox(
 @Composable
 internal fun MPInputBody(
     modifier: Modifier = Modifier,
-    error: Boolean = false,
-    enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    state: InputLabelState = InputLabelState.Idle,
+    label: String = "",
+    helper: String = "",
+    error: String = "",
+    showTooltipIcon: Boolean = false,
+    onClickTooltip: () -> Unit = {},
     showHelperIcon: Boolean = false,
-    icon: ImageVector? = null,
+    defaults: MPInputDefaults,
     content: @Composable () -> Unit,
 ) {
-    val state =
-        if (error) {
-            InputLabelState.Error
-        } else if (!enabled) {
-            InputLabelState.Disabled
-        } else {
-            InputLabelState.Idle
-        }
     Column(modifier = modifier) {
-        label?.let {
-            MPInputLabel(
-                it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
-                textStyle = MPTextStyle.BodySmallRegular,
-                inputLabelState = state,
-            )
-        }
-        content()
-        helper?.let {
-            MPInputHelper(
-                text = it,
-                modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs),
-                inputLabelState = state,
-                showIcon = showHelperIcon,
-                icon = icon,
-            )
-        }
-    }
-}
-
-@Composable
-internal fun MPInputHelper(
-    text: String,
-    modifier: Modifier = Modifier,
-    showIcon: Boolean = false,
-    inputLabelState: InputLabelState = InputLabelState.Idle,
-    icon: ImageVector? = null,
-) {
-    Row {
-        if (showIcon) {
-            icon?.let {
-                Icon(it, MP_EMPTY_STRING)
-                Spacer(modifier = Modifier.padding(start = MercadoPagoTheme.spacing.xxs))
+        if (label.isNotBlank()) {
+            Row {
+                MPText(
+                    text = label,
+                    modifier = Modifier.padding(bottom = defaults.spacing.labelPadding),
+                    style = MercadoPagoTheme.typography.body.default.medium,
+                    color = defaults.colors.textPrimary,
+                )
+                if (showTooltipIcon) {
+                    Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
+                    Icon(
+                        painter = painterResource(R.drawable.ic_tooltip),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(MercadoPagoTheme.radius.xlarge)
+                            .clickable { onClickTooltip.invoke() },
+                        tint = MercadoPagoTheme.color.icon.accent,
+                    )
+                }
             }
         }
-        MPInputLabel(
-            text,
-            modifier = modifier,
-            inputLabelState = inputLabelState,
-            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-        )
+        content()
+        when {
+            error.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = error,
+                    state = InputLabelState.Error,
+                    showHelperIcon = true,
+                )
+            }
+
+            helper.isNotEmpty() -> {
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
+                MPInputMessage(
+                    text = helper,
+                    state = state,
+                    showHelperIcon = showHelperIcon,
+                )
+            }
+        }
     }
 }
 
 @Composable
-internal fun MPInputLabel(
+internal fun MPInputMessage(
     text: String,
-    modifier: Modifier = Modifier,
-    textStyle: MPTextStyle = MPTextStyle.Title,
-    inputLabelState: InputLabelState = InputLabelState.Idle,
+    state: InputLabelState,
+    showHelperIcon: Boolean = true,
 ) {
-    val colorType = when (inputLabelState) {
-        InputLabelState.Idle -> MPTextColorType.Primary
-        InputLabelState.Disabled -> MPTextColorType.Inverted
-        InputLabelState.Error -> MPTextColorType.Negative
-    }
+    when (state) {
+        InputLabelState.Idle -> {
+            MPHelper(
+                text = text,
+                showIcon = false,
+                hierarchy = MPHelperHierarchy.Quiet,
+            )
+        }
 
-    MPText(
-        text,
-        modifier = modifier,
-        textStyle = textStyle,
-        colorType = colorType,
-    )
+        InputLabelState.Error -> {
+            MPHelper(
+                text = text,
+                showIcon = showHelperIcon,
+                type = MPHelperType.Negative,
+                hierarchy = MPHelperHierarchy.Loud,
+            )
+        }
+
+        InputLabelState.Caution -> {
+            MPHelper(
+                text = text,
+                showIcon = showHelperIcon,
+                type = MPHelperType.Caution,
+                hierarchy = MPHelperHierarchy.Quiet,
+            )
+        }
+
+        InputLabelState.ReadOnly -> {}
+
+        InputLabelState.Disabled -> {}
+    }
+}
+
+@Preview
+@Composable
+private fun MPInputBodyPreview() {
+    val defaults = getMPInputDefaults()
+    MPInputBody(
+        label = "label text",
+        helper = "helper text",
+        defaults = defaults,
+    ) {
+        MPText("Text")
+    }
 }
 
 internal enum class InputLabelState {
     Idle,
+    Caution,
     Disabled,
     Error,
+    ReadOnly,
 }

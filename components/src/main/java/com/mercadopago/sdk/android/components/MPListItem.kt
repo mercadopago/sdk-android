@@ -1,90 +1,135 @@
 package com.mercadopago.sdk.android.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.components.extensions.isNotNull
+import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
+import com.mercadopago.sdk.android.components.model.MPListItemTrailing
+import com.mercadopago.sdk.android.components.model.MPListItemType
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
 
 /**
- * Trailing Type enum class, used to determine the trailing showing type
- * This its used to change the component showed in trailing
- */
-enum class MPTrailingType {
-    /**
-     *  Text: Trailing type that`s shows a text
-     */
-    Text,
-
-    /**
-     *  Pill: Trailing type that`s shows a pill
-     */
-    Pill,
-}
-
-/**
  * List Item component
- * @param text component text to be showed
  * @param modifier component modifier
- * @param selected component is selected
- * @param trailingText component is trailing text
- * @param trailingType component is trailing type [MPTrailingType]
+ * @param contentInfo component content information (title, header, description)
+ * @param trailing component trailing content (text, icon, color)
+ * @param leftImage component left image
+ * @param type component type (RadioButton, etc.)
+ * @param onClick component click action
  */
 @Composable
 fun MPListItem(
-    text: String,
     modifier: Modifier = Modifier,
-    selected: Boolean = false,
-    trailingText: String? = null,
-    trailingType: MPTrailingType = MPTrailingType.Text,
+    contentInfo: MPListItemContentInfo,
+    trailing: MPListItemTrailing? = null,
+    leftImage: ImageVector? = null,
+    type: MPListItemType? = null,
+    onClick: () -> Unit = {},
 ) {
-    Column(
-        modifier = modifier,
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(MercadoPagoTheme.spacing.paddings.xmicro),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xmicro),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MercadoPagoTheme.spacing.xs),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MPRadioButton(selected)
-            Spacer(Modifier.size(MercadoPagoTheme.spacing.s))
-            MPText(
-                text = text,
-                textStyle = MPTextStyle.BodyMediumRegular,
-                modifier = Modifier.weight(1f),
+        if (type is MPListItemType.RadioButton) {
+            MPRadioButton(
+                selected = type.selected,
+                modifier = Modifier.size(20.dp),
             )
-
-            trailingText?.let {
-                when (trailingType) {
-                    MPTrailingType.Text -> MPText(
-                        trailingText,
-                        textStyle = MPTextStyle.BodySmallRegular,
-                    )
-
-                    MPTrailingType.Pill -> MPPill(trailingText)
-                }
-            }
         }
 
-        Spacer(
-            Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(color = MercadoPagoTheme.color.outline.secondary),
+        if (leftImage.isNotNull()) {
+            Icon(
+                imageVector = leftImage,
+                contentDescription = null,
+                tint = MercadoPagoTheme.color.icon.accent,
+                modifier = Modifier.size(40.dp),
+            )
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            MPListItemContentInfo(contentInfo = contentInfo)
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xnano),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MPListItemTrailing(trailing = trailing)
+        }
+    }
+}
+
+@Composable
+private fun MPListItemContentInfo(
+    contentInfo: MPListItemContentInfo,
+) {
+    if (contentInfo.header.isNotNull()) {
+        MPText(
+            text = contentInfo.header,
+            style = MercadoPagoTheme.typography.body.default.medium,
+            color = MercadoPagoTheme.color.text.primary,
         )
+    }
+    MPText(
+        text = contentInfo.title.orEmpty(),
+        style = MercadoPagoTheme.typography.body.emphasis.medium,
+        color = MercadoPagoTheme.color.text.primary,
+    )
+    if (contentInfo.description.isNotNull()) {
+        MPText(
+            text = contentInfo.description,
+            style = MercadoPagoTheme.typography.body.default.small,
+            color = MercadoPagoTheme.color.text.secondary,
+        )
+    }
+}
+
+@Composable
+private fun MPListItemTrailing(
+    trailing: MPListItemTrailing?,
+) {
+    trailing?.let {
+        if (it.text.isNotNull()) {
+            MPText(
+                text = it.text,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = it.textColor ?: MercadoPagoTheme.color.text.secondary,
+            )
+        }
+
+        when (it.type) {
+            is MPListItemTrailing.Type.Icon ->
+                Icon(
+                    imageVector = it.type.icon,
+                    contentDescription = null,
+                    tint = MercadoPagoTheme.color.icon.secondary,
+                    modifier = Modifier.size(20.dp),
+                )
+            is MPListItemTrailing.Type.None, null -> Unit
+        }
     }
 }
 
@@ -96,10 +141,15 @@ private fun MPListItemPreview() {
             modifier = Modifier.padding(10.dp),
         ) {
             MPListItem(
-                text = "List Item",
-                trailingText = "trailing",
-                trailingType = MPTrailingType.Pill,
-                selected = true,
+                contentInfo = MPListItemContentInfo(
+                    title = "Title",
+                    description = "Description",
+                ),
+                trailing = MPListItemTrailing(
+                    type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
+                    text = "$ 1.000",
+                    textColor = MercadoPagoTheme.color.fill.accentLoud,
+                ),
             )
         }
     }
