@@ -5,12 +5,7 @@ import com.mercadopago.sdk.android.coremethods.builder.data.remote.service.MPExt
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-internal fun provideNetworkModule(
-    baseUrl: String,
-): Module =
+internal fun provideNetworkModule(): Module =
     module {
-        single { RetrofitServiceFactory(baseUrl = baseUrl, publicKey = null) }
-        single {
-            get<RetrofitServiceFactory>().createService(MPExtendedService::class.java)
-        }
+        single { get<RetrofitServiceFactory>().createService(MPExtendedService::class.java) }
     }

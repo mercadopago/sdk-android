@@ -18,9 +18,7 @@ internal class MPExtendedModulesProvider : CoreKoinModuleProvider, MercadoPagoKo
 
     override fun provideModules(): List<Module> {
         return listOf(
-            provideNetworkModule(
-                baseUrl = "https://beta--bricks-api.furyapps.io/",
-            ),
+            provideNetworkModule(),
             provideDataSourceModule(),
             provideRepositoryModule(),
             provideUseCaseModule(),
