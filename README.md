@@ -37,21 +37,24 @@ dependencyResolutionManagement {
 Using toml:
 Add the following definitions to your `libs.versions.toml` file to declare the SDK dependencies. We recommend using our Bill of Materials (BOM) to ensure consistent versioning across all SDK modules and avoid dependency conflicts:
 
-```
-// Main SDK
+```toml
 [versions]
 mercadoPagoSdkBomVersion = "latest-bom-version"
 
 [libraries]
+# BOM — manages versions for all SDK modules
 mercadopago-sdk-bom = { group = "com.mercadopago.android.sdk", name = "sdk-android-bom", version.ref = "mercadoPagoSdkBomVersion" }
-// Core Methods SDK
+# SDK entry point — required for MercadoPagoSDK.initialize()
+mercadopago-sdk-android = { group = "com.mercadopago.android.sdk", name = "sdk-android" }
+# Core Methods — identification, installments, tokenization
 mercadopago-sdk-coreMethods = { group = "com.mercadopago.android.sdk", name = "core-methods" }
 ```
 
-Call inside the build.gradle file for the module you need
+Call inside the build.gradle file for the module you need:
 ```kts
 implementation(platform(libs.mercadopago.sdk.bom))
-implementation(libs.mercadopago.sdk.coreMethods)
+implementation(libs.mercadopago.sdk.android)      // required — SDK entry point
+implementation(libs.mercadopago.sdk.coreMethods)  // optional — Core Methods API
 ```
 
 ## Usage
@@ -96,6 +99,14 @@ You can call the SDK with this method. Here is an example with the Core Methods 
 ## Sample App
 You can also use our sample app to see how to use the SDK. Clone this repository and build the :example module. Don't forget to change the public key.
 
+
+## Contributing
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Coding Guidelines](CODING_GUIDELINES.md) before opening a PR.
+
+## Security
+
+This SDK handles PCI-sensitive payment data. To report a vulnerability, **do not open a public issue** — follow the process described in [SECURITY.md](SECURITY.md).
 
 ## License
 
