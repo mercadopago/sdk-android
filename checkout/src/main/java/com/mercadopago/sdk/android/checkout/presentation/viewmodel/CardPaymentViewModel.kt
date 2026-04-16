@@ -15,7 +15,6 @@ import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
-import com.mercadopago.sdk.android.checkout.data.remote.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -30,6 +29,7 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitialization
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
@@ -119,58 +119,57 @@ internal class CardPaymentViewModel(
     }
 
     private fun populateFieldsFromInitialization(
-        response: com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse,
-    ) {
-        val identificationTypes = response.identificationTypes.map { it.toDomain() }
+        initialization: CardFormInitialization,
+    ) = with(initialization) {
         val firstType = identificationTypes.firstOrNull()
 
         _viewState.value = _viewState.value.copy(
-            title = response.translations.cardFormTitle,
+            title = translations.cardFormTitle,
             cardNumberState = _viewState.value.cardNumberState.copy(
-                label = response.translations.cardNumber.label,
-                placeHolder = response.translations.cardNumber.placeholder,
-                helper = response.translations.cardNumber.helper.orEmpty(),
-                errorEmptyField = response.translations.cardNumber.errorEmptyField,
-                errorIncompleteField = response.translations.cardNumber.errorIncompleteField,
-                errorInvalidField = response.translations.cardNumber.errorInvalidField,
+                label = translations.cardNumber.label,
+                placeHolder = translations.cardNumber.placeholder,
+                helper = translations.cardNumber.helper,
+                errorEmptyField = translations.cardNumber.errorEmptyField,
+                errorIncompleteField = translations.cardNumber.errorIncompleteField,
+                errorInvalidField = translations.cardNumber.errorInvalidField,
             ),
             cardHolderState = _viewState.value.cardHolderState.copy(
-                label = response.translations.holderName.label,
-                placeHolder = response.translations.holderName.placeholder,
-                helper = response.translations.holderName.helper.orEmpty(),
-                errorEmptyField = response.translations.holderName.errorEmptyField,
-                errorIncompleteField = response.translations.holderName.errorIncompleteField,
-                errorInvalidField = response.translations.holderName.errorInvalidField,
+                label = translations.holderName.label,
+                placeHolder = translations.holderName.placeholder,
+                helper = translations.holderName.helper,
+                errorEmptyField = translations.holderName.errorEmptyField,
+                errorIncompleteField = translations.holderName.errorIncompleteField,
+                errorInvalidField = translations.holderName.errorInvalidField,
             ),
             expirationDateState = _viewState.value.expirationDateState.copy(
-                label = response.translations.expirationDate.label,
-                placeHolder = response.translations.expirationDate.placeholder,
-                errorEmptyField = response.translations.expirationDate.errorEmptyField,
-                errorIncompleteField = response.translations.expirationDate.errorIncompleteField,
-                errorInvalidField = response.translations.expirationDate.errorInvalidField,
+                label = translations.expirationDate.label,
+                placeHolder = translations.expirationDate.placeholder,
+                errorEmptyField = translations.expirationDate.errorEmptyField,
+                errorIncompleteField = translations.expirationDate.errorIncompleteField,
+                errorInvalidField = translations.expirationDate.errorInvalidField,
             ),
             secureCodeState = _viewState.value.secureCodeState.copy(
-                label = response.translations.securityCode.label,
-                placeHolder = response.translations.securityCode.placeholder,
-                helper = response.translations.securityCode.helper.orEmpty(),
-                messageTooltip = response.translations.securityCode.tooltip,
-                maxLength = response.securityCode.length,
-                errorEmptyField = response.translations.securityCode.errorEmptyField,
-                errorIncompleteField = response.translations.securityCode.errorIncompleteField,
-                errorInvalidField = response.translations.securityCode.errorInvalidField.orEmpty(),
+                label = translations.securityCode.label,
+                placeHolder = translations.securityCode.placeholder,
+                helper = translations.securityCode.helper,
+                messageTooltip = translations.securityCode.tooltip,
+                maxLength = securityCode.length,
+                errorEmptyField = translations.securityCode.errorEmptyField,
+                errorIncompleteField = translations.securityCode.errorIncompleteField,
+                errorInvalidField = translations.securityCode.errorInvalidField,
             ),
             identificationTypeState = _viewState.value.identificationTypeState.copy(
-                label = response.translations.document.label,
+                label = translations.document.label,
                 show = identificationTypes.isNotEmpty(),
                 identificationTypes = identificationTypes,
                 selected = firstType,
                 placeHolder = firstType.getPlaceholder().orEmpty(),
-                errorEmptyField = response.translations.document.errorEmptyField,
-                errorIncompleteField = response.translations.document.errorIncompleteField,
-                errorInvalidField = response.translations.document.errorInvalidField,
+                errorEmptyField = translations.document.errorEmptyField,
+                errorIncompleteField = translations.document.errorIncompleteField,
+                errorInvalidField = translations.document.errorInvalidField,
             ),
             fixedFooterState = _viewState.value.fixedFooterState.copy(
-                buttonText = response.translations.installments.payButtonLabel,
+                buttonText = translations.payButtonLabel,
             ),
         )
     }
