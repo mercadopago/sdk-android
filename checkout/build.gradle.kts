@@ -1,4 +1,6 @@
 import com.mercadopago.sdk.android.CheckoutSDKConfig
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -37,15 +39,41 @@ android {
     namespace = "com.mercadopago.android.sdk.checkout"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
+    val secretPropertiesFile = rootProject.file("secrets.properties")
+    val secretProperties = Properties()
+    runCatching {
+        secretProperties.load(FileInputStream(secretPropertiesFile))
+    }
+
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreMethodsSDKConfig.VERSION_NAME
+
+        buildConfigField(
+            "String",
+            "CHECKOUT_BFF_BASE_URL",
+            "\"https://api.mercadopago.com/\"",
+        )
+
+        buildConfigField("String", "FURY_TOKEN", "\"\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "CHECKOUT_BFF_BASE_URL",
+                "\"https://beta--bricks-api.furyapps.io/cho-off/\"",
+            )
+            buildConfigField(
+                "String",
+                "FURY_TOKEN",
+                secretProperties.getProperty("fury_token", "\"\""),
+            )
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
