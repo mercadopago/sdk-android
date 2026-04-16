@@ -73,7 +73,7 @@ internal fun CardPaymentScreen(
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
-        viewModel.getIdentificationTypes()
+        viewModel.initialize()
     }
 
     BackHandler {
