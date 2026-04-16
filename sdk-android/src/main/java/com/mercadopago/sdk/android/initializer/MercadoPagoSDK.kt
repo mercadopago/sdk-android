@@ -6,8 +6,8 @@ import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
-import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.data.local.mapper.toSiteId
+import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
@@ -33,7 +33,6 @@ class MercadoPagoSDK private constructor(
     val koin: Koin,
     internal var publicKey: String,
     internal var countryCode: CountryCode,
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal val sessionId: String,
     private val applicationContext: Context,
 ) {

@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.coremethods.builder.di.services
 
-import com.google.gson.GsonBuilder
 import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.core.di.RetrofitServiceFactory
 import com.mercadopago.sdk.android.coremethods.builder.data.remote.service.MPExtendedService
 import org.koin.core.module.Module

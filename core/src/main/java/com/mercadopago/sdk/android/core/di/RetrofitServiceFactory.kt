@@ -21,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * @param publicKey The seller's public key for API authentication
  * @param baseUrl The base URL for the API endpoints
+ * @param gson The gson formater
  *
  * Example:
  * ```kotlin
@@ -61,7 +62,6 @@ class RetrofitServiceFactory(
             addInterceptor(
                 FuryTokenInterceptor(
                     baseUrl = baseUrl,
-                    publicKey = PublicKeyStore.publicKey ?: publicKey
                 )
             )
             addInterceptor(loggingInterceptor)
