@@ -45,8 +45,6 @@ android {
     }
 
     buildTypes {
-        debug {
-        }
         release {
             isMinifyEnabled = true
             proguardFiles(
