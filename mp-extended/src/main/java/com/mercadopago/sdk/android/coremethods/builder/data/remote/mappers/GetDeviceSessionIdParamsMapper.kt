@@ -4,4 +4,4 @@ import com.mercadopago.sdk.android.coremethods.builder.data.remote.request.MPDev
 import com.mercadopago.sdk.android.coremethods.builder.domain.model.params.GetDeviceSessionParams
 
 internal fun GetDeviceSessionParams.toRequest(): MPDeviceSessionIdRequest =
-    MPDeviceSessionIdRequest(device = this.device?.fingerprint, siteId = this.siteId)
+    MPDeviceSessionIdRequest(fingerprint = this.device?.fingerprint, siteId = this.siteId)

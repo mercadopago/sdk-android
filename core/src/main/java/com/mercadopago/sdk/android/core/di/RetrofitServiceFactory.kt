@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
+import com.google.gson.Gson
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.core.utils.interceptor.FuryTokenInterceptor
@@ -40,6 +41,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitServiceFactory(
     private val publicKey: String?,
     private val baseUrl: String,
+    private val gson: Gson = Gson(),
 ) {
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -51,8 +53,17 @@ class RetrofitServiceFactory(
             }
         }
         OkHttpClient.Builder().apply {
-            addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey ?: publicKey })
-            addInterceptor(FuryTokenInterceptor(baseUrl))
+            addInterceptor(
+                PublicKeyInterceptor {
+                    PublicKeyStore.publicKey ?: publicKey
+                }
+            )
+            addInterceptor(
+                FuryTokenInterceptor(
+                    baseUrl = baseUrl,
+                    publicKey = PublicKeyStore.publicKey ?: publicKey
+                )
+            )
             addInterceptor(loggingInterceptor)
         }.build()
     }
@@ -61,7 +72,7 @@ class RetrofitServiceFactory(
         Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 

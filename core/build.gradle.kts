@@ -1,5 +1,7 @@
 import com.mercadopago.sdk.android.BomConfig
 import com.mercadopago.sdk.android.CoreSDKConfig
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -34,6 +36,12 @@ android {
     namespace = "com.mercadopago.sdk.android.core"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
+    val secretPropertiesFile = rootProject.file("secrets.properties")
+    val secretProperties = Properties()
+    runCatching {
+        secretProperties.load(FileInputStream(secretPropertiesFile))
+    }
+
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreSDKConfig.VERSION_NAME
@@ -44,9 +52,17 @@ android {
         buildConfigField("String", "SdkVersion", "\"${BomConfig.VERSION_NAME}\"")
         buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
         buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
+        buildConfigField("String", "FURY_TOKEN", "\"\"")
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "FURY_TOKEN",
+                secretProperties.getProperty("fury_token", "\"\""),
+            )
+        }
         release {
             isMinifyEnabled = true
             proguardFiles(
