@@ -8,13 +8,13 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardFormInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
@@ -103,7 +103,7 @@ internal class CheckoutModulesProviderTest {
                 GetPaymentMethodsUseCase::class,
                 GetCardIssuersUseCase::class,
                 GetInstallmentsUseCase::class,
-                GetIdentificationTypesUseCase::class,
+                GetCardFormInitializationUseCase::class,
                 GenerateTokenUseCase::class,
                 CardPaymentScreenStateFactory::class,
                 CardPaymentValidator::class,
