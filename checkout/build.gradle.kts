@@ -40,24 +40,12 @@ android {
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreMethodsSDKConfig.VERSION_NAME
-
-        buildConfigField(
-            "String",
-            "CHECKOUT_BFF_BASE_URL",
-            "\"https://api.mercadopago.com/\"",
-        )
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         debug {
-            buildConfigField(
-                "String",
-                "CHECKOUT_BFF_BASE_URL",
-                "\"https://beta--bricks-api.furyapps.io/cho-off/\"",
-            )
         }
         release {
             isMinifyEnabled = true

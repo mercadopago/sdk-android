@@ -7,6 +7,7 @@ import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
+import com.mercadopago.sdk.android.data.local.mapper.toSiteId
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.coroutines.SdkCoroutineProvider
 import com.mercadopago.sdk.android.initializer.exceptions.EmptyPublicKeyException
@@ -188,5 +189,12 @@ class MercadoPagoSDK private constructor(
         val countryCode: CountryCode?
             @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
             get() = sdkInstance?.countryCode
+
+        /**
+         * @suppress
+         * Returns the site ID string derived from the current country code.
+         */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        fun getSiteId(): String = sdkInstance?.countryCode?.toSiteId().orEmpty()
     }
 }

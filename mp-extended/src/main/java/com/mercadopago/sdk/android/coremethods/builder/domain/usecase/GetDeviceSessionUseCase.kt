@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.builder.domain.usecase
 
 import com.mercadolibre.android.device.sdk.DeviceSDK
-import com.mercadopago.sdk.android.coremethods.builder.data.local.mapper.toSiteId
 import com.mercadopago.sdk.android.coremethods.builder.domain.model.MPDeviceSession
 import com.mercadopago.sdk.android.coremethods.builder.domain.model.params.GetDeviceSessionParams
 import com.mercadopago.sdk.android.coremethods.builder.domain.repository.MPExtendedRepository
@@ -16,7 +15,7 @@ internal class GetDeviceSessionUseCase(
         return repository.getDeviceSession(
             GetDeviceSessionParams(
                 device = DeviceSDK.getInstance()?.info,
-                siteId = MercadoPagoSDK.countryCode?.toSiteId().orEmpty(),
+                siteId = MercadoPagoSDK.getSiteId(),
             ),
         )
     }
