@@ -20,7 +20,9 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.length == 0) {
-            stringProvider.getString(R.string.card_form_error_required_field)
+            state.errorEmptyField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_required_field)
+            }
         } else {
             null
         }
@@ -30,7 +32,9 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.length > 0 && !state.filled) {
-            stringProvider.getString(R.string.card_form_error_expiration_incomplete)
+            state.errorIncompleteField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_expiration_incomplete)
+            }
         } else {
             null
         }
@@ -40,7 +44,9 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.filled && !state.isValid) {
-            stringProvider.getString(R.string.card_form_error_expiration_invalid)
+            state.errorInvalidField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_expiration_invalid)
+            }
         } else {
             null
         }

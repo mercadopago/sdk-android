@@ -19,7 +19,9 @@ internal class SecurityCodeVerifier(
         state: SecurityCodeState,
     ): String? {
         return if (state.length == 0) {
-            stringProvider.getString(R.string.card_form_error_required_field)
+            state.errorEmptyField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_required_field)
+            }
         } else {
             null
         }
@@ -29,7 +31,9 @@ internal class SecurityCodeVerifier(
         state: SecurityCodeState,
     ): String? {
         return if (state.length > 0 && state.length < state.maxLength) {
-            stringProvider.getString(R.string.card_form_error_cvv_incomplete)
+            state.errorIncompleteField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_cvv_incomplete)
+            }
         } else {
             null
         }

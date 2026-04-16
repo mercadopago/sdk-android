@@ -106,16 +106,7 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutType,
             ).fold(
                 onSuccess = { response ->
-                    val identificationTypes = response.identificationTypes.map { it.toDomain() }
-                    val firstType = identificationTypes.firstOrNull()
-                    _viewState.value = _viewState.value.copy(
-                        identificationTypeState = _viewState.value.identificationTypeState.copy(
-                            show = identificationTypes.isNotEmpty(),
-                            identificationTypes = identificationTypes,
-                            selected = firstType,
-                            placeHolder = firstType.getPlaceholder().orEmpty(),
-                        ),
-                    )
+                    populateFieldsFromInitialization(response)
                     updateLoadingState(false)
                 },
                 onError = { error ->
@@ -125,6 +116,63 @@ internal class CardPaymentViewModel(
                 },
             )
         }
+    }
+
+    private fun populateFieldsFromInitialization(
+        response: com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse,
+    ) {
+        val identificationTypes = response.identificationTypes.map { it.toDomain() }
+        val firstType = identificationTypes.firstOrNull()
+
+        _viewState.value = _viewState.value.copy(
+            title = response.translations.cardFormTitle,
+            cardNumberState = _viewState.value.cardNumberState.copy(
+                label = response.translations.cardNumber.label,
+                placeHolder = response.translations.cardNumber.placeholder,
+                helper = response.translations.cardNumber.helper.orEmpty(),
+                errorEmptyField = response.translations.cardNumber.errorEmptyField,
+                errorIncompleteField = response.translations.cardNumber.errorIncompleteField,
+                errorInvalidField = response.translations.cardNumber.errorInvalidField,
+            ),
+            cardHolderState = _viewState.value.cardHolderState.copy(
+                label = response.translations.holderName.label,
+                placeHolder = response.translations.holderName.placeholder,
+                helper = response.translations.holderName.helper.orEmpty(),
+                errorEmptyField = response.translations.holderName.errorEmptyField,
+                errorIncompleteField = response.translations.holderName.errorIncompleteField,
+                errorInvalidField = response.translations.holderName.errorInvalidField,
+            ),
+            expirationDateState = _viewState.value.expirationDateState.copy(
+                label = response.translations.expirationDate.label,
+                placeHolder = response.translations.expirationDate.placeholder,
+                errorEmptyField = response.translations.expirationDate.errorEmptyField,
+                errorIncompleteField = response.translations.expirationDate.errorIncompleteField,
+                errorInvalidField = response.translations.expirationDate.errorInvalidField,
+            ),
+            secureCodeState = _viewState.value.secureCodeState.copy(
+                label = response.translations.securityCode.label,
+                placeHolder = response.translations.securityCode.placeholder,
+                helper = response.translations.securityCode.helper.orEmpty(),
+                messageTooltip = response.translations.securityCode.tooltip,
+                maxLength = response.securityCode.length,
+                errorEmptyField = response.translations.securityCode.errorEmptyField,
+                errorIncompleteField = response.translations.securityCode.errorIncompleteField,
+                errorInvalidField = response.translations.securityCode.errorInvalidField.orEmpty(),
+            ),
+            identificationTypeState = _viewState.value.identificationTypeState.copy(
+                label = response.translations.document.label,
+                show = identificationTypes.isNotEmpty(),
+                identificationTypes = identificationTypes,
+                selected = firstType,
+                placeHolder = firstType.getPlaceholder().orEmpty(),
+                errorEmptyField = response.translations.document.errorEmptyField,
+                errorIncompleteField = response.translations.document.errorIncompleteField,
+                errorInvalidField = response.translations.document.errorInvalidField,
+            ),
+            fixedFooterState = _viewState.value.fixedFooterState.copy(
+                buttonText = response.translations.installments.payButtonLabel,
+            ),
+        )
     }
 
     fun onCardNumberEvent(

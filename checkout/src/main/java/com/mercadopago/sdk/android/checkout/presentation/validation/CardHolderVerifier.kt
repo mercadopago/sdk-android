@@ -20,7 +20,9 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isEmpty()) {
-            stringProvider.getString(R.string.card_form_error_required_field)
+            state.errorEmptyField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_required_field)
+            }
         } else {
             null
         }
@@ -30,7 +32,9 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
-            stringProvider.getString(R.string.card_form_error_cardholder_incomplete)
+            state.errorIncompleteField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_cardholder_incomplete)
+            }
         } else {
             null
         }
@@ -40,7 +44,9 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
-            stringProvider.getString(R.string.card_form_error_cardholder_format)
+            state.errorInvalidField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_cardholder_format)
+            }
         } else {
             null
         }

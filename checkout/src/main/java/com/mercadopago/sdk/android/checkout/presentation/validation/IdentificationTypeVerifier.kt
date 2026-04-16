@@ -20,7 +20,9 @@ internal class IdentificationTypeVerifier(
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isEmpty()) {
-            stringProvider.getString(R.string.card_form_error_required_field)
+            state.errorEmptyField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_required_field)
+            }
         } else {
             null
         }
@@ -35,7 +37,9 @@ internal class IdentificationTypeVerifier(
         return when {
             maxLength == null -> null
             state.value.length !in minLength..maxLength ->
-                stringProvider.getString(R.string.card_form_error_required_field)
+                state.errorIncompleteField.ifEmpty {
+                    stringProvider.getString(R.string.card_form_error_required_field)
+                }
             else -> null
         }
     }
@@ -44,7 +48,9 @@ internal class IdentificationTypeVerifier(
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.all { it == '0' }) {
-            stringProvider.getString(R.string.card_form_error_document_all_zeros)
+            state.errorInvalidField.ifEmpty {
+                stringProvider.getString(R.string.card_form_error_document_all_zeros)
+            }
         } else {
             null
         }
