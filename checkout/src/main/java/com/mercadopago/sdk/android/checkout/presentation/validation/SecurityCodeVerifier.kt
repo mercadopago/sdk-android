@@ -1,12 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 
-internal class SecurityCodeVerifier(
-    private val stringProvider: StringProvider,
-) {
+internal class SecurityCodeVerifier {
     fun verify(
         state: SecurityCodeState,
     ): String =
@@ -19,9 +15,7 @@ internal class SecurityCodeVerifier(
         state: SecurityCodeState,
     ): String? {
         return if (state.length == 0) {
-            state.errorEmptyField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_required_field)
-            }
+            state.errorEmptyField
         } else {
             null
         }
@@ -31,9 +25,7 @@ internal class SecurityCodeVerifier(
         state: SecurityCodeState,
     ): String? {
         return if (state.length > 0 && state.length < state.maxLength) {
-            state.errorIncompleteField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_cvv_incomplete)
-            }
+            state.errorIncompleteField
         } else {
             null
         }

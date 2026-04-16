@@ -1,12 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 
-internal class ExpirationDateVerifier(
-    private val stringProvider: StringProvider,
-) {
+internal class ExpirationDateVerifier {
     fun verify(
         state: ExpirationDateState,
     ): String =
@@ -20,9 +16,7 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.length == 0) {
-            state.errorEmptyField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_required_field)
-            }
+            state.errorEmptyField
         } else {
             null
         }
@@ -32,9 +26,7 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.length > 0 && !state.filled) {
-            state.errorIncompleteField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_expiration_incomplete)
-            }
+            state.errorIncompleteField
         } else {
             null
         }
@@ -44,9 +36,7 @@ internal class ExpirationDateVerifier(
         state: ExpirationDateState,
     ): String? {
         return if (state.filled && !state.isValid) {
-            state.errorInvalidField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_expiration_invalid)
-            }
+            state.errorInvalidField
         } else {
             null
         }

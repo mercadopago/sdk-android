@@ -1,12 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 
-internal class IdentificationTypeVerifier(
-    private val stringProvider: StringProvider,
-) {
+internal class IdentificationTypeVerifier {
     fun verify(
         state: IdentificationTypeState,
     ): String =
@@ -20,9 +16,7 @@ internal class IdentificationTypeVerifier(
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isEmpty()) {
-            state.errorEmptyField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_required_field)
-            }
+            state.errorEmptyField
         } else {
             null
         }
@@ -36,10 +30,7 @@ internal class IdentificationTypeVerifier(
 
         return when {
             maxLength == null -> null
-            state.value.length !in minLength..maxLength ->
-                state.errorIncompleteField.ifEmpty {
-                    stringProvider.getString(R.string.card_form_error_required_field)
-                }
+            state.value.length !in minLength..maxLength -> state.errorIncompleteField
             else -> null
         }
     }
@@ -48,9 +39,7 @@ internal class IdentificationTypeVerifier(
         state: IdentificationTypeState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.all { it == '0' }) {
-            state.errorInvalidField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_document_all_zeros)
-            }
+            state.errorInvalidField
         } else {
             null
         }

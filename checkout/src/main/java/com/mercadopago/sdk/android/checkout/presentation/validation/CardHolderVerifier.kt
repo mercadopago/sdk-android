@@ -1,12 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 
-internal class CardHolderVerifier(
-    private val stringProvider: StringProvider,
-) {
+internal class CardHolderVerifier {
     fun verify(
         state: CardHolderState,
     ): String =
@@ -20,9 +16,7 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isEmpty()) {
-            state.errorEmptyField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_required_field)
-            }
+            state.errorEmptyField
         } else {
             null
         }
@@ -32,9 +26,7 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
-            state.errorIncompleteField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_cardholder_incomplete)
-            }
+            state.errorIncompleteField
         } else {
             null
         }
@@ -44,9 +36,7 @@ internal class CardHolderVerifier(
         state: CardHolderState,
     ): String? {
         return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
-            state.errorInvalidField.ifEmpty {
-                stringProvider.getString(R.string.card_form_error_cardholder_format)
-            }
+            state.errorInvalidField
         } else {
             null
         }

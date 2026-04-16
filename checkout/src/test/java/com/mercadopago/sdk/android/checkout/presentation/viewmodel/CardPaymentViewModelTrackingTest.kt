@@ -16,7 +16,6 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -51,7 +50,6 @@ internal class CardPaymentViewModelTrackingTest {
     private val getCardFormInitializationUseCase = mockk<GetCardFormInitializationUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
-    private val validator = mockk<CardPaymentValidator>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -92,7 +90,6 @@ internal class CardPaymentViewModelTrackingTest {
         getCardFormInitializationUseCase = getCardFormInitializationUseCase,
         generateTokenUseCase = generateTokenUseCase,
         cancelledFormContextUseCase = cancelledFormContextUseCase,
-        validator = validator,
     )
 
     // region Initialize
