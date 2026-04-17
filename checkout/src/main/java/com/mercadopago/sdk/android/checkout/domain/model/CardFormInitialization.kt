@@ -2,72 +2,76 @@ package com.mercadopago.sdk.android.checkout.domain.model
 
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 
-internal data class CardFormInitialization(
+internal data class CardFormInitializationOutput(
+    val title: String,
+    val button: String,
+    val fields: CardFormFields,
     val identificationTypes: List<IdentificationType>,
-    val cardNumber: CardNumberConfiguration,
-    val securityCode: SecurityCodeConfiguration,
-    val holderName: HolderNameConfiguration,
-    val expirationDate: ExpirationDateConfiguration,
-    val translations: FormTranslations,
 )
 
-internal data class CardNumberConfiguration(
-    val type: String,
-    val minLength: Int,
-    val maxLength: Int,
-    val mask: String,
+internal data class CardFormFields(
+    val cardNumber: CardNumberField,
+    val holderName: CardHolderField,
+    val expirationDate: ExpirationDateField,
+    val securityCode: SecurityCodeField,
+    val document: DocumentField,
 )
 
-internal data class SecurityCodeConfiguration(
-    val length: Int,
-    val type: String,
-)
-
-internal data class HolderNameConfiguration(
-    val type: String,
-    val minLength: Int,
-    val maxLength: Int,
-)
-
-internal data class ExpirationDateConfiguration(
-    val type: String,
-    val mask: String,
-    val minLength: Int,
-    val maxLength: Int,
-)
-
-internal data class FormTranslations(
-    val cardFormTitle: String,
-    val cardNumber: FieldTranslations,
-    val holderName: FieldTranslations,
-    val expirationDate: FieldTranslations,
-    val securityCode: SecurityCodeFieldTranslations,
-    val document: DocumentFieldTranslations,
-    val payButtonLabel: String,
-)
-
-internal data class FieldTranslations(
+internal data class CardNumberField(
     val label: String,
     val placeholder: String,
-    val helper: String,
-    val errorEmptyField: String,
-    val errorIncompleteField: String,
-    val errorInvalidField: String,
+    val validation: CardNumberValidation,
+    val config: CardFieldConfig,
 )
 
-internal data class SecurityCodeFieldTranslations(
+internal data class CardNumberValidation(
+    val errorEmpty: String,
+    val errorIncomplete: String,
+    val errorInvalid: String,
+    val errorMethodNotAllowed: String,
+    val errorTypeNotAllowed: String,
+)
+
+internal data class CardHolderField(
+    val label: String,
+    val placeholder: String,
+    val validation: Validation,
+    val config: CardFieldConfig,
+)
+
+internal data class ExpirationDateField(
+    val label: String,
+    val placeholder: String,
+    val validation: Validation,
+    val config: CardFieldConfig,
+)
+
+internal data class SecurityCodeField(
     val label: String,
     val placeholder: String,
     val helper: String,
     val tooltip: String,
-    val errorEmptyField: String,
-    val errorIncompleteField: String,
-    val errorInvalidField: String,
+    val validation: Validation,
+    val config: CardFieldConfig,
 )
 
-internal data class DocumentFieldTranslations(
+internal data class DocumentField(
     val label: String,
-    val errorEmptyField: String,
-    val errorIncompleteField: String,
-    val errorInvalidField: String,
+    val validation: Validation,
+)
+
+internal data class Validation(
+    val errorEmpty: String,
+    val errorIncomplete: String,
+    val errorInvalid: String,
+)
+
+internal data class CardFieldConfig(
+    val type: String,
+    val length: LengthRange,
+)
+
+internal data class LengthRange(
+    val min: Int,
+    val max: Int,
 )

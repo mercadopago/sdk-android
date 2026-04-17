@@ -11,7 +11,7 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardFormInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -46,7 +46,7 @@ internal class CardPaymentViewModelTrackingTest {
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
     private val getCardDataByBinUseCase = mockk<GetCardDataByBinUseCase>(relaxed = true)
-    private val getCardFormInitializationUseCase = mockk<GetCardFormInitializationUseCase>(relaxed = true)
+    private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
 
@@ -85,7 +85,7 @@ internal class CardPaymentViewModelTrackingTest {
         stateFactory = stateFactory,
         checkoutConfiguration = config,
         getCardDataByBinUseCase = getCardDataByBinUseCase,
-        getCardFormInitializationUseCase = getCardFormInitializationUseCase,
+        initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
         cancelledFormContextUseCase = cancelledFormContextUseCase,
     )
@@ -100,7 +100,7 @@ internal class CardPaymentViewModelTrackingTest {
             localized = "checkout",
             throwable = null,
         )
-        coEvery { getCardFormInitializationUseCase(any(), any(), any()) } returns Result.Error(error)
+        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(error)
         val viewModel = makeViewModel()
 
         viewModel.initialize()

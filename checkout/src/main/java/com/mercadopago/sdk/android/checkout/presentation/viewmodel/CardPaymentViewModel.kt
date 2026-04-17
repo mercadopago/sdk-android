@@ -29,13 +29,13 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
-import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitialization
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardFormInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
@@ -75,7 +75,7 @@ internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
-    private val getCardFormInitializationUseCase: GetCardFormInitializationUseCase,
+    private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
 ) : ViewModel() {
@@ -103,7 +103,7 @@ internal class CardPaymentViewModel(
             val amount = checkoutConfiguration?.getCardFormAmount()?.toString().orEmpty()
             val checkoutType = checkoutConfiguration?.checkoutType.toString()
 
-            getCardFormInitializationUseCase(
+            initializeCardFormUseCase(
                 locale = locale,
                 amount = amount,
                 checkoutType = checkoutType,
@@ -122,57 +122,57 @@ internal class CardPaymentViewModel(
     }
 
     private fun populateFieldsFromInitialization(
-        initialization: CardFormInitialization,
+        initialization: CardFormInitializationOutput,
     ) = with(initialization) {
         val firstType = identificationTypes.firstOrNull()
 
         _viewState.value = _viewState.value.copy(
-            title = translations.cardFormTitle,
+            title = title,
             cardNumberState = _viewState.value.cardNumberState.copy(
-                label = translations.cardNumber.label,
-                placeHolder = translations.cardNumber.placeholder,
-                helper = translations.cardNumber.helper,
-                errorEmptyField = translations.cardNumber.errorEmptyField,
-                errorIncompleteField = translations.cardNumber.errorIncompleteField,
-                errorInvalidField = translations.cardNumber.errorInvalidField,
+                label = fields.cardNumber.label,
+                placeHolder = fields.cardNumber.placeholder,
+                helper = "",
+                errorEmptyField = fields.cardNumber.validation.errorEmpty,
+                errorIncompleteField = fields.cardNumber.validation.errorIncomplete,
+                errorInvalidField = fields.cardNumber.validation.errorInvalid,
             ),
             cardHolderState = _viewState.value.cardHolderState.copy(
-                label = translations.holderName.label,
-                placeHolder = translations.holderName.placeholder,
-                helper = translations.holderName.helper,
-                errorEmptyField = translations.holderName.errorEmptyField,
-                errorIncompleteField = translations.holderName.errorIncompleteField,
-                errorInvalidField = translations.holderName.errorInvalidField,
+                label = fields.holderName.label,
+                placeHolder = fields.holderName.placeholder,
+                helper = "",
+                errorEmptyField = fields.holderName.validation.errorEmpty,
+                errorIncompleteField = fields.holderName.validation.errorIncomplete,
+                errorInvalidField = fields.holderName.validation.errorInvalid,
             ),
             expirationDateState = _viewState.value.expirationDateState.copy(
-                label = translations.expirationDate.label,
-                placeHolder = translations.expirationDate.placeholder,
-                errorEmptyField = translations.expirationDate.errorEmptyField,
-                errorIncompleteField = translations.expirationDate.errorIncompleteField,
-                errorInvalidField = translations.expirationDate.errorInvalidField,
+                label = fields.expirationDate.label,
+                placeHolder = fields.expirationDate.placeholder,
+                errorEmptyField = fields.expirationDate.validation.errorEmpty,
+                errorIncompleteField = fields.expirationDate.validation.errorIncomplete,
+                errorInvalidField = fields.expirationDate.validation.errorInvalid,
             ),
             secureCodeState = _viewState.value.secureCodeState.copy(
-                label = translations.securityCode.label,
-                placeHolder = translations.securityCode.placeholder,
-                helper = translations.securityCode.helper,
-                messageTooltip = translations.securityCode.tooltip,
-                maxLength = securityCode.length,
-                errorEmptyField = translations.securityCode.errorEmptyField,
-                errorIncompleteField = translations.securityCode.errorIncompleteField,
-                errorInvalidField = translations.securityCode.errorInvalidField,
+                label = fields.securityCode.label,
+                placeHolder = fields.securityCode.placeholder,
+                helper = fields.securityCode.helper,
+                messageTooltip = fields.securityCode.tooltip,
+                maxLength = fields.securityCode.config.length.max,
+                errorEmptyField = fields.securityCode.validation.errorEmpty,
+                errorIncompleteField = fields.securityCode.validation.errorIncomplete,
+                errorInvalidField = fields.securityCode.validation.errorInvalid,
             ),
             identificationTypeState = _viewState.value.identificationTypeState.copy(
-                label = translations.document.label,
+                label = fields.document.label,
                 show = identificationTypes.isNotEmpty(),
                 identificationTypes = identificationTypes,
                 selected = firstType,
                 placeHolder = firstType.getPlaceholder().orEmpty(),
-                errorEmptyField = translations.document.errorEmptyField,
-                errorIncompleteField = translations.document.errorIncompleteField,
-                errorInvalidField = translations.document.errorInvalidField,
+                errorEmptyField = fields.document.validation.errorEmpty,
+                errorIncompleteField = fields.document.validation.errorIncomplete,
+                errorInvalidField = fields.document.validation.errorInvalid,
             ),
             fixedFooterState = _viewState.value.fixedFooterState.copy(
-                buttonText = translations.payButtonLabel,
+                buttonText = button,
             ),
         )
     }
