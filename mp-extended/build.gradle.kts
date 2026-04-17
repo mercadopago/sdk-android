@@ -28,7 +28,7 @@ publishing {
 }
 
 android {
-    namespace = "com.mercadopago.sdk.android.coremethods.builder"
+    namespace = "com.mercadopago.sdk.android.mpextended"
     compileSdk = MercadoPagoSDKConfig.COMPILE_SDK
 
     defaultConfig {
