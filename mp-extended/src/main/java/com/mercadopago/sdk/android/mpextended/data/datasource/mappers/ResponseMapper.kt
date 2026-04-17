@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.builder.data.datasource.mappers
+package com.mercadopago.sdk.android.mpextended.data.datasource.mappers
 
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError

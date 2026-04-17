@@ -1,7 +1,7 @@
-package com.mercadopago.sdk.android.coremethods.builder.data.remote.service
+package com.mercadopago.sdk.android.mpextended.data.remote.service
 
-import com.mercadopago.sdk.android.coremethods.builder.data.remote.request.MPDeviceSessionIdRequest
-import com.mercadopago.sdk.android.coremethods.builder.data.remote.response.DeviceSessionIdResponse
+import com.mercadopago.sdk.android.mpextended.data.remote.request.MPDeviceSessionIdRequest
+import com.mercadopago.sdk.android.mpextended.data.remote.response.DeviceSessionIdResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers

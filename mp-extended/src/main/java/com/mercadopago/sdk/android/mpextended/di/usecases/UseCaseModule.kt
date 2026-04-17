@@ -1,6 +1,6 @@
-package com.mercadopago.sdk.android.coremethods.builder.di.usecases
+package com.mercadopago.sdk.android.mpextended.di.usecases
 
-import com.mercadopago.sdk.android.coremethods.builder.domain.usecase.GetDeviceSessionUseCase
+import com.mercadopago.sdk.android.mpextended.domain.usecase.GetDeviceSessionUseCase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

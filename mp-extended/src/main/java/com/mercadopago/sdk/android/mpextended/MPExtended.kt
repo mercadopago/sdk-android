@@ -1,12 +1,12 @@
-package com.mercadopago.sdk.android.coremethods.builder
+package com.mercadopago.sdk.android.mpextended
 
 import androidx.annotation.RestrictTo
-import com.mercadopago.sdk.android.coremethods.builder.di.MPExtendedModulesProvider
-import com.mercadopago.sdk.android.coremethods.builder.domain.model.MPDeviceSession
-import com.mercadopago.sdk.android.coremethods.builder.domain.usecase.GetDeviceSessionUseCase
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import com.mercadopago.sdk.android.mpextended.di.MPExtendedModulesProvider
+import com.mercadopago.sdk.android.mpextended.domain.model.MPDeviceSession
+import com.mercadopago.sdk.android.mpextended.domain.usecase.GetDeviceSessionUseCase
 import org.koin.core.Koin
 
 /**

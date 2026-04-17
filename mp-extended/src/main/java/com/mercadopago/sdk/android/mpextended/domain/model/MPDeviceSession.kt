@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.builder.domain.model
+package com.mercadopago.sdk.android.mpextended.domain.model
 
 /**
  * @suppress

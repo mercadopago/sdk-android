@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.builder.data.remote.request
+package com.mercadopago.sdk.android.mpextended.data.remote.request
 
 import com.google.gson.annotations.SerializedName
 import com.mercadolibre.android.device.sdk.domain.Fingerprint

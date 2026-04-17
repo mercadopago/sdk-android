@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.coremethods.builder.domain.model.params
+package com.mercadopago.sdk.android.mpextended.domain.model.params
 
 import com.mercadolibre.android.device.sdk.domain.Device
 
