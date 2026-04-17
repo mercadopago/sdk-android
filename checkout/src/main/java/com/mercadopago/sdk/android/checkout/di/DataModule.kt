@@ -43,7 +43,7 @@ internal fun provideDataModule() =
             CardPaymentScreenStateFactory(stringProvider = get())
         }
         factory {
-            CardPaymentValidator(stringProvider = get())
+            CardPaymentValidator()
         }
         factory<CardFormRemoteDataSource> {
             CardFormRemoteDataSourceImpl(service = get())

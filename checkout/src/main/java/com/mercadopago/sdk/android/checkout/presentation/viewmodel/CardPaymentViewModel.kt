@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormDropdownSelection
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitializeError
@@ -41,6 +40,7 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingClear
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -75,13 +75,10 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
-    private val helperTextOptional: String
-        get() = stateFactory.getOptionalFieldText()
-
     private val genericErrorMessage: String
         get() = stateFactory.getGenericErrorMessage()
 
-    private val _viewState = MutableStateFlow(stateFactory.createInitialState())
+    private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     private var isCancelling = false
@@ -91,7 +88,7 @@ internal class CardPaymentViewModel(
         UiButton("user_tapped_ui_back_button"),
     }
 
-    fun getIdentificationTypes() {
+    fun initialization() {
         viewModelScope.launch {
             updateLoadingState(true)
             val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).toLanguageTag()
@@ -103,16 +100,7 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutType,
             ).fold(
                 onSuccess = { data ->
-                    val identificationTypes = data.identificationTypes
-                    val firstType = identificationTypes.firstOrNull()
-                    _viewState.value = _viewState.value.copy(
-                        identificationTypeState = _viewState.value.identificationTypeState.copy(
-                            show = identificationTypes.isNotEmpty(),
-                            identificationTypes = identificationTypes,
-                            selected = firstType,
-                            placeHolder = firstType.getPlaceholder().orEmpty(),
-                        ),
-                    )
+                    _viewState.value = data.toCardPaymentScreenState()
                 },
                 onError = { error ->
                     trackInitializeError(error)
@@ -446,7 +434,7 @@ internal class CardPaymentViewModel(
         updateCardNumberError<CardNumberErrorType.CardTypeNotAccepted> {
             val (cardTypes, _) = checkoutConfiguration?.paymentMethods.extractCardFilters()
             if (!cardData.paymentMethod.matchesCardType(cardTypes)) {
-                val cardType = com.mercadopago.sdk.android.checkout.core.model.CardType.fromString(
+                val cardType = CardType.fromString(
                     cardData.paymentMethod.paymentTypeId.orEmpty(),
                 )
                 CardNumberErrorType.CardTypeNotAccepted(cardType)
@@ -462,13 +450,11 @@ internal class CardPaymentViewModel(
         val cardNumberState = viewState.value.cardNumberState
         val errorMessage: String = when {
             errors.any { it is CardNumberErrorType.LuhnValidation && cardNumberState.isComplete() } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_invalid)
+                cardNumberState.validation.errorInvalid
             }
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_invalid)
+                cardNumberState.validation.errorInvalid
             }
 
             errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
@@ -524,7 +510,7 @@ internal class CardPaymentViewModel(
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) helperTextOptional else "",
+        helper = if (securityCode.isOptional()) _viewState.value.secureCodeState.helper else "",
         placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
         messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
@@ -818,6 +804,5 @@ internal class CardPaymentViewModel(
             metricCardFormUserCanceledError(errorType = reason.analyticsValue),
         )
     }
-
     // endregion
 }
