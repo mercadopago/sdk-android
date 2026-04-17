@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
-import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
@@ -22,6 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * @param publicKey The seller's public key for API authentication
  * @param baseUrl The base URL for the API endpoints
+ * @param gson The retrofit gson interpreter
  *
  * Example:
  * ```kotlin
@@ -42,11 +43,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitServiceFactory(
     private val publicKey: String?,
     private val baseUrl: String,
+    private val gson: Gson = GsonBuilder().create()
 ) {
-
-    private val gson = GsonBuilder()
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create()
 
     private val okHttpClient: OkHttpClient by lazy {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -103,4 +101,12 @@ class RetrofitServiceFactory(
     fun <T> createService(serviceClass: Class<T>): T {
         return retrofit.create(serviceClass)
     }
+
+    /**
+     * Used just in mp_extended removed
+     * @param gson: Gson used in retrofit
+     */
+    @Deprecated("Will be replaced in new versions")
+    fun withGson(gson: Gson): RetrofitServiceFactory =
+        RetrofitServiceFactory(publicKey = publicKey, baseUrl = baseUrl, gson = gson)
 }
