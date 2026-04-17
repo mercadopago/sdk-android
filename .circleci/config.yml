@@ -218,7 +218,7 @@ jobs:
           command: |
             ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
             ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
-            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
+            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom" "mp-extended")
             any_published=0
             for MODULE in "${MODULES[@]}"; do
               VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
