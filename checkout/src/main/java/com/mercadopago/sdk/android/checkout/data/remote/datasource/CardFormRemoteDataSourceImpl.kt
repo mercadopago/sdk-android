@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class CardFormRemoteDataSourceImpl(
     private val service: CardFormService,
 ) : CardFormRemoteDataSource {
-    override suspend fun getInitialization(
+    override suspend fun fetchInitialization(
         locale: String,
         amount: String,
         checkoutType: String,
