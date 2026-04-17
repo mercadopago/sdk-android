@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
-import com.mercadopago.sdk.android.core.utils.interceptor.FuryTokenInterceptor
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -59,11 +58,6 @@ class RetrofitServiceFactory(
                 PublicKeyInterceptor {
                     PublicKeyStore.publicKey ?: publicKey
                 }
-            )
-            addInterceptor(
-                FuryTokenInterceptor(
-                    baseUrl = baseUrl,
-                )
             )
             addInterceptor(loggingInterceptor)
         }.build()
