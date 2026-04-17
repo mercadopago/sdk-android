@@ -107,7 +107,7 @@ internal class CardPaymentViewModelTrackingTest {
         coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(error)
         val viewModel = makeViewModel()
 
-        viewModel.getIdentificationTypes()
+        viewModel.initialization()
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
