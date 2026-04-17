@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.core.di
 
 import androidx.annotation.RestrictTo
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
@@ -19,6 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * @param publicKey The seller's public key for API authentication
  * @param baseUrl The base URL for the API endpoints
+ * @param gson The retrofit gson interpreter
  *
  * Example:
  * ```kotlin
@@ -39,6 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitServiceFactory(
     private val publicKey: String?,
     private val baseUrl: String,
+    private val gson: Gson = GsonBuilder().create()
 ) {
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -50,7 +54,11 @@ class RetrofitServiceFactory(
             }
         }
         OkHttpClient.Builder().apply {
-            addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey ?: publicKey })
+            addInterceptor(
+                PublicKeyInterceptor {
+                    PublicKeyStore.publicKey ?: publicKey
+                }
+            )
             addInterceptor(loggingInterceptor)
         }.build()
     }
@@ -59,7 +67,7 @@ class RetrofitServiceFactory(
         Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 
@@ -87,4 +95,12 @@ class RetrofitServiceFactory(
     fun <T> createService(serviceClass: Class<T>): T {
         return retrofit.create(serviceClass)
     }
+
+    /**
+     * Used just in mp_extended removed
+     * @param gson: Gson used in retrofit
+     */
+    @Deprecated("Will be replaced in new versions")
+    fun withGson(gson: Gson): RetrofitServiceFactory =
+        RetrofitServiceFactory(publicKey = publicKey, baseUrl = baseUrl, gson = gson)
 }

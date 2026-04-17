@@ -40,7 +40,6 @@ android {
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = CoreMethodsSDKConfig.VERSION_NAME
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
