@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CardFormRemoteDataSource {
-    suspend fun getInitialization(
+    suspend fun fetchInitialization(
         locale: String,
         amount: String,
         checkoutType: String,
