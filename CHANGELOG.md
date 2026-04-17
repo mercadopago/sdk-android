@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-17
+
+### Added
+- MPExtended module with Device Session ID support (#175)
+- `MPExtended` public API for device session retrieval
+- Clean architecture layers (data/domain) for MPExtended module
+- Koin DI modules for MPExtended (network, datasource, repository, use cases)
+- Gson snake_case converter as default in Retrofit
+
+### Changed
+- Updated `RetrofitServiceFactory` to support Gson converter
+- Updated `PublicKeyInterceptor` logic
+- `MercadoPagoSDK` now initializes MPExtended module
+
 ## [0.1.7] - 2026-03-30
 
 ### Fixed
@@ -161,6 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Documentation](https://mercadopago.github.io/sdk-android/)
 - [Apache License 2.0](https://github.com/mercadopago/sdk-android/blob/main/LICENSE.md)
 
+[0.2.0]: https://github.com/mercadopago/sdk-android/releases/tag/v0.2.0
 [0.1.7]: https://github.com/mercadopago/sdk-android/releases/tag/v.0.1.7
 [0.1.5]: https://github.com/mercadopago/sdk-android/releases/tag/v.0.1.5
 [0.1.4]: https://github.com/mercadopago/sdk-android/releases/tag/v.0.1.4
