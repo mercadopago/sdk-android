@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
+import com.google.gson.Gson
 import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
@@ -108,6 +109,7 @@ internal class CheckoutModulesProviderTest {
                 CardPaymentScreenStateFactory::class,
                 CardPaymentValidator::class,
                 CancelledFormContextUseCase::class,
+                Gson::class
             ),
         )
         koin.checkModules {
