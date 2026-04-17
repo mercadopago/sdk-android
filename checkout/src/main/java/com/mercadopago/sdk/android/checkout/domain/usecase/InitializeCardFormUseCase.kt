@@ -8,12 +8,10 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.checkout.domain.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class InitializeCardFormUseCase(
     private val cardFormRemoteDataSource: CardFormRemoteDataSource,
-    private val stringProvider: StringProvider,
 ) {
     suspend operator fun invoke(
         locale: String,
@@ -26,7 +24,6 @@ internal class InitializeCardFormUseCase(
                 amount = amount,
                 checkoutType = checkoutType,
             )
-        }
-            .map { it.toDomain(stringProvider) }
+        }.map { it.toDomain() }
             .mapToCheckoutError(ErrorLocalized.CARD_FORM_INITIALIZATION)
 }

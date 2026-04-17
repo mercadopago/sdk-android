@@ -13,13 +13,19 @@ internal class PublicKeyInterceptor(
     ): Response {
         val request = chain.request()
         val currentPublicKey: String? = publicKeyProvider()
+
         if (currentPublicKey.isNullOrEmpty()) {
             return chain.proceed(request)
         }
+
         val url = request.url.newBuilder().apply {
             addQueryParameter(PUBLIC_KEY, currentPublicKey)
         }.build()
-        val newRequest = request.newBuilder().url(url).build()
+
+        val newRequest = request.newBuilder()
+            .url(url)
+            .build()
+
         return chain.proceed(newRequest)
     }
 }
