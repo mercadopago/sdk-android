@@ -22,6 +22,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationType as ResponseIdentificationType
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType as DomainIdentificationType
 
 internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
@@ -34,7 +36,7 @@ internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
             securityCode = securityCode.toSecurityCodeField(translations.securityCode),
             document = translations.document.toDocumentField(),
         ),
-        identificationTypes = identificationTypes,
+        identificationTypes = identificationTypes.map { it.toDomain() },
     )
 
 private fun CardNumberConfig.toCardNumberField(
@@ -127,4 +129,14 @@ private fun LengthConfig.toLengthRange(): LengthRange =
     LengthRange(
         min = min,
         max = max,
+    )
+
+private fun ResponseIdentificationType.toDomain(): DomainIdentificationType =
+    DomainIdentificationType(
+        id = id,
+        name = name,
+        type = type,
+        minLength = minLength,
+        maxLength = maxLength,
+        mask = mask,
     )

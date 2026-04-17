@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationType
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 
 internal data class CardFormInitializationOutput(
     val title: String,
