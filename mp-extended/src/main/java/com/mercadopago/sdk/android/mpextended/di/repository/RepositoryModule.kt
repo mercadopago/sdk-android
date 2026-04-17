@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.mpextended.di.repository
 
-import com.mercadopago.sdk.android.mpextended.data.repository.MpExtendedRepositoryImpl
+import com.mercadopago.sdk.android.mpextended.data.repository.MPExtendedRepositoryImpl
 import com.mercadopago.sdk.android.mpextended.domain.repository.MPExtendedRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -8,6 +8,6 @@ import org.koin.dsl.module
 internal fun provideRepositoryModule(): Module =
     module {
         factory<MPExtendedRepository> {
-            MpExtendedRepositoryImpl(get())
+            MPExtendedRepositoryImpl(get())
         }
     }

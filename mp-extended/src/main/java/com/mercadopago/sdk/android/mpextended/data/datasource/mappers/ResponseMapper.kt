@@ -8,16 +8,17 @@ import retrofit2.Response
 
 internal const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
 
+private val gson = GsonBuilder().create()
+
 internal val EMPTY_BODY_ERROR = Result.Error(
     ResultError.Request(
-        code = "200",
+        code = "EMPTY_BODY",
         message = "empty body",
     ),
 )
 
 internal fun ResponseBody?.toResultError(): ResultError.Request {
     val errorBody = this?.string()
-    val gson = GsonBuilder().create()
 
     return errorBody?.let {
         gson.fromJson(it, ResultError.Request::class.java)

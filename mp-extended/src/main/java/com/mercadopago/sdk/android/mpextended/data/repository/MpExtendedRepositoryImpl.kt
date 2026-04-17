@@ -8,7 +8,7 @@ import com.mercadopago.sdk.android.mpextended.domain.model.MPDeviceSession
 import com.mercadopago.sdk.android.mpextended.domain.model.params.GetDeviceSessionParams
 import com.mercadopago.sdk.android.mpextended.domain.repository.MPExtendedRepository
 
-internal class MpExtendedRepositoryImpl(
+internal class MPExtendedRepositoryImpl(
     private val dataSource: MPExtendedRemoteDataSource,
 ) : MPExtendedRepository {
     override suspend fun getDeviceSession(
