@@ -44,7 +44,6 @@ android {
         buildConfigField("String", "SdkVersion", "\"${BomConfig.VERSION_NAME}\"")
         buildConfigField("String", "MERCADO_PAGO_API_URL", "\"https://api.mercadopago.com/\"")
         buildConfigField("String", "MERCADO_LIBRE_API_URL", "\"https://api.mercadolibre.com/\"")
-        buildConfigField("String", "FURY_TOKEN", "\"\"")
     }
 
     buildTypes {
