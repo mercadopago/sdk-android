@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormDropdownSelection
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitializeError
@@ -27,18 +26,21 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNot
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -46,7 +48,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -55,6 +56,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -68,18 +70,15 @@ internal class CardPaymentViewModel(
     private val stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardDataByBinUseCase: GetCardDataByBinUseCase,
-    private val getIdentificationTypesUseCase: GetIdentificationTypesUseCase,
+    private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
-    private val helperTextOptional: String
-        get() = stateFactory.getOptionalFieldText()
-
     private val genericErrorMessage: String
         get() = stateFactory.getGenericErrorMessage()
 
-    private val _viewState = MutableStateFlow(stateFactory.createInitialState())
+    private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     private var isCancelling = false
@@ -89,20 +88,19 @@ internal class CardPaymentViewModel(
         UiButton("user_tapped_ui_back_button"),
     }
 
-    fun getIdentificationTypes() {
+    fun initialization() {
         viewModelScope.launch {
             updateLoadingState(true)
-            getIdentificationTypesUseCase().fold(
+            val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).toLanguageTag()
+            val amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty()
+            val checkoutType = checkoutConfiguration?.checkoutType.toString()
+            initializeCardFormUseCase(
+                locale = locale,
+                amount = amount,
+                checkoutType = checkoutType,
+            ).fold(
                 onSuccess = { data ->
-                    val firstType = data.firstOrNull()
-                    _viewState.value = _viewState.value.copy(
-                        identificationTypeState = _viewState.value.identificationTypeState.copy(
-                            show = data.isNotEmpty(),
-                            identificationTypes = data,
-                            selected = firstType,
-                            placeHolder = firstType.getPlaceholder().orEmpty(),
-                        ),
-                    )
+                    _viewState.value = data.toCardPaymentScreenState()
                 },
                 onError = { error ->
                     trackInitializeError(error)
@@ -436,7 +434,7 @@ internal class CardPaymentViewModel(
         updateCardNumberError<CardNumberErrorType.CardTypeNotAccepted> {
             val (cardTypes, _) = checkoutConfiguration?.paymentMethods.extractCardFilters()
             if (!cardData.paymentMethod.matchesCardType(cardTypes)) {
-                val cardType = com.mercadopago.sdk.android.checkout.core.model.CardType.fromString(
+                val cardType = CardType.fromString(
                     cardData.paymentMethod.paymentTypeId.orEmpty(),
                 )
                 CardNumberErrorType.CardTypeNotAccepted(cardType)
@@ -452,13 +450,11 @@ internal class CardPaymentViewModel(
         val cardNumberState = viewState.value.cardNumberState
         val errorMessage: String = when {
             errors.any { it is CardNumberErrorType.LuhnValidation && cardNumberState.isComplete() } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_invalid)
+                cardNumberState.validation.errorInvalid
             }
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } -> {
-                stateFactory.getStringProvider()
-                    .getString(R.string.card_form_error_card_number_invalid)
+                cardNumberState.validation.errorInvalid
             }
 
             errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
@@ -514,7 +510,7 @@ internal class CardPaymentViewModel(
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) helperTextOptional else "",
+        helper = if (securityCode.isOptional()) _viewState.value.secureCodeState.helper else "",
         placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
         messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
@@ -808,6 +804,5 @@ internal class CardPaymentViewModel(
             metricCardFormUserCanceledError(errorType = reason.analyticsValue),
         )
     }
-
     // endregion
 }
