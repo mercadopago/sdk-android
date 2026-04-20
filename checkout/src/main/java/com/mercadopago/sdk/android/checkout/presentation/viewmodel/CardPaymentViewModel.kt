@@ -48,7 +48,11 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -73,7 +77,6 @@ internal class CardPaymentViewModel(
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
-    private val validator: CardPaymentValidator,
 ) : ViewModel() {
     private val genericErrorMessage: String
         get() = stateFactory.getGenericErrorMessage()
@@ -395,7 +398,7 @@ internal class CardPaymentViewModel(
 
     private fun handleCardNumberInputError() {
         updateCardNumberError<CardNumberErrorType.FieldValidation> {
-            val error = validator.validateCardNumber(viewState.value.cardNumberState)
+            val error = CardNumberVerifier().verify(viewState.value.cardNumberState)
             if (error.isNotEmpty()) CardNumberErrorType.FieldValidation(error) else null
         }
     }
@@ -630,7 +633,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val expirationDateError = validator.validateExpirationDate(currentState.expirationDateState)
+        val expirationDateError = ExpirationDateVerifier().verify(currentState.expirationDateState)
         updateFieldState(expirationDateError, shouldUpdateError) { error, isValid ->
             copy(
                 expirationDateState = expirationDateState.copy(
@@ -647,7 +650,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
-            val securityCodeError = validator.validateSecurityCode(currentState.secureCodeState)
+            val securityCodeError = SecurityCodeVerifier().verify(currentState.secureCodeState)
             if (shouldUpdateError) trackInputValidation("cvv", securityCodeError.isEmpty())
             updateFieldState(securityCodeError, shouldUpdateError) { error, isValid ->
                 copy(
@@ -665,7 +668,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val cardHolderError = validator.validateCardHolder(currentState.cardHolderState)
+        val cardHolderError = CardHolderVerifier().verify(currentState.cardHolderState)
         if (shouldUpdateError) trackInputValidation("card_holder", cardHolderError.isEmpty())
         updateFieldState(cardHolderError, shouldUpdateError) { error, isValid ->
             copy(
@@ -683,7 +686,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val identificationError =
-            validator.validateIdentificationType(currentState.identificationTypeState)
+            IdentificationTypeVerifier().verify(currentState.identificationTypeState)
         if (shouldUpdateError) trackInputValidation("document", identificationError.isEmpty())
         updateFieldState(identificationError, shouldUpdateError) { error, isValid ->
             copy(

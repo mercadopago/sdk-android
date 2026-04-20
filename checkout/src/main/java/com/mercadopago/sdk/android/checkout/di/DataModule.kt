@@ -15,7 +15,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUse
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -42,9 +41,6 @@ internal fun provideDataModule() =
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
-        factory {
-            CardPaymentValidator()
-        }
         factory<CardFormRemoteDataSource> {
             CardFormRemoteDataSourceImpl(service = get())
         }
@@ -64,7 +60,6 @@ internal fun provideDataModule() =
                 initializeCardFormUseCase = get(),
                 generateTokenUseCase = GenerateTokenUseCase(),
                 cancelledFormContextUseCase = CancelledFormContextUseCase(),
-                validator = get(),
             )
         }
     }
