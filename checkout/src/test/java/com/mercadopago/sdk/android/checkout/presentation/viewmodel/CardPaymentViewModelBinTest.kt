@@ -127,7 +127,9 @@ internal class CardPaymentViewModelBinTest {
             cardNumber = CardNumberConfig(length = 16, validation = "standard", mask = null),
             securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = "back"),
             issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
-            quotas = listOf(Quota(quantity = 1, installmentAmount = "100", totalAmount = "100", label = "1x", discountRate = 0.0)),
+            quotas = listOf(
+                Quota(quantity = 1, installmentAmount = "100", totalAmount = "100", label = "1x", discountRate = 0.0),
+            ),
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -287,6 +289,8 @@ internal class CardPaymentViewModelBinTest {
         val viewModel = makeViewModel()
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("12345"))
 
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any()) } throws AssertionError("Should not be called")
+        coEvery {
+            getCardBinUseCase(any(), any(), any(), any(), any(), any())
+        } throws AssertionError("Should not be called")
     }
 }

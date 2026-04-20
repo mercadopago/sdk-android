@@ -639,7 +639,9 @@ internal class CardPaymentViewModel(
         }
     }
 
-    private fun updateStateWithCardBinData(data: CardBinData) {
+    private fun updateStateWithCardBinData(
+        data: CardBinData,
+    ) {
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 maxLength = data.cardNumber?.length ?: _viewState.value.cardNumberState.maxLength,
@@ -658,7 +660,9 @@ internal class CardPaymentViewModel(
         data.translations?.let { applyTranslations(it) }
     }
 
-    private fun applyTranslations(translations: CardFormTranslations) {
+    private fun applyTranslations(
+        translations: CardFormTranslations,
+    ) {
         _viewState.value = _viewState.value.copy(
             cardNumberState = _viewState.value.cardNumberState.copy(
                 label = translations.cardNumber?.label.orEmpty(),
