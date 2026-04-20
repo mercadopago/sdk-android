@@ -11,6 +11,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class GetCardBinUseCase(
     private val cardFormRemoteDataSource: CardFormRemoteDataSource,
 ) {
+    @Suppress("LongParameterList")
     suspend operator fun invoke(
         bin: String,
         amount: String,

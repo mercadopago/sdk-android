@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -45,6 +46,7 @@ internal class CardPaymentViewModelTrackingTest {
 
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
+    private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val getCardDataByBinUseCase = mockk<GetCardDataByBinUseCase>(relaxed = true)
     private val getIdentificationTypesUseCase = mockk<GetIdentificationTypesUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
@@ -83,6 +85,7 @@ internal class CardPaymentViewModelTrackingTest {
     ) = CardPaymentViewModel(
         stateFactory = stateFactory,
         checkoutConfiguration = config,
+        getCardBinUseCase = getCardBinUseCase,
         getCardDataByBinUseCase = getCardDataByBinUseCase,
         getIdentificationTypesUseCase = getIdentificationTypesUseCase,
         generateTokenUseCase = generateTokenUseCase,

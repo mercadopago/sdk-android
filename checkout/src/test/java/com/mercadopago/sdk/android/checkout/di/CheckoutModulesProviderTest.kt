@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
@@ -68,7 +69,7 @@ internal class CheckoutModulesProviderTest {
         every { context.createConfigurationContext(any()) } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
-        val modulesProvider = CheckoutModulesProvider(context)
+        val modulesProvider = CheckoutModulesProvider(context = context, publicKey = "public_key")
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
             context = context,
@@ -99,6 +100,7 @@ internal class CheckoutModulesProviderTest {
                 CheckoutThemePreferences::class,
                 CardPaymentViewModel::class,
                 InstallmentsViewModel::class,
+                GetCardBinUseCase::class,
                 GetCardDataByBinUseCase::class,
                 GetPaymentMethodsUseCase::class,
                 GetCardIssuersUseCase::class,

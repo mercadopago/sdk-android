@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 internal interface CardFormService {
+    @Suppress("LongParameterList")
     @GET("v1/card_payment_brick/card")
     suspend fun getCardBin(
         @Query("product_id") productId: String? = PRODUCT_ID,

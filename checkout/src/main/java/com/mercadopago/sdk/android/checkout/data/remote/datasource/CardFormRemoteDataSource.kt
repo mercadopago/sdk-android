@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CardFormRemoteDataSource {
+    @Suppress("LongParameterList")
     suspend fun getCardBin(
         bin: String,
         amount: String,
