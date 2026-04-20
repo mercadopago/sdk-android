@@ -5,11 +5,10 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 internal fun provideNetworkModule(
-    publicKey: String,
     baseUrl: String,
 ): Module =
     module {
-        single { RetrofitFactory(publicKey, baseUrl) }
+        single { RetrofitFactory(baseUrl) }
         single {
             get<RetrofitFactory>().createService(CardFormService::class.java)
         }

@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.checkout.data.remote.interceptor
 import okhttp3.Interceptor
 import okhttp3.Response
 
-private const val PUBLIC_KEY = "public_key"
+private const val PUBLIC_KEY = "X-Public-Key"
 
 internal class PublicKeyInterceptor(
     private val publicKeyProvider: () -> String?,
@@ -18,12 +18,8 @@ internal class PublicKeyInterceptor(
             return chain.proceed(request)
         }
 
-        val url = request.url.newBuilder().apply {
-            addQueryParameter(PUBLIC_KEY, currentPublicKey)
-        }.build()
-
         val newRequest = request.newBuilder()
-            .url(url)
+            .addHeader(PUBLIC_KEY, currentPublicKey)
             .build()
 
         return chain.proceed(newRequest)
