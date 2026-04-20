@@ -52,29 +52,16 @@ android {
 
         buildConfigField(
             "String",
-            "CHECKOUT_BFF_BASE_URL",
-            "\"https://api.mercadopago.com/\"",
+            "CHECKOUT_PRODUCT_ID",
+            secretProperties.getProperty("checkout.productId")
+                ?: secretProperties.getProperty("coreMethods.productId", "\"\""),
         )
-
-        buildConfigField("String", "FURY_TOKEN", "\"\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
-        debug {
-            buildConfigField(
-                "String",
-                "CHECKOUT_BFF_BASE_URL",
-                "\"https://beta--bricks-api.furyapps.io/cho-off/\"",
-            )
-            buildConfigField(
-                "String",
-                "FURY_TOKEN",
-                secretProperties.getProperty("fury_token", "\"\""),
-            )
-        }
         release {
             isMinifyEnabled = true
             proguardFiles(
