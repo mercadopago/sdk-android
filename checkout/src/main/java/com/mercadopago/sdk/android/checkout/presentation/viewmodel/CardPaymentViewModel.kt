@@ -14,19 +14,18 @@ import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
-import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
-import com.mercadopago.sdk.android.checkout.domain.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
-import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -35,7 +34,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
@@ -48,7 +46,11 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -56,7 +58,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -73,7 +74,6 @@ internal class CardPaymentViewModel(
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
-    private val validator: CardPaymentValidator,
 ) : ViewModel() {
     private val genericErrorMessage: String
         get() = stateFactory.getGenericErrorMessage()
@@ -91,13 +91,9 @@ internal class CardPaymentViewModel(
     fun initialization() {
         viewModelScope.launch {
             updateLoadingState(true)
-            val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).toLanguageTag()
-            val amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty()
-            val checkoutType = checkoutConfiguration?.checkoutType.toString()
             initializeCardFormUseCase(
-                locale = locale,
-                amount = amount,
-                checkoutType = checkoutType,
+                amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
+                checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
                     _viewState.value = data.toCardPaymentScreenState()
@@ -328,12 +324,13 @@ internal class CardPaymentViewModel(
                 }
             }
 
+            // TechDebt - Atualizar com valores do BFF
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = event.identificationType.getPlaceholder().orEmpty(),
+                        placeHolder = "",
                     ),
                 )
             }
@@ -395,7 +392,7 @@ internal class CardPaymentViewModel(
 
     private fun handleCardNumberInputError() {
         updateCardNumberError<CardNumberErrorType.FieldValidation> {
-            val error = validator.validateCardNumber(viewState.value.cardNumberState)
+            val error = CardNumberVerifier().verify(viewState.value.cardNumberState)
             if (error.isNotEmpty()) CardNumberErrorType.FieldValidation(error) else null
         }
     }
@@ -505,14 +502,15 @@ internal class CardPaymentViewModel(
         )
     }
 
+    // TechDebt - Atualizar com valores do BFF
     private fun buildSecurityCodeState(
         securityCode: SecurityCode,
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) _viewState.value.secureCodeState.helper else "",
-        placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
-        messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
+        helper = viewState.value.secureCodeState.helper,
+        placeHolder = "",
+        messageTooltip = "",
     )
 
     private fun buildInstallmentsState(
@@ -630,7 +628,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val expirationDateError = validator.validateExpirationDate(currentState.expirationDateState)
+        val expirationDateError = ExpirationDateVerifier().verify(currentState.expirationDateState)
         updateFieldState(expirationDateError, shouldUpdateError) { error, isValid ->
             copy(
                 expirationDateState = expirationDateState.copy(
@@ -647,7 +645,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         if (!currentState.secureCodeState.optional) {
-            val securityCodeError = validator.validateSecurityCode(currentState.secureCodeState)
+            val securityCodeError = SecurityCodeVerifier().verify(currentState.secureCodeState)
             if (shouldUpdateError) trackInputValidation("cvv", securityCodeError.isEmpty())
             updateFieldState(securityCodeError, shouldUpdateError) { error, isValid ->
                 copy(
@@ -665,7 +663,7 @@ internal class CardPaymentViewModel(
         shouldUpdateError: Boolean = true,
     ) {
         val currentState = _viewState.value
-        val cardHolderError = validator.validateCardHolder(currentState.cardHolderState)
+        val cardHolderError = CardHolderVerifier().verify(currentState.cardHolderState)
         if (shouldUpdateError) trackInputValidation("card_holder", cardHolderError.isEmpty())
         updateFieldState(cardHolderError, shouldUpdateError) { error, isValid ->
             copy(
@@ -683,7 +681,7 @@ internal class CardPaymentViewModel(
     ) {
         val currentState = _viewState.value
         val identificationError =
-            validator.validateIdentificationType(currentState.identificationTypeState)
+            IdentificationTypeVerifier().verify(currentState.identificationTypeState)
         if (shouldUpdateError) trackInputValidation("document", identificationError.isEmpty())
         updateFieldState(identificationError, shouldUpdateError) { error, isValid ->
             copy(

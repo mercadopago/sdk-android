@@ -7,10 +7,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 internal interface CardFormService {
-    @GET("v1/card_payment_brick/initialization")
+    @GET("cho-off/v1/card_payment_brick/initialization")
     suspend fun initialization(
         @Query("product_id") productId: String? = PRODUCT_ID,
-        @Query("locale") locale: String,
         @Query("amount") amount: String,
         @Query("checkout_type") checkoutType: String,
     ): Response<CardFormInitResponse>

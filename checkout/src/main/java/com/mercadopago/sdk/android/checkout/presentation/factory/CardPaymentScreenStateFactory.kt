@@ -2,93 +2,10 @@ package com.mercadopago.sdk.android.checkout.presentation.factory
 
 import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
-import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
-import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
-import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
-import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 
 internal class CardPaymentScreenStateFactory(
     private val stringProvider: StringProvider,
 ) {
-    fun createInitialState(): CardPaymentScreenState {
-        return CardPaymentScreenState(
-            title = stringProvider.getString(R.string.card_form_title),
-            cardNumberState = createCardNumberState(),
-            cardHolderState = createCardHolderState(),
-            expirationDateState = createExpirationDateState(),
-            secureCodeState = createSecurityCodeState(),
-            identificationTypeState = createIdentificationTypeState(),
-            fixedFooterState = createFixedFooterState(),
-        )
-    }
-
-    private fun createCardNumberState() =
-        CardNumberState(
-            label = stringProvider.getString(R.string.card_form_number_label),
-            placeHolder = stringProvider.getString(R.string.card_form_number_placeholder),
-            validation = ValidationState(
-                errorEmpty = stringProvider.getString(R.string.card_form_error_required_field),
-                errorIncomplete = stringProvider.getString(R.string.card_form_error_card_number_incomplete),
-                errorInvalid = stringProvider.getString(R.string.card_form_error_card_number_invalid),
-            ),
-        )
-
-    private fun createCardHolderState() =
-        CardHolderState(
-            label = stringProvider.getString(R.string.card_form_holder_label),
-            placeHolder = stringProvider.getString(R.string.card_form_holder_placeholder),
-            helper = stringProvider.getString(R.string.card_form_holder_helper),
-            validation = ValidationState(
-                errorEmpty = stringProvider.getString(R.string.card_form_error_required_field),
-                errorIncomplete = stringProvider.getString(R.string.card_form_error_cardholder_incomplete),
-                errorInvalid = stringProvider.getString(R.string.card_form_error_cardholder_format),
-            ),
-        )
-
-    private fun createExpirationDateState() =
-        ExpirationDateState(
-            label = stringProvider.getString(R.string.card_form_expiration_short_label),
-            placeHolder = stringProvider.getString(R.string.card_form_expiration_placeholder),
-            validation = ValidationState(
-                errorEmpty = stringProvider.getString(R.string.card_form_error_required_field),
-                errorIncomplete = stringProvider.getString(R.string.card_form_error_expiration_incomplete),
-                errorInvalid = stringProvider.getString(R.string.card_form_error_expiration_invalid),
-            ),
-        )
-
-    private fun createSecurityCodeState(): SecurityCodeState =
-        SecurityCodeState(
-            label = stringProvider.getString(R.string.card_form_security_label),
-            placeHolder = stringProvider.getString(R.string.card_form_security_placeholder_three_digits),
-            messageTooltip = stringProvider.getString(R.string.card_form_security_code_tooltip_back)
-                .format(SecurityCodeState().maxLength),
-            validation = ValidationState(
-                errorEmpty = stringProvider.getString(R.string.card_form_error_required_field),
-                errorIncomplete = stringProvider.getString(R.string.card_form_error_cvv_incomplete),
-            ),
-        )
-
-    private fun createIdentificationTypeState() =
-        IdentificationTypeState(
-            label = stringProvider.getString(R.string.card_form_document_label),
-            validation = ValidationState(
-                errorEmpty = stringProvider.getString(R.string.card_form_error_required_field),
-                errorIncomplete = stringProvider.getString(R.string.card_form_error_required_field),
-                errorInvalid = stringProvider.getString(R.string.card_form_error_document_all_zeros),
-            ),
-        )
-
-    private fun createFixedFooterState() =
-        FixedFooterState(
-            buttonText = stringProvider.getString(R.string.card_form_save_button),
-        )
-
-    fun getOptionalFieldText() = stringProvider.getString(R.string.card_form_optional_field)
-
     fun getGenericErrorMessage() = stringProvider.getString(R.string.card_form_generic_error)
 
     fun getStringProvider() = stringProvider

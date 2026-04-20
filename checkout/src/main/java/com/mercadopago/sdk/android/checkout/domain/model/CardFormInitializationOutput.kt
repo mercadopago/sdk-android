@@ -1,12 +1,21 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-
 internal data class CardFormInitializationOutput(
     val title: String,
     val button: String,
     val fields: CardFormFields,
-    val identificationTypes: List<IdentificationType>,
+    val identificationTypes: List<IdentificationTypeItem>,
+)
+
+internal data class IdentificationTypeItem(
+    val id: String,
+    val name: String,
+    val minLength: Int,
+    val maxLength: Int,
+    val placeholder: String,
+    val mask: String,
+    val type: String,
+    val sequence: String,
 )
 
 internal data class CardFormFields(

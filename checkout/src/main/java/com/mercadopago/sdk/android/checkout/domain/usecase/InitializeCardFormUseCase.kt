@@ -14,13 +14,11 @@ internal class InitializeCardFormUseCase(
     private val cardFormRemoteDataSource: CardFormRemoteDataSource,
 ) {
     suspend operator fun invoke(
-        locale: String,
         amount: String,
         checkoutType: String,
     ): Result<CardFormInitializationOutput, MercadoPagoCheckoutError> =
         withErrorHandling {
             cardFormRemoteDataSource.fetchInitialization(
-                locale = locale,
                 amount = amount,
                 checkoutType = checkoutType,
             )
