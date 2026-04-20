@@ -512,7 +512,7 @@ internal class CardPaymentViewModel(
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) _viewState.value.secureCodeState.helper else "",
+        helper = viewState.value.secureCodeState.helper,
         placeHolder = "",
         messageTooltip = "",
     )

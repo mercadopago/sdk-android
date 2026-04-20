@@ -61,6 +61,7 @@ private fun SecurityCodeField.toSecurityCodeState() =
         validation = validation.toValidationState(),
     )
 
+// TechDebt - Atualizar com valores do BFF
 private fun DocumentField.toIdentificationTypeState(
     identificationTypes: List<IdentificationType>,
 ): IdentificationTypeState {
@@ -70,7 +71,6 @@ private fun DocumentField.toIdentificationTypeState(
         show = identificationTypes.isNotEmpty(),
         identificationTypes = identificationTypes,
         selected = firstType,
-        // TECHDEBT: Pegar o valor do BFF (rota /cards)
         placeHolder = "",
         validation = validation.toValidationState(),
     )
