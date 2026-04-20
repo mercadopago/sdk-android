@@ -10,7 +10,7 @@ internal interface CardFormRemoteDataSource {
         amount: String,
         processingMode: String,
         locale: String,
-        allowCardTypes: String?,
-        allowCardBrands: String?,
+        allowPaymentTypes: String?,
+        allowPaymentMethods: String?,
     ): Result<CardBinResponse, ResultError>
 }

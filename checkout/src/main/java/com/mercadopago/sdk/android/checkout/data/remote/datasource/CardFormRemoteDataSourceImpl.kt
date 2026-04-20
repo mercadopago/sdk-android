@@ -14,15 +14,15 @@ internal class CardFormRemoteDataSourceImpl(
         amount: String,
         processingMode: String,
         locale: String,
-        allowCardTypes: String?,
-        allowCardBrands: String?,
+        allowPaymentTypes: String?,
+        allowPaymentMethods: String?,
     ): Result<CardBinResponse, ResultError> =
         service.getCardBin(
             bin = bin,
             amount = amount,
             processingMode = processingMode,
             locale = locale,
-            allowCardTypes = allowCardTypes,
-            allowCardBrands = allowCardBrands,
+            allowPaymentTypes = allowPaymentTypes,
+            allowPaymentMethods = allowPaymentMethods,
         ).toInternalResponse()
 }

@@ -636,8 +636,8 @@ internal class CardPaymentViewModel(
                 amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty(),
                 processingMode = PROCESSING_MODE,
                 locale = locale,
-                allowCardTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
-                allowCardBrands = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
+                allowPaymentTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
+                allowPaymentMethods = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
             )
         }
     }

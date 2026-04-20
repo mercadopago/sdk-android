@@ -14,7 +14,7 @@ internal interface CardFormService {
         @Query("amount") amount: String,
         @Query("processing_mode") processingMode: String,
         @Query("locale") locale: String,
-        @Query("allow_card_types") allowCardTypes: String?,
-        @Query("allow_card_brands") allowCardBrands: String?,
+        @Query("allow_payment_types") allowPaymentTypes: String?,
+        @Query("allow_payment_methods") allowPaymentMethods: String?,
     ): Response<CardBinResponse>
 }

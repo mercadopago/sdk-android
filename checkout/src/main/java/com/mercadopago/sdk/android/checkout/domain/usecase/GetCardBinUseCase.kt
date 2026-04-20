@@ -16,8 +16,8 @@ internal class GetCardBinUseCase(
         amount: String,
         processingMode: String,
         locale: String,
-        allowCardTypes: String?,
-        allowCardBrands: String?,
+        allowPaymentTypes: String?,
+        allowPaymentMethods: String?,
     ): Result<CardBinResponse, MercadoPagoCheckoutError> =
         withErrorHandling {
             cardFormRemoteDataSource.getCardBin(
@@ -25,8 +25,8 @@ internal class GetCardBinUseCase(
                 amount = amount,
                 processingMode = processingMode,
                 locale = locale,
-                allowCardTypes = allowCardTypes,
-                allowCardBrands = allowCardBrands,
+                allowPaymentTypes = allowPaymentTypes,
+                allowPaymentMethods = allowPaymentMethods,
             )
         }.mapToCheckoutError(ErrorLocalized.CARD_BIN)
 }
