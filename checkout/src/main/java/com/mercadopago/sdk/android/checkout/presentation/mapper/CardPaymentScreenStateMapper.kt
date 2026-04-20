@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.DocumentField
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.model.IdentificationTypeItem
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
@@ -61,20 +62,30 @@ private fun SecurityCodeField.toSecurityCodeState() =
         validation = validation.toValidationState(),
     )
 
-// TechDebt - Atualizar com valores do BFF
 private fun DocumentField.toIdentificationTypeState(
-    identificationTypes: List<IdentificationType>,
+    identificationTypes: List<IdentificationTypeItem>,
 ): IdentificationTypeState {
-    val firstType = identificationTypes.firstOrNull()
+    val coreTypes = identificationTypes.map { it.toCoreType() }
+    val firstItem = identificationTypes.firstOrNull()
     return IdentificationTypeState(
         label = label,
         show = identificationTypes.isNotEmpty(),
-        identificationTypes = identificationTypes,
-        selected = firstType,
-        placeHolder = "",
+        identificationTypes = coreTypes,
+        selected = coreTypes.firstOrNull(),
+        placeHolder = firstItem?.placeholder.orEmpty(),
         validation = validation.toValidationState(),
     )
 }
+
+private fun IdentificationTypeItem.toCoreType(): IdentificationType =
+    IdentificationType(
+        id = id,
+        name = name,
+        type = type,
+        minLength = minLength,
+        maxLength = maxLength,
+        mask = mask,
+    )
 
 private fun Validation.toValidationState() =
     ValidationState(

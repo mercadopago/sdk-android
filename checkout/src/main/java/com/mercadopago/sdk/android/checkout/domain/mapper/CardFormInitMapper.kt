@@ -19,11 +19,11 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.DocumentField
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.model.IdentificationTypeItem
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationType as ResponseIdentificationType
-import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType as DomainIdentificationType
 
 internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
@@ -131,12 +131,14 @@ private fun LengthConfig.toLengthRange(): LengthRange =
         max = max,
     )
 
-private fun ResponseIdentificationType.toDomain(): DomainIdentificationType =
-    DomainIdentificationType(
+private fun ResponseIdentificationType.toDomain(): IdentificationTypeItem =
+    IdentificationTypeItem(
         id = id,
         name = name,
-        type = type,
         minLength = minLength,
         maxLength = maxLength,
+        placeholder = placeholder,
         mask = mask,
+        type = type,
+        sequence = sequence,
     )
