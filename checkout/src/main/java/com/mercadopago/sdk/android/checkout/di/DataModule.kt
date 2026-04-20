@@ -41,12 +41,6 @@ internal fun provideDataModule() =
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
-        factory<CardFormRemoteDataSource> {
-            CardFormRemoteDataSourceImpl(service = get())
-        }
-        factory {
-            InitializeCardFormUseCase(cardFormRemoteDataSource = get())
-        }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
                 stateFactory = get(),

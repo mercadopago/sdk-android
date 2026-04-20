@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.checkout.domain.interactor
 import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.checkout.di.CheckoutModulesProvider
-import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import org.koin.core.Koin
 
 /**
@@ -28,7 +27,6 @@ class Checkout internal constructor(
                 instance ?: Checkout(
                     koin = CheckoutModulesProvider(
                         context = context.applicationContext,
-                        publicKey = PublicKeyStore.publicKey.orEmpty(),
                     ).koinApp,
                 ).also {
                     instance = it

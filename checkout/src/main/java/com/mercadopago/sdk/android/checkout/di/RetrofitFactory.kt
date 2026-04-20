@@ -4,13 +4,13 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.checkout.data.remote.interceptor.PublicKeyInterceptor
 import com.mercadopago.sdk.android.core.BuildConfig
+import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 internal class RetrofitFactory(
-    private val publicKey: String?,
     private val baseUrl: String,
 ) {
     private val gson by lazy {
@@ -28,7 +28,7 @@ internal class RetrofitFactory(
             }
         }
         OkHttpClient.Builder()
-            .addInterceptor(PublicKeyInterceptor { publicKey })
+            .addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey })
             .addInterceptor(loggingInterceptor)
             .build()
     }
