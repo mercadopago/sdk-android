@@ -25,37 +25,15 @@ internal class CardPaymentScreenStateFactory(
         )
     }
 
-    private fun createCardNumberState() =
-        CardNumberState(
-            label = stringProvider.getString(R.string.card_form_number_label),
-            placeHolder = stringProvider.getString(R.string.card_form_number_placeholder),
-        )
+    private fun createCardNumberState() = CardNumberState()
 
-    private fun createCardHolderState() =
-        CardHolderState(
-            label = stringProvider.getString(R.string.card_form_holder_label),
-            placeHolder = stringProvider.getString(R.string.card_form_holder_placeholder),
-            helper = stringProvider.getString(R.string.card_form_holder_helper),
-        )
+    private fun createCardHolderState() = CardHolderState()
 
-    private fun createExpirationDateState() =
-        ExpirationDateState(
-            label = stringProvider.getString(R.string.card_form_expiration_short_label),
-            placeHolder = stringProvider.getString(R.string.card_form_expiration_placeholder),
-        )
+    private fun createExpirationDateState() = ExpirationDateState()
 
-    private fun createSecurityCodeState(): SecurityCodeState =
-        SecurityCodeState(
-            label = stringProvider.getString(R.string.card_form_security_label),
-            placeHolder = stringProvider.getString(R.string.card_form_security_placeholder_three_digits),
-            messageTooltip = stringProvider.getString(R.string.card_form_security_code_tooltip_back)
-                .format(SecurityCodeState().maxLength),
-        )
+    private fun createSecurityCodeState(): SecurityCodeState = SecurityCodeState()
 
-    private fun createIdentificationTypeState() =
-        IdentificationTypeState(
-            label = stringProvider.getString(R.string.card_form_document_label),
-        )
+    private fun createIdentificationTypeState() = IdentificationTypeState()
 
     private fun createFixedFooterState() =
         FixedFooterState(

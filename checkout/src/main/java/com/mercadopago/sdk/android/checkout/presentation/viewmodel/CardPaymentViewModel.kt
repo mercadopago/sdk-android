@@ -20,8 +20,6 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
-import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
-import com.mercadopago.sdk.android.checkout.domain.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
@@ -29,7 +27,9 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
+import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
@@ -78,9 +78,6 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase: CancelledFormContextUseCase,
     private val validator: CardPaymentValidator,
 ) : ViewModel() {
-    private val helperTextOptional: String
-        get() = stateFactory.getOptionalFieldText()
-
     private val genericErrorMessage: String
         get() = stateFactory.getGenericErrorMessage()
 
@@ -519,9 +516,6 @@ internal class CardPaymentViewModel(
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
-        helper = if (securityCode.isOptional()) helperTextOptional else "",
-        placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
-        messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
     )
 
     private fun buildInstallmentsState(
@@ -638,8 +632,61 @@ internal class CardPaymentViewModel(
                 locale = locale,
                 allowPaymentTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
                 allowPaymentMethods = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
+            ).fold(
+                onSuccess = { data -> updateStateWithCardBinData(data) },
+                onError = { },
             )
         }
+    }
+
+    private fun updateStateWithCardBinData(data: CardBinData) {
+        _viewState.value = _viewState.value.copy(
+            cardNumberState = _viewState.value.cardNumberState.copy(
+                maxLength = data.cardNumber?.length ?: _viewState.value.cardNumberState.maxLength,
+                mask = (data.cardNumber?.length ?: _viewState.value.cardNumberState.maxLength).toMask(),
+            ),
+            secureCodeState = _viewState.value.secureCodeState.copy(
+                maxLength = data.securityCode?.length ?: _viewState.value.secureCodeState.maxLength,
+                optional = data.securityCode?.mode?.equals("optional", ignoreCase = true) == true,
+            ),
+            paymentState = PaymentState(
+                paymentMethodId = data.id,
+                paymentTypeId = data.paymentTypeId,
+            ),
+            cardFormTranslations = data.translations,
+        )
+        data.translations?.let { applyTranslations(it) }
+    }
+
+    private fun applyTranslations(translations: CardFormTranslations) {
+        _viewState.value = _viewState.value.copy(
+            cardNumberState = _viewState.value.cardNumberState.copy(
+                label = translations.cardNumber?.label.orEmpty(),
+                placeHolder = translations.cardNumber?.placeholder.orEmpty(),
+                helper = translations.cardNumber?.helper.orEmpty(),
+            ),
+            cardHolderState = _viewState.value.cardHolderState.copy(
+                label = translations.cardHolderName?.label.orEmpty(),
+                placeHolder = translations.cardHolderName?.placeholder.orEmpty(),
+                helper = translations.cardHolderName?.helper.orEmpty(),
+            ),
+            expirationDateState = _viewState.value.expirationDateState.copy(
+                label = translations.expirationDate?.label.orEmpty(),
+                placeHolder = translations.expirationDate?.placeholder.orEmpty(),
+                helper = translations.expirationDate?.helper.orEmpty(),
+            ),
+            secureCodeState = _viewState.value.secureCodeState.copy(
+                label = translations.securityCode?.label.orEmpty(),
+                placeHolder = translations.securityCode?.placeholder.orEmpty(),
+                helper = translations.securityCode?.helper.orEmpty(),
+                messageTooltip = translations.securityCode?.tooltip.orEmpty(),
+            ),
+            identificationTypeState = _viewState.value.identificationTypeState.copy(
+                label = translations.identification?.label.orEmpty(),
+                placeHolder = translations.identification?.placeholder.orEmpty(),
+                helper = translations.identification?.helper.orEmpty(),
+            ),
+        )
     }
 
     private fun updateFieldState(

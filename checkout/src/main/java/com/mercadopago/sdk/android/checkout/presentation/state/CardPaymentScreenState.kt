@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
@@ -19,6 +20,7 @@ internal data class CardPaymentScreenState(
     val paymentState: PaymentState = PaymentState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
+    val cardFormTranslations: CardFormTranslations? = null,
     val messageError: MessageError = MessageError(),
     val isLoading: Boolean = false,
     val showTooltip: Boolean = false,
