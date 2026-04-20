@@ -14,6 +14,8 @@ import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -24,7 +26,6 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNot
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
-import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -57,7 +58,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -91,13 +91,9 @@ internal class CardPaymentViewModel(
     fun initialization() {
         viewModelScope.launch {
             updateLoadingState(true)
-            val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).toLanguageTag()
-            val amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty()
-            val checkoutType = checkoutConfiguration?.checkoutType.toString()
             initializeCardFormUseCase(
-                locale = locale,
-                amount = amount,
-                checkoutType = checkoutType,
+                amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
+                checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
                     _viewState.value = data.toCardPaymentScreenState()

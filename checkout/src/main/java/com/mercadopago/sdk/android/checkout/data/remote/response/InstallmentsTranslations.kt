@@ -4,5 +4,4 @@ internal data class InstallmentsTranslations(
     val header: InstallmentsHeaderTranslations,
     val interestFreeLabel: String,
     val totalLabel: String,
-    val payButtonLabel: String,
 )

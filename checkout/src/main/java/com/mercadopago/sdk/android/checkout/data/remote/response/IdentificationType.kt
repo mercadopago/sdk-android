@@ -8,4 +8,5 @@ internal data class IdentificationType(
     val placeholder: String,
     val mask: String,
     val type: String,
+    val sequence: String,
 )

@@ -28,7 +28,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType a
 internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
         title = translations.cardFormTitle,
-        button = translations.installments.payButtonLabel,
+        button = translations.cardFormFooterButtonLabel,
         fields = CardFormFields(
             cardNumber = cardNumber.toCardNumberField(translations.cardNumber),
             holderName = holderName.toCardHolderField(translations.holderName),
