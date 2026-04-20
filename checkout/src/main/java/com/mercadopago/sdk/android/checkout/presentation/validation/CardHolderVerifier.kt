@@ -1,12 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 
-internal class CardHolderVerifier(
-    private val stringProvider: StringProvider,
-) {
+internal class CardHolderVerifier {
     fun verify(
         state: CardHolderState,
     ): String =
@@ -18,33 +14,25 @@ internal class CardHolderVerifier(
 
     private fun checkEmpty(
         state: CardHolderState,
-    ): String? {
-        return if (state.value.isEmpty()) {
-            stringProvider.getString(R.string.card_form_error_required_field)
-        } else {
-            null
-        }
-    }
+    ): String? = if (state.value.isEmpty()) state.validation.errorEmpty else null
 
     private fun checkIncomplete(
         state: CardHolderState,
-    ): String? {
-        return if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
-            stringProvider.getString(R.string.card_form_error_cardholder_incomplete)
+    ): String? =
+        if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {
+            state.validation.errorIncomplete
         } else {
             null
         }
-    }
 
     private fun checkFormat(
         state: CardHolderState,
-    ): String? {
-        return if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
-            stringProvider.getString(R.string.card_form_error_cardholder_format)
+    ): String? =
+        if (state.value.isNotEmpty() && SPECIAL_CHARACTERS_REGEX.containsMatchIn(state.value)) {
+            state.validation.errorInvalid
         } else {
             null
         }
-    }
 
     companion object {
         private val SPECIAL_CHARACTERS_REGEX = Regex("[^a-zA-Z\\s]")
