@@ -73,7 +73,7 @@ internal fun CardPaymentScreen(
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
-        viewModel.getIdentificationTypes()
+        viewModel.initialization()
     }
 
     BackHandler {
@@ -300,7 +300,7 @@ internal fun CardPaymentScreenContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.8f)),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center,
             ) {
                 MPProgressIndicator()

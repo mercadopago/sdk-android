@@ -16,6 +16,14 @@ internal object ExceptionFactory {
         localized: ErrorLocalized,
     ): MercadoPagoCheckoutError {
         return when {
+            error.code.isNullOrEmpty() -> {
+                MercadoPagoCheckoutError.ServiceError(
+                    code = ErrorCode.SERVICE_ERROR,
+                    messageError = error.message,
+                    localized = localized.name,
+                    throwable = null,
+                )
+            }
             isNetworkError(error.code) -> {
                 MercadoPagoCheckoutError.NetworkError(
                     code = ErrorCode.NETWORK_CONNECTION_FAILED,
