@@ -98,7 +98,7 @@ internal class CardPaymentViewModelTrackingTest {
             localized = "checkout",
             throwable = null,
         )
-        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(error)
+        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(error)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
