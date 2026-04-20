@@ -8,7 +8,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.DocumentField
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -71,7 +70,8 @@ private fun DocumentField.toIdentificationTypeState(
         show = identificationTypes.isNotEmpty(),
         identificationTypes = identificationTypes,
         selected = firstType,
-        placeHolder = firstType.getPlaceholder().orEmpty(),
+        // TECHDEBT: Pegar o valor do BFF (rota /cards)
+        placeHolder = "",
         validation = validation.toValidationState(),
     )
 }

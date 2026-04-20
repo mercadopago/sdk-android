@@ -13,7 +13,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -64,8 +63,6 @@ internal class CardPaymentViewModelTrackingTest {
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        every { stateFactory.createInitialState() } returns CardPaymentScreenState()
-        every { stateFactory.getOptionalFieldText() } returns ""
         every { stateFactory.getGenericErrorMessage() } returns "Error"
         mockkObject(CheckoutCallbackHolder)
         every { CheckoutCallbackHolder.notify(any()) } returns Unit

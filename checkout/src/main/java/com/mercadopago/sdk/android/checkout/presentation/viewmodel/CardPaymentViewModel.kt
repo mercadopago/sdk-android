@@ -18,8 +18,6 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.getLength
-import com.mercadopago.sdk.android.checkout.domain.extensions.getMessage
-import com.mercadopago.sdk.android.checkout.domain.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
@@ -35,7 +33,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getPlaceholder
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
@@ -331,12 +328,13 @@ internal class CardPaymentViewModel(
                 }
             }
 
+            // TechDebt - Atualizar com valores do BFF
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = event.identificationType.getPlaceholder().orEmpty(),
+                        placeHolder = "",
                     ),
                 )
             }
@@ -508,14 +506,15 @@ internal class CardPaymentViewModel(
         )
     }
 
+    // TechDebt - Atualizar com valores do BFF
     private fun buildSecurityCodeState(
         securityCode: SecurityCode,
     ) = _viewState.value.secureCodeState.copy(
         maxLength = securityCode.length,
         optional = securityCode.isOptional(),
         helper = if (securityCode.isOptional()) _viewState.value.secureCodeState.helper else "",
-        placeHolder = securityCode.getPlaceholder(stateFactory.getStringProvider()),
-        messageTooltip = securityCode.getMessage(stateFactory.getStringProvider()),
+        placeHolder = "",
+        messageTooltip = "",
     )
 
     private fun buildInstallmentsState(
