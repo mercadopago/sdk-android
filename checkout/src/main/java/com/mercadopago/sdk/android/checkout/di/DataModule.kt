@@ -7,16 +7,14 @@ import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -38,13 +36,10 @@ internal fun provideDataModule() =
             CardFormRemoteDataSourceImpl(service = get())
         }
         factory {
-            GetCardBinUseCase(cardFormRemoteDataSource = get())
+            InitializeCardFormUseCase(cardFormRemoteDataSource = get())
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
-        }
-        factory {
-            CardPaymentValidator(stringProvider = get())
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
@@ -56,11 +51,9 @@ internal fun provideDataModule() =
                     getInstallmentsUseCase = GetInstallmentsUseCase(),
                     stringProvider = get(),
                 ),
-                getCardBinUseCase = get(),
-                getIdentificationTypesUseCase = GetIdentificationTypesUseCase(),
+                initializeCardFormUseCase = get(),
                 generateTokenUseCase = GenerateTokenUseCase(),
                 cancelledFormContextUseCase = CancelledFormContextUseCase(),
-                validator = get(),
             )
         }
     }

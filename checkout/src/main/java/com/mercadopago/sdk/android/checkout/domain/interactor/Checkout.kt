@@ -27,8 +27,6 @@ class Checkout internal constructor(
                 instance ?: Checkout(
                     koin = CheckoutModulesProvider(
                         context = context.applicationContext,
-                        // TECH DEBT
-                        publicKey = "",
                     ).koinApp,
                 ).also {
                     instance = it
