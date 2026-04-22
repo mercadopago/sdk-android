@@ -15,9 +15,9 @@ internal interface CardFormRemoteDataSource {
     suspend fun getCardBin(
         bin: String,
         amount: String,
+        checkoutType: String,
         processingMode: String,
-        locale: String,
-        allowPaymentTypes: String?,
-        allowPaymentMethods: String?,
+        allowCardTypes: String?,
+        allowCardBrands: String?,
     ): Result<CardBinResponse, ResultError>
 }

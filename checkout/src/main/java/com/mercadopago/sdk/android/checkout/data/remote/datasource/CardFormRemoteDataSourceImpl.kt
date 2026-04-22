@@ -22,17 +22,17 @@ internal class CardFormRemoteDataSourceImpl(
     override suspend fun getCardBin(
         bin: String,
         amount: String,
+        checkoutType: String,
         processingMode: String,
-        locale: String,
-        allowPaymentTypes: String?,
-        allowPaymentMethods: String?,
+        allowCardTypes: String?,
+        allowCardBrands: String?,
     ): Result<CardBinResponse, ResultError> =
         service.getCardBin(
             bin = bin,
             amount = amount,
+            checkoutType = checkoutType,
             processingMode = processingMode,
-            locale = locale,
-            allowPaymentTypes = allowPaymentTypes,
-            allowPaymentMethods = allowPaymentMethods,
+            allowCardTypes = allowCardTypes,
+            allowCardBrands = allowCardBrands,
         ).toInternalResponse()
 }

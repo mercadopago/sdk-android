@@ -27,7 +27,6 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNot
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
-import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
@@ -63,7 +62,6 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -620,17 +618,14 @@ internal class CardPaymentViewModel(
         bin: String,
     ) {
         val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
-        val locale = CountryCodeToLocaleMapper.map(MercadoPagoSDK.countryCode).let {
-            "${it.language}_${it.country}"
-        }
         viewModelScope.launch {
             getCardBinUseCase(
                 bin = bin,
                 amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty(),
+                checkoutType = checkoutConfiguration.toCheckoutType(),
                 processingMode = PROCESSING_MODE,
-                locale = locale,
-                allowPaymentTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
-                allowPaymentMethods = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
+                allowCardTypes = cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
+                allowCardBrands = cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
             ).fold(
                 onSuccess = { data -> updateStateWithCardBinData(data) },
                 onError = { },
