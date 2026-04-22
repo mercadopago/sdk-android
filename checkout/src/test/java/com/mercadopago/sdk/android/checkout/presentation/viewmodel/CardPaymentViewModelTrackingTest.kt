@@ -45,7 +45,6 @@ internal class CardPaymentViewModelTrackingTest {
 
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
-    private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val getCardDataByBinUseCase = mockk<GetCardDataByBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
@@ -84,7 +83,6 @@ internal class CardPaymentViewModelTrackingTest {
     ) = CardPaymentViewModel(
         stateFactory = stateFactory,
         checkoutConfiguration = config,
-        getCardBinUseCase = getCardBinUseCase,
         getCardDataByBinUseCase = getCardDataByBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
