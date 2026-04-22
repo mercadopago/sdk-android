@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.checkout.data.remote.service
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PRODUCT_ID
 import retrofit2.Response
 import retrofit2.http.GET

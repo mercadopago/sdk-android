@@ -66,7 +66,7 @@ internal class CheckoutModulesProviderTest {
         every { context.createConfigurationContext(any()) } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
-        val modulesProvider = CheckoutModulesProvider(context = context, publicKey = "public_key")
+        val modulesProvider = CheckoutModulesProvider(context = context)
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
             context = context,
