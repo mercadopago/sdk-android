@@ -21,16 +21,18 @@ import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsFieldTransl
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldTranslation
 
-internal fun CardBinResponse.toDomain(): CardBinData =
-    CardBinData(
-        id = id,
-        paymentTypeId = paymentTypeId,
-        cardNumber = cardNumber?.toDomain(),
-        securityCode = securityCode?.toDomain(),
-        issuers = issuers?.map { it.toDomain() } ?: emptyList(),
+internal fun CardBinResponse.toDomain(): CardBinData {
+    val paymentMethod = paymentMethods?.firstOrNull()
+    return CardBinData(
+        id = paymentMethod?.id,
+        paymentTypeId = paymentMethod?.paymentTypeId,
+        cardNumber = paymentMethod?.cardNumber?.toDomain(),
+        securityCode = paymentMethod?.securityCode?.toDomain(),
+        issuers = paymentMethod?.issuers?.map { it.toDomain() } ?: emptyList(),
         quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
         translations = translations?.toDomain(),
     )
+}
 
 private fun CardNumberConfigResponse.toDomain(): CardNumberConfig =
     CardNumberConfig(

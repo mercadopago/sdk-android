@@ -3,13 +3,17 @@ package com.mercadopago.sdk.android.checkout.data.remote.response
 import com.google.gson.annotations.SerializedName
 
 internal data class CardBinResponse(
+    @SerializedName("payment_methods") val paymentMethods: List<PaymentMethodResponse>?,
+    @SerializedName("installment") val installment: InstallmentConfigResponse?,
+    @SerializedName("translations") val translations: TranslationsResponse?,
+)
+
+internal data class PaymentMethodResponse(
     @SerializedName("id") val id: String?,
     @SerializedName("payment_type_id") val paymentTypeId: String?,
     @SerializedName("card_number") val cardNumber: CardNumberConfigResponse?,
     @SerializedName("security_code") val securityCode: SecurityCodeConfigResponse?,
     @SerializedName("issuers") val issuers: List<IssuerResponse>?,
-    @SerializedName("installment") val installment: InstallmentConfigResponse?,
-    @SerializedName("translations") val translations: TranslationsResponse?,
 )
 
 internal data class CardNumberConfigResponse(
