@@ -15,8 +15,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseC
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
@@ -47,7 +45,6 @@ internal class CheckoutModulesProviderTest {
         mockkObject(CoreKoinFactory)
         mockkObject(CheckoutType::class)
         mockkObject(CardPaymentScreenStateFactory::class)
-        mockkObject(CardPaymentValidator::class)
         mockkConstructor(Configuration::class)
     }
 
@@ -69,7 +66,7 @@ internal class CheckoutModulesProviderTest {
         every { context.createConfigurationContext(any()) } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
-        val modulesProvider = CheckoutModulesProvider(context = context, publicKey = "public_key")
+        val modulesProvider = CheckoutModulesProvider(context = context)
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
             context = context,
@@ -105,10 +102,8 @@ internal class CheckoutModulesProviderTest {
                 GetPaymentMethodsUseCase::class,
                 GetCardIssuersUseCase::class,
                 GetInstallmentsUseCase::class,
-                GetIdentificationTypesUseCase::class,
                 GenerateTokenUseCase::class,
                 CardPaymentScreenStateFactory::class,
-                CardPaymentValidator::class,
                 CancelledFormContextUseCase::class,
             ),
         )

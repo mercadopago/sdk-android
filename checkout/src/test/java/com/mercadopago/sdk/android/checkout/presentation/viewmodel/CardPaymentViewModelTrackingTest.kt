@@ -12,18 +12,17 @@ import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -48,10 +47,9 @@ internal class CardPaymentViewModelTrackingTest {
     private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val getCardDataByBinUseCase = mockk<GetCardDataByBinUseCase>(relaxed = true)
-    private val getIdentificationTypesUseCase = mockk<GetIdentificationTypesUseCase>(relaxed = true)
+    private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
-    private val validator = mockk<CardPaymentValidator>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -67,17 +65,18 @@ internal class CardPaymentViewModelTrackingTest {
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        every { stateFactory.createInitialState() } returns CardPaymentScreenState()
-        every { stateFactory.getOptionalFieldText() } returns ""
         every { stateFactory.getGenericErrorMessage() } returns "Error"
         mockkObject(CheckoutCallbackHolder)
         every { CheckoutCallbackHolder.notify(any()) } returns Unit
+        mockkObject(MercadoPagoSDK.Companion)
+        every { MercadoPagoSDK.countryCode } returns null
     }
 
     @After
     fun tearDown() {
         unmockkObject(MPAnalytics.Companion)
         unmockkObject(CheckoutCallbackHolder)
+        unmockkObject(MercadoPagoSDK.Companion)
     }
 
     private fun makeViewModel(
@@ -87,10 +86,9 @@ internal class CardPaymentViewModelTrackingTest {
         checkoutConfiguration = config,
         getCardBinUseCase = getCardBinUseCase,
         getCardDataByBinUseCase = getCardDataByBinUseCase,
-        getIdentificationTypesUseCase = getIdentificationTypesUseCase,
+        initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
         cancelledFormContextUseCase = cancelledFormContextUseCase,
-        validator = validator,
     )
 
     // region Initialize
@@ -103,10 +101,10 @@ internal class CardPaymentViewModelTrackingTest {
             localized = "checkout",
             throwable = null,
         )
-        coEvery { getIdentificationTypesUseCase() } returns Result.Error(error)
+        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(error)
         val viewModel = makeViewModel()
 
-        viewModel.getIdentificationTypes()
+        viewModel.initialization()
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }

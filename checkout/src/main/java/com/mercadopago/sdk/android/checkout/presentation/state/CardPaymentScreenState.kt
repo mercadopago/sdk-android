@@ -9,6 +9,12 @@ import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 
+internal data class ValidationState(
+    val errorEmpty: String = "",
+    val errorIncomplete: String = "",
+    val errorInvalid: String = "",
+)
+
 internal data class CardPaymentScreenState(
     val title: String = "",
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
@@ -41,6 +47,7 @@ internal data class SecurityCodeState(
     val optional: Boolean = false,
     val maxLength: Int = 3,
     val messageTooltip: String = "",
+    val validation: ValidationState = ValidationState(),
 ) : FieldState
 
 internal data class ExpirationDateState(
@@ -54,6 +61,7 @@ internal data class ExpirationDateState(
     override val isValid: Boolean = false,
     override val showPlaceHolder: Boolean = true,
     val length: Int = 0,
+    val validation: ValidationState = ValidationState(),
 ) : FieldState
 
 internal data class CardNumberState(
@@ -73,6 +81,7 @@ internal data class CardNumberState(
     val lastFourDigits: String = "",
     val cardBin: String? = null,
     val errorTypes: List<CardNumberErrorType> = listOf(),
+    val validation: ValidationState = ValidationState(),
 ) : FieldState
 
 internal data class CardHolderState(
@@ -87,6 +96,7 @@ internal data class CardHolderState(
     override val showPlaceHolder: Boolean = true,
     val show: Boolean = true,
     val value: String = "",
+    val validation: ValidationState = ValidationState(),
 ) : FieldState
 
 internal data class IdentificationTypeState(
@@ -103,6 +113,7 @@ internal data class IdentificationTypeState(
     val identificationTypes: List<IdentificationType>? = null,
     val selected: IdentificationType? = null,
     val value: String = "",
+    val validation: ValidationState = ValidationState(),
 ) : FieldState
 
 internal data class InstallmentsState(

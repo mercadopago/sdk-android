@@ -20,12 +20,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldTranslation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.usecase.GetIdentificationTypesUseCase
-import com.mercadopago.sdk.android.checkout.presentation.validation.CardPaymentValidator
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -53,10 +51,9 @@ internal class CardPaymentViewModelBinTest {
     private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val getCardDataByBinUseCase = mockk<GetCardDataByBinUseCase>(relaxed = true)
-    private val getIdentificationTypesUseCase = mockk<GetIdentificationTypesUseCase>(relaxed = true)
+    private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
-    private val validator = mockk<CardPaymentValidator>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -94,8 +91,6 @@ internal class CardPaymentViewModelBinTest {
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        every { stateFactory.createInitialState() } returns CardPaymentScreenState()
-        every { stateFactory.getOptionalFieldText() } returns ""
         every { stateFactory.getGenericErrorMessage() } returns "Error"
         mockkObject(CheckoutCallbackHolder)
         every { CheckoutCallbackHolder.notify(any()) } returns Unit
@@ -113,10 +108,9 @@ internal class CardPaymentViewModelBinTest {
         checkoutConfiguration = checkoutConfiguration,
         getCardBinUseCase = getCardBinUseCase,
         getCardDataByBinUseCase = getCardDataByBinUseCase,
-        getIdentificationTypesUseCase = getIdentificationTypesUseCase,
+        initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
         cancelledFormContextUseCase = cancelledFormContextUseCase,
-        validator = validator,
     )
 
     @Test
