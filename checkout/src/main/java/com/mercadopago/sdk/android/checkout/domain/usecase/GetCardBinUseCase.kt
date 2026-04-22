@@ -17,19 +17,19 @@ internal class GetCardBinUseCase(
     suspend operator fun invoke(
         bin: String,
         amount: String,
+        checkoutType: String,
         processingMode: String,
-        locale: String,
-        allowPaymentTypes: String?,
-        allowPaymentMethods: String?,
+        allowCardTypes: String?,
+        allowCardBrands: String?,
     ): Result<CardBinData, MercadoPagoCheckoutError> =
         withErrorHandling {
             cardFormRemoteDataSource.getCardBin(
                 bin = bin,
                 amount = amount,
+                checkoutType = checkoutType,
                 processingMode = processingMode,
-                locale = locale,
-                allowPaymentTypes = allowPaymentTypes,
-                allowPaymentMethods = allowPaymentMethods,
+                allowCardTypes = allowCardTypes,
+                allowCardBrands = allowCardBrands,
             )
         }.mapToCheckoutError(ErrorLocalized.CARD_BIN)
             .map { it.toDomain() }
