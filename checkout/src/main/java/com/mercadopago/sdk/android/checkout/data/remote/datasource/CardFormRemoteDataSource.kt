@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.data.remote.datasource
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
@@ -11,13 +11,13 @@ internal interface CardFormRemoteDataSource {
         checkoutType: String,
     ): Result<CardFormInitResponse, ResultError>
 
+    @Suppress("LongParameterList")
     suspend fun getCardBin(
         bin: String,
         amount: String,
+        checkoutType: String,
         processingMode: String,
-        locale: String,
         allowCardTypes: String?,
         allowCardBrands: String?,
     ): Result<CardBinResponse, ResultError>
-
 }

@@ -11,11 +11,12 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 internal class GetCardBinUseCase(
     private val cardFormRemoteDataSource: CardFormRemoteDataSource,
 ) {
+    @Suppress("LongParameterList")
     suspend operator fun invoke(
         bin: String,
         amount: String,
+        checkoutType: String,
         processingMode: String,
-        locale: String,
         allowCardTypes: String?,
         allowCardBrands: String?,
     ): Result<CardBinResponse, MercadoPagoCheckoutError> =
@@ -23,8 +24,8 @@ internal class GetCardBinUseCase(
             cardFormRemoteDataSource.getCardBin(
                 bin = bin,
                 amount = amount,
+                checkoutType = checkoutType,
                 processingMode = processingMode,
-                locale = locale,
                 allowCardTypes = allowCardTypes,
                 allowCardBrands = allowCardBrands,
             )
