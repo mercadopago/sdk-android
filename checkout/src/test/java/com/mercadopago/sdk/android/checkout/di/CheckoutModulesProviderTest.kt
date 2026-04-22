@@ -109,7 +109,7 @@ internal class CheckoutModulesProviderTest {
                 CardPaymentScreenStateFactory::class,
                 CardPaymentValidator::class,
                 CancelledFormContextUseCase::class,
-                Gson::class
+                Gson::class,
             ),
         )
         koin.checkModules {
