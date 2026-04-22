@@ -115,6 +115,6 @@ internal class StringExtensionsTest {
 
         val result = CardBrand.Visa.toCardBrandErrorMessage(stringProvider)
 
-        assertEquals("Brand not accepted Visa", result)
+        assertEquals("Brand not accepted visa", result)
     }
 }
