@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
+import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -25,18 +26,16 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isOptional
 import com.mercadopago.sdk.android.checkout.domain.extensions.isPaymentMethodNotFound
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
 import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
-import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.mapper.CountryCodeToLocaleMapper
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
@@ -64,6 +63,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
