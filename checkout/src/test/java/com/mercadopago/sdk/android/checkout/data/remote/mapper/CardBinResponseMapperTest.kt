@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentConf
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsSelectorResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentMethodResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfigResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslationResponse
@@ -18,15 +19,22 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CardBinResponseMapperTest {
-    private fun minimalResponse(
+    private fun paymentMethodResponse(
         id: String? = "visa",
         paymentTypeId: String? = null,
-    ) = CardBinResponse(
+    ) = PaymentMethodResponse(
         id = id,
         paymentTypeId = paymentTypeId,
         cardNumber = null,
         securityCode = null,
         issuers = null,
+    )
+
+    private fun minimalResponse(
+        id: String? = "visa",
+        paymentTypeId: String? = null,
+    ) = CardBinResponse(
+        paymentMethods = listOf(paymentMethodResponse(id, paymentTypeId)),
         installment = null,
         translations = null,
     )
@@ -34,7 +42,11 @@ internal class CardBinResponseMapperTest {
     @Test
     fun `toDomain maps card number config`() {
         val response = minimalResponse().copy(
-            cardNumber = CardNumberConfigResponse(length = 16, validation = "standard", mask = null),
+            paymentMethods = listOf(
+                paymentMethodResponse().copy(
+                    cardNumber = CardNumberConfigResponse(length = 16, validation = "standard", mask = null),
+                ),
+            ),
         )
 
         val domain = response.toDomain()
@@ -47,7 +59,11 @@ internal class CardBinResponseMapperTest {
     @Test
     fun `toDomain maps security code config`() {
         val response = minimalResponse().copy(
-            securityCode = SecurityCodeConfigResponse(mode = "mandatory", length = 3, cardLocation = "back"),
+            paymentMethods = listOf(
+                paymentMethodResponse().copy(
+                    securityCode = SecurityCodeConfigResponse(mode = "mandatory", length = 3, cardLocation = "back"),
+                ),
+            ),
         )
 
         val domain = response.toDomain()
@@ -60,7 +76,11 @@ internal class CardBinResponseMapperTest {
     @Test
     fun `toDomain maps issuers list`() {
         val response = minimalResponse().copy(
-            issuers = listOf(IssuerResponse(id = 1234L, name = "VISA", secureThumbnail = "https://img")),
+            paymentMethods = listOf(
+                paymentMethodResponse().copy(
+                    issuers = listOf(IssuerResponse(id = 1234L, name = "VISA", secureThumbnail = "https://img")),
+                ),
+            ),
         )
 
         val domain = response.toDomain()
@@ -170,14 +190,29 @@ internal class CardBinResponseMapperTest {
     }
 
     @Test
-    fun `toDomain returns empty issuers list when issuers is null`() {
-        val domain = minimalResponse().toDomain()
+    fun `toDomain returns empty issuers and quotas when paymentMethods is null`() {
+        val response = CardBinResponse(
+            paymentMethods = null,
+            installment = null,
+            translations = null,
+        )
+
+        val domain = response.toDomain()
 
         assertTrue(domain.issuers.isEmpty())
         assertTrue(domain.quotas.isEmpty())
         assertNull(domain.cardNumber)
         assertNull(domain.securityCode)
         assertNull(domain.translations)
+        assertNull(domain.id)
+        assertNull(domain.paymentTypeId)
+    }
+
+    @Test
+    fun `toDomain returns empty issuers when payment method issuers is null`() {
+        val domain = minimalResponse().toDomain()
+
+        assertTrue(domain.issuers.isEmpty())
     }
 
     @Test
@@ -263,5 +298,15 @@ internal class CardBinResponseMapperTest {
         assertEquals("CVV", domain.translations?.securityCode?.label)
         assertNull(domain.translations?.securityCode?.tooltip)
         assertNull(domain.translations?.securityCode?.error)
+    }
+
+    @Test
+    fun `toDomain extracts id and paymentTypeId from first payment method`() {
+        val response = minimalResponse(id = "master", paymentTypeId = "debit_card")
+
+        val domain = response.toDomain()
+
+        assertEquals("master", domain.id)
+        assertEquals("debit_card", domain.paymentTypeId)
     }
 }
