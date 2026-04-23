@@ -50,8 +50,6 @@ internal class MercadoPagoCheckoutTest {
         unmockkAll()
     }
 
-    // region Builder
-
     @Test
     fun `when build called then returns MercadoPagoCheckout instance`() {
         val checkout = MercadoPagoCheckout.Builder(context, checkoutType).build()
@@ -67,10 +65,6 @@ internal class MercadoPagoCheckoutTest {
 
         assertSame(builder, result)
     }
-
-    // endregion
-
-    // region show
 
     @Test
     fun `when show called then setCallback is called with provided callback`() {
@@ -128,8 +122,6 @@ internal class MercadoPagoCheckoutTest {
 
         verify { mockThemePreferences.setCurrentThemeScheme(MercadoPagoThemes.Default) }
     }
-
-    // endregion
 
     private fun buildCheckout(
         appearance: CheckoutAppearance? = CheckoutAppearance(),
