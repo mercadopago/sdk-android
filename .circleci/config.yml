@@ -87,6 +87,9 @@ jobs:
       - run:
           name: Run Code Coverage
           command: ./gradlew koverHtmlReportDebug --no-build-cache
+      - run:
+          name: Verify Coverage Threshold (80%)
+          command: ./gradlew koverVerify --no-build-cache
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug

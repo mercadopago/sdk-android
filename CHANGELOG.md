@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## CI/CD - 2023-04-23
+
+### Added
+- Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
+- Added Gradle dependency cache keyed on `libs.versions.toml` + `build.gradle.kts` + `settings.gradle.kts` with `v1-` prefix for manual invalidation
+- Enforced 80% code coverage threshold via `koverVerify` in CI (threshold was already declared in `build.gradle.kts`)
+- Added version consistency check in `publish-maven`: fails if a module version is bumped without bumping its dependents, preventing partial releases
+
+### Changed
+- Fixed `store_test_results` to use JUnit XML format — test results now appear in CircleCI UI
+- Extracted duplicated Android SDK setup into a reusable `setup-android` command
+- Unified artifacts under a single `store_artifacts` with `builds/` and `reports/` subfolders — eliminates duplicate artifact folders
+- `publish-maven` halts early when no modules have version changes
+
 ## [0.2.0] - 2026-04-17
 
 ### Added
