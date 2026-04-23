@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.domain.extensions
 
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
@@ -34,3 +35,11 @@ internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardTy
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
     return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
 }
+
+internal fun CardBinData.matchesCardBrand(
+    cardBrands: List<CardBrand>,
+): Boolean = cardBrands.isEmpty() || cardBrands.any { it.name.equals(this.id, ignoreCase = true) }
+
+internal fun CardBinData.matchesCardType(
+    cardTypes: List<CardType>,
+): Boolean = cardTypes.isEmpty() || cardTypes.any { it.value.equals(this.paymentTypeId, ignoreCase = true) }

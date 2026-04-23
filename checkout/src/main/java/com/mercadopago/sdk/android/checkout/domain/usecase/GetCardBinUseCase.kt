@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
+import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
@@ -10,17 +12,20 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
+internal data class CardBinFilter(
+    val cardTypes: List<CardType>,
+    val cardBrands: List<CardBrand>,
+)
+
 internal class GetCardBinUseCase(
     private val cardFormRemoteDataSource: CardFormRemoteDataSource,
 ) {
-    @Suppress("LongParameterList")
     suspend operator fun invoke(
         bin: String,
         amount: String,
         checkoutType: String,
         processingMode: String,
-        allowCardTypes: String?,
-        allowCardBrands: String?,
+        filter: CardBinFilter,
     ): Result<CardBinData, MercadoPagoCheckoutError> =
         withErrorHandling {
             cardFormRemoteDataSource.getCardBin(
@@ -28,8 +33,8 @@ internal class GetCardBinUseCase(
                 amount = amount,
                 checkoutType = checkoutType,
                 processingMode = processingMode,
-                allowCardTypes = allowCardTypes,
-                allowCardBrands = allowCardBrands,
+                allowCardTypes = filter.cardTypes.joinToString(",") { it.value }.takeIf { it.isNotEmpty() },
+                allowCardBrands = filter.cardBrands.joinToString(",") { it.name }.takeIf { it.isNotEmpty() },
             )
         }.mapToCheckoutError(ErrorLocalized.CARD_BIN)
             .map { it.toDomain() }
