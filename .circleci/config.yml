@@ -61,11 +61,18 @@ jobs:
       - run:
           name: Check Java Version
           command: java -version
-      - android/restore-gradle-cache
+      - restore_cache:
+          keys:
+            - gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
+            - gradle-
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
-      - android/save-gradle-cache
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
 
       # TEST STEP
       - run:
@@ -161,11 +168,18 @@ jobs:
       - run:
           name: Check Java Version
           command: java -version
-      - android/restore-gradle-cache
+      - restore_cache:
+          keys:
+            - gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
+            - gradle-
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
-      - android/save-gradle-cache
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
       - run:
           name: Publish to Maven
           command: |
