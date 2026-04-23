@@ -83,7 +83,7 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverXmlReportDebug
+          command: ./gradlew koverHtmlReportDebug
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
