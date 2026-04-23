@@ -87,8 +87,14 @@ jobs:
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
+      - run:
+          name: Collect Test Results
+          command: |
+            mkdir -p ~/test-results
+            find . -path "*/build/test-results/testDebugUnitTest/*.xml" -exec cp {} ~/test-results/ \; 2>/dev/null || true
+          when: always
       - store_test_results:
-          path: "*/build/test-results"
+          path: ~/test-results
       - run:
           name: Archive Reports
           command: |
