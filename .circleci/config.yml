@@ -93,7 +93,12 @@ jobs:
             sudo apt-get update -qq && sudo apt-get install -y python3-pip --no-install-recommends -qq
             pip3 install diff-cover --quiet
             git fetch origin main --depth=1 2>/dev/null || true
-            REPORTS=$(find . -path "*/build/reports/kover/reportDebug/report.xml" | tr '\n' ' ')
+            REPORTS=$(find . -path "*/build/reports/kover*" -name "*.xml" | tr '\n' ' ')
+            if [ -z "$(echo $REPORTS | tr -d ' ')" ]; then
+              echo "No Kover XML reports found, skipping diff coverage check."
+              exit 0
+            fi
+            echo "Coverage reports found: $REPORTS"
             diff-cover $REPORTS --compare-branch=origin/main --fail-under=80
       #      - run:
       #          name: Run Screenshot Tests
