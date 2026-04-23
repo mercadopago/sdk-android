@@ -1,0 +1,25 @@
+.circleci/config.yml
+  8f2ee370d0b2d096 89,91-96
+CHANGELOG.md
+  8f2ee370d0b2d096 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.3",
+  "base_commit_sha": "37f01ea9718f611703d59e4bc6e71ff16d1fd69a",
+  "prompts": {
+    "8f2ee370d0b2d096": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3fa3e30-7f09-4ac3-8ff0-fa834d2d3dbe",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 4,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    }
+  }
+}
