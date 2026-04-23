@@ -63,8 +63,8 @@ jobs:
           command: java -version
       - restore_cache:
           keys:
-            - gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
-            - gradle-
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
@@ -72,7 +72,7 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-          key: gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
 
       # TEST STEP
       - run:
@@ -86,7 +86,7 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverHtmlReportDebug
+          command: ./gradlew koverHtmlReportDebug --no-build-cache
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
@@ -179,8 +179,8 @@ jobs:
           command: java -version
       - restore_cache:
           keys:
-            - gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
-            - gradle-
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
@@ -188,7 +188,7 @@ jobs:
           paths:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
-          key: gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
       - run:
           name: Publish to Maven
           command: |
