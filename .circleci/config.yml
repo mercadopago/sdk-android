@@ -107,9 +107,6 @@ jobs:
               [ -d "${module}build/reports/ktlint" ] && cp -r "${module}build/reports/ktlint" ~/circleci-artifacts/reports/${module%/}-ktlint || true
               [ -d "${module}build/reports/kover"  ] && cp -r "${module}build/reports/kover"  ~/circleci-artifacts/reports/${module%/}-kover  || true
             done
-      - store_artifacts:
-          path: ~/circleci-artifacts/reports
-          destination: reports
 
       # DOCUMENTATION STEP
       - run:
@@ -128,9 +125,9 @@ jobs:
       - run:
           name: Archive APK and AAR
           command: |
-            mkdir -p ~/circleci-artifacts
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/
+            mkdir -p ~/circleci-artifacts/builds
+            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/
+            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/
       - store_artifacts:
           path: ~/circleci-artifacts
           destination: artifacts
