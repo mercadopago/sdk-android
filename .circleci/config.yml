@@ -76,9 +76,6 @@ jobs:
 
       # TEST STEP
       - run:
-          name: Clean Test Cache
-          command: ./gradlew cleanTest
-      - run:
           name: Run Detekt
           command: ./gradlew detekt
       - run:
@@ -86,7 +83,7 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
+          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --parallel
       - run:
           name: Verify Diff Coverage (80%)
           command: |
