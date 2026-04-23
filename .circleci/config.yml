@@ -90,6 +90,7 @@ jobs:
       - run:
           name: Verify Diff Coverage (80%)
           command: |
+            sudo apt-get update -qq && sudo apt-get install -y python3-pip --no-install-recommends -qq
             pip3 install diff-cover --quiet
             git fetch origin main --depth=1 2>/dev/null || true
             REPORTS=$(find . -path "*/build/reports/kover/reportDebug/report.xml" | tr '\n' ' ')
