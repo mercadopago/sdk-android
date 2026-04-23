@@ -3,21 +3,9 @@ version: 2.1
 orbs:
   android: circleci/android@3.0.2
 
-executors:
-  android-executor:
-    docker:
-      - image: circleci/android:api-30
-    working_directory: ~/repo
-
-jobs:
-  build-test:
-    circleci_ip_ranges: true
-    executor: android-executor
-    docker:
-      - image: cimg/openjdk:17.0.13
-    resource_class: xlarge
+commands:
+  setup-android:
     steps:
-      # PRE SETUP
       - run:
           name: Install Git LFS
           command: |
@@ -27,18 +15,15 @@ jobs:
       - checkout
       - run:
           name: Set Secrets File
-          command: echo "$SECRET_FILE" | base64 --decode > secrets.properties
-      - run:
-          name: Check JDK exists
-          command: javac -version
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
       - run:
           name: Download Platform Tools
           command: |
             cd ..
             mkdir android-sdk
             cd android-sdk
-            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip platform-tools-latest-linux.zip
+            wget -q https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+            unzip -q platform-tools-latest-linux.zip
       - run:
           name: Download Commandline Tools
           command: |
@@ -46,34 +31,41 @@ jobs:
             cd android-sdk
             mkdir cmdline-tools
             cd cmdline-tools
-            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip commandlinetools-linux-11076708_latest.zip
+            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip -q commandlinetools-linux-11076708_latest.zip
             mv cmdline-tools latest
       - run:
           name: Set up Android Home
           command: |
-            echo '
-            export ANDROID_HOME=$HOME/android-sdk
+            echo 'export ANDROID_HOME=$HOME/android-sdk
             export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
-      - run:
-          name: Verify Android Home
-          command: echo $ANDROID_HOME
       - run:
           name: Accept SDK licenses
           command: |
             yes | sdkmanager --licenses || exit 0
             yes | sdkmanager --update || exit 0
 
+jobs:
+  build-test:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+
       # SETUP STEP
       - run:
           name: Check Java Version
           command: java -version
-
+      - android/restore-gradle-cache
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
+      - android/save-gradle-cache
 
       # TEST STEP
       - run:
@@ -89,7 +81,19 @@ jobs:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
       - store_test_results:
-          path: core-methods/build/reports/kover/reportDebug.xml
+          path: "*/build/test-results"
+      - run:
+          name: Archive Reports
+          command: |
+            mkdir -p ~/circleci-artifacts/reports
+            for module in */; do
+              [ -d "${module}build/reports/detekt" ] && cp -r "${module}build/reports/detekt" ~/circleci-artifacts/reports/${module%/}-detekt || true
+              [ -d "${module}build/reports/ktlint" ] && cp -r "${module}build/reports/ktlint" ~/circleci-artifacts/reports/${module%/}-ktlint || true
+              [ -d "${module}build/reports/kover"  ] && cp -r "${module}build/reports/kover"  ~/circleci-artifacts/reports/${module%/}-kover  || true
+            done
+      - store_artifacts:
+          path: ~/circleci-artifacts/reports
+          destination: reports
 
       # DOCUMENTATION STEP
       - run:
@@ -106,23 +110,19 @@ jobs:
           name: Build the app
           command: ./gradlew assemble --stacktrace
       - run:
-          name: Archive APK
+          name: Archive APK and AAR
           command: |
             mkdir -p ~/circleci-artifacts
             cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/
-      - run:
-          name: Archive .AAR
-          command: |
-            mkdir -p ~/circleci-artifacts
             cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/
       - store_artifacts:
           path: ~/circleci-artifacts
-          destination: apk
+          destination: artifacts
 
   docs-deploy:
-    executor: android-executor
     docker:
       - image: cimg/node:16.17
+    working_directory: ~/repo
     steps:
       - run:
           name: Install Git LFS
@@ -153,66 +153,19 @@ jobs:
 
   publish-maven:
     circleci_ip_ranges: true
-    executor: android-executor
     docker:
       - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
     steps:
-      # PRE SETUP
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
-      - checkout
-      - run:
-          name: Set Secrets File
-          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
-      - run:
-          name: Check JDK exists
-          command: javac -version
-      - run:
-          name: Download Platform Tools
-          command: |
-            cd ..
-            mkdir android-sdk
-            cd android-sdk
-            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip platform-tools-latest-linux.zip
-      - run:
-          name: Download Commandline Tools
-          command: |
-            cd ..
-            cd android-sdk
-            mkdir cmdline-tools
-            cd cmdline-tools
-            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip commandlinetools-linux-11076708_latest.zip
-            mv cmdline-tools latest
-      - run:
-          name: Set up Android Home
-          command: |
-            echo '
-            export ANDROID_HOME=$HOME/android-sdk
-            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Verify Android Home
-          command: echo $ANDROID_HOME
-      - run:
-          name: Accept SDK licenses
-          command: |
-            yes | sdkmanager --licenses || exit 0
-            yes | sdkmanager --update || exit 0
-
-      # SETUP STEP
+      - setup-android
       - run:
           name: Check Java Version
           command: java -version
+      - android/restore-gradle-cache
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
+      - android/save-gradle-cache
       - run:
           name: Publish to Maven
           command: |
@@ -241,6 +194,7 @@ jobs:
             else
               echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
             fi
+
 workflows:
   version: 2
   build:
