@@ -86,7 +86,7 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --parallel
+          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
       - run:
           name: Verify Diff Coverage (80%)
           command: |
