@@ -172,6 +172,76 @@ jobs:
     steps:
       - setup-android
       - run:
+          name: Check version consistency
+          command: |
+            BUILDSCR="buildSrc/src/main/kotlin/com/mercadopago/sdk/android"
+
+            config_to_module() {
+              case "$1" in
+                CoreSDKConfig.kt)        echo "core" ;;
+                AnalyticsSDKConfig.kt)   echo "analytics" ;;
+                MercadoPagoSDKConfig.kt) echo "sdk-android" ;;
+                CoreMethodsSDKConfig.kt) echo "core-methods" ;;
+                FoundationSDKConfig.kt)  echo "foundation" ;;
+                ComponentsSDKConfig.kt)  echo "components" ;;
+                CheckoutSDKConfig.kt)    echo "checkout" ;;
+                BomConfig.kt)            echo "sdk-android-bom" ;;
+              esac
+            }
+
+            project_ref_to_module() {
+              case "$1" in
+                core)        echo "core" ;;
+                analytics)   echo "analytics" ;;
+                sdkAndroid)  echo "sdk-android" ;;
+                coreMethods) echo "core-methods" ;;
+                foundation)  echo "foundation" ;;
+                components)  echo "components" ;;
+                checkout)    echo "checkout" ;;
+              esac
+            }
+
+            CHANGED_MODULES=""
+            for config in CoreSDKConfig.kt AnalyticsSDKConfig.kt MercadoPagoSDKConfig.kt \
+                          CoreMethodsSDKConfig.kt FoundationSDKConfig.kt ComponentsSDKConfig.kt \
+                          CheckoutSDKConfig.kt BomConfig.kt; do
+              if git diff HEAD~1 HEAD -- "$BUILDSCR/$config" 2>/dev/null | grep -q '^\+.*VERSION_NAME'; then
+                CHANGED_MODULES="$CHANGED_MODULES $(config_to_module "$config")"
+              fi
+            done
+
+            if [ -z "$(echo $CHANGED_MODULES | tr -d ' ')" ]; then
+              echo "No version changes detected, skipping publish."
+              circleci-agent step halt
+            fi
+
+            echo "Modules with version changes: $CHANGED_MODULES"
+
+            declare -A DEPENDENTS
+            for kts in */build.gradle.kts; do
+              MODULE="${kts%%/*}"
+              for ref in $(grep -oP '(?<=projects\.)[a-zA-Z]+' "$kts" 2>/dev/null); do
+                dep=$(project_ref_to_module "$ref")
+                [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]} $MODULE"
+              done
+            done
+
+            ERRORS=""
+            for changed in $CHANGED_MODULES; do
+              for dependent in ${DEPENDENTS[$changed]}; do
+                if ! echo "$CHANGED_MODULES" | grep -qw "$dependent"; then
+                  ERRORS="$ERRORS\n  ✗ '$dependent' depends on '$changed' but VERSION_NAME was not bumped"
+                fi
+              done
+            done
+
+            if [ -n "$ERRORS" ]; then
+              printf "VERSION CONSISTENCY ERROR:%b\n" "$ERRORS"
+              exit 1
+            fi
+
+            echo "Version consistency check passed."
+      - run:
           name: Check Java Version
           command: java -version
       - restore_cache:
