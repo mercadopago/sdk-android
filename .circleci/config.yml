@@ -86,10 +86,14 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverHtmlReportDebug --no-build-cache
+          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
       - run:
-          name: Verify Coverage Threshold (80%)
-          command: ./gradlew koverVerify --no-build-cache
+          name: Verify Diff Coverage (80%)
+          command: |
+            pip3 install diff-cover --quiet
+            git fetch origin main --depth=1 2>/dev/null || true
+            REPORTS=$(find . -path "*/build/reports/kover/reportDebug/report.xml" | tr '\n' ' ')
+            diff-cover $REPORTS --compare-branch=origin/main --fail-under=80
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug

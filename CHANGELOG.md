@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
 - Added Gradle dependency cache keyed on `libs.versions.toml` + `build.gradle.kts` + `settings.gradle.kts` with `v1-` prefix for manual invalidation
-- Enforced 80% code coverage threshold via `koverVerify` in CI (threshold was already declared in `build.gradle.kts`)
+- Enforced 80% diff coverage threshold via `diff-cover`: only lines added or modified in the PR are checked, avoiding failures on existing legacy code
 - Added version consistency check in `publish-maven`: fails if a module version is bumped without bumping its dependents, preventing partial releases
 
 ### Changed
