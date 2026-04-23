@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## CI/CD - 2023-04-23
+## CI/CD - 2026-04-23
 
 ### Added
 - Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
