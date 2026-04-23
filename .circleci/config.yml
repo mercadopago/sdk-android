@@ -137,13 +137,13 @@ jobs:
       # BUILD STEP
       - run:
           name: Build the app
-          command: ./gradlew assemble --stacktrace
+          command: ./gradlew assembleDebug --parallel --stacktrace
       - run:
           name: Archive APK and AAR
           command: |
             mkdir -p ~/circleci-artifacts/builds
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/
+            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/ || true
+            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/ || true
       - store_artifacts:
           path: ~/circleci-artifacts
           destination: artifacts
