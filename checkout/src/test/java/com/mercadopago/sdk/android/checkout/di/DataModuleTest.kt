@@ -3,20 +3,16 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
-import com.google.gson.Gson
 import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -76,6 +72,7 @@ internal class DataModuleTest {
         val module = module {
             includes(provideDataModule())
             single { checkoutConfiguration }
+            single { mockk<CardFormService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -85,21 +82,17 @@ internal class DataModuleTest {
 
         module.verify(
             extraTypes = listOf(
-                CoreMethods::class,
+                CheckoutConfiguration::class,
                 CheckoutType::class,
                 List::class,
-                CheckoutConfiguration::class,
-                CheckoutThemePreferences::class,
                 CardFormService::class,
-                CardPaymentViewModel::class,
+                CoreMethods::class,
                 GetCardDataByBinUseCase::class,
                 GetPaymentMethodsUseCase::class,
                 GetCardIssuersUseCase::class,
                 GetInstallmentsUseCase::class,
                 GenerateTokenUseCase::class,
-                CardPaymentScreenStateFactory::class,
                 CancelledFormContextUseCase::class,
-                Gson::class,
             ),
         )
 
