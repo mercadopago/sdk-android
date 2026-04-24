@@ -180,13 +180,18 @@ jobs:
           name: Deploy documentation to GitHub Pages
           command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist build/dokka/htmlMultiModule
 
-  publish-maven:
-    circleci_ip_ranges: true
+  check-version-consistency:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
     steps:
-      - setup-android
+      - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
+      - checkout
       - run:
           name: Check version consistency
           command: |
@@ -229,8 +234,8 @@ jobs:
             done
 
             if [ -z "$(echo $CHANGED_MODULES | tr -d ' ')" ]; then
-              echo "No version changes detected, skipping publish."
-              circleci-agent step halt
+              echo "No version changes detected, skipping consistency check."
+              exit 0
             fi
 
             echo "Modules with version changes: $CHANGED_MODULES"
@@ -260,6 +265,14 @@ jobs:
             fi
 
             echo "Version consistency check passed."
+
+  publish-maven:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    steps:
+      - setup-android
       - run:
           name: Check Java Version
           command: java -version
@@ -309,6 +322,14 @@ workflows:
   build:
     jobs:
       - build-test
+      - check-version-consistency:
+          requires:
+            - build-test
+          filters:
+            branches:
+              only:
+                - main
+                - /release\/.*/
       - docs-deploy:
           requires:
             - build-test
