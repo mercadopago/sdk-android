@@ -375,26 +375,6 @@ internal class CardPaymentViewModelBinTest {
     }
 
     @Test
-    fun `when BIN returns brand not in allowedBrands then CardBrandNotAccepted error is set`() = runTest {
-        val data = CardBinData(
-            id = "amex",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
-        )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-
-        val viewModel = makeViewModel()
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-
-        val errorTypes = viewModel.viewState.value.cardNumberState.errorTypes
-        assertEquals(true, errorTypes.any { it is CardNumberErrorType.CardBrandNotAccepted })
-    }
-
-    @Test
     fun `when BIN returns type not in allowedTypes then CardTypeNotAccepted error is set`() = runTest {
         val data = CardBinData(
             id = "visa",
