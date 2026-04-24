@@ -3,21 +3,9 @@ version: 2.1
 orbs:
   android: circleci/android@3.0.2
 
-executors:
-  android-executor:
-    docker:
-      - image: circleci/android:api-30
-    working_directory: ~/repo
-
-jobs:
-  build-test:
-    circleci_ip_ranges: true
-    executor: android-executor
-    docker:
-      - image: cimg/openjdk:17.0.13
-    resource_class: xlarge
+commands:
+  setup-android:
     steps:
-      # PRE SETUP
       - run:
           name: Install Git LFS
           command: |
@@ -27,18 +15,15 @@ jobs:
       - checkout
       - run:
           name: Set Secrets File
-          command: echo "$SECRET_FILE" | base64 --decode > secrets.properties
-      - run:
-          name: Check JDK exists
-          command: javac -version
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
       - run:
           name: Download Platform Tools
           command: |
             cd ..
             mkdir android-sdk
             cd android-sdk
-            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip platform-tools-latest-linux.zip
+            wget -q https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+            unzip -q platform-tools-latest-linux.zip
       - run:
           name: Download Commandline Tools
           command: |
@@ -46,36 +31,53 @@ jobs:
             cd android-sdk
             mkdir cmdline-tools
             cd cmdline-tools
-            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip commandlinetools-linux-11076708_latest.zip
+            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+            unzip -q commandlinetools-linux-11076708_latest.zip
             mv cmdline-tools latest
       - run:
           name: Set up Android Home
           command: |
-            echo '
-            export ANDROID_HOME=$HOME/android-sdk
+            echo 'export ANDROID_HOME=$HOME/android-sdk
             export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
             export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
             source $BASH_ENV
-      - run:
-          name: Verify Android Home
-          command: echo $ANDROID_HOME
       - run:
           name: Accept SDK licenses
           command: |
             yes | sdkmanager --licenses || exit 0
             yes | sdkmanager --update || exit 0
 
+jobs:
+  build-test:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+
       # SETUP STEP
       - run:
           name: Check Java Version
           command: java -version
-
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
 
       # TEST STEP
+      - run:
+          name: Clean Test Cache
+          command: ./gradlew cleanTest
       - run:
           name: Run Detekt
           command: ./gradlew detekt
@@ -84,12 +86,24 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverXmlReportDebug
+          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
+      - run:
+          name: Verify Diff Coverage (80%)
+          command: .circleci/scripts/verify-diff-coverage.sh
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
+      - run:
+          name: Collect Test Results
+          command: |
+            mkdir -p ~/test-results
+            find . -path "*/build/test-results/testDebugUnitTest/*.xml" -exec cp {} ~/test-results/ \; 2>/dev/null || true
+          when: always
       - store_test_results:
-          path: core-methods/build/reports/kover/reportDebug.xml
+          path: ~/test-results
+      - run:
+          name: Archive Reports
+          command: .circleci/scripts/archive-reports.sh
 
       # DOCUMENTATION STEP
       - run:
@@ -104,25 +118,21 @@ jobs:
       # BUILD STEP
       - run:
           name: Build the app
-          command: ./gradlew assemble --stacktrace
+          command: ./gradlew assembleDebug --parallel --stacktrace
       - run:
-          name: Archive APK
+          name: Archive APK and AAR
           command: |
-            mkdir -p ~/circleci-artifacts
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/
-      - run:
-          name: Archive .AAR
-          command: |
-            mkdir -p ~/circleci-artifacts
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/
+            mkdir -p ~/circleci-artifacts/builds
+            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/ || true
+            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/ || true
       - store_artifacts:
           path: ~/circleci-artifacts
-          destination: apk
+          destination: artifacts
 
   docs-deploy:
-    executor: android-executor
     docker:
       - image: cimg/node:16.17
+    working_directory: ~/repo
     steps:
       - run:
           name: Install Git LFS
@@ -143,21 +153,14 @@ jobs:
           fingerprints:
             - "SHA256:CHbCMOR2Mcw/RHacZ+LuEOqsvk0Vis+R3lzMcdpy9y0"
       - run:
-          name: Configure Git for deployment
-          command: |
-            git config --global user.email "dev@mercadopago.com"
-            git config --global user.name "CI Build"
-      - run:
           name: Deploy documentation to GitHub Pages
-          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist build/dokka/htmlMultiModule
+          command: .circleci/scripts/deploy-docs.sh
 
-  publish-maven:
-    circleci_ip_ranges: true
-    executor: android-executor
+  check-version-consistency:
     docker:
       - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
     steps:
-      # PRE SETUP
       - run:
           name: Install Git LFS
           command: |
@@ -166,86 +169,48 @@ jobs:
             git lfs install --skip-smudge
       - checkout
       - run:
-          name: Set Secrets File
-          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
-      - run:
-          name: Check JDK exists
-          command: javac -version
-      - run:
-          name: Download Platform Tools
-          command: |
-            cd ..
-            mkdir android-sdk
-            cd android-sdk
-            wget https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip platform-tools-latest-linux.zip
-      - run:
-          name: Download Commandline Tools
-          command: |
-            cd ..
-            cd android-sdk
-            mkdir cmdline-tools
-            cd cmdline-tools
-            wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip commandlinetools-linux-11076708_latest.zip
-            mv cmdline-tools latest
-      - run:
-          name: Set up Android Home
-          command: |
-            echo '
-            export ANDROID_HOME=$HOME/android-sdk
-            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
-            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
-            source $BASH_ENV
-      - run:
-          name: Verify Android Home
-          command: echo $ANDROID_HOME
-      - run:
-          name: Accept SDK licenses
-          command: |
-            yes | sdkmanager --licenses || exit 0
-            yes | sdkmanager --update || exit 0
+          name: Check version consistency
+          command: .circleci/scripts/check-version-consistency.sh
 
-      # SETUP STEP
+  publish-maven:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    steps:
+      - setup-android
       - run:
           name: Check Java Version
           command: java -version
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
       - run:
           name: Publish to Maven
-          command: |
-            ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
-            ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
-            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom")
-            any_published=0
-            for MODULE in "${MODULES[@]}"; do
-              VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
-              ARTIFACT_URL="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk/$MODULE/$VERSION/"
-              if curl -sfI "$ARTIFACT_URL" > /dev/null; then
-                echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
-              else
-                echo "Publishing $MODULE:$VERSION ..."
-                ./gradlew ":$MODULE:publish" || {
-                  echo "Publish failed for $MODULE"
-                  exit 1
-                }
-                any_published=1
-              fi
-            done
+          command: .circleci/scripts/publish-maven.sh
 
-            if [[ $any_published -eq 0 ]]; then
-              echo "No modules needed to be published. Skipping release creation."
-              circleci-agent step halt
-            else
-              echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
-            fi
 workflows:
   version: 2
   build:
     jobs:
       - build-test
+      - check-version-consistency:
+          requires:
+            - build-test
+          filters:
+            branches:
+              only:
+                - main
+                - /release\/.*/
       - docs-deploy:
           requires:
             - build-test
