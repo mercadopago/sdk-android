@@ -7,7 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## CI/CD - 2026-04-23
+## [0.2.1] - 2026-04-24
+
+### Fixed
+- `RetrofitServiceFactory` constructor annotated with `@JvmOverloads` — Java callers no longer need to specify all parameters explicitly (#187)
+- `mp-extended` module correctly included in the Maven publish pipeline (#185)
+
+### Changed
+- Version `0.2.1` released across all modules: `sdk-android`, `bom`, `core`, `core-methods`, `checkout`, `components`, `foundation`, `analytics`, `mp-extended`
+
+## [CI/CD] - 2026-04-23
 
 ### Added
 - Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
