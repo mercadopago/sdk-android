@@ -26,6 +26,8 @@ import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.unmockkAll
+import org.junit.After
 import org.junit.Before
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -45,6 +47,11 @@ internal class DataModuleTest {
         mockkConstructor(Configuration::class)
         every { MercadoPagoSDK.getInstance() } returns mockk(relaxed = true)
         every { MercadoPagoSDK.countryCode } returns mockk(relaxed = true)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
     }
 
     @OptIn(KoinExperimentalAPI::class)
