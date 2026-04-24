@@ -201,6 +201,7 @@ jobs:
                 FoundationSDKConfig.kt)  echo "foundation" ;;
                 ComponentsSDKConfig.kt)  echo "components" ;;
                 CheckoutSDKConfig.kt)    echo "checkout" ;;
+                MPExtendedSDKConfig.kt)  echo "mp-extended" ;;
                 BomConfig.kt)            echo "sdk-android-bom" ;;
               esac
             }
@@ -214,13 +215,14 @@ jobs:
                 foundation)  echo "foundation" ;;
                 components)  echo "components" ;;
                 checkout)    echo "checkout" ;;
+                mpExtended)  echo "mp-extended" ;;
               esac
             }
 
             CHANGED_MODULES=""
             for config in CoreSDKConfig.kt AnalyticsSDKConfig.kt MercadoPagoSDKConfig.kt \
                           CoreMethodsSDKConfig.kt FoundationSDKConfig.kt ComponentsSDKConfig.kt \
-                          CheckoutSDKConfig.kt BomConfig.kt; do
+                          CheckoutSDKConfig.kt MPExtendedSDKConfig.kt BomConfig.kt; do
               if git diff HEAD~1 HEAD -- "$BUILDSCR/$config" 2>/dev/null | grep -q '^\+.*VERSION_NAME'; then
                 CHANGED_MODULES="$CHANGED_MODULES $(config_to_module "$config")"
               fi
@@ -236,6 +238,7 @@ jobs:
             declare -A DEPENDENTS
             for kts in */build.gradle.kts; do
               MODULE="${kts%%/*}"
+              [[ "$MODULE" == "example" || "$MODULE" == "showkase" ]] && continue
               for ref in $(grep -oP '(?<=projects\.)[a-zA-Z]+' "$kts" 2>/dev/null); do
                 dep=$(project_ref_to_module "$ref")
                 [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]} $MODULE"
