@@ -2,24 +2,22 @@ package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfigResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.FieldErrorTranslationResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslationResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslationResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfigResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslationResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.TranslationsResponse
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.BinSecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.domain.model.FieldErrorTranslation
-import com.mercadopago.sdk.android.checkout.domain.model.FieldTranslation
-import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsFieldTranslation
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
-import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldTranslation
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()
@@ -46,6 +44,8 @@ private fun SecurityCodeConfigResponse.toDomain(): BinSecurityCodeConfig =
         mode = mode,
         length = length,
         cardLocation = cardLocation,
+        tooltip = tooltip,
+        placeholder = placeholder,
     )
 
 private fun IssuerResponse.toDomain(): BinIssuer =
@@ -67,38 +67,47 @@ private fun QuotaResponse.toDomain(): Quota =
 private fun TranslationsResponse.toDomain(): CardFormTranslations =
     CardFormTranslations(
         cardNumber = cardNumber?.toDomain(),
-        cardHolderName = cardHolderName?.toDomain(),
-        expirationDate = expirationDate?.toDomain(),
+        cardHolderName = cardHolderName?.toHolderNameTranslations(),
+        expirationDate = expirationDate?.toExpirationDateTranslations(),
         securityCode = securityCode?.toDomain(),
-        identification = identification?.toDomain(),
-        installments = installments?.toDomain(),
     )
 
-private fun FieldTranslationResponse.toDomain(): FieldTranslation =
-    FieldTranslation(
-        label = label,
-        placeholder = placeholder,
+private fun FieldTranslationResponse.toDomain() =
+    CardNumberTranslations(
+        label = label.orEmpty(),
+        placeholder = placeholder.orEmpty(),
         helper = helper,
-        error = error?.toDomain(),
+        errorEmptyField = "",
+        errorIncompleteField = error?.incomplete.orEmpty(),
+        errorInvalidField = error?.invalid.orEmpty(),
     )
 
-private fun FieldErrorTranslationResponse.toDomain(): FieldErrorTranslation =
-    FieldErrorTranslation(
-        invalid = invalid,
-        incomplete = incomplete,
-    )
-
-private fun SecurityCodeTranslationResponse.toDomain(): SecurityCodeFieldTranslation =
-    SecurityCodeFieldTranslation(
-        label = label,
-        placeholder = placeholder,
+private fun FieldTranslationResponse.toHolderNameTranslations() =
+    HolderNameTranslations(
+        label = label.orEmpty(),
+        placeholder = placeholder.orEmpty(),
         helper = helper,
-        tooltip = tooltip,
-        error = error?.toDomain(),
+        errorEmptyField = "",
+        errorIncompleteField = error?.incomplete.orEmpty(),
+        errorInvalidField = error?.invalid.orEmpty(),
     )
 
-private fun InstallmentsTranslationResponse.toDomain(): InstallmentsFieldTranslation =
-    InstallmentsFieldTranslation(
-        label = label,
-        installmentsSelectorPlaceholder = installmentsSelector?.placeholder,
+private fun FieldTranslationResponse.toExpirationDateTranslations() =
+    ExpirationDateTranslations(
+        label = label.orEmpty(),
+        placeholder = placeholder.orEmpty(),
+        helper = helper,
+        errorEmptyField = "",
+        errorIncompleteField = error?.incomplete.orEmpty(),
+        errorInvalidField = error?.invalid.orEmpty(),
+    )
+
+private fun SecurityCodeTranslationResponse.toDomain() =
+    SecurityCodeTranslations(
+        label = label.orEmpty(),
+        placeholder = placeholder.orEmpty(),
+        helper = helper,
+        tooltip = tooltip.orEmpty(),
+        errorEmptyField = "",
+        errorIncompleteField = error?.incomplete.orEmpty(),
     )

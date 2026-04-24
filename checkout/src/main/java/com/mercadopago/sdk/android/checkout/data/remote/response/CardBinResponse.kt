@@ -24,6 +24,8 @@ internal data class SecurityCodeConfigResponse(
     val mode: String?,
     val length: Int?,
     val cardLocation: String?,
+    val tooltip: String? = null,
+    val placeholder: String? = null,
 )
 
 internal data class IssuerResponse(

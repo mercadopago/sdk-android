@@ -5,8 +5,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfi
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldErrorTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentConfigResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsSelectorResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentMethodResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
@@ -155,11 +153,10 @@ internal class CardBinResponseMapperTest {
 
         assertEquals("Número de tarjeta", translations.cardNumber?.label)
         assertEquals("•••• ••••", translations.cardNumber?.placeholder)
-        assertEquals("Inválido", translations.cardNumber?.error?.invalid)
-        assertEquals("Incompleto", translations.cardNumber?.error?.incomplete)
+        assertEquals("Inválido", translations.cardNumber?.errorInvalidField)
+        assertEquals("Incompleto", translations.cardNumber?.errorIncompleteField)
         assertEquals("Titular", translations.cardHolderName?.label)
         assertEquals("Vencimento", translations.expirationDate?.label)
-        assertEquals("CPF", translations.identification?.label)
     }
 
     @Test
@@ -186,7 +183,7 @@ internal class CardBinResponseMapperTest {
 
         assertEquals("CVV", translations.securityCode?.label)
         assertEquals("3 dígitos no verso", translations.securityCode?.tooltip)
-        assertEquals("Inválido", translations.securityCode?.error?.invalid)
+        assertEquals("Incompleto", translations.securityCode?.errorIncompleteField)
     }
 
     @Test
@@ -234,47 +231,6 @@ internal class CardBinResponseMapperTest {
     }
 
     @Test
-    fun `toDomain maps installments selector placeholder from nested object`() {
-        val response = minimalResponse().copy(
-            translations = TranslationsResponse(
-                cardNumber = null,
-                cardHolderName = null,
-                expirationDate = null,
-                securityCode = null,
-                identification = null,
-                installments = InstallmentsTranslationResponse(
-                    label = "Cuotas",
-                    installmentsSelector = InstallmentsSelectorResponse(placeholder = "Selecione as parcelas"),
-                ),
-            ),
-        )
-
-        val domain = response.toDomain()
-
-        assertEquals("Cuotas", domain.translations?.installments?.label)
-        assertEquals("Selecione as parcelas", domain.translations?.installments?.installmentsSelectorPlaceholder)
-    }
-
-    @Test
-    fun `toDomain maps null installments selector placeholder when selector is null`() {
-        val response = minimalResponse().copy(
-            translations = TranslationsResponse(
-                cardNumber = null,
-                cardHolderName = null,
-                expirationDate = null,
-                securityCode = null,
-                identification = null,
-                installments = InstallmentsTranslationResponse(label = "Cuotas", installmentsSelector = null),
-            ),
-        )
-
-        val domain = response.toDomain()
-
-        assertEquals("Cuotas", domain.translations?.installments?.label)
-        assertNull(domain.translations?.installments?.installmentsSelectorPlaceholder)
-    }
-
-    @Test
     fun `toDomain maps security code translation with null error`() {
         val response = minimalResponse().copy(
             translations = TranslationsResponse(
@@ -296,8 +252,7 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertEquals("CVV", domain.translations?.securityCode?.label)
-        assertNull(domain.translations?.securityCode?.tooltip)
-        assertNull(domain.translations?.securityCode?.error)
+        assertEquals("", domain.translations?.securityCode?.tooltip)
     }
 
     @Test

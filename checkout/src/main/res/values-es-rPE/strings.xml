@@ -8,7 +8,6 @@
     <string name="card_type_prepaid">tarjeta prepago.</string>
 
     <!-- Validation Error Messages -->
-    <string name="card_form_error_card_number_invalid">Ingresa el número tal como aparece en la tarjeta.</string>
     <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas</string>
     <string name="card_form_error_card_type_not_accepted">La tienda no acepta</string>
 </resources>

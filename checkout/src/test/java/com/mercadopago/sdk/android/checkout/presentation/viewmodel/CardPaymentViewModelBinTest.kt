@@ -6,6 +6,10 @@ import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
@@ -13,15 +17,11 @@ import com.mercadopago.sdk.android.checkout.domain.model.BinSecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.domain.model.FieldTranslation
-import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsFieldTranslation
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
-import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldTranslation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -40,8 +40,6 @@ import org.junit.Before
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CardPaymentViewModelBinTest {
@@ -66,18 +64,34 @@ internal class CardPaymentViewModelBinTest {
     )
 
     private val fullTranslations = CardFormTranslations(
-        cardNumber = FieldTranslation(label = "Número", placeholder = "•••• ••••", helper = "", error = null),
-        cardHolderName = FieldTranslation(label = "Titular", placeholder = "Nome", helper = "", error = null),
-        expirationDate = FieldTranslation(label = "Vencimento", placeholder = "MM/AA", helper = "", error = null),
-        securityCode = SecurityCodeFieldTranslation(
+        cardNumber = CardNumberTranslations(
+            label = "Número",
+            placeholder = "•••• ••••",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        cardHolderName = HolderNameTranslations(
+            label = "Titular",
+            placeholder = "Nome",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        expirationDate = ExpirationDateTranslations(
+            label = "Vencimento",
+            placeholder = "MM/AA",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        securityCode = SecurityCodeTranslations(
             label = "CVV",
             placeholder = "123",
-            helper = "",
             tooltip = "3 dígitos no verso",
-            error = null,
+            errorEmptyField = "",
+            errorIncompleteField = "",
         ),
-        identification = FieldTranslation(label = "CPF", placeholder = "000.000.000-00", helper = "", error = null),
-        installments = InstallmentsFieldTranslation(label = "Parcelas", installmentsSelectorPlaceholder = "Selecione"),
     )
 
     @Before
@@ -193,44 +207,6 @@ internal class CardPaymentViewModelBinTest {
     }
 
     @Test
-    fun `when BIN call succeeds with translations then translations stored in state`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = fullTranslations,
-        )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-
-        val viewModel = makeViewModel()
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-
-        assertNotNull(viewModel.viewState.value.cardFormTranslations)
-    }
-
-    @Test
-    fun `when BIN call succeeds without translations then cardFormTranslations is null`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
-        )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-
-        val viewModel = makeViewModel()
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-
-        assertNull(viewModel.viewState.value.cardFormTranslations)
-    }
-
-    @Test
     fun `when BIN call succeeds then paymentState is updated`() = runTest {
         val data = CardBinData(
             id = "visa",
@@ -264,7 +240,6 @@ internal class CardPaymentViewModelBinTest {
         val stateBefore = viewModel.viewState.value
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
 
-        assertEquals(stateBefore.cardFormTranslations, viewModel.viewState.value.cardFormTranslations)
         assertEquals(stateBefore.cardNumberState.label, viewModel.viewState.value.cardNumberState.label)
     }
 
@@ -375,41 +350,48 @@ internal class CardPaymentViewModelBinTest {
     }
 
     @Test
-    fun `when BIN returns type not in allowedTypes then CardTypeNotAccepted error is set`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "debit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
-        )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-
-        val viewModel = makeViewModel()
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-
-        val errorTypes = viewModel.viewState.value.cardNumberState.errorTypes
-        assertEquals(true, errorTypes.any { it is CardNumberErrorType.CardTypeNotAccepted })
-    }
-
-    @Test
-    fun `when BIN returns null translations then existing translations in state are preserved`() = runTest {
+    fun `when securityCode has tooltip then it takes priority over translations tooltip`() = runTest {
         val data = CardBinData(
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = null,
+            securityCode = BinSecurityCodeConfig(
+                mode = "mandatory",
+                length = 3,
+                cardLocation = "back",
+                tooltip = "direct tooltip",
+                placeholder = "direct placeholder",
+            ),
             issuers = emptyList(),
             quotas = emptyList(),
-            translations = null,
+            translations = fullTranslations,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
 
         val viewModel = makeViewModel()
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
 
-        assertNull(viewModel.viewState.value.cardFormTranslations)
+        assertEquals("direct tooltip", viewModel.viewState.value.secureCodeState.messageTooltip)
+        assertEquals("direct placeholder", viewModel.viewState.value.secureCodeState.placeHolder)
+    }
+
+    @Test
+    fun `when securityCode has no tooltip then translations tooltip is used`() = runTest {
+        val data = CardBinData(
+            id = "visa",
+            paymentTypeId = "credit_card",
+            cardNumber = null,
+            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = "back"),
+            issuers = emptyList(),
+            quotas = emptyList(),
+            translations = fullTranslations,
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+
+        val viewModel = makeViewModel()
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        assertEquals("3 dígitos no verso", viewModel.viewState.value.secureCodeState.messageTooltip)
+        assertEquals("123", viewModel.viewState.value.secureCodeState.placeHolder)
     }
 }

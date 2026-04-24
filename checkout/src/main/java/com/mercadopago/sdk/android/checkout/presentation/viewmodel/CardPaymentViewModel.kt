@@ -11,7 +11,6 @@ import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmitError
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormUserCanceledError
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
@@ -22,8 +21,6 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
-import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardBrand
-import com.mercadopago.sdk.android.checkout.domain.extensions.matchesCardType
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
@@ -37,12 +34,12 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingClear
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
-import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
@@ -51,8 +48,6 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDa
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
-import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
@@ -361,32 +356,6 @@ internal class CardPaymentViewModel(
         }
     }
 
-    private fun handleCardBrandValidation(
-        data: CardBinData,
-    ) {
-        updateCardNumberError<CardNumberErrorType.CardBrandNotAccepted> {
-            val (_, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
-            if (!data.matchesCardBrand(cardBrands)) {
-                CardNumberErrorType.CardBrandNotAccepted(CardBrand.fromString(data.id.orEmpty()))
-            } else {
-                null
-            }
-        }
-    }
-
-    private fun handleCardTypeValidation(
-        data: CardBinData,
-    ) {
-        updateCardNumberError<CardNumberErrorType.CardTypeNotAccepted> {
-            val (cardTypes, _) = checkoutConfiguration?.paymentMethods.extractCardFilters()
-            if (!data.matchesCardType(cardTypes)) {
-                CardNumberErrorType.CardTypeNotAccepted(CardType.fromString(data.paymentTypeId.orEmpty()))
-            } else {
-                null
-            }
-        }
-    }
-
     private fun updateCardNumberErrorState(
         errors: List<CardNumberErrorType>,
     ) {
@@ -534,8 +503,6 @@ internal class CardPaymentViewModel(
             ).fold(
                 onSuccess = { data ->
                     updateStateWithCardBinData(data)
-                    handleCardBrandValidation(data)
-                    handleCardTypeValidation(data)
                 },
                 onError = { },
             )
@@ -545,80 +512,8 @@ internal class CardPaymentViewModel(
     private fun updateStateWithCardBinData(
         data: CardBinData,
     ) {
-        val current = _viewState.value
-        _viewState.value = current.copy(
-            cardNumberState = buildCardNumberState(current, data),
-            secureCodeState = buildSecureCodeState(current, data),
-            cardHolderState = buildCardHolderState(current, data),
-            expirationDateState = buildExpirationDateState(current, data),
-            cardIssuers = data.issuers.map { CardIssuer(id = it.id?.toString(), thumbnail = it.secureThumbnail) },
-            installmentsState = buildBinInstallmentsState(current, data),
-            paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
-            cardFormTranslations = data.translations ?: current.cardFormTranslations,
-        )
+        _viewState.value = _viewState.value.applyCardBinData(data)
     }
-
-    private fun String?.orCurrent(
-        current: String,
-    ): String = this?.takeIf { it.isNotEmpty() } ?: current
-
-    private fun buildCardNumberState(
-        current: CardPaymentScreenState,
-        data: CardBinData,
-    ) = current.cardNumberState.copy(
-        maxLength = data.cardNumber?.length ?: current.cardNumberState.maxLength,
-        mask = (data.cardNumber?.length ?: current.cardNumberState.maxLength).toMask(),
-        image = data.issuers.firstOrNull()?.secureThumbnail,
-        label = data.translations?.cardNumber?.label.orCurrent(current.cardNumberState.label),
-        placeHolder = data.translations?.cardNumber?.placeholder.orCurrent(current.cardNumberState.placeHolder),
-        helper = data.translations?.cardNumber?.helper.orCurrent(current.cardNumberState.helper),
-    )
-
-    private fun buildSecureCodeState(
-        current: CardPaymentScreenState,
-        data: CardBinData,
-    ) = current.secureCodeState.copy(
-        maxLength = data.securityCode?.length ?: current.secureCodeState.maxLength,
-        optional = data.securityCode?.mode?.equals("optional", ignoreCase = true) == true,
-        label = data.translations?.securityCode?.label.orCurrent(current.secureCodeState.label),
-        placeHolder = data.translations?.securityCode?.placeholder.orCurrent(current.secureCodeState.placeHolder),
-        helper = data.translations?.securityCode?.helper.orCurrent(current.secureCodeState.helper),
-        messageTooltip = data.translations?.securityCode?.tooltip.orCurrent(current.secureCodeState.messageTooltip),
-    )
-
-    private fun buildCardHolderState(
-        current: CardPaymentScreenState,
-        data: CardBinData,
-    ) = current.cardHolderState.copy(
-        label = data.translations?.cardHolderName?.label.orCurrent(current.cardHolderState.label),
-        placeHolder = data.translations?.cardHolderName?.placeholder.orCurrent(current.cardHolderState.placeHolder),
-        helper = data.translations?.cardHolderName?.helper.orCurrent(current.cardHolderState.helper),
-    )
-
-    private fun buildExpirationDateState(
-        current: CardPaymentScreenState,
-        data: CardBinData,
-    ) = current.expirationDateState.copy(
-        label = data.translations?.expirationDate?.label.orCurrent(current.expirationDateState.label),
-        placeHolder = data.translations?.expirationDate?.placeholder.orCurrent(current.expirationDateState.placeHolder),
-        helper = data.translations?.expirationDate?.helper.orCurrent(current.expirationDateState.helper),
-    )
-
-    private fun buildBinInstallmentsState(
-        current: CardPaymentScreenState,
-        data: CardBinData,
-    ) = current.installmentsState.copy(
-        showList = data.quotas.isNotEmpty(),
-        installments = data.quotas.map {
-            PayerCost(
-                instalments = it.quantity,
-                installmentAmount = it.installmentAmount?.toFloatOrNull(),
-                totalAmount = it.totalAmount?.toFloatOrNull(),
-                discountRate = it.discountRate?.toFloat(),
-                labels = listOfNotNull(it.label),
-            )
-        },
-    )
 
     private fun updateFieldState(
         error: String,
