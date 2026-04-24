@@ -36,7 +36,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * @see HttpLoggingInterceptor
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-class RetrofitServiceFactory(
+class RetrofitServiceFactory @JvmOverloads constructor(
     private val publicKey: String?,
     private val baseUrl: String,
 ) {
