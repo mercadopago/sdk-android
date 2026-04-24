@@ -1,41 +1,37 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
-import io.mockk.every
-import io.mockk.mockk
+import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class CardHolderVerifierTest {
-    private val stringProvider: StringProvider = mockk()
-    private val verifier = CardHolderVerifier(stringProvider)
+    private val verifier = CardHolderVerifier()
 
     @Test
     fun `when value is empty then returns required field error`() {
-        every { stringProvider.getString(R.string.card_form_error_required_field) } returns "required"
+        val state = CardHolderState(value = "", validation = ValidationState(errorEmpty = "required"))
 
-        val result = verifier.verify(CardHolderState(value = ""))
+        val result = verifier.verify(state)
 
         assertEquals("required", result)
     }
 
     @Test
     fun `when value length is less than min characters then returns incomplete error`() {
-        every { stringProvider.getString(R.string.card_form_error_cardholder_incomplete) } returns "incomplete"
+        val state = CardHolderState(value = "AB", validation = ValidationState(errorIncomplete = "incomplete"))
 
-        val result = verifier.verify(CardHolderState(value = "AB"))
+        val result = verifier.verify(state)
 
         assertEquals("incomplete", result)
     }
 
     @Test
     fun `when value contains special characters then returns format error`() {
-        every { stringProvider.getString(R.string.card_form_error_cardholder_format) } returns "invalid format"
+        val state = CardHolderState(value = "AB@", validation = ValidationState(errorInvalid = "invalid format"))
 
-        val result = verifier.verify(CardHolderState(value = "AB@"))
+        val result = verifier.verify(state)
 
         assertEquals("invalid format", result)
     }
