@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
@@ -89,6 +90,7 @@ internal class DataModuleTest {
                 List::class,
                 CheckoutConfiguration::class,
                 CheckoutThemePreferences::class,
+                CardFormService::class,
                 CardPaymentViewModel::class,
                 GetCardDataByBinUseCase::class,
                 GetPaymentMethodsUseCase::class,
