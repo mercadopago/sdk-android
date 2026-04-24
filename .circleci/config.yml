@@ -89,20 +89,7 @@ jobs:
           command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
       - run:
           name: Verify Diff Coverage (80%)
-          command: |
-            # python3-pip not shipped in cimg/openjdk:17.0.13 (~15s overhead, no cache available in this image)
-            sudo apt-get update -qq && sudo apt-get install -y python3-pip --no-install-recommends -qq
-            pip3 install "diff-cover==10.2.0" --quiet
-            if ! git fetch origin main 2>&1; then
-              echo "Warning: git fetch origin main failed — diff-cover may compare against a stale branch"
-            fi
-            REPORTS=$(find . -path "*/build/reports/kover*" -name "*.xml" | tr '\n' ' ')
-            if [ -z "$(echo $REPORTS | tr -d ' ')" ]; then
-              echo "No Kover XML reports found, skipping diff coverage check."
-              exit 0
-            fi
-            echo "Coverage reports found: $REPORTS"
-            diff-cover $REPORTS --compare-branch=origin/main --diff-range-notation=.. --fail-under=80
+          command: .circleci/scripts/verify-diff-coverage.sh
       #      - run:
       #          name: Run Screenshot Tests
       #          command: ./gradlew verifyPaparazziDebug
@@ -116,13 +103,7 @@ jobs:
           path: ~/test-results
       - run:
           name: Archive Reports
-          command: |
-            mkdir -p ~/circleci-artifacts/reports
-            for module in */; do
-              [ -d "${module}build/reports/detekt" ] && cp -r "${module}build/reports/detekt" ~/circleci-artifacts/reports/${module%/}-detekt || true
-              [ -d "${module}build/reports/ktlint" ] && cp -r "${module}build/reports/ktlint" ~/circleci-artifacts/reports/${module%/}-ktlint || true
-              [ -d "${module}build/reports/kover"  ] && cp -r "${module}build/reports/kover"  ~/circleci-artifacts/reports/${module%/}-kover  || true
-            done
+          command: .circleci/scripts/archive-reports.sh
 
       # DOCUMENTATION STEP
       - run:
@@ -172,13 +153,24 @@ jobs:
           fingerprints:
             - "SHA256:CHbCMOR2Mcw/RHacZ+LuEOqsvk0Vis+R3lzMcdpy9y0"
       - run:
-          name: Configure Git for deployment
-          command: |
-            git config --global user.email "dev@mercadopago.com"
-            git config --global user.name "CI Build"
-      - run:
           name: Deploy documentation to GitHub Pages
-          command: npx gh-pages --dotfiles --message "[skip ci] Updates" --dist build/dokka/htmlMultiModule
+          command: .circleci/scripts/deploy-docs.sh
+
+  check-version-consistency:
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: Install Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install --skip-smudge
+      - checkout
+      - run:
+          name: Check version consistency
+          command: .circleci/scripts/check-version-consistency.sh
 
   publish-maven:
     circleci_ip_ranges: true
@@ -187,76 +179,6 @@ jobs:
     working_directory: ~/repo
     steps:
       - setup-android
-      - run:
-          name: Check version consistency
-          command: |
-            BUILDSCR="buildSrc/src/main/kotlin/com/mercadopago/sdk/android"
-
-            config_to_module() {
-              case "$1" in
-                CoreSDKConfig.kt)        echo "core" ;;
-                AnalyticsSDKConfig.kt)   echo "analytics" ;;
-                MercadoPagoSDKConfig.kt) echo "sdk-android" ;;
-                CoreMethodsSDKConfig.kt) echo "core-methods" ;;
-                FoundationSDKConfig.kt)  echo "foundation" ;;
-                ComponentsSDKConfig.kt)  echo "components" ;;
-                CheckoutSDKConfig.kt)    echo "checkout" ;;
-                BomConfig.kt)            echo "sdk-android-bom" ;;
-              esac
-            }
-
-            project_ref_to_module() {
-              case "$1" in
-                core)        echo "core" ;;
-                analytics)   echo "analytics" ;;
-                sdkAndroid)  echo "sdk-android" ;;
-                coreMethods) echo "core-methods" ;;
-                foundation)  echo "foundation" ;;
-                components)  echo "components" ;;
-                checkout)    echo "checkout" ;;
-              esac
-            }
-
-            CHANGED_MODULES=""
-            for config in CoreSDKConfig.kt AnalyticsSDKConfig.kt MercadoPagoSDKConfig.kt \
-                          CoreMethodsSDKConfig.kt FoundationSDKConfig.kt ComponentsSDKConfig.kt \
-                          CheckoutSDKConfig.kt BomConfig.kt; do
-              if git diff HEAD~1 HEAD -- "$BUILDSCR/$config" 2>/dev/null | grep -q '^\+.*VERSION_NAME'; then
-                CHANGED_MODULES="$CHANGED_MODULES $(config_to_module "$config")"
-              fi
-            done
-
-            if [ -z "$(echo $CHANGED_MODULES | tr -d ' ')" ]; then
-              echo "No version changes detected, skipping publish."
-              circleci-agent step halt
-            fi
-
-            echo "Modules with version changes: $CHANGED_MODULES"
-
-            declare -A DEPENDENTS
-            for kts in */build.gradle.kts; do
-              MODULE="${kts%%/*}"
-              for ref in $(grep -oP '(?<=projects\.)[a-zA-Z]+' "$kts" 2>/dev/null); do
-                dep=$(project_ref_to_module "$ref")
-                [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]} $MODULE"
-              done
-            done
-
-            ERRORS=""
-            for changed in $CHANGED_MODULES; do
-              for dependent in ${DEPENDENTS[$changed]}; do
-                if ! echo "$CHANGED_MODULES" | grep -qw "$dependent"; then
-                  ERRORS="$ERRORS\n  ✗ '$dependent' depends on '$changed' but VERSION_NAME was not bumped"
-                fi
-              done
-            done
-
-            if [ -n "$ERRORS" ]; then
-              printf "VERSION CONSISTENCY ERROR:%b\n" "$ERRORS"
-              exit 1
-            fi
-
-            echo "Version consistency check passed."
       - run:
           name: Check Java Version
           command: java -version
@@ -274,38 +196,21 @@ jobs:
           key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
       - run:
           name: Publish to Maven
-          command: |
-            ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo $ORG_GRADLE_PROJECT_sdkAndroidUsername | base64 --decode)
-            ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo $ORG_GRADLE_PROJECT_sdkAndroidPassword | base64 --decode)
-            MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom" "mp-extended")
-            any_published=0
-            for MODULE in "${MODULES[@]}"; do
-              VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
-              ARTIFACT_URL="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk/$MODULE/$VERSION/"
-              if curl -sfI "$ARTIFACT_URL" > /dev/null; then
-                echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
-              else
-                echo "Publishing $MODULE:$VERSION ..."
-                ./gradlew ":$MODULE:publish" || {
-                  echo "Publish failed for $MODULE"
-                  exit 1
-                }
-                any_published=1
-              fi
-            done
-
-            if [[ $any_published -eq 0 ]]; then
-              echo "No modules needed to be published. Skipping release creation."
-              circleci-agent step halt
-            else
-              echo "export SHOULD_CREATE_RELEASE=true" >> $BASH_ENV
-            fi
+          command: .circleci/scripts/publish-maven.sh
 
 workflows:
   version: 2
   build:
     jobs:
       - build-test
+      - check-version-consistency:
+          requires:
+            - build-test
+          filters:
+            branches:
+              only:
+                - main
+                - /release\/.*/
       - docs-deploy:
           requires:
             - build-test
