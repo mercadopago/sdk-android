@@ -2,80 +2,148 @@ package com.mercadopago.sdk.android.checkout.domain.extensions
 
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
-import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.coremethods.domain.model.CardModel
+import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
+import com.mercadopago.sdk.android.coremethods.domain.model.SecurityCodeModel
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
 
 internal class PaymentMethodExtensionsTest {
-    private fun binData(
-        id: String?,
-        paymentTypeId: String?,
-    ) = CardBinData(
-        id = id,
-        paymentTypeId = paymentTypeId,
-        cardNumber = null,
-        securityCode = null,
-        issuers = emptyList(),
-        quotas = emptyList(),
-        translations = null,
-    )
-
-    // region matchesCardBrand
-
     @Test
-    fun `matchesCardBrand returns true when cardBrands list is empty`() {
-        assertTrue(binData("amex", null).matchesCardBrand(emptyList()))
+    fun `given paymentMethod with securityCode then toSecurityCode maps all fields`() {
+        val paymentMethod = PaymentMethod(
+            card = CardModel(securityCode = SecurityCodeModel(length = 4, mode = "optional", location = "front")),
+        )
+
+        val result = paymentMethod.toSecurityCode()
+
+        assertEquals(4, result.length)
+        assertEquals("optional", result.mode)
+        assertEquals("front", result.location)
     }
 
     @Test
-    fun `matchesCardBrand returns true when id matches a brand`() {
-        assertTrue(binData("visa", null).matchesCardBrand(listOf(CardBrand.Visa)))
+    fun `given paymentMethod with null card then toSecurityCode uses defaults`() {
+        val paymentMethod = PaymentMethod(card = null)
+
+        val result = paymentMethod.toSecurityCode()
+
+        assertEquals(3, result.length)
+        assertEquals("mandatory", result.mode)
+        assertEquals("back", result.location)
     }
 
     @Test
-    fun `matchesCardBrand is case insensitive`() {
-        assertTrue(binData("VISA", null).matchesCardBrand(listOf(CardBrand.Visa)))
+    fun `given paymentMethod with null securityCode fields then toSecurityCode uses defaults`() {
+        val paymentMethod = PaymentMethod(card = CardModel(securityCode = SecurityCodeModel()))
+
+        val result = paymentMethod.toSecurityCode()
+
+        assertEquals(3, result.length)
+        assertEquals("mandatory", result.mode)
+        assertEquals("back", result.location)
     }
 
     @Test
-    fun `matchesCardBrand returns false when id does not match any brand`() {
-        assertFalse(binData("amex", null).matchesCardBrand(listOf(CardBrand.Visa, CardBrand.Mastercard)))
+    fun `given paymentMethod with issuer_id in additionalInfoNeeded then hasIssuers returns true`() {
+        val paymentMethod = PaymentMethod(id = "visa", additionalInfoNeeded = listOf("issuer_id"))
+
+        assertTrue(paymentMethod.hasIssuers())
     }
 
     @Test
-    fun `matchesCardBrand returns false when id is null`() {
-        assertFalse(binData(null, null).matchesCardBrand(listOf(CardBrand.Visa)))
-    }
+    fun `given paymentMethod without issuer_id then hasIssuers returns false`() {
+        val paymentMethod = PaymentMethod(id = "visa", additionalInfoNeeded = listOf("cardholder_name"))
 
-    // endregion
-
-    // region matchesCardType
-
-    @Test
-    fun `matchesCardType returns true when cardTypes list is empty`() {
-        assertTrue(binData(null, "debit_card").matchesCardType(emptyList()))
+        assertFalse(paymentMethod.hasIssuers())
     }
 
     @Test
-    fun `matchesCardType returns true when paymentTypeId matches a type`() {
-        assertTrue(binData(null, "credit_card").matchesCardType(listOf(CardType.CREDIT)))
+    fun `given paymentMethod with null additionalInfoNeeded then hasIssuers returns false`() {
+        val paymentMethod = PaymentMethod(id = "visa", additionalInfoNeeded = null)
+
+        assertFalse(paymentMethod.hasIssuers())
     }
 
     @Test
-    fun `matchesCardType is case insensitive`() {
-        assertTrue(binData(null, "CREDIT_CARD").matchesCardType(listOf(CardType.CREDIT)))
+    fun `given paymentMethod with null id then hasIssuers returns false`() {
+        val paymentMethod = PaymentMethod(id = null, additionalInfoNeeded = listOf("issuer_id"))
+
+        assertFalse(paymentMethod.hasIssuers())
     }
 
     @Test
-    fun `matchesCardType returns false when paymentTypeId does not match any type`() {
-        assertFalse(binData(null, "debit_card").matchesCardType(listOf(CardType.CREDIT)))
+    fun `given empty cardBrands list then matchesCardBrand returns true`() {
+        val paymentMethod = PaymentMethod(id = "visa")
+
+        assertTrue(paymentMethod.matchesCardBrand(emptyList()))
     }
 
     @Test
-    fun `matchesCardType returns false when paymentTypeId is null`() {
-        assertFalse(binData(null, null).matchesCardType(listOf(CardType.CREDIT)))
+    fun `given matching brand in list then matchesCardBrand returns true`() {
+        val paymentMethod = PaymentMethod(id = "visa")
+
+        assertTrue(paymentMethod.matchesCardBrand(listOf(CardBrand.Visa)))
     }
 
-    // endregion
+    @Test
+    fun `given non matching brand in list then matchesCardBrand returns false`() {
+        val paymentMethod = PaymentMethod(id = "master")
+
+        assertFalse(paymentMethod.matchesCardBrand(listOf(CardBrand.Visa)))
+    }
+
+    @Test
+    fun `given empty cardTypes list then matchesCardType returns true`() {
+        val paymentMethod = PaymentMethod(paymentTypeId = "credit_card")
+
+        assertTrue(paymentMethod.matchesCardType(emptyList()))
+    }
+
+    @Test
+    fun `given matching type in list then matchesCardType returns true`() {
+        val paymentMethod = PaymentMethod(paymentTypeId = "credit_card")
+
+        assertTrue(paymentMethod.matchesCardType(listOf(CardType.CREDIT)))
+    }
+
+    @Test
+    fun `given non matching type in list then matchesCardType returns false`() {
+        val paymentMethod = PaymentMethod(paymentTypeId = "debit_card")
+
+        assertFalse(paymentMethod.matchesCardType(listOf(CardType.CREDIT)))
+    }
+
+    @Test
+    fun `given null list then extractCardFilters returns empty pairs`() {
+        val result = null.extractCardFilters()
+
+        assertEquals(emptyList(), result.first)
+        assertEquals(emptyList(), result.second)
+    }
+
+    @Test
+    fun `given list without Card type then extractCardFilters returns empty pairs`() {
+        val result = listOf<CheckoutPaymentMethod>().extractCardFilters()
+
+        assertEquals(emptyList(), result.first)
+        assertEquals(emptyList(), result.second)
+    }
+
+    @Test
+    fun `given list with Card type then extractCardFilters returns its filters`() {
+        val allowedTypes = listOf(CardType.CREDIT)
+        val allowedBrands = listOf(CardBrand.Visa)
+        val paymentMethods = listOf(
+            CheckoutPaymentMethod.Card(allowedTypes = allowedTypes, allowedBrands = allowedBrands),
+        )
+
+        val result = paymentMethods.extractCardFilters()
+
+        assertEquals(allowedTypes, result.first)
+        assertEquals(allowedBrands, result.second)
+    }
 }
