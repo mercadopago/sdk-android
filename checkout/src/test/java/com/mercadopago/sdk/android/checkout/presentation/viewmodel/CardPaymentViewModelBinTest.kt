@@ -22,7 +22,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -51,7 +50,6 @@ internal class CardPaymentViewModelBinTest {
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
-    private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -115,7 +113,6 @@ internal class CardPaymentViewModelBinTest {
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
-        cancelledFormContextUseCase = cancelledFormContextUseCase,
     )
 
     @Test

@@ -13,7 +13,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
-import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
@@ -47,7 +46,6 @@ internal class CardPaymentViewModelTrackingTest {
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
-    private val cancelledFormContextUseCase = mockk<CancelledFormContextUseCase>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -85,7 +83,6 @@ internal class CardPaymentViewModelTrackingTest {
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
-        cancelledFormContextUseCase = cancelledFormContextUseCase,
     )
 
     // region Initialize
@@ -156,13 +153,13 @@ internal class CardPaymentViewModelTrackingTest {
     // region Submit
 
     @Test
-    fun `when validateFieldsAndTokenize called then tracks submit event`() = runTest {
+    fun `when card payment onSubmit called then tracks submit event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token123"))
         val viewModel = makeViewModel()
 
-        viewModel.validateFieldsAndTokenize(
+        viewModel.onSubmit(
             cardNumberState = mockk(relaxed = true),
             expirationDateState = mockk(relaxed = true),
             securityCodeState = mockk(relaxed = true),
