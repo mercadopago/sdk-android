@@ -97,7 +97,7 @@ internal fun CardPaymentScreen(
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
             focusManager.clearFocus()
-            viewModel.validateFieldsAndTokenize(
+            viewModel.onSubmit(
                 cardNumberState = cardNumberPCIState,
                 expirationDateState = expirationDatePCIState,
                 securityCodeState = securityCodePCIState,

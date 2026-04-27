@@ -9,10 +9,6 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardDataByBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardIssuersUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetInstallmentsUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.GetPaymentMethodsUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -99,10 +95,6 @@ internal class CheckoutModulesProviderTest {
                 CardPaymentViewModel::class,
                 InstallmentsViewModel::class,
                 GetCardBinUseCase::class,
-                GetCardDataByBinUseCase::class,
-                GetPaymentMethodsUseCase::class,
-                GetCardIssuersUseCase::class,
-                GetInstallmentsUseCase::class,
                 GenerateTokenUseCase::class,
                 CardPaymentScreenStateFactory::class,
                 CancelledFormContextUseCase::class,

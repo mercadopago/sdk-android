@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.data.remote.datasource
 
 import com.mercadopago.sdk.android.checkout.data.remote.mapper.toInternalResponse
+import com.mercadopago.sdk.android.checkout.data.remote.request.CardBinRequest
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
@@ -20,19 +21,16 @@ internal class CardFormRemoteDataSourceImpl(
         ).toInternalResponse()
 
     override suspend fun getCardBin(
-        bin: String,
-        amount: String,
-        checkoutType: String,
-        processingMode: String,
-        allowCardTypes: String?,
-        allowCardBrands: String?,
+        request: CardBinRequest,
     ): Result<CardBinResponse, ResultError> =
-        service.getCardBin(
-            bin = bin,
-            amount = amount,
-            checkoutType = checkoutType,
-            processingMode = processingMode,
-            allowCardTypes = allowCardTypes,
-            allowCardBrands = allowCardBrands,
-        ).toInternalResponse()
+        with(request) {
+            service.getCardBin(
+                bin = bin,
+                amount = amount,
+                checkoutType = checkoutType,
+                processingMode = processingMode,
+                allowCardTypes = allowCardTypes,
+                allowCardBrands = allowCardBrands,
+            ).toInternalResponse()
+        }
 }
