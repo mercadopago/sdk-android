@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfigResponse
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberLengthResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldErrorTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslationResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentConfigResponse
@@ -42,7 +43,11 @@ internal class CardBinResponseMapperTest {
         val response = minimalResponse().copy(
             paymentMethods = listOf(
                 paymentMethodResponse().copy(
-                    cardNumber = CardNumberConfigResponse(length = 16, validation = "standard", mask = null),
+                    cardNumber = CardNumberConfigResponse(
+                        length = CardNumberLengthResponse(min = 16, max = 16),
+                        validation = "standard",
+                        mask = null,
+                    ),
                 ),
             ),
         )

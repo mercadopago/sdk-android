@@ -496,7 +496,7 @@ internal class CardPaymentViewModel(
         viewModelScope.launch {
             getCardBinUseCase(
                 bin = bin,
-                amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString().orEmpty(),
+                amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString(),
                 checkoutType = checkoutConfiguration.toCheckoutType(),
                 processingMode = PROCESSING_MODE,
                 filter = CardBinFilter(cardTypes = cardTypes, cardBrands = cardBrands),

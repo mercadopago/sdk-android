@@ -34,7 +34,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
 
 private fun CardNumberConfigResponse.toDomain(): CardNumberConfig =
     CardNumberConfig(
-        length = length,
+        length = length?.max ?: length?.min,
         validation = validation,
         mask = mask,
     )

@@ -15,9 +15,14 @@ internal data class PaymentMethodResponse(
 )
 
 internal data class CardNumberConfigResponse(
-    val length: Int?,
+    val length: CardNumberLengthResponse?,
     val validation: String?,
     val mask: String?,
+)
+
+internal data class CardNumberLengthResponse(
+    val min: Int?,
+    val max: Int?,
 )
 
 internal data class SecurityCodeConfigResponse(
