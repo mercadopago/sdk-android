@@ -1,32 +1,36 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
-import io.mockk.every
-import io.mockk.mockk
+import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class SecurityCodeVerifierTest {
-    private val stringProvider: StringProvider = mockk()
-    private val verifier = SecurityCodeVerifier(stringProvider)
+    private val verifier = SecurityCodeVerifier()
 
     @Test
     fun `when length is 0 then returns required field error`() {
-        every { stringProvider.getString(R.string.card_form_error_required_field) } returns "required"
+        val state = SecurityCodeState(
+            length = 0,
+            maxLength = 3,
+            validation = ValidationState(errorEmpty = "required"),
+        )
 
-        val result = verifier.verify(SecurityCodeState(length = 0, maxLength = 3))
+        val result = verifier.verify(state)
 
         assertEquals("required", result)
     }
 
     @Test
     fun `when length greater than 0 and less than maxLength then returns incomplete error`() {
-        every { stringProvider.getString(R.string.card_form_error_cvv_incomplete) } returns "incomplete"
+        val state = SecurityCodeState(
+            length = 2,
+            maxLength = 3,
+            validation = ValidationState(errorIncomplete = "incomplete"),
+        )
 
-        val result = verifier.verify(SecurityCodeState(length = 2, maxLength = 3))
+        val result = verifier.verify(state)
 
         assertEquals("incomplete", result)
     }
