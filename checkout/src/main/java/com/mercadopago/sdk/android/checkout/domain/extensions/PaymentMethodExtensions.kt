@@ -22,14 +22,6 @@ internal fun PaymentMethod.hasIssuers() =
     this.additionalInfoNeeded?.contains(ISSUER_ID) == true &&
         this.id != null
 
-internal fun PaymentMethod.matchesCardBrand(
-    cardBrands: List<CardBrand>,
-): Boolean = cardBrands.isEmpty() || cardBrands.any { it.name.equals(this.id, ignoreCase = true) }
-
-internal fun PaymentMethod.matchesCardType(
-    cardTypes: List<CardType>,
-): Boolean = cardTypes.isEmpty() || cardTypes.any { it.value.equals(this.paymentTypeId, ignoreCase = true) }
-
 internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
     return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()

@@ -15,13 +15,14 @@ internal val EMPTY_BODY_ERROR = Result.Error(
     ),
 )
 
-internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> =
-    if (isSuccessful) {
+internal fun <T> Response<T>.toInternalResponse(): Result<T, ResultError> {
+    return if (isSuccessful) {
         val result = this.body() ?: return EMPTY_BODY_ERROR
         Result.Success<T>(result)
     } else {
         Result.Error<ResultError>(errorBody().toResultError())
     }
+}
 
 internal fun ResponseBody?.toResultError(): ResultError.Request {
     val errorBody = this?.string()

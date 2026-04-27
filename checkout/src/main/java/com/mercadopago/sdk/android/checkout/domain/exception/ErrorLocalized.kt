@@ -7,4 +7,5 @@ internal enum class ErrorLocalized {
     ISSUERS,
     INSTALLMENTS,
     CARD_FORM_INITIALIZATION,
+    CARD_BIN,
 }

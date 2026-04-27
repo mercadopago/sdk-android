@@ -67,7 +67,7 @@ for kts in */build.gradle.kts; do
   [[ "$MODULE" == "example" || "$MODULE" == "showkase" ]] && continue
   for ref in $(grep -oP '(?<=projects\.)[a-zA-Z]+' "$kts" 2>/dev/null); do
     dep=$(project_ref_to_module "$ref")
-    [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]} $MODULE"
+    [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]:-} $MODULE"
   done
 done
 
