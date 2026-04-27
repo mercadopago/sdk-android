@@ -15,7 +15,12 @@ internal fun CardPaymentScreenState.applyCardBinData(
         secureCodeState = buildSecureCodeState(data),
         cardHolderState = buildCardHolderState(data),
         expirationDateState = buildExpirationDateState(data),
-        cardIssuers = data.issuers.map { CardIssuer(id = it.id?.toString(), thumbnail = it.secureThumbnail) },
+        cardIssuers = data.issuers.map {
+            CardIssuer(
+                id = it.id?.toString(),
+                thumbnail = it.secureThumbnail,
+            )
+        },
         installmentsState = buildBinInstallmentsState(data),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
     )

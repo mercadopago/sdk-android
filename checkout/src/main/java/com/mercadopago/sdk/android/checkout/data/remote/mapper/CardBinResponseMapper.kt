@@ -77,7 +77,7 @@ private fun FieldTranslationResponse.toDomain() =
         label = label.orEmpty(),
         placeholder = placeholder.orEmpty(),
         helper = helper,
-        errorEmptyField = "",
+        errorEmptyField = "", // TechDebt get error of empty field
         errorIncompleteField = error?.incomplete.orEmpty(),
         errorInvalidField = error?.invalid.orEmpty(),
     )
