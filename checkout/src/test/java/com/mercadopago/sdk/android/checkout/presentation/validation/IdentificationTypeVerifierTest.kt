@@ -1,61 +1,125 @@
 package com.mercadopago.sdk.android.checkout.presentation.validation
 
-import com.mercadopago.android.sdk.checkout.R
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
+import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import io.mockk.every
-import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class IdentificationTypeVerifierTest {
-    private val stringProvider: StringProvider = mockk()
-    private val verifier = IdentificationTypeVerifier(stringProvider)
+    private val verifier = IdentificationTypeVerifier()
+
+    private val validation = ValidationState(
+        errorEmpty = "Campo obrigatório",
+        errorIncomplete = "Documento incompleto",
+        errorInvalid = "Documento inválido",
+    )
+
+    private val selected = IdentificationType(minLength = 7, maxLength = 11)
+
+    private fun state(
+        value: String,
+        selected: IdentificationType? = this.selected,
+    ) = IdentificationTypeState(value = value, selected = selected, validation = validation)
+
+    // region checkEmpty
 
     @Test
-    fun `when value is empty then returns required field error`() {
-        every { stringProvider.getString(R.string.card_form_error_required_field) } returns "required"
+    fun `given empty value then returns errorEmpty`() {
+        val result = verifier.verify(state(value = ""))
 
-        val result = verifier.verify(IdentificationTypeState(value = ""))
-
-        assertEquals("required", result)
+        assertEquals("Campo obrigatório", result)
     }
 
     @Test
-    fun `when value length is out of selected range then returns required field error`() {
-        every { stringProvider.getString(R.string.card_form_error_required_field) } returns "required"
-        val selected = IdentificationType(minLength = 7, maxLength = 11)
+    fun `given empty value with null selected then still returns errorEmpty`() {
+        val result = verifier.verify(state(value = "", selected = null))
 
-        val result = verifier.verify(IdentificationTypeState(value = "12345", selected = selected))
+        assertEquals("Campo obrigatório", result)
+    }
 
-        assertEquals("required", result)
+    // endregion
+
+    // region checkIncomplete
+
+    @Test
+    fun `given value shorter than minLength then returns errorIncomplete`() {
+        val result = verifier.verify(state(value = "12345")) // length 5 < min 7
+
+        assertEquals("Documento incompleto", result)
     }
 
     @Test
-    fun `when value contains all zeros then returns all zeros error`() {
-        every { stringProvider.getString(R.string.card_form_error_document_all_zeros) } returns "all zeros"
-        val selected = IdentificationType(minLength = 7, maxLength = 11)
+    fun `given value longer than maxLength then returns errorIncomplete`() {
+        val result = verifier.verify(state(value = "123456789012")) // length 12 > max 11
 
-        val result = verifier.verify(IdentificationTypeState(value = "00000000", selected = selected))
-
-        assertEquals("all zeros", result)
+        assertEquals("Documento incompleto", result)
     }
 
     @Test
-    fun `when selected is null then incomplete check is skipped`() {
-        val result = verifier.verify(IdentificationTypeState(value = "123", selected = null))
+    fun `given all-zeros value shorter than minLength then incomplete takes priority over invalid`() {
+        val result = verifier.verify(state(value = "000000")) // length 6 < min 7, but also all zeros
+
+        assertEquals("Documento incompleto", result)
+    }
+
+    @Test
+    fun `given null selected then checkIncomplete is skipped`() {
+        val result = verifier.verify(state(value = "123", selected = null))
+
+        assertTrue(result.isEmpty())
+    }
+
+    // endregion
+
+    // region checkAllZeros
+
+    @Test
+    fun `given all-zeros value within valid range then returns errorInvalid`() {
+        val result = verifier.verify(state(value = "00000000")) // length 8, in 7..11
+
+        assertEquals("Documento inválido", result)
+    }
+
+    @Test
+    fun `given all-zeros value at minLength then returns errorInvalid`() {
+        val result = verifier.verify(state(value = "0000000")) // length 7 == min
+
+        assertEquals("Documento inválido", result)
+    }
+
+    @Test
+    fun `given all-zeros value at maxLength then returns errorInvalid`() {
+        val result = verifier.verify(state(value = "00000000000")) // length 11 == max
+
+        assertEquals("Documento inválido", result)
+    }
+
+    // endregion
+
+    // region valid cases
+
+    @Test
+    fun `given value with exactly minLength and no zeros then returns empty`() {
+        val result = verifier.verify(state(value = "1234567")) // length 7 == min
 
         assertTrue(result.isEmpty())
     }
 
     @Test
-    fun `when value is valid then returns empty string`() {
-        val selected = IdentificationType(minLength = 7, maxLength = 11)
-
-        val result = verifier.verify(IdentificationTypeState(value = "12345678", selected = selected))
+    fun `given value with exactly maxLength and no zeros then returns empty`() {
+        val result = verifier.verify(state(value = "12345678901")) // length 11 == max
 
         assertTrue(result.isEmpty())
     }
+
+    @Test
+    fun `given valid value within range then returns empty`() {
+        val result = verifier.verify(state(value = "12345678")) // length 8, in 7..11
+
+        assertTrue(result.isEmpty())
+    }
+
+    // endregion
 }
