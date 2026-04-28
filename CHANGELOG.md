@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [CI/CD] - 2026-04-28
-
 ### Added
 - `check-changelog` CircleCI job warns when `CHANGELOG.md` has not been updated in the branch — non-blocking, pipeline continues (#205)
 - `lib.sh` created with shared helpers (`config_to_module`, `project_ref_to_module`, `artifact_exists`, `bom_published_modules`) used by `check-version-consistency` and `publish-maven` (#204)

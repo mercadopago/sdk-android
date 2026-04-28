@@ -101,7 +101,7 @@ jobs:
           name: Archive Reports
           command: .circleci/scripts/archive-reports.sh
 
-  docs:
+  documentation-write:
     circleci_ip_ranges: true
     docker:
       - image: cimg/openjdk:17.0.13
@@ -146,7 +146,7 @@ jobs:
           path: ~/circleci-artifacts
           destination: artifacts
 
-  docs-deploy:
+  documentation-deploy:
     docker:
       - image: cimg/node:16.17
     working_directory: ~/repo
@@ -181,7 +181,7 @@ jobs:
       - checkout
       - run:
           name: Check CHANGELOG.md update
-          command: .circleci/scripts/check-changelog.sh || true
+          command: .circleci/scripts/check-changelog.sh
 
   check-version-consistency:
     docker:
@@ -198,6 +198,44 @@ jobs:
       - run:
           name: Check version consistency
           command: .circleci/scripts/check-version-consistency.sh
+
+  build-artifacts:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Build Debug and Release AARs
+          command: ./gradlew assembleDebug assembleRelease --parallel
+      - run:
+          name: Collect AARs
+          command: |
+            mkdir -p ~/artifacts/aars/release ~/artifacts/aars/debug
+            find . -path "*/build/outputs/aar/*-release.aar" -exec cp {} ~/artifacts/aars/release/ \;
+            find . -path "*/build/outputs/aar/*-debug.aar" -exec cp {} ~/artifacts/aars/debug/ \;
+      - persist_to_workspace:
+          root: ~/artifacts
+          paths:
+            - aars
+
+  verify-artifacts:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/artifacts
+      - run:
+          name: Verify AAR Contents
+          command: .circleci/scripts/verify-artifacts.sh ~/artifacts/aars/release ~/artifacts/aars/debug
 
   publish-maven:
     circleci_ip_ranges: true
@@ -229,9 +267,12 @@ workflows:
   version: 2
   build:
     jobs:
-      - check-changelog
+      - check-changelog:
+          filters:
+            branches:
+              ignore: main
       - test
-      - docs:
+      - documentation-write:
           requires:
             - test
       - build:
@@ -243,15 +284,29 @@ workflows:
               only:
                 - main
                 - /release\/.*/
-      - docs-deploy:
+      - documentation-deploy:
           requires:
-            - docs
+            - documentation-write
+            - publish-maven
+          filters:
+            branches:
+              only: main
+      - build-artifacts:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
+      - verify-artifacts:
+          requires:
+            - build-artifacts
           filters:
             branches:
               only: main
       - publish-maven:
           requires:
-            - test
+            - verify-artifacts
+            - check-version-consistency
           filters:
             branches:
               only: main
