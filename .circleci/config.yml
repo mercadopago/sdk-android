@@ -156,6 +156,16 @@ jobs:
           name: Deploy documentation to GitHub Pages
           command: .circleci/scripts/deploy-docs.sh
 
+  check-changelog:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Check CHANGELOG.md update
+          command: .circleci/scripts/check-changelog.sh || true
+
   check-version-consistency:
     docker:
       - image: cimg/openjdk:17.0.13
@@ -203,6 +213,7 @@ workflows:
   build:
     jobs:
       - build-test
+      - check-changelog:
       - check-version-consistency:
           requires:
             - build-test
