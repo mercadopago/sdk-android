@@ -48,7 +48,7 @@ commands:
             yes | sdkmanager --update || exit 0
 
 jobs:
-  build-test:
+  test:
     circleci_ip_ranges: true
     docker:
       - image: cimg/openjdk:17.0.13
@@ -56,8 +56,6 @@ jobs:
     resource_class: xlarge
     steps:
       - setup-android
-
-      # SETUP STEP
       - run:
           name: Check Java Version
           command: java -version
@@ -73,8 +71,6 @@ jobs:
             - ~/.gradle/caches
             - ~/.gradle/wrapper
           key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-
-      # TEST STEP
       - run:
           name: Clean Test Cache
           command: ./gradlew cleanTest
@@ -105,17 +101,38 @@ jobs:
           name: Archive Reports
           command: .circleci/scripts/archive-reports.sh
 
-      # DOCUMENTATION STEP
+  docs:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Update Dokka Documentation
           command: ./gradlew dokkaHtmlMultiModule
-
       - persist_to_workspace:
           root: build/dokka/
           paths:
             - htmlMultiModule
 
-      # BUILD STEP
+  build:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Build the app
           command: ./gradlew assembleDebug --parallel --stacktrace
@@ -212,11 +229,15 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-test
       - check-changelog
-      - check-version-consistency:
+      - test
+      - docs:
           requires:
-            - build-test
+            - test
+      - build:
+          requires:
+            - test
+      - check-version-consistency:
           filters:
             branches:
               only:
@@ -224,13 +245,13 @@ workflows:
                 - /release\/.*/
       - docs-deploy:
           requires:
-            - build-test
+            - docs
           filters:
             branches:
               only: main
       - publish-maven:
           requires:
-            - build-test
+            - test
           filters:
             branches:
               only: main
