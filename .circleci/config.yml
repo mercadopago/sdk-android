@@ -48,7 +48,26 @@ commands:
             yes | sdkmanager --update || exit 0
 
 jobs:
-  test:
+  lint:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run KtLint Check
+          command: ./gradlew ktlintCheck
+
+  test-coverage:
     circleci_ip_ranges: true
     docker:
       - image: cimg/openjdk:17.0.13
@@ -74,12 +93,6 @@ jobs:
       - run:
           name: Clean Test Cache
           command: ./gradlew cleanTest
-      - run:
-          name: Run Detekt
-          command: ./gradlew detekt
-      - run:
-          name: Run KLint Check
-          command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
           command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
@@ -173,7 +186,7 @@ jobs:
           name: Deploy documentation to GitHub Pages
           command: .circleci/scripts/deploy-docs.sh
 
-  check-changelog:
+  verify-changelog:
     docker:
       - image: cimg/base:2024.01
     working_directory: ~/repo
@@ -183,7 +196,7 @@ jobs:
           name: Check CHANGELOG.md update
           command: .circleci/scripts/check-changelog.sh
 
-  check-version-consistency:
+  verify-version-consistency:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
@@ -267,46 +280,44 @@ workflows:
   version: 2
   build:
     jobs:
-      - check-changelog:
+      - verify-changelog:
           filters:
             branches:
               ignore: main
-      - test
+      - lint
+      - test-coverage
       - documentation-write:
           requires:
-            - test
+            - lint
+            - test-coverage
       - build:
           requires:
-            - test
-      - check-version-consistency:
+            - lint
+            - test-coverage
+      - verify-version-consistency:
           filters:
             branches:
               only:
                 - main
                 - /release\/.*/
+      - build-artifacts:
+          requires:
+            - lint
+            - test-coverage
+      - verify-artifacts:
+          requires:
+            - build-artifacts
+      - publish-maven:
+          requires:
+            - verify-artifacts
+            - verify-version-consistency
+          filters:
+            branches:
+              only: main
       - documentation-deploy:
           requires:
             - documentation-write
             - publish-maven
-          filters:
-            branches:
-              only: main
-      - build-artifacts:
-          requires:
-            - test
-          filters:
-            branches:
-              only: main
-      - verify-artifacts:
-          requires:
-            - build-artifacts
-          filters:
-            branches:
-              only: main
-      - publish-maven:
-          requires:
-            - verify-artifacts
-            - check-version-consistency
           filters:
             branches:
               only: main
