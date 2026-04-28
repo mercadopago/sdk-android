@@ -6,34 +6,28 @@ orbs:
 commands:
   setup-android:
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - run:
           name: Set Secrets File
           command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - restore_cache:
+          keys:
+            - v1-android-sdk-11076708
       - run:
-          name: Download Platform Tools
+          name: Download Android SDK
           command: |
-            cd ..
-            mkdir android-sdk
-            cd android-sdk
-            wget -q https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip -q platform-tools-latest-linux.zip
-      - run:
-          name: Download Commandline Tools
-          command: |
-            cd ..
-            cd android-sdk
-            mkdir cmdline-tools
-            cd cmdline-tools
-            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip -q commandlinetools-linux-11076708_latest.zip
-            mv cmdline-tools latest
+            if [ ! -d "$HOME/android-sdk/cmdline-tools/latest" ]; then
+              mkdir -p "$HOME/android-sdk/cmdline-tools"
+              wget -q -P "$HOME/android-sdk" https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+              unzip -q "$HOME/android-sdk/platform-tools-latest-linux.zip" -d "$HOME/android-sdk"
+              wget -q -P "$HOME/android-sdk/cmdline-tools" https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+              unzip -q "$HOME/android-sdk/cmdline-tools/commandlinetools-linux-11076708_latest.zip" -d "$HOME/android-sdk/cmdline-tools"
+              mv "$HOME/android-sdk/cmdline-tools/cmdline-tools" "$HOME/android-sdk/cmdline-tools/latest"
+            fi
+      - save_cache:
+          key: v1-android-sdk-11076708
+          paths:
+            - ~/android-sdk
       - run:
           name: Set up Android Home
           command: |
@@ -66,6 +60,12 @@ jobs:
       - run:
           name: Run KtLint Check
           command: ./gradlew ktlintCheck
+      - save_cache:
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          when: always
 
   test-coverage:
     circleci_ip_ranges: true
@@ -75,21 +75,10 @@ jobs:
     resource_class: xlarge
     steps:
       - setup-android
-      - run:
-          name: Check Java Version
-          command: java -version
       - restore_cache:
           keys:
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
-      - run:
-          name: Install Dependencies
-          command: ./gradlew dependencies
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
       - run:
           name: Clean Test Cache
           command: ./gradlew cleanTest
@@ -139,12 +128,6 @@ jobs:
       - image: cimg/node:16.17
     working_directory: ~/repo
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - attach_workspace:
           at: build/dokka/
@@ -176,12 +159,6 @@ jobs:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - run:
           name: Check version consistency

@@ -10,10 +10,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `check-changelog` CircleCI job warns when `CHANGELOG.md` has not been updated in the branch — non-blocking, pipeline continues (#205)
 - `lib.sh` created with shared helpers (`config_to_module`, `project_ref_to_module`, `artifact_exists`, `bom_published_modules`) used by `check-version-consistency` and `publish-maven` (#204)
+- `lint` job runs in parallel with `test-coverage`, providing faster feedback on static analysis without blocking the test pipeline
+- Android SDK cached in CI with key `v1-android-sdk-11076708` — download skipped on cache hit, saving setup time on every pipeline run
+- `build-artifacts` Collect AARs step now filters by BOM modules via `bom_published_modules`, avoiding collection of non-published modules
+
+### Changed
+- Monolithic `build-test` job split into `lint`, `test-coverage`, `documentation-write`, and `build` for better parallelism and separation of concerns
+- `lint` uses `resource_class: large` instead of `xlarge` — detekt and ktlint do not require high memory
+- `documentation-write` restricted to `main` branch only — no value generating docs on feature branches
+- `build` job removed — `build-artifacts` already covers debug and release AAR compilation for all BOM modules
+- `check-changelog` and `check-version-consistency` renamed to `verify-changelog` and `verify-version-consistency` for naming consistency
+- `verify-changelog` filter changed to `ignore: main` — runs only on feature branches where the reminder is actionable
+- `build-artifacts` and `verify-artifacts` now run on all branches to catch artifact issues before merge
+- `save_cache` for Gradle dependencies moved to `lint` job with `when: always` — `lint` always completes before `test-coverage`, ensuring cache is available for downstream jobs
+- Git LFS installation removed from all CI jobs — LFS content is not used by any active pipeline step
 
 ### Fixed
 - `check-version-consistency` now derives the list of modules to validate from `sdk-android-bom/build.gradle.kts` via `bom_published_modules`, avoiding false positives on non-published modules (#204)
 - Unbound variable errors in bash associative arrays fixed with `${var:-}` pattern (#204)
+- `verify-changelog` `git fetch` failure now exits cleanly with a warning instead of producing a false positive
+- `verify-changelog` no longer runs on `main` branch, preventing a dependency chain that would block `lint` and all downstream jobs on `main`
 
 ## [0.2.1] - 2026-04-24
 
