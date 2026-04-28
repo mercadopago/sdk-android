@@ -22,6 +22,7 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingClear
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
@@ -61,11 +62,6 @@ internal class CardPaymentViewModel(
         stateFactory = stateFactory,
         analyticsTracker = analyticsTracker,
     )
-
-    enum class CancelReason(val analyticsValue: String) {
-        SystemBack("user_tapped_back_button"),
-        UiButton("user_tapped_ui_back_button"),
-    }
 
     fun onCardNumberEvent(
         event: CardNumberTextFieldEvent,
