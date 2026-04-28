@@ -22,6 +22,7 @@ internal data class MPInputColorDefaults(
     val textSecondary: Color,
     val textDisabled: Color,
     val textError: Color,
+    val iconSecondary: Color,
 )
 
 internal data class MPInputSpacingDefaults(
@@ -49,6 +50,7 @@ internal fun getMPInputDefaults(): MPInputDefaults {
             textSecondary = MercadoPagoTheme.color.text.secondary,
             textDisabled = MercadoPagoTheme.color.text.disabled,
             textError = MercadoPagoTheme.color.feedback.negative.textLoud,
+            iconSecondary = MercadoPagoTheme.color.icon.secondary,
         ),
         spacing = MPInputSpacingDefaults(
             labelPadding = MercadoPagoTheme.spacing.paddings.pico,

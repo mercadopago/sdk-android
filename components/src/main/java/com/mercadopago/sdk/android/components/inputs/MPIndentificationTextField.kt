@@ -150,7 +150,7 @@ internal fun MPIdentificationTypeSelector(
             Icon(
                 imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                 contentDescription = null,
-                tint = defaults.colors.textSecondary,
+                tint = defaults.colors.iconSecondary,
                 modifier = Modifier.size(20.dp),
             )
         }
