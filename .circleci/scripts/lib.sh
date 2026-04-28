@@ -17,7 +17,7 @@ config_to_module() {
 }
 
 project_ref_to_module() {
-  echo "$1" | sed 's/\([A-Z]\)/-\L\1/g'
+  echo "$1" | sed 's/[A-Z]/-&/g' | tr '[:upper:]' '[:lower:]'
 }
 
 artifact_exists() {
@@ -27,8 +27,10 @@ artifact_exists() {
 # Returns space-separated list of published modules derived from BOM constraints,
 # with sdk-android-bom appended last.
 bom_published_modules() {
+  local root
+  root="$(git rev-parse --show-toplevel)"
   local modules=""
-  for ref in $(grep -oP '(?<=api\(projects\.)[a-zA-Z]+' sdk-android-bom/build.gradle.kts 2>/dev/null | sort -u); do
+  for ref in $(grep -oP '(?<=api\(projects\.)[a-zA-Z]+' "$root/sdk-android-bom/build.gradle.kts" | awk '!seen[$0]++'); do
     local mod
     mod=$(project_ref_to_module "$ref")
     [ -n "$mod" ] && modules="$modules $mod"
