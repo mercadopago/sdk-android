@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -77,7 +78,7 @@ internal fun CardPaymentScreen(
     }
 
     BackHandler {
-        viewModel.onBackPressed(CardPaymentViewModel.CancelReason.SystemBack)
+        viewModel.onBackPressed(CancelReason.SystemBack)
     }
 
     CardPaymentScreenContent(
@@ -92,7 +93,7 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackPressed = { viewModel.onBackPressed(CardPaymentViewModel.CancelReason.UiButton) },
+        onBackPressed = { viewModel.onBackPressed(CancelReason.UiButton) },
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
