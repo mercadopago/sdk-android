@@ -53,7 +53,7 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
-    resource_class: xlarge
+    resource_class: large
     steps:
       - setup-android
       - restore_cache:
@@ -134,31 +134,6 @@ jobs:
           paths:
             - htmlMultiModule
 
-  build:
-    circleci_ip_ranges: true
-    docker:
-      - image: cimg/openjdk:17.0.13
-    working_directory: ~/repo
-    resource_class: xlarge
-    steps:
-      - setup-android
-      - restore_cache:
-          keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
-      - run:
-          name: Build the app
-          command: ./gradlew assembleDebug --parallel --stacktrace
-      - run:
-          name: Archive APK and AAR
-          command: |
-            mkdir -p ~/circleci-artifacts/builds
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/ || true
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/ || true
-      - store_artifacts:
-          path: ~/circleci-artifacts
-          destination: artifacts
-
   documentation-deploy:
     docker:
       - image: cimg/node:16.17
@@ -230,9 +205,13 @@ jobs:
       - run:
           name: Collect AARs
           command: |
+            source .circleci/scripts/lib.sh
             mkdir -p ~/artifacts/aars/release ~/artifacts/aars/debug
-            find . -path "*/build/outputs/aar/*-release.aar" -exec cp {} ~/artifacts/aars/release/ \;
-            find . -path "*/build/outputs/aar/*-debug.aar" -exec cp {} ~/artifacts/aars/debug/ \;
+            for module in $(bom_published_modules); do
+              [ "$module" = "sdk-android-bom" ] && continue
+              find . -path "*/build/outputs/aar/${module}-release.aar" -exec cp {} ~/artifacts/aars/release/ \; 2>/dev/null || true
+              find . -path "*/build/outputs/aar/${module}-debug.aar" -exec cp {} ~/artifacts/aars/debug/ \; 2>/dev/null || true
+            done
       - persist_to_workspace:
           root: ~/artifacts
           paths:
@@ -285,16 +264,12 @@ workflows:
             branches:
               ignore: main
       - lint
-      - test-coverage
-      - documentation-write:
+      - test-coverage:
           requires:
             - lint
-            - test-coverage
-      - build:
-          requires:
-            - lint
-            - test-coverage
       - verify-version-consistency:
+          requires:
+            - test-coverage
           filters:
             branches:
               only:
@@ -302,7 +277,6 @@ workflows:
                 - /release\/.*/
       - build-artifacts:
           requires:
-            - lint
             - test-coverage
       - verify-artifacts:
           requires:
@@ -314,10 +288,15 @@ workflows:
           filters:
             branches:
               only: main
+      - documentation-write:
+          requires:
+            - publish-maven
+          filters:
+            branches:
+              only: main
       - documentation-deploy:
           requires:
             - documentation-write
-            - publish-maven
           filters:
             branches:
               only: main
