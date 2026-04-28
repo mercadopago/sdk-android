@@ -11,6 +11,7 @@ import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 
 internal class CardFormAnalyticsTracker(
     private val isCancelling: () -> Boolean,
@@ -68,7 +69,7 @@ internal class CardFormAnalyticsTracker(
     }
 
     fun trackUserCanceled(
-        reason: CardPaymentViewModel.CancelReason,
+        reason: CancelReason,
     ) {
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormUserCanceledError(errorType = reason.analyticsValue),
