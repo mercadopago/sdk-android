@@ -69,10 +69,7 @@ fun MPHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = MercadoPagoTheme.color.background.primary)
-                .padding(
-                    horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                    vertical = MercadoPagoTheme.spacing.paddings.micro,
-                ),
+                .padding(MercadoPagoTheme.spacing.paddings.xtiny),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -80,11 +77,7 @@ fun MPHeader(
             MPHeaderCollapsedTitle(title = title, progress = progress)
         }
 
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(bottom = MercadoPagoTheme.spacing.paddings.xsmall),
-        ) {
+        Column(modifier = Modifier.verticalScroll(scrollState)) {
             MPHeaderExpandedTitle(
                 title = title,
                 subtitle = subtitle,
@@ -104,10 +97,7 @@ private fun MPHeaderExpandedTitle(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                vertical = MercadoPagoTheme.spacing.paddings.xmicro,
-            )
+            .padding(MercadoPagoTheme.spacing.paddings.xtiny)
             .onGloballyPositioned { coordinates ->
                 onHeightMeasured(coordinates.size.height.toFloat())
             },
