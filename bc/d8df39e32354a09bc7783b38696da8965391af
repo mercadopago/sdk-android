@@ -1,0 +1,25 @@
+components/src/main/java/com/mercadopago/sdk/android/components/inputs/MPIndentificationTextField.kt
+  921d249d915d71fd 7,108-109
+components/src/main/java/com/mercadopago/sdk/android/components/inputs/MPInput.kt
+  921d249d915d71fd 42,87,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "bcd8df39e32354a09bc7783b38696da8965391af",
+  "prompts": {
+    "921d249d915d71fd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9abcc4e-3dfc-4823-bcad-1c01a43d5e60",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 7,
+      "total_deletions": 6,
+      "accepted_lines": 6,
+      "overriden_lines": 1
+    }
+  }
+}
