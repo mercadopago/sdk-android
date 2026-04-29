@@ -180,7 +180,7 @@ internal val BodyMediumDefault = TextStyle(
     fontFamily = InterFontFamily,
     fontWeight = FontWeight.W400,
     fontSize = 14.sp,
-    lineHeight = 20.sp,
+    lineHeight = 18.sp,
     letterSpacing = 0.sp,
 )
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -283,7 +282,6 @@ internal fun CardPaymentScreenContent(
                 Surface(
                     shadowElevation = 8.dp,
                     tonalElevation = 0.dp,
-                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                 ) {
                     MPFixedFooter(
                         title = viewState.fixedFooterState.title,

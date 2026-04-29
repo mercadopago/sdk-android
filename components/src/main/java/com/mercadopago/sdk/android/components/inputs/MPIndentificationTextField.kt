@@ -4,15 +4,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -101,8 +105,8 @@ fun MPIdentificationTextField(
                         },
                         defaults = defaults,
                     )
-                    VerticalDivider(modifier = Modifier.height(40.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
+                    VerticalDivider(modifier = Modifier.fillMaxHeight())
+                    Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
                     Box(modifier = Modifier.weight(1f)) {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
@@ -143,7 +147,12 @@ internal fun MPIdentificationTypeSelector(
                 color = defaults.colors.textSecondary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = defaults.colors.iconSecondary,
+                modifier = Modifier.size(20.dp),
+            )
         }
         ExposedDropdownMenu(
             expanded = expanded,
