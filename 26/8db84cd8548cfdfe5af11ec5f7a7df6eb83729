@@ -1,0 +1,23 @@
+foundation/src/main/java/com/mercadopago/sdk/android/foundation/typography/Typography.kt
+  b5fe66bcc67d6cdc 183
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "268db84cd8548cfdfe5af11ec5f7a7df6eb83729",
+  "prompts": {
+    "b5fe66bcc67d6cdc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4a1b8b1b-421b-4a66-b357-a3495f6b8089",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 5101,
+      "total_deletions": 2,
+      "accepted_lines": 5099,
+      "overriden_lines": 1
+    }
+  }
+}
