@@ -39,7 +39,7 @@ internal fun MPInputDecorationBox(
                 enabled = enabled,
                 defaults = defaults,
             )
-            .height(MercadoPagoTheme.spacing.paddings.xlarge)
+            .height(MercadoPagoTheme.spacing.paddings.large)
             .padding(horizontal = defaults.spacing.horizontalPadding),
     ) {
         content()
@@ -84,7 +84,7 @@ internal fun MPInputBody(
         content()
         when {
             error.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
                 MPInputMessage(
                     text = error,
                     state = InputLabelState.Error,
@@ -93,7 +93,7 @@ internal fun MPInputBody(
             }
 
             helper.isNotEmpty() -> {
-                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.nano))
+                Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
                 MPInputMessage(
                     text = helper,
                     state = state,
