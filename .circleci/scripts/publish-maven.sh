@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
+source "$SCRIPT_DIR/lib.sh"
+
 ORG_GRADLE_PROJECT_sdkAndroidUsername=$(echo "$ORG_GRADLE_PROJECT_sdkAndroidUsername" | base64 --decode)
 ORG_GRADLE_PROJECT_sdkAndroidPassword=$(echo "$ORG_GRADLE_PROJECT_sdkAndroidPassword" | base64 --decode)
 export ORG_GRADLE_PROJECT_sdkAndroidUsername
 export ORG_GRADLE_PROJECT_sdkAndroidPassword
 
-MAVEN_BASE="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk"
-MODULES=("core" "analytics" "sdk-android" "core-methods" "sdk-android-bom" "mp-extended")
+readarray -t MODULES <<< "$(bom_published_modules | tr ' ' '\n' | grep -v '^$')"
 
 any_published=0
 for MODULE in "${MODULES[@]}"; do
   VERSION=$(./gradlew -q ":$MODULE:properties" | grep "^version:" | awk '{print $2}')
-  ARTIFACT_URL="$MAVEN_BASE/$MODULE/$VERSION/"
-  if curl -sfI "$ARTIFACT_URL" > /dev/null; then
+  if artifact_exists "$MODULE" "$VERSION"; then
     echo "Module $MODULE: version $VERSION already exists, skipping publish for this module."
   else
     echo "Publishing $MODULE:$VERSION ..."

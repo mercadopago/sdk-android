@@ -6,34 +6,28 @@ orbs:
 commands:
   setup-android:
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - run:
           name: Set Secrets File
           command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - restore_cache:
+          keys:
+            - v1-android-sdk-11076708
       - run:
-          name: Download Platform Tools
+          name: Download Android SDK
           command: |
-            cd ..
-            mkdir android-sdk
-            cd android-sdk
-            wget -q https://dl.google.com/android/repository/platform-tools-latest-linux.zip
-            unzip -q platform-tools-latest-linux.zip
-      - run:
-          name: Download Commandline Tools
-          command: |
-            cd ..
-            cd android-sdk
-            mkdir cmdline-tools
-            cd cmdline-tools
-            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-            unzip -q commandlinetools-linux-11076708_latest.zip
-            mv cmdline-tools latest
+            if [ ! -d "$HOME/android-sdk/cmdline-tools/latest" ]; then
+              mkdir -p "$HOME/android-sdk/cmdline-tools"
+              wget -q -P "$HOME/android-sdk" https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+              unzip -q "$HOME/android-sdk/platform-tools-latest-linux.zip" -d "$HOME/android-sdk"
+              wget -q -P "$HOME/android-sdk/cmdline-tools" https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+              unzip -q "$HOME/android-sdk/cmdline-tools/commandlinetools-linux-11076708_latest.zip" -d "$HOME/android-sdk/cmdline-tools"
+              mv "$HOME/android-sdk/cmdline-tools/cmdline-tools" "$HOME/android-sdk/cmdline-tools/latest"
+            fi
+      - save_cache:
+          key: v1-android-sdk-11076708
+          paths:
+            - ~/android-sdk
       - run:
           name: Set up Android Home
           command: |
@@ -48,7 +42,31 @@ commands:
             yes | sdkmanager --update || exit 0
 
 jobs:
-  build-test:
+  lint:
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: large
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run KtLint Check
+          command: ./gradlew ktlintCheck
+      - save_cache:
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          when: always
+
+  test-coverage:
     circleci_ip_ranges: true
     docker:
       - image: cimg/openjdk:17.0.13
@@ -56,34 +74,13 @@ jobs:
     resource_class: xlarge
     steps:
       - setup-android
-
-      # SETUP STEP
-      - run:
-          name: Check Java Version
-          command: java -version
       - restore_cache:
           keys:
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
-          name: Install Dependencies
-          command: ./gradlew dependencies
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-
-      # TEST STEP
-      - run:
           name: Clean Test Cache
           command: ./gradlew cleanTest
-      - run:
-          name: Run Detekt
-          command: ./gradlew detekt
-      - run:
-          name: Run KLint Check
-          command: ./gradlew ktlintCheck
       - run:
           name: Run Code Coverage
           command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
@@ -105,41 +102,31 @@ jobs:
           name: Archive Reports
           command: .circleci/scripts/archive-reports.sh
 
-      # DOCUMENTATION STEP
+  documentation-write:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Update Dokka Documentation
           command: ./gradlew dokkaHtmlMultiModule
-
       - persist_to_workspace:
           root: build/dokka/
           paths:
             - htmlMultiModule
 
-      # BUILD STEP
-      - run:
-          name: Build the app
-          command: ./gradlew assembleDebug --parallel --stacktrace
-      - run:
-          name: Archive APK and AAR
-          command: |
-            mkdir -p ~/circleci-artifacts/builds
-            cp example/build/outputs/apk/debug/example-debug.apk ~/circleci-artifacts/builds/ || true
-            cp core-methods/build/outputs/aar/core-methods-debug.aar ~/circleci-artifacts/builds/ || true
-      - store_artifacts:
-          path: ~/circleci-artifacts
-          destination: artifacts
-
-  docs-deploy:
+  documentation-deploy:
     docker:
       - image: cimg/node:16.17
     working_directory: ~/repo
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - attach_workspace:
           at: build/dokka/
@@ -156,21 +143,67 @@ jobs:
           name: Deploy documentation to GitHub Pages
           command: .circleci/scripts/deploy-docs.sh
 
-  check-version-consistency:
+  verify-changelog:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Check CHANGELOG.md update
+          command: .circleci/scripts/check-changelog.sh
+
+  verify-version-consistency:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
     steps:
-      - run:
-          name: Install Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install --skip-smudge
       - checkout
       - run:
           name: Check version consistency
           command: .circleci/scripts/check-version-consistency.sh
+
+  build-artifacts:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Build Debug and Release AARs
+          command: ./gradlew assembleDebug assembleRelease --parallel
+      - run:
+          name: Collect AARs
+          command: |
+            source .circleci/scripts/lib.sh
+            mkdir -p ~/artifacts/aars/release ~/artifacts/aars/debug
+            for module in $(bom_published_modules); do
+              [ "$module" = "sdk-android-bom" ] && continue
+              find . -path "*/build/outputs/aar/${module}-release.aar" -exec cp {} ~/artifacts/aars/release/ \; 2>/dev/null || true
+              find . -path "*/build/outputs/aar/${module}-debug.aar" -exec cp {} ~/artifacts/aars/debug/ \; 2>/dev/null || true
+            done
+      - persist_to_workspace:
+          root: ~/artifacts
+          paths:
+            - aars
+
+  verify-artifacts:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/artifacts
+      - run:
+          name: Verify AAR Contents
+          command: .circleci/scripts/verify-artifacts.sh ~/artifacts/aars/release ~/artifacts/aars/debug
 
   publish-maven:
     circleci_ip_ranges: true
@@ -202,24 +235,44 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-test
-      - check-version-consistency:
+      - verify-changelog:
+          filters:
+            branches:
+              ignore: main
+      - lint
+      - test-coverage:
           requires:
-            - build-test
+            - lint
+      - verify-version-consistency:
+          requires:
+            - test-coverage
           filters:
             branches:
               only:
                 - main
                 - /release\/.*/
-      - docs-deploy:
+      - build-artifacts:
           requires:
-            - build-test
+            - test-coverage
+      - verify-artifacts:
+          requires:
+            - build-artifacts
+      - publish-maven:
+          requires:
+            - verify-artifacts
+            - verify-version-consistency
           filters:
             branches:
               only: main
-      - publish-maven:
+      - documentation-write:
           requires:
-            - build-test
+            - publish-maven
+          filters:
+            branches:
+              only: main
+      - documentation-deploy:
+          requires:
+            - documentation-write
           filters:
             branches:
               only: main

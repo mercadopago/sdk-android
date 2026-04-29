@@ -1,49 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
+source "$SCRIPT_DIR/lib.sh"
+
 BUILDSCR="buildSrc/src/main/kotlin/com/mercadopago/sdk/android"
-MAVEN_BASE="https://artifacts.mercadolibre.com/service/rest/repository/browse/android-releases/com/mercadopago/android/sdk"
-
-config_to_module() {
-  case "$1" in
-    CoreSDKConfig.kt)        echo "core" ;;
-    AnalyticsSDKConfig.kt)   echo "analytics" ;;
-    MercadoPagoSDKConfig.kt) echo "sdk-android" ;;
-    CoreMethodsSDKConfig.kt) echo "core-methods" ;;
-    FoundationSDKConfig.kt)  echo "foundation" ;;
-    ComponentsSDKConfig.kt)  echo "components" ;;
-    CheckoutSDKConfig.kt)    echo "checkout" ;;
-    MPExtendedSDKConfig.kt)  echo "mp-extended" ;;
-    BomConfig.kt)            echo "sdk-android-bom" ;;
-  esac
-}
-
-project_ref_to_module() {
-  case "$1" in
-    core)        echo "core" ;;
-    analytics)   echo "analytics" ;;
-    sdkAndroid)  echo "sdk-android" ;;
-    coreMethods) echo "core-methods" ;;
-    foundation)  echo "foundation" ;;
-    components)  echo "components" ;;
-    checkout)    echo "checkout" ;;
-    mpExtended)  echo "mp-extended" ;;
-  esac
-}
 
 module_version() {
   grep -oP '(?<=VERSION_NAME = ")[^"]+' "$BUILDSCR/${1}" 2>/dev/null
 }
 
-artifact_exists() {
-  curl -sfI "$MAVEN_BASE/$1/$2/" > /dev/null 2>&1
-}
+PUBLISHED_MODULES=$(bom_published_modules)
 
 CHANGED_MODULES=""
 for config in CoreSDKConfig.kt AnalyticsSDKConfig.kt MercadoPagoSDKConfig.kt \
               CoreMethodsSDKConfig.kt FoundationSDKConfig.kt ComponentsSDKConfig.kt \
               CheckoutSDKConfig.kt MPExtendedSDKConfig.kt BomConfig.kt; do
   module=$(config_to_module "$config")
+  echo "$PUBLISHED_MODULES" | grep -qw "$module" || continue
   version=$(module_version "$config")
   if git diff HEAD~1 HEAD -- "$BUILDSCR/$config" 2>/dev/null | grep -q '^\+.*VERSION_NAME'; then
     echo "  → $module: VERSION_NAME bumped in diff"
@@ -67,13 +42,13 @@ for kts in */build.gradle.kts; do
   [[ "$MODULE" == "example" || "$MODULE" == "showkase" ]] && continue
   for ref in $(grep -oP '(?<=projects\.)[a-zA-Z]+' "$kts" 2>/dev/null); do
     dep=$(project_ref_to_module "$ref")
-    [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]} $MODULE"
+    [ -n "$dep" ] && DEPENDENTS["$dep"]="${DEPENDENTS[$dep]:-} $MODULE"
   done
 done
 
 ERRORS=""
 for changed in $CHANGED_MODULES; do
-  for dependent in ${DEPENDENTS[$changed]}; do
+  for dependent in ${DEPENDENTS[$changed]:-}; do
     if ! echo "$CHANGED_MODULES" | grep -qw "$dependent"; then
       ERRORS="$ERRORS\n  ✗ '$dependent' depends on '$changed' but VERSION_NAME was not bumped"
     fi
