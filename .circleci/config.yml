@@ -169,6 +169,8 @@ jobs:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
     resource_class: xlarge
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError"
     steps:
       - setup-android
       - restore_cache:
@@ -178,6 +180,7 @@ jobs:
       - run:
           name: Build Debug and Release AARs
           command: ./gradlew assembleDebug assembleRelease --parallel
+          no_output_timeout: 20m
       - run:
           name: Collect AARs
           command: |
