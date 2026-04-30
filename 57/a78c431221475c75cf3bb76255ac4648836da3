@@ -1,0 +1,63 @@
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/MercadoPagoSDKConfig.kt
+  37ad9c9ae0451165 23
+.circleci/config.yml
+  89330e9b7050655d 174-175,185
+  37ad9c9ae0451165 119-121,125,137
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/ui/components/textfield/securitycode/SecurityCodeField.kt
+  37ad9c9ae0451165 89-91
+sdk-android/module.md
+  37ad9c9ae0451165 1-36
+buildSrc/src/main/kotlin/mp.android.dokka.gradle.kts
+  37ad9c9ae0451165 1-48
+core-methods/build.gradle.kts
+  37ad9c9ae0451165 11
+sdk-android/src/main/java/com/mercadopago/sdk/android/initializer/MercadoPagoSDK.kt
+  37ad9c9ae0451165 69-70,132-133
+.circleci/scripts/deploy-docs.sh
+  37ad9c9ae0451165 6-7
+core-methods/module.md
+  37ad9c9ae0451165 1-40
+sdk-android/src/main/java/com/mercadopago/sdk/android/initializer/samples/MercadoPagoSDKSamples.kt
+  37ad9c9ae0451165 1-30
+build.gradle.kts
+  37ad9c9ae0451165 11-13,80-95
+buildSrc/build.gradle.kts
+  37ad9c9ae0451165 7-12
+gradle/libs.versions.toml
+  37ad9c9ae0451165 48,123-125
+sdk-android/build.gradle.kts
+  37ad9c9ae0451165 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "57a78c431221475c75cf3bb76255ac4648836da3",
+  "prompts": {
+    "37ad9c9ae0451165": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ca47855c-efb1-416a-9cbe-072c99b3d222",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 394,
+      "total_deletions": 231,
+      "accepted_lines": 207,
+      "overriden_lines": 0
+    },
+    "89330e9b7050655d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e2f5c398-a02c-4d24-8e8d-86214b437d82",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 1,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
