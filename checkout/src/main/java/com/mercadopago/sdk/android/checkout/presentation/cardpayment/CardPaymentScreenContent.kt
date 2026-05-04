@@ -224,7 +224,7 @@ internal fun CardPaymentScreenContent(
                                 if (viewState.showTooltip) {
                                     MPTooltip(
                                         modifier = Modifier
-                                            .fillMaxWidth()
+                                            .align(Alignment.TopCenter)
                                             .layout { measurable, constraints ->
                                                 val placeable = measurable.measure(constraints)
                                                 layout(placeable.width, 0) {

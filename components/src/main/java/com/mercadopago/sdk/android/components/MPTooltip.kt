@@ -3,11 +3,13 @@ package com.mercadopago.sdk.android.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
@@ -23,18 +25,22 @@ private const val TOOLTIP_GROUP = "Tooltip"
  *
  * @param text the contextual label to display
  * @param modifier component modifier
+ * @param maxWidth maximum width constraint; defaults to 280.dp
  */
 @Composable
 fun MPTooltip(
     text: String,
     modifier: Modifier = Modifier,
+    maxWidth: Dp = 280.dp,
 ) {
     val shape = MercadoPagoTheme.shape.tiny
     MPText(
         text = text,
         style = MercadoPagoTheme.typography.body.default.small,
         color = MercadoPagoTheme.color.text.inverse,
-        modifier = modifier
+        modifier = Modifier
+            .widthIn(max = maxWidth)
+            .then(modifier)
             .shadow(elevation = 2.dp, shape = shape)
             .background(
                 color = MercadoPagoTheme.color.fill.inverse,
