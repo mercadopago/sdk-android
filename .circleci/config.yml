@@ -54,6 +54,9 @@ jobs:
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
+          name: Download Dependencies
+          command: ./gradlew dependencies --no-build-cache
+      - run:
           name: Run Detekt
           command: ./gradlew detekt
       - run:
