@@ -3,17 +3,16 @@ package com.mercadopago.sdk.android.checkout.data.repository
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.data.remote.request.CardBinRequest
-import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
-import com.mercadopago.sdk.android.checkout.domain.exception.mapToCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.extensions.joinOrNull
 import com.mercadopago.sdk.android.checkout.domain.extensions.map
 import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.checkout.domain.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class CardFormRepositoryImpl(
@@ -21,18 +20,17 @@ internal class CardFormRepositoryImpl(
 ) : CardFormRepository {
     override suspend fun fetchInitialization(
         params: InitializeCardFormParams,
-    ): Result<CardFormInitializationOutput, MercadoPagoCheckoutError> =
+    ): Result<CardFormInitializationOutput, ResultError> =
         withErrorHandling {
             dataSource.fetchInitialization(
                 amount = params.amount,
                 checkoutType = params.checkoutType,
             )
         }.map { it.toDomain() }
-            .mapToCheckoutError(ErrorLocalized.CARD_FORM_INITIALIZATION)
 
     override suspend fun getCardBin(
         params: GetCardBinParams,
-    ): Result<CardBinData, MercadoPagoCheckoutError> =
+    ): Result<CardBinData, ResultError> =
         withErrorHandling {
             dataSource.getCardBin(
                 CardBinRequest(
@@ -40,14 +38,9 @@ internal class CardFormRepositoryImpl(
                     amount = params.amount,
                     checkoutType = params.checkoutType,
                     processingMode = params.processingMode,
-                    allowCardTypes = params.filter.cardTypes
-                        .joinToString(",") { it.value }
-                        .takeIf { it.isNotEmpty() },
-                    allowCardBrands = params.filter.cardBrands
-                        .joinToString(",") { it.name }
-                        .takeIf { it.isNotEmpty() },
+                    allowCardTypes = params.filter.cardTypes.joinOrNull { it.value },
+                    allowCardBrands = params.filter.cardBrands.joinOrNull { it.name },
                 ),
             )
-        }.mapToCheckoutError(ErrorLocalized.CARD_BIN)
-            .map { it.toDomain() }
+        }.map { it.toDomain() }
 }

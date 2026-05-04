@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
@@ -77,9 +78,6 @@ internal class CardPaymentViewModel(
                 if (!event.isFocused) {
                     analyticsTracker.trackInputValidation("card_number", isValid)
                     _viewState.value = errorHandler.applyCardNumberFieldError(_viewState.value)
-                    if (_viewState.value.messageError.description.isNotEmpty()) {
-                        _viewState.value = _viewState.value.copy(showMessage = true)
-                    }
                 }
             }
 
@@ -105,11 +103,6 @@ internal class CardPaymentViewModel(
             }
 
             is CardNumberTextFieldEvent.IsValid -> {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        isValid = event.isValid,
-                    ),
-                )
                 _viewState.value = errorHandler.applyLuhnValidation(_viewState.value, event.isValid)
             }
 
@@ -282,7 +275,6 @@ internal class CardPaymentViewModel(
                 }
             }
 
-            // TechDebt - Atualizar com valores do BFF
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 analyticsTracker.trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
@@ -394,7 +386,9 @@ internal class CardPaymentViewModel(
                     onSuccess = { data ->
                         _viewState.value = _viewState.value.applyCardBinData(data)
                     },
-                    onError = { },
+                    onError = { error ->
+                        Log.i("test", error.toString())
+                    },
                 )
             }
         }
