@@ -43,7 +43,7 @@ private const val MP_BOTTOM_SHEET_GROUP = "MPBottomSheet"
  *
  * @param title Header title text
  * @param items Ordered list of document type options
- * @param selectedItemId [MPDocumentTypeItem.id] of the currently selected item, or null
+ * @param selectedItemId [MPBottomSheetListItem.id] of the currently selected item, or null
  * @param onItemSelected Callback invoked when the user selects an item
  * @param onDismiss Callback invoked when the user taps the dismiss (X) button
  * @param modifier Component modifier
@@ -51,9 +51,9 @@ private const val MP_BOTTOM_SHEET_GROUP = "MPBottomSheet"
 @Composable
 fun MPBottomSheet(
     title: String,
-    items: List<MPDocumentTypeItem>,
+    items: List<MPBottomSheetListItem>,
     selectedItemId: String?,
-    onItemSelected: (MPDocumentTypeItem) -> Unit,
+    onItemSelected: (MPBottomSheetListItem) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -69,7 +69,7 @@ fun MPBottomSheet(
     ) {
         MPBottomSheetDragIndicator()
         MPBottomSheetHeader(title = title, onDismiss = onDismiss)
-        MPBottomSheetDocumentList(
+        MPBottomSheetList(
             items = items,
             selectedItemId = selectedItemId,
             onItemSelected = onItemSelected,
@@ -83,7 +83,7 @@ fun MPBottomSheet(
  * @param id Unique identifier; drives selection state
  * @param label Display text shown in the list row
  */
-data class MPDocumentTypeItem(
+data class MPBottomSheetListItem(
     val id: String,
     val label: String,
 )
@@ -158,10 +158,10 @@ private fun MPBottomSheetHeader(
 }
 
 @Composable
-private fun MPBottomSheetDocumentList(
-    items: List<MPDocumentTypeItem>,
+private fun MPBottomSheetList(
+    items: List<MPBottomSheetListItem>,
     selectedItemId: String?,
-    onItemSelected: (MPDocumentTypeItem) -> Unit,
+    onItemSelected: (MPBottomSheetListItem) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -170,7 +170,7 @@ private fun MPBottomSheetDocumentList(
         verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.gap.xmicro),
     ) {
         items.forEach { item ->
-            MPBottomSheetDocumentRow(
+            MPBottomSheetRow(
                 item = item,
                 selected = item.id == selectedItemId,
                 onItemSelected = onItemSelected,
@@ -180,10 +180,10 @@ private fun MPBottomSheetDocumentList(
 }
 
 @Composable
-private fun MPBottomSheetDocumentRow(
-    item: MPDocumentTypeItem,
+private fun MPBottomSheetRow(
+    item: MPBottomSheetListItem,
     selected: Boolean,
-    onItemSelected: (MPDocumentTypeItem) -> Unit,
+    onItemSelected: (MPBottomSheetListItem) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -244,9 +244,9 @@ internal fun MPBottomSheetCpfSelectedPreview() {
             MPBottomSheet(
                 title = "Documento do titular",
                 items = listOf(
-                    MPDocumentTypeItem(id = "CPF", label = "CPF"),
-                    MPDocumentTypeItem(id = "CNPJ", label = "CNPJ"),
-                    MPDocumentTypeItem(id = "OTRO", label = "Otro"),
+                    MPBottomSheetListItem(id = "CPF", label = "CPF"),
+                    MPBottomSheetListItem(id = "CNPJ", label = "CNPJ"),
+                    MPBottomSheetListItem(id = "OTRO", label = "Otro"),
                 ),
                 selectedItemId = "CPF",
                 onItemSelected = {},
@@ -268,9 +268,9 @@ internal fun MPBottomSheetNoSelectionPreview() {
             MPBottomSheet(
                 title = "Documento do titular",
                 items = listOf(
-                    MPDocumentTypeItem(id = "CPF", label = "CPF"),
-                    MPDocumentTypeItem(id = "CNPJ", label = "CNPJ"),
-                    MPDocumentTypeItem(id = "OTRO", label = "Otro"),
+                    MPBottomSheetListItem(id = "CPF", label = "CPF"),
+                    MPBottomSheetListItem(id = "CNPJ", label = "CNPJ"),
+                    MPBottomSheetListItem(id = "OTRO", label = "Otro"),
                 ),
                 selectedItemId = null,
                 onItemSelected = {},
