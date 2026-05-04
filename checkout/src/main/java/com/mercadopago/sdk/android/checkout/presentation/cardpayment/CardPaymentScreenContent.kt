@@ -40,8 +40,8 @@ import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
-import com.mercadopago.sdk.android.components.MPPopover
 import com.mercadopago.sdk.android.components.MPProgressIndicator
+import com.mercadopago.sdk.android.components.MPTooltip
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -222,7 +222,7 @@ internal fun CardPaymentScreenContent(
                                     onEvent = onSecurityCodeEvent,
                                 )
                                 if (viewState.showTooltip) {
-                                    MPPopover(
+                                    MPTooltip(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .layout { measurable, constraints ->
@@ -231,8 +231,7 @@ internal fun CardPaymentScreenContent(
                                                     placeable.placeRelative(0, -placeable.height)
                                                 }
                                             },
-                                        description = viewState.secureCodeState.messageTooltip,
-                                        onDismiss = onTooltipClick,
+                                        text = viewState.secureCodeState.messageTooltip,
                                     )
                                 }
                             }
