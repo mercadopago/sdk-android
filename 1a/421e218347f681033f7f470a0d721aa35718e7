@@ -1,0 +1,23 @@
+.circleci/config.yml
+  ccc90854a1fc95eb 57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "1a421e218347f681033f7f470a0d721aa35718e7",
+  "prompts": {
+    "ccc90854a1fc95eb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5a170118-abd7-4d8c-928c-0a0428d668e4",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 13,
+      "total_deletions": 2,
+      "accepted_lines": 3,
+      "overriden_lines": 2
+    }
+  }
+}
