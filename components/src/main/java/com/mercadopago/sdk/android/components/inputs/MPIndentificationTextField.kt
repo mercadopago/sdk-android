@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.components.inputs
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,6 +59,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
+ * @param onTypeClick Optional callback invoked when the user taps the type selector. When provided,
+ * opens an external picker (e.g. [MPBottomSheet]) instead of the inline dropdown.
  * @param onEvent Callback invoked when identification field events occur (value changes, focus, type selection).
  */
 @Composable
@@ -73,6 +76,7 @@ fun MPIdentificationTextField(
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
+    onTypeClick: (() -> Unit)? = null,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
     val defaults = getMPInputDefaults()
@@ -97,14 +101,23 @@ fun MPIdentificationTextField(
                     error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
-                    MPIdentificationTypeSelector(
-                        identificationTypes = identificationTypes,
-                        selectedIdentificationType = selectedIdentificationType,
-                        onTypeSelected = { identificationType ->
-                            onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
-                        },
-                        defaults = defaults,
-                    )
+                    if (onTypeClick != null) {
+                        MPIdentificationTypeSelectorButton(
+                            selectedIdentificationType = selectedIdentificationType,
+                            onClick = onTypeClick,
+                            defaults = defaults,
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        MPIdentificationTypeSelector(
+                            identificationTypes = identificationTypes,
+                            selectedIdentificationType = selectedIdentificationType,
+                            onTypeSelected = { identificationType ->
+                                onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
+                            },
+                            defaults = defaults,
+                        )
+                    }
                     VerticalDivider(modifier = Modifier.fillMaxHeight())
                     Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
                     Box(modifier = Modifier.weight(1f)) {
@@ -124,6 +137,10 @@ fun MPIdentificationTextField(
     }
 }
 
+@Deprecated(
+    message = "Use onTypeClick parameter in MPIdentificationTextField with MPBottomSheet to handle type selection",
+    level = DeprecationLevel.WARNING,
+)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MPIdentificationTypeSelector(
@@ -177,6 +194,31 @@ internal fun MPIdentificationTypeSelector(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun MPIdentificationTypeSelectorButton(
+    selectedIdentificationType: IdentificationType?,
+    onClick: () -> Unit,
+    defaults: MPInputDefaults,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable(onClick = onClick),
+    ) {
+        MPText(
+            text = selectedIdentificationType?.name.orEmpty(),
+            style = MercadoPagoTheme.typography.body.default.medium,
+            color = defaults.colors.textSecondary,
+            modifier = Modifier.widthIn(min = 32.dp),
+        )
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowDown,
+            contentDescription = null,
+            tint = defaults.colors.iconSecondary,
+            modifier = Modifier.size(20.dp),
+        )
     }
 }
 

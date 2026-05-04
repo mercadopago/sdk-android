@@ -43,7 +43,7 @@ private const val MP_BOTTOM_SHEET_GROUP = "MPBottomSheet"
  *
  * @param title Header title text
  * @param items Ordered list of document type options
- * @param selectedItemId [MPBottomSheetListItem.id] of the currently selected item, or null
+ * @param selectedLabel [MPBottomSheetListItem.label] of the currently selected item, or null
  * @param onItemSelected Callback invoked when the user selects an item
  * @param onDismiss Callback invoked when the user taps the dismiss (X) button
  * @param modifier Component modifier
@@ -52,7 +52,7 @@ private const val MP_BOTTOM_SHEET_GROUP = "MPBottomSheet"
 fun MPBottomSheet(
     title: String,
     items: List<MPBottomSheetListItem>,
-    selectedItemId: String?,
+    selectedLabel: String?,
     onItemSelected: (MPBottomSheetListItem) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -71,7 +71,7 @@ fun MPBottomSheet(
         MPBottomSheetHeader(title = title, onDismiss = onDismiss)
         MPBottomSheetList(
             items = items,
-            selectedItemId = selectedItemId,
+            selectedLabel = selectedLabel,
             onItemSelected = onItemSelected,
         )
     }
@@ -80,11 +80,9 @@ fun MPBottomSheet(
 /**
  * A document type option for [MPBottomSheet].
  *
- * @param id Unique identifier; drives selection state
- * @param label Display text shown in the list row
+ * @param label Display text shown in the list row; drives selection state
  */
 data class MPBottomSheetListItem(
-    val id: String,
     val label: String,
 )
 
@@ -160,7 +158,7 @@ private fun MPBottomSheetHeader(
 @Composable
 private fun MPBottomSheetList(
     items: List<MPBottomSheetListItem>,
-    selectedItemId: String?,
+    selectedLabel: String?,
     onItemSelected: (MPBottomSheetListItem) -> Unit,
 ) {
     Column(
@@ -172,7 +170,7 @@ private fun MPBottomSheetList(
         items.forEach { item ->
             MPBottomSheetRow(
                 item = item,
-                selected = item.id == selectedItemId,
+                selected = item.label == selectedLabel,
                 onItemSelected = onItemSelected,
             )
         }
@@ -244,11 +242,11 @@ internal fun MPBottomSheetCpfSelectedPreview() {
             MPBottomSheet(
                 title = "Documento do titular",
                 items = listOf(
-                    MPBottomSheetListItem(id = "CPF", label = "CPF"),
-                    MPBottomSheetListItem(id = "CNPJ", label = "CNPJ"),
-                    MPBottomSheetListItem(id = "OTRO", label = "Otro"),
+                    MPBottomSheetListItem(label = "CPF"),
+                    MPBottomSheetListItem(label = "CNPJ"),
+                    MPBottomSheetListItem(label = "Otro"),
                 ),
-                selectedItemId = "CPF",
+                selectedLabel = "CPF",
                 onItemSelected = {},
                 onDismiss = {},
             )
@@ -268,11 +266,11 @@ internal fun MPBottomSheetNoSelectionPreview() {
             MPBottomSheet(
                 title = "Documento do titular",
                 items = listOf(
-                    MPBottomSheetListItem(id = "CPF", label = "CPF"),
-                    MPBottomSheetListItem(id = "CNPJ", label = "CNPJ"),
-                    MPBottomSheetListItem(id = "OTRO", label = "Otro"),
+                    MPBottomSheetListItem(label = "CPF"),
+                    MPBottomSheetListItem(label = "CNPJ"),
+                    MPBottomSheetListItem(label = "Otro"),
                 ),
-                selectedItemId = null,
+                selectedLabel = null,
                 onItemSelected = {},
                 onDismiss = {},
             )

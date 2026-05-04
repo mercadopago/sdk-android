@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,6 +39,8 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.components.MPBottomSheet
+import com.mercadopago.sdk.android.components.MPBottomSheetListItem
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -125,6 +131,7 @@ internal fun CardPaymentScreenContent(
     onMessageClick: () -> Unit = {},
 ) {
     val cardNumberFocusRequester = remember { FocusRequester() }
+    var showIdentificationBottomSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         cardNumberFocusRequester.requestFocus()
@@ -253,6 +260,7 @@ internal fun CardPaymentScreenContent(
                                     label = viewState.identificationTypeState.label,
                                     helper = viewState.identificationTypeState.helper,
                                     placeHolder = viewState.identificationTypeState.placeHolder,
+                                    onTypeClick = { showIdentificationBottomSheet = true },
                                     onEvent = onIdentificationEvent,
                                 )
                             }
@@ -303,6 +311,29 @@ internal fun CardPaymentScreenContent(
             ) {
                 MPProgressIndicator()
             }
+        }
+    }
+
+    if (showIdentificationBottomSheet) {
+        val types = viewState.identificationTypeState.identificationTypes.orEmpty()
+        ModalBottomSheet(
+            onDismissRequest = { showIdentificationBottomSheet = false },
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            containerColor = Color.Transparent,
+            dragHandle = null,
+        ) {
+            MPBottomSheet(
+                title = viewState.identificationTypeState.label,
+                items = types.map { MPBottomSheetListItem(label = it.name.orEmpty()) },
+                selectedLabel = viewState.identificationTypeState.selected?.name,
+                onItemSelected = { item ->
+                    types.find { it.name == item.label }?.let {
+                        onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(it))
+                    }
+                    showIdentificationBottomSheet = false
+                },
+                onDismiss = { showIdentificationBottomSheet = false },
+            )
         }
     }
 }
