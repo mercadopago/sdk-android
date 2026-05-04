@@ -4,16 +4,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -27,7 +30,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextField
@@ -35,6 +37,7 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identific
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * Composable function that displays an identification text field with MercadoPago styling.
@@ -65,19 +68,20 @@ fun MPIdentificationTextField(
     selectedIdentificationType: IdentificationType?,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
+    error: String = "",
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
+        error = error,
+        defaults = defaults,
     ) {
         IdentificationTextField(
             state = state,
@@ -85,12 +89,13 @@ fun MPIdentificationTextField(
             identificationType = selectedIdentificationType,
             onEvent = onEvent,
             enabled = enabled,
-            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
+            cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
+                    defaults = defaults,
                 ) {
                     MPIdentificationTypeSelector(
                         identificationTypes = identificationTypes,
@@ -98,14 +103,16 @@ fun MPIdentificationTextField(
                         onTypeSelected = { identificationType ->
                             onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
                         },
+                        defaults = defaults,
                     )
-                    VerticalDivider(modifier = Modifier.height(40.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
+                    VerticalDivider(modifier = Modifier.fillMaxHeight())
+                    Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
                     Box(modifier = Modifier.weight(1f)) {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoTheme.typography.body.default.medium,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
@@ -117,22 +124,13 @@ fun MPIdentificationTextField(
     }
 }
 
-/**
- * Internal composable that provides a dropdown selector for identification types.
- *
- * This component displays a dropdown menu for selecting identification document types,
- * with the selected type name and a trailing icon indicator.
- *
- * @param identificationTypes List of available identification types.
- * @param selectedIdentificationType The currently selected identification type.
- * @param onTypeSelected Callback invoked when an identification type is selected.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MPIdentificationTypeSelector(
     identificationTypes: List<IdentificationType>,
     selectedIdentificationType: IdentificationType?,
     onTypeSelected: (IdentificationType) -> Unit,
+    defaults: MPInputDefaults,
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(
@@ -145,19 +143,30 @@ internal fun MPIdentificationTypeSelector(
         ) {
             MPText(
                 text = selectedIdentificationType?.name.orEmpty(),
-                textStyle = MPTextStyle.BodyMediumRegular,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = defaults.colors.textSecondary,
                 modifier = Modifier.widthIn(min = 32.dp),
             )
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = defaults.colors.iconSecondary,
+                modifier = Modifier.size(20.dp),
+            )
         }
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            matchTextFieldWidth = false,
+        ) {
             identificationTypes.forEach { identificationType ->
                 DropdownMenuItem(
                     text = {
                         identificationType.name?.let {
                             MPText(
                                 text = it,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoTheme.typography.body.default.medium,
+                                color = defaults.colors.textPrimary,
                             )
                         }
                     },
@@ -174,11 +183,27 @@ internal fun MPIdentificationTypeSelector(
 @Preview(showBackground = true)
 @Composable
 private fun MPIdentificationTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Default,
+    ) {
         val identificationState = rememberPCIFieldState()
         val identificationTypes = listOf(
-            IdentificationType(id = "CPF", name = "CPF", type = "number", minLength = 11, maxLength = 11),
-            IdentificationType(id = "CNPJ", name = "CNPJ", type = "number", minLength = 14, maxLength = 14),
+            IdentificationType(
+                id = "CPF",
+                name = "CPF",
+                type = "number",
+                minLength = 11,
+                maxLength = 11,
+                mask = "###.###.###-##",
+            ),
+            IdentificationType(
+                id = "CNPJ",
+                name = "CNPJ",
+                type = "number",
+                minLength = 14,
+                maxLength = 14,
+                mask = "##.###.###/####-##",
+            ),
         )
         Column(
             modifier = Modifier.padding(10.dp),

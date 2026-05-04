@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * @param publicKey The seller's public key for API authentication
  * @param baseUrl The base URL for the API endpoints
- * @param gson The retrofit gson interpreter
+ * @param gson The base Gson for the retrofit converter factory
  *
  * Example:
  * ```kotlin
@@ -54,11 +54,7 @@ class RetrofitServiceFactory @JvmOverloads constructor(
             }
         }
         OkHttpClient.Builder().apply {
-            addInterceptor(
-                PublicKeyInterceptor {
-                    PublicKeyStore.publicKey ?: publicKey
-                }
-            )
+            addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey ?: publicKey })
             addInterceptor(loggingInterceptor)
         }.build()
     }

@@ -6,6 +6,8 @@
         <activity
             android:name="com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity"
             android:exported="true"
-            android:theme="@style/MercadoPago.Checkout"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/MercadoPago.Checkout"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>

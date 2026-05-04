@@ -3,23 +3,30 @@ package com.mercadopago.sdk.android.components.extensions
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.components.inputs.MPInputDefaults
 
 @Composable
 internal fun Modifier.addBorder(
     isFocused: Boolean,
     error: Boolean = false,
+    enabled: Boolean = true,
+    defaults: MPInputDefaults,
 ): Modifier {
     return border(
-        width = if (isFocused) 2.dp else 1.dp,
-        color = if (error) {
-            MercadoPagoTheme.color.accentNegative
-        } else if (isFocused) {
-            MercadoPagoTheme.color.secondary
+        width = if (isFocused) {
+            defaults.border.widthFocused
         } else {
-            MercadoPagoTheme.color.secondarySecondVariant
+            defaults.border.widthIdle
         },
-        shape = MercadoPagoTheme.shape.xs,
+        color = if (!enabled) {
+            defaults.colors.borderDisabled
+        } else if (error) {
+            defaults.colors.borderError
+        } else if (isFocused) {
+            defaults.colors.borderActive
+        } else {
+            defaults.colors.borderIdle
+        },
+        shape = defaults.border.shape,
     )
 }

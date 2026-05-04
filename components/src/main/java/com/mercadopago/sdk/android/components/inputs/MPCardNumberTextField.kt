@@ -11,7 +11,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.MPText
-import com.mercadopago.sdk.android.components.MPTextStyle
 import com.mercadopago.sdk.android.components.MP_EMPTY_STRING
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextField
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
@@ -19,6 +18,9 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.utils.MaskVisualTransformationDefaults
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
+
+private const val DEFAULT_CARD_NUMBER_MAX_LENGTH = 19
 
 /**
  * Composable function that displays a card number text field with MercadoPago styling.
@@ -30,11 +32,12 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
  * @param state The PCIFieldState that manages the secure field state.
  * @param isFocused Whether the field is currently focused. Used to display focus-specific styling.
  * @param showPlaceHolder Whether to show a placeholder text when the field is empty.
- * @param error Whether the field is in an error state. Displays error styling when true.
  * @param enabled Whether the field is enabled for user interaction.
+ * @param error Whether the field is in an error state. Displays error styling when true.
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
+ * @param maxLength Field max length.
  * @param visualTransformation The visual transformation to apply to the input (e.g., masking).
  * Defaults to card number masking format.
  * @param onEvent Callback invoked when card number events occur (e.g., value changes, validation).
@@ -45,38 +48,43 @@ fun MPCardNumberTextField(
     state: PCIFieldState,
     isFocused: Boolean = false,
     showPlaceHolder: Boolean = false,
-    error: Boolean = false,
     enabled: Boolean = true,
-    label: String? = null,
-    helper: String? = null,
+    error: String = "",
+    label: String = "",
+    helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
+    maxLength: Int = DEFAULT_CARD_NUMBER_MAX_LENGTH,
     visualTransformation: VisualTransformation = MaskVisualTransformationDefaults.CardNumber,
     onEvent: (CardNumberTextFieldEvent) -> Unit,
 ) {
+    val defaults = getMPInputDefaults()
     MPInputBody(
         modifier = modifier,
-        error = error,
-        enabled = enabled,
         label = label,
         helper = helper,
+        error = error,
+        defaults = defaults,
     ) {
         CardNumberTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
-            textStyle = MercadoPagoTheme.typography.body.mediumRegular,
+            textStyle = MercadoPagoTheme.typography.body.default.medium,
             enabled = enabled,
             visualTransformation = visualTransformation,
+            maxLength = maxLength,
             decorationBox = { innerTextField ->
                 MPInputDecorationBox(
                     isFocused = isFocused,
-                    error = error,
+                    error = error.isNotBlank(),
+                    defaults = defaults,
                 ) {
                     Box {
                         if (showPlaceHolder && state.isEmpty) {
                             MPText(
                                 text = placeHolder,
-                                textStyle = MPTextStyle.BodyMediumRegular,
+                                style = MercadoPagoTheme.typography.body.default.medium,
+                                color = defaults.colors.textSecondary,
                                 modifier = Modifier.align(Alignment.CenterStart),
                             )
                         }
@@ -91,7 +99,9 @@ fun MPCardNumberTextField(
 @Preview(showBackground = true)
 @Composable
 private fun MPCardNumberTextFieldPreview() {
-    MercadoPagoTheme {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Default,
+    ) {
         val cardNumberState = rememberPCIFieldState()
         Column(
             modifier = Modifier.padding(10.dp),

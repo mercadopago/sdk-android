@@ -18,7 +18,6 @@ internal class PublicKeyInterceptor(
         if (currentPublicKey.isNullOrEmpty()) {
             return chain.proceed(request)
         }
-
         return if (request.header(PUBLIC_KEY_HEADER) != null) {
             val newRequest = request.newBuilder()
                 .removeHeader(PUBLIC_KEY_HEADER)

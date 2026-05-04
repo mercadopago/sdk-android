@@ -44,7 +44,7 @@ fun MPRadioButton(
     RadioButton(
         selected = selected,
         onClick = onClick,
-        modifier = modifier.size(MercadoPagoTheme.spacing.xl),
+        modifier = modifier.size(MercadoPagoTheme.spacing.paddings.xsmall),
         enabled = enabled,
         colors = RadioButtonColors(
             selectedColor = getRadioColor(error),
@@ -60,7 +60,11 @@ fun MPRadioButton(
 private fun getRadioColor(
     error: Boolean,
 ): Color {
-    return if (error) MercadoPagoTheme.color.text.negative else MercadoPagoTheme.color.text.accent
+    return if (error) {
+        MercadoPagoTheme.color.feedback.negative.textLoud
+    } else {
+        MercadoPagoTheme.color.text.accent
+    }
 }
 
 @Preview(name = "Radio Button", group = RADIO_GROUP)

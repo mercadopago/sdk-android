@@ -55,9 +55,7 @@ object CoreKoinFactory {
             androidLogger(loggerLevel)
             // Add modules definitions
             modules(provider.provideModules())
-        }.koin.also { koin ->
-            koin.loadModules(provider.provideModules())
-        }
+        }.koin
     }
 
     /**

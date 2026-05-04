@@ -31,17 +31,17 @@ fun MPPill(
         horizontalArrangement = Arrangement.spacedBy(0.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .height(MercadoPagoTheme.spacing.m)
+            .height(MercadoPagoTheme.spacing.paddings.xtiny)
             .background(
-                color = MercadoPagoTheme.color.feedback.positiveSecondary,
-                shape = RoundedCornerShape(MercadoPagoTheme.spacing.m),
+                color = MercadoPagoTheme.color.feedback.positive.fillQuiet,
+                shape = RoundedCornerShape(MercadoPagoTheme.spacing.paddings.xtiny),
             )
-            .padding(horizontal = MercadoPagoTheme.spacing.xs),
+            .padding(horizontal = MercadoPagoTheme.spacing.paddings.xmicro),
     ) {
         MPText(
-            text,
-            textStyle = MPTextStyle.BodyExtraSmallSemiBold,
-            colorType = MPTextColorType.Positive,
+            text = text,
+            style = MercadoPagoTheme.typography.body.emphasis.small,
+            color = MercadoPagoTheme.color.feedback.positive.textLoud,
         )
     }
 }

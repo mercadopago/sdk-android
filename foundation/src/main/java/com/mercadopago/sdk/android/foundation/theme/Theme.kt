@@ -9,19 +9,33 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.foundation.color.BackgroundColor
-import com.mercadopago.sdk.android.foundation.color.FeedbackColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoBackgroundColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoBorderColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoBrandColor
 import com.mercadopago.sdk.android.foundation.color.MercadoPagoColor
-import com.mercadopago.sdk.android.foundation.color.OutlineColor
-import com.mercadopago.sdk.android.foundation.color.TextColor
-import com.mercadopago.sdk.android.foundation.outline.MercadoPagoOutline
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoFeedbackColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoFeedbackTypeColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoFillColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoIconColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoInteractiveBorderColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoInteractiveColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoInteractiveFillColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoInteractiveIconColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoSurfaceColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoTextColor
+import com.mercadopago.sdk.android.foundation.color.MercadoPagoTransparentColor
+import com.mercadopago.sdk.android.foundation.outline.MercadoPagoBorderWidth
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoRadius
 import com.mercadopago.sdk.android.foundation.shape.MercadoPagoShape
 import com.mercadopago.sdk.android.foundation.spacing.MercadoPagoSpacing
-import com.mercadopago.sdk.android.foundation.theme.default.MercadoPagoDefaultThemes
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoBodyTypography
-import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTitleTypography
+import com.mercadopago.sdk.android.foundation.spacing.SpacingGap
+import com.mercadopago.sdk.android.foundation.spacing.SpacingPaddings
+import com.mercadopago.sdk.android.foundation.typography.BodyStyle
+import com.mercadopago.sdk.android.foundation.typography.BodyTypography
+import com.mercadopago.sdk.android.foundation.typography.HeadingStyle
+import com.mercadopago.sdk.android.foundation.typography.HeadingTypography
 import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
+import com.mercadopago.sdk.android.foundation.typography.TitleTypography
 
 /**
  * @suppress
@@ -29,75 +43,215 @@ import com.mercadopago.sdk.android.foundation.typography.MercadoPagoTypography
  * This is used to propagate theme values down the composition tree.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-internal val LocalMercadoPagoTheme = compositionLocalOf {
-    MercadoPagoThemeProvider(
+internal val LocalMercadoPagoTheme = compositionLocalOf<MercadoPagoThemeProvider.Default> {
+    MercadoPagoThemeProvider.Default(
         color = MercadoPagoColor(
-            accent = Color.Unspecified,
-            accentFirstVariant = Color.Unspecified,
-            accentSecondVariant = Color.Unspecified,
-            accentYellow = Color.Unspecified,
-            accentPositive = Color.Unspecified,
-            accentNegative = Color.Unspecified,
-            background = BackgroundColor(
+            background = MercadoPagoBackgroundColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
-                tertiary = Color.Unspecified,
-                inverted = Color.Unspecified,
             ),
-            text = TextColor(
+            surface = MercadoPagoSurfaceColor(
+                primaryIdle = Color.Unspecified,
+                primaryActive = Color.Unspecified,
+                primaryDisabled = Color.Unspecified,
+            ),
+            fill = MercadoPagoFillColor(
+                primary = Color.Unspecified,
+                secondary = Color.Unspecified,
+                inverse = Color.Unspecified,
+                disabled = Color.Unspecified,
+                accentLoud = Color.Unspecified,
+                accentQuiet = Color.Unspecified,
+                defaultOnScroll = Color.Unspecified,
+            ),
+            border = MercadoPagoBorderColor(
+                primary = Color.Unspecified,
+                accent = Color.Unspecified,
+                inverse = Color.Unspecified,
+                disabled = Color.Unspecified,
+            ),
+            icon = MercadoPagoIconColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
                 accent = Color.Unspecified,
+                inverse = Color.Unspecified,
                 disabled = Color.Unspecified,
-                negative = Color.Unspecified,
-                inverted = Color.Unspecified,
             ),
-            secondary = Color.Unspecified,
-            secondaryFirstVariant = Color.Unspecified,
-            secondarySecondVariant = Color.Unspecified,
-            outline = OutlineColor(
+            text = MercadoPagoTextColor(
                 primary = Color.Unspecified,
                 secondary = Color.Unspecified,
+                accent = Color.Unspecified,
+                inverse = Color.Unspecified,
+                disabled = Color.Unspecified,
+                linkIdle = Color.Unspecified,
+                linkActive = Color.Unspecified,
             ),
-            feedback = FeedbackColor(
-                positive = Color.Unspecified,
-                negative = Color.Unspecified,
-                positiveSecondary = Color.Unspecified,
+            brand = MercadoPagoBrandColor(
+                fillLoud = Color.Unspecified,
+                fillQuiet = Color.Unspecified,
+                gradientStart = Color.Unspecified,
+                gradientEnd = Color.Unspecified,
+            ),
+            feedback = MercadoPagoFeedbackColor(
+                informative = MercadoPagoFeedbackTypeColor(
+                    fillLoud = Color.Unspecified,
+                    fillQuiet = Color.Unspecified,
+                    textLoud = Color.Unspecified,
+                    borderLoud = Color.Unspecified,
+                    iconLoud = Color.Unspecified,
+                ),
+                positive = MercadoPagoFeedbackTypeColor(
+                    fillLoud = Color.Unspecified,
+                    fillQuiet = Color.Unspecified,
+                    textLoud = Color.Unspecified,
+                    borderLoud = Color.Unspecified,
+                    iconLoud = Color.Unspecified,
+                ),
+                caution = MercadoPagoFeedbackTypeColor(
+                    fillLoud = Color.Unspecified,
+                    fillQuiet = Color.Unspecified,
+                    textLoud = Color.Unspecified,
+                    borderLoud = Color.Unspecified,
+                    iconLoud = Color.Unspecified,
+                ),
+                negative = MercadoPagoFeedbackTypeColor(
+                    fillLoud = Color.Unspecified,
+                    fillQuiet = Color.Unspecified,
+                    textLoud = Color.Unspecified,
+                    borderLoud = Color.Unspecified,
+                    iconLoud = Color.Unspecified,
+                ),
+            ),
+            interactive = MercadoPagoInteractiveColor(
+                fillLoud = MercadoPagoInteractiveFillColor(
+                    idle = Color.Unspecified,
+                    hover = Color.Unspecified,
+                    active = Color.Unspecified,
+                ),
+                fillQuiet = MercadoPagoInteractiveFillColor(
+                    idle = Color.Unspecified,
+                    hover = Color.Unspecified,
+                    active = Color.Unspecified,
+                ),
+                fillMute = MercadoPagoInteractiveFillColor(
+                    idle = Color.Unspecified,
+                    hover = Color.Unspecified,
+                    active = Color.Unspecified,
+                ),
+                border = MercadoPagoInteractiveBorderColor(
+                    idle = Color.Unspecified,
+                    active = Color.Unspecified,
+                ),
+                icon = MercadoPagoInteractiveIconColor(
+                    idle = Color.Unspecified,
+                    active = Color.Unspecified,
+                    idleAccent = Color.Unspecified,
+                    activeAccent = Color.Unspecified,
+                ),
+            ),
+            transparent = MercadoPagoTransparentColor(
+                transparent = Color.Unspecified,
             ),
         ),
         spacing = MercadoPagoSpacing(
-            xxs = 0.dp,
-            xs = 0.dp,
-            s = 0.dp,
-            m = 0.dp,
-            l = 0.dp,
-            xl = 0.dp,
-            xxl = 0.dp,
+            paddings = SpacingPaddings(
+                none = 0.dp,
+                pico = 0.dp,
+                xnano = 0.dp,
+                nano = 0.dp,
+                xmicro = 0.dp,
+                micro = 0.dp,
+                xtiny = 0.dp,
+                tiny = 0.dp,
+                xsmall = 0.dp,
+                small = 0.dp,
+                medium = 0.dp,
+                large = 0.dp,
+                xlarge = 0.dp,
+                huge = 0.dp,
+                xhuge = 0.dp,
+                mega = 0.dp,
+                xmega = 0.dp,
+            ),
+            gap = SpacingGap(
+                none = 0.dp,
+                pico = 0.dp,
+                xnano = 0.dp,
+                nano = 0.dp,
+                xmicro = 0.dp,
+                micro = 0.dp,
+                xtiny = 0.dp,
+                tiny = 0.dp,
+                xsmall = 0.dp,
+                small = 0.dp,
+                medium = 0.dp,
+                large = 0.dp,
+                xlarge = 0.dp,
+                huge = 0.dp,
+                xhuge = 0.dp,
+                mega = 0.dp,
+                xmega = 0.dp,
+            ),
         ),
         shape = MercadoPagoShape(
-            xxs = RoundedCornerShape(0.dp),
-            xs = RoundedCornerShape(0.dp),
-            s = RoundedCornerShape(0.dp),
+            none = RoundedCornerShape(0.dp),
+            tiny = RoundedCornerShape(0.dp),
+            xsmall = RoundedCornerShape(0.dp),
+            small = RoundedCornerShape(0.dp),
+            medium = RoundedCornerShape(0.dp),
+            large = RoundedCornerShape(0.dp),
+            xlarge = RoundedCornerShape(0.dp),
+            full = RoundedCornerShape(0.dp),
         ),
         radius = MercadoPagoRadius(
-            xxs = 0.dp,
-            xs = 0.dp,
-            s = 0.dp,
+            none = 0.dp,
+            tiny = 0.dp,
+            xsmall = 0.dp,
+            small = 0.dp,
+            medium = 0.dp,
+            large = 0.dp,
+            xlarge = 0.dp,
+            full = 0.dp,
         ),
-        outline = MercadoPagoOutline(
-            xxs = 0.dp,
-            xs = 0.dp,
+        borderWidth = MercadoPagoBorderWidth(
+            none = 0.dp,
+            small = 0.dp,
+            medium = 0.dp,
+            large = 0.dp,
+            xlarge = 0.dp,
         ),
         typography = MercadoPagoTypography(
-            title = MercadoPagoTitleTypography(
-                smallSemibold = TextStyle.Default,
+            heading = HeadingTypography(
+                default = HeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
+                narrow = HeadingStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    huge = TextStyle.Default,
+                ),
             ),
-            body = MercadoPagoBodyTypography(
-                mediumSemibold = TextStyle.Default,
-                mediumRegular = TextStyle.Default,
-                smallSemibold = TextStyle.Default,
-                smallRegular = TextStyle.Default,
-                extraSmallSemibold = TextStyle.Default,
+            body = BodyTypography(
+                default = BodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                emphasis = BodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+                textlink = BodyStyle(
+                    small = TextStyle.Default,
+                    medium = TextStyle.Default,
+                    large = TextStyle.Default,
+                ),
+            ),
+            title = TitleTypography(
+                title = TextStyle.Default,
             ),
         ),
     )
@@ -132,6 +286,20 @@ object MercadoPagoTheme {
         get() = LocalMercadoPagoTheme.current.shape
 
     /**
+     * Gets the current radius configuration from the theme.
+     */
+    val radius: MercadoPagoRadius
+        @Composable
+        get() = LocalMercadoPagoTheme.current.radius
+
+    /**
+     * Gets the current border width configuration from the theme.
+     */
+    val borderWidth: MercadoPagoBorderWidth
+        @Composable
+        get() = LocalMercadoPagoTheme.current.borderWidth
+
+    /**
      * Gets the current typography configuration from the theme.
      */
     val typography: MercadoPagoTypography
@@ -142,30 +310,29 @@ object MercadoPagoTheme {
 /**
  * @suppress
  * Composable function that provides the MercadoPago theme to its content.
- * This is the main entry point for applying the theme to a composition.
  *
- * @param theme The theme scheme to be applied, defaults to [MercadoPagoDefaultThemes.Default]
- * @param appearance The appearance mode to be used, defaults to [MercadoPagoThemeAppearance.System]
+ * @param theme The theme configuration to be applied, defaults to [MercadoPagoThemes.Default]
+ * @param style The user interface style to be used, defaults to [MercadoPagoUserInterfaceStyle.System]
  * @param content The content to be themed
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 @Composable
 fun MercadoPagoTheme(
-    theme: MercadoPagoThemeProviderScheme = MercadoPagoDefaultThemes.Default,
-    appearance: MercadoPagoThemeAppearance = MercadoPagoThemeAppearance.System,
+    theme: MercadoPagoThemeConfiguration = MercadoPagoThemes.Default,
+    style: MercadoPagoUserInterfaceStyle = MercadoPagoUserInterfaceStyle.System,
     content: @Composable () -> Unit,
 ) {
-    val themeScheme = when (appearance) {
-        MercadoPagoThemeAppearance.System -> if (isSystemInDarkTheme()) {
+    val themeScheme = when (style) {
+        MercadoPagoUserInterfaceStyle.System -> if (isSystemInDarkTheme()) {
             theme.darkTheme
         } else {
             theme.lightTheme
         }
-        MercadoPagoThemeAppearance.Light -> theme.lightTheme
-        MercadoPagoThemeAppearance.Dark -> theme.darkTheme
+        MercadoPagoUserInterfaceStyle.Light -> theme.lightTheme
+        MercadoPagoUserInterfaceStyle.Dark -> theme.darkTheme
     }
     CompositionLocalProvider(
-        LocalMercadoPagoTheme provides themeScheme,
+        LocalMercadoPagoTheme provides themeScheme as MercadoPagoThemeProvider.Default,
         content = content,
     )
 }

@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.PreviewGroup
@@ -77,7 +76,6 @@ internal const val COMPONENT_NAME_IDENTIFICATION = "identification"
  * @param keyboardOptions Configuration for the software keyboard (defaults based on identification type)
  * @param keyboardActions Callbacks for keyboard action events
  * @param cursorBrush Brush applied to customize the cursor appearance
- * @param visualTransformation Visual transformations applied to the input text
  *
  * @see PCIFieldState
  * @see IdentificationTextFieldEvent
@@ -99,21 +97,19 @@ fun IdentificationTextField(
     keyboardOptions: KeyboardOptions? = null,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
-    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val maxLength = identificationType?.maxLength ?: Int.MAX_VALUE
-    val keyboardType = if (identificationType?.type == "number") {
-        KeyboardType.Number
-    } else {
-        KeyboardType.Text
-    }
+    val isNumeric = (identificationType?.type == "number")
+    val keyboardType = if (isNumeric) KeyboardType.Number else KeyboardType.Text
 
     PCITextField(
         value = state.input,
         onValueChange = { value ->
-            if (value.length <= maxLength) {
-                state.input = value
-                onEvent(IdentificationTextFieldEvent.OnValueChanged(value = value))
+            val filteredValue = if (isNumeric) value.filter { it.isDigit() } else value
+
+            if (filteredValue.length <= maxLength) {
+                state.input = filteredValue
+                onEvent(IdentificationTextFieldEvent.OnValueChanged(value = filteredValue))
             }
         },
         onFocusChanged = { isFocused ->
@@ -127,7 +123,7 @@ fun IdentificationTextField(
         keyboardOptions = keyboardOptions ?: KeyboardOptions(keyboardType = keyboardType),
         keyboardActions = keyboardActions,
         textStyle = textStyle,
-        visualTransformation = visualTransformation,
+        visualTransformation = identificationType.getVisualTransformation(),
     )
 }
 
@@ -170,6 +166,7 @@ internal fun IdentificationTextFieldFilledPreview() {
             type = "number",
             minLength = 11,
             maxLength = 11,
+            mask = "###.###.###-##",
         ),
         onEvent = { },
     )
