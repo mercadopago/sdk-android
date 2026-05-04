@@ -2,10 +2,8 @@ package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfigResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslationResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfigResponse
@@ -73,7 +71,7 @@ private fun TranslationsResponse.toDomain(): CardFormTranslations =
     )
 
 private fun FieldTranslationResponse.toDomain() =
-    CardNumberTranslations(
+    FieldTranslations(
         label = label.orEmpty(),
         placeholder = placeholder.orEmpty(),
         helper = helper,
@@ -84,7 +82,7 @@ private fun FieldTranslationResponse.toDomain() =
     )
 
 private fun FieldTranslationResponse.toHolderNameTranslations() =
-    HolderNameTranslations(
+    FieldTranslations(
         label = label.orEmpty(),
         placeholder = placeholder.orEmpty(),
         helper = helper,
@@ -94,7 +92,7 @@ private fun FieldTranslationResponse.toHolderNameTranslations() =
     )
 
 private fun FieldTranslationResponse.toExpirationDateTranslations() =
-    ExpirationDateTranslations(
+    FieldTranslations(
         label = label.orEmpty(),
         placeholder = placeholder.orEmpty(),
         helper = helper,

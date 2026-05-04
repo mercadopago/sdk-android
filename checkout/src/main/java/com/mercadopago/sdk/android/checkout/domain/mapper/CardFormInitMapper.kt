@@ -2,12 +2,10 @@ package com.mercadopago.sdk.android.checkout.domain.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
@@ -40,7 +38,7 @@ internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     )
 
 private fun CardNumberConfig.toCardNumberField(
-    translations: CardNumberTranslations,
+    translations: FieldTranslations,
 ): CardNumberField =
     CardNumberField(
         label = translations.label,
@@ -60,7 +58,7 @@ private fun CardNumberConfig.toCardNumberField(
     )
 
 private fun HolderNameConfig.toCardHolderField(
-    translations: HolderNameTranslations,
+    translations: FieldTranslations,
 ): CardHolderField =
     CardHolderField(
         label = translations.label,
@@ -77,7 +75,7 @@ private fun HolderNameConfig.toCardHolderField(
     )
 
 private fun ExpirationDateConfig.toExpirationDateField(
-    translations: ExpirationDateTranslations,
+    translations: FieldTranslations,
 ): ExpirationDateField =
     ExpirationDateField(
         label = translations.label,

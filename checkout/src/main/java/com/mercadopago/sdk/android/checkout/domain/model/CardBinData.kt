@@ -1,8 +1,6 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 
 internal data class CardBinData(
@@ -44,8 +42,8 @@ internal data class Quota(
 )
 
 internal data class CardFormTranslations(
-    val cardNumber: CardNumberTranslations?,
-    val cardHolderName: HolderNameTranslations?,
-    val expirationDate: ExpirationDateTranslations?,
+    val cardNumber: FieldTranslations?,
+    val cardHolderName: FieldTranslations?,
+    val expirationDate: FieldTranslations?,
     val securityCode: SecurityCodeTranslations?,
 )
