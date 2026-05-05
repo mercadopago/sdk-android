@@ -32,8 +32,8 @@ private fun String?.orCurrent(
 private fun CardPaymentScreenState.buildCardNumberState(
     data: CardBinData,
 ) = cardNumberState.copy(
-    maxLength = data.cardNumber?.length ?: cardNumberState.maxLength,
-    mask = (data.cardNumber?.length ?: cardNumberState.maxLength).toMask(),
+    maxLength = data.cardNumber?.length?.max ?: cardNumberState.maxLength,
+    mask = (data.cardNumber?.length?.max ?: cardNumberState.maxLength).toMask(),
     image = data.issuers.firstOrNull()?.secureThumbnail,
     label = data.translations?.cardNumber?.label.orCurrent(cardNumberState.label),
     placeHolder = data.translations?.cardNumber?.placeholder.orCurrent(cardNumberState.placeHolder),
@@ -56,9 +56,9 @@ private fun CardPaymentScreenState.buildSecureCodeState(
 private fun CardPaymentScreenState.buildCardHolderState(
     data: CardBinData,
 ) = cardHolderState.copy(
-    label = data.translations?.cardHolderName?.label.orCurrent(cardHolderState.label),
-    placeHolder = data.translations?.cardHolderName?.placeholder.orCurrent(cardHolderState.placeHolder),
-    helper = data.translations?.cardHolderName?.helper.orCurrent(cardHolderState.helper),
+    label = data.translations?.holderName?.label.orCurrent(cardHolderState.label),
+    placeHolder = data.translations?.holderName?.placeholder.orCurrent(cardHolderState.placeHolder),
+    helper = data.translations?.holderName?.helper.orCurrent(cardHolderState.helper),
 )
 
 private fun CardPaymentScreenState.buildExpirationDateState(
