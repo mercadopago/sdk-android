@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Card Form Strings - Português (Brasil) - MLB -->
-    <string name="card_form_title">Preencha os dados do cartão</string>
-    <string name="card_form_number_label">Número do cartão</string>
-    <string name="card_form_holder_label">Nome do titular</string>
-    <string name="card_form_holder_placeholder">Ex.: Maria Lopes</string>
-    <string name="card_form_holder_helper">Conforme aparece no cartão.</string>
-    <string name="card_form_expiration_label">Vencimento</string>
-    <string name="card_form_expiration_short_label">Vencimento</string>
-    <string name="card_form_security_label">Código de segurança</string>
-    <string name="card_form_document_label">Documento do titular</string>
-    <string name="card_form_optional_field">Dado opcional.</string>
     <string name="card_form_generic_error">Ocorreu um erro. Por favor, tente novamente.</string>
-    <string name="card_form_save_button">Salvar cartão</string>
 
     <!-- Card Type Translations -->
     <string name="card_type_credit_card">cartão de crédito.</string>
@@ -20,24 +8,6 @@
     <string name="card_type_prepaid">cartão prepago.</string>
 
     <!-- Validation Error Messages -->
-    <string name="card_form_error_required_field">Preencha este campo.</string>
-    <string name="card_form_error_cardholder_incomplete">Insira conforme está no cartão.</string>
-    <string name="card_form_error_cardholder_format">Digite apenas letras e números.</string>
-    <string name="card_form_error_card_number_invalid">Insira conforme está no cartão.</string>
-    <string name="card_form_error_card_number_incomplete">Insira o número completo.</string>
-    <string name="card_form_error_document_all_zeros">Insira um documento válido.</string>
-    <string name="card_form_error_expiration_incomplete">Insira a data completa.</string>
-    <string name="card_form_error_expiration_invalid">Insira uma data válida.</string>
-    <string name="card_form_error_cvv_incomplete">Insira o código completo.</string>
-    <string name="card_form_error_insufficient_amount">Verifique se o cartão tem limite suficiente.</string>
     <string name="card_form_error_card_brand_not_accepted">A loja não aceita cartões</string>
     <string name="card_form_error_card_type_not_accepted">A loja não aceita</string>
-
-    <!-- Security Code Placeholder -->
-    <string name="card_form_security_placeholder_three_digits">Ex.: 123</string>
-    <string name="card_form_security_placeholder_four_digits">Ex.: 1234</string>
-
-    <!-- Security Code Tooltip Messages -->
-    <string name="card_form_security_code_tooltip_back">É um número de %d dígitos que está atrás do seu cartão ou no app do seu banco.</string>
-    <string name="card_form_security_code_tooltip_front">É um número de %d dígitos que está na parte da frente do seu cartão ou no app do seu banco.</string>
 </resources>

@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -45,8 +46,8 @@ import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
-import com.mercadopago.sdk.android.components.MPPopover
 import com.mercadopago.sdk.android.components.MPProgressIndicator
+import com.mercadopago.sdk.android.components.MPTooltip
 import com.mercadopago.sdk.android.components.bottomsheet.MPListBottomSheet
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
@@ -78,11 +79,11 @@ internal fun CardPaymentScreen(
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
-        viewModel.getIdentificationTypes()
+        viewModel.initialization()
     }
 
     BackHandler {
-        viewModel.onBackPressed(CardPaymentViewModel.CancelReason.SystemBack)
+        viewModel.onBackPressed(CancelReason.SystemBack)
     }
 
     CardPaymentScreenContent(
@@ -97,12 +98,12 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackPressed = { viewModel.onBackPressed(CardPaymentViewModel.CancelReason.UiButton) },
+        onBackPressed = { viewModel.onBackPressed(CancelReason.UiButton) },
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
             focusManager.clearFocus()
-            viewModel.validateFieldsAndTokenize(
+            viewModel.onSubmit(
                 cardNumberState = cardNumberPCIState,
                 expirationDateState = expirationDatePCIState,
                 securityCodeState = securityCodePCIState,
@@ -229,17 +230,16 @@ internal fun CardPaymentScreenContent(
                                     onEvent = onSecurityCodeEvent,
                                 )
                                 if (viewState.showTooltip) {
-                                    MPPopover(
+                                    MPTooltip(
                                         modifier = Modifier
-                                            .fillMaxWidth()
+                                            .align(Alignment.TopCenter)
                                             .layout { measurable, constraints ->
                                                 val placeable = measurable.measure(constraints)
                                                 layout(placeable.width, 0) {
                                                     placeable.placeRelative(0, -placeable.height)
                                                 }
                                             },
-                                        description = viewState.secureCodeState.messageTooltip,
-                                        onDismiss = onTooltipClick,
+                                        text = viewState.secureCodeState.messageTooltip,
                                     )
                                 }
                             }
@@ -306,7 +306,7 @@ internal fun CardPaymentScreenContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.White.copy(alpha = 0.8f)),
+                    .background(Color.White),
                 contentAlignment = Alignment.Center,
             ) {
                 MPProgressIndicator()
