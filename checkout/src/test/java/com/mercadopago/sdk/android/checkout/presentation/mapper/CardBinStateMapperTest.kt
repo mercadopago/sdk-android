@@ -113,8 +113,6 @@ internal class CardBinStateMapperTest {
         ),
     )
 
-    // ── card number ───────────────────────────────────────────────────────────
-
     @Test
     fun `given cardNumber with length then updates maxLength`() {
         val data = emptyBinData.copy(
@@ -190,8 +188,6 @@ internal class CardBinStateMapperTest {
         assertEquals("0000", result.cardNumberState.placeHolder)
     }
 
-    // ── card number image ─────────────────────────────────────────────────────
-
     @Test
     fun `given issuers then sets image from first issuer`() {
         val data = emptyBinData.copy(
@@ -212,8 +208,6 @@ internal class CardBinStateMapperTest {
 
         assertNull(result.cardNumberState.image)
     }
-
-    // ── security code ─────────────────────────────────────────────────────────
 
     @Test
     fun `given securityCode with length then updates maxLength`() {
@@ -318,8 +312,6 @@ internal class CardBinStateMapperTest {
         assertEquals("from config", result.secureCodeState.messageTooltip)
     }
 
-    // ── card holder ───────────────────────────────────────────────────────────
-
     @Test
     fun `given translations with holderName then updates cardHolderState`() {
         val data = emptyBinData.copy(
@@ -353,8 +345,6 @@ internal class CardBinStateMapperTest {
         assertEquals("Nome no cartão", result.cardHolderState.placeHolder)
     }
 
-    // ── expiration date ───────────────────────────────────────────────────────
-
     @Test
     fun `given translations with expirationDate then updates expirationDateState`() {
         val data = emptyBinData.copy(
@@ -377,8 +367,6 @@ internal class CardBinStateMapperTest {
         assertEquals("MM/AA", result.expirationDateState.placeHolder)
     }
 
-    // ── issuers ───────────────────────────────────────────────────────────────
-
     @Test
     fun `given issuers then maps to CardIssuer list`() {
         val data = emptyBinData.copy(
@@ -398,8 +386,6 @@ internal class CardBinStateMapperTest {
 
         assertTrue(result.cardIssuers.isEmpty())
     }
-
-    // ── installments ──────────────────────────────────────────────────────────
 
     @Test
     fun `given non-empty quotas then showList is true`() {
@@ -449,8 +435,6 @@ internal class CardBinStateMapperTest {
         assertEquals(100.00f, payerCost.totalAmount)
         assertEquals(listOf("3x"), payerCost.labels)
     }
-
-    // ── payment state ─────────────────────────────────────────────────────────
 
     @Test
     fun `given binData with id and paymentTypeId then updates paymentState`() {

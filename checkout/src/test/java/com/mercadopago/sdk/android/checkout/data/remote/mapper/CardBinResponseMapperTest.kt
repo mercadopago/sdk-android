@@ -85,8 +85,6 @@ internal class CardBinResponseMapperTest {
         translations = null,
     )
 
-    // ── card number ───────────────────────────────────────────────────────────
-
     @Test
     fun `toDomain maps card number config`() {
         val response = minimalResponse().copy(
@@ -115,8 +113,6 @@ internal class CardBinResponseMapperTest {
 
         assertNull(domain.cardNumber)
     }
-
-    // ── security code ─────────────────────────────────────────────────────────
 
     @Test
     fun `toDomain maps security code config`() {
@@ -167,8 +163,6 @@ internal class CardBinResponseMapperTest {
         assertNull(domain.securityCode)
     }
 
-    // ── issuers ───────────────────────────────────────────────────────────────
-
     @Test
     fun `toDomain maps issuers list`() {
         val response = minimalResponse().copy(
@@ -193,8 +187,6 @@ internal class CardBinResponseMapperTest {
 
         assertTrue(domain.issuers.isEmpty())
     }
-
-    // ── quotas ────────────────────────────────────────────────────────────────
 
     @Test
     fun `toDomain maps quotas`() {
@@ -237,8 +229,6 @@ internal class CardBinResponseMapperTest {
 
         assertTrue(domain.quotas.isEmpty())
     }
-
-    // ── translations ──────────────────────────────────────────────────────────
 
     @Test
     fun `toDomain passes translations through directly`() {
@@ -285,8 +275,6 @@ internal class CardBinResponseMapperTest {
 
         assertNull(domain.translations)
     }
-
-    // ── identity ──────────────────────────────────────────────────────────────
 
     @Test
     fun `toDomain extracts id and paymentTypeId from first payment method`() {
