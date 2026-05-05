@@ -20,7 +20,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -42,7 +41,6 @@ import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
-    stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
@@ -60,7 +58,6 @@ internal class CardPaymentViewModel(
     )
 
     private val errorHandler = CardFormFieldErrorHandler(
-        stateFactory = stateFactory,
         analyticsTracker = analyticsTracker,
     )
 

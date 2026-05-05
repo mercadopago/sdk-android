@@ -1,9 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
-import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardBrandErrorMessage
-import com.mercadopago.sdk.android.checkout.presentation.extensions.toCardTypeErrorMessage
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
@@ -13,7 +10,6 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.Identificati
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 
 internal class CardFormFieldErrorHandler(
-    private val stateFactory: CardPaymentScreenStateFactory,
     private val analyticsTracker: CardFormAnalyticsTracker,
 ) {
     fun applyLuhnValidation(
@@ -43,16 +39,6 @@ internal class CardFormFieldErrorHandler(
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } ->
                 cardNumberState.validation.errorInvalid
-
-            errors.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
-                val error = errors.filterIsInstance<CardNumberErrorType.CardBrandNotAccepted>().first()
-                error.brand.toCardBrandErrorMessage(stateFactory.getStringProvider())
-            }
-
-            errors.any { it is CardNumberErrorType.CardTypeNotAccepted } -> {
-                val error = errors.filterIsInstance<CardNumberErrorType.CardTypeNotAccepted>().first()
-                error.cardType?.value?.toCardTypeErrorMessage(stateFactory.getStringProvider()) ?: ""
-            }
 
             errors.any { it is CardNumberErrorType.FieldValidation } ->
                 errors.filterIsInstance<CardNumberErrorType.FieldValidation>().first().message
