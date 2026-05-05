@@ -1,0 +1,45 @@
+components/src/main/java/com/mercadopago/sdk/android/components/bottomsheet/MPBottomSheet.kt
+  49aadaec918d2ab9 13,69-70
+  edcdd4def9b32b0a 1,9,33-34,38,41,44,52,59,74,149,151,159,161-168
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPBottomSheetListItem.kt
+  49aadaec918d2ab9 4
+  edcdd4def9b32b0a 6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  edcdd4def9b32b0a 327
+  49aadaec918d2ab9 325
+components/src/main/java/com/mercadopago/sdk/android/components/bottomsheet/MPListBottomSheet.kt
+  edcdd4def9b32b0a 1-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "21b481b709122e3479171f86ddac663575c9b0f6",
+  "prompts": {
+    "49aadaec918d2ab9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8a1325a8-a111-4375-890d-075f2737709d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 7,
+      "total_deletions": 3,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    },
+    "edcdd4def9b32b0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "37295888-c202-4c37-9877-a40ab30b16e1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 414,
+      "total_deletions": 47,
+      "accepted_lines": 343,
+      "overriden_lines": 0
+    }
+  }
+}
