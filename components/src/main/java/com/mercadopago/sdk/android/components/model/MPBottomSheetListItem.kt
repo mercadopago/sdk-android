@@ -1,11 +1,9 @@
 package com.mercadopago.sdk.android.components.model
 
-import com.mercadopago.sdk.android.components.MPBottomSheet
-
 /**
- * A document type option for [MPBottomSheet].
+ * Item displayed in a [MPListBottomSheet] row.
  *
- * @param label Display text shown in the list row; drives selection state
+ * @param label Display text shown in the row; also used as the selection key
  */
 data class MPBottomSheetListItem(
     val label: String,

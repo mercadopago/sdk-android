@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -39,7 +40,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.components.MPBottomSheet
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -47,6 +47,7 @@ import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
 import com.mercadopago.sdk.android.components.MPPopover
 import com.mercadopago.sdk.android.components.MPProgressIndicator
+import com.mercadopago.sdk.android.components.bottomsheet.MPListBottomSheet
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -321,8 +322,9 @@ internal fun CardPaymentScreenContent(
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
             containerColor = Color.Transparent,
             dragHandle = null,
+            contentWindowInsets = { WindowInsets(0) },
         ) {
-            MPBottomSheet(
+            MPListBottomSheet(
                 title = viewState.identificationTypeState.label,
                 items = types.map { MPBottomSheetListItem(label = it.name.orEmpty()) },
                 selectedLabel = viewState.identificationTypeState.selected?.name,
