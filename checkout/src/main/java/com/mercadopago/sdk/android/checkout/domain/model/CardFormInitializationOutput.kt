@@ -46,6 +46,7 @@ internal data class CardHolderField(
     val placeholder: String,
     val validation: Validation,
     val config: CardFieldConfig,
+    val helper: String,
 )
 
 internal data class ExpirationDateField(
