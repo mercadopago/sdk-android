@@ -44,6 +44,7 @@ internal fun provideDataModule() =
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
             CardPaymentViewModel(
+                stateFactory = get(),
                 checkoutConfiguration = checkoutConfiguration,
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
                 initializeCardFormUseCase = get(),

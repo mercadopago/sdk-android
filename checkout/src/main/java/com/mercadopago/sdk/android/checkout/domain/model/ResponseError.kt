@@ -4,5 +4,5 @@ internal data class ResponseError(
     val code: String,
     val errorCode: String,
     val message: String,
-    val userErrorMessage: String,
+    val userErrorMessage: String?,
 )
