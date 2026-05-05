@@ -260,7 +260,7 @@ internal fun CardPaymentScreenContent(
                                     label = viewState.identificationTypeState.label,
                                     helper = viewState.identificationTypeState.helper,
                                     placeHolder = viewState.identificationTypeState.placeHolder,
-                                    onItemClick = { showIdentificationBottomSheet = true },
+                                    onSelectorClick = { showIdentificationBottomSheet = true },
                                     onEvent = onIdentificationEvent,
                                 )
                             }

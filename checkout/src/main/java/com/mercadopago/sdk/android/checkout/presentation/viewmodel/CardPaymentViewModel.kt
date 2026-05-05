@@ -282,13 +282,12 @@ internal class CardPaymentViewModel(
                 }
             }
 
-            // TechDebt - Atualizar com valores do BFF
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 analyticsTracker.trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = "",
+                        placeHolder = event.identificationType.placeholder.orEmpty(),
                     ),
                 )
             }

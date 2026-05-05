@@ -40,6 +40,8 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfi
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
+private const val IDENTIFICATION_TEXT_FIELD_GROUP = "IdentificationTextField"
+
 /**
  * Composable function that displays an identification text field with MercadoPago styling.
  *
@@ -59,7 +61,8 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
- * @param onItemClick Optional callback invoked when the user taps the type selector. When provided,
+ * @param prefix Optional prefix text displayed between the type selector and the input field (e.g. country code).
+ * @param onSelectorClick Optional callback invoked when the user taps the type selector. When provided,
  * opens an external picker (e.g. [MPBottomSheet]) instead of the inline dropdown.
  * @param onEvent Callback invoked when identification field events occur (value changes, focus, type selection).
  */
@@ -70,13 +73,14 @@ fun MPIdentificationTextField(
     identificationTypes: List<IdentificationType>,
     selectedIdentificationType: IdentificationType?,
     isFocused: Boolean = false,
-    showPlaceHolder: Boolean = false,
+    showPlaceHolder: Boolean = true,
     error: String = "",
     enabled: Boolean = true,
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
-    onItemClick: (() -> Unit)? = null,
+    prefix: String = MP_EMPTY_STRING,
+    onSelectorClick: (() -> Unit)? = null,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
     val defaults = getMPInputDefaults()
@@ -96,44 +100,83 @@ fun MPIdentificationTextField(
             textStyle = MercadoPagoTheme.typography.body.default.medium,
             cursorBrush = SolidColor(defaults.colors.cursor),
             decorationBox = { innerTextField ->
-                MPInputDecorationBox(
-                    isFocused = isFocused,
-                    error = error.isNotBlank(),
-                    defaults = defaults,
-                ) {
-                    if (onItemClick != null) {
-                        MPIdentificationTypeSelectorButton(
-                            selectedIdentificationType = selectedIdentificationType,
-                            onClick = onItemClick,
-                            defaults = defaults,
-                        )
-                    } else {
-                        @Suppress("DEPRECATION")
-                        MPIdentificationTypeSelector(
-                            identificationTypes = identificationTypes,
-                            selectedIdentificationType = selectedIdentificationType,
-                            onTypeSelected = { identificationType ->
-                                onEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
-                            },
-                            defaults = defaults,
-                        )
-                    }
-                    VerticalDivider(modifier = Modifier.fillMaxHeight())
-                    Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
-                    Box(modifier = Modifier.weight(1f)) {
-                        if (showPlaceHolder && state.isEmpty) {
-                            MPText(
-                                text = placeHolder,
-                                style = MercadoPagoTheme.typography.body.default.medium,
-                                color = defaults.colors.textSecondary,
-                                modifier = Modifier.align(Alignment.CenterStart),
-                            )
-                        }
-                        innerTextField()
-                    }
-                }
+                MPIdentificationDecoration(
+                    innerTextField = innerTextField,
+                    params = MPIdentificationInputDefaults(
+                        isFocused = isFocused,
+                        error = error.isNotBlank(),
+                        identificationTypes = identificationTypes,
+                        selectedIdentificationType = selectedIdentificationType,
+                        prefix = prefix,
+                        showPlaceHolder = showPlaceHolder,
+                        placeHolder = placeHolder,
+                        inputDefaults = defaults,
+                    ),
+                    state = state,
+                    onSelectorClick = onSelectorClick,
+                    onEvent = onEvent,
+                )
             },
         )
+    }
+}
+
+private data class MPIdentificationInputDefaults(
+    val isFocused: Boolean,
+    val error: Boolean,
+    val identificationTypes: List<IdentificationType>,
+    val selectedIdentificationType: IdentificationType?,
+    val prefix: String,
+    val showPlaceHolder: Boolean,
+    val placeHolder: String,
+    val inputDefaults: MPInputDefaults,
+)
+
+@Composable
+private fun MPIdentificationDecoration(
+    innerTextField: @Composable () -> Unit,
+    params: MPIdentificationInputDefaults,
+    state: PCIFieldState,
+    onSelectorClick: (() -> Unit)?,
+    onEvent: (IdentificationTextFieldEvent) -> Unit,
+) {
+    MPInputDecorationBox(isFocused = params.isFocused, error = params.error, defaults = params.inputDefaults) {
+        if (onSelectorClick != null) {
+            MPIdentificationTypeSelectorButton(
+                selectedIdentificationType = params.selectedIdentificationType,
+                onClick = onSelectorClick,
+                defaults = params.inputDefaults,
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            MPIdentificationTypeSelector(
+                identificationTypes = params.identificationTypes,
+                selectedIdentificationType = params.selectedIdentificationType,
+                onTypeSelected = { onEvent(IdentificationTextFieldEvent.OnTypeSelected(it)) },
+                defaults = params.inputDefaults,
+            )
+        }
+        VerticalDivider(modifier = Modifier.fillMaxHeight())
+        Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
+        if (params.prefix.isNotBlank()) {
+            MPText(
+                text = params.prefix,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = params.inputDefaults.colors.textSecondary,
+            )
+            Spacer(modifier = Modifier.width(MercadoPagoTheme.spacing.paddings.xmicro))
+        }
+        Box(modifier = Modifier.weight(1f)) {
+            if (params.showPlaceHolder && state.isEmpty) {
+                MPText(
+                    text = params.placeHolder,
+                    style = MercadoPagoTheme.typography.body.default.medium,
+                    color = params.inputDefaults.colors.textSecondary,
+                    modifier = Modifier.align(Alignment.CenterStart),
+                )
+            }
+            innerTextField()
+        }
     }
 }
 
@@ -222,7 +265,7 @@ private fun MPIdentificationTypeSelectorButton(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "IdentificationTextField - Default", group = IDENTIFICATION_TEXT_FIELD_GROUP, showBackground = true)
 @Composable
 private fun MPIdentificationTextFieldPreview() {
     MercadoPagoTheme(
@@ -248,7 +291,7 @@ private fun MPIdentificationTextFieldPreview() {
             ),
         )
         Column(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(16.dp),
         ) {
             MPIdentificationTextField(
                 state = identificationState,
@@ -256,6 +299,40 @@ private fun MPIdentificationTextFieldPreview() {
                 selectedIdentificationType = identificationTypes.first(),
                 label = "Identification",
                 placeHolder = "000.000.000-00",
+                showPlaceHolder = true,
+            ) {
+            }
+        }
+    }
+}
+
+@Preview(name = "IdentificationTextField - With Prefix", group = IDENTIFICATION_TEXT_FIELD_GROUP, showBackground = true)
+@Composable
+private fun MPIdentificationTextFieldWithPrefixPreview() {
+    MercadoPagoTheme(
+        theme = MercadoPagoThemes.Default,
+    ) {
+        val identificationState = rememberPCIFieldState()
+        val identificationTypes = listOf(
+            IdentificationType(
+                id = "CPF",
+                name = "CPF",
+                type = "number",
+                minLength = 11,
+                maxLength = 11,
+                mask = "###.###.###-##",
+            ),
+        )
+        Column(
+            modifier = Modifier.padding(16.dp),
+        ) {
+            MPIdentificationTextField(
+                state = identificationState,
+                identificationTypes = identificationTypes,
+                selectedIdentificationType = identificationTypes.first(),
+                label = "Identification",
+                placeHolder = "000.000.000-00",
+                prefix = "+55",
                 showPlaceHolder = true,
             ) {
             }
