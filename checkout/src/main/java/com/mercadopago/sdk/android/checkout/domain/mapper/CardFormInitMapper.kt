@@ -68,6 +68,7 @@ private fun HolderNameConfig.toCardHolderField(
             errorIncomplete = translations.errorIncompleteField,
             errorInvalid = translations.errorInvalidField,
         ),
+        helper = translations.helper.orEmpty(),
         config = CardFieldConfig(
             type = type,
             length = length.toLengthRange(),

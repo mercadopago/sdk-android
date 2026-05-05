@@ -44,6 +44,7 @@ private fun CardHolderField.toCardHolderState() =
         label = label,
         placeHolder = placeholder,
         validation = validation.toValidationState(),
+        helper = helper,
     )
 
 private fun ExpirationDateField.toExpirationDateState() =
