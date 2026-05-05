@@ -40,7 +40,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTyp
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.components.MPBottomSheet
-import com.mercadopago.sdk.android.components.MPBottomSheetListItem
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -53,6 +52,7 @@ import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
+import com.mercadopago.sdk.android.components.model.MPBottomSheetListItem
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -260,7 +260,7 @@ internal fun CardPaymentScreenContent(
                                     label = viewState.identificationTypeState.label,
                                     helper = viewState.identificationTypeState.helper,
                                     placeHolder = viewState.identificationTypeState.placeHolder,
-                                    onTypeClick = { showIdentificationBottomSheet = true },
+                                    onItemClick = { showIdentificationBottomSheet = true },
                                     onEvent = onIdentificationEvent,
                                 )
                             }

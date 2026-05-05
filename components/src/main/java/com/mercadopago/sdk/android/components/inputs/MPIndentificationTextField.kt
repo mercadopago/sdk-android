@@ -59,7 +59,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param placeHolder Field place holder.
- * @param onTypeClick Optional callback invoked when the user taps the type selector. When provided,
+ * @param onItemClick Optional callback invoked when the user taps the type selector. When provided,
  * opens an external picker (e.g. [MPBottomSheet]) instead of the inline dropdown.
  * @param onEvent Callback invoked when identification field events occur (value changes, focus, type selection).
  */
@@ -76,7 +76,7 @@ fun MPIdentificationTextField(
     label: String = "",
     helper: String = "",
     placeHolder: String = MP_EMPTY_STRING,
-    onTypeClick: (() -> Unit)? = null,
+    onItemClick: (() -> Unit)? = null,
     onEvent: (IdentificationTextFieldEvent) -> Unit,
 ) {
     val defaults = getMPInputDefaults()
@@ -101,10 +101,10 @@ fun MPIdentificationTextField(
                     error = error.isNotBlank(),
                     defaults = defaults,
                 ) {
-                    if (onTypeClick != null) {
+                    if (onItemClick != null) {
                         MPIdentificationTypeSelectorButton(
                             selectedIdentificationType = selectedIdentificationType,
-                            onClick = onTypeClick,
+                            onClick = onItemClick,
                             defaults = defaults,
                         )
                     } else {

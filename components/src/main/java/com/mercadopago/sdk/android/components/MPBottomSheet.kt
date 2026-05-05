@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -22,8 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.components.model.MPBottomSheetListItem
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -77,21 +85,13 @@ fun MPBottomSheet(
     }
 }
 
-/**
- * A document type option for [MPBottomSheet].
- *
- * @param label Display text shown in the list row; drives selection state
- */
-data class MPBottomSheetListItem(
-    val label: String,
-)
-
 @Composable
 private fun MPBottomSheetDragIndicator() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(MercadoPagoTheme.spacing.paddings.tiny),
+            .height(MercadoPagoTheme.spacing.paddings.tiny)
+            .clearAndSetSemantics {},
         contentAlignment = Alignment.Center,
     ) {
         Box(
@@ -139,6 +139,7 @@ private fun MPBottomSheetHeader(
                 .size(MercadoPagoTheme.spacing.gap.xsmall)
                 .clip(MercadoPagoTheme.shape.small)
                 .background(MercadoPagoTheme.color.interactive.fillMute.idle)
+                .semantics { role = Role.Button }
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
@@ -148,7 +149,7 @@ private fun MPBottomSheetHeader(
         ) {
             Icon(
                 painter = painterResource(R.drawable.mp_icon_close_x),
-                contentDescription = null,
+                contentDescription = stringResource(R.string.mp_bottom_sheet_close_description),
                 tint = MercadoPagoTheme.color.interactive.icon.idle,
             )
         }
@@ -164,6 +165,7 @@ private fun MPBottomSheetList(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .selectableGroup()
             .padding(MercadoPagoTheme.spacing.paddings.xnano),
         verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.gap.xmicro),
     ) {
@@ -194,6 +196,10 @@ private fun MPBottomSheetRow(
                     MercadoPagoTheme.color.interactive.fillMute.idle
                 },
             )
+            .semantics {
+                role = Role.RadioButton
+                this.selected = selected
+            }
             .clickable { onItemSelected(item) },
     ) {
         MPText(

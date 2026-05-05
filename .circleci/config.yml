@@ -54,9 +54,6 @@ jobs:
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
-          name: Download Dependencies
-          command: ./gradlew dependencies --no-build-cache
-      - run:
           name: Run Detekt
           command: ./gradlew detekt
       - run:
@@ -87,12 +84,6 @@ jobs:
       - run:
           name: Run Code Coverage
           command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
-      - save_cache:
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          when: always
       - run:
           name: Verify Diff Coverage (80%)
           command: .circleci/scripts/verify-diff-coverage.sh
@@ -186,12 +177,6 @@ jobs:
           keys:
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
             - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
-      - save_cache:
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          when: always
       - run:
           name: Build Debug and Release AARs
           command: ./gradlew assembleDebug assembleRelease --parallel
