@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.coremethods.di
 
 import android.app.Application
 import android.content.pm.ApplicationInfo
+import com.google.gson.Gson
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -48,7 +49,7 @@ internal class CoreMethodsModulesProviderTest {
         }
 
         // Then
-        module.verify()
+        module.verify(extraTypes = listOf(Gson::class))
         koin.checkModules()
     }
 }
