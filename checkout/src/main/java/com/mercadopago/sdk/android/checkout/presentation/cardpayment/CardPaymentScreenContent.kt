@@ -53,7 +53,6 @@ import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
-import com.mercadopago.sdk.android.components.model.MPBottomSheetListItem
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -326,10 +325,10 @@ internal fun CardPaymentScreenContent(
         ) {
             MPListBottomSheet(
                 title = viewState.identificationTypeState.label,
-                items = types.map { MPBottomSheetListItem(label = it.name.orEmpty()) },
+                items = types.toBottomSheetItems(),
                 selectedLabel = viewState.identificationTypeState.selected?.name,
                 onItemSelected = { item ->
-                    types.find { it.name == item.label }?.let {
+                    types.findByBottomSheetItem(item)?.let {
                         onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(it))
                     }
                     showIdentificationBottomSheet = false
