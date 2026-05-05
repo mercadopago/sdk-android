@@ -7,19 +7,21 @@ import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeaderTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
-import com.mercadopago.sdk.android.checkout.domain.model.BinSecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
-import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
-import com.mercadopago.sdk.android.checkout.domain.model.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -85,22 +87,24 @@ internal class CardPaymentViewModelTest {
         throwable = null,
     )
 
-    private val fullTranslations = CardFormTranslations(
-        cardNumber = CardNumberTranslations(
+    private val fullTranslations = Translations(
+        cardFormTitle = "",
+        cardFormFooterButtonLabel = "",
+        cardNumber = FieldTranslations(
             label = "Número",
             placeholder = "•••• ••••",
             errorEmptyField = "",
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
-        cardHolderName = HolderNameTranslations(
+        holderName = FieldTranslations(
             label = "Titular",
             placeholder = "Nome",
             errorEmptyField = "",
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
-        expirationDate = ExpirationDateTranslations(
+        expirationDate = FieldTranslations(
             label = "Vencimento",
             placeholder = "MM/AA",
             errorEmptyField = "",
@@ -113,6 +117,21 @@ internal class CardPaymentViewModelTest {
             tooltip = "3 dígitos no verso",
             errorEmptyField = "",
             errorIncompleteField = "",
+        ),
+        document = DocumentTranslations(
+            label = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        installments = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(
+                chevron = "",
+                radio = "",
+                title = "",
+            ),
+            interestFreeLabel = "",
+            totalLabel = "",
         ),
     )
 
@@ -137,7 +156,6 @@ internal class CardPaymentViewModelTest {
     private fun makeViewModel(
         config: CheckoutConfiguration? = checkoutConfiguration,
     ) = CardPaymentViewModel(
-        stateFactory = stateFactory,
         checkoutConfiguration = config,
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
@@ -264,8 +282,8 @@ internal class CardPaymentViewModelTest {
         val data = CardBinData(
             id = "visa",
             paymentTypeId = "credit_card",
-            cardNumber = CardNumberConfig(length = 16, validation = "standard", mask = null),
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = "back"),
+            cardNumber = CardNumberConfig(type = "Number", length = LengthConfig(min = 16, max = 16), mask = ""),
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
             quotas = listOf(
                 Quota(
@@ -292,7 +310,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
             translations = null,
@@ -312,7 +330,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = BinSecurityCodeConfig(mode = "optional", length = 0, cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "Number", length = 0, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
             translations = null,
@@ -378,7 +396,22 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
 
-        assertEquals(stateBefore.cardNumberState.label, viewModel.viewState.value.cardNumberState.label)
+        val state = viewModel.viewState.value
+        // card number — not updated by applyCardBinData
+        assertEquals(stateBefore.cardNumberState.label, state.cardNumberState.label)
+        assertEquals(stateBefore.cardNumberState.maxLength, state.cardNumberState.maxLength)
+        assertEquals(stateBefore.cardNumberState.placeHolder, state.cardNumberState.placeHolder)
+        assertEquals(stateBefore.cardNumberState.errorTypes, state.cardNumberState.errorTypes)
+        // security code — not updated by applyCardBinData
+        assertEquals(stateBefore.secureCodeState.label, state.secureCodeState.label)
+        assertEquals(stateBefore.secureCodeState.maxLength, state.secureCodeState.maxLength)
+        assertFalse(state.secureCodeState.optional)
+        // card holder and expiration date — not updated by applyCardBinData
+        assertEquals(stateBefore.cardHolderState.label, state.cardHolderState.label)
+        assertEquals(stateBefore.expirationDateState.label, state.expirationDateState.label)
+        // issuers and installments — not updated by applyCardBinData
+        assertTrue(state.cardIssuers.isEmpty())
+        assertFalse(state.installmentsState.showList)
     }
 
     @Test

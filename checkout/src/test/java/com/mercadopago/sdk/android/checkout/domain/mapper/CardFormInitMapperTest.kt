@@ -2,12 +2,10 @@ package com.mercadopago.sdk.android.checkout.domain.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationType
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeaderTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslations
@@ -23,21 +21,21 @@ internal class CardFormInitMapperTest {
     private fun buildTranslations(
         cardFormTitle: String = "Card Payment",
         cardFormFooterButtonLabel: String = "Pay",
-        cardNumber: CardNumberTranslations = CardNumberTranslations(
+        cardNumber: FieldTranslations = FieldTranslations(
             label = "Card number",
             placeholder = "0000 0000 0000 0000",
             errorEmptyField = "Required",
             errorIncompleteField = "Incomplete",
             errorInvalidField = "Invalid",
         ),
-        holderName: HolderNameTranslations = HolderNameTranslations(
+        holderName: FieldTranslations = FieldTranslations(
             label = "Cardholder name",
             placeholder = "Name as on card",
             errorEmptyField = "Required",
             errorIncompleteField = "Incomplete",
             errorInvalidField = "Invalid format",
         ),
-        expirationDate: ExpirationDateTranslations = ExpirationDateTranslations(
+        expirationDate: FieldTranslations = FieldTranslations(
             label = "Expiration date",
             placeholder = "MM/YY",
             errorEmptyField = "Required",
@@ -130,7 +128,7 @@ internal class CardFormInitMapperTest {
 
     @Test
     fun `given response then cardNumber label and placeholder are mapped`() {
-        val translations = CardNumberTranslations(
+        val translations = FieldTranslations(
             label = "Número",
             placeholder = "0000",
             errorEmptyField = "req",
@@ -147,7 +145,7 @@ internal class CardFormInitMapperTest {
 
     @Test
     fun `given response then cardNumber validation errors are mapped`() {
-        val translations = CardNumberTranslations(
+        val translations = FieldTranslations(
             label = "",
             placeholder = "",
             errorEmptyField = "empty",
@@ -181,7 +179,7 @@ internal class CardFormInitMapperTest {
 
     @Test
     fun `given response then holderName label placeholder and validation are mapped`() {
-        val translations = HolderNameTranslations(
+        val translations = FieldTranslations(
             label = "Titular",
             placeholder = "Nome",
             errorEmptyField = "empty",
@@ -201,7 +199,7 @@ internal class CardFormInitMapperTest {
 
     @Test
     fun `given response then expirationDate label placeholder and validation are mapped`() {
-        val translations = ExpirationDateTranslations(
+        val translations = FieldTranslations(
             label = "Validade",
             placeholder = "MM/AA",
             errorEmptyField = "empty",
