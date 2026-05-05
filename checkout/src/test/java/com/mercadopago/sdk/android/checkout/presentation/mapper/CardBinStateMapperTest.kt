@@ -1,14 +1,21 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeaderTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
-import com.mercadopago.sdk.android.checkout.domain.model.BinSecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
-import com.mercadopago.sdk.android.checkout.domain.model.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,11 +28,22 @@ internal class CardBinStateMapperTest {
         cardNumberState = CardNumberState(
             label = "Número",
             placeHolder = "0000",
+            helper = "Digite o número",
             maxLength = 16,
         ),
         secureCodeState = SecurityCodeState(
             label = "CVV",
+            placeHolder = "000",
+            messageTooltip = "3 dígitos",
             maxLength = 3,
+        ),
+        cardHolderState = CardHolderState(
+            label = "Titular",
+            placeHolder = "Nome no cartão",
+        ),
+        expirationDateState = ExpirationDateState(
+            label = "Validade",
+            placeHolder = "MM/AA",
         ),
     )
 
@@ -39,15 +57,84 @@ internal class CardBinStateMapperTest {
         translations = null,
     )
 
+    private fun fieldTranslations(
+        label: String = "",
+        placeholder: String = "",
+        helper: String? = null,
+    ) = FieldTranslations(
+        label = label,
+        placeholder = placeholder,
+        helper = helper,
+        errorEmptyField = "",
+        errorIncompleteField = "",
+        errorInvalidField = "",
+    )
+
+    private fun securityCodeTranslations(
+        label: String = "",
+        placeholder: String = "",
+        tooltip: String = "",
+        helper: String? = null,
+    ) = SecurityCodeTranslations(
+        label = label,
+        placeholder = placeholder,
+        helper = helper,
+        tooltip = tooltip,
+        errorEmptyField = "",
+        errorIncompleteField = "",
+    )
+
+    private fun defaultTranslations(
+        cardNumber: FieldTranslations = fieldTranslations(),
+        holderName: FieldTranslations = fieldTranslations(),
+        expirationDate: FieldTranslations = fieldTranslations(),
+        securityCode: SecurityCodeTranslations = securityCodeTranslations(),
+    ) = Translations(
+        cardFormTitle = "",
+        cardFormFooterButtonLabel = "",
+        cardNumber = cardNumber,
+        holderName = holderName,
+        expirationDate = expirationDate,
+        securityCode = securityCode,
+        document = DocumentTranslations(
+            label = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        installments = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(
+                chevron = "",
+                radio = "",
+                title = "",
+            ),
+            interestFreeLabel = "",
+            totalLabel = "",
+        ),
+    )
+
+    // ── card number ───────────────────────────────────────────────────────────
+
     @Test
     fun `given cardNumber with length then updates maxLength`() {
         val data = emptyBinData.copy(
-            cardNumber = CardNumberConfig(length = 13, validation = null, mask = null),
+            cardNumber = CardNumberConfig(type = "Number", length = LengthConfig(min = 13, max = 13), mask = ""),
         )
 
         val result = baseState.applyCardBinData(data)
 
         assertEquals(13, result.cardNumberState.maxLength)
+    }
+
+    @Test
+    fun `given cardNumber with length then updates mask`() {
+        val data = emptyBinData.copy(
+            cardNumber = CardNumberConfig(type = "Number", length = LengthConfig(min = 16, max = 16), mask = ""),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("#### #### #### ####", result.cardNumberState.mask)
     }
 
     @Test
@@ -58,7 +145,55 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given issuers with thumbnail then sets image from first issuer`() {
+    fun `given translations with cardNumber label then updates label and placeholder`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                cardNumber = fieldTranslations(label = "Card number", placeholder = "#### #### #### ####"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Card number", result.cardNumberState.label)
+        assertEquals("#### #### #### ####", result.cardNumberState.placeHolder)
+    }
+
+    @Test
+    fun `given translations with cardNumber helper then updates helper`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                cardNumber = fieldTranslations(helper = "16 dígitos"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("16 dígitos", result.cardNumberState.helper)
+    }
+
+    @Test
+    fun `given empty cardNumber label in translations then keeps current label`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(cardNumber = fieldTranslations(label = "")),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Número", result.cardNumberState.label)
+    }
+
+    @Test
+    fun `given null translations then keeps current cardNumber label and placeholder`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertEquals("Número", result.cardNumberState.label)
+        assertEquals("0000", result.cardNumberState.placeHolder)
+    }
+
+    // ── card number image ─────────────────────────────────────────────────────
+
+    @Test
+    fun `given issuers then sets image from first issuer`() {
         val data = emptyBinData.copy(
             issuers = listOf(
                 BinIssuer(id = 1L, name = "Visa", secureThumbnail = "https://img.visa.com"),
@@ -78,68 +213,17 @@ internal class CardBinStateMapperTest {
         assertNull(result.cardNumberState.image)
     }
 
+    // ── security code ─────────────────────────────────────────────────────────
+
     @Test
-    fun `given translations with non-empty cardNumber label then updates label`() {
+    fun `given securityCode with length then updates maxLength`() {
         val data = emptyBinData.copy(
-            translations = CardFormTranslations(
-                cardNumber = CardNumberTranslations(
-                    label = "Card number",
-                    placeholder = "#### #### #### ####",
-                    errorEmptyField = "",
-                    errorIncompleteField = "",
-                    errorInvalidField = "",
-                ),
-                cardHolderName = null,
-                expirationDate = null,
-                securityCode = null,
-            ),
-        )
-
-        val result = baseState.applyCardBinData(data)
-
-        assertEquals("Card number", result.cardNumberState.label)
-        assertEquals("#### #### #### ####", result.cardNumberState.placeHolder)
-    }
-
-    @Test
-    fun `given null translations then keeps current cardNumber label`() {
-        val result = baseState.applyCardBinData(emptyBinData)
-
-        assertEquals("Número", result.cardNumberState.label)
-        assertEquals("0000", result.cardNumberState.placeHolder)
-    }
-
-    @Test
-    fun `given securityCode with length then updates secureCode maxLength`() {
-        val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 4, cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "Number", length = 4, mode = "mandatory"),
         )
 
         val result = baseState.applyCardBinData(data)
 
         assertEquals(4, result.secureCodeState.maxLength)
-    }
-
-    @Test
-    fun `given securityCode mode optional then optional is true`() {
-        val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "optional", length = 3, cardLocation = ""),
-        )
-
-        val result = baseState.applyCardBinData(data)
-
-        assertTrue(result.secureCodeState.optional)
-    }
-
-    @Test
-    fun `given securityCode mode mandatory then optional is false`() {
-        val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = ""),
-        )
-
-        val result = baseState.applyCardBinData(data)
-
-        assertFalse(result.secureCodeState.optional)
     }
 
     @Test
@@ -150,11 +234,155 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given issuers then maps to CardIssuer list with id and thumbnail`() {
+    fun `given securityCode mode optional then optional is true`() {
         val data = emptyBinData.copy(
-            issuers = listOf(
-                BinIssuer(id = 42L, name = "Visa", secureThumbnail = "https://img.com/42"),
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, mode = "optional"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertTrue(result.secureCodeState.optional)
+    }
+
+    @Test
+    fun `given securityCode mode mandatory then optional is false`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, mode = "mandatory"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertFalse(result.secureCodeState.optional)
+    }
+
+    @Test
+    fun `given securityCode placeholder then updates placeHolder`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, placeholder = "•••"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("•••", result.secureCodeState.placeHolder)
+    }
+
+    @Test
+    fun `given securityCode tooltip then updates messageTooltip`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, tooltip = "Verso do cartão"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Verso do cartão", result.secureCodeState.messageTooltip)
+    }
+
+    @Test
+    fun `given translations with securityCode label then updates label`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                securityCode = securityCodeTranslations(label = "Código de segurança"),
             ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Código de segurança", result.secureCodeState.label)
+    }
+
+    @Test
+    fun `given securityCode placeholder overrides translations placeholder`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, placeholder = "from config"),
+            translations = defaultTranslations(
+                securityCode = securityCodeTranslations(placeholder = "from translations"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("from config", result.secureCodeState.placeHolder)
+    }
+
+    @Test
+    fun `given securityCode tooltip overrides translations tooltip`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeConfig(type = "Number", length = 3, tooltip = "from config"),
+            translations = defaultTranslations(
+                securityCode = securityCodeTranslations(tooltip = "from translations"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("from config", result.secureCodeState.messageTooltip)
+    }
+
+    // ── card holder ───────────────────────────────────────────────────────────
+
+    @Test
+    fun `given translations with holderName then updates cardHolderState`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                holderName = fieldTranslations(label = "Nome no cartão", placeholder = "Ex. Maria Silva"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Nome no cartão", result.cardHolderState.label)
+        assertEquals("Ex. Maria Silva", result.cardHolderState.placeHolder)
+    }
+
+    @Test
+    fun `given empty holderName label in translations then keeps current label`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(holderName = fieldTranslations(label = "")),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Titular", result.cardHolderState.label)
+    }
+
+    @Test
+    fun `given null translations then keeps current cardHolderState`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertEquals("Titular", result.cardHolderState.label)
+        assertEquals("Nome no cartão", result.cardHolderState.placeHolder)
+    }
+
+    // ── expiration date ───────────────────────────────────────────────────────
+
+    @Test
+    fun `given translations with expirationDate then updates expirationDateState`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                expirationDate = fieldTranslations(label = "Data de validade", placeholder = "MM/AA"),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Data de validade", result.expirationDateState.label)
+        assertEquals("MM/AA", result.expirationDateState.placeHolder)
+    }
+
+    @Test
+    fun `given null translations then keeps current expirationDateState`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertEquals("Validade", result.expirationDateState.label)
+        assertEquals("MM/AA", result.expirationDateState.placeHolder)
+    }
+
+    // ── issuers ───────────────────────────────────────────────────────────────
+
+    @Test
+    fun `given issuers then maps to CardIssuer list`() {
+        val data = emptyBinData.copy(
+            issuers = listOf(BinIssuer(id = 42L, name = "Visa", secureThumbnail = "https://img.com/42")),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -170,6 +398,8 @@ internal class CardBinStateMapperTest {
 
         assertTrue(result.cardIssuers.isEmpty())
     }
+
+    // ── installments ──────────────────────────────────────────────────────────
 
     @Test
     fun `given non-empty quotas then showList is true`() {
@@ -198,7 +428,7 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given quotas then maps quantity to instalments`() {
+    fun `given quotas then maps to PayerCost list`() {
         val data = emptyBinData.copy(
             quotas = listOf(
                 Quota(
@@ -206,7 +436,7 @@ internal class CardBinStateMapperTest {
                     installmentAmount = "33.33",
                     totalAmount = "100.00",
                     label = "3x",
-                    discountRate = null,
+                    discountRate = 0.0,
                 ),
             ),
         )
@@ -219,6 +449,8 @@ internal class CardBinStateMapperTest {
         assertEquals(100.00f, payerCost.totalAmount)
         assertEquals(listOf("3x"), payerCost.labels)
     }
+
+    // ── payment state ─────────────────────────────────────────────────────────
 
     @Test
     fun `given binData with id and paymentTypeId then updates paymentState`() {
