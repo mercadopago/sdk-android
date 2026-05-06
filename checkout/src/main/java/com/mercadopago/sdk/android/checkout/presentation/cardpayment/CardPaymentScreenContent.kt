@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -13,9 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -316,26 +313,17 @@ internal fun CardPaymentScreenContent(
 
     if (showIdentificationBottomSheet) {
         val types = viewState.identificationTypeState.identificationTypes.orEmpty()
-        ModalBottomSheet(
-            onDismissRequest = { showIdentificationBottomSheet = false },
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-            containerColor = Color.Transparent,
-            dragHandle = null,
-            contentWindowInsets = { WindowInsets(0) },
-        ) {
-            MPListBottomSheet(
-                title = viewState.identificationTypeState.label,
-                items = types.toBottomSheetItems(),
-                selectedLabel = viewState.identificationTypeState.selected?.name,
-                onItemSelected = { item ->
-                    types.findByBottomSheetItem(item)?.let {
-                        onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(it))
-                    }
-                    showIdentificationBottomSheet = false
-                },
-                onDismiss = { showIdentificationBottomSheet = false },
-            )
-        }
+        MPListBottomSheet(
+            title = viewState.identificationTypeState.label,
+            items = types.toBottomSheetItems(),
+            selectedLabel = viewState.identificationTypeState.selected?.name,
+            onItemSelected = { item ->
+                types.findByBottomSheetItem(item)?.let {
+                    onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(it))
+                }
+            },
+            onDismiss = { showIdentificationBottomSheet = false },
+        )
     }
 }
 
