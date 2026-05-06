@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.checkout.data.remote.datasource
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -39,8 +39,9 @@ internal class CardFormRemoteDataSourceImplTest {
 
         val result = dataSource.fetchInitialization(amount, checkoutType)
 
-        assertIs<Result.Error<ResultError>>(result)
-        assertIs<ResultError.Request>(result.error)
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("404", error.error.code)
+        assertEquals(404, error.error.httpStatus)
     }
 
     @Test
