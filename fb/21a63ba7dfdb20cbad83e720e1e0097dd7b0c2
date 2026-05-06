@@ -1,0 +1,41 @@
+components/src/main/java/com/mercadopago/sdk/android/components/bottomsheet/MPListBottomSheet.kt
+  edcdd4def9b32b0a 38,103-108
+  29b4c421824b64b5 5,9,15-16,18-22,36-37,39,42,44-47,50,52-54,64-102,150-153,198,222
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  29b4c421824b64b5 316-326
+components/build.gradle.kts
+  29b4c421824b64b5 66-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "fb21a63ba7dfdb20cbad83e720e1e0097dd7b0c2",
+  "prompts": {
+    "29b4c421824b64b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d0e972c-8541-4ed1-9839-5c680e485975",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 113,
+      "total_deletions": 62,
+      "accepted_lines": 87,
+      "overriden_lines": 0
+    },
+    "edcdd4def9b32b0a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "37295888-c202-4c37-9877-a40ab30b16e1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 162,
+      "overriden_lines": 0
+    }
+  }
+}
