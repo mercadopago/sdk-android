@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
@@ -383,9 +382,7 @@ internal class CardPaymentViewModel(
                     onSuccess = { data ->
                         _viewState.value = _viewState.value.applyCardBinData(data)
                     },
-                    onError = { error ->
-                        Log.i("test", error.toString())
-                    },
+                    onError = { },
                 )
             }
         }

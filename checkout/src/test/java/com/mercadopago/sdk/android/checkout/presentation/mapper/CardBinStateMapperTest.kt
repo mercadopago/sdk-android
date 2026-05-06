@@ -1,11 +1,16 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeaderTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
-import com.mercadopago.sdk.android.checkout.domain.model.BinSecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.checkout.domain.model.CardFormTranslations
-import com.mercadopago.sdk.android.checkout.domain.model.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -17,6 +22,52 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CardBinStateMapperTest {
+    private fun defaultTranslations(
+        cardNumber: FieldTranslations = FieldTranslations(
+            label = "",
+            placeholder = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+    ) = Translations(
+        cardFormTitle = "",
+        cardFormFooterButtonLabel = "",
+        cardNumber = cardNumber,
+        holderName = FieldTranslations(
+            label = "",
+            placeholder = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        expirationDate = FieldTranslations(
+            label = "",
+            placeholder = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        securityCode = SecurityCodeTranslations(
+            label = "",
+            placeholder = "",
+            tooltip = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+        ),
+        document = DocumentTranslations(
+            label = "",
+            errorEmptyField = "",
+            errorIncompleteField = "",
+            errorInvalidField = "",
+        ),
+        installments = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
+            interestFreeLabel = "",
+            totalLabel = "",
+        ),
+    )
+
     private val baseState = CardPaymentScreenState(
         cardNumberState = CardNumberState(
             label = "Número",
@@ -42,7 +93,7 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given cardNumber with length then updates maxLength`() {
         val data = emptyBinData.copy(
-            cardNumber = CardNumberConfig(length = 13, validation = null, mask = null),
+            cardNumber = CardNumberConfig(type = "text", length = LengthConfig(min = 13, max = 13), mask = ""),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -81,17 +132,14 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given translations with non-empty cardNumber label then updates label`() {
         val data = emptyBinData.copy(
-            translations = CardFormTranslations(
-                cardNumber = CardNumberTranslations(
+            translations = defaultTranslations(
+                cardNumber = FieldTranslations(
                     label = "Card number",
                     placeholder = "#### #### #### ####",
                     errorEmptyField = "",
                     errorIncompleteField = "",
                     errorInvalidField = "",
                 ),
-                cardHolderName = null,
-                expirationDate = null,
-                securityCode = null,
             ),
         )
 
@@ -112,7 +160,7 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given securityCode with length then updates secureCode maxLength`() {
         val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 4, cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 4, mode = "mandatory", cardLocation = ""),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -123,7 +171,7 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given securityCode mode optional then optional is true`() {
         val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "optional", length = 3, cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = ""),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -134,7 +182,7 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given securityCode mode mandatory then optional is false`() {
         val data = emptyBinData.copy(
-            securityCode = BinSecurityCodeConfig(mode = "mandatory", length = 3, cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = ""),
         )
 
         val result = baseState.applyCardBinData(data)

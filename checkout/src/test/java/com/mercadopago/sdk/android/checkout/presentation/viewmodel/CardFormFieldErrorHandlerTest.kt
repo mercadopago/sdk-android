@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
@@ -17,9 +16,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class CardFormFieldErrorHandlerTest {
-    private val stateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
     private val analyticsTracker = mockk<CardFormAnalyticsTracker>(relaxed = true)
-    private val handler = CardFormFieldErrorHandler(stateFactory, analyticsTracker)
+    private val handler = CardFormFieldErrorHandler(analyticsTracker)
 
     private val cardValidation = ValidationState(
         errorEmpty = "Número obrigatório",
