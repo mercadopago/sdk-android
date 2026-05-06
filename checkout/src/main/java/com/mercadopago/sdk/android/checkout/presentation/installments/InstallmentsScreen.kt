@@ -44,13 +44,6 @@ internal fun InstallmentsScreen(
     val viewState by viewModel.viewState.collectAsState()
     val viewEvent by viewModel.viewEvent.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getInstallments(
-            bin = "44443333",
-            amount = BigDecimal.TEN,
-        )
-    }
-
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is InstallmentsScreenEvent.OnInstallmentsSelected -> {
