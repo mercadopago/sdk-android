@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
@@ -24,6 +25,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScr
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -31,12 +33,13 @@ import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState.Companion.create as createPCIFieldState
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
@@ -48,6 +51,13 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
+
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
+
+    val cardNumberPCIState = createPCIFieldState()
+    val expirationDatePCIState = createPCIFieldState()
+    val securityCodePCIState = createPCIFieldState()
 
     private var isCancelling = false
 
@@ -326,11 +336,7 @@ internal class CardPaymentViewModel(
         }
     }
 
-    fun onSubmit(
-        cardNumberState: PCIFieldState,
-        expirationDateState: PCIFieldState,
-        securityCodeState: PCIFieldState,
-    ) {
+    fun onSubmit() {
         _viewState.value.let { state ->
             val hasIdentificationError = state.identificationTypeState.show &&
                 state.identificationTypeState.error.isNotEmpty()
@@ -340,18 +346,42 @@ internal class CardPaymentViewModel(
                 state.cardHolderState.error.isNotEmpty() ||
                 hasIdentificationError
             if (!hasErrors) {
-                generateToken(
-                    cardNumberState = cardNumberState,
-                    expirationDateState = expirationDateState,
-                    securityCodeState = securityCodeState,
-                    buyerIdentification = BuyerIdentification(
-                        name = state.cardHolderState.value,
-                        number = state.identificationTypeState.value,
-                        type = state.identificationTypeState.selected?.name,
-                    ),
-                )
+                if (state.installmentsState.showList) {
+                    _viewEvent.value = CardPaymentViewEvent.NavigateToInstallments(
+                        payerCosts = state.installmentsState.installments,
+                        lastFourDigits = state.cardNumberState.lastFourDigits,
+                        paymentMethodId = state.paymentState.paymentMethodId.orEmpty(),
+                    )
+                } else {
+                    generateToken(
+                        buyerIdentification = BuyerIdentification(
+                            name = state.cardHolderState.value,
+                            number = state.identificationTypeState.value,
+                            type = state.identificationTypeState.selected?.name,
+                        ),
+                        installment = 1,
+                    )
+                }
             }
         }
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
+    }
+
+    fun generateTokenAndPay(
+        installment: Int,
+    ) {
+        val state = _viewState.value
+        generateToken(
+            buyerIdentification = BuyerIdentification(
+                name = state.cardHolderState.value,
+                number = state.identificationTypeState.value,
+                type = state.identificationTypeState.selected?.name,
+            ),
+            installment = installment,
+        )
     }
 
     private fun onBinChanged(
@@ -389,24 +419,22 @@ internal class CardPaymentViewModel(
     }
 
     private fun generateToken(
-        cardNumberState: PCIFieldState,
-        expirationDateState: PCIFieldState,
-        securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification,
+        installment: Int,
     ) {
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
             generateTokenUseCase(
-                cardNumberState = cardNumberState,
-                expirationDateState = expirationDateState,
-                securityCodeState = securityCodeState,
+                cardNumberState = cardNumberPCIState,
+                expirationDateState = expirationDatePCIState,
+                securityCodeState = securityCodePCIState,
                 buyerIdentification = buyerIdentification,
             ).fold(
                 onSuccess = { cardToken ->
                     val paymentData = MPPaymentData(
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount(),
+                        transactionAmount = checkoutConfiguration?.getAmount(),
                         token = cardToken.token,
-                        installment = 1,
+                        installment = installment,
                         paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                         issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
@@ -417,7 +445,7 @@ internal class CardPaymentViewModel(
                     )
                     analyticsTracker.trackSubmit(
                         cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble(),
+                        transactionAmount = checkoutConfiguration?.getAmount()?.toDouble(),
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )

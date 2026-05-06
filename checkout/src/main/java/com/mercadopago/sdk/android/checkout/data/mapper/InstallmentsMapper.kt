@@ -11,6 +11,18 @@ internal const val INTEREST_FREE = "Sem acréscimo"
 
 internal const val FIRST_INSTALLMENT = 1
 
+internal fun List<PayerCost>.toInstallmentsState(): List<InstallmentState> =
+    map {
+        InstallmentState(
+            text = "${it.instalments} $SEPARATOR_INSTALLMENTS ${it.installmentAmount?.toCurrencyString()}",
+            description = "",
+            trailing = it.formatTrailingText(),
+            interestFree = it.installmentAmount == it.totalAmount,
+            isSelected = false,
+            number = it.instalments ?: FIRST_INSTALLMENT,
+        )
+    }
+
 internal fun Installment?.toInstallmentsState(): List<InstallmentState> =
     this?.payerCost?.map {
         InstallmentState(

@@ -1,15 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.installments
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -23,17 +21,19 @@ import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
+import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
+import com.mercadopago.sdk.android.components.model.MPListItemType
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
-import java.math.BigDecimal
 
 @Composable
 internal fun InstallmentsScreen(
@@ -49,7 +49,9 @@ internal fun InstallmentsScreen(
             is InstallmentsScreenEvent.OnInstallmentsSelected -> {
                 onInstallmentSelected(event.installment)
             }
-            InstallmentsScreenEvent.Idle -> Unit
+            is InstallmentsScreenEvent.ConfirmPayment,
+            InstallmentsScreenEvent.Idle,
+            -> Unit
         }
     }
 
@@ -57,6 +59,7 @@ internal fun InstallmentsScreen(
         viewState = viewState,
         onBackClick = onBackClick,
         onItemClick = { viewModel.onInstallmentSelected(installment = it) },
+        onPayClick = { viewModel.onPayClicked() },
     )
 }
 
@@ -65,100 +68,185 @@ private fun InstallmentsScreenContent(
     viewState: InstallmentsScreenState,
     onBackClick: () -> Unit = {},
     onItemClick: (Int) -> Unit = {},
+    onPayClick: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         MPHeader(
+            modifier = Modifier.fillMaxSize(),
             title = viewState.title.orEmpty(),
             onBackClick = onBackClick,
         ) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 120.dp),
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        items(viewState.installmentsState) { item ->
-                            MPListItem(
-                                contentInfo = MPListItemContentInfo(
-                                    title = item.text,
-                                    description = item.description,
-                                ),
-                                modifier = Modifier.fillMaxWidth(),
-                                trailing = MPListItemTrailing(
-                                    text = item.trailing,
-                                    type = MPListItemTrailing.Type.Icon(
-                                        icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
-                                    ),
-                                    textColor = if (item.interestFree) {
-                                        MercadoPagoTheme.color.feedback.positive.textLoud
-                                    } else {
-                                        null
-                                    },
-                                ),
-                                onClick = { onItemClick(item.number) },
-                            )
-                        }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                viewState.installmentsState.forEach { item ->
+                    when (viewState.displayType) {
+                        InstallmentsDisplayType.Chevron -> ChevronInstallmentItem(
+                            item = item,
+                            onItemClick = onItemClick,
+                        )
+                        InstallmentsDisplayType.RadioButton -> RadioButtonInstallmentItem(
+                            item = item,
+                            onItemClick = onItemClick,
+                        )
                     }
                 }
-                viewState.footerState?.let { footer ->
-                    MPFixedFooter(
-                        title = footer.title,
-                        amount = MPAmountData(
-                            currencySymbol = footer.currencySymbol,
-                            integerPart = footer.amountIntegerPart,
-                            decimalPart = footer.amountDecimalPart,
-                        ),
-                        subtitle = footer.subtitle,
-                        modifier = Modifier.align(Alignment.BottomCenter),
-                    )
+                if (viewState.footerState != null) {
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
+        }
+        viewState.footerState?.let { footer ->
+            MPFixedFooter(
+                title = footer.title,
+                amount = MPAmountData(
+                    currencySymbol = footer.currencySymbol,
+                    integerPart = footer.amountIntegerPart,
+                    decimalPart = footer.amountDecimalPart,
+                ),
+                subtitle = footer.subtitle,
+                button = footer.buttonLabel?.let { label ->
+                    MPFixedFooterButtonData(
+                        text = label,
+                        onClick = onPayClick,
+                    )
+                },
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
 
-@Preview(showBackground = true, name = "Card Payment Screen - Default")
 @Composable
-private fun InstallmentsScreenPreview() {
-    MercadoPagoTheme(
-        theme = MercadoPagoThemes.Default,
-    ) {
+private fun ChevronInstallmentItem(
+    item: InstallmentState,
+    onItemClick: (Int) -> Unit,
+) {
+    MPListItem(
+        contentInfo = MPListItemContentInfo(
+            title = item.text,
+            description = item.description,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        trailing = MPListItemTrailing(
+            text = item.trailing,
+            type = MPListItemTrailing.Type.Icon(
+                icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
+            ),
+            textColor = if (item.interestFree) {
+                MercadoPagoTheme.color.feedback.positive.textLoud
+            } else {
+                null
+            },
+        ),
+        onClick = { onItemClick(item.number) },
+    )
+}
+
+@Composable
+private fun RadioButtonInstallmentItem(
+    item: InstallmentState,
+    onItemClick: (Int) -> Unit,
+) {
+    MPListItem(
+        contentInfo = MPListItemContentInfo(
+            title = item.text,
+            description = item.description,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+        type = MPListItemType.RadioButton(selected = item.isSelected),
+        trailing = if (item.trailing.isNotEmpty()) {
+            MPListItemTrailing(
+                text = item.trailing,
+                textColor = if (item.interestFree) {
+                    MercadoPagoTheme.color.feedback.positive.textLoud
+                } else {
+                    null
+                },
+            )
+        } else {
+            null
+        },
+        onClick = { onItemClick(item.number) },
+    )
+}
+
+@Preview(showBackground = true, name = "Installments Screen - Chevron")
+@Composable
+private fun InstallmentsScreenChevronPreview() {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
+                displayType = InstallmentsDisplayType.Chevron,
                 installmentsState = listOf(
                     InstallmentState(
-                        text = "1x 300,00",
+                        text = "1x R$ 300,00",
                         description = "",
-                        trailing = "R$ 300",
+                        trailing = "",
                         interestFree = false,
                         isSelected = false,
                         number = 1,
                     ),
                     InstallmentState(
-                        number = 2,
-                        text = "2x 190,00",
+                        text = "2x R$ 190,00",
                         description = "",
                         trailing = "Sem acréscimo",
                         interestFree = true,
                         isSelected = false,
+                        number = 2,
                     ),
                 ),
                 footerState = FooterState(
                     title = "Total",
                     currencySymbol = "R$",
-                    amountIntegerPart = "100",
-                    amountDecimalPart = "30",
-                    subtitle = "Santander Credito **** 1234",
+                    amountIntegerPart = "300",
+                    amountDecimalPart = "00",
+                    subtitle = "Visa **** 1234",
                 ),
             ),
-            onBackClick = { },
-            onItemClick = { Log.i("InstallmentsScreen", "onItemClick: $it") },
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Installments Screen - RadioButton")
+@Composable
+private fun InstallmentsScreenRadioButtonPreview() {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
+        InstallmentsScreenContent(
+            viewState = InstallmentsScreenState(
+                title = "Escolha o parcelamento",
+                displayType = InstallmentsDisplayType.RadioButton,
+                installmentsState = listOf(
+                    InstallmentState(
+                        text = "1x R$ 300,00",
+                        description = "",
+                        trailing = "",
+                        interestFree = false,
+                        isSelected = true,
+                        number = 1,
+                    ),
+                    InstallmentState(
+                        text = "2x R$ 190,00",
+                        description = "",
+                        trailing = "Sem acréscimo",
+                        interestFree = true,
+                        isSelected = false,
+                        number = 2,
+                    ),
+                ),
+                footerState = FooterState(
+                    title = "Total",
+                    currencySymbol = "R$",
+                    amountIntegerPart = "300",
+                    amountDecimalPart = "00",
+                    subtitle = "Mastercard **** 5678",
+                    buttonLabel = "Pagar",
+                ),
+            ),
         )
     }
 }

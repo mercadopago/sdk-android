@@ -1,26 +1,25 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
+import com.mercadopago.sdk.android.checkout.core.model.internal.toInstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.data.mapper.toInstallmentsState
 import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
-import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 internal class InstallmentsViewModel(
-    private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
+    private val checkoutConfiguration: CheckoutConfiguration?,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(InstallmentsScreenState())
     val viewState: StateFlow<InstallmentsScreenState> = _viewState.asStateFlow()
@@ -28,33 +27,61 @@ internal class InstallmentsViewModel(
     private val _viewEvent = MutableStateFlow<InstallmentsScreenEvent>(InstallmentsScreenEvent.Idle)
     val viewEvent: StateFlow<InstallmentsScreenEvent> = _viewEvent.asStateFlow()
 
-    fun getInstallments(
-        bin: String,
-        amount: BigDecimal,
+    private val amount: BigDecimal = checkoutConfiguration?.getAmount() ?: BigDecimal.ZERO
+    private val displayType: InstallmentsDisplayType = checkoutConfiguration.toInstallmentsDisplayType()
+
+    private var lastFourDigits: String = ""
+    private var paymentMethodId: String = ""
+
+    fun setup(
+        payerCosts: List<PayerCost>,
+        lastFourDigits: String,
+        paymentMethodId: String,
     ) {
-        viewModelScope.launch {
-            val result = coreMethods.getInstallments(bin = bin, amount = amount)
-            when (result) {
-                is Result.Success ->
-                    _viewState.value = _viewState.value.copy(
-                        title = "Escolha o parcelamento",
-                        installmentsState = result.data.getOrNull(0).toInstallmentsState(),
-                        footerState = FooterState(
-                            title = "Total",
-                            currencySymbol = null.getCurrencyString(),
-                            amountIntegerPart = amount.getTotal(),
-                            amountDecimalPart = amount.getTotalDecimalPart(),
-                            subtitle = "Santander Credito **** 1234",
-                        ),
-                    )
-                is Result.Error -> Unit
-            }
-        }
+        this.lastFourDigits = lastFourDigits
+        this.paymentMethodId = paymentMethodId
+        val installments = payerCosts.toInstallmentsState()
+        _viewState.value = _viewState.value.copy(
+            title = "Escolha o parcelamento",
+            displayType = displayType,
+            installmentsState = if (displayType == InstallmentsDisplayType.RadioButton) {
+                installments.mapIndexed { index, state -> state.copy(isSelected = index == 0) }
+            } else {
+                installments
+            },
+            footerState = FooterState(
+                title = "Total",
+                currencySymbol = null.getCurrencyString(),
+                amountIntegerPart = amount.getTotal(),
+                amountDecimalPart = amount.getTotalDecimalPart(),
+                subtitle = buildSubtitle(),
+                buttonLabel = if (displayType == InstallmentsDisplayType.RadioButton) "Pagar" else null,
+            ),
+        )
     }
 
     fun onInstallmentSelected(
         installment: Int,
     ) {
-        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(installment = installment)
+        when (displayType) {
+            InstallmentsDisplayType.Chevron ->
+                _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(installment)
+            InstallmentsDisplayType.RadioButton ->
+                _viewState.value = _viewState.value.copy(
+                    installmentsState = _viewState.value.installmentsState.map {
+                        it.copy(isSelected = it.number == installment)
+                    },
+                )
+        }
+    }
+
+    fun onPayClicked() {
+        val selected = _viewState.value.installmentsState.firstOrNull { it.isSelected } ?: return
+        _viewEvent.value = InstallmentsScreenEvent.ConfirmPayment(selected.number)
+    }
+
+    private fun buildSubtitle(): String {
+        val brand = paymentMethodId.replaceFirstChar { it.uppercaseChar() }
+        return if (lastFourDigits.isNotEmpty()) "$brand **** $lastFourDigits" else brand
     }
 }

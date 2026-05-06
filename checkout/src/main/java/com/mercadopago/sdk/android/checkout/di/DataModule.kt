@@ -54,5 +54,7 @@ internal fun provideDataModule() =
 
 internal fun provideInstallmentsModule() =
     module {
-        viewModel { InstallmentsViewModel() }
+        viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
+            InstallmentsViewModel(checkoutConfiguration = checkoutConfiguration)
+        }
     }

@@ -36,7 +36,6 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -639,11 +638,7 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit(
-            cardNumberState = mockk<PCIFieldState>(relaxed = true),
-            expirationDateState = mockk<PCIFieldState>(relaxed = true),
-            securityCodeState = mockk<PCIFieldState>(relaxed = true),
-        )
+        viewModel.onSubmit()
 
         coVerify { generateTokenUseCase(any(), any(), any(), any()) }
     }
@@ -655,11 +650,7 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit(
-            cardNumberState = mockk<PCIFieldState>(relaxed = true),
-            expirationDateState = mockk<PCIFieldState>(relaxed = true),
-            securityCodeState = mockk<PCIFieldState>(relaxed = true),
-        )
+        viewModel.onSubmit()
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
@@ -673,11 +664,7 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit(
-            cardNumberState = mockk<PCIFieldState>(relaxed = true),
-            expirationDateState = mockk<PCIFieldState>(relaxed = true),
-            securityCodeState = mockk<PCIFieldState>(relaxed = true),
-        )
+        viewModel.onSubmit()
 
         verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success }) }
     }
@@ -689,11 +676,7 @@ internal class CardPaymentViewModelTest {
         } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit(
-            cardNumberState = mockk<PCIFieldState>(relaxed = true),
-            expirationDateState = mockk<PCIFieldState>(relaxed = true),
-            securityCodeState = mockk<PCIFieldState>(relaxed = true),
-        )
+        viewModel.onSubmit()
 
         verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
     }
@@ -705,11 +688,7 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit(
-            cardNumberState = mockk<PCIFieldState>(relaxed = true),
-            expirationDateState = mockk<PCIFieldState>(relaxed = true),
-            securityCodeState = mockk<PCIFieldState>(relaxed = true),
-        )
+        viewModel.onSubmit()
 
         assertFalse(viewModel.viewState.value.isLoading)
     }
