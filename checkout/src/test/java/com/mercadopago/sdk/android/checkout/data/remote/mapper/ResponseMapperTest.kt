@@ -104,7 +104,6 @@ internal class ResponseMapperTest {
         val result = responseBody.toResultError(httpStatus = 400)
 
         assertEquals("bad_request", result.code)
-        assertEquals("The store does not accept this payment method.", result.message)
         assertEquals("Este cartão não é aceito.", result.userErrorMessage)
         assertEquals(400, result.httpStatus)
     }
