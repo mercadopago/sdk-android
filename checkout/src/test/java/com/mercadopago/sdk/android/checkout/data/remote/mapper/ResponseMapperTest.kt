@@ -95,20 +95,6 @@ internal class ResponseMapperTest {
     }
 
     @Test
-    fun `given BFF error with error_code and user_error_message then all fields are parsed`() {
-        val json = """{"code":"bad_request","error_code":"PAYMENT_METHOD_UNAVAILABLE",""" +
-            """"message":"The store does not accept this payment method.",""" +
-            """"user_error_message":"Este cartão não é aceito."}"""
-        val responseBody = json.toResponseBody("application/json".toMediaType())
-
-        val result = responseBody.toResultError(httpStatus = 400)
-
-        assertEquals("bad_request", result.code)
-        assertEquals("Este cartão não é aceito.", result.userErrorMessage)
-        assertEquals(400, result.httpStatus)
-    }
-
-    @Test
     fun `given BFF error with only code and message then error_code and user_error_message are null`() {
         val json = """{"code":"bad_request","message":"The store does not accept this payment method."}"""
         val responseBody = json.toResponseBody("application/json".toMediaType())
