@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
-import com.mercadopago.sdk.android.checkout.domain.exception.mapError
+import com.mercadopago.sdk.android.checkout.domain.exception.ExceptionFactory.mapError
 import com.mercadopago.sdk.android.checkout.domain.extensions.withServiceRetry
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError

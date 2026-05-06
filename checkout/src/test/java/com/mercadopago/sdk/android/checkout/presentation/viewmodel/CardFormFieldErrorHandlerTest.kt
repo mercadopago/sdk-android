@@ -111,7 +111,7 @@ internal class CardFormFieldErrorHandlerTest {
     fun `given PaymentMethodNotFound then error is errorInvalid`() {
         val result = handler.applyCardNumberErrorState(
             baseState,
-            listOf(CardNumberErrorType.PaymentMethodNotFound),
+            listOf(CardNumberErrorType.PaymentMethodNotFound(message = "Número inválido")),
         )
 
         assertEquals("Número inválido", result.cardNumberState.error)
