@@ -48,6 +48,7 @@ internal fun provideDataModule() =
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
                 initializeCardFormUseCase = get(),
                 generateTokenUseCase = GenerateTokenUseCase(),
+                cardPaymentScreenStateFactory = get(),
             )
         }
     }

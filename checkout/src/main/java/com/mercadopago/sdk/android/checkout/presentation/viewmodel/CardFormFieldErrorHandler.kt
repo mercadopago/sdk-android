@@ -3,12 +3,14 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 
+@Suppress("TooManyFunctions")
 internal class CardFormFieldErrorHandler(
     private val analyticsTracker: CardFormAnalyticsTracker,
 ) {
@@ -54,6 +56,29 @@ internal class CardFormFieldErrorHandler(
                     errorTypes = errors,
                 ),
             ),
+        )
+    }
+
+    fun applyPaymentMethodNotFoundError(
+        state: CardPaymentScreenState,
+        message: String,
+    ): CardPaymentScreenState =
+        updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound>(state) {
+            CardNumberErrorType.PaymentMethodNotFound(message)
+        }
+
+    fun handleResultError(
+        state: CardPaymentScreenState,
+        message: String,
+        genericErrorMessage: String,
+    ): CardPaymentScreenState {
+        val isCardNumberFocused = state.cardNumberState.isFocused
+        return state.copy(
+            messageError = MessageError(
+                title = message,
+                description = genericErrorMessage,
+            ),
+            showMessage = !isCardNumberFocused,
         )
     }
 
