@@ -85,6 +85,7 @@ private fun IdentificationTypeItem.toCoreType(): IdentificationType =
         minLength = minLength,
         maxLength = maxLength,
         mask = mask,
+        placeholder = placeholder,
     )
 
 private fun Validation.toValidationState() =

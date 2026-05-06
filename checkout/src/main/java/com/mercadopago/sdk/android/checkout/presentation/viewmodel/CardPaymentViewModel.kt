@@ -276,7 +276,7 @@ internal class CardPaymentViewModel(
                 _viewState.value = _viewState.value.copy(
                     identificationTypeState = _viewState.value.identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = "",
+                        placeHolder = event.identificationType.placeholder.orEmpty(),
                     ),
                 )
             }

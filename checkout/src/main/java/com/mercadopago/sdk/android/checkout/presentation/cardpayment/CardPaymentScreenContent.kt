@@ -17,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -43,6 +45,7 @@ import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
 import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.MPTooltip
+import com.mercadopago.sdk.android.components.bottomsheet.MPListBottomSheet
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
 import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
@@ -126,6 +129,7 @@ internal fun CardPaymentScreenContent(
     onMessageClick: () -> Unit = {},
 ) {
     val cardNumberFocusRequester = remember { FocusRequester() }
+    var showIdentificationBottomSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         cardNumberFocusRequester.requestFocus()
@@ -253,6 +257,7 @@ internal fun CardPaymentScreenContent(
                                     label = viewState.identificationTypeState.label,
                                     helper = viewState.identificationTypeState.helper,
                                     placeHolder = viewState.identificationTypeState.placeHolder,
+                                    onSelectorClick = { showIdentificationBottomSheet = true },
                                     onEvent = onIdentificationEvent,
                                 )
                             }
@@ -304,6 +309,21 @@ internal fun CardPaymentScreenContent(
                 MPProgressIndicator()
             }
         }
+    }
+
+    if (showIdentificationBottomSheet) {
+        val types = viewState.identificationTypeState.identificationTypes.orEmpty()
+        MPListBottomSheet(
+            title = viewState.identificationTypeState.label,
+            items = types.toBottomSheetItems(),
+            selectedLabel = viewState.identificationTypeState.selected?.name,
+            onItemSelected = { item ->
+                types.findByBottomSheetItem(item)?.let {
+                    onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(it))
+                }
+            },
+            onDismiss = { showIdentificationBottomSheet = false },
+        )
     }
 }
 
