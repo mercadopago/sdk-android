@@ -1,6 +1,6 @@
 package com.mercadopago.sdk.android.checkout.data.remote.response
 
-internal data class CardNumberTranslations(
+internal data class FieldTranslations(
     val label: String,
     val placeholder: String,
     val helper: String? = null,

@@ -1,9 +1,13 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
+import com.mercadopago.sdk.android.checkout.domain.exception.mapToCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.extensions.withRetry
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getOrZero
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class GetCardBinUseCase(
@@ -16,13 +20,15 @@ internal class GetCardBinUseCase(
         processingMode: String,
         filter: CardBinFilter,
     ): Result<CardBinData, MercadoPagoCheckoutError> =
-        repository.getCardBin(
-            GetCardBinParams(
-                bin = bin,
-                amount = amount ?: "0",
-                checkoutType = checkoutType,
-                processingMode = processingMode,
-                filter = filter,
-            ),
-        )
+        withRetry {
+            repository.getCardBin(
+                GetCardBinParams(
+                    bin = bin,
+                    amount = amount.getOrZero(),
+                    checkoutType = checkoutType,
+                    processingMode = processingMode,
+                    filter = filter,
+                ),
+            )
+        }.mapToCheckoutError(ErrorLocalized.CARD_BIN)
 }

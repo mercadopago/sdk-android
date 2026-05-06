@@ -1,32 +1,17 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
+import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
+import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 
 internal data class CardBinData(
     val id: String?,
     val paymentTypeId: String?,
     val cardNumber: CardNumberConfig?,
-    val securityCode: BinSecurityCodeConfig?,
+    val securityCode: SecurityCodeConfig?,
     val issuers: List<BinIssuer>,
     val quotas: List<Quota>,
-    val translations: CardFormTranslations?,
-)
-
-internal data class CardNumberConfig(
-    val length: Int?,
-    val validation: String?,
-    val mask: String?,
-)
-
-internal data class BinSecurityCodeConfig(
-    val mode: String?,
-    val length: Int?,
-    val cardLocation: String?,
-    val tooltip: String? = null,
-    val placeholder: String? = null,
+    val translations: Translations?,
 )
 
 internal data class BinIssuer(
@@ -41,11 +26,4 @@ internal data class Quota(
     val totalAmount: String?,
     val label: String?,
     val discountRate: Double?,
-)
-
-internal data class CardFormTranslations(
-    val cardNumber: CardNumberTranslations?,
-    val cardHolderName: HolderNameTranslations?,
-    val expirationDate: ExpirationDateTranslations?,
-    val securityCode: SecurityCodeTranslations?,
 )

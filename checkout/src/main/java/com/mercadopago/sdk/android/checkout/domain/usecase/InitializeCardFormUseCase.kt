@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.usecase
 
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
+import com.mercadopago.sdk.android.checkout.domain.exception.mapToCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
@@ -18,5 +20,5 @@ internal class InitializeCardFormUseCase(
                 amount = amount,
                 checkoutType = checkoutType,
             ),
-        )
+        ).mapToCheckoutError(ErrorLocalized.CARD_FORM_INITIALIZATION)
 }

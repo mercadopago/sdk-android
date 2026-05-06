@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,11 +37,7 @@ internal class InitializeCardFormUseCaseTest {
 
     @Test
     fun `given request error then returns ServiceError localized to CARD_FORM_INITIALIZATION`() = runTest {
-        val error = MercadoPagoCheckoutError.ServiceError(
-            code = ErrorCode.SERVICE_ERROR,
-            messageError = "Service unavailable",
-            localized = ErrorLocalized.CARD_FORM_INITIALIZATION.name,
-        )
+        val error = ResultError.Request(message = "Service unavailable", code = "SERVICE_ERROR")
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
         val result = useCase(amount, checkoutType)
@@ -54,12 +51,7 @@ internal class InitializeCardFormUseCaseTest {
 
     @Test
     fun `given network error then returns NetworkError localized to CARD_FORM_INITIALIZATION`() = runTest {
-        val error = MercadoPagoCheckoutError.NetworkError(
-            code = ErrorCode.NETWORK_CONNECTION_FAILED,
-            messageError = "Connection failed",
-            localized = ErrorLocalized.CARD_FORM_INITIALIZATION.name,
-            throwable = null,
-        )
+        val error = ResultError.Request(message = "Connection failed", code = "NETWORK_CONNECTION_FAILED")
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
         val result = useCase(amount, checkoutType)

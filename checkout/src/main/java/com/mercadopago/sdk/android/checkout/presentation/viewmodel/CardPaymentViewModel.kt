@@ -19,7 +19,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -41,7 +40,6 @@ import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
-    stateFactory: CardPaymentScreenStateFactory,
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
@@ -59,7 +57,6 @@ internal class CardPaymentViewModel(
     )
 
     private val errorHandler = CardFormFieldErrorHandler(
-        stateFactory = stateFactory,
         analyticsTracker = analyticsTracker,
     )
 
@@ -77,9 +74,6 @@ internal class CardPaymentViewModel(
                 if (!event.isFocused) {
                     analyticsTracker.trackInputValidation("card_number", isValid)
                     _viewState.value = errorHandler.applyCardNumberFieldError(_viewState.value)
-                    if (_viewState.value.messageError.description.isNotEmpty()) {
-                        _viewState.value = _viewState.value.copy(showMessage = true)
-                    }
                 }
             }
 
@@ -105,11 +99,6 @@ internal class CardPaymentViewModel(
             }
 
             is CardNumberTextFieldEvent.IsValid -> {
-                _viewState.value = _viewState.value.copy(
-                    cardNumberState = _viewState.value.cardNumberState.copy(
-                        isValid = event.isValid,
-                    ),
-                )
                 _viewState.value = errorHandler.applyLuhnValidation(_viewState.value, event.isValid)
             }
 
@@ -282,7 +271,6 @@ internal class CardPaymentViewModel(
                 }
             }
 
-            // TechDebt - Atualizar com valores do BFF
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 analyticsTracker.trackDropdownSelection(event.identificationType.id.orEmpty())
                 _viewState.value = _viewState.value.copy(

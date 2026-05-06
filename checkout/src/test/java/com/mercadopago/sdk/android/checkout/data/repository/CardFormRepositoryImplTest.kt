@@ -6,7 +6,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
@@ -63,7 +62,7 @@ internal class CardFormRepositoryImplTest {
 
         val result = repository.fetchInitialization(initParams)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        assertIs<Result.Error<ResultError>>(result)
     }
 
     @Test
@@ -74,7 +73,7 @@ internal class CardFormRepositoryImplTest {
 
         val result = repository.fetchInitialization(initParams)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        assertIs<Result.Error<ResultError>>(result)
     }
 
     @Test
@@ -114,7 +113,7 @@ internal class CardFormRepositoryImplTest {
 
         val result = repository.getCardBin(binParams)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        assertIs<Result.Error<ResultError>>(result)
     }
 
     @Test
@@ -123,7 +122,7 @@ internal class CardFormRepositoryImplTest {
 
         val result = repository.getCardBin(binParams)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        assertIs<Result.Error<ResultError>>(result)
     }
 
     @Test
