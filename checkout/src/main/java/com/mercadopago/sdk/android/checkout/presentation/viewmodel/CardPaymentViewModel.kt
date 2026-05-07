@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.internal.toInstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -19,17 +20,26 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toCurrencyString
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
+import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
@@ -39,7 +49,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState.Companion.create as createPCIFieldState
+
+private const val PAY_BUTTON_LABEL = "Pagar"
+private const val FIRST_INSTALLMENT = 1
+private const val INSTALLMENTS_SEPARATOR = "x"
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
@@ -347,19 +362,12 @@ internal class CardPaymentViewModel(
                 hasIdentificationError
             if (!hasErrors) {
                 if (state.installmentsState.showList) {
-                    _viewEvent.value = CardPaymentViewEvent.NavigateToInstallments(
-                        payerCosts = state.installmentsState.installments,
-                        lastFourDigits = state.cardNumberState.lastFourDigits,
-                        paymentMethodId = state.paymentState.paymentMethodId.orEmpty(),
-                    )
+                    _viewState.value = state.copy(installmentsScreen = buildInstallmentsScreen(state))
+                    _viewEvent.value = CardPaymentViewEvent.NavigateToInstallments
                 } else {
                     generateToken(
-                        buyerIdentification = BuyerIdentification(
-                            name = state.cardHolderState.value,
-                            number = state.identificationTypeState.value,
-                            type = state.identificationTypeState.selected?.name,
-                        ),
-                        installment = 1,
+                        buyerIdentification = state.toBuyerIdentification(),
+                        installment = FIRST_INSTALLMENT,
                     )
                 }
             }
@@ -370,19 +378,94 @@ internal class CardPaymentViewModel(
         _viewEvent.value = null
     }
 
-    fun generateTokenAndPay(
+    fun onInstallmentSelected(
         installment: Int,
     ) {
-        val state = _viewState.value
-        generateToken(
-            buyerIdentification = BuyerIdentification(
-                name = state.cardHolderState.value,
-                number = state.identificationTypeState.value,
-                type = state.identificationTypeState.selected?.name,
+        val current = _viewState.value.installmentsScreen
+        if (current.displayType != InstallmentsDisplayType.RadioButton) return
+        _viewState.value = _viewState.value.copy(
+            installmentsScreen = current.copy(
+                installmentsState = current.installmentsState.map {
+                    it.copy(isSelected = it.number == installment)
+                },
             ),
-            installment = installment,
         )
     }
+
+    fun onPayClicked() {
+        val selected = _viewState.value.installmentsScreen.installmentsState.firstOrNull { it.isSelected }
+            ?: return
+        generateToken(
+            buyerIdentification = _viewState.value.toBuyerIdentification(),
+            installment = selected.number,
+        )
+    }
+
+    private fun buildInstallmentsScreen(
+        state: CardPaymentScreenState,
+    ): InstallmentsScreenState {
+        val displayType = checkoutConfiguration.toInstallmentsDisplayType()
+        val amount = checkoutConfiguration?.getAmount() ?: BigDecimal.ZERO
+        val installmentsCopy = state.installmentsState
+        val title = when (displayType) {
+            InstallmentsDisplayType.Chevron -> installmentsCopy.headerChevron
+            InstallmentsDisplayType.RadioButton -> installmentsCopy.headerRadio
+        }
+        val installments = installmentsCopy.installments
+            .toInstallmentStates(interestFreeLabel = installmentsCopy.interestFreeLabel)
+            .let { list ->
+                if (displayType == InstallmentsDisplayType.RadioButton) {
+                    list.mapIndexed { index, item -> item.copy(isSelected = index == 0) }
+                } else {
+                    list
+                }
+            }
+        val brand = state.paymentState.paymentMethodId.orEmpty().replaceFirstChar { it.uppercaseChar() }
+        val lastFourDigits = state.cardNumberState.lastFourDigits
+        return InstallmentsScreenState(
+            title = title,
+            displayType = displayType,
+            installmentsState = installments,
+            footerState = FooterState(
+                title = installmentsCopy.totalLabel,
+                currencySymbol = null.getCurrencyString(),
+                amountIntegerPart = amount.getTotal(),
+                amountDecimalPart = amount.getTotalDecimalPart(),
+                subtitle = if (lastFourDigits.isNotEmpty()) "$brand **** $lastFourDigits" else brand,
+                buttonLabel = if (displayType == InstallmentsDisplayType.RadioButton) PAY_BUTTON_LABEL else null,
+            ),
+        )
+    }
+
+    private fun List<PayerCost>.toInstallmentStates(
+        interestFreeLabel: String,
+    ): List<InstallmentState> =
+        map {
+            InstallmentState(
+                text = "${it.instalments} $INSTALLMENTS_SEPARATOR ${it.installmentAmount?.toCurrencyString()}",
+                description = "",
+                trailing = it.formatTrailing(interestFreeLabel),
+                interestFree = it.installmentAmount == it.totalAmount,
+                isSelected = false,
+                number = it.instalments ?: FIRST_INSTALLMENT,
+            )
+        }
+
+    private fun PayerCost.formatTrailing(
+        interestFreeLabel: String,
+    ): String =
+        when {
+            instalments == FIRST_INSTALLMENT -> ""
+            installmentAmount == totalAmount -> interestFreeLabel
+            else -> totalAmount?.toCurrencyString().orEmpty()
+        }
+
+    private fun CardPaymentScreenState.toBuyerIdentification(): BuyerIdentification =
+        BuyerIdentification(
+            name = cardHolderState.value,
+            number = identificationTypeState.value,
+            type = identificationTypeState.selected?.name,
+        )
 
     private fun onBinChanged(
         cardBin: String?,

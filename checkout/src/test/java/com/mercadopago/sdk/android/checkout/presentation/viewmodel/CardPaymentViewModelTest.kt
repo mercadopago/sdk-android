@@ -27,6 +27,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -691,5 +692,103 @@ internal class CardPaymentViewModelTest {
         viewModel.onSubmit()
 
         assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    // ── installments flow ─────────────────────────────────────────────────────
+
+    private suspend fun makeViewModelWithInstallments(): CardPaymentViewModel {
+        val data = CardBinData(
+            id = "visa",
+            paymentTypeId = "credit_card",
+            cardNumber = null,
+            securityCode = null,
+            issuers = emptyList(),
+            quotas = listOf(
+                Quota(
+                    quantity = 1,
+                    installmentAmount = "100",
+                    totalAmount = "100",
+                    label = "1x",
+                    discountRate = 0.0,
+                ),
+                Quota(
+                    quantity = 3,
+                    installmentAmount = "34",
+                    totalAmount = "102",
+                    label = "3x",
+                    discountRate = 0.0,
+                ),
+            ),
+            translations = null,
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        return makeViewModel().also {
+            it.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+        }
+    }
+
+    @Test
+    fun `when onSubmit and showList true then emits NavigateToInstallments`() = runTest {
+        val viewModel = makeViewModelWithInstallments()
+
+        viewModel.onSubmit()
+
+        assertEquals(CardPaymentViewEvent.NavigateToInstallments, viewModel.viewEvent.value)
+    }
+
+    @Test
+    fun `when onSubmit and showList true then populates installmentsScreen state`() = runTest {
+        val viewModel = makeViewModelWithInstallments()
+
+        viewModel.onSubmit()
+
+        val installmentsScreen = viewModel.viewState.value.installmentsScreen
+        assertEquals(2, installmentsScreen.installmentsState.size)
+        assertTrue(installmentsScreen.installmentsState.first().isSelected)
+    }
+
+    @Test
+    fun `when onInstallmentSelected then updates isSelected to matching number`() = runTest {
+        val viewModel = makeViewModelWithInstallments()
+        viewModel.onSubmit()
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        val states = viewModel.viewState.value.installmentsScreen.installmentsState
+        assertFalse(states.first { it.number == 1 }.isSelected)
+        assertTrue(states.first { it.number == 3 }.isSelected)
+    }
+
+    @Test
+    fun `when onPayClicked with selected installment then calls generateTokenUseCase`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        val viewModel = makeViewModelWithInstallments()
+        viewModel.onSubmit()
+        viewModel.onInstallmentSelected(installment = 3)
+
+        viewModel.onPayClicked()
+
+        coVerify { generateTokenUseCase(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `when onPayClicked without selection then does not call generateTokenUseCase`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onPayClicked()
+
+        coVerify(exactly = 0) { generateTokenUseCase(any(), any(), any(), any()) }
+    }
+
+    @Test
+    fun `when onViewEventConsumed then viewEvent is null`() = runTest {
+        val viewModel = makeViewModelWithInstallments()
+        viewModel.onSubmit()
+
+        viewModel.onViewEventConsumed()
+
+        assertEquals(null, viewModel.viewEvent.value)
     }
 }

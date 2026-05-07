@@ -11,19 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
@@ -37,26 +35,13 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 @Composable
 internal fun InstallmentsScreen(
-    viewModel: InstallmentsViewModel,
+    viewModel: CardPaymentViewModel,
     onBackClick: () -> Unit = {},
-    onInstallmentSelected: (Int) -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val viewEvent by viewModel.viewEvent.collectAsState()
-
-    LaunchedEffect(viewEvent) {
-        when (val event = viewEvent) {
-            is InstallmentsScreenEvent.OnInstallmentsSelected -> {
-                onInstallmentSelected(event.installment)
-            }
-            is InstallmentsScreenEvent.ConfirmPayment,
-            InstallmentsScreenEvent.Idle,
-            -> Unit
-        }
-    }
 
     InstallmentsScreenContent(
-        viewState = viewState,
+        viewState = viewState.installmentsScreen,
         onBackClick = onBackClick,
         onItemClick = { viewModel.onInstallmentSelected(installment = it) },
         onPayClick = { viewModel.onPayClicked() },

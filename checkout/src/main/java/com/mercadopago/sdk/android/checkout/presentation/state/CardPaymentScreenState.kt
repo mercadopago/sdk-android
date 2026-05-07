@@ -22,6 +22,7 @@ internal data class CardPaymentScreenState(
     val cardHolderState: CardHolderState = CardHolderState(),
     val identificationTypeState: IdentificationTypeState = IdentificationTypeState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
+    val installmentsScreen: InstallmentsScreenState = InstallmentsScreenState(),
     val paymentState: PaymentState = PaymentState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
@@ -118,6 +119,10 @@ internal data class InstallmentsState(
     val showList: Boolean = false,
     val installments: List<PayerCost> = emptyList(),
     val selectedInstallment: PayerCost? = null,
+    val headerChevron: String = "",
+    val headerRadio: String = "",
+    val interestFreeLabel: String = "",
+    val totalLabel: String = "",
 )
 
 internal data class MessageError(

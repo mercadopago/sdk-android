@@ -14,7 +14,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUse
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -49,12 +48,5 @@ internal fun provideDataModule() =
                 initializeCardFormUseCase = get(),
                 generateTokenUseCase = GenerateTokenUseCase(),
             )
-        }
-    }
-
-internal fun provideInstallmentsModule() =
-    module {
-        viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
-            InstallmentsViewModel(checkoutConfiguration = checkoutConfiguration)
         }
     }

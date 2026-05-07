@@ -82,4 +82,9 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
             labels = listOfNotNull(it.label),
         )
     },
+    headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
+    headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
+    interestFreeLabel = data.translations?.installments?.interestFreeLabel
+        .orCurrent(installmentsState.interestFreeLabel),
+    totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
 )

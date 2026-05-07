@@ -19,7 +19,6 @@ internal class CheckoutModulesProvider(val context: Context) : CoreKoinModulePro
                 baseUrl = BuildConfig.MERCADO_PAGO_API_URL,
             ),
             provideDataModule(),
-            provideInstallmentsModule(),
         )
     }
 }

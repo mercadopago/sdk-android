@@ -30,6 +30,11 @@ internal class CardBinStateMapperTest {
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
+        installments: InstallmentsTranslations = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
+            interestFreeLabel = "",
+            totalLabel = "",
+        ),
     ) = Translations(
         cardFormTitle = "",
         cardFormFooterButtonLabel = "",
@@ -61,11 +66,7 @@ internal class CardBinStateMapperTest {
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
-        installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
-            totalLabel = "",
-        ),
+        installments = installments,
     )
 
     private val baseState = CardPaymentScreenState(
@@ -276,5 +277,29 @@ internal class CardBinStateMapperTest {
 
         assertEquals("visa", result.paymentState.paymentMethodId)
         assertEquals("credit_card", result.paymentState.paymentTypeId)
+    }
+
+    @Test
+    fun `given installments translations then updates installments labels`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                installments = InstallmentsTranslations(
+                    header = InstallmentsHeaderTranslations(
+                        chevron = "Elegí las cuotas",
+                        radio = "Elegí el plan",
+                        title = "Cuotas",
+                    ),
+                    interestFreeLabel = "Sin interés",
+                    totalLabel = "Total",
+                ),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Elegí las cuotas", result.installmentsState.headerChevron)
+        assertEquals("Elegí el plan", result.installmentsState.headerRadio)
+        assertEquals("Sin interés", result.installmentsState.interestFreeLabel)
+        assertEquals("Total", result.installmentsState.totalLabel)
     }
 }
