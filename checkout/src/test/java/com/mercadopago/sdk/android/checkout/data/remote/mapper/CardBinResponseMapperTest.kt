@@ -158,6 +158,7 @@ internal class CardBinResponseMapperTest {
     fun `toDomain maps quotas`() {
         val response = minimalResponse().copy(
             installment = InstallmentConfigResponse(
+                selectionType = null,
                 quotas = listOf(
                     QuotaResponse(
                         installments = 1,
@@ -174,6 +175,27 @@ internal class CardBinResponseMapperTest {
         assertEquals(1, domain.payerCosts[0].instalments)
         assertEquals(10f, domain.payerCosts[0].installmentAmount)
         assertEquals(10f, domain.payerCosts[0].totalAmount)
+    }
+
+    @Test
+    fun `toDomain maps installments selectionType`() {
+        val response = minimalResponse().copy(
+            installment = InstallmentConfigResponse(
+                selectionType = "radio_button",
+                quotas = null,
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals("radio_button", domain.installmentsSelectionType)
+    }
+
+    @Test
+    fun `toDomain returns null selectionType when installment is null`() {
+        val domain = minimalResponse().copy(installment = null).toDomain()
+
+        assertNull(domain.installmentsSelectionType)
     }
 
     @Test
@@ -267,7 +289,7 @@ internal class CardBinResponseMapperTest {
     @Test
     fun `toDomain returns empty quotas when installment quotas is null`() {
         val domain = minimalResponse().copy(
-            installment = InstallmentConfigResponse(quotas = null),
+            installment = InstallmentConfigResponse(selectionType = null, quotas = null),
         ).toDomain()
 
         assertTrue(domain.payerCosts.isEmpty())

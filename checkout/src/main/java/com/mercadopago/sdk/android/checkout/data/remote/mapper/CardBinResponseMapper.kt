@@ -16,6 +16,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         securityCode = paymentMethod?.securityCode,
         issuers = paymentMethod?.issuers?.map { it.toDomain() } ?: emptyList(),
         payerCosts = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
+        installmentsSelectionType = installment?.selectionType,
         translations = translations,
     )
 }

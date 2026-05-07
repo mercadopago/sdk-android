@@ -12,6 +12,7 @@ internal data class CardBinData(
     val securityCode: SecurityCodeConfig?,
     val issuers: List<BinIssuer>,
     val payerCosts: List<PayerCost>,
+    val installmentsSelectionType: String?,
     val translations: Translations?,
 )
 

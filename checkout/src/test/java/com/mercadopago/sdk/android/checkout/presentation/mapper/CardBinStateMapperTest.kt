@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import kotlin.test.Test
@@ -88,6 +89,7 @@ internal class CardBinStateMapperTest {
         securityCode = null,
         issuers = emptyList(),
         payerCosts = emptyList(),
+        installmentsSelectionType = null,
         translations = null,
     )
 
@@ -272,6 +274,49 @@ internal class CardBinStateMapperTest {
 
         assertEquals("visa", result.paymentState.paymentMethodId)
         assertEquals("credit_card", result.paymentState.paymentTypeId)
+    }
+
+    @Test
+    fun `given selectionType radio_button then displayType is RadioButton`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "radio_button")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given selectionType chevron then displayType is Chevron`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "chevron")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.Chevron, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given selectionType chevron with uppercase then displayType is Chevron`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "CHEVRON")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.Chevron, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given null selectionType then displayType defaults to RadioButton`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given unknown selectionType then displayType defaults to RadioButton`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "something_else")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
     }
 
     @Test

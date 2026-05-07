@@ -13,13 +13,4 @@ sealed class CheckoutType : Parcelable {
      */
     @Parcelize
     data class CardForm(val cardFormConfiguration: CardFormConfiguration = CardFormConfiguration()) : CheckoutType()
-
-    /**
-     * PaymentBrick class, used to configure the payment brick
-     * @param paymentBrickConfiguration PaymentBrickConfiguration
-     */
-    @Parcelize
-    data class PaymentBrick(
-        val paymentBrickConfiguration: PaymentBrickConfiguration = PaymentBrickConfiguration(),
-    ) : CheckoutType()
 }

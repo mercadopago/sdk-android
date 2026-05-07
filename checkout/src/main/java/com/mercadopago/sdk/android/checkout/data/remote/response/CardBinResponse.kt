@@ -21,6 +21,7 @@ internal data class IssuerResponse(
 )
 
 internal data class InstallmentConfigResponse(
+    val selectionType: String?,
     val quotas: List<QuotaResponse>?,
 )
 

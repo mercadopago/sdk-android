@@ -3,8 +3,11 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
+
+private const val SELECTION_TYPE_CHEVRON = "chevron"
 
 internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
@@ -78,4 +81,12 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
     interestFreeLabel = data.translations?.installments?.interestFreeLabel
         .orCurrent(installmentsState.interestFreeLabel),
     totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
+    displayType = data.installmentsSelectionType.toDisplayType(),
 )
+
+private fun String?.toDisplayType(): InstallmentsDisplayType =
+    if (this?.equals(SELECTION_TYPE_CHEVRON, ignoreCase = true) == true) {
+        InstallmentsDisplayType.Chevron
+    } else {
+        InstallmentsDisplayType.RadioButton
+    }

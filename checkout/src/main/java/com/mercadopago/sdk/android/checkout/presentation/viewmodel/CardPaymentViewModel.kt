@@ -7,7 +7,6 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.internal.toInstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -404,9 +403,9 @@ internal class CardPaymentViewModel(
     private fun buildInstallmentsScreen(
         state: CardPaymentScreenState,
     ): InstallmentsScreenState {
-        val displayType = checkoutConfiguration.toInstallmentsDisplayType()
-        val amount = checkoutConfiguration?.getAmount() ?: BigDecimal.ZERO
         val installmentsCopy = state.installmentsState
+        val displayType = installmentsCopy.displayType
+        val amount = checkoutConfiguration?.getAmount() ?: BigDecimal.ZERO
         val title = when (displayType) {
             InstallmentsDisplayType.Chevron -> installmentsCopy.headerChevron
             InstallmentsDisplayType.RadioButton -> installmentsCopy.headerRadio

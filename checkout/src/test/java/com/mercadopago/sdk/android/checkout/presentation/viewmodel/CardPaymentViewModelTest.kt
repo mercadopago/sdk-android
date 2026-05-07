@@ -285,6 +285,7 @@ internal class CardPaymentViewModelTest {
                     totalAmount = 100f,
                 ),
             ),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -304,6 +305,7 @@ internal class CardPaymentViewModelTest {
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = emptyList(),
             payerCosts = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -324,6 +326,7 @@ internal class CardPaymentViewModelTest {
             securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
             payerCosts = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -343,6 +346,7 @@ internal class CardPaymentViewModelTest {
             securityCode = null,
             issuers = emptyList(),
             payerCosts = emptyList(),
+            installmentsSelectionType = null,
             translations = fullTranslations,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -366,6 +370,7 @@ internal class CardPaymentViewModelTest {
             securityCode = null,
             issuers = emptyList(),
             payerCosts = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -401,6 +406,7 @@ internal class CardPaymentViewModelTest {
                 BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
             ),
             payerCosts = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -434,6 +440,7 @@ internal class CardPaymentViewModelTest {
                     totalAmount = 102f,
                 ),
             ),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -709,6 +716,7 @@ internal class CardPaymentViewModelTest {
                     totalAmount = 102f,
                 ),
             ),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
