@@ -25,9 +25,7 @@ internal data class InstallmentConfigResponse(
 )
 
 internal data class QuotaResponse(
-    val quantity: Int?,
-    val installmentAmount: String?,
-    val totalAmount: String?,
-    val label: String?,
-    val discountRate: Double?,
+    val installments: Int?,
+    val installmentAmount: Double?,
+    val totalAmount: Double?,
 )

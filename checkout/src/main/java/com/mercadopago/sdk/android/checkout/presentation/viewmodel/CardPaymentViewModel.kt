@@ -441,23 +441,19 @@ internal class CardPaymentViewModel(
         interestFreeLabel: String,
     ): List<InstallmentState> =
         map {
+            val isInterestFree = it.totalAmount != null && it.installmentAmount == it.totalAmount
             InstallmentState(
                 text = "${it.instalments} $INSTALLMENTS_SEPARATOR ${it.installmentAmount?.toCurrencyString()}",
                 description = "",
-                trailing = it.formatTrailing(interestFreeLabel),
-                interestFree = it.installmentAmount == it.totalAmount,
+                trailing = when {
+                    it.instalments == FIRST_INSTALLMENT -> ""
+                    isInterestFree -> interestFreeLabel
+                    else -> it.totalAmount?.toCurrencyString().orEmpty()
+                },
+                interestFree = isInterestFree,
                 isSelected = false,
                 number = it.instalments ?: FIRST_INSTALLMENT,
             )
-        }
-
-    private fun PayerCost.formatTrailing(
-        interestFreeLabel: String,
-    ): String =
-        when {
-            instalments == FIRST_INSTALLMENT -> ""
-            installmentAmount == totalAmount -> interestFreeLabel
-            else -> totalAmount?.toCurrencyString().orEmpty()
         }
 
     private fun CardPaymentScreenState.toBuyerIdentification(): BuyerIdentification =

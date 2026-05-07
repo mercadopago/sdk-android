@@ -53,6 +53,7 @@ import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutR
 import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 private sealed interface CheckoutState {
     data object Idle : CheckoutState
@@ -69,7 +70,7 @@ internal fun CheckoutExampleScreen(
     val checkout = remember {
         MercadoPagoCheckout.Builder(
             context = context,
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardForm(CardFormConfiguration(amount = BigDecimal(1000))),
         ).setPaymentMethods(listOf(PaymentMethod.Card()))
             .build()
     }

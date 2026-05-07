@@ -23,7 +23,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
-import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -33,6 +32,7 @@ import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUs
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
+import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -278,13 +278,11 @@ internal class CardPaymentViewModelTest {
             cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100",
-                    totalAmount = "100",
-                    label = "1x",
-                    discountRate = 0.0,
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 1,
+                    installmentAmount = 100f,
+                    totalAmount = 100f,
                 ),
             ),
             translations = null,
@@ -305,7 +303,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = emptyList(),
-            quotas = emptyList(),
+            payerCosts = emptyList(),
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -325,7 +323,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
-            quotas = emptyList(),
+            payerCosts = emptyList(),
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -344,7 +342,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            quotas = emptyList(),
+            payerCosts = emptyList(),
             translations = fullTranslations,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -367,7 +365,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            quotas = emptyList(),
+            payerCosts = emptyList(),
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -402,7 +400,7 @@ internal class CardPaymentViewModelTest {
             issuers = listOf(
                 BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
             ),
-            quotas = emptyList(),
+            payerCosts = emptyList(),
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -424,20 +422,16 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = "1x sem juros",
-                    discountRate = 0.0,
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 1,
+                    installmentAmount = 100f,
+                    totalAmount = 100f,
                 ),
-                Quota(
-                    quantity = 3,
-                    installmentAmount = "34.00",
-                    totalAmount = "102.00",
-                    label = "3x",
-                    discountRate = 0.0,
+                PayerCost(
+                    instalments = 3,
+                    installmentAmount = 34f,
+                    totalAmount = 102f,
                 ),
             ),
             translations = null,
@@ -703,20 +697,16 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100",
-                    totalAmount = "100",
-                    label = "1x",
-                    discountRate = 0.0,
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 1,
+                    installmentAmount = 100f,
+                    totalAmount = 100f,
                 ),
-                Quota(
-                    quantity = 3,
-                    installmentAmount = "34",
-                    totalAmount = "102",
-                    label = "3x",
-                    discountRate = 0.0,
+                PayerCost(
+                    instalments = 3,
+                    installmentAmount = 34f,
+                    totalAmount = 102f,
                 ),
             ),
             translations = null,

@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
@@ -72,16 +71,8 @@ private fun CardPaymentScreenState.buildExpirationDateState(
 private fun CardPaymentScreenState.buildBinInstallmentsState(
     data: CardBinData,
 ) = installmentsState.copy(
-    showList = data.quotas.isNotEmpty(),
-    installments = data.quotas.map {
-        PayerCost(
-            instalments = it.quantity,
-            installmentAmount = it.installmentAmount?.toFloatOrNull(),
-            totalAmount = it.totalAmount?.toFloatOrNull(),
-            discountRate = it.discountRate?.toFloat(),
-            labels = listOfNotNull(it.label),
-        )
-    },
+    showList = data.payerCosts.isNotEmpty(),
+    installments = data.payerCosts,
     headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
     headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
     interestFreeLabel = data.translations?.installments?.interestFreeLabel

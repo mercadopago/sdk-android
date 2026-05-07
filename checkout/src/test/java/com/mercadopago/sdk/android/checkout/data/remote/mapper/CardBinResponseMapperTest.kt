@@ -160,11 +160,9 @@ internal class CardBinResponseMapperTest {
             installment = InstallmentConfigResponse(
                 quotas = listOf(
                     QuotaResponse(
-                        quantity = 1,
-                        installmentAmount = "10.00",
-                        totalAmount = "10.00",
-                        label = "1 cuota",
-                        discountRate = 0.0,
+                        installments = 1,
+                        installmentAmount = 10.00,
+                        totalAmount = 10.00,
                     ),
                 ),
             ),
@@ -172,12 +170,10 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(1, domain.quotas.size)
-        assertEquals(1, domain.quotas[0].quantity)
-        assertEquals("10.00", domain.quotas[0].installmentAmount)
-        assertEquals("10.00", domain.quotas[0].totalAmount)
-        assertEquals("1 cuota", domain.quotas[0].label)
-        assertEquals(0.0, domain.quotas[0].discountRate)
+        assertEquals(1, domain.payerCosts.size)
+        assertEquals(1, domain.payerCosts[0].instalments)
+        assertEquals(10f, domain.payerCosts[0].installmentAmount)
+        assertEquals(10f, domain.payerCosts[0].totalAmount)
     }
 
     @Test
@@ -244,7 +240,7 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertTrue(domain.issuers.isEmpty())
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.payerCosts.isEmpty())
         assertNull(domain.cardNumber)
         assertNull(domain.securityCode)
         assertNull(domain.translations)
@@ -265,7 +261,7 @@ internal class CardBinResponseMapperTest {
             .copy(installment = null)
             .toDomain()
 
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.payerCosts.isEmpty())
     }
 
     @Test
@@ -274,7 +270,7 @@ internal class CardBinResponseMapperTest {
             installment = InstallmentConfigResponse(quotas = null),
         ).toDomain()
 
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.payerCosts.isEmpty())
     }
 
     @Test

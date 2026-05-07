@@ -118,7 +118,6 @@ internal data class IdentificationTypeState(
 internal data class InstallmentsState(
     val showList: Boolean = false,
     val installments: List<PayerCost> = emptyList(),
-    val selectedInstallment: PayerCost? = null,
     val headerChevron: String = "",
     val headerRadio: String = "",
     val interestFreeLabel: String = "",

@@ -11,10 +11,10 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTra
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -87,7 +87,7 @@ internal class CardBinStateMapperTest {
         cardNumber = null,
         securityCode = null,
         issuers = emptyList(),
-        quotas = emptyList(),
+        payerCosts = emptyList(),
         translations = null,
     )
 
@@ -221,15 +221,13 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given non-empty quotas then showList is true`() {
+    fun `given non-empty payerCosts then showList is true`() {
         val data = emptyBinData.copy(
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = null,
-                    discountRate = null,
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 1,
+                    installmentAmount = 100f,
+                    totalAmount = 100f,
                 ),
             ),
         )
@@ -240,22 +238,20 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given empty quotas then showList is false`() {
+    fun `given empty payerCosts then showList is false`() {
         val result = baseState.applyCardBinData(emptyBinData)
 
         assertFalse(result.installmentsState.showList)
     }
 
     @Test
-    fun `given quotas then maps quantity to instalments`() {
+    fun `given payerCosts then exposes them on installments state`() {
         val data = emptyBinData.copy(
-            quotas = listOf(
-                Quota(
-                    quantity = 3,
-                    installmentAmount = "33.33",
-                    totalAmount = "100.00",
-                    label = "3x",
-                    discountRate = null,
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 3,
+                    installmentAmount = 33.33f,
+                    totalAmount = 100f,
                 ),
             ),
         )
@@ -265,8 +261,7 @@ internal class CardBinStateMapperTest {
         val payerCost = result.installmentsState.installments.first()
         assertEquals(3, payerCost.instalments)
         assertEquals(33.33f, payerCost.installmentAmount)
-        assertEquals(100.00f, payerCost.totalAmount)
-        assertEquals(listOf("3x"), payerCost.labels)
+        assertEquals(100f, payerCost.totalAmount)
     }
 
     @Test
