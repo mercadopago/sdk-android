@@ -1,13 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="card_form_generic_error">Ocurrió un error. Por favor, intenta de nuevo.</string>
-
-    <!-- Card Type Translations -->
-    <string name="card_type_credit_card">tarjeta de crédito.</string>
-    <string name="card_type_debit_card">tarjeta de débito.</string>
-    <string name="card_type_prepaid">tarjeta prepago.</string>
-
-    <!-- Validation Error Messages -->
-    <string name="card_form_error_card_brand_not_accepted">La tienda no acepta tarjetas</string>
-    <string name="card_form_error_card_type_not_accepted">La tienda no acepta</string>
 </resources>

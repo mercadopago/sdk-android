@@ -4,9 +4,9 @@ import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -14,7 +14,6 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
 internal class InitializeCardFormUseCaseTest {
@@ -37,7 +36,7 @@ internal class InitializeCardFormUseCaseTest {
 
     @Test
     fun `given request error then returns ServiceError localized to CARD_FORM_INITIALIZATION`() = runTest {
-        val error = ResultError.Request(message = "Service unavailable", code = "SERVICE_ERROR")
+        val error = ResponseError(code = "bad_request", message = "Service unavailable", httpStatus = 400)
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
         val result = useCase(amount, checkoutType)
@@ -51,7 +50,7 @@ internal class InitializeCardFormUseCaseTest {
 
     @Test
     fun `given network error then returns NetworkError localized to CARD_FORM_INITIALIZATION`() = runTest {
-        val error = ResultError.Request(message = "Connection failed", code = "NETWORK_CONNECTION_FAILED")
+        val error = ResponseError(code = "NO_INTERNET", message = "Connection failed")
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
         val result = useCase(amount, checkoutType)
@@ -64,10 +63,12 @@ internal class InitializeCardFormUseCaseTest {
     }
 
     @Test
-    fun `given fetchInitialization throws exception then propagates exception`() = runTest {
+    fun `given fetchInitialization throws exception then returns Result Error`() = runTest {
         coEvery { cardFormRepository.fetchInitialization(params) } throws RuntimeException("Unexpected error")
 
-        assertFailsWith<RuntimeException> { useCase(amount, checkoutType) }
+        val result = useCase(amount, checkoutType)
+
+        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
     }
 
     @Test

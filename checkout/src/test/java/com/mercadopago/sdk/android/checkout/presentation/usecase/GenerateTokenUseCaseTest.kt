@@ -40,7 +40,7 @@ internal class GenerateTokenUseCaseTest {
 
     @Test
     fun `given coreMethods returns request network error then returns NetworkError`() = runTest {
-        val requestError = ResultError.Request(message = "Connection failed", code = "NETWORK_ERROR")
+        val requestError = ResultError.Request(message = "Connection failed", code = "NETWORK")
         coEvery {
             coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
         } returns Result.Error(requestError)
@@ -55,7 +55,7 @@ internal class GenerateTokenUseCaseTest {
 
     @Test
     fun `given coreMethods returns request timeout error then returns NetworkError with timeout code`() = runTest {
-        val requestError = ResultError.Request(message = "Timeout", code = "TIMEOUT_ERROR")
+        val requestError = ResultError.Request(message = "Timeout", code = "TIMEOUT")
         coEvery {
             coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
         } returns Result.Error(requestError)

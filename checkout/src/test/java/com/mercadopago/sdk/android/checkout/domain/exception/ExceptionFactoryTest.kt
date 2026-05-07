@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.exception
 
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import kotlin.test.Test
@@ -12,9 +13,11 @@ internal class ExceptionFactoryTest {
     private val localized = ErrorLocalized.TOKENIZATION
     private val message = "error message"
 
+    // ── mapRequestError — network codes ──────────────────────────────────────
+
     @Test
-    fun `when code contains NETWORK then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
-        val error = ResultError.Request(message = message, code = "NETWORK_ERROR")
+    fun `when code is NETWORK then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
+        val error = ResponseError(code = ERROR_CODE_NETWORK, message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -26,8 +29,8 @@ internal class ExceptionFactoryTest {
     }
 
     @Test
-    fun `when code contains CONNECTION then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
-        val error = ResultError.Request(message = message, code = "CONNECTION_RESET")
+    fun `when code is CONNECTION then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
+        val error = ResponseError(code = ERROR_CODE_CONNECTION, message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -36,8 +39,8 @@ internal class ExceptionFactoryTest {
     }
 
     @Test
-    fun `when code contains NO_INTERNET then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
-        val error = ResultError.Request(message = message, code = "NO_INTERNET")
+    fun `when code is NO_INTERNET then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
+        val error = ResponseError(code = ERROR_CODE_NO_INTERNET, message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -46,8 +49,8 @@ internal class ExceptionFactoryTest {
     }
 
     @Test
-    fun `when code contains UNREACHABLE then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
-        val error = ResultError.Request(message = message, code = "HOST_UNREACHABLE")
+    fun `when code is UNREACHABLE then mapRequestError returns NetworkError with NETWORK_CONNECTION_FAILED`() {
+        val error = ResponseError(code = ERROR_CODE_UNREACHABLE, message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -56,8 +59,8 @@ internal class ExceptionFactoryTest {
     }
 
     @Test
-    fun `when code contains TIMEOUT then mapRequestError returns NetworkError with NETWORK_TIMEOUT`() {
-        val error = ResultError.Request(message = message, code = "REQUEST_TIMEOUT")
+    fun `when code is TIMEOUT then mapRequestError returns NetworkError with NETWORK_TIMEOUT`() {
+        val error = ResponseError(code = ERROR_CODE_TIMEOUT, message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -68,9 +71,11 @@ internal class ExceptionFactoryTest {
         assertNull(networkError.throwable)
     }
 
+    // ── mapRequestError — service codes ──────────────────────────────────────
+
     @Test
-    fun `when code is unknown then mapRequestError returns ServiceError with SERVICE_ERROR`() {
-        val error = ResultError.Request(message = message, code = "404")
+    fun `when httpStatus is 4xx then mapRequestError returns ServiceError with SERVICE_ERROR`() {
+        val error = ResponseError(code = "bad_request", message = message, httpStatus = 400)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
@@ -82,43 +87,89 @@ internal class ExceptionFactoryTest {
     }
 
     @Test
-    fun `when code contains lowercase network keyword then mapRequestError returns NetworkError`() {
-        val error = ResultError.Request(message = message, code = "network_failure")
+    fun `when httpStatus is 5xx then mapRequestError returns ServiceError with SERVICE_ERROR`() {
+        val error = ResponseError(code = "internal_server_error", message = message, httpStatus = 500)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
-        val networkError = assertIs<MercadoPagoCheckoutError.NetworkError>(result)
-        assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, networkError.code)
+        val serviceError = assertIs<MercadoPagoCheckoutError.ServiceError>(result)
+        assertEquals(ErrorCode.SERVICE_ERROR, serviceError.code)
     }
 
     @Test
-    fun `when code contains timeout then mapRequestError returns NetworkError with NETWORK_TIMEOUT`() {
-        val error = ResultError.Request(message = message, code = "timeout")
+    fun `when code does not match any pattern then mapRequestError returns ServiceError`() {
+        val error = ResponseError(code = "unknown_code", message = message)
 
         val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
-        val networkError = assertIs<MercadoPagoCheckoutError.NetworkError>(result)
-        assertEquals(ErrorCode.NETWORK_TIMEOUT, networkError.code)
+        assertIs<MercadoPagoCheckoutError.ServiceError>(result)
+    }
+
+    // ── mapRequestError — message priority ───────────────────────────────────
+
+    @Test
+    fun `when userErrorMessage is set then mapRequestError uses it as messageError`() {
+        val userMsg = "Mensagem para o usuário"
+        val error = ResponseError(
+            code = "bad_request",
+            message = "debug message",
+            userErrorMessage = userMsg,
+            httpStatus = 400,
+        )
+
+        val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
+
+        val serviceError = assertIs<MercadoPagoCheckoutError.ServiceError>(result)
+        assertEquals(userMsg, serviceError.messageError)
     }
 
     @Test
-    fun `when mapValidationError called then returns ServiceError with SERVICE_ERROR`() {
-        val error = ResultError.Validation(message = message)
+    fun `when errorCode field is set then it takes priority over code for classification`() {
+        val error = ResponseError(
+            code = "bad_request",
+            errorCode = "PAYMENT_METHOD_UNAVAILABLE",
+            message = message,
+            httpStatus = 400,
+        )
 
-        val result = ExceptionFactory.mapValidationError(error = error, localized = localized)
+        val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
 
-        assertEquals(ErrorCode.SERVICE_ERROR, result.code)
-        assertEquals(message, result.messageError)
-        assertEquals(localized.name, result.localized)
-        assertNull(result.throwable)
+        assertIs<MercadoPagoCheckoutError.ServiceError>(result)
     }
+
+    // ── mapError ──────────────────────────────────────────────────────────────
+
+    @Test
+    fun `when mapError with Success then returns Success unchanged`() {
+        val data = "payload"
+        val result: Result<String, ResponseError> = Result.Success(data)
+
+        val mapped = with(ExceptionFactory) { result.mapError(localized = localized) }
+
+        val success = assertIs<Result.Success<String>>(mapped)
+        assertEquals(data, success.data)
+    }
+
+    @Test
+    fun `when mapError with network error then returns Result Error with NetworkError`() {
+        val result: Result<String, ResponseError> = Result.Error(
+            ResponseError(code = ERROR_CODE_NO_INTERNET, message = message),
+        )
+
+        val mapped = with(ExceptionFactory) { result.mapError(localized = localized) }
+
+        val error = assertIs<Result.Error<MercadoPagoCheckoutError>>(mapped)
+        assertIs<MercadoPagoCheckoutError.NetworkError>(error.error)
+    }
+
+    // ── mapToCheckoutError ────────────────────────────────────────────────────
 
     @Test
     fun `when mapToCheckoutError with Success then returns Success unchanged`() {
         val data = "payload"
         val result: Result<String, ResultError> = Result.Success(data)
 
-        val mapped = result.mapToCheckoutError(localized = localized)
+        val mapped = with(ExceptionFactory) { result.mapToCheckoutError(localized = localized) }
 
         val success = assertIs<Result.Success<String>>(mapped)
         assertEquals(data, success.data)
@@ -127,10 +178,10 @@ internal class ExceptionFactoryTest {
     @Test
     fun `when mapToCheckoutError with Request network error then returns Error with NetworkError`() {
         val result: Result<String, ResultError> = Result.Error(
-            ResultError.Request(message = message, code = "NETWORK_FAILURE"),
+            ResultError.Request(message = message, code = ERROR_CODE_NO_INTERNET),
         )
 
-        val mapped = result.mapToCheckoutError(localized = localized)
+        val mapped = with(ExceptionFactory) { result.mapToCheckoutError(localized = localized) }
 
         val error = assertIs<Result.Error<MercadoPagoCheckoutError>>(mapped)
         assertIs<MercadoPagoCheckoutError.NetworkError>(error.error)
@@ -139,10 +190,10 @@ internal class ExceptionFactoryTest {
     @Test
     fun `when mapToCheckoutError with Request unknown error then returns Error with ServiceError`() {
         val result: Result<String, ResultError> = Result.Error(
-            ResultError.Request(message = message, code = "500"),
+            ResultError.Request(message = message, code = "bad_request"),
         )
 
-        val mapped = result.mapToCheckoutError(localized = localized)
+        val mapped = with(ExceptionFactory) { result.mapToCheckoutError(localized = localized) }
 
         val error = assertIs<Result.Error<MercadoPagoCheckoutError>>(mapped)
         assertIs<MercadoPagoCheckoutError.ServiceError>(error.error)
@@ -154,7 +205,7 @@ internal class ExceptionFactoryTest {
             ResultError.Validation(message = message),
         )
 
-        val mapped = result.mapToCheckoutError(localized = localized)
+        val mapped = with(ExceptionFactory) { result.mapToCheckoutError(localized = localized) }
 
         val error = assertIs<Result.Error<MercadoPagoCheckoutError>>(mapped)
         assertIs<MercadoPagoCheckoutError.ServiceError>(error.error)

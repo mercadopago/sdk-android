@@ -6,10 +6,10 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -54,26 +54,26 @@ internal class CardFormRepositoryImplTest {
     }
 
     @Test
-    fun `given dataSource returns error then fetchInitialization returns MercadoPagoCheckoutError`() = runTest {
-        val error = ResultError.Request(message = "Not Found", code = "404")
+    fun `given dataSource returns error then fetchInitialization returns Result Error`() = runTest {
+        val error = ResponseError(code = "404", message = "Not Found", httpStatus = 404)
         coEvery {
             dataSource.fetchInitialization(any(), any())
         } returns Result.Error(error)
 
         val result = repository.fetchInitialization(initParams)
 
-        assertIs<Result.Error<ResultError>>(result)
+        assertIs<Result.Error<*>>(result)
     }
 
     @Test
-    fun `given dataSource throws then fetchInitialization returns MercadoPagoCheckoutError`() = runTest {
+    fun `given dataSource throws then fetchInitialization returns Result Error`() = runTest {
         coEvery {
             dataSource.fetchInitialization(any(), any())
         } throws RuntimeException("Network failure")
 
         val result = repository.fetchInitialization(initParams)
 
-        assertIs<Result.Error<ResultError>>(result)
+        assertIs<Result.Error<*>>(result)
     }
 
     @Test
@@ -107,22 +107,22 @@ internal class CardFormRepositoryImplTest {
     }
 
     @Test
-    fun `given dataSource returns error then getCardBin returns MercadoPagoCheckoutError`() = runTest {
-        val error = ResultError.Request(message = "Bad Request", code = "400")
+    fun `given dataSource returns error then getCardBin returns Result Error`() = runTest {
+        val error = ResponseError(code = "400", message = "Bad Request", httpStatus = 400)
         coEvery { dataSource.getCardBin(any()) } returns Result.Error(error)
 
         val result = repository.getCardBin(binParams)
 
-        assertIs<Result.Error<ResultError>>(result)
+        assertIs<Result.Error<*>>(result)
     }
 
     @Test
-    fun `given dataSource throws then getCardBin returns MercadoPagoCheckoutError`() = runTest {
+    fun `given dataSource throws then getCardBin returns Result Error`() = runTest {
         coEvery { dataSource.getCardBin(any()) } throws RuntimeException("Timeout")
 
         val result = repository.getCardBin(binParams)
 
-        assertIs<Result.Error<ResultError>>(result)
+        assertIs<Result.Error<*>>(result)
     }
 
     @Test

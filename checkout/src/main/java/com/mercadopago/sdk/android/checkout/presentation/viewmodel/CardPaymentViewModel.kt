@@ -13,12 +13,14 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -44,6 +46,7 @@ internal class CardPaymentViewModel(
     private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
@@ -382,7 +385,20 @@ internal class CardPaymentViewModel(
                     onSuccess = { data ->
                         _viewState.value = _viewState.value.applyCardBinData(data)
                     },
-                    onError = { },
+                    onError = { error ->
+                        _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {
+                            errorHandler.applyPaymentMethodNotFoundError(
+                                state = _viewState.value,
+                                message = error.errorMessage,
+                            )
+                        } else {
+                            errorHandler.handleResultError(
+                                state = _viewState.value,
+                                message = error.errorMessage,
+                                genericErrorMessage = cardPaymentScreenStateFactory.getGenericErrorMessage(),
+                            )
+                        }
+                    },
                 )
             }
         }
