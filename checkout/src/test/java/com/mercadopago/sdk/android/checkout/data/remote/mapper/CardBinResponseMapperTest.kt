@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeCon
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -162,8 +163,8 @@ internal class CardBinResponseMapperTest {
                 quotas = listOf(
                     QuotaResponse(
                         installments = 1,
-                        installmentAmount = 10.00,
-                        totalAmount = 10.00,
+                        installmentAmount = 10.0f,
+                        totalAmount = 10.0f,
                     ),
                 ),
             ),
@@ -173,8 +174,8 @@ internal class CardBinResponseMapperTest {
 
         assertEquals(1, domain.payerCosts.size)
         assertEquals(1, domain.payerCosts[0].instalments)
-        assertEquals(10f, domain.payerCosts[0].installmentAmount)
-        assertEquals(10f, domain.payerCosts[0].totalAmount)
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.payerCosts[0].installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.payerCosts[0].totalAmount))
     }
 
     @Test

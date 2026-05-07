@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
-import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
-import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.getAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -51,7 +50,6 @@ import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState.Companion.create as createPCIFieldState
 
-private const val PAY_BUTTON_LABEL = "Pagar"
 private const val FIRST_INSTALLMENT = 1
 private const val INSTALLMENTS_SEPARATOR = "x"
 
@@ -334,7 +332,7 @@ internal class CardPaymentViewModel(
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
             initializeCardFormUseCase(
-                amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
+                amount = checkoutConfiguration?.getAmountOrZero().orEmpty(),
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
@@ -419,8 +417,11 @@ internal class CardPaymentViewModel(
                     list
                 }
             }
-        val brand = state.paymentState.paymentMethodId.orEmpty().replaceFirstChar { it.uppercaseChar() }
+        val brand = state.paymentState.paymentMethodId.toBrandLabel()
         val lastFourDigits = state.cardNumberState.lastFourDigits
+        val subtitle = listOf(brand, "****", lastFourDigits)
+            .filter { it.isNotEmpty() }
+            .joinToString(separator = " ")
         return InstallmentsScreenState(
             title = title,
             displayType = displayType,
@@ -430,28 +431,39 @@ internal class CardPaymentViewModel(
                 currencySymbol = null.getCurrencyString(),
                 amountIntegerPart = amount.getTotal(),
                 amountDecimalPart = amount.getTotalDecimalPart(),
-                subtitle = if (lastFourDigits.isNotEmpty()) "$brand **** $lastFourDigits" else brand,
-                buttonLabel = if (displayType == InstallmentsDisplayType.RadioButton) PAY_BUTTON_LABEL else null,
+                subtitle = subtitle,
+                buttonLabel = installmentsCopy.payButtonLabel
+                    .takeIf { displayType == InstallmentsDisplayType.RadioButton && it.isNotEmpty() },
             ),
         )
     }
 
+    private fun String?.toBrandLabel(): String =
+        this.orEmpty()
+            .split('_')
+            .filter { it.isNotEmpty() }
+            .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
+
     private fun List<PayerCost>.toInstallmentStates(
         interestFreeLabel: String,
     ): List<InstallmentState> =
-        map {
-            val isInterestFree = it.totalAmount != null && it.installmentAmount == it.totalAmount
+        map { payerCost ->
+            val installmentAmount = payerCost.installmentAmount
+            val totalAmount = payerCost.totalAmount
+            val isInterestFree = totalAmount != null &&
+                installmentAmount != null &&
+                installmentAmount.compareTo(totalAmount) == 0
             InstallmentState(
-                text = "${it.instalments} $INSTALLMENTS_SEPARATOR ${it.installmentAmount?.toCurrencyString()}",
+                text = "${payerCost.instalments} $INSTALLMENTS_SEPARATOR ${installmentAmount?.toCurrencyString()}",
                 description = "",
                 trailing = when {
-                    it.instalments == FIRST_INSTALLMENT -> ""
+                    payerCost.instalments == FIRST_INSTALLMENT -> ""
                     isInterestFree -> interestFreeLabel
-                    else -> it.totalAmount?.toCurrencyString().orEmpty()
+                    else -> totalAmount?.toCurrencyString().orEmpty()
                 },
                 interestFree = isInterestFree,
                 isSelected = false,
-                number = it.instalments ?: FIRST_INSTALLMENT,
+                number = payerCost.instalments ?: FIRST_INSTALLMENT,
             )
         }
 
@@ -482,7 +494,7 @@ internal class CardPaymentViewModel(
             viewModelScope.launch {
                 getCardBinUseCase(
                     bin = cardBin.orEmpty(),
-                    amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString(),
+                    amount = checkoutConfiguration?.getAmount()?.toPlainString(),
                     checkoutType = checkoutConfiguration.toCheckoutType(),
                     processingMode = PROCESSING_MODE,
                     filter = CardBinFilter(cardTypes = cardTypes, cardBrands = cardBrands),

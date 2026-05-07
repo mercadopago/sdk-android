@@ -81,6 +81,7 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
     interestFreeLabel = data.translations?.installments?.interestFreeLabel
         .orCurrent(installmentsState.interestFreeLabel),
     totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
+    payButtonLabel = data.translations?.cardFormFooterButtonLabel.orCurrent(installmentsState.payButtonLabel),
     displayType = data.installmentsSelectionType.toDisplayType(),
 )
 

@@ -122,6 +122,7 @@ internal data class InstallmentsState(
     val headerRadio: String = "",
     val interestFreeLabel: String = "",
     val totalLabel: String = "",
+    val payButtonLabel: String = "",
     val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
 )
 

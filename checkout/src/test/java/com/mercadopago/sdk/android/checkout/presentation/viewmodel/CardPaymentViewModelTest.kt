@@ -53,6 +53,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -281,8 +282,8 @@ internal class CardPaymentViewModelTest {
             payerCosts = listOf(
                 PayerCost(
                     instalments = 1,
-                    installmentAmount = 100f,
-                    totalAmount = 100f,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
             ),
             installmentsSelectionType = null,
@@ -431,13 +432,13 @@ internal class CardPaymentViewModelTest {
             payerCosts = listOf(
                 PayerCost(
                     instalments = 1,
-                    installmentAmount = 100f,
-                    totalAmount = 100f,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
                 PayerCost(
                     instalments = 3,
-                    installmentAmount = 34f,
-                    totalAmount = 102f,
+                    installmentAmount = BigDecimal.valueOf(34.0),
+                    totalAmount = BigDecimal.valueOf(102.0),
                 ),
             ),
             installmentsSelectionType = null,
@@ -707,13 +708,13 @@ internal class CardPaymentViewModelTest {
             payerCosts = listOf(
                 PayerCost(
                     instalments = 1,
-                    installmentAmount = 100f,
-                    totalAmount = 100f,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
                 PayerCost(
                     instalments = 3,
-                    installmentAmount = 34f,
-                    totalAmount = 102f,
+                    installmentAmount = BigDecimal.valueOf(34.0),
+                    totalAmount = BigDecimal.valueOf(102.0),
                 ),
             ),
             installmentsSelectionType = null,

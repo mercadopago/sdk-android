@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -36,9 +37,10 @@ internal class CardBinStateMapperTest {
             interestFreeLabel = "",
             totalLabel = "",
         ),
+        cardFormFooterButtonLabel: String = "",
     ) = Translations(
         cardFormTitle = "",
-        cardFormFooterButtonLabel = "",
+        cardFormFooterButtonLabel = cardFormFooterButtonLabel,
         cardNumber = cardNumber,
         holderName = FieldTranslations(
             label = "",
@@ -228,8 +230,8 @@ internal class CardBinStateMapperTest {
             payerCosts = listOf(
                 PayerCost(
                     instalments = 1,
-                    installmentAmount = 100f,
-                    totalAmount = 100f,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
             ),
         )
@@ -252,8 +254,8 @@ internal class CardBinStateMapperTest {
             payerCosts = listOf(
                 PayerCost(
                     instalments = 3,
-                    installmentAmount = 33.33f,
-                    totalAmount = 100f,
+                    installmentAmount = BigDecimal.valueOf(33.33),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
             ),
         )
@@ -262,8 +264,8 @@ internal class CardBinStateMapperTest {
 
         val payerCost = result.installmentsState.installments.first()
         assertEquals(3, payerCost.instalments)
-        assertEquals(33.33f, payerCost.installmentAmount)
-        assertEquals(100f, payerCost.totalAmount)
+        assertEquals(0, BigDecimal.valueOf(33.33).compareTo(payerCost.installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(100.0).compareTo(payerCost.totalAmount))
     }
 
     @Test
@@ -341,5 +343,16 @@ internal class CardBinStateMapperTest {
         assertEquals("Elegí el plan", result.installmentsState.headerRadio)
         assertEquals("Sin interés", result.installmentsState.interestFreeLabel)
         assertEquals("Total", result.installmentsState.totalLabel)
+    }
+
+    @Test
+    fun `given cardFormFooterButtonLabel then updates payButtonLabel`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(cardFormFooterButtonLabel = "Pagar"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Pagar", result.installmentsState.payButtonLabel)
     }
 }

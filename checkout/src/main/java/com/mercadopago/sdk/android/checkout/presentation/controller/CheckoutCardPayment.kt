@@ -86,6 +86,12 @@ private fun CardFormDestination(
     CardPaymentScreen(viewModel = cardPaymentViewModel)
 }
 
+/**
+ * Reuses Form's back-stack entry as ViewModel store so Form and Installments share the same
+ * [CardPaymentViewModel] instance. `getBackStackEntry<T>()` is annotated `@RestrictTo` on the
+ * current Navigation Compose API but is the documented way to scope a typed destination's
+ * ViewModel.
+ */
 @SuppressLint("RestrictedApi")
 @Composable
 private fun InstallmentsDestination(

@@ -31,6 +31,6 @@ private fun IssuerResponse.toDomain(): BinIssuer =
 private fun QuotaResponse.toDomain(): PayerCost =
     PayerCost(
         instalments = installments,
-        installmentAmount = installmentAmount?.toFloat(),
-        totalAmount = totalAmount?.toFloat(),
+        installmentAmount = installmentAmount?.toBigDecimal(),
+        totalAmount = totalAmount?.toBigDecimal(),
     )
