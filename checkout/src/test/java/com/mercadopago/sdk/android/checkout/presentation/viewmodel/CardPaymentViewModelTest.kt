@@ -59,6 +59,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@Suppress("LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CardPaymentViewModelTest {
     @get:Rule
@@ -789,5 +790,277 @@ internal class CardPaymentViewModelTest {
         viewModel.onViewEventConsumed()
 
         assertEquals(null, viewModel.viewEvent.value)
+    }
+
+    // ── isBeingCleared branches ───────────────────────────────────────────────
+
+    @Test
+    fun `when card number length goes from non-zero to zero then clears errorTypes`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnLengthChanged(length = 4))
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnLengthChanged(length = 0))
+
+        assertTrue(viewModel.viewState.value.cardNumberState.errorTypes.isEmpty())
+    }
+
+    @Test
+    fun `when expiration date length goes from non-zero to zero then no error is shown`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = 3))
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = 0))
+
+        assertEquals("", viewModel.viewState.value.expirationDateState.error)
+    }
+
+    @Test
+    fun `when security code length goes from non-zero to zero then no error is shown`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 2))
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 0))
+
+        assertEquals("", viewModel.viewState.value.secureCodeState.error)
+    }
+
+    @Test
+    fun `when security code length reaches maxLength then applies validation`() = runTest {
+        val viewModel = makeViewModel()
+        val maxLength = viewModel.viewState.value.secureCodeState.maxLength
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = maxLength))
+
+        assertEquals(maxLength, viewModel.viewState.value.secureCodeState.length)
+    }
+
+    @Test
+    fun `when card holder value goes from filled to empty then no error is shown`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged("John Doe"))
+
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged(""))
+
+        assertEquals("", viewModel.viewState.value.cardHolderState.error)
+    }
+
+    @Test
+    fun `when identification value goes from filled to empty then no error is shown`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678"))
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged(""))
+
+        assertEquals("", viewModel.viewState.value.identificationTypeState.error)
+    }
+
+    @Test
+    fun `when identification value reaches maxLength then validation is applied`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onIdentificationEvent(
+            IdentificationTextFieldEvent.OnTypeSelected(
+                IdentificationType(id = "CPF", minLength = 11, maxLength = 11, name = "CPF"),
+            ),
+        )
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678901"))
+
+        assertEquals("12345678901", viewModel.viewState.value.identificationTypeState.value)
+    }
+
+    // ── focus gain branches ───────────────────────────────────────────────────
+
+    @Test
+    fun `when ExpirationDate OnFocusChanged true then isFocused is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused = true))
+
+        assertTrue(viewModel.viewState.value.expirationDateState.isFocused)
+    }
+
+    @Test
+    fun `when ExpirationDate OnFocusChanged false then isFocused is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused = false))
+
+        assertFalse(viewModel.viewState.value.expirationDateState.isFocused)
+    }
+
+    @Test
+    fun `when SecurityCode OnFocusChanged true then isFocused is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused = true))
+
+        assertTrue(viewModel.viewState.value.secureCodeState.isFocused)
+    }
+
+    @Test
+    fun `when SecurityCode OnFocusChanged false then isFocused is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused = false))
+
+        assertFalse(viewModel.viewState.value.secureCodeState.isFocused)
+    }
+
+    @Test
+    fun `when CardHolder OnFocusChanged true then isFocused is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnFocusChanged(isFocused = true))
+
+        assertTrue(viewModel.viewState.value.cardHolderState.isFocused)
+    }
+
+    @Test
+    fun `when Identification OnFocusChanged true then isFocused is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnFocusChanged(isFocused = true))
+
+        assertTrue(viewModel.viewState.value.identificationTypeState.isFocused)
+    }
+
+    @Test
+    fun `when Identification OnFocusChanged false then isFocused is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnFocusChanged(isFocused = false))
+
+        assertFalse(viewModel.viewState.value.identificationTypeState.isFocused)
+    }
+
+    // ── installments display type branches ────────────────────────────────────
+
+    private suspend fun makeViewModelWithChevronInstallments(): CardPaymentViewModel {
+        val data = CardBinData(
+            id = "visa_credit",
+            paymentTypeId = "credit_card",
+            cardNumber = null,
+            securityCode = null,
+            issuers = emptyList(),
+            payerCosts = listOf(
+                PayerCost(
+                    instalments = 1,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
+                ),
+                PayerCost(
+                    instalments = 6,
+                    installmentAmount = BigDecimal.valueOf(20.0),
+                    totalAmount = BigDecimal.valueOf(120.0),
+                ),
+            ),
+            installmentsSelectionType = "chevron",
+            translations = null,
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        return makeViewModel().also {
+            it.onCardNumberEvent(CardNumberTextFieldEvent.OnLastFourDigitsFilled("1234"))
+            it.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+        }
+    }
+
+    @Test
+    fun `when onSubmit and displayType is Chevron then no installment is selected`() = runTest {
+        val viewModel = makeViewModelWithChevronInstallments()
+
+        viewModel.onSubmit()
+
+        val states = viewModel.viewState.value.installmentsScreen.installmentsState
+        assertTrue(states.none { it.isSelected })
+    }
+
+    @Test
+    fun `when onSubmit and displayType is Chevron then footer has no buttonLabel`() = runTest {
+        val viewModel = makeViewModelWithChevronInstallments()
+
+        viewModel.onSubmit()
+
+        assertEquals(null, viewModel.viewState.value.installmentsScreen.footerState?.buttonLabel)
+    }
+
+    @Test
+    fun `when onInstallmentSelected and displayType is Chevron then selection is unchanged`() = runTest {
+        val viewModel = makeViewModelWithChevronInstallments()
+        viewModel.onSubmit()
+        val before = viewModel.viewState.value.installmentsScreen.installmentsState
+
+        viewModel.onInstallmentSelected(installment = 6)
+
+        assertEquals(before, viewModel.viewState.value.installmentsScreen.installmentsState)
+    }
+
+    @Test
+    fun `when paymentMethodId has underscore then subtitle joins capitalized brand and last four`() = runTest {
+        val viewModel = makeViewModelWithChevronInstallments()
+
+        viewModel.onSubmit()
+
+        val subtitle = viewModel.viewState.value.installmentsScreen.footerState?.subtitle
+        assertEquals("Visa Credit **** 1234", subtitle)
+    }
+
+    @Test
+    fun `when payerCost has different installment and total amount then trailing shows total`() = runTest {
+        val viewModel = makeViewModelWithChevronInstallments()
+
+        viewModel.onSubmit()
+
+        val sixInstallments = viewModel.viewState.value.installmentsScreen.installmentsState
+            .first { it.number == 6 }
+        assertFalse(sixInstallments.interestFree)
+        assertTrue(sixInstallments.trailing.isNotEmpty())
+    }
+
+    @Test
+    fun `when payerCost is interest free and not first installment then trailing shows interest free label`() =
+        runTest {
+            val data = CardBinData(
+                id = "visa",
+                paymentTypeId = "credit_card",
+                cardNumber = null,
+                securityCode = null,
+                issuers = emptyList(),
+                payerCosts = listOf(
+                    PayerCost(
+                        instalments = 3,
+                        installmentAmount = BigDecimal.valueOf(50.0),
+                        totalAmount = BigDecimal.valueOf(50.0),
+                    ),
+                ),
+                installmentsSelectionType = null,
+                translations = fullTranslations.copy(
+                    installments = InstallmentsTranslations(
+                        header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
+                        interestFreeLabel = "Sem juros",
+                        totalLabel = "",
+                    ),
+                ),
+            )
+            coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+            val viewModel = makeViewModel()
+            viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+            viewModel.onSubmit()
+
+            val three = viewModel.viewState.value.installmentsScreen.installmentsState
+                .first { it.number == 3 }
+            assertTrue(three.interestFree)
+            assertEquals("Sem juros", three.trailing)
+        }
+
+    @Test
+    fun `when first installment then trailing is empty`() = runTest {
+        val viewModel = makeViewModelWithInstallments()
+
+        viewModel.onSubmit()
+
+        val first = viewModel.viewState.value.installmentsScreen.installmentsState
+            .first { it.number == 1 }
+        assertEquals("", first.trailing)
     }
 }
