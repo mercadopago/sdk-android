@@ -699,7 +699,7 @@ internal class CardPaymentViewModelTest {
 
     // ── installments flow ─────────────────────────────────────────────────────
 
-    private suspend fun makeViewModelWithInstallments(): CardPaymentViewModel {
+    private fun makeViewModelWithInstallments(): CardPaymentViewModel {
         val data = CardBinData(
             id = "visa",
             paymentTypeId = "credit_card",
@@ -935,7 +935,7 @@ internal class CardPaymentViewModelTest {
 
     // ── installments display type branches ────────────────────────────────────
 
-    private suspend fun makeViewModelWithChevronInstallments(): CardPaymentViewModel {
+    private fun makeViewModelWithChevronInstallments(): CardPaymentViewModel {
         val data = CardBinData(
             id = "visa_credit",
             paymentTypeId = "credit_card",

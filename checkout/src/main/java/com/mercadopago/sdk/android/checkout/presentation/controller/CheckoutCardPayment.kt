@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
@@ -98,7 +99,10 @@ private fun InstallmentsDestination(
     navController: NavHostController,
     checkoutConfiguration: CheckoutConfiguration?,
 ) {
-    val formBackStackEntry = remember { navController.getBackStackEntry<SampleDestination.Form>() }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val formBackStackEntry = remember(currentBackStackEntry) {
+        navController.getBackStackEntry<SampleDestination.Form>()
+    }
     val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
         viewModelStoreOwner = formBackStackEntry,
     ) { parametersOf(checkoutConfiguration) }
