@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -25,7 +26,9 @@ import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
+import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
@@ -35,7 +38,11 @@ import org.koin.test.mock.MockProvider
 import org.koin.test.verify.verify
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class CheckoutModulesProviderTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Before
     fun setUp() {
         MockProvider.register { mockk(relaxed = true) }

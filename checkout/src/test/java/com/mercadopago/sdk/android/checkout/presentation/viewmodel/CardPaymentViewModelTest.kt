@@ -578,10 +578,23 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit is called then isLoading is false after completion`() = runTest {
+    fun `when onSubmit succeeds and clearSubmitState is called then isLoading is false`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
+        val viewModel = makeViewModel()
+
+        viewModel.onSubmit()
+        viewModel.clearSubmitState()
+
+        assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when onSubmit fails then isLoading is false`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.onSubmit()

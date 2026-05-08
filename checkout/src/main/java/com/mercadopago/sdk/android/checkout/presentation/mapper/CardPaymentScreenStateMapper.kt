@@ -67,9 +67,7 @@ private fun DocumentField.toIdentificationTypeState(
 ): IdentificationTypeState {
     val coreTypes = identificationTypes.map { it.toCoreType() }
     val firstItem = identificationTypes.firstOrNull()
-    val placeholdersByTypeId = identificationTypes
-        .mapNotNull { item -> item.id?.let { id -> id to item.placeholder } }
-        .toMap()
+    val placeholdersByTypeId = identificationTypes.associate { item -> item.id to item.placeholder }
     return IdentificationTypeState(
         label = label,
         show = identificationTypes.isNotEmpty(),

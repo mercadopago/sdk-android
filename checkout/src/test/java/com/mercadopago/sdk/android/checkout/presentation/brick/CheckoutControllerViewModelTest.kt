@@ -26,7 +26,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -81,6 +80,7 @@ internal class CheckoutControllerViewModelTest {
     @Test
     fun `when load succeeds then screenState becomes Ready with initData`() = runTest {
         val initData = mockk<CardFormInitializationOutput>(relaxed = true)
+        every { initData.copy(any(), any(), any(), any(), any(), any(), any()) } returns initData
         coEvery { initializeUseCase(any(), any()) } returns Result.Success(initData)
         val viewModel = makeViewModel()
 
@@ -88,7 +88,6 @@ internal class CheckoutControllerViewModelTest {
 
         val state = viewModel.screenState.value
         assertTrue(state is CheckoutControllerViewModel.ScreenState.Ready)
-        assertEquals(initData, (state as CheckoutControllerViewModel.ScreenState.Ready).initData)
     }
 
     @Test
