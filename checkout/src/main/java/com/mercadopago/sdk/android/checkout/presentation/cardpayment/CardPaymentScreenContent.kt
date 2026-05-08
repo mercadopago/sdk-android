@@ -75,10 +75,6 @@ internal fun CardPaymentScreen(
     val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
 
-    LaunchedEffect(Unit) {
-        viewModel.initialization()
-    }
-
     BackHandler {
         viewModel.onBackPressed(CancelReason.SystemBack)
     }

@@ -22,7 +22,6 @@ internal data class CardPaymentScreenState(
     val cardHolderState: CardHolderState = CardHolderState(),
     val identificationTypeState: IdentificationTypeState = IdentificationTypeState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
-    val installmentsScreen: InstallmentsScreenState = InstallmentsScreenState(),
     val paymentState: PaymentState = PaymentState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),

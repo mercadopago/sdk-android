@@ -17,7 +17,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeCon
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -25,9 +24,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.presentation.brick.CardPaymentCallbacks
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -67,8 +65,8 @@ internal class CardPaymentViewModelTest {
 
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
-    private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
+    private val callbacks = mockk<CardPaymentCallbacks>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -150,57 +148,14 @@ internal class CardPaymentViewModelTest {
 
     private fun makeViewModel(
         config: CheckoutConfiguration? = checkoutConfiguration,
+        initData: CardFormInitializationOutput = mockk(relaxed = true),
     ) = CardPaymentViewModel(
+        initData = initData,
         checkoutConfiguration = config,
+        callbacks = callbacks,
         getCardBinUseCase = getCardBinUseCase,
-        initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
     )
-
-    // ── initialization ───────────────────────────────────────────────────────
-
-    @Test
-    fun `when initialization succeeds then isLoading is false`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns
-            Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
-        val viewModel = makeViewModel()
-
-        viewModel.initialization()
-
-        assertFalse(viewModel.viewState.value.isLoading)
-    }
-
-    @Test
-    fun `when initialization fails then isLoading is false`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
-        val viewModel = makeViewModel()
-
-        viewModel.initialization()
-
-        assertFalse(viewModel.viewState.value.isLoading)
-    }
-
-    @Test
-    fun `when initialization fails then notifies CheckoutCallbackHolder with Error`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
-        val viewModel = makeViewModel()
-
-        viewModel.initialization()
-
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
-    }
-
-    @Test
-    fun `when initialization fails then tracks initialize_error event`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
-        val viewModel = makeViewModel()
-
-        viewModel.initialization()
-
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/initialize_error"))
-    }
 
     // ── card number events ────────────────────────────────────────────────────
 
@@ -610,7 +565,7 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onBackPressed()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        verify { callbacks.onUserCancelled(any()) }
     }
 
     @Test
@@ -630,7 +585,7 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onBackPressed(reason = CancelReason.UiButton)
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        verify { callbacks.onUserCancelled(any()) }
     }
 
     // ── submit ────────────────────────────────────────────────────────────────
@@ -662,7 +617,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds then notifies CheckoutCallbackHolder with Success`() = runTest {
+    fun `when onSubmit succeeds then calls callbacks onSuccess`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -670,11 +625,11 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onSubmit()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success }) }
+        verify { callbacks.onSuccess(any()) }
     }
 
     @Test
-    fun `when onSubmit fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when onSubmit fails then calls callbacks onFailure`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Error(networkError)
@@ -682,7 +637,7 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onSubmit()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        verify { callbacks.onFailure(any()) }
     }
 
     @Test
@@ -697,7 +652,7 @@ internal class CardPaymentViewModelTest {
         assertFalse(viewModel.viewState.value.isLoading)
     }
 
-    // ── installments flow ─────────────────────────────────────────────────────
+    // ── installments navigation ───────────────────────────────────────────────
 
     private fun makeViewModelWithInstallments(): CardPaymentViewModel {
         val data = CardBinData(
@@ -728,68 +683,39 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit and showList true then emits NavigateToInstallments`() = runTest {
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        assertEquals(CardPaymentViewEvent.NavigateToInstallments, viewModel.viewEvent.value)
-    }
-
-    @Test
-    fun `when onSubmit and showList true then populates installmentsScreen state`() = runTest {
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        val installmentsScreen = viewModel.viewState.value.installmentsScreen
-        assertEquals(2, installmentsScreen.installmentsState.size)
-        assertTrue(installmentsScreen.installmentsState.first().isSelected)
-    }
-
-    @Test
-    fun `when onInstallmentSelected then updates isSelected to matching number`() = runTest {
-        val viewModel = makeViewModelWithInstallments()
-        viewModel.onSubmit()
-
-        viewModel.onInstallmentSelected(installment = 3)
-
-        val states = viewModel.viewState.value.installmentsScreen.installmentsState
-        assertFalse(states.first { it.number == 1 }.isSelected)
-        assertTrue(states.first { it.number == 3 }.isSelected)
-    }
-
-    @Test
-    fun `when onPayClicked with selected installment then calls generateTokenUseCase`() = runTest {
+    fun `when onSubmit and showList true then calls onNavigateInstallments`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModelWithInstallments()
-        viewModel.onSubmit()
-        viewModel.onInstallmentSelected(installment = 3)
 
-        viewModel.onPayClicked()
+        viewModel.onSubmit()
+
+        verify { callbacks.onNavigateInstallments(any(), any()) }
+    }
+
+    @Test
+    fun `when onSubmit and showList true then tokenizes before navigating`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        val viewModel = makeViewModelWithInstallments()
+
+        viewModel.onSubmit()
 
         coVerify { generateTokenUseCase(any(), any(), any(), any()) }
     }
 
     @Test
-    fun `when onPayClicked without selection then does not call generateTokenUseCase`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onPayClicked()
-
-        coVerify(exactly = 0) { generateTokenUseCase(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `when onViewEventConsumed then viewEvent is null`() = runTest {
+    fun `when onSubmit and showList true then does not call onSuccess`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModelWithInstallments()
+
         viewModel.onSubmit()
 
-        viewModel.onViewEventConsumed()
-
-        assertEquals(null, viewModel.viewEvent.value)
+        verify(exactly = 0) { callbacks.onSuccess(any()) }
     }
 
     // ── isBeingCleared branches ───────────────────────────────────────────────
@@ -931,136 +857,5 @@ internal class CardPaymentViewModelTest {
         viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnFocusChanged(isFocused = false))
 
         assertFalse(viewModel.viewState.value.identificationTypeState.isFocused)
-    }
-
-    // ── installments display type branches ────────────────────────────────────
-
-    private fun makeViewModelWithChevronInstallments(): CardPaymentViewModel {
-        val data = CardBinData(
-            id = "visa_credit",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = listOf(
-                Quota(
-                    installments = 1,
-                    installmentAmount = BigDecimal.valueOf(100.0),
-                    totalAmount = BigDecimal.valueOf(100.0),
-                ),
-                Quota(
-                    installments = 6,
-                    installmentAmount = BigDecimal.valueOf(20.0),
-                    totalAmount = BigDecimal.valueOf(120.0),
-                ),
-            ),
-            installmentsSelectionType = "chevron",
-            translations = null,
-        )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-        return makeViewModel().also {
-            it.onCardNumberEvent(CardNumberTextFieldEvent.OnLastFourDigitsFilled("1234"))
-            it.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-        }
-    }
-
-    @Test
-    fun `when onSubmit and displayType is Chevron then no installment is selected`() = runTest {
-        val viewModel = makeViewModelWithChevronInstallments()
-
-        viewModel.onSubmit()
-
-        val states = viewModel.viewState.value.installmentsScreen.installmentsState
-        assertTrue(states.none { it.isSelected })
-    }
-
-    @Test
-    fun `when onSubmit and displayType is Chevron then footer has no buttonLabel`() = runTest {
-        val viewModel = makeViewModelWithChevronInstallments()
-
-        viewModel.onSubmit()
-
-        assertEquals(null, viewModel.viewState.value.installmentsScreen.footerState?.buttonLabel)
-    }
-
-    @Test
-    fun `when onInstallmentSelected and displayType is Chevron then selection is unchanged`() = runTest {
-        val viewModel = makeViewModelWithChevronInstallments()
-        viewModel.onSubmit()
-        val before = viewModel.viewState.value.installmentsScreen.installmentsState
-
-        viewModel.onInstallmentSelected(installment = 6)
-
-        assertEquals(before, viewModel.viewState.value.installmentsScreen.installmentsState)
-    }
-
-    @Test
-    fun `when paymentMethodId has underscore then subtitle joins capitalized brand and last four`() = runTest {
-        val viewModel = makeViewModelWithChevronInstallments()
-
-        viewModel.onSubmit()
-
-        val subtitle = viewModel.viewState.value.installmentsScreen.footerState?.subtitle
-        assertEquals("Visa Credit **** 1234", subtitle)
-    }
-
-    @Test
-    fun `when payerCost has different installment and total amount then trailing shows total`() = runTest {
-        val viewModel = makeViewModelWithChevronInstallments()
-
-        viewModel.onSubmit()
-
-        val sixInstallments = viewModel.viewState.value.installmentsScreen.installmentsState
-            .first { it.number == 6 }
-        assertFalse(sixInstallments.interestFree)
-        assertTrue(sixInstallments.trailing.isNotEmpty())
-    }
-
-    @Test
-    fun `when payerCost is interest free and not first installment then trailing shows interest free label`() =
-        runTest {
-            val data = CardBinData(
-                id = "visa",
-                paymentTypeId = "credit_card",
-                cardNumber = null,
-                securityCode = null,
-                issuers = emptyList(),
-                quotas = listOf(
-                    Quota(
-                        installments = 3,
-                        installmentAmount = BigDecimal.valueOf(50.0),
-                        totalAmount = BigDecimal.valueOf(50.0),
-                    ),
-                ),
-                installmentsSelectionType = null,
-                translations = fullTranslations.copy(
-                    installments = InstallmentsTranslations(
-                        header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-                        interestFreeLabel = "Sem juros",
-                        totalLabel = "",
-                    ),
-                ),
-            )
-            coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-            val viewModel = makeViewModel()
-            viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-
-            viewModel.onSubmit()
-
-            val three = viewModel.viewState.value.installmentsScreen.installmentsState
-                .first { it.number == 3 }
-            assertTrue(three.interestFree)
-            assertEquals("Sem juros", three.trailing)
-        }
-
-    @Test
-    fun `when first installment then trailing is empty`() = runTest {
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        val first = viewModel.viewState.value.installmentsScreen.installmentsState
-            .first { it.number == 1 }
-        assertEquals("", first.trailing)
     }
 }

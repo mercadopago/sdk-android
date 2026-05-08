@@ -1,10 +1,16 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import java.math.BigDecimal
+
 internal data class CardFormInitializationOutput(
     val title: String,
     val button: String,
     val fields: CardFormFields,
     val identificationTypes: List<IdentificationTypeItem>,
+    val transactionAmount: BigDecimal? = null,
+    val paymentMethods: List<PaymentMethod> = emptyList(),
+    val checkoutType: String = "",
 )
 
 internal data class IdentificationTypeItem(

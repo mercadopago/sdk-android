@@ -24,7 +24,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
@@ -38,13 +38,13 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 @Composable
 internal fun InstallmentsScreen(
-    viewModel: CardPaymentViewModel,
+    viewModel: InstallmentsViewModel,
     onBackClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
     InstallmentsScreenContent(
-        viewState = viewState.installmentsScreen,
+        viewState = viewState,
         onBackClick = onBackClick,
         onItemClick = { viewModel.onInstallmentSelected(installment = it) },
         onPayClick = { viewModel.onPayClicked() },
