@@ -17,14 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * Mirrors `CardFormBrickViewModel.swift` from iOS — minimal responsibilities:
- *  - drives the `Loading` / `Ready(initData)` lifecycle for the brick
- *  - calls the init use case once when the brick is first composed
- *
- * Does not hold cross-screen state, navigation, or the public callback. Those live on the
- * `CheckoutBrick` composable.
- */
 internal class CheckoutControllerViewModel(
     private val configuration: CheckoutConfiguration?,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
