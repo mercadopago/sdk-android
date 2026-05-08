@@ -3,9 +3,11 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
+
+private const val SELECTION_TYPE_CHEVRON = "chevron"
 
 internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
@@ -73,13 +75,19 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
     data: CardBinData,
 ) = installmentsState.copy(
     showList = data.quotas.isNotEmpty(),
-    installments = data.quotas.map {
-        PayerCost(
-            instalments = it.quantity,
-            installmentAmount = it.installmentAmount?.toFloatOrNull(),
-            totalAmount = it.totalAmount?.toFloatOrNull(),
-            discountRate = it.discountRate?.toFloat(),
-            labels = listOfNotNull(it.label),
-        )
-    },
+    installments = data.quotas,
+    headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
+    headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
+    interestFreeLabel = data.translations?.installments?.interestFreeLabel
+        .orCurrent(installmentsState.interestFreeLabel),
+    totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
+    payButtonLabel = data.translations?.cardFormFooterButtonLabel.orCurrent(installmentsState.payButtonLabel),
+    displayType = data.installmentsSelectionType.toDisplayType(),
 )
+
+private fun String?.toDisplayType(): InstallmentsDisplayType =
+    if (this?.equals(SELECTION_TYPE_CHEVRON, ignoreCase = true) == true) {
+        InstallmentsDisplayType.Chevron
+    } else {
+        InstallmentsDisplayType.RadioButton
+    }

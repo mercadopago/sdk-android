@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeCon
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import org.junit.Test
+import java.math.BigDecimal
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -158,13 +159,12 @@ internal class CardBinResponseMapperTest {
     fun `toDomain maps quotas`() {
         val response = minimalResponse().copy(
             installment = InstallmentConfigResponse(
+                selectionType = null,
                 quotas = listOf(
                     QuotaResponse(
-                        quantity = 1,
-                        installmentAmount = "10.00",
-                        totalAmount = "10.00",
-                        label = "1 cuota",
-                        discountRate = 0.0,
+                        installments = 1,
+                        installmentAmount = 10.0f,
+                        totalAmount = 10.0f,
                     ),
                 ),
             ),
@@ -173,11 +173,30 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertEquals(1, domain.quotas.size)
-        assertEquals(1, domain.quotas[0].quantity)
-        assertEquals("10.00", domain.quotas[0].installmentAmount)
-        assertEquals("10.00", domain.quotas[0].totalAmount)
-        assertEquals("1 cuota", domain.quotas[0].label)
-        assertEquals(0.0, domain.quotas[0].discountRate)
+        assertEquals(1, domain.quotas[0].installments)
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].totalAmount))
+    }
+
+    @Test
+    fun `toDomain maps installments selectionType`() {
+        val response = minimalResponse().copy(
+            installment = InstallmentConfigResponse(
+                selectionType = "radio_button",
+                quotas = null,
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals("radio_button", domain.installmentsSelectionType)
+    }
+
+    @Test
+    fun `toDomain returns null selectionType when installment is null`() {
+        val domain = minimalResponse().copy(installment = null).toDomain()
+
+        assertNull(domain.installmentsSelectionType)
     }
 
     @Test
@@ -271,7 +290,7 @@ internal class CardBinResponseMapperTest {
     @Test
     fun `toDomain returns empty quotas when installment quotas is null`() {
         val domain = minimalResponse().copy(
-            installment = InstallmentConfigResponse(quotas = null),
+            installment = InstallmentConfigResponse(selectionType = null, quotas = null),
         ).toDomain()
 
         assertTrue(domain.quotas.isEmpty())

@@ -11,6 +11,7 @@ internal data class CardBinData(
     val securityCode: SecurityCodeConfig?,
     val issuers: List<BinIssuer>,
     val quotas: List<Quota>,
+    val installmentsSelectionType: String?,
     val translations: Translations?,
 )
 
@@ -18,12 +19,4 @@ internal data class BinIssuer(
     val id: Long?,
     val name: String?,
     val secureThumbnail: String?,
-)
-
-internal data class Quota(
-    val quantity: Int?,
-    val installmentAmount: String?,
-    val totalAmount: String?,
-    val label: String?,
-    val discountRate: Double?,
 )

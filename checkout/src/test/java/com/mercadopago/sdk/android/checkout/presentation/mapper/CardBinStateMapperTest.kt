@@ -14,7 +14,9 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -30,9 +32,15 @@ internal class CardBinStateMapperTest {
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
+        installments: InstallmentsTranslations = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
+            interestFreeLabel = "",
+            totalLabel = "",
+        ),
+        cardFormFooterButtonLabel: String = "",
     ) = Translations(
         cardFormTitle = "",
-        cardFormFooterButtonLabel = "",
+        cardFormFooterButtonLabel = cardFormFooterButtonLabel,
         cardNumber = cardNumber,
         holderName = FieldTranslations(
             label = "",
@@ -61,11 +69,7 @@ internal class CardBinStateMapperTest {
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
-        installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
-            totalLabel = "",
-        ),
+        installments = installments,
     )
 
     private val baseState = CardPaymentScreenState(
@@ -87,6 +91,7 @@ internal class CardBinStateMapperTest {
         securityCode = null,
         issuers = emptyList(),
         quotas = emptyList(),
+        installmentsSelectionType = null,
         translations = null,
     )
 
@@ -220,15 +225,13 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given non-empty quotas then showList is true`() {
+    fun `given non-empty payerCosts then showList is true`() {
         val data = emptyBinData.copy(
             quotas = listOf(
                 Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = null,
-                    discountRate = null,
+                    installments = 1,
+                    installmentAmount = BigDecimal.valueOf(100.0),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
             ),
         )
@@ -239,33 +242,30 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given empty quotas then showList is false`() {
+    fun `given empty payerCosts then showList is false`() {
         val result = baseState.applyCardBinData(emptyBinData)
 
         assertFalse(result.installmentsState.showList)
     }
 
     @Test
-    fun `given quotas then maps quantity to instalments`() {
+    fun `given payerCosts then exposes them on installments state`() {
         val data = emptyBinData.copy(
             quotas = listOf(
                 Quota(
-                    quantity = 3,
-                    installmentAmount = "33.33",
-                    totalAmount = "100.00",
-                    label = "3x",
-                    discountRate = null,
+                    installments = 3,
+                    installmentAmount = BigDecimal.valueOf(33.33),
+                    totalAmount = BigDecimal.valueOf(100.0),
                 ),
             ),
         )
 
         val result = baseState.applyCardBinData(data)
 
-        val payerCost = result.installmentsState.installments.first()
-        assertEquals(3, payerCost.instalments)
-        assertEquals(33.33f, payerCost.installmentAmount)
-        assertEquals(100.00f, payerCost.totalAmount)
-        assertEquals(listOf("3x"), payerCost.labels)
+        val quota = result.installmentsState.installments.first()
+        assertEquals(3, quota.installments)
+        assertEquals(0, BigDecimal.valueOf(33.33).compareTo(quota.installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(100.0).compareTo(quota.totalAmount))
     }
 
     @Test
@@ -276,5 +276,83 @@ internal class CardBinStateMapperTest {
 
         assertEquals("visa", result.paymentState.paymentMethodId)
         assertEquals("credit_card", result.paymentState.paymentTypeId)
+    }
+
+    @Test
+    fun `given selectionType radio_button then displayType is RadioButton`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "radio_button")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given selectionType chevron then displayType is Chevron`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "chevron")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.Chevron, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given selectionType chevron with uppercase then displayType is Chevron`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "CHEVRON")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.Chevron, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given null selectionType then displayType defaults to RadioButton`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given unknown selectionType then displayType defaults to RadioButton`() {
+        val data = emptyBinData.copy(installmentsSelectionType = "something_else")
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+    }
+
+    @Test
+    fun `given installments translations then updates installments labels`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(
+                installments = InstallmentsTranslations(
+                    header = InstallmentsHeaderTranslations(
+                        chevron = "Elegí las cuotas",
+                        radio = "Elegí el plan",
+                        title = "Cuotas",
+                    ),
+                    interestFreeLabel = "Sin interés",
+                    totalLabel = "Total",
+                ),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Elegí las cuotas", result.installmentsState.headerChevron)
+        assertEquals("Elegí el plan", result.installmentsState.headerRadio)
+        assertEquals("Sin interés", result.installmentsState.interestFreeLabel)
+        assertEquals("Total", result.installmentsState.totalLabel)
+    }
+
+    @Test
+    fun `given cardFormFooterButtonLabel then updates payButtonLabel`() {
+        val data = emptyBinData.copy(
+            translations = defaultTranslations(cardFormFooterButtonLabel = "Pagar"),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("Pagar", result.installmentsState.payButtonLabel)
     }
 }

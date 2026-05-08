@@ -9,8 +9,6 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
@@ -90,26 +88,5 @@ internal class DataModuleTest {
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
         }
-    }
-
-    @OptIn(KoinExperimentalAPI::class)
-    @Test
-    fun `when provideInstallmentsModule is called then InstallmentsViewModel should be provided`() {
-        val module = module {
-            includes(provideInstallmentsModule())
-        }
-
-        val koin = koinApplication {
-            modules(module)
-        }
-
-        module.verify(
-            extraTypes = listOf(
-                CoreMethods::class,
-                InstallmentsViewModel::class,
-            ),
-        )
-
-        koin.checkModules()
     }
 }

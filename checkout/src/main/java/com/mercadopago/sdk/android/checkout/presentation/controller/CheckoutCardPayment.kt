@@ -1,11 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.controller
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,18 +17,17 @@ import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@SuppressLint("RestrictedApi")
 @Composable
 internal fun MPCardPayment(
     checkoutConfiguration: CheckoutConfiguration?,
 ) {
     val navController = rememberNavController()
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val destination = currentBackStackEntry?.destination?.route
 
     CardPaymentNavHost(
         navController = navController,
@@ -48,32 +49,75 @@ internal fun CardPaymentNavHost(
         exitTransition = { slideOutHorizontally { it } },
     ) {
         composable<SampleDestination.Form> {
-            CardPaymentScreen(
-                viewModel = koinViewModel { parametersOf(checkoutConfiguration) },
+            CardFormDestination(
+                checkoutConfiguration = checkoutConfiguration,
+                onNavigateToInstallments = {
+                    navController.navigate(SampleDestination.Installment)
+                },
             )
         }
 
         composable<SampleDestination.Installment> {
-            InstallmentsScreen(
-                viewModel = koinViewModel(),
-                onBackClick = { navController.popBackStack() },
-                onInstallmentSelected = { Log.i("InstallmentsScreen", "onItemClick: $it") },
+            InstallmentsDestination(
+                navController = navController,
+                checkoutConfiguration = checkoutConfiguration,
             )
         }
     }
 }
 
+@Composable
+private fun CardFormDestination(
+    checkoutConfiguration: CheckoutConfiguration?,
+    onNavigateToInstallments: () -> Unit,
+) {
+    val cardPaymentViewModel: CardPaymentViewModel = koinViewModel { parametersOf(checkoutConfiguration) }
+    val viewEvent by cardPaymentViewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (viewEvent) {
+            CardPaymentViewEvent.NavigateToInstallments -> {
+                onNavigateToInstallments()
+                cardPaymentViewModel.onViewEventConsumed()
+            }
+            null -> Unit
+        }
+    }
+
+    CardPaymentScreen(viewModel = cardPaymentViewModel)
+}
+
+/**
+ * Reuses Form's back-stack entry as ViewModel store so Form and Installments share the same
+ * [CardPaymentViewModel] instance. `getBackStackEntry<T>()` is annotated `@RestrictTo` on the
+ * current Navigation Compose API but is the documented way to scope a typed destination's
+ * ViewModel.
+ */
+@SuppressLint("RestrictedApi")
+@Composable
+private fun InstallmentsDestination(
+    navController: NavHostController,
+    checkoutConfiguration: CheckoutConfiguration?,
+) {
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val formBackStackEntry = remember(currentBackStackEntry) {
+        navController.getBackStackEntry<SampleDestination.Form>()
+    }
+    val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
+        viewModelStoreOwner = formBackStackEntry,
+    ) { parametersOf(checkoutConfiguration) }
+
+    InstallmentsScreen(
+        viewModel = cardPaymentViewModel,
+        onBackClick = { navController.popBackStack() },
+    )
+}
+
 @Serializable
 internal sealed interface SampleDestination {
     @Serializable
-    object Form : SampleDestination
+    data object Form : SampleDestination
 
     @Serializable
-    object Installment : SampleDestination
-}
-
-internal fun SampleDestination.isRoute(
-    route: String?,
-): Boolean {
-    return this::class.qualifiedName == route
+    data object Installment : SampleDestination
 }

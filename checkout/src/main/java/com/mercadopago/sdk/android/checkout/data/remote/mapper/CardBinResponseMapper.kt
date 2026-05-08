@@ -16,6 +16,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         securityCode = paymentMethod?.securityCode,
         issuers = paymentMethod?.issuers?.map { it.toDomain() } ?: emptyList(),
         quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
+        installmentsSelectionType = installment?.selectionType,
         translations = translations,
     )
 }
@@ -29,9 +30,7 @@ private fun IssuerResponse.toDomain(): BinIssuer =
 
 private fun QuotaResponse.toDomain(): Quota =
     Quota(
-        quantity = quantity,
-        installmentAmount = installmentAmount,
-        totalAmount = totalAmount,
-        label = label,
-        discountRate = discountRate,
+        installments = installments,
+        installmentAmount = installmentAmount?.toBigDecimal(),
+        totalAmount = totalAmount?.toBigDecimal(),
     )

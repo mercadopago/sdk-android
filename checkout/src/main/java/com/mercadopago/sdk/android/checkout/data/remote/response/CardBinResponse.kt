@@ -21,13 +21,12 @@ internal data class IssuerResponse(
 )
 
 internal data class InstallmentConfigResponse(
+    val selectionType: String?,
     val quotas: List<QuotaResponse>?,
 )
 
 internal data class QuotaResponse(
-    val quantity: Int?,
-    val installmentAmount: String?,
-    val totalAmount: String?,
-    val label: String?,
-    val discountRate: Double?,
+    val installments: Int?,
+    val installmentAmount: Float?,
+    val totalAmount: Float?,
 )
