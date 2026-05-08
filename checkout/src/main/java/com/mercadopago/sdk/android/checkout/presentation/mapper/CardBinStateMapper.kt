@@ -74,8 +74,8 @@ private fun CardPaymentScreenState.buildExpirationDateState(
 private fun CardPaymentScreenState.buildBinInstallmentsState(
     data: CardBinData,
 ) = installmentsState.copy(
-    showList = data.payerCosts.isNotEmpty(),
-    installments = data.payerCosts,
+    showList = data.quotas.isNotEmpty(),
+    installments = data.quotas,
     headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
     headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
     interestFreeLabel = data.translations?.installments?.interestFreeLabel

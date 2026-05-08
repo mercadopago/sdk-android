@@ -11,11 +11,11 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTra
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -90,7 +90,7 @@ internal class CardBinStateMapperTest {
         cardNumber = null,
         securityCode = null,
         issuers = emptyList(),
-        payerCosts = emptyList(),
+        quotas = emptyList(),
         installmentsSelectionType = null,
         translations = null,
     )
@@ -227,9 +227,9 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given non-empty payerCosts then showList is true`() {
         val data = emptyBinData.copy(
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 1,
+            quotas = listOf(
+                Quota(
+                    installments = 1,
                     installmentAmount = BigDecimal.valueOf(100.0),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
@@ -251,9 +251,9 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given payerCosts then exposes them on installments state`() {
         val data = emptyBinData.copy(
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 3,
+            quotas = listOf(
+                Quota(
+                    installments = 3,
                     installmentAmount = BigDecimal.valueOf(33.33),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
@@ -262,10 +262,10 @@ internal class CardBinStateMapperTest {
 
         val result = baseState.applyCardBinData(data)
 
-        val payerCost = result.installmentsState.installments.first()
-        assertEquals(3, payerCost.instalments)
-        assertEquals(0, BigDecimal.valueOf(33.33).compareTo(payerCost.installmentAmount))
-        assertEquals(0, BigDecimal.valueOf(100.0).compareTo(payerCost.totalAmount))
+        val quota = result.installmentsState.installments.first()
+        assertEquals(3, quota.installments)
+        assertEquals(0, BigDecimal.valueOf(33.33).compareTo(quota.installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(100.0).compareTo(quota.totalAmount))
     }
 
     @Test

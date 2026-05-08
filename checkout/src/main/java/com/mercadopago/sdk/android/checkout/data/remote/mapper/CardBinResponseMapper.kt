@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()
@@ -15,7 +15,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         cardNumber = paymentMethod?.cardNumber,
         securityCode = paymentMethod?.securityCode,
         issuers = paymentMethod?.issuers?.map { it.toDomain() } ?: emptyList(),
-        payerCosts = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
+        quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
         installmentsSelectionType = installment?.selectionType,
         translations = translations,
     )
@@ -28,9 +28,9 @@ private fun IssuerResponse.toDomain(): BinIssuer =
         secureThumbnail = secureThumbnail,
     )
 
-private fun QuotaResponse.toDomain(): PayerCost =
-    PayerCost(
-        instalments = installments,
+private fun QuotaResponse.toDomain(): Quota =
+    Quota(
+        installments = installments,
         installmentAmount = installmentAmount?.toBigDecimal(),
         totalAmount = totalAmount?.toBigDecimal(),
     )

@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.coremethods.domain.model
 
-import java.math.BigDecimal
-
 /**
  * Represents installment options and payment details for a specific payment method.
  * This class contains comprehensive information about available installment plans,
@@ -65,10 +63,10 @@ data class Issuer(
  */
 data class PayerCost(
     val instalments: Int? = null,
-    val installmentAmount: BigDecimal? = null,
+    val installmentAmount: Float? = null,
     val instalmentsRate: Float? = null,
     val installmentRateCollector: List<String>? = null,
-    val totalAmount: BigDecimal? = null,
+    val totalAmount: Float? = null,
     val minAllowedAmount: Float? = null,
     val maxAllowedAmount: Float? = null,
     val discountRate: Float? = null,

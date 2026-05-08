@@ -23,6 +23,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -32,7 +33,6 @@ import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUs
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -280,9 +280,9 @@ internal class CardPaymentViewModelTest {
             cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 1,
+            quotas = listOf(
+                Quota(
+                    installments = 1,
                     installmentAmount = BigDecimal.valueOf(100.0),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
@@ -306,7 +306,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = emptyList(),
-            payerCosts = emptyList(),
+            quotas = emptyList(),
             installmentsSelectionType = null,
             translations = null,
         )
@@ -327,7 +327,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
-            payerCosts = emptyList(),
+            quotas = emptyList(),
             installmentsSelectionType = null,
             translations = null,
         )
@@ -347,7 +347,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            payerCosts = emptyList(),
+            quotas = emptyList(),
             installmentsSelectionType = null,
             translations = fullTranslations,
         )
@@ -371,7 +371,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            payerCosts = emptyList(),
+            quotas = emptyList(),
             installmentsSelectionType = null,
             translations = null,
         )
@@ -407,7 +407,7 @@ internal class CardPaymentViewModelTest {
             issuers = listOf(
                 BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
             ),
-            payerCosts = emptyList(),
+            quotas = emptyList(),
             installmentsSelectionType = null,
             translations = null,
         )
@@ -430,14 +430,14 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 1,
+            quotas = listOf(
+                Quota(
+                    installments = 1,
                     installmentAmount = BigDecimal.valueOf(100.0),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
-                PayerCost(
-                    instalments = 3,
+                Quota(
+                    installments = 3,
                     installmentAmount = BigDecimal.valueOf(34.0),
                     totalAmount = BigDecimal.valueOf(102.0),
                 ),
@@ -453,7 +453,7 @@ internal class CardPaymentViewModelTest {
         val installmentsState = viewModel.viewState.value.installmentsState
         assertTrue(installmentsState.showList)
         assertEquals(2, installmentsState.installments.size)
-        assertEquals(1, installmentsState.installments.first().instalments)
+        assertEquals(1, installmentsState.installments.first().installments)
     }
 
     // ── expiration date events ────────────────────────────────────────────────
@@ -706,14 +706,14 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 1,
+            quotas = listOf(
+                Quota(
+                    installments = 1,
                     installmentAmount = BigDecimal.valueOf(100.0),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
-                PayerCost(
-                    instalments = 3,
+                Quota(
+                    installments = 3,
                     installmentAmount = BigDecimal.valueOf(34.0),
                     totalAmount = BigDecimal.valueOf(102.0),
                 ),
@@ -942,14 +942,14 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = emptyList(),
-            payerCosts = listOf(
-                PayerCost(
-                    instalments = 1,
+            quotas = listOf(
+                Quota(
+                    installments = 1,
                     installmentAmount = BigDecimal.valueOf(100.0),
                     totalAmount = BigDecimal.valueOf(100.0),
                 ),
-                PayerCost(
-                    instalments = 6,
+                Quota(
+                    installments = 6,
                     installmentAmount = BigDecimal.valueOf(20.0),
                     totalAmount = BigDecimal.valueOf(120.0),
                 ),
@@ -1025,9 +1025,9 @@ internal class CardPaymentViewModelTest {
                 cardNumber = null,
                 securityCode = null,
                 issuers = emptyList(),
-                payerCosts = listOf(
-                    PayerCost(
-                        instalments = 3,
+                quotas = listOf(
+                    Quota(
+                        installments = 3,
                         installmentAmount = BigDecimal.valueOf(50.0),
                         totalAmount = BigDecimal.valueOf(50.0),
                     ),

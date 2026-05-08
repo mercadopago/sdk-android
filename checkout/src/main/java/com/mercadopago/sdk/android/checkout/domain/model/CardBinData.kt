@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.checkout.domain.model
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal data class CardBinData(
     val id: String?,
@@ -11,7 +10,7 @@ internal data class CardBinData(
     val cardNumber: CardNumberConfig?,
     val securityCode: SecurityCodeConfig?,
     val issuers: List<BinIssuer>,
-    val payerCosts: List<PayerCost>,
+    val quotas: List<Quota>,
     val installmentsSelectionType: String?,
     val translations: Translations?,
 )

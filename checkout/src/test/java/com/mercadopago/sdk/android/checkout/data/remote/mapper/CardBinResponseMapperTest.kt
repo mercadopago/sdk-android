@@ -172,10 +172,10 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(1, domain.payerCosts.size)
-        assertEquals(1, domain.payerCosts[0].instalments)
-        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.payerCosts[0].installmentAmount))
-        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.payerCosts[0].totalAmount))
+        assertEquals(1, domain.quotas.size)
+        assertEquals(1, domain.quotas[0].installments)
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].totalAmount))
     }
 
     @Test
@@ -263,7 +263,7 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertTrue(domain.issuers.isEmpty())
-        assertTrue(domain.payerCosts.isEmpty())
+        assertTrue(domain.quotas.isEmpty())
         assertNull(domain.cardNumber)
         assertNull(domain.securityCode)
         assertNull(domain.translations)
@@ -284,7 +284,7 @@ internal class CardBinResponseMapperTest {
             .copy(installment = null)
             .toDomain()
 
-        assertTrue(domain.payerCosts.isEmpty())
+        assertTrue(domain.quotas.isEmpty())
     }
 
     @Test
@@ -293,7 +293,7 @@ internal class CardBinResponseMapperTest {
             installment = InstallmentConfigResponse(selectionType = null, quotas = null),
         ).toDomain()
 
-        assertTrue(domain.payerCosts.isEmpty())
+        assertTrue(domain.quotas.isEmpty())
     }
 
     @Test

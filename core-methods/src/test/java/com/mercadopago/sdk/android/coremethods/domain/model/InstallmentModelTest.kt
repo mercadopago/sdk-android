@@ -23,10 +23,10 @@ internal class InstallmentModelTest {
         val payerCost = listOf(
             PayerCost(
                 instalments = 3,
-                installmentAmount = 1000f.toBigDecimal(),
+                installmentAmount = 1000f,
                 instalmentsRate = 1.5f,
                 installmentRateCollector = listOf("Collective 1"),
-                totalAmount = 3000f.toBigDecimal(),
+                totalAmount = 3000f,
                 minAllowedAmount = 500f,
                 maxAllowedAmount = 3000f,
                 discountRate = 0.0f,

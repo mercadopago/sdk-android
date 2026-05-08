@@ -25,10 +25,10 @@ internal fun InstallmentsResponse.toModel() =
 internal fun PayerCostResponse.toModel() =
     PayerCost(
         instalments = this.instalments,
-        installmentAmount = this.installmentAmount?.toBigDecimal(),
+        installmentAmount = this.installmentAmount,
         instalmentsRate = this.instalmentsRate,
         installmentRateCollector = this.installmentRateCollector,
-        totalAmount = this.totalAmount?.toBigDecimal(),
+        totalAmount = this.totalAmount,
         minAllowedAmount = this.minAllowedAmount,
         maxAllowedAmount = this.maxAllowedAmount,
         discountRate = this.discountRate,

@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
@@ -37,7 +38,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
@@ -295,10 +295,14 @@ internal class CardPaymentViewModel(
 
             is IdentificationTextFieldEvent.OnTypeSelected -> {
                 analyticsTracker.trackDropdownSelection(event.identificationType.id.orEmpty())
+                val identificationTypeState = _viewState.value.identificationTypeState
+                val placeHolder = event.identificationType.id
+                    ?.let { identificationTypeState.placeholdersByTypeId[it] }
+                    .orEmpty()
                 _viewState.value = _viewState.value.copy(
-                    identificationTypeState = _viewState.value.identificationTypeState.copy(
+                    identificationTypeState = identificationTypeState.copy(
                         selected = event.identificationType,
-                        placeHolder = event.identificationType.placeholder.orEmpty(),
+                        placeHolder = placeHolder,
                     ),
                 )
             }
@@ -444,26 +448,26 @@ internal class CardPaymentViewModel(
             .filter { it.isNotEmpty() }
             .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
 
-    private fun List<PayerCost>.toInstallmentStates(
+    private fun List<Quota>.toInstallmentStates(
         interestFreeLabel: String,
     ): List<InstallmentState> =
-        map { payerCost ->
-            val installmentAmount = payerCost.installmentAmount
-            val totalAmount = payerCost.totalAmount
+        map { quota ->
+            val installmentAmount = quota.installmentAmount
+            val totalAmount = quota.totalAmount
             val isInterestFree = totalAmount != null &&
                 installmentAmount != null &&
                 installmentAmount.compareTo(totalAmount) == 0
             InstallmentState(
-                text = "${payerCost.instalments} $INSTALLMENTS_SEPARATOR ${installmentAmount?.toCurrencyString()}",
+                text = "${quota.installments} $INSTALLMENTS_SEPARATOR ${installmentAmount?.toCurrencyString()}",
                 description = "",
                 trailing = when {
-                    payerCost.instalments == FIRST_INSTALLMENT -> ""
+                    quota.installments == FIRST_INSTALLMENT -> ""
                     isInterestFree -> interestFreeLabel
                     else -> totalAmount?.toCurrencyString().orEmpty()
                 },
                 interestFree = isInterestFree,
                 isSelected = false,
-                number = payerCost.instalments ?: FIRST_INSTALLMENT,
+                number = quota.installments ?: FIRST_INSTALLMENT,
             )
         }
 
