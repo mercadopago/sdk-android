@@ -298,19 +298,19 @@ internal class CardFormFieldErrorHandlerTest {
     }
 
     @Test
-    fun `given all fields valid then footer is visible`() {
+    fun `given all fields valid then footer button is enabled`() {
         val result = handler.applyCardNumberErrorState(baseState, emptyList())
 
-        assertTrue(result.fixedFooterState.isVisible)
+        assertTrue(result.fixedFooterState.isButtonEnabled)
     }
 
     @Test
-    fun `given cardNumber field invalid then footer is not visible`() {
+    fun `given cardNumber field invalid then footer button is disabled`() {
         val result = handler.applyCardNumberErrorState(
             baseState,
             listOf(CardNumberErrorType.FieldValidation("error")),
         )
 
-        assertFalse(result.fixedFooterState.isVisible)
+        assertFalse(result.fixedFooterState.isButtonEnabled)
     }
 }

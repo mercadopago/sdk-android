@@ -139,7 +139,7 @@ internal data class FixedFooterState(
     val amountDecimalPart: String = "",
     val subtitle: String? = null,
     val buttonText: String = "",
-    val isVisible: Boolean = false,
+    val isButtonEnabled: Boolean = false,
 )
 
 internal data class PaymentState(

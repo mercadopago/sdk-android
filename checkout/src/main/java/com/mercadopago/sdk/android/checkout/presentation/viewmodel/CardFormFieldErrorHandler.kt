@@ -136,7 +136,7 @@ internal class CardFormFieldErrorHandler(
             state.cardHolderState.isValid &&
             isIdentificationValid
         return state.copy(
-            fixedFooterState = state.fixedFooterState.copy(isVisible = isFormValid),
+            fixedFooterState = state.fixedFooterState.copy(isButtonEnabled = isFormValid),
         )
     }
 
