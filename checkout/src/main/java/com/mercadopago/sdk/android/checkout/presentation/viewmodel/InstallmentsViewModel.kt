@@ -17,9 +17,9 @@ import kotlinx.coroutines.flow.stateIn
 internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
 ) : ViewModel() {
-    private val _selectedNumber = MutableStateFlow(installmentData.selectedInstallment)
+    private val selectedNumber = MutableStateFlow(installmentData.selectedInstallment)
 
-    val viewState: StateFlow<InstallmentsScreenState> = _selectedNumber
+    val viewState: StateFlow<InstallmentsScreenState> = selectedNumber
         .map { installmentData.copy(selectedInstallment = it).toInstallmentsScreenState() }
         .stateIn(
             scope = viewModelScope,
@@ -39,11 +39,11 @@ internal class InstallmentsViewModel(
     ) {
         if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
         if (installmentData.quotas.none { it.installments == installment }) return
-        _selectedNumber.value = installment
+        selectedNumber.value = installment
     }
 
     fun onPayClicked() {
-        val number = _selectedNumber.value
+        val number = selectedNumber.value
             ?: viewState.value.installmentsState.firstOrNull { it.isSelected }?.number
             ?: return
         _viewEvent.value = InstallmentViewEvent.OnSuccess(

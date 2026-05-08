@@ -11,8 +11,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.presentation.brick.CardPaymentCallbacks
-import com.mercadopago.sdk.android.checkout.presentation.brick.InstallmentsCallbacks
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
@@ -88,20 +86,16 @@ internal class DataModuleTest {
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
-                CardPaymentCallbacks::class,
                 MPPaymentData::class,
                 MPInstallmentData::class,
-                InstallmentsCallbacks::class,
             ),
         )
 
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
             withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
-            withInstance<CardPaymentCallbacks>(mockk(relaxed = true))
             withInstance<MPPaymentData>(mockk(relaxed = true))
             withInstance<MPInstallmentData>(mockk(relaxed = true))
-            withInstance<InstallmentsCallbacks>(mockk(relaxed = true))
         }
     }
 }

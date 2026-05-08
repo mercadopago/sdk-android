@@ -2,11 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
-import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
@@ -24,8 +19,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.presentation.brick.CardPaymentCallbacks
-import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -66,17 +59,6 @@ internal class CardPaymentViewModelTest {
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
-    private val callbacks = mockk<CardPaymentCallbacks>(relaxed = true)
-
-    private val checkoutConfiguration = CheckoutConfiguration(
-        checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
-        paymentMethods = listOf(
-            PaymentMethod.Card(
-                allowedTypes = listOf(CardType.CREDIT, CardType.DEBIT),
-                allowedBrands = listOf(CardBrand.Visa, CardBrand.Mastercard),
-            ),
-        ),
-    )
 
     private val networkError = MercadoPagoCheckoutError.NetworkError(
         code = ErrorCode.NETWORK_CONNECTION_FAILED,
@@ -147,12 +129,9 @@ internal class CardPaymentViewModelTest {
     }
 
     private fun makeViewModel(
-        config: CheckoutConfiguration? = checkoutConfiguration,
         initData: CardFormInitializationOutput = mockk(relaxed = true),
     ) = CardPaymentViewModel(
-        initData = initData,
-        checkoutConfiguration = config,
-        callbacks = callbacks,
+        initializationOutput = initData,
         getCardBinUseCase = getCardBinUseCase,
         generateTokenUseCase = generateTokenUseCase,
     )
@@ -560,15 +539,6 @@ internal class CardPaymentViewModelTest {
     // ── back pressed ──────────────────────────────────────────────────────────
 
     @Test
-    fun `when onBackPressed then notifies CheckoutCallbackHolder with UserCancelled`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onBackPressed()
-
-        verify { callbacks.onUserCancelled(any()) }
-    }
-
-    @Test
     fun `when onBackPressed then tracks user_canceled_error event`() = runTest {
         val viewModel = makeViewModel()
 
@@ -577,15 +547,6 @@ internal class CardPaymentViewModelTest {
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
         assertTrue(metricSlot.captured.path.endsWith("/user_canceled_error"))
-    }
-
-    @Test
-    fun `when onBackPressed with UiButton reason then notifies UserCancelled`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onBackPressed(reason = CancelReason.UiButton)
-
-        verify { callbacks.onUserCancelled(any()) }
     }
 
     // ── submit ────────────────────────────────────────────────────────────────
@@ -614,30 +575,6 @@ internal class CardPaymentViewModelTest {
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
         assertTrue(metricSlot.captured.path.endsWith("/submit"))
-    }
-
-    @Test
-    fun `when onSubmit succeeds then calls callbacks onSuccess`() = runTest {
-        coEvery {
-            generateTokenUseCase(any(), any(), any(), any())
-        } returns Result.Success(CardToken(token = "token_abc"))
-        val viewModel = makeViewModel()
-
-        viewModel.onSubmit()
-
-        verify { callbacks.onSuccess(any()) }
-    }
-
-    @Test
-    fun `when onSubmit fails then calls callbacks onFailure`() = runTest {
-        coEvery {
-            generateTokenUseCase(any(), any(), any(), any())
-        } returns Result.Error(networkError)
-        val viewModel = makeViewModel()
-
-        viewModel.onSubmit()
-
-        verify { callbacks.onFailure(any()) }
     }
 
     @Test
@@ -683,18 +620,6 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit and showList true then calls onNavigateInstallments`() = runTest {
-        coEvery {
-            generateTokenUseCase(any(), any(), any(), any())
-        } returns Result.Success(CardToken(token = "token_abc"))
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        verify { callbacks.onNavigateInstallments(any(), any()) }
-    }
-
-    @Test
     fun `when onSubmit and showList true then tokenizes before navigating`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
@@ -704,18 +629,6 @@ internal class CardPaymentViewModelTest {
         viewModel.onSubmit()
 
         coVerify { generateTokenUseCase(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `when onSubmit and showList true then does not call onSuccess`() = runTest {
-        coEvery {
-            generateTokenUseCase(any(), any(), any(), any())
-        } returns Result.Success(CardToken(token = "token_abc"))
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        verify(exactly = 0) { callbacks.onSuccess(any()) }
     }
 
     // ── isBeingCleared branches ───────────────────────────────────────────────
