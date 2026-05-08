@@ -46,8 +46,6 @@ internal fun InstallmentsScreen(
     InstallmentsScreenContent(
         viewState = viewState,
         onBackClick = onBackClick,
-        onItemClick = { viewModel.onInstallmentSelected(installment = it) },
-        onPayClick = { viewModel.onPayClicked() },
     )
 }
 
