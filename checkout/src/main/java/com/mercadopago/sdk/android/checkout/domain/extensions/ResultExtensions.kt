@@ -67,6 +67,15 @@ private fun Exception.toResponseError(): ResponseError =
         else -> ResponseError(code = "EXCEPTION", message = message ?: "An error occurred")
     }
 
+private fun Exception.toResultError(): ResultError =
+    when (this) {
+        is SocketTimeoutException -> ResultError.Request(code = ERROR_CODE_TIMEOUT, message = message ?: "")
+        is UnknownHostException -> ResultError.Request(code = ERROR_CODE_NO_INTERNET, message = message ?: "")
+        is ConnectException -> ResultError.Request(code = ERROR_CODE_CONNECTION, message = message ?: "")
+        is IOException -> ResultError.Request(code = ERROR_CODE_NETWORK, message = message ?: "")
+        else -> ResultError.Request(code = "EXCEPTION", message = message ?: "An error occurred")
+    }
+
 @Suppress("TooGenericExceptionCaught")
 internal suspend inline fun <T> withErrorHandling(
     crossinline block: suspend () -> Result<T, ResponseError>,
@@ -90,12 +99,7 @@ internal suspend inline fun <T> withRetry(
         val result = try {
             block()
         } catch (e: Exception) {
-            Result.Error(
-                ResultError.Request(
-                    message = e.message ?: "Network error occurred",
-                    code = "NETWORK_ERROR",
-                ),
-            )
+            Result.Error(e.toResultError())
         }
 
         lastResult = result
