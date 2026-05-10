@@ -1,0 +1,201 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/CardBinFilter.kt
+  5368c8edf01dc358 1-9
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  5368c8edf01dc358 1-12,15,17-30,32-39,42-46,48,50-51,53-55,57,61-67,69,71,75-76,78,82-96,98,100-101,105-106,108-109,113-116,118,120,124-127,129,131,135-138,140,142,146-147,149,153-158,160,162-164,168-169,171-172,174-190,194-211,214-227,229-230
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/MercadoPagoSDKConfig.kt
+  5368c8edf01dc358 34
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  5368c8edf01dc358 7-9,17-19,23-25,42,44,46-47,50-51,56-59,61-64,78-79,94-95,113,117,133,144,156-159,164,185,197,200-203,229-232,243,261-264,267-270,281,285,287,291,298-310,315,321,323-326,328-329,332-333,335-336,341,369-402,430-435,439,443
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/FoundationSDKConfig.kt
+  5368c8edf01dc358 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProvider.kt
+  5368c8edf01dc358 4,10,18-20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/model/CancelReason.kt
+  5368c8edf01dc358 1-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/params/InitializeCardFormParams.kt
+  5368c8edf01dc358 1-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/exception/ExceptionFactory.kt
+  5368c8edf01dc358 19-26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardFormInitializationOutput.kt
+  5368c8edf01dc358 1-86
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/exception/ErrorLocalized.kt
+  5368c8edf01dc358 5-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/repository/CardFormRepositoryImpl.kt
+  5368c8edf01dc358 1,3-5,8,10-12,14-16,19-24,26-52
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  5368c8edf01dc358 35,50,82,86,101,106,233,235,242,309
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/CardNumberVerifier.kt
+  5368c8edf01dc358 5,16,20-22
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/CardFormService.kt
+  5368c8edf01dc358 1-32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/RetrofitFactory.kt
+  5368c8edf01dc358 1-47
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  5368c8edf01dc358 1-85
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/CoreMethodsSDKConfig.kt
+  5368c8edf01dc358 9
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapper.kt
+  5368c8edf01dc358 1,3-11,14,16,19-20,22-77,79-102
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/SecurityCodeVerifier.kt
+  5368c8edf01dc358 5,16,20-22
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/interceptor/PublicKeyInterceptor.kt
+  5368c8edf01dc358 1-27
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolderTest.kt
+  5368c8edf01dc358 1-86
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/IdentificationType.kt
+  5368c8edf01dc358 1-12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapper.kt
+  5368c8edf01dc358 1-144
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSourceImplTest.kt
+  5368c8edf01dc358 1,3-4,11-12,17-19,21-22,25-27,29,31-32,36-38,40,42-43,47-49,51,53
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/factory/CardPaymentScreenStateFactoryTest.kt
+  5368c8edf01dc358 1-40
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/interactor/Checkout.kt
+  5368c8edf01dc358 28-30
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/ExpirationDateVerifier.kt
+  5368c8edf01dc358 5,17,21,25
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/LengthConfig.kt
+  5368c8edf01dc358 1-6
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/ResponseMapperTest.kt
+  5368c8edf01dc358 1-88
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/CardNumberVerifierTest.kt
+  5368c8edf01dc358 4,10,14-18,20,27-31,33
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/CardHolderVerifierTest.kt
+  5368c8edf01dc358 4,10,14,16,23,25,32,34
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/CardFormRepositoryImplTest.kt
+  5368c8edf01dc358 1-8,10-12,16,18,23-27,29-32,34-55,58-62,64,66,70-73,75,77,81-98,100-103,105-107,111-113,115,121-122,124,130-134,136,138-154
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/GetCardBinUseCaseTest.kt
+  5368c8edf01dc358 3,5-6,9,11,17-19,21-27,30-31,33,35-36,40-41,43,45-46,50-52,54,56,60-72,76-77,79,81
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/ResponseMapper.kt
+  5368c8edf01dc358 1-37
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  5368c8edf01dc358 1-22
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/AnalyticsSDKConfig.kt
+  5368c8edf01dc358 11
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/ComponentsSDKConfig.kt
+  5368c8edf01dc358 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  5368c8edf01dc358 1-90
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardNumberTranslations.kt
+  5368c8edf01dc358 1-11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/SecurityCodeTranslations.kt
+  5368c8edf01dc358 1-11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/IdentificationTypeVerifier.kt
+  5368c8edf01dc358 5,17,27,34-36
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/HolderNameTranslations.kt
+  5368c8edf01dc358 1-11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/utils/Constants.kt
+  5368c8edf01dc358 1-6
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapperTest.kt
+  5368c8edf01dc358 1-357
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/InitializeCardFormUseCaseTest.kt
+  5368c8edf01dc358 5,7-8,11,16,19-21,23-25,28-30,32,34,38-44,46,49-52,56-63,65,68-71,75-76,78,82-84,86,88
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapperTest.kt
+  5368c8edf01dc358 1-294
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/IdentificationTypeVerifierTest.kt
+  5368c8edf01dc358 4,11,15,17,23,25-29,31,39-43,45
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardFormInitResponse.kt
+  5368c8edf01dc358 1-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/repository/CardFormRepository.kt
+  5368c8edf01dc358 1,3-4,6-7,10-17
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  5368c8edf01dc358 10-13,15,17-22,24-26,28-29,33,38-41,43,56-57,61,67-68,73,81-118,126-127,134,142-143,147,150-182,185,192-225,227-228,243-457,467-525,527-534,537,540-542,549-576,578-579,582-625,628,631-650,658-663,665-672,675-678,681-685,687,690-704
+components/src/main/java/com/mercadopago/sdk/android/components/MPTooltip.kt
+  5368c8edf01dc358 1-85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/GetCardBinUseCase.kt
+  5368c8edf01dc358 3,5-6,9-10,14-27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/request/CardBinRequest.kt
+  5368c8edf01dc358 1-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/params/GetCardBinParams.kt
+  5368c8edf01dc358 1-11
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/BomConfig.kt
+  5368c8edf01dc358 11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  5368c8edf01dc358 1-51
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  5368c8edf01dc358 9-10,71,81,84-85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/InstallmentsHeaderTranslations.kt
+  5368c8edf01dc358 1-7
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  5368c8edf01dc358 1-318
+README.md
+  5368c8edf01dc358 40-41,47,51,54
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/HolderNameConfig.kt
+  5368c8edf01dc358 1-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  5368c8edf01dc358 1-114
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/SecurityCodeVerifierTest.kt
+  5368c8edf01dc358 4,10,14-18,20,27-31,33
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTracker.kt
+  5368c8edf01dc358 1,3-12,14,16-18,20-26,28-36,38-45,47-58,63-67,69-77
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSourceImpl.kt
+  5368c8edf01dc358 1-36
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/DocumentTranslations.kt
+  5368c8edf01dc358 1-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/SecurityCodeConfig.kt
+  5368c8edf01dc358 1-6
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTrackerTest.kt
+  5368c8edf01dc358 1-150
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/ExpirationDateConfig.kt
+  5368c8edf01dc358 1-7
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/RetrofitFactoryTest.kt
+  5368c8edf01dc358 1-19
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/NetworkModuleTest.kt
+  5368c8edf01dc358 1-55
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  5368c8edf01dc358 1-272
+core/src/main/java/com/mercadopago/sdk/android/core/utils/interceptor/PublicKeyInterceptor.kt
+  5368c8edf01dc358 20-24
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/CoreSDKConfig.kt
+  5368c8edf01dc358 11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/InitializeCardFormUseCase.kt
+  5368c8edf01dc358 3,5-6,9-10,13-21
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  5368c8edf01dc358 11-16,48,62,82,97,114
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/ExpirationDateTranslations.kt
+  5368c8edf01dc358 1-11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/CardHolderVerifier.kt
+  5368c8edf01dc358 5,17,21-23,30-32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/Translations.kt
+  5368c8edf01dc358 1-12
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  5368c8edf01dc358 11,66,97
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSource.kt
+  5368c8edf01dc358 1-18
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandler.kt
+  5368c8edf01dc358 1-166
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardNumberConfig.kt
+  5368c8edf01dc358 1-7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/NetworkModule.kt
+  5368c8edf01dc358 1-15
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/ExpirationDateVerifierTest.kt
+  5368c8edf01dc358 4,10-16,20,28,36,44
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/CheckoutSDKConfig.kt
+  5368c8edf01dc358 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/InstallmentsTranslations.kt
+  5368c8edf01dc358 1-7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  5368c8edf01dc358 7-9,11-13,33-38,40,43,49-50
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/interceptor/PublicKeyInterceptorTest.kt
+  5368c8edf01dc358 1-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "e272c072ab2bb00a8bf50a40bd01e6607efc82e4",
+  "prompts": {
+    "5368c8edf01dc358": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "40674852-e547-4562-9d30-9c8683e70010",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 4916,
+      "total_deletions": 2159,
+      "accepted_lines": 4914,
+      "overriden_lines": 0
+    }
+  }
+}

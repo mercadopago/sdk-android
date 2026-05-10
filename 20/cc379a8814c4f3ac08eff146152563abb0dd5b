@@ -1,0 +1,25 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  80c1c839557c63a7 227
+components/src/main/java/com/mercadopago/sdk/android/components/MPTooltip.kt
+  80c1c839557c63a7 12,28,34,41-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "20cc379a8814c4f3ac08eff146152563abb0dd5b",
+  "prompts": {
+    "80c1c839557c63a7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ed2cce9-16c5-4ad2-8404-38d37e0c7c95",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 6,
+      "accepted_lines": 8,
+      "overriden_lines": 2
+    }
+  }
+}

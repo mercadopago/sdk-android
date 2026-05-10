@@ -1,0 +1,25 @@
+.circleci/scripts/check-changelog.sh
+  9ab35f268403278d 5
+CHANGELOG.md
+  9ab35f268403278d 12-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "0a04686dd42c063a99ca6cb1fb27e4a637b9afde",
+  "prompts": {
+    "9ab35f268403278d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7f8abd39-764c-4733-afde-0e67791d3401",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 6,
+      "accepted_lines": 7,
+      "overriden_lines": 0
+    }
+  }
+}

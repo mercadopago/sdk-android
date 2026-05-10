@@ -1,0 +1,22 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  ai_agent 702,938
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/controller/CheckoutCardPayment.kt
+  s_c59799665779ff::t_5d046099342d18 15
+  s_c59799665779ff::t_bbf70db8f17d6e 102-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "d6ac4035ae1bce3a3712724e5083d1e582a50483",
+  "prompts": {},
+  "sessions": {
+    "s_c59799665779ff": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "06ede491-d383-49da-9b98-7615e78cd9ff",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

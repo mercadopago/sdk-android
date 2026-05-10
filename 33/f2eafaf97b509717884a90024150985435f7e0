@@ -1,0 +1,43 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_3328d5475f2498::t_a736330135007a 84,86-92
+  s_3328d5475f2498::t_97778a5b31fb6e 6,10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_3328d5475f2498::t_27f0014382d5a8 407-408
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_3328d5475f2498::t_4ec1248852d5f6 125
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_3328d5475f2498::t_3f8b3c4241f1ba 161,180-198
+  s_3328d5475f2498::t_3a3f954962ae11 292
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_3328d5475f2498::t_655cf3612fbe15 24
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  s_3328d5475f2498::t_f2b4420c91953d 15
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_3328d5475f2498::t_7ffec9e46f48df 308,329,373,409
+  s_3328d5475f2498::t_e538660057ee56 443
+  s_3328d5475f2498::t_e9502f73aee191 719
+  s_3328d5475f2498::t_ff343243dca84b 288
+  s_3328d5475f2498::t_4e844235285498 349
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_3328d5475f2498::t_9f579aeda5d11f 19
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_3328d5475f2498::t_4d41b283f5b65c 16
+  s_3328d5475f2498::t_0206937192ce78 92
+  s_3328d5475f2498::t_665f46cefe4669 280-321
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "33f2eafaf97b509717884a90024150985435f7e0",
+  "prompts": {},
+  "sessions": {
+    "s_3328d5475f2498": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "56ccda23-af43-4486-88b7-12206149ede1",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+.circleci/scripts/publish-maven.sh
+  257bf0723f894d67 4-7,13,18
+.circleci/scripts/check-version-consistency.sh
+  257bf0723f894d67 4-6,8,14,21,45,51
+.circleci/scripts/lib.sh
+  257bf0723f894d67 1-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "675e5a931c8edeb98cf771b5ee3a1315c3bce25c",
+  "prompts": {
+    "257bf0723f894d67": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e39e3a33-a650-49ee-9e17-953d00b45aa6",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 87,
+      "total_deletions": 73,
+      "accepted_lines": 53,
+      "overriden_lines": 0
+    }
+  }
+}

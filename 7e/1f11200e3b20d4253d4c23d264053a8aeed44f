@@ -1,0 +1,26 @@
+build.gradle.kts
+  s_9d6fa9f21b888c::t_25571d6aedbcc5 58
+  s_9d6fa9f21b888c::t_3f8dc7a68d9928 63-65
+  s_9d6fa9f21b888c::t_abb56884ef0ffc 67
+  s_9d6fa9f21b888c::t_136f0a03d11793 66
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  ai_agent 62
+  s_9d6fa9f21b888c::t_83d17d303ac17e 794-1031,1033-1065
+  s_9d6fa9f21b888c::t_dd2d5fb483e8c9 1032
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "7e1f11200e3b20d4253d4c23d264053a8aeed44f",
+  "prompts": {},
+  "sessions": {
+    "s_9d6fa9f21b888c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c20262e8-eafb-4627-8808-e2f9903c1ee6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
