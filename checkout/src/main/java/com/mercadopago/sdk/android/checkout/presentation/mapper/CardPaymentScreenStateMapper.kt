@@ -67,15 +67,11 @@ private fun DocumentField.toIdentificationTypeState(
 ): IdentificationTypeState {
     val coreTypes = identificationTypes.map { it.toCoreType() }
     val firstItem = identificationTypes.firstOrNull()
-    val placeholdersByTypeId = identificationTypes
-        .mapNotNull { item -> item.id?.let { id -> id to item.placeholder } }
-        .toMap()
     return IdentificationTypeState(
         label = label,
         show = identificationTypes.isNotEmpty(),
         identificationTypes = coreTypes,
         selected = coreTypes.firstOrNull(),
-        placeholdersByTypeId = placeholdersByTypeId,
         placeHolder = firstItem?.placeholder.orEmpty(),
         validation = validation.toValidationState(),
     )
@@ -89,6 +85,7 @@ private fun IdentificationTypeItem.toCoreType(): IdentificationType =
         minLength = minLength,
         maxLength = maxLength,
         mask = mask,
+        placeholder = placeholder,
     )
 
 private fun Validation.toValidationState() =
