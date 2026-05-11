@@ -1,0 +1,29 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_7b87dc1ba40b62::t_302488034ec034 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/QuotaExtensions.kt
+  s_7b87dc1ba40b62::t_08e39657d50ae2 12-15
+  s_7b87dc1ba40b62::t_583f7642bc43b8 1-6,11
+  s_7b87dc1ba40b62::t_859c4a4e0993ca 7-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_7b87dc1ba40b62::t_26249ba040a6f1 8-9,11,49,51,56
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/BuyerIdentificationMapper.kt
+  s_7b87dc1ba40b62::t_d312df11669f4c 1-11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
+  s_7b87dc1ba40b62::t_0cc3b931bc8cd2 47-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "478f231905f76bf117a83e5da9f04fedb4150889",
+  "prompts": {},
+  "sessions": {
+    "s_7b87dc1ba40b62": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e14d42c-f873-4b51-986e-afb4889a90b6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

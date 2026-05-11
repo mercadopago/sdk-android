@@ -1,0 +1,55 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_170c245cb5e814::t_51f4109c8192b1 43-52,55,58
+  s_170c245cb5e814::t_f0395fc8b0a324 4
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/brick/CheckoutViewEvents.kt
+  s_c1a2a64687e694::t_6dab5ab6231cd4 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_c1a2a64687e694::t_b42b7abd108c5f 12
+  s_c1a2a64687e694::t_abe5c3e77f95e6 62-66
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPInstallmentData.kt
+  s_c1a2a64687e694::t_4e406c539690ce 16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/brick/CheckoutController.kt
+  s_c1a2a64687e694::t_d89dad1830148b 98
+  s_c1a2a64687e694::t_cab9b66627a0bf 46
+  s_c1a2a64687e694::t_a7338823f0d19a 124-125,128-130,136
+  s_c1a2a64687e694::t_edcaf12cdeff84 97,99-101
+  s_c1a2a64687e694::t_a6192bdba74838 61,63,70-71,73-74
+  s_c1a2a64687e694::t_5c1589b739df6b 21
+  s_170c245cb5e814::t_4471d1fa86b636 24
+  s_c1a2a64687e694::t_228fd001d8b97e 85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/MPInstallmentDataMapper.kt
+  s_c1a2a64687e694::t_78e8e6f735c5a3 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_c1a2a64687e694::t_b8c8b10cb08541 6
+  s_c1a2a64687e694::t_5ca1cdd46201ee 20
+  s_c1a2a64687e694::t_89cc0c49835a57 43-50,54,58-63,65
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_c1a2a64687e694::t_ba199e29faf41b 49-50
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/LoadingScreen.kt
+  s_170c245cb5e814::t_ab1454f696f9eb 1-15,19-35
+  s_170c245cb5e814::t_84ed246629f54c 16-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "7dd1283eda6154d958040c14b673f02251142a27",
+  "prompts": {},
+  "sessions": {
+    "s_170c245cb5e814": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "71b36b7e-331a-40b4-859c-f681ee194de0",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_c1a2a64687e694": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bb14300-70b9-4b9e-8143-ad0020dae25d",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
