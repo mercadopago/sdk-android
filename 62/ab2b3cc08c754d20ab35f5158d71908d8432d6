@@ -1,0 +1,16 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapperTest.kt
+  h_e120d9bb8a4c69 50,151
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  h_e120d9bb8a4c69 95-97,107-109,118-120,129-131,140-142,151-153,315-317,326-328
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "62ab2b3cc08c754d20ab35f5158d71908d8432d6",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
