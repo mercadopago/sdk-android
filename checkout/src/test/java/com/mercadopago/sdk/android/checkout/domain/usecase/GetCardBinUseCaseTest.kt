@@ -2,9 +2,9 @@ package com.mercadopago.sdk.android.checkout.domain.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -25,7 +25,7 @@ internal class GetCardBinUseCaseTest {
     private val processingMode = "aggregator"
     private val filter = CardBinFilter(cardTypes = emptyList(), cardBrands = emptyList())
     private val cardBinData = mockk<CardBinData>()
-    private val error = ResultError.Request(message = "Error", code = "ERROR")
+    private val error = ResponseError(code = "ERROR", message = "Error")
 
     @Test
     fun `given repository returns success then returns Result Success`() = runTest {
