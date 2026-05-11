@@ -57,7 +57,6 @@ internal class CardPaymentViewModel(
         _viewEvent.value = null
     }
 
-    /** Reseta loading do submit. Chamado quando a tela de cartão é (re)exibida. */
     fun clearSubmitState() {
         if (_viewState.value.isLoading) {
             _viewState.value = _viewState.value.copy(isLoading = false)
@@ -341,8 +340,6 @@ internal class CardPaymentViewModel(
                         issuer = state.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = state.paymentState.paymentTypeId.orEmpty(),
                     )
-                    // Mantém isLoading=true até o composable consumir o evento e navegar,
-                    // evitando "piscada" do form sem loader entre o fim do submit e a navegação.
                     _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                         payment = paymentData,
                         installment = state.toMPInstallmentData(initializationOutput.transactionAmount),

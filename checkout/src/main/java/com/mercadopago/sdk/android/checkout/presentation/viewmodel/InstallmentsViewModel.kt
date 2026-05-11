@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.presentation.brick.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
+    private val paymentData: MPPaymentData,
 ) : ViewModel() {
     private val selectedNumber = MutableStateFlow(installmentData.selectedInstallment)
 
@@ -37,17 +39,30 @@ internal class InstallmentsViewModel(
     fun onInstallmentSelected(
         installment: Int,
     ) {
-        if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
         if (installmentData.quotas.none { it.installments == installment }) return
-        selectedNumber.value = installment
+        when (installmentData.display.displayType) {
+            InstallmentsDisplayType.RadioButton -> {
+                selectedNumber.value = installment
+            }
+            InstallmentsDisplayType.Chevron -> {
+                emitSuccess(installment)
+            }
+        }
     }
 
     fun onPayClicked() {
+        if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
         val number = selectedNumber.value
             ?: viewState.value.installmentsState.firstOrNull { it.isSelected }?.number
             ?: return
+        emitSuccess(number)
+    }
+
+    private fun emitSuccess(
+        installment: Int,
+    ) {
         _viewEvent.value = InstallmentViewEvent.OnSuccess(
-            installmentData.copy(selectedInstallment = number),
+            paymentData.copy(installment = installment),
         )
     }
 }

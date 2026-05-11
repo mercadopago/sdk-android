@@ -2,9 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.brick
 
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -12,9 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,11 +18,12 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
+import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
-import com.mercadopago.sdk.android.components.MPProgressIndicator
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -48,6 +43,7 @@ internal fun CheckoutController(
     LaunchedEffect(Unit) { checkoutControllerViewModel.load() }
 
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
+    var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
 
     when (val state = screenState) {
         is CheckoutControllerViewModel.ScreenState.Loading -> LoadingScreen()
@@ -62,17 +58,20 @@ internal fun CheckoutController(
             composable<CheckoutDestination.Form> {
                 CardFormScreenDestination(
                     data = state.initData,
-                    onNavigateToInstallments = { installmentData ->
+                    onNavigateToInstallments = { installmentData, paymentData ->
                         pendingInstallmentData = installmentData
+                        pendingPaymentData = paymentData
                         navController.navigate(CheckoutDestination.Installment)
                     },
                 )
             }
 
             composable<CheckoutDestination.Installment> {
-                val data = pendingInstallmentData ?: return@composable
+                val installmentData = pendingInstallmentData ?: return@composable
+                val paymentData = pendingPaymentData ?: return@composable
                 InstallmentsScreenDestination(
-                    data = data,
+                    installmentData = installmentData,
+                    paymentData = paymentData,
                     onBackClick = { navController.popBackStack() },
                 )
             }
@@ -83,13 +82,11 @@ internal fun CheckoutController(
 @Composable
 private fun CardFormScreenDestination(
     data: CardFormInitializationOutput,
-    onNavigateToInstallments: (MPInstallmentData) -> Unit,
+    onNavigateToInstallments: (MPInstallmentData, MPPaymentData) -> Unit,
 ) {
     val cardPaymentViewModel: CardPaymentViewModel = koinViewModel { parametersOf(data) }
     val viewEvent by cardPaymentViewModel.viewEvent.collectAsState()
 
-    // Roda ao montar/remontar o Form (entrada inicial ou volta após pop do Installment).
-    // Reseta o loading do submit anterior pra evitar a "piscada" do loader durante a transição.
     LaunchedEffect(Unit) {
         cardPaymentViewModel.clearSubmitState()
     }
@@ -97,7 +94,11 @@ private fun CardFormScreenDestination(
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is CardPaymentViewEvent.OnSuccess -> {
-                onNavigateToInstallments(event.installment)
+                if (event.installment.showInstallment) {
+                    onNavigateToInstallments(event.installment, event.payment)
+                } else {
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
+                }
                 cardPaymentViewModel.onViewEventConsumed()
             }
 
@@ -120,15 +121,19 @@ private fun CardFormScreenDestination(
 
 @Composable
 private fun InstallmentsScreenDestination(
-    data: MPInstallmentData,
+    installmentData: MPInstallmentData,
+    paymentData: MPPaymentData,
     onBackClick: () -> Unit,
 ) {
-    val installmentsViewModel: InstallmentsViewModel = koinViewModel { parametersOf(data) }
+    val installmentsViewModel: InstallmentsViewModel = koinViewModel {
+        parametersOf(installmentData, paymentData)
+    }
     val viewEvent by installmentsViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is InstallmentViewEvent.OnSuccess -> {
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
                 installmentsViewModel.onViewEventConsumed()
             }
 
@@ -150,16 +155,4 @@ private fun InstallmentsScreenDestination(
         viewModel = installmentsViewModel,
         onBackClick = onBackClick,
     )
-}
-
-@Composable
-private fun LoadingScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        contentAlignment = Alignment.Center,
-    ) {
-        MPProgressIndicator()
-    }
 }
