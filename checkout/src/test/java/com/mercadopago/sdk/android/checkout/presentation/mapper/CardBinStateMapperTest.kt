@@ -169,9 +169,16 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given securityCode mode optional then optional is true`() {
+    fun `given null securityCode then optional is true`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertTrue(result.secureCodeState.optional)
+    }
+
+    @Test
+    fun `given securityCode with optional true then optional is true`() {
         val data = emptyBinData.copy(
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, optional = true),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -180,9 +187,9 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given securityCode mode mandatory then optional is false`() {
+    fun `given securityCode with optional false then optional is false`() {
         val data = emptyBinData.copy(
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, optional = false),
         )
 
         val result = baseState.applyCardBinData(data)
