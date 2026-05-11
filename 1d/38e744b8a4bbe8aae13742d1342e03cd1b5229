@@ -1,0 +1,19 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_5a84a765661695::t_7ddf9f81485245 107-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "1d38e744b8a4bbe8aae13742d1342e03cd1b5229",
+  "prompts": {},
+  "sessions": {
+    "s_5a84a765661695": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14cf4fe1-6c0b-4c95-8f1c-6ca12be59d68",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
