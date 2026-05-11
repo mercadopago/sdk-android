@@ -89,7 +89,7 @@ internal class CardPaymentViewModel(
                 )
                 if (event.length.isBeingCleared(previousLength)) {
                     _viewState.value =
-                        errorHandler.applyCardNumberErrorState(_viewState.value, emptyList())
+                        errorHandler.applyCardNumberErrorState(_viewState.value, emptyList(), false)
                 }
             }
 

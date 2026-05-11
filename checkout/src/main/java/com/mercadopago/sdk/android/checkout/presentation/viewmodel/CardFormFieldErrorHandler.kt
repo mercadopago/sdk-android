@@ -33,6 +33,7 @@ internal class CardFormFieldErrorHandler(
     fun applyCardNumberErrorState(
         state: CardPaymentScreenState,
         errors: List<CardNumberErrorType>,
+        isValid: Boolean,
     ): CardPaymentScreenState {
         val cardNumberState = state.cardNumberState
         val errorMessage: String = when {
@@ -40,7 +41,7 @@ internal class CardFormFieldErrorHandler(
                 cardNumberState.validation.errorInvalid
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } ->
-                cardNumberState.validation.errorInvalid
+                errors.filterIsInstance<CardNumberErrorType.PaymentMethodNotFound>().first().message
 
             errors.any { it is CardNumberErrorType.FieldValidation } ->
                 errors.filterIsInstance<CardNumberErrorType.FieldValidation>().first().message
@@ -52,7 +53,7 @@ internal class CardFormFieldErrorHandler(
             state.copy(
                 cardNumberState = cardNumberState.copy(
                     error = errorMessage,
-                    isValid = errors.isEmpty(),
+                    isValid = isValid,
                     errorTypes = errors,
                 ),
             ),
@@ -172,6 +173,6 @@ internal class CardFormFieldErrorHandler(
         val errors = state.cardNumberState.errorTypes.toMutableList()
         errors.removeAll { it is T }
         errorFactory()?.let { errors.add(it) }
-        return applyCardNumberErrorState(state, errors)
+        return applyCardNumberErrorState(state, errors, errors.isEmpty())
     }
 }
