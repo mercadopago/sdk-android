@@ -3,12 +3,14 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 
+@Suppress("TooManyFunctions")
 internal class CardFormFieldErrorHandler(
     private val analyticsTracker: CardFormAnalyticsTracker,
 ) {
@@ -31,6 +33,7 @@ internal class CardFormFieldErrorHandler(
     fun applyCardNumberErrorState(
         state: CardPaymentScreenState,
         errors: List<CardNumberErrorType>,
+        isValid: Boolean,
     ): CardPaymentScreenState {
         val cardNumberState = state.cardNumberState
         val errorMessage: String = when {
@@ -38,7 +41,7 @@ internal class CardFormFieldErrorHandler(
                 cardNumberState.validation.errorInvalid
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } ->
-                cardNumberState.validation.errorInvalid
+                errors.filterIsInstance<CardNumberErrorType.PaymentMethodNotFound>().first().message
 
             errors.any { it is CardNumberErrorType.FieldValidation } ->
                 errors.filterIsInstance<CardNumberErrorType.FieldValidation>().first().message
@@ -50,10 +53,33 @@ internal class CardFormFieldErrorHandler(
             state.copy(
                 cardNumberState = cardNumberState.copy(
                     error = errorMessage,
-                    isValid = errors.isEmpty(),
+                    isValid = isValid,
                     errorTypes = errors,
                 ),
             ),
+        )
+    }
+
+    fun applyPaymentMethodNotFoundError(
+        state: CardPaymentScreenState,
+        message: String,
+    ): CardPaymentScreenState =
+        updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound>(state) {
+            CardNumberErrorType.PaymentMethodNotFound(message)
+        }
+
+    fun handleResultError(
+        state: CardPaymentScreenState,
+        message: String,
+        genericErrorMessage: String,
+    ): CardPaymentScreenState {
+        val isCardNumberFocused = state.cardNumberState.isFocused
+        return state.copy(
+            messageError = MessageError(
+                title = message,
+                description = genericErrorMessage,
+            ),
+            showMessage = !isCardNumberFocused,
         )
     }
 
@@ -147,6 +173,6 @@ internal class CardFormFieldErrorHandler(
         val errors = state.cardNumberState.errorTypes.toMutableList()
         errors.removeAll { it is T }
         errorFactory()?.let { errors.add(it) }
-        return applyCardNumberErrorState(state, errors)
+        return applyCardNumberErrorState(state, errors, errors.isEmpty())
     }
 }

@@ -50,6 +50,7 @@ internal data class CardNumberValidation(
 internal data class CardHolderField(
     val label: String,
     val placeholder: String,
+    val helper: String,
     val validation: Validation,
     val config: CardFieldConfig,
 )

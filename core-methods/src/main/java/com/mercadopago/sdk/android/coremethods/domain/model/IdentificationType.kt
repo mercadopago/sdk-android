@@ -13,6 +13,7 @@ package com.mercadopago.sdk.android.coremethods.domain.model
  * @param maxLength The maximum number of characters allowed for this identification type
  * @param mask Optional mask pattern for formatting the identification number. Use '#' for digit placeholders
  *             and any other character as fixed separators (e.g., "###.###.###-##" for CPF)
+ * @param placeholder Optional placeholder text displayed in the input field (e.g., "000.000.000-00" for CPF)
  */
 data class IdentificationType(
     val id: String? = null,
@@ -21,4 +22,5 @@ data class IdentificationType(
     val minLength: Int? = null,
     val maxLength: Int? = null,
     val mask: String? = null,
+    val placeholder: String? = null,
 )

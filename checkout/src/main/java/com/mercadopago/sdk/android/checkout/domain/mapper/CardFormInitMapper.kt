@@ -63,6 +63,7 @@ private fun HolderNameConfig.toCardHolderField(
     CardHolderField(
         label = translations.label,
         placeholder = translations.placeholder,
+        helper = translations.helper.orEmpty(),
         validation = Validation(
             errorEmpty = translations.errorEmptyField,
             errorIncomplete = translations.errorIncompleteField,

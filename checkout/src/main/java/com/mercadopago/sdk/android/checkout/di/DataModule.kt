@@ -57,6 +57,7 @@ internal fun provideDataModule() =
                 initializationOutput = initData,
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
                 generateTokenUseCase = GenerateTokenUseCase(),
+                cardPaymentScreenStateFactory = get(),
             )
         }
         viewModel { (installmentData: MPInstallmentData, paymentData: MPPaymentData) ->
