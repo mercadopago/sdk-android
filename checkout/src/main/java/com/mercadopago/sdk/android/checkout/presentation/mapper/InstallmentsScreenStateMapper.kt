@@ -5,7 +5,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
+import com.mercadopago.sdk.android.checkout.presentation.extensions.isInterestFree
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toBrandLabel
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toCurrencyString
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toInstallmentLabel
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
@@ -13,7 +16,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScree
 import java.math.BigDecimal
 
 private const val FIRST_INSTALLMENT = 1
-private const val INSTALLMENTS_SEPARATOR = "x"
 
 internal fun MPInstallmentData.toInstallmentsScreenState(): InstallmentsScreenState {
     val title = when (display.displayType) {
@@ -44,18 +46,14 @@ private fun List<Quota>.toInstallmentStates(
     interestFreeLabel: String,
 ): List<InstallmentState> =
     map { quota ->
-        val installmentAmount = quota.installmentAmount
-        val totalAmount = quota.totalAmount
-        val isInterestFree = totalAmount != null &&
-            installmentAmount != null &&
-            installmentAmount.compareTo(totalAmount) == 0
+        val isInterestFree = quota.isInterestFree()
         InstallmentState(
-            text = "${quota.installments} $INSTALLMENTS_SEPARATOR ${installmentAmount?.toCurrencyString()}",
+            text = quota.toInstallmentLabel(),
             description = "",
             trailing = when {
                 quota.installments == FIRST_INSTALLMENT -> ""
                 isInterestFree -> interestFreeLabel
-                else -> totalAmount?.toCurrencyString().orEmpty()
+                else -> quota.totalAmount?.toCurrencyString().orEmpty()
             },
             interestFree = isInterestFree,
             isSelected = false,
@@ -77,8 +75,3 @@ private fun MPInstallmentData.toSubtitle(): String =
     listOf(brand.toBrandLabel(), "****", lastFourDigits)
         .filter { it.isNotEmpty() }
         .joinToString(separator = " ")
-
-private fun String.toBrandLabel(): String =
-    split('_')
-        .filter { it.isNotEmpty() }
-        .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }

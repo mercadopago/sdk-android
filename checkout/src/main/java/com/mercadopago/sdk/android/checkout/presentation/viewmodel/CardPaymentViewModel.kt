@@ -17,6 +17,7 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingClear
 import com.mercadopago.sdk.android.checkout.presentation.extensions.map
 import com.mercadopago.sdk.android.checkout.presentation.extensions.onSuccess
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
+import com.mercadopago.sdk.android.checkout.presentation.mapper.toBuyerIdentification
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toMPInstallmentData
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -418,10 +419,3 @@ private fun CardPaymentScreenState.hasErrors(): Boolean {
         cardHolderState.error.isNotEmpty() ||
         hasIdentificationError
 }
-
-private fun CardPaymentScreenState.toBuyerIdentification(): BuyerIdentification =
-    BuyerIdentification(
-        name = cardHolderState.value,
-        number = identificationTypeState.value,
-        type = identificationTypeState.selected?.name,
-    )
