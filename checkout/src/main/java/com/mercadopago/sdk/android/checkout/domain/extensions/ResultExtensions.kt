@@ -69,11 +69,11 @@ private fun Exception.toResponseError(): ResponseError =
 
 private fun Exception.toResultError(): ResultError =
     when (this) {
-        is SocketTimeoutException -> ResultError.Request(code = ERROR_CODE_TIMEOUT, message = message ?: "")
-        is UnknownHostException -> ResultError.Request(code = ERROR_CODE_NO_INTERNET, message = message ?: "")
-        is ConnectException -> ResultError.Request(code = ERROR_CODE_CONNECTION, message = message ?: "")
-        is IOException -> ResultError.Request(code = ERROR_CODE_NETWORK, message = message ?: "")
-        else -> ResultError.Request(code = "EXCEPTION", message = message ?: "An error occurred")
+        is SocketTimeoutException -> ResultError.Request(code = ERROR_CODE_TIMEOUT, message = message.orEmpty())
+        is UnknownHostException -> ResultError.Request(code = ERROR_CODE_NO_INTERNET, message = message.orEmpty())
+        is ConnectException -> ResultError.Request(code = ERROR_CODE_CONNECTION, message = message.orEmpty())
+        is IOException -> ResultError.Request(code = ERROR_CODE_NETWORK, message = message.orEmpty())
+        else -> ResultError.Request(code = "EXCEPTION", message = message.orEmpty())
     }
 
 @Suppress("TooGenericExceptionCaught")

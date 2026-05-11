@@ -38,7 +38,7 @@ internal object ExceptionFactory {
             else ->
                 MercadoPagoCheckoutError.ServiceError(
                     code = ErrorCode.SERVICE_ERROR,
-                    messageError = message,
+                    messageError = error.userErrorMessage.orEmpty(),
                     localized = localized.name,
                     throwable = null,
                 )

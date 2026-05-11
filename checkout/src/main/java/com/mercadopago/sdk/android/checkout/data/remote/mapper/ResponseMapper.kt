@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
+import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
@@ -28,7 +29,7 @@ internal fun ResponseBody?.toResultError(
     httpStatus: Int,
 ): ResponseError {
     val errorBody = this?.string()
-    val gson = GsonBuilder().create()
+    val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
 
     return errorBody?.let {
         gson.fromJson(it, ResponseError::class.java)?.copy(httpStatus = httpStatus)

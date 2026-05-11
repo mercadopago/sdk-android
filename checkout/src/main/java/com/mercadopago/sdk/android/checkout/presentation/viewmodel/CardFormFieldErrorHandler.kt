@@ -41,7 +41,7 @@ internal class CardFormFieldErrorHandler(
                 cardNumberState.validation.errorInvalid
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } ->
-                cardNumberState.validation.errorInvalid
+                errors.filterIsInstance<CardNumberErrorType.PaymentMethodNotFound>().first().message
 
             errors.any { it is CardNumberErrorType.FieldValidation } ->
                 errors.filterIsInstance<CardNumberErrorType.FieldValidation>().first().message
