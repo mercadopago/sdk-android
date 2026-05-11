@@ -1,0 +1,20 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/GenerateTokenUseCaseTest.kt
+  s_fd5c9cc17c26a5::t_ae84318a0907cb 58
+  s_fd5c9cc17c26a5::t_5efcc71080de4f 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "9d6f5cc26b89e9322de03bb8411eb3487d0e1554",
+  "prompts": {},
+  "sessions": {
+    "s_fd5c9cc17c26a5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f1d3840a-b4aa-4b53-97e2-f367f34d7703",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
