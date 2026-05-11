@@ -26,6 +26,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
@@ -69,6 +70,7 @@ internal class CardPaymentViewModelTest {
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
+    private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
@@ -155,9 +157,8 @@ internal class CardPaymentViewModelTest {
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
+        cardPaymentScreenStateFactory = cardPaymentScreenStateFactory,
     )
-
-    // ── initialization ───────────────────────────────────────────────────────
 
     @Test
     fun `when initialization succeeds then isLoading is false`() = runTest {
@@ -201,8 +202,6 @@ internal class CardPaymentViewModelTest {
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
         assertTrue(metricSlot.captured.path.endsWith("/initialize_error"))
     }
-
-    // ── card number events ────────────────────────────────────────────────────
 
     @Test
     fun `when OnLengthChanged then updates card number length`() = runTest {
@@ -260,8 +259,6 @@ internal class CardPaymentViewModelTest {
 
         assertTrue(viewModel.viewState.value.cardNumberState.isFocused)
     }
-
-    // ── BIN events ────────────────────────────────────────────────────────────
 
     @Test
     fun `when BIN length is less than 6 then getCardBin is not called`() = runTest {
@@ -456,8 +453,6 @@ internal class CardPaymentViewModelTest {
         assertEquals(1, installmentsState.installments.first().installments)
     }
 
-    // ── expiration date events ────────────────────────────────────────────────
-
     @Test
     fun `when ExpirationDate IsValid then updates isValid`() = runTest {
         val viewModel = makeViewModel()
@@ -496,8 +491,6 @@ internal class CardPaymentViewModelTest {
         assertTrue(viewModel.viewState.value.expirationDateState.filled)
     }
 
-    // ── security code events ──────────────────────────────────────────────────
-
     @Test
     fun `when SecurityCode OnLengthChanged then updates length`() = runTest {
         val viewModel = makeViewModel()
@@ -516,8 +509,6 @@ internal class CardPaymentViewModelTest {
         assertTrue(viewModel.viewState.value.secureCodeState.filled)
     }
 
-    // ── card holder events ────────────────────────────────────────────────────
-
     @Test
     fun `when CardHolder OnValueChanged then updates value`() = runTest {
         val viewModel = makeViewModel()
@@ -535,8 +526,6 @@ internal class CardPaymentViewModelTest {
 
         assertFalse(viewModel.viewState.value.cardHolderState.isFocused)
     }
-
-    // ── identification events ─────────────────────────────────────────────────
 
     @Test
     fun `when Identification OnValueChanged then updates value`() = runTest {
@@ -571,8 +560,6 @@ internal class CardPaymentViewModelTest {
         assertEquals("", viewModel.viewState.value.identificationTypeState.placeHolder)
     }
 
-    // ── tooltip and message ───────────────────────────────────────────────────
-
     @Test
     fun `when onTooltipClick called once then showTooltip is true`() = runTest {
         val viewModel = makeViewModel()
@@ -602,8 +589,6 @@ internal class CardPaymentViewModelTest {
         assertEquals(MessageError(), viewModel.viewState.value.messageError)
     }
 
-    // ── back pressed ──────────────────────────────────────────────────────────
-
     @Test
     fun `when onBackPressed then notifies CheckoutCallbackHolder with UserCancelled`() = runTest {
         val viewModel = makeViewModel()
@@ -632,8 +617,6 @@ internal class CardPaymentViewModelTest {
 
         verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
     }
-
-    // ── submit ────────────────────────────────────────────────────────────────
 
     @Test
     fun `when onSubmit with no errors then calls generateTokenUseCase`() = runTest {

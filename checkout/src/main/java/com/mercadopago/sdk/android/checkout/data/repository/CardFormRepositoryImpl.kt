@@ -9,10 +9,10 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.checkout.domain.mapper.toDomain
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.GetCardBinParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class CardFormRepositoryImpl(
@@ -20,7 +20,7 @@ internal class CardFormRepositoryImpl(
 ) : CardFormRepository {
     override suspend fun fetchInitialization(
         params: InitializeCardFormParams,
-    ): Result<CardFormInitializationOutput, ResultError> =
+    ): Result<CardFormInitializationOutput, ResponseError> =
         withErrorHandling {
             dataSource.fetchInitialization(
                 amount = params.amount,
@@ -30,7 +30,7 @@ internal class CardFormRepositoryImpl(
 
     override suspend fun getCardBin(
         params: GetCardBinParams,
-    ): Result<CardBinData, ResultError> =
+    ): Result<CardBinData, ResponseError> =
         withErrorHandling {
             dataSource.getCardBin(
                 CardBinRequest(

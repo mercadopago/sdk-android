@@ -47,7 +47,6 @@ internal class CheckoutModulesProviderTest {
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideModules is called Then modules should be verified`() {
-        // Given
         val configuration = mockk<Configuration>(relaxed = true)
         every { configuration.setLocale(any()) } returns Unit
         every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
@@ -68,7 +67,6 @@ internal class CheckoutModulesProviderTest {
             context = context,
         )
 
-        // When
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
             paymentMethods = emptyList(),
@@ -83,7 +81,6 @@ internal class CheckoutModulesProviderTest {
             modules(module)
         }
 
-        // Then
         module.verify(
             extraTypes = listOf(
                 CoreMethods::class,
