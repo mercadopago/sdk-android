@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.checkout.presentation.brick
+package com.mercadopago.sdk.android.checkout.presentation.state
 
 import kotlinx.serialization.Serializable
 

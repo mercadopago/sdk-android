@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.checkout.presentation.brick
+package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData

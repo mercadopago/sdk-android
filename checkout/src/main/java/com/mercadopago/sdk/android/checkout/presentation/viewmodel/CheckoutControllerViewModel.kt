@@ -1,17 +1,16 @@
-package com.mercadopago.sdk.android.checkout.presentation.brick
+package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.core.model.internal.getAmount
-import com.mercadopago.sdk.android.checkout.core.model.internal.getAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
+import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardFormAnalyticsTracker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,13 +38,13 @@ internal class CheckoutControllerViewModel(
         if (_screenState.value !is ScreenState.Loading) return
         viewModelScope.launch {
             initializeCardFormUseCase(
-                amount = configuration?.getAmountOrZero().orEmpty(),
+                amount = configuration?.getCardFormAmountOrZero().orEmpty(),
                 checkoutType = configuration.toCheckoutType(),
             ).fold(
-                onSuccess = { initData ->
+                onSuccess = { data ->
                     _screenState.value = ScreenState.Ready(
-                        initData.copy(
-                            transactionAmount = configuration?.getAmount(),
+                        data.copy(
+                            transactionAmount = configuration?.getCardFormAmount(),
                             paymentMethods = configuration?.paymentMethods.orEmpty(),
                             checkoutType = configuration.toCheckoutType(),
                         ),

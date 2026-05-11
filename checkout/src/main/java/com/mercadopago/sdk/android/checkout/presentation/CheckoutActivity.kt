@@ -15,7 +15,6 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
-import com.mercadopago.sdk.android.checkout.presentation.brick.CheckoutController
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import org.koin.compose.KoinContext
 

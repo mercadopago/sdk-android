@@ -11,7 +11,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.presentation.brick.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.map
@@ -23,6 +22,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toMPInstallmentD
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -104,8 +104,11 @@ internal class CardPaymentViewModel(
                     ),
                 )
                 if (event.length.isBeingCleared(previousLength)) {
-                    _viewState.value =
-                        errorHandler.applyCardNumberErrorState(_viewState.value, emptyList())
+                    _viewState.value = errorHandler.applyCardNumberErrorState(
+                        state = _viewState.value,
+                        errors = emptyList(),
+                        isValid = true,
+                    )
                 }
             }
 

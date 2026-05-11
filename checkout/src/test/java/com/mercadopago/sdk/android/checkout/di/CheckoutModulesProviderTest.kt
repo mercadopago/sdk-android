@@ -12,7 +12,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -50,7 +49,6 @@ internal class CheckoutModulesProviderTest {
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
         mockkObject(CheckoutType::class)
-        mockkObject(CardPaymentScreenStateFactory::class)
         mockkConstructor(Configuration::class)
     }
 
@@ -101,7 +99,6 @@ internal class CheckoutModulesProviderTest {
                 CardPaymentViewModel::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
-                CardPaymentScreenStateFactory::class,
                 CancelledFormContextUseCase::class,
                 Gson::class,
                 CardFormInitializationOutput::class,

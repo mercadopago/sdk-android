@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.presentation.brick.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow

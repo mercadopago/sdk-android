@@ -14,10 +14,9 @@ import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
-import com.mercadopago.sdk.android.checkout.presentation.brick.CheckoutControllerViewModel
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CheckoutControllerViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -43,9 +42,6 @@ internal fun provideDataModule() =
         factory {
             InitializeCardFormUseCase(repository = get())
         }
-        factory {
-            CardPaymentScreenStateFactory(stringProvider = get())
-        }
         viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
             CheckoutControllerViewModel(
                 configuration = checkoutConfiguration,
@@ -57,7 +53,6 @@ internal fun provideDataModule() =
                 initializationOutput = initData,
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
                 generateTokenUseCase = GenerateTokenUseCase(),
-                cardPaymentScreenStateFactory = get(),
             )
         }
         viewModel { (installmentData: MPInstallmentData, paymentData: MPPaymentData) ->
