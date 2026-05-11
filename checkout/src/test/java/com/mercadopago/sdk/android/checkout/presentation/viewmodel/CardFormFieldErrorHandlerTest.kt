@@ -91,7 +91,11 @@ internal class CardFormFieldErrorHandlerTest {
 
     @Test
     fun `given empty errors then cardNumber isValid and error is empty`() {
-        val result = handler.applyCardNumberErrorState(baseState, emptyList())
+        val result = handler.applyCardNumberErrorState(
+            state = baseState,
+            errors = emptyList(),
+            isValid = true,
+        )
 
         assertTrue(result.cardNumberState.isValid)
         assertEquals("", result.cardNumberState.error)
@@ -100,8 +104,9 @@ internal class CardFormFieldErrorHandlerTest {
     @Test
     fun `given LuhnValidation with complete card then error is errorInvalid`() {
         val result = handler.applyCardNumberErrorState(
-            baseState,
-            listOf(CardNumberErrorType.LuhnValidation),
+            state = baseState,
+            errors = listOf(CardNumberErrorType.LuhnValidation),
+            isValid = true,
         )
 
         assertEquals("Número inválido", result.cardNumberState.error)
@@ -110,8 +115,9 @@ internal class CardFormFieldErrorHandlerTest {
     @Test
     fun `given PaymentMethodNotFound then error is errorInvalid`() {
         val result = handler.applyCardNumberErrorState(
-            baseState,
-            listOf(CardNumberErrorType.PaymentMethodNotFound(message = "Número inválido")),
+            state = baseState,
+            errors = listOf(CardNumberErrorType.PaymentMethodNotFound(message = "Número inválido")),
+            isValid = true,
         )
 
         assertEquals("Número inválido", result.cardNumberState.error)
@@ -120,8 +126,9 @@ internal class CardFormFieldErrorHandlerTest {
     @Test
     fun `given FieldValidation then error is the validation message`() {
         val result = handler.applyCardNumberErrorState(
-            baseState,
-            listOf(CardNumberErrorType.FieldValidation("Número obrigatório")),
+            state = baseState,
+            errors = listOf(CardNumberErrorType.FieldValidation("Número obrigatório")),
+            isValid = true,
         )
 
         assertEquals("Número obrigatório", result.cardNumberState.error)
@@ -129,7 +136,11 @@ internal class CardFormFieldErrorHandlerTest {
 
     @Test
     fun `given empty errors then isValid is true`() {
-        val result = handler.applyCardNumberErrorState(baseState, emptyList())
+        val result = handler.applyCardNumberErrorState(
+            state = baseState,
+            errors = emptyList(),
+            isValid = true,
+        )
 
         assertTrue(result.cardNumberState.isValid)
     }
@@ -137,8 +148,9 @@ internal class CardFormFieldErrorHandlerTest {
     @Test
     fun `given errors then isValid is false`() {
         val result = handler.applyCardNumberErrorState(
-            baseState,
-            listOf(CardNumberErrorType.LuhnValidation),
+            state = baseState,
+            errors = listOf(CardNumberErrorType.LuhnValidation),
+            isValid = false,
         )
 
         assertFalse(result.cardNumberState.isValid)
@@ -299,7 +311,11 @@ internal class CardFormFieldErrorHandlerTest {
 
     @Test
     fun `given all fields valid then footer is visible`() {
-        val result = handler.applyCardNumberErrorState(baseState, emptyList())
+        val result = handler.applyCardNumberErrorState(
+            state = baseState,
+            errors = emptyList(),
+            isValid = true,
+        )
 
         assertTrue(result.fixedFooterState.isVisible)
     }
@@ -307,8 +323,9 @@ internal class CardFormFieldErrorHandlerTest {
     @Test
     fun `given cardNumber field invalid then footer is not visible`() {
         val result = handler.applyCardNumberErrorState(
-            baseState,
-            listOf(CardNumberErrorType.FieldValidation("error")),
+            state = baseState,
+            errors = listOf(CardNumberErrorType.FieldValidation("error")),
+            isValid = true,
         )
 
         assertFalse(result.fixedFooterState.isVisible)

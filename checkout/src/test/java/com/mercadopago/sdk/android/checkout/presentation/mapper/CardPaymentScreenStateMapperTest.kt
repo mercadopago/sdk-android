@@ -47,6 +47,7 @@ internal class CardPaymentScreenStateMapperTest {
             label = "Holder",
             placeholder = "Name",
             validation = defaultValidation,
+            helper = "helper",
             config = defaultConfig,
         ),
         expirationDate: ExpirationDateField = ExpirationDateField(
@@ -147,6 +148,7 @@ internal class CardPaymentScreenStateMapperTest {
                 placeholder = "Nome",
                 validation = Validation("empty", "incomplete", "invalid"),
                 config = defaultConfig,
+                helper = "helper",
             ),
         )
 
