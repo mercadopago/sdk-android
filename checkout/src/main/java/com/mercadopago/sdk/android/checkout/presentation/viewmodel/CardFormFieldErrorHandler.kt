@@ -71,13 +71,11 @@ internal class CardFormFieldErrorHandler(
     fun handleResultError(
         state: CardPaymentScreenState,
         message: String,
-        genericErrorMessage: String,
     ): CardPaymentScreenState {
         val isCardNumberFocused = state.cardNumberState.isFocused
         return state.copy(
             messageError = MessageError(
                 title = message,
-                description = genericErrorMessage,
             ),
             showMessage = !isCardNumberFocused,
         )

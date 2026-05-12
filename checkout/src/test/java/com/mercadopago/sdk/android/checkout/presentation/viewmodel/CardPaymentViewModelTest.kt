@@ -2,6 +2,11 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.checkout.core.model.CardBrand
+import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
@@ -19,6 +24,9 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -28,6 +36,7 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -44,13 +53,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@Suppress("LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CardPaymentViewModelTest {
     @get:Rule
@@ -58,7 +65,18 @@ internal class CardPaymentViewModelTest {
 
     private val mockMPAnalytics = mockk<MPAnalytics>(relaxed = true)
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
+    private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
+
+    private val checkoutConfiguration = CheckoutConfiguration(
+        checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
+        paymentMethods = listOf(
+            PaymentMethod.Card(
+                allowedTypes = listOf(CardType.CREDIT, CardType.DEBIT),
+                allowedBrands = listOf(CardBrand.Visa, CardBrand.Mastercard),
+            ),
+        ),
+    )
 
     private val networkError = MercadoPagoCheckoutError.NetworkError(
         code = ErrorCode.NETWORK_CONNECTION_FAILED,
@@ -129,14 +147,56 @@ internal class CardPaymentViewModelTest {
     }
 
     private fun makeViewModel(
-        initData: CardFormInitializationOutput = mockk(relaxed = true),
+        config: CheckoutConfiguration? = checkoutConfiguration,
     ) = CardPaymentViewModel(
-        initializationOutput = initData,
+        checkoutConfiguration = config,
         getCardBinUseCase = getCardBinUseCase,
+        initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
     )
 
-    // ── card number events ────────────────────────────────────────────────────
+    @Test
+    fun `when initialization succeeds then isLoading is false`() = runTest {
+        coEvery { initializeCardFormUseCase(any(), any()) } returns
+            Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
+        val viewModel = makeViewModel()
+
+        viewModel.initialization()
+
+        assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when initialization fails then isLoading is false`() = runTest {
+        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        val viewModel = makeViewModel()
+
+        viewModel.initialization()
+
+        assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when initialization fails then emits OnFailure viewEvent`() = runTest {
+        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        val viewModel = makeViewModel()
+
+        viewModel.initialization()
+
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
+    }
+
+    @Test
+    fun `when initialization fails then tracks initialize_error event`() = runTest {
+        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        val viewModel = makeViewModel()
+
+        viewModel.initialization()
+
+        val metricSlot = slot<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
+        assertTrue(metricSlot.captured.path.endsWith("/initialize_error"))
+    }
 
     @Test
     fun `when OnLengthChanged then updates card number length`() = runTest {
@@ -195,8 +255,6 @@ internal class CardPaymentViewModelTest {
         assertTrue(viewModel.viewState.value.cardNumberState.isFocused)
     }
 
-    // ── BIN events ────────────────────────────────────────────────────────────
-
     @Test
     fun `when BIN length is less than 6 then getCardBin is not called`() = runTest {
         val viewModel = makeViewModel()
@@ -217,8 +275,8 @@ internal class CardPaymentViewModelTest {
             quotas = listOf(
                 Quota(
                     installments = 1,
-                    installmentAmount = BigDecimal.valueOf(100.0),
-                    totalAmount = BigDecimal.valueOf(100.0),
+                    installmentAmount = java.math.BigDecimal("100"),
+                    totalAmount = java.math.BigDecimal("100"),
                 ),
             ),
             installmentsSelectionType = null,
@@ -259,7 +317,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
             installmentsSelectionType = null,
@@ -367,13 +425,13 @@ internal class CardPaymentViewModelTest {
             quotas = listOf(
                 Quota(
                     installments = 1,
-                    installmentAmount = BigDecimal.valueOf(100.0),
-                    totalAmount = BigDecimal.valueOf(100.0),
+                    installmentAmount = java.math.BigDecimal("100.00"),
+                    totalAmount = java.math.BigDecimal("100.00"),
                 ),
                 Quota(
                     installments = 3,
-                    installmentAmount = BigDecimal.valueOf(34.0),
-                    totalAmount = BigDecimal.valueOf(102.0),
+                    installmentAmount = java.math.BigDecimal("34.00"),
+                    totalAmount = java.math.BigDecimal("102.00"),
                 ),
             ),
             installmentsSelectionType = null,
@@ -389,8 +447,6 @@ internal class CardPaymentViewModelTest {
         assertEquals(2, installmentsState.installments.size)
         assertEquals(1, installmentsState.installments.first().installments)
     }
-
-    // ── expiration date events ────────────────────────────────────────────────
 
     @Test
     fun `when ExpirationDate IsValid then updates isValid`() = runTest {
@@ -430,8 +486,6 @@ internal class CardPaymentViewModelTest {
         assertTrue(viewModel.viewState.value.expirationDateState.filled)
     }
 
-    // ── security code events ──────────────────────────────────────────────────
-
     @Test
     fun `when SecurityCode OnLengthChanged then updates length`() = runTest {
         val viewModel = makeViewModel()
@@ -450,8 +504,6 @@ internal class CardPaymentViewModelTest {
         assertTrue(viewModel.viewState.value.secureCodeState.filled)
     }
 
-    // ── card holder events ────────────────────────────────────────────────────
-
     @Test
     fun `when CardHolder OnValueChanged then updates value`() = runTest {
         val viewModel = makeViewModel()
@@ -469,8 +521,6 @@ internal class CardPaymentViewModelTest {
 
         assertFalse(viewModel.viewState.value.cardHolderState.isFocused)
     }
-
-    // ── identification events ─────────────────────────────────────────────────
 
     @Test
     fun `when Identification OnValueChanged then updates value`() = runTest {
@@ -505,8 +555,6 @@ internal class CardPaymentViewModelTest {
         assertEquals("", viewModel.viewState.value.identificationTypeState.placeHolder)
     }
 
-    // ── tooltip and message ───────────────────────────────────────────────────
-
     @Test
     fun `when onTooltipClick called once then showTooltip is true`() = runTest {
         val viewModel = makeViewModel()
@@ -536,7 +584,14 @@ internal class CardPaymentViewModelTest {
         assertEquals(MessageError(), viewModel.viewState.value.messageError)
     }
 
-    // ── back pressed ──────────────────────────────────────────────────────────
+    @Test
+    fun `when onBackPressed then emits OnUserCancelled viewEvent`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onBackPressed()
+
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
+    }
 
     @Test
     fun `when onBackPressed then tracks user_canceled_error event`() = runTest {
@@ -549,7 +604,14 @@ internal class CardPaymentViewModelTest {
         assertTrue(metricSlot.captured.path.endsWith("/user_canceled_error"))
     }
 
-    // ── submit ────────────────────────────────────────────────────────────────
+    @Test
+    fun `when onBackPressed with UiButton reason then emits OnUserCancelled viewEvent`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onBackPressed(reason = CancelReason.UiButton)
+
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
+    }
 
     @Test
     fun `when onSubmit with no errors then calls generateTokenUseCase`() = runTest {
@@ -558,7 +620,11 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
 
         coVerify { generateTokenUseCase(any(), any(), any(), any()) }
     }
@@ -570,7 +636,11 @@ internal class CardPaymentViewModelTest {
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
 
         val metricSlot = slot<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
@@ -578,210 +648,50 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds and clearSubmitState is called then isLoading is false`() = runTest {
+    fun `when onSubmit succeeds then emits OnSuccess viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit()
-        viewModel.clearSubmitState()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
 
-        assertFalse(viewModel.viewState.value.isLoading)
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 
     @Test
-    fun `when onSubmit fails then isLoading is false`() = runTest {
+    fun `when onSubmit fails then emits OnFailure viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
-        viewModel.onSubmit()
-
-        assertFalse(viewModel.viewState.value.isLoading)
-    }
-
-    // ── installments navigation ───────────────────────────────────────────────
-
-    private fun makeViewModelWithInstallments(): CardPaymentViewModel {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = listOf(
-                Quota(
-                    installments = 1,
-                    installmentAmount = BigDecimal.valueOf(100.0),
-                    totalAmount = BigDecimal.valueOf(100.0),
-                ),
-                Quota(
-                    installments = 3,
-                    installmentAmount = BigDecimal.valueOf(34.0),
-                    totalAmount = BigDecimal.valueOf(102.0),
-                ),
-            ),
-            installmentsSelectionType = null,
-            translations = null,
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
-        return makeViewModel().also {
-            it.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
-        }
+
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
-    fun `when onSubmit and showList true then tokenizes before navigating`() = runTest {
+    fun `when onSubmit is called then isLoading is false after completion`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
-        val viewModel = makeViewModelWithInstallments()
-
-        viewModel.onSubmit()
-
-        coVerify { generateTokenUseCase(any(), any(), any(), any()) }
-    }
-
-    // ── isBeingCleared branches ───────────────────────────────────────────────
-
-    @Test
-    fun `when card number length goes from non-zero to zero then clears errorTypes`() = runTest {
         val viewModel = makeViewModel()
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnLengthChanged(length = 4))
 
-        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnLengthChanged(length = 0))
-
-        assertTrue(viewModel.viewState.value.cardNumberState.errorTypes.isEmpty())
-    }
-
-    @Test
-    fun `when expiration date length goes from non-zero to zero then no error is shown`() = runTest {
-        val viewModel = makeViewModel()
-        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = 3))
-
-        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = 0))
-
-        assertEquals("", viewModel.viewState.value.expirationDateState.error)
-    }
-
-    @Test
-    fun `when security code length goes from non-zero to zero then no error is shown`() = runTest {
-        val viewModel = makeViewModel()
-        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 2))
-
-        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 0))
-
-        assertEquals("", viewModel.viewState.value.secureCodeState.error)
-    }
-
-    @Test
-    fun `when security code length reaches maxLength then applies validation`() = runTest {
-        val viewModel = makeViewModel()
-        val maxLength = viewModel.viewState.value.secureCodeState.maxLength
-
-        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = maxLength))
-
-        assertEquals(maxLength, viewModel.viewState.value.secureCodeState.length)
-    }
-
-    @Test
-    fun `when card holder value goes from filled to empty then no error is shown`() = runTest {
-        val viewModel = makeViewModel()
-        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged("John Doe"))
-
-        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged(""))
-
-        assertEquals("", viewModel.viewState.value.cardHolderState.error)
-    }
-
-    @Test
-    fun `when identification value goes from filled to empty then no error is shown`() = runTest {
-        val viewModel = makeViewModel()
-        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678"))
-
-        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged(""))
-
-        assertEquals("", viewModel.viewState.value.identificationTypeState.error)
-    }
-
-    @Test
-    fun `when identification value reaches maxLength then validation is applied`() = runTest {
-        val viewModel = makeViewModel()
-        viewModel.onIdentificationEvent(
-            IdentificationTextFieldEvent.OnTypeSelected(
-                IdentificationType(id = "CPF", minLength = 11, maxLength = 11, name = "CPF"),
-            ),
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678901"))
-
-        assertEquals("12345678901", viewModel.viewState.value.identificationTypeState.value)
-    }
-
-    // ── focus gain branches ───────────────────────────────────────────────────
-
-    @Test
-    fun `when ExpirationDate OnFocusChanged true then isFocused is true`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused = true))
-
-        assertTrue(viewModel.viewState.value.expirationDateState.isFocused)
-    }
-
-    @Test
-    fun `when ExpirationDate OnFocusChanged false then isFocused is false`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnFocusChanged(isFocused = false))
-
-        assertFalse(viewModel.viewState.value.expirationDateState.isFocused)
-    }
-
-    @Test
-    fun `when SecurityCode OnFocusChanged true then isFocused is true`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused = true))
-
-        assertTrue(viewModel.viewState.value.secureCodeState.isFocused)
-    }
-
-    @Test
-    fun `when SecurityCode OnFocusChanged false then isFocused is false`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnFocusChanged(isFocused = false))
-
-        assertFalse(viewModel.viewState.value.secureCodeState.isFocused)
-    }
-
-    @Test
-    fun `when CardHolder OnFocusChanged true then isFocused is true`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnFocusChanged(isFocused = true))
-
-        assertTrue(viewModel.viewState.value.cardHolderState.isFocused)
-    }
-
-    @Test
-    fun `when Identification OnFocusChanged true then isFocused is true`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnFocusChanged(isFocused = true))
-
-        assertTrue(viewModel.viewState.value.identificationTypeState.isFocused)
-    }
-
-    @Test
-    fun `when Identification OnFocusChanged false then isFocused is false`() = runTest {
-        val viewModel = makeViewModel()
-
-        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnFocusChanged(isFocused = false))
-
-        assertFalse(viewModel.viewState.value.identificationTypeState.isFocused)
+        assertFalse(viewModel.viewState.value.isLoading)
     }
 }

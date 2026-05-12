@@ -7,7 +7,6 @@ import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
-import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
@@ -16,7 +15,6 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CheckoutControllerViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -43,15 +41,10 @@ internal fun provideDataModule() =
             InitializeCardFormUseCase(repository = get())
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
-            CheckoutControllerViewModel(
-                configuration = checkoutConfiguration,
-                initializeCardFormUseCase = get(),
-            )
-        }
-        viewModel { (initData: CardFormInitializationOutput) ->
             CardPaymentViewModel(
-                initializationOutput = initData,
+                checkoutConfiguration = checkoutConfiguration,
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
+                initializeCardFormUseCase = get(),
                 generateTokenUseCase = GenerateTokenUseCase(),
             )
         }

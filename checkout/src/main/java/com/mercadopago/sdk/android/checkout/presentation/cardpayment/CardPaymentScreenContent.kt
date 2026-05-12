@@ -2,6 +2,8 @@ package com.mercadopago.sdk.android.checkout.presentation.cardpayment
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -68,12 +70,16 @@ internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberPCIState = viewModel.cardNumberPCIState
-    val expirationDatePCIState = viewModel.expirationDatePCIState
-    val securityCodePCIState = viewModel.securityCodePCIState
+    val cardNumberPCIState = rememberPCIFieldState()
+    val expirationDatePCIState = rememberPCIFieldState()
+    val securityCodePCIState = rememberPCIFieldState()
     val cardHolderPCIState = rememberPCIFieldState()
     val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        viewModel.initialization()
+    }
 
     BackHandler {
         viewModel.onBackPressed(CancelReason.SystemBack)
@@ -96,7 +102,11 @@ internal fun CardPaymentScreen(
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
             focusManager.clearFocus()
-            viewModel.onSubmit()
+            viewModel.onSubmit(
+                cardNumberState = cardNumberPCIState,
+                expirationDateState = expirationDatePCIState,
+                securityCodeState = securityCodePCIState,
+            )
         },
     )
 }
@@ -289,6 +299,17 @@ internal fun CardPaymentScreenContent(
                     )
                 }
             }
+        }
+
+        if (viewState.showTooltip) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                    ) { onTooltipClick() },
+            )
         }
 
         if (viewState.isLoading) {
