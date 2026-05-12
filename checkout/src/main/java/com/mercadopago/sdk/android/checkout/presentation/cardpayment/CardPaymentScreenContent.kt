@@ -38,6 +38,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -134,8 +135,7 @@ internal fun CardPaymentScreenContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
+            .statusBarsPadding(),
     ) {
         Column(
             modifier = Modifier
@@ -279,18 +279,30 @@ internal fun CardPaymentScreenContent(
             }
 
             Surface(
+                modifier = Modifier.fillMaxWidth(),
                 shadowElevation = 8.dp,
                 tonalElevation = 0.dp,
             ) {
-                MPFixedFooter(
-                    title = viewState.fixedFooterState.title,
-                    subtitle = viewState.fixedFooterState.subtitle,
-                    button = MPFixedFooterButtonData(
-                        text = viewState.fixedFooterState.buttonText,
-                        enabled = viewState.fixedFooterState.isButtonEnabled,
-                        onClick = onFooterButtonClick,
-                    ),
-                )
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    MPFixedFooter(
+                        title = viewState.fixedFooterState.title,
+                        amount = viewState.fixedFooterState.amountIntegerPart
+                            .takeIf { it.isNotEmpty() }
+                            ?.let {
+                                MPAmountData(
+                                    currencySymbol = viewState.fixedFooterState.currencySymbol,
+                                    integerPart = it,
+                                    decimalPart = viewState.fixedFooterState.amountDecimalPart,
+                                )
+                            },
+                        subtitle = viewState.fixedFooterState.subtitle,
+                        button = MPFixedFooterButtonData(
+                            text = viewState.fixedFooterState.buttonText,
+                            enabled = viewState.fixedFooterState.isButtonEnabled,
+                            onClick = onFooterButtonClick,
+                        ),
+                    )
+                }
             }
         }
 

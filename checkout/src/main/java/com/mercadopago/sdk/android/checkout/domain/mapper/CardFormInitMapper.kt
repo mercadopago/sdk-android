@@ -27,6 +27,7 @@ internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
         title = translations.cardFormTitle,
         button = translations.cardFormFooterButtonLabel,
+        totalLabel = translations.installments.totalLabel,
         fields = CardFormFields(
             cardNumber = cardNumber.toCardNumberField(translations.cardNumber),
             holderName = holderName.toCardHolderField(translations.holderName),

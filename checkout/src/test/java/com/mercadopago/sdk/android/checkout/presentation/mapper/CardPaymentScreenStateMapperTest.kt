@@ -70,6 +70,7 @@ internal class CardPaymentScreenStateMapperTest {
     ) = CardFormInitializationOutput(
         title = title,
         button = button,
+        totalLabel = "",
         fields = CardFormFields(
             cardNumber = cardNumber,
             holderName = holderName,

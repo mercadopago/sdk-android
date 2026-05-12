@@ -24,6 +24,7 @@ internal fun CardPaymentScreenState.applyCardBinData(
             )
         },
         installmentsState = buildBinInstallmentsState(data),
+        fixedFooterState = buildFixedFooterState(data),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
     )
 
@@ -69,6 +70,12 @@ private fun CardPaymentScreenState.buildExpirationDateState(
     label = data.translations?.expirationDate?.label.orCurrent(expirationDateState.label),
     placeHolder = data.translations?.expirationDate?.placeholder.orCurrent(expirationDateState.placeHolder),
     helper = data.translations?.expirationDate?.helper.orCurrent(expirationDateState.helper),
+)
+
+private fun CardPaymentScreenState.buildFixedFooterState(
+    data: CardBinData,
+) = fixedFooterState.copy(
+    title = data.translations?.installments?.totalLabel.orCurrent(fixedFooterState.title),
 )
 
 private fun CardPaymentScreenState.buildBinInstallmentsState(

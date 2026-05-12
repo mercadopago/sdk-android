@@ -9,6 +9,9 @@ import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.IdentificationTypeItem
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -18,19 +21,27 @@ import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTyp
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
+import java.math.BigDecimal
 
-internal fun CardFormInitializationOutput.toCardPaymentScreenState() =
-    with(fields) {
-        CardPaymentScreenState(
-            title = title,
-            cardNumberState = cardNumber.toCardNumberState(),
-            cardHolderState = holderName.toCardHolderState(),
-            expirationDateState = expirationDate.toExpirationDateState(),
-            secureCodeState = securityCode.toSecurityCodeState(),
-            identificationTypeState = document.toIdentificationTypeState(identificationTypes),
-            fixedFooterState = FixedFooterState(buttonText = button),
-        )
-    }
+internal fun CardFormInitializationOutput.toCardPaymentScreenState(
+    amount: BigDecimal = BigDecimal.ZERO,
+) = with(fields) {
+    CardPaymentScreenState(
+        title = title,
+        cardNumberState = cardNumber.toCardNumberState(),
+        cardHolderState = holderName.toCardHolderState(),
+        expirationDateState = expirationDate.toExpirationDateState(),
+        secureCodeState = securityCode.toSecurityCodeState(),
+        identificationTypeState = document.toIdentificationTypeState(identificationTypes),
+        fixedFooterState = FixedFooterState(
+            title = totalLabel,
+            buttonText = button,
+            currencySymbol = null.getCurrencyString(),
+            amountIntegerPart = amount.getTotal(),
+            amountDecimalPart = amount.getTotalDecimalPart(),
+        ),
+    )
+}
 
 private fun CardNumberField.toCardNumberState() =
     CardNumberState(
