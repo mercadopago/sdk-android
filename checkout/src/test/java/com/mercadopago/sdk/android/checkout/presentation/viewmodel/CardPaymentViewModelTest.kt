@@ -320,7 +320,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
+            securityCode = null,
             issuers = emptyList(),
             quotas = emptyList(),
             translations = null,

@@ -7,4 +7,5 @@ internal data class SecurityCodeConfig(
     val cardLocation: String? = null,
     val tooltip: String? = null,
     val placeholder: String? = null,
+    val optional: Boolean = false,
 )
