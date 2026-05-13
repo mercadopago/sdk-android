@@ -1,0 +1,27 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_e34e021397702d::t_7a084e99a7ba8c 49
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_e34e021397702d::t_f4138aae499fd6 168
+  s_e34e021397702d::t_fe92c15e0913e9 184,186,195,197
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_e34e021397702d::t_dc73b32048743e 276
+  s_e34e021397702d::t_eb99781b837697 302,323
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_e34e021397702d::t_60c0674949394a 134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "2a50fb20285487ce7d7e9b1e5891bff443ee377b",
+  "prompts": {},
+  "sessions": {
+    "s_e34e021397702d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5860a70-48d5-4357-ab85-7853219f1b7e",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
