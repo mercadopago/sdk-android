@@ -1,44 +1,19 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.Quota
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import java.math.BigDecimal
 import kotlin.test.Test
-import kotlin.test.assertFalse
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 internal class InstallmentsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
-
-    private val quotas = listOf(
-        Quota(
-            installments = 1,
-            installmentAmount = BigDecimal("100.00"),
-            totalAmount = BigDecimal("100.00"),
-        ),
-        Quota(
-            installments = 3,
-            installmentAmount = BigDecimal("34.00"),
-            totalAmount = BigDecimal("102.00"),
-        ),
-    )
-
-    private fun makeData(
-        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
-    ) = MPInstallmentData(
-        brand = "visa",
-        lastFourDigits = "1234",
-        paymentMethodId = "visa",
-        paymentTypeId = "credit_card",
-        issuerId = "1",
-        quotas = quotas,
-        display = MPInstallmentData.Display(displayType = displayType),
-    )
 
     private val paymentData = MPPaymentData(
         token = "token",
@@ -51,54 +26,27 @@ internal class InstallmentsViewModelTest {
     )
 
     private fun makeViewModel(
-        installmentData: MPInstallmentData = makeData(),
         paymentData: MPPaymentData = this.paymentData,
-    ) = InstallmentsViewModel(
-        installmentData = installmentData,
-        paymentData = paymentData,
-    )
+    ) = InstallmentsViewModel(paymentData = paymentData)
 
     @Test
-    fun `viewState reflects quotas from installmentData`() = runTest {
-        val viewModel = makeViewModel()
-
-        kotlin.test.assertEquals(2, viewModel.viewState.value.installmentsState.size)
-    }
-
-    @Test
-    fun `RadioButton mode auto-selects first item`() = runTest {
-        val viewModel = makeViewModel()
-
-        kotlin.test.assertEquals(
-            true,
-            viewModel.viewState.value.installmentsState.first().isSelected,
-        )
-    }
-
-    @Test
-    fun `Chevron mode does not pre-select`() = runTest {
-        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
-
-        assertFalse(viewModel.viewState.value.installmentsState.any { it.isSelected })
-    }
-
-    @Test
-    fun `onInstallmentSelected updates selection in RadioButton mode`() = runTest {
+    fun `onInstallmentSelected emits OnSuccess viewEvent carrying selected installment`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onInstallmentSelected(installment = 3)
 
-        val states = viewModel.viewState.value.installmentsState
-        kotlin.test.assertEquals(true, states.first { it.number == 3 }.isSelected)
-        kotlin.test.assertEquals(false, states.first { it.number == 1 }.isSelected)
+        val event = viewModel.viewEvent.value
+        assertTrue(event is InstallmentViewEvent.OnSuccess)
+        assertEquals(3, event.payment.installment)
     }
 
     @Test
-    fun `onInstallmentSelected ignored in Chevron mode`() = runTest {
-        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
+    fun `clearViewEvent resets viewEvent to null`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 2)
 
-        viewModel.onInstallmentSelected(installment = 3)
+        viewModel.clearViewEvent()
 
-        assertFalse(viewModel.viewState.value.installmentsState.any { it.isSelected })
+        assertNull(viewModel.viewEvent.value)
     }
 }

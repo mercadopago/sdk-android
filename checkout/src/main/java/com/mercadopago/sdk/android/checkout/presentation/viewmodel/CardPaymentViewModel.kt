@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
@@ -18,9 +19,9 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.mapper.toMPInstallmentData
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -43,9 +44,10 @@ import kotlinx.coroutines.launch
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val getCardBinUseCase: GetCardBinUseCase,
+    private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
@@ -311,7 +313,7 @@ internal class CardPaymentViewModel(
         _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
     }
 
-    fun clearSubmitState() {
+    fun clearViewEvent() {
         _viewEvent.value = null
     }
 
@@ -401,6 +403,7 @@ internal class CardPaymentViewModel(
                             errorHandler.handleResultError(
                                 state = _viewState.value,
                                 message = error.errorMessage,
+                                genericErrorMessage = cardPaymentScreenStateFactory.getGenericErrorMessage(),
                             )
                         }
                     },
@@ -444,9 +447,7 @@ internal class CardPaymentViewModel(
                     )
                     _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                         payment = paymentData,
-                        installment = _viewState.value.toMPInstallmentData(
-                            checkoutConfiguration?.getCardFormAmount(),
-                        ),
+                        installment = MPInstallmentData(),
                     )
                 },
                 onError = { checkoutError ->

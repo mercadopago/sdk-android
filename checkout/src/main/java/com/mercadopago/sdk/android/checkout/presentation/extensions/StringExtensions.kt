@@ -20,8 +20,3 @@ internal fun String.isBeingCleared(
 ): Boolean = this.length < previousValue.length
 
 internal fun String?.getOrZero() = this ?: ZERO
-
-internal fun String.toBrandLabel(): String =
-    split('_')
-        .filter { it.isNotEmpty() }
-        .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
