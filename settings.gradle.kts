@@ -51,7 +51,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "mercado-pago-sdk-android"
 include(":example")
 include(":core-methods")
-include(":mp-extended")
 include(":showkase")
 include(":analytics")
 include(":core")

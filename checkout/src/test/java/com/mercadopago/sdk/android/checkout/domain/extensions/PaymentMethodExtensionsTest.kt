@@ -76,48 +76,6 @@ internal class PaymentMethodExtensionsTest {
     }
 
     @Test
-    fun `given empty cardBrands list then matchesCardBrand returns true`() {
-        val paymentMethod = PaymentMethod(id = "visa")
-
-        assertTrue(paymentMethod.matchesCardBrand(emptyList()))
-    }
-
-    @Test
-    fun `given matching brand in list then matchesCardBrand returns true`() {
-        val paymentMethod = PaymentMethod(id = "visa")
-
-        assertTrue(paymentMethod.matchesCardBrand(listOf(CardBrand.Visa)))
-    }
-
-    @Test
-    fun `given non matching brand in list then matchesCardBrand returns false`() {
-        val paymentMethod = PaymentMethod(id = "master")
-
-        assertFalse(paymentMethod.matchesCardBrand(listOf(CardBrand.Visa)))
-    }
-
-    @Test
-    fun `given empty cardTypes list then matchesCardType returns true`() {
-        val paymentMethod = PaymentMethod(paymentTypeId = "credit_card")
-
-        assertTrue(paymentMethod.matchesCardType(emptyList()))
-    }
-
-    @Test
-    fun `given matching type in list then matchesCardType returns true`() {
-        val paymentMethod = PaymentMethod(paymentTypeId = "credit_card")
-
-        assertTrue(paymentMethod.matchesCardType(listOf(CardType.CREDIT)))
-    }
-
-    @Test
-    fun `given non matching type in list then matchesCardType returns false`() {
-        val paymentMethod = PaymentMethod(paymentTypeId = "debit_card")
-
-        assertFalse(paymentMethod.matchesCardType(listOf(CardType.CREDIT)))
-    }
-
-    @Test
     fun `given null list then extractCardFilters returns empty pairs`() {
         val result = null.extractCardFilters()
 

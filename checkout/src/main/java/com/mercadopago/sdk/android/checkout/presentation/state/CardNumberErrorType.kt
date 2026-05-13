@@ -6,7 +6,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardType
 internal sealed class CardNumberErrorType {
     data class FieldValidation(val message: String) : CardNumberErrorType()
 
-    data object PaymentMethodNotFound : CardNumberErrorType()
+    data class PaymentMethodNotFound(val message: String) : CardNumberErrorType()
 
     data object LuhnValidation : CardNumberErrorType()
 

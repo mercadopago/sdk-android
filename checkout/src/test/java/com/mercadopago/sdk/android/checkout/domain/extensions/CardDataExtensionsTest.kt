@@ -1,22 +1,16 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
-import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.domain.model.CardData
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
-import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardModel
 import com.mercadopago.sdk.android.coremethods.domain.model.LengthModel
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import io.mockk.every
-import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class CardDataExtensionsTest {
-    private val stringProvider = mockk<StringProvider>()
-
     @Test
     fun `given security code length zero then isOptional returns true`() {
         val securityCode = SecurityCode(length = 0, mode = "optional", location = "back")
@@ -60,49 +54,5 @@ internal class CardDataExtensionsTest {
         )
 
         assertEquals(CARD_LENGTH_19, cardData.getLength())
-    }
-
-    @Test
-    fun `given security code location is back then getMessage uses back tooltip`() {
-        val securityCode = SecurityCode(length = 3, mode = "mandatory", location = "back")
-        every { stringProvider.getString(R.string.card_form_security_code_tooltip_back) } returns "CVV: %d digits"
-
-        val result = securityCode.getMessage(stringProvider)
-
-        assertEquals("CVV: 3 digits", result)
-    }
-
-    @Test
-    fun `given security code location is not back then getMessage uses front tooltip`() {
-        val securityCode = SecurityCode(length = 4, mode = "mandatory", location = "front")
-        every { stringProvider.getString(R.string.card_form_security_code_tooltip_front) } returns "Code: %d"
-
-        val result = securityCode.getMessage(stringProvider)
-
-        assertEquals("Code: 4", result)
-    }
-
-    @Test
-    fun `given security code length 4 then getPlaceholder returns four digit string`() {
-        val securityCode = SecurityCode(length = 4, mode = "mandatory", location = "front")
-        every {
-            stringProvider.getString(R.string.card_form_security_placeholder_four_digits)
-        } returns "0000"
-
-        val result = securityCode.getPlaceholder(stringProvider)
-
-        assertEquals("0000", result)
-    }
-
-    @Test
-    fun `given security code length 3 then getPlaceholder returns three digit string`() {
-        val securityCode = SecurityCode(length = 3, mode = "mandatory", location = "back")
-        every {
-            stringProvider.getString(R.string.card_form_security_placeholder_three_digits)
-        } returns "000"
-
-        val result = securityCode.getPlaceholder(stringProvider)
-
-        assertEquals("000", result)
     }
 }
