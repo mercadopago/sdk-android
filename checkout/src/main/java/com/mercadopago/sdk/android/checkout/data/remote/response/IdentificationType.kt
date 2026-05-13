@@ -5,8 +5,8 @@ internal data class IdentificationType(
     val name: String,
     val minLength: Int,
     val maxLength: Int,
-    val placeholder: String,
-    val mask: String,
-    val type: String,
-    val sequence: String,
+    val placeholder: String?,
+    val mask: String?,
+    val type: String?,
+    val sequence: String?,
 )

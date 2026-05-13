@@ -123,7 +123,6 @@ internal class CardBinResponseMapperTest {
                     securityCode = SecurityCodeConfig(
                         type = "mandatory",
                         length = 3,
-                        mode = "mandatory",
                         cardLocation = "back",
                     ),
                 ),
@@ -132,7 +131,7 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals("mandatory", domain.securityCode?.mode)
+        assertEquals("mandatory", domain.securityCode?.type)
         assertEquals(3, domain.securityCode?.length)
         assertEquals("back", domain.securityCode?.cardLocation)
     }
