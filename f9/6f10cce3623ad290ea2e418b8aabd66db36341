@@ -1,0 +1,12 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "f96f10cce3623ad290ea2e418b8aabd66db36341",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
