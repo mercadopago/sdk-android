@@ -271,7 +271,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, cardLocation = "back"),
             issuers = listOf(BinIssuer(id = "1", name = "Banco")),
             quotas = listOf(
                 Quota(
@@ -297,7 +297,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
             installmentsSelectionType = null,
@@ -318,7 +318,7 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "text", length = 0, cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
             installmentsSelectionType = null,

@@ -46,7 +46,7 @@ private fun CardPaymentScreenState.buildSecureCodeState(
     data: CardBinData,
 ) = secureCodeState.copy(
     maxLength = data.securityCode?.length ?: secureCodeState.maxLength,
-    optional = data.securityCode?.mode?.equals("optional", ignoreCase = true) == true,
+    optional = data.securityCode?.let { it.length <= 0 } ?: true,
     label = data.translations?.securityCode?.label.orCurrent(secureCodeState.label),
     placeHolder = data.securityCode?.placeholder
         .orCurrent(data.translations?.securityCode?.placeholder.orCurrent(secureCodeState.placeHolder)),

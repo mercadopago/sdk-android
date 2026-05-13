@@ -136,8 +136,8 @@ private fun ResponseIdentificationType.toDomain(): IdentificationTypeItem =
         name = name,
         minLength = minLength,
         maxLength = maxLength,
-        placeholder = placeholder,
-        mask = mask,
-        type = type,
-        sequence = sequence,
+        placeholder = placeholder.orEmpty(),
+        mask = mask.orEmpty(),
+        type = type.orEmpty(),
+        sequence = sequence.orEmpty(),
     )

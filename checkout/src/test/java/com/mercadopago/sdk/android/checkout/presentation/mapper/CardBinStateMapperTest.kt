@@ -165,7 +165,7 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given securityCode with length then updates secureCode maxLength`() {
         val data = emptyBinData.copy(
-            securityCode = SecurityCodeConfig(type = "text", length = 4, mode = "mandatory", cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 4, cardLocation = ""),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -174,9 +174,16 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given securityCode mode optional then optional is true`() {
+    fun `given null securityCode then optional is true`() {
+        val result = baseState.applyCardBinData(emptyBinData)
+
+        assertTrue(result.secureCodeState.optional)
+    }
+
+    @Test
+    fun `given securityCode with length zero then optional is true`() {
         val data = emptyBinData.copy(
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 0),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -185,9 +192,9 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given securityCode mode mandatory then optional is false`() {
+    fun `given securityCode with positive length then optional is false`() {
         val data = emptyBinData.copy(
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = ""),
+            securityCode = SecurityCodeConfig(type = "text", length = 3),
         )
 
         val result = baseState.applyCardBinData(data)
