@@ -1,0 +1,86 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_e107cf4a61d1b4::t_730e98325adcfb 182-185,187
+  s_e107cf4a61d1b4::t_0cebca364379b3 1-181,188-305
+  s_e107cf4a61d1b4::t_e5981e55533d32 186
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/MPInstallmentDataMapper.kt
+  s_d69cf3139dcb5d::t_1bfbfafe9056ad 23
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/InstallmentsTranslations.kt
+  s_d69cf3139dcb5d::t_865021a3680639 6
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTrackerTest.kt
+  s_e107cf4a61d1b4::t_5e008c1a161627 4,12,20,28,43,58,66,89,105,112,119
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPInstallmentData.kt
+  s_d69cf3139dcb5d::t_6a8fdbc4f96546 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_d69cf3139dcb5d::t_6efb822e85078e 121
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenState.kt
+  s_d69cf3139dcb5d::t_808cc55ef7f34c 14
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_e107cf4a61d1b4::t_212787511eb1f2 72-74
+  s_e107cf4a61d1b4::t_62ce6b1f70a6cf 67-71,75-76
+  s_e107cf4a61d1b4::t_109400caaa5dd4 18
+  s_e107cf4a61d1b4::t_cfe8bda682093c 65
+  s_d69cf3139dcb5d::t_a543f7d0d1cb94 5,23,29,44,47-48,50
+  s_e107cf4a61d1b4::t_4a55ca30b700b0 21,24-27
+  s_e107cf4a61d1b4::t_9aa26c24447d8a 34
+  s_e107cf4a61d1b4::t_28118ff6778df0 77-82
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_d69cf3139dcb5d::t_0ac7b437f0f17f 9-12,39-41,43-49
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  s_d69cf3139dcb5d::t_a59263f39671ae 19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_d69cf3139dcb5d::t_5c1072beec7e44 18,31-33
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_d69cf3139dcb5d::t_ad917cd8567983 145,153
+  s_d69cf3139dcb5d::t_4941b0ea442a80 91,93
+  s_d69cf3139dcb5d::t_60215bb17e119e 167-169
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_d69cf3139dcb5d::t_ca41dbbbdf208c 151
+  s_d69cf3139dcb5d::t_1e9cf497e2014d 147,168,173,175,204,209,211
+  s_d69cf3139dcb5d::t_f1f6a38f2d3f1a 131
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_d69cf3139dcb5d::t_5796b1d4b0efe8 36,38
+  s_d69cf3139dcb5d::t_ad3b3070afd4c6 206,209,217
+  s_d69cf3139dcb5d::t_50f29c17cdff5f 329,331,338
+  s_d69cf3139dcb5d::t_ec737547826406 117,120-121,127
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_d69cf3139dcb5d::t_6c7a046fdb3aca 127,129
+  s_d69cf3139dcb5d::t_18fdc95388b9ba 275
+  s_e107cf4a61d1b4::t_82699036f5a192 59
+  s_d69cf3139dcb5d::t_64eae2b6190f16 401
+  s_e107cf4a61d1b4::t_6ccf68611221ca 415
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTracker.kt
+  s_e107cf4a61d1b4::t_5f182df0eb7c69 75
+  s_e107cf4a61d1b4::t_2fcf8fce6d7716 19-20,33,42
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_d69cf3139dcb5d::t_67b0b2f12dc271 22-23,39,79,81
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_d69cf3139dcb5d::t_b4f51ce68186c2 7,23-25,32,45-46
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapperTest.kt
+  s_d69cf3139dcb5d::t_f3cc3a7dd0a28c 69,71
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/Quota.kt
+  s_d69cf3139dcb5d::t_b790236fa9ffc0 9-11,13-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "efc3ea9e23a8ebde08865310874cd23b4a82877f",
+  "prompts": {},
+  "sessions": {
+    "s_d69cf3139dcb5d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b61897f3-a5c6-4184-9e81-9205fc6b0da3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_e107cf4a61d1b4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b01f8f05-b292-4341-9b62-682fb2e6b9c1",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
