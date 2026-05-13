@@ -1,0 +1,37 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_dcf3cfc3853fd8::t_3f8817fe31a4fa 120
+  s_7f7c8b45026128::t_95ff28b589c707 7
+  s_28fa3d74cb8675::t_a6cb701ffa9b20 119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "36506ed822104bf5bf56b0eb9345b4f8c3ab0700",
+  "prompts": {},
+  "sessions": {
+    "s_28fa3d74cb8675": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e5657366-1c55-4fbe-875d-749a1f65acd6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_7f7c8b45026128": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e38a236-fdd0-4b90-97ea-32a8fffd6d21",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_dcf3cfc3853fd8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ee9178f-ef49-4c7c-9e6c-e31a94670baf",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
