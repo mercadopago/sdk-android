@@ -68,9 +68,9 @@ internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberPCIState = viewModel.cardNumberPCIState
-    val expirationDatePCIState = viewModel.expirationDatePCIState
-    val securityCodePCIState = viewModel.securityCodePCIState
+    val cardNumberPCIState = rememberPCIFieldState()
+    val expirationDatePCIState = rememberPCIFieldState()
+    val securityCodePCIState = rememberPCIFieldState()
     val cardHolderPCIState = rememberPCIFieldState()
     val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
@@ -100,7 +100,11 @@ internal fun CardPaymentScreen(
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
             focusManager.clearFocus()
-            viewModel.onSubmit()
+            viewModel.onSubmit(
+                cardNumberState = cardNumberPCIState,
+                expirationDateState = expirationDatePCIState,
+                securityCodeState = securityCodePCIState,
+            )
         },
     )
 }
