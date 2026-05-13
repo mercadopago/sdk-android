@@ -6,4 +6,5 @@ internal data class FooterState(
     val amountIntegerPart: String,
     val amountDecimalPart: String,
     val subtitle: String,
+    val buttonLabel: String? = null,
 )

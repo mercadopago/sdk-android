@@ -17,7 +17,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeCon
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -28,6 +27,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -180,13 +180,13 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when initialization fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when initialization fails then emits OnFailure viewEvent`() = runTest {
         coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
@@ -277,13 +277,12 @@ internal class CardPaymentViewModelTest {
             issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
             quotas = listOf(
                 Quota(
-                    quantity = 1,
-                    installmentAmount = "100",
-                    totalAmount = "100",
-                    label = "1x",
-                    discountRate = 0.0,
+                    installments = 1,
+                    installmentAmount = java.math.BigDecimal("100"),
+                    totalAmount = java.math.BigDecimal("100"),
                 ),
             ),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -303,6 +302,7 @@ internal class CardPaymentViewModelTest {
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -320,9 +320,10 @@ internal class CardPaymentViewModelTest {
             id = "visa",
             paymentTypeId = "credit_card",
             cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 0, mode = "optional", cardLocation = "back"),
+            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "optional", cardLocation = "back"),
             issuers = emptyList(),
             quotas = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -342,6 +343,7 @@ internal class CardPaymentViewModelTest {
             securityCode = null,
             issuers = emptyList(),
             quotas = emptyList(),
+            installmentsSelectionType = null,
             translations = fullTranslations,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -365,6 +367,7 @@ internal class CardPaymentViewModelTest {
             securityCode = null,
             issuers = emptyList(),
             quotas = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -400,6 +403,7 @@ internal class CardPaymentViewModelTest {
                 BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
             ),
             quotas = emptyList(),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -423,20 +427,17 @@ internal class CardPaymentViewModelTest {
             issuers = emptyList(),
             quotas = listOf(
                 Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = "1x sem juros",
-                    discountRate = 0.0,
+                    installments = 1,
+                    installmentAmount = java.math.BigDecimal("100.00"),
+                    totalAmount = java.math.BigDecimal("100.00"),
                 ),
                 Quota(
-                    quantity = 3,
-                    installmentAmount = "34.00",
-                    totalAmount = "102.00",
-                    label = "3x",
-                    discountRate = 0.0,
+                    installments = 3,
+                    installmentAmount = java.math.BigDecimal("34.00"),
+                    totalAmount = java.math.BigDecimal("102.00"),
                 ),
             ),
+            installmentsSelectionType = null,
             translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
@@ -447,7 +448,7 @@ internal class CardPaymentViewModelTest {
         val installmentsState = viewModel.viewState.value.installmentsState
         assertTrue(installmentsState.showList)
         assertEquals(2, installmentsState.installments.size)
-        assertEquals(1, installmentsState.installments.first().instalments)
+        assertEquals(1, installmentsState.installments.first().installments)
     }
 
     @Test
@@ -587,12 +588,12 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed then notifies CheckoutCallbackHolder with UserCancelled`() = runTest {
+    fun `when onBackPressed then emits OnUserCancelled viewEvent`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
     }
 
     @Test
@@ -607,12 +608,12 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed with UiButton reason then notifies UserCancelled`() = runTest {
+    fun `when onBackPressed with UiButton reason then emits OnUserCancelled viewEvent`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed(reason = CancelReason.UiButton)
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
     }
 
     @Test
@@ -650,7 +651,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds then notifies CheckoutCallbackHolder with Success`() = runTest {
+    fun `when onSubmit succeeds then emits OnSuccess viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -662,11 +663,11 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 
     @Test
-    fun `when onSubmit fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when onSubmit fails then emits OnFailure viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Error(networkError)
@@ -678,7 +679,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test

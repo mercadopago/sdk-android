@@ -76,8 +76,6 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
 ) = installmentsState.copy(
     showList = data.quotas.isNotEmpty(),
     installments = data.quotas,
-    headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
-    headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
     interestFreeLabel = data.translations?.installments?.interestFreeLabel
         .orCurrent(installmentsState.interestFreeLabel),
     totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),

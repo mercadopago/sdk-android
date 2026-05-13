@@ -339,8 +339,6 @@ internal class CardBinStateMapperTest {
 
         val result = baseState.applyCardBinData(data)
 
-        assertEquals("Elegí las cuotas", result.installmentsState.headerChevron)
-        assertEquals("Elegí el plan", result.installmentsState.headerRadio)
         assertEquals("Sin interés", result.installmentsState.interestFreeLabel)
         assertEquals("Total", result.installmentsState.totalLabel)
     }

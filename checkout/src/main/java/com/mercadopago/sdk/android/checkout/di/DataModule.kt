@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.data.provider.AndroidStringProvider
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -14,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUse
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -41,7 +43,7 @@ internal fun provideDataModule() =
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
-        viewModel { (checkoutConfiguration: CheckoutConfiguration) ->
+        viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
             CardPaymentViewModel(
                 checkoutConfiguration = checkoutConfiguration,
                 getCardBinUseCase = GetCardBinUseCase(repository = get()),
@@ -49,5 +51,8 @@ internal fun provideDataModule() =
                 generateTokenUseCase = GenerateTokenUseCase(),
                 cardPaymentScreenStateFactory = get(),
             )
+        }
+        viewModel { (paymentData: MPPaymentData) ->
+            InstallmentsViewModel(paymentData = paymentData)
         }
     }

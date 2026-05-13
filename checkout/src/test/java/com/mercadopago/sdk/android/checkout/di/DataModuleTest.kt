@@ -7,8 +7,11 @@ import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
+import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
@@ -16,8 +19,10 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
@@ -27,7 +32,11 @@ import org.koin.test.mock.MockProvider
 import org.koin.test.verify.verify
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class DataModuleTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Before
     fun setUp() {
         MockProvider.register { mockk(relaxed = true) }
@@ -82,11 +91,15 @@ internal class DataModuleTest {
                 CardFormService::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
+                CardFormInitializationOutput::class,
+                MPPaymentData::class,
             ),
         )
 
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
+            withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
+            withInstance<MPPaymentData>(mockk(relaxed = true))
         }
     }
 }
