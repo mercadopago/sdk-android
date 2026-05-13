@@ -33,9 +33,9 @@ internal class CardBinStateMapperTest {
             errorInvalidField = "",
         ),
         installments: InstallmentsTranslations = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
+            header = InstallmentsHeaderTranslations(title = ""),
             totalLabel = "",
+            payButtonLabel = "",
         ),
         cardFormFooterButtonLabel: String = "",
     ) = Translations(
@@ -114,17 +114,17 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given issuers with thumbnail then sets image from first issuer`() {
+    fun `given issuers then image remains null`() {
         val data = emptyBinData.copy(
             issuers = listOf(
-                BinIssuer(id = 1L, name = "Visa", secureThumbnail = "https://img.visa.com"),
-                BinIssuer(id = 2L, name = "MC", secureThumbnail = "https://img.mc.com"),
+                BinIssuer(id = "1", name = "Visa"),
+                BinIssuer(id = "2", name = "MC"),
             ),
         )
 
         val result = baseState.applyCardBinData(data)
 
-        assertEquals("https://img.visa.com", result.cardNumberState.image)
+        assertNull(result.cardNumberState.image)
     }
 
     @Test
@@ -203,10 +203,10 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
-    fun `given issuers then maps to CardIssuer list with id and thumbnail`() {
+    fun `given issuers then maps to CardIssuer list with id`() {
         val data = emptyBinData.copy(
             issuers = listOf(
-                BinIssuer(id = 42L, name = "Visa", secureThumbnail = "https://img.com/42"),
+                BinIssuer(id = "42", name = "Visa"),
             ),
         )
 
@@ -214,7 +214,7 @@ internal class CardBinStateMapperTest {
 
         assertEquals(1, result.cardIssuers.size)
         assertEquals("42", result.cardIssuers.first().id)
-        assertEquals("https://img.com/42", result.cardIssuers.first().thumbnail)
+        assertNull(result.cardIssuers.first().thumbnail)
     }
 
     @Test
@@ -326,33 +326,17 @@ internal class CardBinStateMapperTest {
         val data = emptyBinData.copy(
             translations = defaultTranslations(
                 installments = InstallmentsTranslations(
-                    header = InstallmentsHeaderTranslations(
-                        chevron = "Elegí las cuotas",
-                        radio = "Elegí el plan",
-                        title = "Cuotas",
-                    ),
-                    interestFreeLabel = "Sin interés",
+                    header = InstallmentsHeaderTranslations(title = "Cuotas"),
                     totalLabel = "Total",
+                    payButtonLabel = "Pagar",
                 ),
             ),
         )
 
         val result = baseState.applyCardBinData(data)
 
-        assertEquals("Elegí las cuotas", result.installmentsState.headerChevron)
-        assertEquals("Elegí el plan", result.installmentsState.headerRadio)
-        assertEquals("Sin interés", result.installmentsState.interestFreeLabel)
+        assertEquals("Cuotas", result.installmentsState.title)
         assertEquals("Total", result.installmentsState.totalLabel)
-    }
-
-    @Test
-    fun `given cardFormFooterButtonLabel then updates payButtonLabel`() {
-        val data = emptyBinData.copy(
-            translations = defaultTranslations(cardFormFooterButtonLabel = "Pagar"),
-        )
-
-        val result = baseState.applyCardBinData(data)
-
         assertEquals("Pagar", result.installmentsState.payButtonLabel)
     }
 }

@@ -9,9 +9,8 @@ internal data class InstallmentsScreenState(
 
 internal data class InstallmentState(
     val text: String,
-    val description: String,
     val trailing: String,
-    val interestFree: Boolean,
     val isSelected: Boolean,
+    val isEnabled: Boolean,
     val number: Int,
 )

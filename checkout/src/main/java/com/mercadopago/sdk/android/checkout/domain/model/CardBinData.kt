@@ -16,7 +16,6 @@ internal data class CardBinData(
 )
 
 internal data class BinIssuer(
-    val id: Long?,
+    val id: String?,
     val name: String?,
-    val secureThumbnail: String?,
 )

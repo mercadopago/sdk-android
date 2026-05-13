@@ -20,9 +20,7 @@ internal fun CardPaymentScreenState.toMPInstallmentData(
         showInstallment = installmentsState.showList,
         display = MPInstallmentData.Display(
             displayType = installmentsState.displayType,
-            headerChevron = installmentsState.headerChevron,
-            headerRadio = installmentsState.headerRadio,
-            interestFreeLabel = installmentsState.interestFreeLabel,
+            title = installmentsState.title,
             totalLabel = installmentsState.totalLabel,
             payButtonLabel = installmentsState.payButtonLabel,
         ),

@@ -66,13 +66,9 @@ internal class CardFormInitMapperTest {
         securityCode = securityCode,
         document = document,
         installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(
-                chevron = "",
-                radio = "",
-                title = "",
-            ),
-            interestFreeLabel = "",
+            header = InstallmentsHeaderTranslations(title = ""),
             totalLabel = "",
+            payButtonLabel = "",
         ),
     )
 

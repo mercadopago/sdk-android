@@ -88,9 +88,9 @@ internal class CardBinResponseMapperTest {
             errorInvalidField = "",
         ),
         installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
+            header = InstallmentsHeaderTranslations(title = ""),
             totalLabel = "",
+            payButtonLabel = "",
         ),
     )
 
@@ -142,7 +142,7 @@ internal class CardBinResponseMapperTest {
         val response = minimalResponse().copy(
             paymentMethods = listOf(
                 paymentMethodResponse().copy(
-                    issuers = listOf(IssuerResponse(id = 1234L, name = "VISA", secureThumbnail = "https://img")),
+                    issuers = listOf(IssuerResponse(id = "1234", name = "VISA")),
                 ),
             ),
         )
@@ -150,9 +150,8 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertEquals(1, domain.issuers.size)
-        assertEquals(1234L, domain.issuers[0].id)
+        assertEquals("1234", domain.issuers[0].id)
         assertEquals("VISA", domain.issuers[0].name)
-        assertEquals("https://img", domain.issuers[0].secureThumbnail)
     }
 
     @Test
@@ -165,6 +164,9 @@ internal class CardBinResponseMapperTest {
                         installments = 1,
                         installmentAmount = 10.0f,
                         totalAmount = 10.0f,
+                        primaryLabel = null,
+                        secondaryLabel = null,
+                        state = null,
                     ),
                 ),
             ),

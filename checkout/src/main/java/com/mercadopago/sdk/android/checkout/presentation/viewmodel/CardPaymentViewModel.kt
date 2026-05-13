@@ -47,17 +47,15 @@ internal class CardPaymentViewModel(
     private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
 ) : ViewModel() {
-    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
     val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
 
-    private var isCancelling = false
+    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
 
     private val analyticsTracker = CardFormAnalyticsTracker(
-        isCancelling = { isCancelling },
         isLoading = { _viewState.value.isLoading },
     )
 
@@ -304,7 +302,6 @@ internal class CardPaymentViewModel(
     fun onBackPressed(
         reason: CancelReason = CancelReason.SystemBack,
     ) {
-        isCancelling = true
         analyticsTracker.trackUserCanceled(reason)
         val currentState = _viewState.value
         val context = cancelledFormContextUseCase(currentState)

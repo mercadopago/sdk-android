@@ -8,8 +8,3 @@ internal fun Quota.toInstallmentLabel(): String {
     val amount = installmentAmount?.toCurrencyString().orEmpty()
     return "$installments $INSTALLMENTS_SEPARATOR $amount"
 }
-
-internal fun Quota.isInterestFree(): Boolean =
-    installmentAmount != null &&
-        totalAmount != null &&
-        installmentAmount.compareTo(totalAmount) == 0

@@ -120,7 +120,6 @@ private fun ChevronInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
-            description = item.description,
         ),
         modifier = Modifier.fillMaxWidth(),
         trailing = MPListItemTrailing(
@@ -128,13 +127,8 @@ private fun ChevronInstallmentItem(
             type = MPListItemTrailing.Type.Icon(
                 icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
             ),
-            textColor = if (item.interestFree) {
-                MercadoPagoTheme.color.feedback.positive.textLoud
-            } else {
-                null
-            },
         ),
-        onClick = { onItemClick(item.number) },
+        onClick = { if (item.isEnabled) onItemClick(item.number) },
     )
 }
 
@@ -146,23 +140,15 @@ private fun RadioButtonInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
-            description = item.description,
         ),
         modifier = Modifier.fillMaxWidth(),
         type = MPListItemType.RadioButton(selected = item.isSelected),
         trailing = if (item.trailing.isNotEmpty()) {
-            MPListItemTrailing(
-                text = item.trailing,
-                textColor = if (item.interestFree) {
-                    MercadoPagoTheme.color.feedback.positive.textLoud
-                } else {
-                    null
-                },
-            )
+            MPListItemTrailing(text = item.trailing)
         } else {
             null
         },
-        onClick = { onItemClick(item.number) },
+        onClick = { if (item.isEnabled) onItemClick(item.number) },
     )
 }
 
@@ -177,18 +163,16 @@ private fun InstallmentsScreenChevronPreview() {
                 installmentsState = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
-                        description = "",
                         trailing = "",
-                        interestFree = false,
                         isSelected = false,
+                        isEnabled = true,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
-                        description = "",
-                        trailing = "Sem acréscimo",
-                        interestFree = true,
+                        trailing = "R$ 380,00",
                         isSelected = false,
+                        isEnabled = true,
                         number = 2,
                     ),
                 ),
@@ -215,18 +199,16 @@ private fun InstallmentsScreenRadioButtonPreview() {
                 installmentsState = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
-                        description = "",
                         trailing = "",
-                        interestFree = false,
                         isSelected = true,
+                        isEnabled = true,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
-                        description = "",
-                        trailing = "Sem acréscimo",
-                        interestFree = true,
+                        trailing = "R$ 380,00",
                         isSelected = false,
+                        isEnabled = true,
                         number = 2,
                     ),
                 ),

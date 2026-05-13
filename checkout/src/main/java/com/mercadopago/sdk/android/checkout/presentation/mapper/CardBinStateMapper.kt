@@ -19,8 +19,8 @@ internal fun CardPaymentScreenState.applyCardBinData(
         expirationDateState = buildExpirationDateState(data),
         cardIssuers = data.issuers.map {
             CardIssuer(
-                id = it.id?.toString(),
-                thumbnail = it.secureThumbnail,
+                id = it.id,
+                thumbnail = null,
             )
         },
         installmentsState = buildBinInstallmentsState(data),
@@ -36,7 +36,7 @@ private fun CardPaymentScreenState.buildCardNumberState(
 ) = cardNumberState.copy(
     maxLength = data.cardNumber?.length?.max ?: cardNumberState.maxLength,
     mask = (data.cardNumber?.length?.max ?: cardNumberState.maxLength).toMask(),
-    image = data.issuers.firstOrNull()?.secureThumbnail,
+    image = null,
     label = data.translations?.cardNumber?.label.orCurrent(cardNumberState.label),
     placeHolder = data.translations?.cardNumber?.placeholder.orCurrent(cardNumberState.placeHolder),
     helper = data.translations?.cardNumber?.helper.orCurrent(cardNumberState.helper),
@@ -76,12 +76,9 @@ private fun CardPaymentScreenState.buildBinInstallmentsState(
 ) = installmentsState.copy(
     showList = data.quotas.isNotEmpty(),
     installments = data.quotas,
-    headerChevron = data.translations?.installments?.header?.chevron.orCurrent(installmentsState.headerChevron),
-    headerRadio = data.translations?.installments?.header?.radio.orCurrent(installmentsState.headerRadio),
-    interestFreeLabel = data.translations?.installments?.interestFreeLabel
-        .orCurrent(installmentsState.interestFreeLabel),
+    title = data.translations?.installments?.header?.title.orCurrent(installmentsState.title),
     totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
-    payButtonLabel = data.translations?.cardFormFooterButtonLabel.orCurrent(installmentsState.payButtonLabel),
+    payButtonLabel = data.translations?.installments?.payButtonLabel.orCurrent(installmentsState.payButtonLabel),
     displayType = data.installmentsSelectionType.toDisplayType(),
 )
 

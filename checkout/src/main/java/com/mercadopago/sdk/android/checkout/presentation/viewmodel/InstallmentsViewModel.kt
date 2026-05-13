@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
@@ -19,14 +20,16 @@ internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
     private val paymentData: MPPaymentData,
 ) : ViewModel() {
-    private val selectedNumber = MutableStateFlow(installmentData.selectedInstallment)
+    private val initialSelection = installmentData.selectedInstallment
+        ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Selected }?.installments
+    private val selectedNumber = MutableStateFlow(initialSelection)
 
     val viewState: StateFlow<InstallmentsScreenState> = selectedNumber
         .map { installmentData.copy(selectedInstallment = it).toInstallmentsScreenState() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = installmentData.toInstallmentsScreenState(),
+            initialValue = installmentData.copy(selectedInstallment = initialSelection).toInstallmentsScreenState(),
         )
 
     private val _viewEvent = MutableStateFlow<InstallmentViewEvent?>(null)
@@ -39,7 +42,8 @@ internal class InstallmentsViewModel(
     fun onInstallmentSelected(
         installment: Int,
     ) {
-        if (installmentData.quotas.none { it.installments == installment }) return
+        val quota = installmentData.quotas.firstOrNull { it.installments == installment } ?: return
+        if (quota.state == QuotaState.Disabled) return
         when (installmentData.display.displayType) {
             InstallmentsDisplayType.RadioButton -> {
                 selectedNumber.value = installment

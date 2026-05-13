@@ -56,6 +56,7 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -123,9 +124,9 @@ internal class CardPaymentViewModelTest {
             errorInvalidField = "",
         ),
         installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
+            header = InstallmentsHeaderTranslations(title = ""),
             totalLabel = "",
+            payButtonLabel = "",
         ),
     )
 
@@ -271,7 +272,7 @@ internal class CardPaymentViewModelTest {
             paymentTypeId = "credit_card",
             cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
             securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
-            issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
+            issuers = listOf(BinIssuer(id = "1", name = "Banco")),
             quotas = listOf(
                 Quota(
                     installments = 1,
@@ -397,7 +398,7 @@ internal class CardPaymentViewModelTest {
             cardNumber = null,
             securityCode = null,
             issuers = listOf(
-                BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
+                BinIssuer(id = "1", name = "Banco do Brasil"),
             ),
             quotas = emptyList(),
             installmentsSelectionType = null,
@@ -411,7 +412,7 @@ internal class CardPaymentViewModelTest {
         val issuers = viewModel.viewState.value.cardIssuers
         assertEquals(1, issuers.size)
         assertEquals("1", issuers.first().id)
-        assertEquals("https://thumb.png", issuers.first().thumbnail)
+        assertNull(issuers.first().thumbnail)
     }
 
     @Test
