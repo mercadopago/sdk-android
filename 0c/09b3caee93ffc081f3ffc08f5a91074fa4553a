@@ -1,0 +1,44 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_b6fb13d22fc6a2::t_1b4341757adef2 19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_b6fb13d22fc6a2::t_55206f5d8ebc6b 16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_b6fb13d22fc6a2::t_05393821e68da4 25-28,52-53,59
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/MPInstallmentDataMapper.kt
+  s_b6fb13d22fc6a2::t_02b6c2c2eebd26 25
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_b6fb13d22fc6a2::t_e64e95730ad10c 62
+  s_b6fb13d22fc6a2::t_427cb3ccebfb63 14
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_b6fb13d22fc6a2::t_31e8d68649b6a8 10,14-16,18-24,26,29-31,35,37,40,45,51,53,67,69,83,85,90,96,103,107,117-143,167,181
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_b6fb13d22fc6a2::t_fd940ef9074920 6,9,18,21-22,29-31,33-35,43,47,69-84
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
+  s_b6fb13d22fc6a2::t_b2caf27bdf6d41 20-44
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/Translations.kt
+  s_b6fb13d22fc6a2::t_9e7b5ebb4c4485 6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPInstallmentData.kt
+  s_b6fb13d22fc6a2::t_19eb7300187500 22
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensionsTest.kt
+  s_b6fb13d22fc6a2::t_c271d64b3c2123 48-83
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_b6fb13d22fc6a2::t_bac3f3e90ee79c 311
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_b6fb13d22fc6a2::t_2de459dde3275a 86,91,96,101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "0c09b3caee93ffc081f3ffc08f5a91074fa4553a",
+  "prompts": {},
+  "sessions": {
+    "s_b6fb13d22fc6a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8de676cc-ddc1-4aa8-b47c-7b82fc0d40f5",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
