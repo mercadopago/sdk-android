@@ -1,0 +1,48 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_b6fb13d22fc6a2::t_f83fd0e3c83c48 17,39,43,79-84,88,99,103-108,122-125,129-153,167-169,217,219-230,235,239,242,246-248,252-253,257-265,267-270,277-279,326-327,331-332,336-341,345-346
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_b6fb13d22fc6a2::t_2ad7eeb9336c83 89-104,106-150
+  s_b6fb13d22fc6a2::t_11deae6ee5221a 366
+  s_b6fb13d22fc6a2::t_44c532617e4692 29
+  s_b6fb13d22fc6a2::t_2cf4543a0a1e2d 405
+  s_b6fb13d22fc6a2::t_4f7be6a41a7920 312
+  s_b6fb13d22fc6a2::t_fd5d5b7058877d 391
+  s_b6fb13d22fc6a2::t_7ce069e8d4a0af 335-350
+  s_b6fb13d22fc6a2::t_7fcec321ba6f48 14,16-20,23-24
+  s_b6fb13d22fc6a2::t_e68181e21819e9 324
+  s_b6fb13d22fc6a2::t_1b454bae194e34 290-292
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_b6fb13d22fc6a2::t_a208a6c1bbe888 5,7
+  s_b6fb13d22fc6a2::t_4e64f81325cb33 48-49,54
+  s_b6fb13d22fc6a2::t_a064c6df660334 6,8,13,27-28,52-53,55-57
+  s_b6fb13d22fc6a2::t_23c46b632b8311 23-24
+  s_b6fb13d22fc6a2::t_aed363556abd79 17,21-22,25,29-31
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapper.kt
+  s_b6fb13d22fc6a2::t_b5fef65584633f 39,56,63,67,73,77,82,84,90-107,120-124
+  s_b6fb13d22fc6a2::t_c0db587bf154b2 53,64,74
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_b6fb13d22fc6a2::t_44c532617e4692 308-310
+  s_b6fb13d22fc6a2::t_0b8b9a0720bf02 5-9,11-12,42-43,46-50,56,93,95-98,109,118,134,143,160,178,195,202,232-233,241-242,250-255,259-261,265-266,270,274,276-281,287-288,290-307,311-321
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_b6fb13d22fc6a2::t_3c882d6697d850 13
+  s_b6fb13d22fc6a2::t_14c1d62ea1c11c 14-46
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  s_b6fb13d22fc6a2::t_bd0fef8c4ef31e 3,8-9,14-18
+  s_b6fb13d22fc6a2::t_671bfef4bc71aa 10-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "5d5d02121700f49f8094f537ec07a6eb290e24d1",
+  "prompts": {},
+  "sessions": {
+    "s_b6fb13d22fc6a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8de676cc-ddc1-4aa8-b47c-7b82fc0d40f5",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
