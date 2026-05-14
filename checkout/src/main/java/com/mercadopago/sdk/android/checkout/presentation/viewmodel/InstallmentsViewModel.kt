@@ -22,6 +22,10 @@ internal class InstallmentsViewModel(
 ) : ViewModel() {
     private val initialSelection = installmentData.selectedInstallment
         ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Selected }?.installments
+        ?: installmentData.quotas
+            .firstOrNull { it.state != QuotaState.Disabled }
+            ?.installments
+            ?.takeIf { installmentData.display.displayType == InstallmentsDisplayType.RadioButton }
     private val selectedNumber = MutableStateFlow(initialSelection)
 
     val viewState: StateFlow<InstallmentsScreenState> = selectedNumber
@@ -45,20 +49,14 @@ internal class InstallmentsViewModel(
         val quota = installmentData.quotas.firstOrNull { it.installments == installment } ?: return
         if (quota.state == QuotaState.Disabled) return
         when (installmentData.display.displayType) {
-            InstallmentsDisplayType.RadioButton -> {
-                selectedNumber.value = installment
-            }
-            InstallmentsDisplayType.Chevron -> {
-                emitSuccess(installment)
-            }
+            InstallmentsDisplayType.RadioButton -> selectedNumber.value = installment
+            InstallmentsDisplayType.Chevron -> emitSuccess(installment)
         }
     }
 
     fun onPayClicked() {
         if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
-        val number = selectedNumber.value
-            ?: viewState.value.installmentsState.firstOrNull { it.isSelected }?.number
-            ?: return
+        val number = selectedNumber.value ?: return
         emitSuccess(number)
     }
 

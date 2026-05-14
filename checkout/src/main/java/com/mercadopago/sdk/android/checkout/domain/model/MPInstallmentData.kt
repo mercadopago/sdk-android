@@ -13,12 +13,12 @@ internal data class MPInstallmentData(
     val quotas: List<Quota> = emptyList(),
     val display: Display = Display(),
     val selectedInstallment: Int? = null,
-    val showInstallment: Boolean = false,
 ) {
     internal data class Display(
         val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
         val title: String = "",
         val totalLabel: String = "",
         val payButtonLabel: String = "",
+        val currencySymbol: String = "",
     )
 }

@@ -17,12 +17,12 @@ internal fun CardPaymentScreenState.toMPInstallmentData(
         issuerId = cardIssuers.firstOrNull()?.id,
         transactionAmount = transactionAmount,
         quotas = installmentsState.installments,
-        showInstallment = installmentsState.showList,
         display = MPInstallmentData.Display(
             displayType = installmentsState.displayType,
             title = installmentsState.title,
             totalLabel = installmentsState.totalLabel,
             payButtonLabel = installmentsState.payButtonLabel,
+            currencySymbol = currencySymbol,
         ),
     )
 }

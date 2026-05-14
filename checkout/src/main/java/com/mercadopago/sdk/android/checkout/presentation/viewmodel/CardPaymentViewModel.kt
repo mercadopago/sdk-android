@@ -308,7 +308,7 @@ internal class CardPaymentViewModel(
         _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
     }
 
-    fun clearSubmitState() {
+    fun onViewEventConsumed() {
         _viewEvent.value = null
     }
 

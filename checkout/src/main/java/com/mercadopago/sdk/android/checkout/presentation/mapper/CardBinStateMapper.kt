@@ -13,6 +13,7 @@ internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
 ): CardPaymentScreenState =
     copy(
+        currencySymbol = data.translations?.currencySymbol.orCurrent(currencySymbol),
         cardNumberState = buildCardNumberState(data),
         secureCodeState = buildSecureCodeState(data),
         cardHolderState = buildCardHolderState(data),

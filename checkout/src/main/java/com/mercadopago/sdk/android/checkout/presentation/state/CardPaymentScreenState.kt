@@ -16,6 +16,7 @@ internal data class ValidationState(
 
 internal data class CardPaymentScreenState(
     val title: String = "",
+    val currencySymbol: String = "",
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
     val secureCodeState: SecurityCodeState = SecurityCodeState(),
     val cardNumberState: CardNumberState = CardNumberState(),
@@ -117,7 +118,6 @@ internal data class IdentificationTypeState(
 internal data class InstallmentsState(
     val showList: Boolean = false,
     val installments: List<Quota> = emptyList(),
-    val selectedInstallment: Quota? = null,
     val title: String = "",
     val totalLabel: String = "",
     val payButtonLabel: String = "",

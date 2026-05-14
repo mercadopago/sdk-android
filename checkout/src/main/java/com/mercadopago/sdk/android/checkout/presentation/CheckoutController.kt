@@ -83,22 +83,22 @@ private fun CardFormScreenDestination(
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is CardPaymentViewEvent.OnSuccess -> {
-                if (event.installment.showInstallment) {
+                if (event.installment.quotas.isNotEmpty()) {
                     onNavigateToInstallments(event.installment, event.payment)
                 } else {
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
                 }
-                cardPaymentViewModel.clearSubmitState()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             is CardPaymentViewEvent.OnFailure -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
-                cardPaymentViewModel.clearSubmitState()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             is CardPaymentViewEvent.OnUserCancelled -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
-                cardPaymentViewModel.clearSubmitState()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             null -> Unit

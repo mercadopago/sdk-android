@@ -11,7 +11,7 @@ import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,7 +59,7 @@ private fun InstallmentsScreenContent(
     onPayClick: () -> Unit = {},
 ) {
     val density = LocalDensity.current
-    var footerHeightPx by remember { mutableStateOf(0) }
+    var footerHeightPx by remember { mutableIntStateOf(0) }
     val footerHeightDp = with(density) { footerHeightPx.toDp() }
 
     Box(modifier = Modifier.fillMaxSize()) {
