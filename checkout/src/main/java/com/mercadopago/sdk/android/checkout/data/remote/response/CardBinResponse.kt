@@ -30,5 +30,6 @@ internal data class QuotaResponse(
     val totalAmount: Float?,
     val primaryLabel: String?,
     val secondaryLabel: String?,
+    val tertiaryLabel: String?,
     val state: String?,
 )

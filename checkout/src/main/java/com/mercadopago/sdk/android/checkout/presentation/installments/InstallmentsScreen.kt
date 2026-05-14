@@ -120,6 +120,7 @@ private fun ChevronInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
+            description = item.description.takeIf { it.isNotEmpty() },
         ),
         modifier = Modifier.fillMaxWidth(),
         trailing = MPListItemTrailing(
@@ -128,7 +129,7 @@ private fun ChevronInstallmentItem(
                 icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
             ),
         ),
-        onClick = { if (item.isEnabled) onItemClick(item.number) },
+        onClick = { onItemClick(item.number) },
     )
 }
 
@@ -140,6 +141,7 @@ private fun RadioButtonInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
+            description = item.description.takeIf { it.isNotEmpty() },
         ),
         modifier = Modifier.fillMaxWidth(),
         type = MPListItemType.RadioButton(selected = item.isSelected),
@@ -148,7 +150,7 @@ private fun RadioButtonInstallmentItem(
         } else {
             null
         },
-        onClick = { if (item.isEnabled) onItemClick(item.number) },
+        onClick = { onItemClick(item.number) },
     )
 }
 
@@ -164,15 +166,15 @@ private fun InstallmentsScreenChevronPreview() {
                     InstallmentState(
                         text = "1x R$ 300,00",
                         trailing = "",
+                        description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = false,
-                        isEnabled = true,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
                         trailing = "R$ 380,00",
+                        description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
-                        isEnabled = true,
                         number = 2,
                     ),
                 ),
@@ -200,15 +202,15 @@ private fun InstallmentsScreenRadioButtonPreview() {
                     InstallmentState(
                         text = "1x R$ 300,00",
                         trailing = "",
+                        description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = true,
-                        isEnabled = true,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
                         trailing = "R$ 380,00",
+                        description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
-                        isEnabled = true,
                         number = 2,
                     ),
                 ),

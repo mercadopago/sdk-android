@@ -165,6 +165,7 @@ internal class CardBinResponseMapperTest {
                         totalAmount = 10.0f,
                         primaryLabel = null,
                         secondaryLabel = null,
+                        tertiaryLabel = null,
                         state = null,
                     ),
                 ),

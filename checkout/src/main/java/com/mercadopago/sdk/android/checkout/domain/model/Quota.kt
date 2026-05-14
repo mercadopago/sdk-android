@@ -8,6 +8,7 @@ internal data class Quota(
     val totalAmount: BigDecimal? = null,
     val primaryLabel: String? = null,
     val secondaryLabel: String? = null,
+    val tertiaryLabel: String? = null,
     val state: QuotaState = QuotaState.None,
 )
 

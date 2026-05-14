@@ -46,8 +46,8 @@ private fun List<Quota>.toInstallmentStates(): List<InstallmentState> =
         InstallmentState(
             text = quota.primaryLabel.orEmpty().ifEmpty { quota.toInstallmentLabel() },
             trailing = quota.secondaryLabel.orEmpty(),
+            description = quota.tertiaryLabel.orEmpty(),
             isSelected = false,
-            isEnabled = quota.state != QuotaState.Disabled,
             number = quota.installments ?: FIRST_INSTALLMENT,
         )
     }

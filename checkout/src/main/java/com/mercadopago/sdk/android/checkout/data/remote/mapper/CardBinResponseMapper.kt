@@ -38,6 +38,7 @@ private fun QuotaResponse.toDomain(): Quota =
         totalAmount = totalAmount?.toBigDecimal(),
         primaryLabel = primaryLabel,
         secondaryLabel = secondaryLabel,
+        tertiaryLabel = tertiaryLabel,
         state = state.toQuotaState(),
     )
 
