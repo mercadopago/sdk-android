@@ -8,9 +8,9 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.toExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()

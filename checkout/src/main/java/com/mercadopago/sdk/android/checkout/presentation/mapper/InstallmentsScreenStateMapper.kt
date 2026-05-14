@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
@@ -10,7 +11,6 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.toAmountPart
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toBrandLabel
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import java.math.BigDecimal
 
@@ -70,11 +70,9 @@ private fun MPInstallmentData.footerAmount(
     selectedQuota: Quota?,
 ): AmountParts {
     val symbol = display.currencySymbol
-    val labelParts = selectedQuota?.secondaryLabel
+    selectedQuota?.secondaryLabel
         ?.takeIf { it.isNotEmpty() }
-        ?.toAmountParts(symbol)
-    if (labelParts != null) return labelParts
-
+        ?.let { return it.toAmountParts(symbol) }
     val total = selectedQuota?.totalAmount ?: transactionAmount ?: BigDecimal.ZERO
     return AmountParts(
         currencySymbol = symbol,

@@ -17,7 +17,7 @@ internal sealed interface CardPaymentViewEvent {
 }
 
 internal sealed interface InstallmentViewEvent {
-    data class OnSuccess(val payment: MPPaymentData) : InstallmentViewEvent
+    data class OnSuccess(val installment: Int) : InstallmentViewEvent
 
     data class OnFailure(val error: MercadoPagoCheckoutError) : InstallmentViewEvent
 

@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
-
 internal data class CardBinData(
     val id: String?,
     val paymentTypeId: String?,

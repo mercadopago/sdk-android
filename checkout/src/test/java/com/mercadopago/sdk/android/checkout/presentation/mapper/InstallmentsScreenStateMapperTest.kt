@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -168,8 +168,6 @@ internal class InstallmentsScreenStateMapperTest {
     ): MPInstallmentData = MPInstallmentData(
         brand = "visa",
         lastFourDigits = "1234",
-        paymentMethodId = "visa",
-        paymentTypeId = "credit_card",
         transactionAmount = transactionAmount,
         quotas = quotas,
         selectedInstallment = selectedInstallment,

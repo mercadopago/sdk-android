@@ -1,9 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
-import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -33,30 +32,13 @@ internal class InstallmentsViewModelTest {
     ) = MPInstallmentData(
         brand = "visa",
         lastFourDigits = "1234",
-        paymentMethodId = "visa",
-        paymentTypeId = "credit_card",
-        issuerId = "1",
         quotas = quotas,
         display = MPInstallmentData.Display(displayType = displayType),
     )
 
-    private val paymentData = MPPaymentData(
-        token = "token",
-        transactionAmount = BigDecimal("100.00"),
-        paymentMethodId = "visa",
-        paymentTypeId = "credit_card",
-        payer = null,
-        installment = null,
-        issuerId = "1",
-    )
-
     private fun makeViewModel(
         installmentData: MPInstallmentData = makeData(),
-        paymentData: MPPaymentData = this.paymentData,
-    ) = InstallmentsViewModel(
-        installmentData = installmentData,
-        paymentData = paymentData,
-    )
+    ) = InstallmentsViewModel(installmentData = installmentData)
 
     @Test
     fun `viewState reflects quotas from installmentData`() = runTest {

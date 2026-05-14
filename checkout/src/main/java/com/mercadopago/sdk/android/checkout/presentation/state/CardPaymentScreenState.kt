@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType

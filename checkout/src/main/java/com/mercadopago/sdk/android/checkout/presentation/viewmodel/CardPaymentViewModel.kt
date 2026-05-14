@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
@@ -20,7 +21,6 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.mapper.toMPInstallmentData
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -439,10 +439,21 @@ internal class CardPaymentViewModel(
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
+                    val state = _viewState.value
                     _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                         payment = paymentData,
-                        installment = _viewState.value.toMPInstallmentData(
-                            checkoutConfiguration?.getCardFormAmount(),
+                        installment = MPInstallmentData(
+                            brand = state.paymentState.paymentMethodId.orEmpty(),
+                            lastFourDigits = state.cardNumberState.lastFourDigits,
+                            transactionAmount = checkoutConfiguration?.getCardFormAmount(),
+                            quotas = state.installmentsState.installments,
+                            display = MPInstallmentData.Display(
+                                displayType = state.installmentsState.displayType,
+                                title = state.installmentsState.title,
+                                totalLabel = state.installmentsState.totalLabel,
+                                payButtonLabel = state.installmentsState.payButtonLabel,
+                                currencySymbol = state.currencySymbol,
+                            ),
                         ),
                     )
                 },

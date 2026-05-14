@@ -115,14 +115,16 @@ private fun InstallmentsScreenDestination(
     onBackClick: () -> Unit,
 ) {
     val installmentsViewModel: InstallmentsViewModel = koinViewModel {
-        parametersOf(installmentData, paymentData)
+        parametersOf(installmentData)
     }
     val viewEvent by installmentsViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is InstallmentViewEvent.OnSuccess -> {
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
+                CheckoutCallbackHolder.notify(
+                    MercadoPagoCheckoutResult.Success(paymentData.copy(installment = event.installment)),
+                )
                 installmentsViewModel.onViewEventConsumed()
             }
 

@@ -2,12 +2,11 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
-import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.stateIn
 
 internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
-    private val paymentData: MPPaymentData,
 ) : ViewModel() {
     private val initialSelection = installmentData.selectedInstallment
         ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Selected }?.installments
@@ -50,21 +48,13 @@ internal class InstallmentsViewModel(
         if (quota.state == QuotaState.Disabled) return
         when (installmentData.display.displayType) {
             InstallmentsDisplayType.RadioButton -> selectedNumber.value = installment
-            InstallmentsDisplayType.Chevron -> emitSuccess(installment)
+            InstallmentsDisplayType.Chevron -> _viewEvent.value = InstallmentViewEvent.OnSuccess(installment)
         }
     }
 
     fun onPayClicked() {
         if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
         val number = selectedNumber.value ?: return
-        emitSuccess(number)
-    }
-
-    private fun emitSuccess(
-        installment: Int,
-    ) {
-        _viewEvent.value = InstallmentViewEvent.OnSuccess(
-            paymentData.copy(installment = installment),
-        )
+        _viewEvent.value = InstallmentViewEvent.OnSuccess(number)
     }
 }
