@@ -3,89 +3,50 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
-
-private const val SELECTION_TYPE_CHEVRON = "chevron"
 
 internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
 ): CardPaymentScreenState =
     copy(
-        currencySymbol = data.translations?.currencySymbol.orCurrent(currencySymbol),
-        cardNumberState = buildCardNumberState(data),
-        secureCodeState = buildSecureCodeState(data),
-        cardHolderState = buildCardHolderState(data),
-        expirationDateState = buildExpirationDateState(data),
-        cardIssuers = data.issuers.map {
-            CardIssuer(
-                id = it.id,
-                thumbnail = null,
-            )
-        },
-        installmentsState = buildBinInstallmentsState(data),
+        currencySymbol = data.currencySymbol.orCurrent(currencySymbol),
+        cardNumberState = cardNumberState.copy(
+            maxLength = data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength,
+            mask = (data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength).toMask(),
+            image = null,
+            label = data.cardNumber?.label.orCurrent(cardNumberState.label),
+            placeHolder = data.cardNumber?.placeholder.orCurrent(cardNumberState.placeHolder),
+        ),
+        secureCodeState = secureCodeState.copy(
+            maxLength = data.securityCode?.config?.length?.max ?: secureCodeState.maxLength,
+            optional = data.securityCode?.config?.length?.max?.let { it <= 0 } ?: true,
+            label = data.securityCode?.label.orCurrent(secureCodeState.label),
+            placeHolder = data.securityCode?.placeholder.orCurrent(secureCodeState.placeHolder),
+            helper = data.securityCode?.helper.orCurrent(secureCodeState.helper),
+            messageTooltip = data.securityCode?.tooltip.orCurrent(secureCodeState.messageTooltip),
+        ),
+        cardHolderState = cardHolderState.copy(
+            label = data.holderName?.label.orCurrent(cardHolderState.label),
+            placeHolder = data.holderName?.placeholder.orCurrent(cardHolderState.placeHolder),
+            helper = data.holderName?.helper.orCurrent(cardHolderState.helper),
+        ),
+        expirationDateState = expirationDateState.copy(
+            label = data.expirationDate?.label.orCurrent(expirationDateState.label),
+            placeHolder = data.expirationDate?.placeholder.orCurrent(expirationDateState.placeHolder),
+        ),
+        cardIssuers = data.issuers.map { CardIssuer(id = it.id, thumbnail = null) },
+        installmentsState = installmentsState.copy(
+            showList = data.quotas.isNotEmpty(),
+            installments = data.quotas,
+            title = data.installmentsTitle.orCurrent(installmentsState.title),
+            totalLabel = data.installmentsTotalLabel.orCurrent(installmentsState.totalLabel),
+            payButtonLabel = data.installmentsPayButtonLabel.orCurrent(installmentsState.payButtonLabel),
+            displayType = data.displayType,
+        ),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
     )
 
 private fun String?.orCurrent(
     current: String,
 ): String = this?.takeIf { it.isNotEmpty() } ?: current
-
-private fun CardPaymentScreenState.buildCardNumberState(
-    data: CardBinData,
-) = cardNumberState.copy(
-    maxLength = data.cardNumber?.length?.max ?: cardNumberState.maxLength,
-    mask = (data.cardNumber?.length?.max ?: cardNumberState.maxLength).toMask(),
-    image = null,
-    label = data.translations?.cardNumber?.label.orCurrent(cardNumberState.label),
-    placeHolder = data.translations?.cardNumber?.placeholder.orCurrent(cardNumberState.placeHolder),
-    helper = data.translations?.cardNumber?.helper.orCurrent(cardNumberState.helper),
-)
-
-private fun CardPaymentScreenState.buildSecureCodeState(
-    data: CardBinData,
-) = secureCodeState.copy(
-    maxLength = data.securityCode?.length ?: secureCodeState.maxLength,
-    optional = data.securityCode?.let { it.length <= 0 } ?: true,
-    label = data.translations?.securityCode?.label.orCurrent(secureCodeState.label),
-    placeHolder = data.securityCode?.placeholder
-        .orCurrent(data.translations?.securityCode?.placeholder.orCurrent(secureCodeState.placeHolder)),
-    helper = data.translations?.securityCode?.helper.orCurrent(secureCodeState.helper),
-    messageTooltip = data.securityCode?.tooltip
-        .orCurrent(data.translations?.securityCode?.tooltip.orCurrent(secureCodeState.messageTooltip)),
-)
-
-private fun CardPaymentScreenState.buildCardHolderState(
-    data: CardBinData,
-) = cardHolderState.copy(
-    label = data.translations?.holderName?.label.orCurrent(cardHolderState.label),
-    placeHolder = data.translations?.holderName?.placeholder.orCurrent(cardHolderState.placeHolder),
-    helper = data.translations?.holderName?.helper.orCurrent(cardHolderState.helper),
-)
-
-private fun CardPaymentScreenState.buildExpirationDateState(
-    data: CardBinData,
-) = expirationDateState.copy(
-    label = data.translations?.expirationDate?.label.orCurrent(expirationDateState.label),
-    placeHolder = data.translations?.expirationDate?.placeholder.orCurrent(expirationDateState.placeHolder),
-    helper = data.translations?.expirationDate?.helper.orCurrent(expirationDateState.helper),
-)
-
-private fun CardPaymentScreenState.buildBinInstallmentsState(
-    data: CardBinData,
-) = installmentsState.copy(
-    showList = data.quotas.isNotEmpty(),
-    installments = data.quotas,
-    title = data.translations?.installments?.header?.title.orCurrent(installmentsState.title),
-    totalLabel = data.translations?.installments?.totalLabel.orCurrent(installmentsState.totalLabel),
-    payButtonLabel = data.translations?.installments?.payButtonLabel.orCurrent(installmentsState.payButtonLabel),
-    displayType = data.installmentsSelectionType.toDisplayType(),
-)
-
-private fun String?.toDisplayType(): InstallmentsDisplayType =
-    if (this?.equals(SELECTION_TYPE_CHEVRON, ignoreCase = true) == true) {
-        InstallmentsDisplayType.Chevron
-    } else {
-        InstallmentsDisplayType.RadioButton
-    }

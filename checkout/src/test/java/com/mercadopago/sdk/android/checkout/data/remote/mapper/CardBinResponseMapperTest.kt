@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
@@ -35,10 +36,11 @@ internal class CardBinResponseMapperTest {
     private fun minimalResponse(
         id: String? = "visa",
         paymentTypeId: String? = null,
+        translations: Translations? = defaultTranslations(),
     ) = CardBinResponse(
         paymentMethods = listOf(paymentMethodResponse(id, paymentTypeId)),
         installment = null,
-        translations = null,
+        translations = translations,
     )
 
     private fun defaultFieldTranslations(
@@ -74,9 +76,16 @@ internal class CardBinResponseMapperTest {
         holderName: FieldTranslations = defaultFieldTranslations(),
         expirationDate: FieldTranslations = defaultFieldTranslations(),
         securityCode: SecurityCodeTranslations = defaultSecurityCodeTranslations(),
+        currencySymbol: String = "",
+        installments: InstallmentsTranslations = InstallmentsTranslations(
+            header = InstallmentsHeaderTranslations(title = ""),
+            totalLabel = "",
+            payButtonLabel = "",
+        ),
     ) = Translations(
         cardFormTitle = "Card Payment",
         cardFormFooterButtonLabel = "Pay",
+        currencySymbol = currencySymbol,
         cardNumber = cardNumber,
         holderName = holderName,
         expirationDate = expirationDate,
@@ -87,16 +96,16 @@ internal class CardBinResponseMapperTest {
             errorIncompleteField = "",
             errorInvalidField = "",
         ),
-        installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(title = ""),
-            totalLabel = "",
-            payButtonLabel = "",
-        ),
+        installments = installments,
     )
 
     @Test
-    fun `toDomain maps card number config`() {
-        val response = minimalResponse().copy(
+    fun `toDomain maps card number config with translations into CardNumberField`() {
+        val response = minimalResponse(
+            translations = defaultTranslations(
+                cardNumber = defaultFieldTranslations(label = "Número", placeholder = "0000"),
+            ),
+        ).copy(
             paymentMethods = listOf(
                 paymentMethodResponse().copy(
                     cardNumber = CardNumberConfig(
@@ -110,14 +119,38 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals("standard", domain.cardNumber?.type)
-        assertEquals(LengthConfig(min = 16, max = 16), domain.cardNumber?.length)
-        assertEquals("0000 0000 0000 0000", domain.cardNumber?.mask)
+        assertEquals("Número", domain.cardNumber?.label)
+        assertEquals("0000", domain.cardNumber?.placeholder)
+        assertEquals("standard", domain.cardNumber?.config?.type)
+        assertEquals(16, domain.cardNumber?.config?.length?.max)
     }
 
     @Test
-    fun `toDomain maps security code config`() {
-        val response = minimalResponse().copy(
+    fun `toDomain returns null cardNumber when translations are missing`() {
+        val response = minimalResponse(translations = null).copy(
+            paymentMethods = listOf(
+                paymentMethodResponse().copy(
+                    cardNumber = CardNumberConfig(
+                        type = "standard",
+                        length = LengthConfig(min = 16, max = 16),
+                        mask = "",
+                    ),
+                ),
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertNull(domain.cardNumber)
+    }
+
+    @Test
+    fun `toDomain maps security code config with translations into SecurityCodeField`() {
+        val response = minimalResponse(
+            translations = defaultTranslations(
+                securityCode = defaultSecurityCodeTranslations(label = "CVV", tooltip = "3 dígitos"),
+            ),
+        ).copy(
             paymentMethods = listOf(
                 paymentMethodResponse().copy(
                     securityCode = SecurityCodeConfig(
@@ -131,9 +164,9 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals("mandatory", domain.securityCode?.type)
-        assertEquals(3, domain.securityCode?.length)
-        assertEquals("back", domain.securityCode?.cardLocation)
+        assertEquals("CVV", domain.securityCode?.label)
+        assertEquals("3 dígitos", domain.securityCode?.tooltip)
+        assertEquals(3, domain.securityCode?.config?.length?.max)
     }
 
     @Test
@@ -181,77 +214,69 @@ internal class CardBinResponseMapperTest {
     }
 
     @Test
-    fun `toDomain maps installments selectionType`() {
+    fun `toDomain maps radio_button selectionType to RadioButton displayType`() {
         val response = minimalResponse().copy(
-            installment = InstallmentConfigResponse(
-                selectionType = "radio_button",
-                quotas = null,
-            ),
+            installment = InstallmentConfigResponse(selectionType = "radio_button", quotas = null),
         )
 
         val domain = response.toDomain()
 
-        assertEquals("radio_button", domain.installmentsSelectionType)
+        assertEquals(InstallmentsDisplayType.RadioButton, domain.displayType)
     }
 
     @Test
-    fun `toDomain returns null selectionType when installment is null`() {
+    fun `toDomain maps chevron selectionType to Chevron displayType`() {
+        val response = minimalResponse().copy(
+            installment = InstallmentConfigResponse(selectionType = "chevron", quotas = null),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals(InstallmentsDisplayType.Chevron, domain.displayType)
+    }
+
+    @Test
+    fun `toDomain defaults to RadioButton displayType when installment is null`() {
         val domain = minimalResponse().copy(installment = null).toDomain()
 
-        assertNull(domain.installmentsSelectionType)
+        assertEquals(InstallmentsDisplayType.RadioButton, domain.displayType)
     }
 
     @Test
-    fun `toDomain maps field translations`() {
-        val response = minimalResponse().copy(
+    fun `toDomain exposes currency symbol from translations`() {
+        val response = minimalResponse(
+            translations = defaultTranslations(currencySymbol = "R$"),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals("R$", domain.currencySymbol)
+    }
+
+    @Test
+    fun `toDomain returns empty currency symbol when translations are missing`() {
+        val domain = minimalResponse(translations = null).toDomain()
+
+        assertEquals("", domain.currencySymbol)
+    }
+
+    @Test
+    fun `toDomain exposes installments labels from translations`() {
+        val response = minimalResponse(
             translations = defaultTranslations(
-                cardNumber = defaultFieldTranslations(
-                    label = "Número de tarjeta",
-                    placeholder = "•••• ••••",
-                    errorIncompleteField = "Incompleto",
-                    errorInvalidField = "Inválido",
-                ),
-                holderName = defaultFieldTranslations(
-                    label = "Titular",
-                    placeholder = "Nome",
-                ),
-                expirationDate = defaultFieldTranslations(
-                    label = "Vencimento",
-                    placeholder = "MM/YY",
+                installments = InstallmentsTranslations(
+                    header = InstallmentsHeaderTranslations(title = "Cuotas"),
+                    totalLabel = "Total",
+                    payButtonLabel = "Pagar",
                 ),
             ),
         )
 
         val domain = response.toDomain()
-        val translations = domain.translations!!
 
-        assertEquals("Número de tarjeta", translations.cardNumber.label)
-        assertEquals("•••• ••••", translations.cardNumber.placeholder)
-        assertEquals("Inválido", translations.cardNumber.errorInvalidField)
-        assertEquals("Incompleto", translations.cardNumber.errorIncompleteField)
-        assertEquals("Titular", translations.holderName.label)
-        assertEquals("Vencimento", translations.expirationDate.label)
-    }
-
-    @Test
-    fun `toDomain maps security code translation with tooltip`() {
-        val response = minimalResponse().copy(
-            translations = defaultTranslations(
-                securityCode = defaultSecurityCodeTranslations(
-                    label = "CVV",
-                    placeholder = "123",
-                    tooltip = "3 dígitos no verso",
-                    errorIncompleteField = "Incompleto",
-                ),
-            ),
-        )
-
-        val domain = response.toDomain()
-        val translations = domain.translations!!
-
-        assertEquals("CVV", translations.securityCode.label)
-        assertEquals("3 dígitos no verso", translations.securityCode.tooltip)
-        assertEquals("Incompleto", translations.securityCode.errorIncompleteField)
+        assertEquals("Cuotas", domain.installmentsTitle)
+        assertEquals("Total", domain.installmentsTotalLabel)
+        assertEquals("Pagar", domain.installmentsPayButtonLabel)
     }
 
     @Test
@@ -268,7 +293,6 @@ internal class CardBinResponseMapperTest {
         assertTrue(domain.quotas.isEmpty())
         assertNull(domain.cardNumber)
         assertNull(domain.securityCode)
-        assertNull(domain.translations)
         assertNull(domain.id)
         assertNull(domain.paymentTypeId)
     }
@@ -299,24 +323,6 @@ internal class CardBinResponseMapperTest {
     }
 
     @Test
-    fun `toDomain maps security code translation with empty tooltip`() {
-        val response = minimalResponse().copy(
-            translations = defaultTranslations(
-                securityCode = defaultSecurityCodeTranslations(
-                    label = "CVV",
-                    placeholder = "123",
-                    tooltip = "",
-                ),
-            ),
-        )
-
-        val domain = response.toDomain()
-
-        assertEquals("CVV", domain.translations?.securityCode?.label)
-        assertEquals("", domain.translations?.securityCode?.tooltip)
-    }
-
-    @Test
     fun `toDomain extracts id and paymentTypeId from first payment method`() {
         val response = minimalResponse(id = "master", paymentTypeId = "debit_card")
 
@@ -324,5 +330,19 @@ internal class CardBinResponseMapperTest {
 
         assertEquals("master", domain.id)
         assertEquals("debit_card", domain.paymentTypeId)
+    }
+
+    @Test
+    fun `toDomain maps holderName translations into CardHolderField`() {
+        val response = minimalResponse(
+            translations = defaultTranslations(
+                holderName = defaultFieldTranslations(label = "Titular", placeholder = "Maria"),
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals("Titular", domain.holderName?.label)
+        assertEquals("Maria", domain.holderName?.placeholder)
     }
 }

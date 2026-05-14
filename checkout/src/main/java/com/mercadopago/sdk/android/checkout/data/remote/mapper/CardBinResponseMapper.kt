@@ -1,35 +1,36 @@
 package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
-import com.mercadopago.sdk.android.checkout.data.remote.response.IssuerResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
+import com.mercadopago.sdk.android.checkout.domain.mapper.toCardHolderField
+import com.mercadopago.sdk.android.checkout.domain.mapper.toCardNumberField
+import com.mercadopago.sdk.android.checkout.domain.mapper.toExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-
-private const val QUOTA_STATE_SELECTED = "selected"
-private const val QUOTA_STATE_DISABLED = "disabled"
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()
+    val installmentsTexts = translations?.installments
     return CardBinData(
         id = paymentMethod?.id,
         paymentTypeId = paymentMethod?.paymentTypeId,
-        cardNumber = paymentMethod?.cardNumber,
-        securityCode = paymentMethod?.securityCode,
-        issuers = paymentMethod?.issuers?.map { it.toDomain() } ?: emptyList(),
+        cardNumber = translations?.cardNumber?.let { paymentMethod?.cardNumber?.toCardNumberField(it) },
+        securityCode = translations?.securityCode?.let { paymentMethod?.securityCode?.toSecurityCodeField(it) },
+        holderName = translations?.holderName?.toCardHolderField(),
+        expirationDate = translations?.expirationDate?.toExpirationDateField(),
+        issuers = paymentMethod?.issuers?.map { BinIssuer(id = it.id, name = it.name) } ?: emptyList(),
         quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
-        installmentsSelectionType = installment?.selectionType,
-        translations = translations,
+        displayType = installment?.selectionType.toDisplayType(),
+        currencySymbol = translations?.currencySymbol.orEmpty(),
+        installmentsTitle = installmentsTexts?.header?.title.orEmpty(),
+        installmentsTotalLabel = installmentsTexts?.totalLabel.orEmpty(),
+        installmentsPayButtonLabel = installmentsTexts?.payButtonLabel.orEmpty(),
     )
 }
-
-private fun IssuerResponse.toDomain(): BinIssuer =
-    BinIssuer(
-        id = id,
-        name = name,
-    )
 
 private fun QuotaResponse.toDomain(): Quota =
     Quota(
@@ -44,7 +45,14 @@ private fun QuotaResponse.toDomain(): Quota =
 
 private fun String?.toQuotaState(): QuotaState =
     when (this?.lowercase()) {
-        QUOTA_STATE_SELECTED -> QuotaState.Selected
-        QUOTA_STATE_DISABLED -> QuotaState.Disabled
+        "selected" -> QuotaState.Selected
+        "disabled" -> QuotaState.Disabled
         else -> QuotaState.None
+    }
+
+private fun String?.toDisplayType(): InstallmentsDisplayType =
+    if (equals("chevron", ignoreCase = true)) {
+        InstallmentsDisplayType.Chevron
+    } else {
+        InstallmentsDisplayType.RadioButton
     }
