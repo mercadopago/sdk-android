@@ -20,6 +20,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
+import com.mercadopago.sdk.android.checkout.presentation.extensions.isEmpty
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
@@ -81,15 +82,15 @@ internal class CardPaymentViewModel(
             }
 
             is CardNumberTextFieldEvent.OnLengthChanged -> {
-                val previousLength = _viewState.value.cardNumberState.length
                 _viewState.value = _viewState.value.copy(
                     cardNumberState = _viewState.value.cardNumberState.copy(
                         length = event.length,
                     ),
                 )
-                if (event.length.isBeingCleared(previousLength)) {
-                    _viewState.value =
-                        errorHandler.applyCardNumberErrorState(_viewState.value, emptyList(), false)
+                _viewState.value = if (event.length.isEmpty()) {
+                    errorHandler.clearCardNumberErrors(_viewState.value)
+                } else {
+                    errorHandler.applyCardNumberFieldError(_viewState.value, shouldShowError = false)
                 }
             }
 

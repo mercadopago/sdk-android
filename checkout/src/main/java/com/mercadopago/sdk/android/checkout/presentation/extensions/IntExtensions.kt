@@ -7,3 +7,5 @@ internal fun Int.toCountStringPlaceholder(
 internal fun Int.isBeingCleared(
     previousLength: Int,
 ): Boolean = this < previousLength
+
+internal fun Int.isEmpty(): Boolean = this == 0

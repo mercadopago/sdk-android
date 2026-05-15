@@ -12,11 +12,11 @@ internal class ExpirationDateVerifier {
             checkInvalid(state),
         ).firstOrNull().orEmpty()
 
-    private fun checkEmpty(
+    fun checkEmpty(
         state: ExpirationDateState,
     ): String? = if (state.length == 0) state.validation.errorEmpty else null
 
-    private fun checkIncomplete(
+    fun checkIncomplete(
         state: ExpirationDateState,
     ): String? = if (state.length > 0 && !state.filled) state.validation.errorIncomplete else null
 

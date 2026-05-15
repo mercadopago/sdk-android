@@ -18,14 +18,18 @@ internal class CardFormFieldErrorHandler(
         state: CardPaymentScreenState,
         isValid: Boolean,
     ): CardPaymentScreenState =
-        updateCardNumberError<CardNumberErrorType.LuhnValidation>(state) {
+        updateCardNumberError<CardNumberErrorType.LuhnValidation>(
+            state = state,
+            shouldShowError = state.cardNumberState.isComplete(),
+        ) {
             if (!isValid) CardNumberErrorType.LuhnValidation else null
         }
 
     fun applyCardNumberFieldError(
         state: CardPaymentScreenState,
+        shouldShowError: Boolean = true,
     ): CardPaymentScreenState =
-        updateCardNumberError<CardNumberErrorType.FieldValidation>(state) {
+        updateCardNumberError<CardNumberErrorType.FieldValidation>(state, shouldShowError) {
             val error = CardNumberVerifier().verify(state.cardNumberState)
             if (error.isNotEmpty()) CardNumberErrorType.FieldValidation(error) else null
         }
@@ -34,6 +38,7 @@ internal class CardFormFieldErrorHandler(
         state: CardPaymentScreenState,
         errors: List<CardNumberErrorType>,
         isValid: Boolean,
+        shouldShowError: Boolean = true,
     ): CardPaymentScreenState {
         val cardNumberState = state.cardNumberState
         val errorMessage: String = when {
@@ -42,6 +47,7 @@ internal class CardFormFieldErrorHandler(
 
             errors.any { it is CardNumberErrorType.PaymentMethodNotFound } ->
                 errors.filterIsInstance<CardNumberErrorType.PaymentMethodNotFound>().first().message
+                    .ifEmpty { cardNumberState.validation.errorInvalid }
 
             errors.any { it is CardNumberErrorType.FieldValidation } ->
                 errors.filterIsInstance<CardNumberErrorType.FieldValidation>().first().message
@@ -52,7 +58,7 @@ internal class CardFormFieldErrorHandler(
         return computeFooterVisibility(
             state.copy(
                 cardNumberState = cardNumberState.copy(
-                    error = errorMessage,
+                    error = if (shouldShowError) errorMessage else "",
                     isValid = isValid,
                     errorTypes = errors,
                 ),
@@ -60,11 +66,20 @@ internal class CardFormFieldErrorHandler(
         )
     }
 
+    fun clearCardNumberErrors(
+        state: CardPaymentScreenState,
+    ): CardPaymentScreenState =
+        applyCardNumberErrorState(
+            state = state,
+            errors = emptyList(),
+            isValid = false,
+        )
+
     fun applyPaymentMethodNotFoundError(
         state: CardPaymentScreenState,
         message: String,
     ): CardPaymentScreenState =
-        updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound>(state) {
+        updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound>(state, true) {
             CardNumberErrorType.PaymentMethodNotFound(message)
         }
 
@@ -153,6 +168,7 @@ internal class CardFormFieldErrorHandler(
         val isIdentificationValid = !state.identificationTypeState.show ||
             (state.identificationTypeState.error.isEmpty() && state.identificationTypeState.isValid)
         val isFormValid = state.cardNumberState.error.isEmpty() &&
+            state.cardNumberState.errorTypes.isEmpty() &&
             state.cardNumberState.isValid &&
             state.expirationDateState.error.isEmpty() &&
             state.expirationDateState.isValid &&
@@ -168,11 +184,12 @@ internal class CardFormFieldErrorHandler(
 
     private inline fun <reified T : CardNumberErrorType> updateCardNumberError(
         state: CardPaymentScreenState,
+        shouldShowError: Boolean,
         errorFactory: () -> T?,
     ): CardPaymentScreenState {
         val errors = state.cardNumberState.errorTypes.toMutableList()
         errors.removeAll { it is T }
         errorFactory()?.let { errors.add(it) }
-        return applyCardNumberErrorState(state, errors, errors.isEmpty())
+        return applyCardNumberErrorState(state, errors, errors.isEmpty(), shouldShowError)
     }
 }
