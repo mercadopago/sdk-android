@@ -11,7 +11,7 @@ import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -20,9 +20,9 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
@@ -59,13 +59,13 @@ private fun InstallmentsScreenContent(
     onPayClick: () -> Unit = {},
 ) {
     val density = LocalDensity.current
-    var footerHeightPx by remember { mutableStateOf(0) }
+    var footerHeightPx by remember { mutableIntStateOf(0) }
     val footerHeightDp = with(density) { footerHeightPx.toDp() }
 
     Box(modifier = Modifier.fillMaxSize()) {
         MPHeader(
             modifier = Modifier.fillMaxSize(),
-            title = viewState.title.orEmpty(),
+            title = viewState.title,
             onBackClick = onBackClick,
         ) {
             Column(
@@ -75,7 +75,7 @@ private fun InstallmentsScreenContent(
                     .padding(bottom = footerHeightDp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                viewState.installmentsState.forEach { item ->
+                viewState.items.forEach { item ->
                     when (viewState.displayType) {
                         InstallmentsDisplayType.Chevron -> ChevronInstallmentItem(
                             item = item,
@@ -89,7 +89,8 @@ private fun InstallmentsScreenContent(
                 }
             }
         }
-        viewState.footerState?.let { footer ->
+        if (viewState.footerState.isVisible) {
+            val footer = viewState.footerState
             MPFixedFooter(
                 title = footer.title,
                 amount = MPAmountData(
@@ -120,7 +121,7 @@ private fun ChevronInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
-            description = item.description,
+            description = item.description.takeIf { it.isNotEmpty() },
         ),
         modifier = Modifier.fillMaxWidth(),
         trailing = MPListItemTrailing(
@@ -128,11 +129,6 @@ private fun ChevronInstallmentItem(
             type = MPListItemTrailing.Type.Icon(
                 icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
             ),
-            textColor = if (item.interestFree) {
-                MercadoPagoTheme.color.feedback.positive.textLoud
-            } else {
-                null
-            },
         ),
         onClick = { onItemClick(item.number) },
     )
@@ -146,19 +142,12 @@ private fun RadioButtonInstallmentItem(
     MPListItem(
         contentInfo = MPListItemContentInfo(
             title = item.text,
-            description = item.description,
+            description = item.description.takeIf { it.isNotEmpty() },
         ),
         modifier = Modifier.fillMaxWidth(),
         type = MPListItemType.RadioButton(selected = item.isSelected),
         trailing = if (item.trailing.isNotEmpty()) {
-            MPListItemTrailing(
-                text = item.trailing,
-                textColor = if (item.interestFree) {
-                    MercadoPagoTheme.color.feedback.positive.textLoud
-                } else {
-                    null
-                },
-            )
+            MPListItemTrailing(text = item.trailing)
         } else {
             null
         },
@@ -174,20 +163,18 @@ private fun InstallmentsScreenChevronPreview() {
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
                 displayType = InstallmentsDisplayType.Chevron,
-                installmentsState = listOf(
+                items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
-                        description = "",
                         trailing = "",
-                        interestFree = false,
+                        description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = false,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
-                        description = "",
-                        trailing = "Sem acréscimo",
-                        interestFree = true,
+                        trailing = "R$ 380,00",
+                        description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
                         number = 2,
                     ),
@@ -198,6 +185,7 @@ private fun InstallmentsScreenChevronPreview() {
                     amountIntegerPart = "300",
                     amountDecimalPart = "00",
                     subtitle = "Visa **** 1234",
+                    isVisible = true,
                 ),
             ),
         )
@@ -212,20 +200,18 @@ private fun InstallmentsScreenRadioButtonPreview() {
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
                 displayType = InstallmentsDisplayType.RadioButton,
-                installmentsState = listOf(
+                items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
-                        description = "",
                         trailing = "",
-                        interestFree = false,
+                        description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = true,
                         number = 1,
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
-                        description = "",
-                        trailing = "Sem acréscimo",
-                        interestFree = true,
+                        trailing = "R$ 380,00",
+                        description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
                         number = 2,
                     ),
@@ -237,6 +223,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
                     amountDecimalPart = "00",
                     subtitle = "Mastercard **** 5678",
                     buttonLabel = "Pagar",
+                    isVisible = true,
                 ),
             ),
         )

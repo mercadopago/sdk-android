@@ -1,14 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
-import java.text.NumberFormat
-import java.util.Locale
-
 internal const val ZERO = "0"
-
-internal fun Locale?.getCurrencyString(): String {
-    val locale = this ?: Locale.getDefault()
-    return NumberFormat.getCurrencyInstance(locale).currency?.symbol.orEmpty()
-}
 
 internal fun String.hasAllSameDigits(): Boolean {
     val digits = this.filter { it.isDigit() }
@@ -20,3 +12,33 @@ internal fun String.isBeingCleared(
 ): Boolean = this.length < previousValue.length
 
 internal fun String?.getOrZero() = this ?: ZERO
+
+internal fun String.toBrandLabel(): String =
+    split('_')
+        .filter { it.isNotEmpty() }
+        .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
+
+internal data class AmountParts(
+    val currencySymbol: String,
+    val integerPart: String,
+    val decimalPart: String,
+)
+
+internal fun String.toAmountParts(
+    currencySymbol: String,
+): AmountParts {
+    val numeric = removePrefix(currencySymbol).trim()
+    val lastSeparator = numeric.lastIndexOfAny(charArrayOf('.', ','))
+    val hasDecimal = lastSeparator > 0 &&
+        lastSeparator < numeric.length - 1 &&
+        numeric.substring(lastSeparator + 1).all(Char::isDigit)
+    return if (hasDecimal) {
+        AmountParts(
+            currencySymbol = currencySymbol,
+            integerPart = numeric.substring(0, lastSeparator),
+            decimalPart = numeric.substring(lastSeparator + 1),
+        )
+    } else {
+        AmountParts(currencySymbol = currencySymbol, integerPart = numeric, decimalPart = "")
+    }
+}
