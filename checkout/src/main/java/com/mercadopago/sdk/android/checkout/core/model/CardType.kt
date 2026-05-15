@@ -20,7 +20,7 @@ enum class CardType(internal val value: String) {
     /**
      * PREPAID: Prepaid card.
      */
-    PREPAID("prepaid"),
+    PREPAID("prepaid_card"),
     ;
 
     internal companion object {
