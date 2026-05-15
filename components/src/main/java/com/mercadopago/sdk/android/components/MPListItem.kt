@@ -47,9 +47,9 @@ fun MPListItem(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(MercadoPagoTheme.spacing.paddings.xmicro),
+            .padding(MercadoPagoTheme.spacing.paddings.micro),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xmicro),
+        horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.micro),
     ) {
         if (type is MPListItemType.RadioButton) {
             MPRadioButton(
@@ -74,7 +74,7 @@ fun MPListItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xnano),
+            horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xmicro),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             MPListItemTrailing(trailing = trailing)
@@ -95,7 +95,7 @@ private fun MPListItemContentInfo(
     }
     MPText(
         text = contentInfo.title.orEmpty(),
-        style = MercadoPagoTheme.typography.body.emphasis.medium,
+        style = MercadoPagoTheme.typography.body.emphasis.large,
         color = MercadoPagoTheme.color.text.primary,
     )
     if (contentInfo.description.isNotNull()) {
@@ -115,7 +115,7 @@ private fun MPListItemTrailing(
         if (it.text.isNotNull()) {
             MPText(
                 text = it.text,
-                style = MercadoPagoTheme.typography.body.default.medium,
+                style = MercadoPagoTheme.typography.body.default.large,
                 color = it.textColor ?: MercadoPagoTheme.color.text.secondary,
             )
         }

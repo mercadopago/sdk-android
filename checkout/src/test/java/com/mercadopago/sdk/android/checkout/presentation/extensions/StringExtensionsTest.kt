@@ -1,26 +1,11 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
-import java.util.Locale
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class StringExtensionsTest {
-    @Test
-    fun `given locale with known currency then getCurrencyString returns currency symbol`() {
-        val result = Locale("pt", "BR").getCurrencyString()
-
-        assertEquals("R$", result)
-    }
-
-    @Test
-    fun `given null locale then getCurrencyString uses default locale`() {
-        val result = null.getCurrencyString()
-
-        assertTrue(result.isNotEmpty())
-    }
-
     @Test
     fun `given string with all same digits then hasAllSameDigits returns true`() {
         assertTrue("1111".hasAllSameDigits())
@@ -59,5 +44,41 @@ internal class StringExtensionsTest {
     @Test
     fun `given string longer than previous then isBeingCleared returns false`() {
         assertFalse("abcde".isBeingCleared("abcd"))
+    }
+
+    @Test
+    fun `toAmountParts splits BRL label with comma decimal`() {
+        val parts = "R$ 1.096,40".toAmountParts(currencySymbol = "R$")
+
+        assertEquals("R$", parts.currencySymbol)
+        assertEquals("1.096", parts.integerPart)
+        assertEquals("40", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts splits US label with dot decimal`() {
+        val parts = "US$ 1,096.40".toAmountParts(currencySymbol = "US$")
+
+        assertEquals("US$", parts.currencySymbol)
+        assertEquals("1,096", parts.integerPart)
+        assertEquals("40", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts without decimal separator returns empty decimalPart`() {
+        val parts = "¥ 1000".toAmountParts(currencySymbol = "¥")
+
+        assertEquals("¥", parts.currencySymbol)
+        assertEquals("1000", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts handles missing space between symbol and digits`() {
+        val parts = "R$1.000,00".toAmountParts(currencySymbol = "R$")
+
+        assertEquals("R$", parts.currencySymbol)
+        assertEquals("1.000", parts.integerPart)
+        assertEquals("00", parts.decimalPart)
     }
 }
