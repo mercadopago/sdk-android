@@ -12,11 +12,11 @@ internal class IdentificationTypeVerifier {
             checkAllZeros(state),
         ).firstOrNull().orEmpty()
 
-    private fun checkEmpty(
+    fun checkEmpty(
         state: IdentificationTypeState,
     ): String? = if (state.value.isEmpty()) state.validation.errorEmpty else null
 
-    private fun checkIncomplete(
+    fun checkIncomplete(
         state: IdentificationTypeState,
     ): String? {
         val minLength = state.selected?.minLength ?: 0

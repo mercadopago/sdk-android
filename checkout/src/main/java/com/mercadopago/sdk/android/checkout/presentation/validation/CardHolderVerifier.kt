@@ -12,11 +12,11 @@ internal class CardHolderVerifier {
             checkFormat(state),
         ).firstOrNull().orEmpty()
 
-    private fun checkEmpty(
+    fun checkEmpty(
         state: CardHolderState,
     ): String? = if (state.value.isEmpty()) state.validation.errorEmpty else null
 
-    private fun checkIncomplete(
+    fun checkIncomplete(
         state: CardHolderState,
     ): String? =
         if (state.value.isNotEmpty() && state.value.length < MIN_CHARACTERS) {

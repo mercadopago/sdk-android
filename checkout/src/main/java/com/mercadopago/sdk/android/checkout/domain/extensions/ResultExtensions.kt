@@ -87,43 +87,14 @@ internal suspend inline fun <T> withErrorHandling(
     }
 
 @Suppress("TooGenericExceptionCaught")
-internal suspend inline fun <T> withRetry(
-    maxAttempts: Int = 2,
-    delayMillis: Long = 500L,
-    crossinline shouldRetry: (ResultError) -> Boolean = { it !is ResultError.Validation },
+internal suspend inline fun <T> withResultErrorHandling(
     crossinline block: suspend () -> Result<T, ResultError>,
-): Result<T, ResultError> {
-    var lastResult: Result<T, ResultError>? = null
-
-    repeat(maxAttempts) { attempt ->
-        val result = try {
-            block()
-        } catch (e: Exception) {
-            Result.Error(e.toResultError())
-        }
-
-        lastResult = result
-
-        val shouldContinue = when (result) {
-            is Result.Success -> false
-            is Result.Error -> {
-                val canRetry = shouldRetry(result.error)
-                val hasMoreAttempts = attempt < maxAttempts - 1
-                canRetry && hasMoreAttempts
-            }
-        }
-
-        if (!shouldContinue) {
-            return result
-        }
-
-        delay(delayMillis)
+): Result<T, ResultError> =
+    try {
+        block()
+    } catch (e: Exception) {
+        Result.Error(e.toResultError())
     }
-
-    return lastResult ?: Result.Error(
-        ResultError.Request(code = "RETRY_EXHAUSTED", message = "Max retry attempts reached"),
-    )
-}
 
 @Suppress("TooGenericExceptionCaught")
 internal suspend inline fun <T> withServiceRetry(

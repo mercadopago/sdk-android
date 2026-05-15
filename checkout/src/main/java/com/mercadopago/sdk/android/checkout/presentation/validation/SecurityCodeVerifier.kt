@@ -11,11 +11,11 @@ internal class SecurityCodeVerifier {
             checkIncomplete(state),
         ).firstOrNull().orEmpty()
 
-    private fun checkEmpty(
+    fun checkEmpty(
         state: SecurityCodeState,
     ): String? = if (state.length == 0) state.validation.errorEmpty else null
 
-    private fun checkIncomplete(
+    fun checkIncomplete(
         state: SecurityCodeState,
     ): String? =
         if (state.length > 0 && state.length < state.maxLength) {

@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.usecase
 
-import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.model.CancelledFieldState
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Field
@@ -8,6 +7,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.State
 import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 
 internal class CancelledFormContextUseCase {
     operator fun invoke(
@@ -37,74 +40,74 @@ internal class CancelledFormContextUseCase {
     private fun buildCardNumberFieldState(
         screenState: CardPaymentScreenState,
     ): CancelledFieldState {
-        val errorTypes = screenState.cardNumberState.errorTypes
-        val state = when {
-            errorTypes.any { it is CardNumberErrorType.CardBrandNotAccepted } -> {
-                val error = errorTypes.filterIsInstance<CardNumberErrorType.CardBrandNotAccepted>().first()
-                State.CardBrandNotAccepted(error.brand)
+        val cardNumberState = screenState.cardNumberState
+        val state = cardNumberState.errorTypes.firstOrNull()?.let {
+            when (it) {
+                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(it.brand)
+                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(it.cardType)
+                is CardNumberErrorType.FieldValidation -> when {
+                    cardNumberState.length == 0 -> State.Empty
+                    cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
+                    else -> State.Invalid
+                }
+                else -> State.Invalid
             }
-            errorTypes.any { it is CardNumberErrorType.CardTypeNotAccepted } -> {
-                val error = errorTypes.filterIsInstance<CardNumberErrorType.CardTypeNotAccepted>().first()
-                State.CardTypeNotAccepted(error.cardType)
-            }
-            screenState.cardNumberState.error.isNotEmpty() -> State.Invalid
-            screenState.cardNumberState.length == 0 -> State.Empty
-            screenState.cardNumberState.length < screenState.cardNumberState.maxLength -> State.Incomplete
-            else -> State.Valid
-        }
+        } ?: State.Valid
         return CancelledFieldState(field = Field.CARD_NUMBER, state = state)
     }
 
     private fun buildCardHolderFieldState(
         screenState: CardPaymentScreenState,
-    ): CancelledFieldState =
-        CancelledFieldState(
-            field = Field.CARD_HOLDER,
-            state = when {
-                screenState.cardHolderState.error.isNotEmpty() -> State.Invalid
-                screenState.cardHolderState.value.isEmpty() -> State.Empty
-                else -> State.Valid
-            },
-        )
+    ): CancelledFieldState {
+        val verifier = CardHolderVerifier()
+        val cardHolderState = screenState.cardHolderState
+        val state = when {
+            verifier.checkEmpty(cardHolderState) != null -> State.Empty
+            verifier.checkIncomplete(cardHolderState) != null -> State.Incomplete
+            verifier.verify(cardHolderState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return CancelledFieldState(field = Field.CARD_HOLDER, state = state)
+    }
 
     private fun buildExpirationDateFieldState(
         screenState: CardPaymentScreenState,
-    ): CancelledFieldState =
-        CancelledFieldState(
-            field = Field.EXPIRATION_DATE,
-            state = when {
-                screenState.expirationDateState.error.isNotEmpty() -> State.Invalid
-                screenState.expirationDateState.length == 0 -> State.Empty
-                !screenState.expirationDateState.filled -> State.Incomplete
-                else -> State.Valid
-            },
-        )
+    ): CancelledFieldState {
+        val verifier = ExpirationDateVerifier()
+        val expirationDateState = screenState.expirationDateState
+        val state = when {
+            verifier.checkEmpty(expirationDateState) != null -> State.Empty
+            verifier.checkIncomplete(expirationDateState) != null -> State.Incomplete
+            verifier.verify(expirationDateState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return CancelledFieldState(field = Field.EXPIRATION_DATE, state = state)
+    }
 
     private fun buildSecurityCodeFieldState(
         screenState: CardPaymentScreenState,
-    ): CancelledFieldState =
-        CancelledFieldState(
-            field = Field.SECURITY_CODE,
-            state = when {
-                screenState.secureCodeState.error.isNotEmpty() -> State.Invalid
-                screenState.secureCodeState.length == 0 -> State.Empty
-                screenState.secureCodeState.length < screenState.secureCodeState.maxLength -> State.Incomplete
-                else -> State.Valid
-            },
-        )
+    ): CancelledFieldState {
+        val verifier = SecurityCodeVerifier()
+        val secureCodeState = screenState.secureCodeState
+        val state = when {
+            verifier.checkEmpty(secureCodeState) != null -> State.Empty
+            verifier.checkIncomplete(secureCodeState) != null -> State.Incomplete
+            else -> State.Valid
+        }
+        return CancelledFieldState(field = Field.SECURITY_CODE, state = state)
+    }
 
     private fun buildDocumentFieldState(
         screenState: CardPaymentScreenState,
-    ): CancelledFieldState =
-        CancelledFieldState(
-            field = Field.DOCUMENT,
-            state = when {
-                screenState.identificationTypeState.error.isNotEmpty() -> State.Invalid
-                screenState.identificationTypeState.value.isEmpty() -> State.Empty
-                !screenState.identificationTypeState.isComplete(
-                    screenState.identificationTypeState.value.length,
-                ) -> State.Incomplete
-                else -> State.Valid
-            },
-        )
+    ): CancelledFieldState {
+        val verifier = IdentificationTypeVerifier()
+        val identificationTypeState = screenState.identificationTypeState
+        val state = when {
+            verifier.checkEmpty(identificationTypeState) != null -> State.Empty
+            verifier.checkIncomplete(identificationTypeState) != null -> State.Incomplete
+            verifier.verify(identificationTypeState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return CancelledFieldState(field = Field.DOCUMENT, state = state)
+    }
 }
