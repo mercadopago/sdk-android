@@ -44,7 +44,7 @@ internal class InstallmentsViewModelTest {
     fun `viewState reflects quotas from installmentData`() = runTest {
         val viewModel = makeViewModel()
 
-        kotlin.test.assertEquals(2, viewModel.viewState.value.installmentsState.size)
+        kotlin.test.assertEquals(2, viewModel.viewState.value.items.size)
     }
 
     @Test
@@ -53,7 +53,7 @@ internal class InstallmentsViewModelTest {
 
         kotlin.test.assertEquals(
             true,
-            viewModel.viewState.value.installmentsState.first().isSelected,
+            viewModel.viewState.value.items.first().isSelected,
         )
     }
 
@@ -61,7 +61,7 @@ internal class InstallmentsViewModelTest {
     fun `Chevron mode does not pre-select`() = runTest {
         val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
 
-        assertFalse(viewModel.viewState.value.installmentsState.any { it.isSelected })
+        assertFalse(viewModel.viewState.value.items.any { it.isSelected })
     }
 
     @Test
@@ -70,7 +70,7 @@ internal class InstallmentsViewModelTest {
 
         viewModel.onInstallmentSelected(installment = 3)
 
-        val states = viewModel.viewState.value.installmentsState
+        val states = viewModel.viewState.value.items
         kotlin.test.assertEquals(true, states.first { it.number == 3 }.isSelected)
         kotlin.test.assertEquals(false, states.first { it.number == 1 }.isSelected)
     }
@@ -81,6 +81,6 @@ internal class InstallmentsViewModelTest {
 
         viewModel.onInstallmentSelected(installment = 3)
 
-        assertFalse(viewModel.viewState.value.installmentsState.any { it.isSelected })
+        assertFalse(viewModel.viewState.value.items.any { it.isSelected })
     }
 }

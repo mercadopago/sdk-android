@@ -119,7 +119,7 @@ internal class CardFormInitMapperTest {
 
         val output = response.toDomain()
 
-        assertEquals("Confirm", output.button)
+        assertEquals("Confirm", output.buttonLabel)
     }
 
     @Test

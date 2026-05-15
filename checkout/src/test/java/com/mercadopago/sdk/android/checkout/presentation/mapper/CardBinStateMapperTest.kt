@@ -47,7 +47,7 @@ internal class CardBinStateMapperTest {
         currencySymbol = "",
         installmentsTitle = "",
         installmentsTotalLabel = "",
-        installmentsPayButtonLabel = "",
+        installmentsButtonLabel = "",
     )
 
     @Test
@@ -251,14 +251,14 @@ internal class CardBinStateMapperTest {
         val data = emptyBinData.copy(
             installmentsTitle = "Cuotas",
             installmentsTotalLabel = "Total",
-            installmentsPayButtonLabel = "Pagar",
+            installmentsButtonLabel = "Pagar",
         )
 
         val result = baseState.applyCardBinData(data)
 
         assertEquals("Cuotas", result.installmentsState.title)
         assertEquals("Total", result.installmentsState.totalLabel)
-        assertEquals("Pagar", result.installmentsState.payButtonLabel)
+        assertEquals("Pagar", result.installmentsState.buttonLabel)
     }
 
     @Test

@@ -5,7 +5,7 @@ import java.math.BigDecimal
 
 internal data class CardFormInitializationOutput(
     val title: String,
-    val button: String,
+    val buttonLabel: String,
     val fields: CardFormFields,
     val identificationTypes: List<IdentificationTypeItem>,
     val transactionAmount: BigDecimal? = null,

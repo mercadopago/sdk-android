@@ -13,7 +13,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
@@ -28,7 +28,7 @@ internal fun CardFormInitializationOutput.toCardPaymentScreenState() =
             expirationDateState = expirationDate.toExpirationDateState(),
             secureCodeState = securityCode.toSecurityCodeState(),
             identificationTypeState = document.toIdentificationTypeState(identificationTypes),
-            fixedFooterState = FixedFooterState(buttonText = button),
+            footerState = FooterState(buttonLabel = buttonLabel),
         )
     }
 

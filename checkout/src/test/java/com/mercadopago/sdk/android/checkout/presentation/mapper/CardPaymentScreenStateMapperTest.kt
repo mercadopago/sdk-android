@@ -70,7 +70,7 @@ internal class CardPaymentScreenStateMapperTest {
         ),
     ) = CardFormInitializationOutput(
         title = title,
-        button = button,
+        buttonLabel = button,
         fields = CardFormFields(
             cardNumber = cardNumber,
             holderName = holderName,
@@ -91,12 +91,12 @@ internal class CardPaymentScreenStateMapperTest {
     }
 
     @Test
-    fun `given output then button is mapped to fixedFooterState buttonText`() {
+    fun `given output then buttonLabel is mapped to footerState buttonLabel`() {
         val output = buildOutput(button = "Confirm")
 
         val state = output.toCardPaymentScreenState()
 
-        assertEquals("Confirm", state.fixedFooterState.buttonText)
+        assertEquals("Confirm", state.footerState.buttonLabel)
     }
 
     @Test

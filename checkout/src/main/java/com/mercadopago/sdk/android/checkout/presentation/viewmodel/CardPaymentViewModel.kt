@@ -451,7 +451,7 @@ internal class CardPaymentViewModel(
                                 displayType = state.installmentsState.displayType,
                                 title = state.installmentsState.title,
                                 totalLabel = state.installmentsState.totalLabel,
-                                payButtonLabel = state.installmentsState.payButtonLabel,
+                                buttonLabel = state.installmentsState.buttonLabel,
                                 currencySymbol = state.currencySymbol,
                             ),
                         ),

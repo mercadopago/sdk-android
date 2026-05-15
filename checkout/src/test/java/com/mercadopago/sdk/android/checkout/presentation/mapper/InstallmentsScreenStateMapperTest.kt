@@ -26,9 +26,9 @@ internal class InstallmentsScreenStateMapperTest {
             selectedInstallment = 2,
         ).toInstallmentsScreenState()
 
-        assertEquals("R$", state.footerState?.currencySymbol)
-        assertEquals("1.096", state.footerState?.amountIntegerPart)
-        assertEquals("40", state.footerState?.amountDecimalPart)
+        assertEquals("R$", state.footerState.currencySymbol)
+        assertEquals("1.096", state.footerState.amountIntegerPart)
+        assertEquals("40", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -42,9 +42,9 @@ internal class InstallmentsScreenStateMapperTest {
             selectedInstallment = 2,
         ).toInstallmentsScreenState()
 
-        assertEquals("R$", state.footerState?.currencySymbol)
-        assertEquals("1096", state.footerState?.amountIntegerPart)
-        assertEquals("40", state.footerState?.amountDecimalPart)
+        assertEquals("R$", state.footerState.currencySymbol)
+        assertEquals("1096", state.footerState.amountIntegerPart)
+        assertEquals("40", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -59,8 +59,8 @@ internal class InstallmentsScreenStateMapperTest {
             displayType = InstallmentsDisplayType.RadioButton,
         ).toInstallmentsScreenState()
 
-        assertEquals("1000", state.footerState?.amountIntegerPart)
-        assertEquals("00", state.footerState?.amountDecimalPart)
+        assertEquals("1000", state.footerState.amountIntegerPart)
+        assertEquals("00", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -75,8 +75,8 @@ internal class InstallmentsScreenStateMapperTest {
             selectedInstallment = null,
         ).toInstallmentsScreenState()
 
-        assertEquals("1112", state.footerState?.amountIntegerPart)
-        assertEquals("30", state.footerState?.amountDecimalPart)
+        assertEquals("1112", state.footerState.amountIntegerPart)
+        assertEquals("30", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -87,9 +87,9 @@ internal class InstallmentsScreenStateMapperTest {
             transactionAmount = BigDecimal("500.55"),
         ).toInstallmentsScreenState()
 
-        assertEquals("R$", state.footerState?.currencySymbol)
-        assertEquals("500", state.footerState?.amountIntegerPart)
-        assertEquals("55", state.footerState?.amountDecimalPart)
+        assertEquals("R$", state.footerState.currencySymbol)
+        assertEquals("500", state.footerState.amountIntegerPart)
+        assertEquals("55", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -97,10 +97,10 @@ internal class InstallmentsScreenStateMapperTest {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
             displayType = InstallmentsDisplayType.Chevron,
-            payButtonLabel = "Pagar",
+            buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
-        assertNull(state.footerState?.buttonLabel)
+        assertNull(state.footerState.buttonLabel)
     }
 
     @Test
@@ -108,10 +108,10 @@ internal class InstallmentsScreenStateMapperTest {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
             displayType = InstallmentsDisplayType.RadioButton,
-            payButtonLabel = "Pagar",
+            buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
-        assertEquals("Pagar", state.footerState?.buttonLabel)
+        assertEquals("Pagar", state.footerState.buttonLabel)
     }
 
     @Test
@@ -122,7 +122,7 @@ internal class InstallmentsScreenStateMapperTest {
             ),
         ).toInstallmentsScreenState()
 
-        val item = state.installmentsState.first()
+        val item = state.items.first()
         assertEquals("2x R$ 548,20", item.text)
         assertEquals("R$ 1.096,40", item.trailing)
     }
@@ -137,9 +137,9 @@ internal class InstallmentsScreenStateMapperTest {
             selectedInstallment = 1,
         ).toInstallmentsScreenState()
 
-        assertEquals("¥", state.footerState?.currencySymbol)
-        assertEquals("1000", state.footerState?.amountIntegerPart)
-        assertEquals("", state.footerState?.amountDecimalPart)
+        assertEquals("¥", state.footerState.currencySymbol)
+        assertEquals("1000", state.footerState.amountIntegerPart)
+        assertEquals("", state.footerState.amountDecimalPart)
     }
 
     private fun quota(
@@ -163,7 +163,7 @@ internal class InstallmentsScreenStateMapperTest {
         selectedInstallment: Int? = null,
         transactionAmount: BigDecimal? = BigDecimal("100"),
         displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
-        payButtonLabel: String = "",
+        buttonLabel: String = "",
         currencySymbol: String = "",
     ): MPInstallmentData = MPInstallmentData(
         brand = "visa",
@@ -175,7 +175,7 @@ internal class InstallmentsScreenStateMapperTest {
             displayType = displayType,
             title = "Escolha o parcelamento",
             totalLabel = "Total",
-            payButtonLabel = payButtonLabel,
+            buttonLabel = buttonLabel,
             currencySymbol = currencySymbol,
         ),
     )

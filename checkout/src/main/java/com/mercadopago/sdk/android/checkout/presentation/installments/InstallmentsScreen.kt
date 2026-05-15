@@ -65,7 +65,7 @@ private fun InstallmentsScreenContent(
     Box(modifier = Modifier.fillMaxSize()) {
         MPHeader(
             modifier = Modifier.fillMaxSize(),
-            title = viewState.title.orEmpty(),
+            title = viewState.title,
             onBackClick = onBackClick,
         ) {
             Column(
@@ -75,7 +75,7 @@ private fun InstallmentsScreenContent(
                     .padding(bottom = footerHeightDp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                viewState.installmentsState.forEach { item ->
+                viewState.items.forEach { item ->
                     when (viewState.displayType) {
                         InstallmentsDisplayType.Chevron -> ChevronInstallmentItem(
                             item = item,
@@ -89,7 +89,8 @@ private fun InstallmentsScreenContent(
                 }
             }
         }
-        viewState.footerState?.let { footer ->
+        if (viewState.footerState.isVisible) {
+            val footer = viewState.footerState
             MPFixedFooter(
                 title = footer.title,
                 amount = MPAmountData(
@@ -162,7 +163,7 @@ private fun InstallmentsScreenChevronPreview() {
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
                 displayType = InstallmentsDisplayType.Chevron,
-                installmentsState = listOf(
+                items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
                         trailing = "",
@@ -184,6 +185,7 @@ private fun InstallmentsScreenChevronPreview() {
                     amountIntegerPart = "300",
                     amountDecimalPart = "00",
                     subtitle = "Visa **** 1234",
+                    isVisible = true,
                 ),
             ),
         )
@@ -198,7 +200,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
                 displayType = InstallmentsDisplayType.RadioButton,
-                installmentsState = listOf(
+                items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
                         trailing = "",
@@ -221,6 +223,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
                     amountDecimalPart = "00",
                     subtitle = "Mastercard **** 5678",
                     buttonLabel = "Pagar",
+                    isVisible = true,
                 ),
             ),
         )

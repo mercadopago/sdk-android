@@ -3,9 +3,9 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 
 internal data class InstallmentsScreenState(
-    val title: String? = null,
-    val installmentsState: List<InstallmentState> = emptyList(),
-    val footerState: FooterState? = null,
+    val title: String = "",
+    val items: List<InstallmentState> = emptyList(),
+    val footerState: FooterState = FooterState(),
     val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
 )
 

@@ -15,7 +15,7 @@ internal data class MPInstallmentData(
         val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
         val title: String = "",
         val totalLabel: String = "",
-        val payButtonLabel: String = "",
+        val buttonLabel: String = "",
         val currencySymbol: String = "",
     )
 }

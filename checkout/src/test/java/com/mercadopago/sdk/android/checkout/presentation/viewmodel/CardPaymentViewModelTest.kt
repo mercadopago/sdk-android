@@ -133,7 +133,7 @@ internal class CardPaymentViewModelTest {
         currencySymbol: String = "",
         installmentsTitle: String = "",
         installmentsTotalLabel: String = "",
-        installmentsPayButtonLabel: String = "",
+        installmentsButtonLabel: String = "",
     ) = CardBinData(
         id = id,
         paymentTypeId = paymentTypeId,
@@ -147,7 +147,7 @@ internal class CardPaymentViewModelTest {
         currencySymbol = currencySymbol,
         installmentsTitle = installmentsTitle,
         installmentsTotalLabel = installmentsTotalLabel,
-        installmentsPayButtonLabel = installmentsPayButtonLabel,
+        installmentsButtonLabel = installmentsButtonLabel,
     )
 
     @Before

@@ -28,7 +28,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         currencySymbol = translations?.currencySymbol.orEmpty(),
         installmentsTitle = installmentsTexts?.header?.title.orEmpty(),
         installmentsTotalLabel = installmentsTexts?.totalLabel.orEmpty(),
-        installmentsPayButtonLabel = installmentsTexts?.payButtonLabel.orEmpty(),
+        installmentsButtonLabel = installmentsTexts?.payButtonLabel.orEmpty(),
     )
 }
 

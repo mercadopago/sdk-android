@@ -13,7 +13,7 @@ internal data class CardBinData(
     val currencySymbol: String,
     val installmentsTitle: String,
     val installmentsTotalLabel: String,
-    val installmentsPayButtonLabel: String,
+    val installmentsButtonLabel: String,
 )
 
 internal data class BinIssuer(

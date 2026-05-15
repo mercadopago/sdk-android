@@ -25,7 +25,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationT
 internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
         title = translations.cardFormTitle,
-        button = translations.cardFormFooterButtonLabel,
+        buttonLabel = translations.cardFormFooterButtonLabel,
         fields = CardFormFields(
             cardNumber = cardNumber.toCardNumberField(translations.cardNumber),
             holderName = holderName.toCardHolderField(translations.holderName),

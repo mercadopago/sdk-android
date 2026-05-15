@@ -276,7 +276,7 @@ internal class CardBinResponseMapperTest {
 
         assertEquals("Cuotas", domain.installmentsTitle)
         assertEquals("Total", domain.installmentsTotalLabel)
-        assertEquals("Pagar", domain.installmentsPayButtonLabel)
+        assertEquals("Pagar", domain.installmentsButtonLabel)
     }
 
     @Test

@@ -23,16 +23,17 @@ internal fun MPInstallmentData.toInstallmentsScreenState(): InstallmentsScreenSt
     return InstallmentsScreenState(
         title = display.title,
         displayType = display.displayType,
-        installmentsState = items,
+        items = items,
         footerState = FooterState(
             title = display.totalLabel,
             currencySymbol = amount.currencySymbol,
             amountIntegerPart = amount.integerPart,
             amountDecimalPart = amount.decimalPart,
             subtitle = toSubtitle(),
-            buttonLabel = display.payButtonLabel.takeIf {
+            buttonLabel = display.buttonLabel.takeIf {
                 display.displayType == InstallmentsDisplayType.RadioButton && it.isNotEmpty()
             },
+            isVisible = true,
         ),
     )
 }

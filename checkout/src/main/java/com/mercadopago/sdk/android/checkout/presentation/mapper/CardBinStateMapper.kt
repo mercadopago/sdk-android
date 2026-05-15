@@ -41,7 +41,7 @@ internal fun CardPaymentScreenState.applyCardBinData(
             installments = data.quotas,
             title = data.installmentsTitle.orCurrent(installmentsState.title),
             totalLabel = data.installmentsTotalLabel.orCurrent(installmentsState.totalLabel),
-            payButtonLabel = data.installmentsPayButtonLabel.orCurrent(installmentsState.payButtonLabel),
+            buttonLabel = data.installmentsButtonLabel.orCurrent(installmentsState.buttonLabel),
             displayType = data.displayType,
         ),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
