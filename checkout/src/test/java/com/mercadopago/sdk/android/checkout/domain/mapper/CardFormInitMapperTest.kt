@@ -174,6 +174,36 @@ internal class CardFormInitMapperTest {
     }
 
     @Test
+    fun `given cardNumber mask then config carries the mask`() {
+        val response = buildResponse(
+            cardNumber = CardNumberConfig(
+                type = "number",
+                length = LengthConfig(min = 15, max = 15),
+                mask = "#### ###### #####",
+            ),
+        )
+
+        val output = response.toDomain().fields.cardNumber.config
+
+        assertEquals("#### ###### #####", output.mask)
+    }
+
+    @Test
+    fun `given blank cardNumber mask then config mask is null`() {
+        val response = buildResponse(
+            cardNumber = CardNumberConfig(
+                type = "number",
+                length = LengthConfig(min = 16, max = 16),
+                mask = "",
+            ),
+        )
+
+        val output = response.toDomain().fields.cardNumber.config
+
+        assertEquals(null, output.mask)
+    }
+
+    @Test
     fun `given response then holderName label placeholder and validation are mapped`() {
         val translations = FieldTranslations(
             label = "Titular",

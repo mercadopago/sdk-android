@@ -362,6 +362,66 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when BIN succeeds with longer CVV than typed digits then secureCode shows incomplete error`() = runTest {
+        val cvv4Data = binData(
+            securityCode = securityCodeField(length = 4).copy(
+                validation = Validation(
+                    errorEmpty = "Required CVV",
+                    errorIncomplete = "Digite os 4 dígitos do código de segurança",
+                    errorInvalid = "Invalid CVV",
+                ),
+            ),
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(cvv4Data)
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 3))
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        val secureCodeState = viewModel.viewState.value.secureCodeState
+        assertEquals(4, secureCodeState.maxLength)
+        assertEquals("Digite os 4 dígitos do código de segurança", secureCodeState.error)
+    }
+
+    @Test
+    fun `when BIN succeeds and CVV not typed yet then secureCode has no error`() = runTest {
+        val cvv4Data = binData(
+            securityCode = securityCodeField(length = 4).copy(
+                validation = Validation(
+                    errorEmpty = "Required CVV",
+                    errorIncomplete = "Incomplete CVV",
+                    errorInvalid = "Invalid CVV",
+                ),
+            ),
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(cvv4Data)
+        val viewModel = makeViewModel()
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        assertEquals("", viewModel.viewState.value.secureCodeState.error)
+    }
+
+    @Test
+    fun `when BIN succeeds with custom mask then cardNumberState mask uses BFF value`() = runTest {
+        val data = binData(
+            cardNumber = cardNumberField(maxLength = 15).copy(
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 15, max = 15),
+                    mask = "#### ###### #####",
+                ),
+            ),
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        val viewModel = makeViewModel()
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        assertEquals("#### ###### #####", viewModel.viewState.value.cardNumberState.mask)
+    }
+
+    @Test
     fun `when BIN call succeeds then paymentState is updated`() = runTest {
         val data = binData()
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)

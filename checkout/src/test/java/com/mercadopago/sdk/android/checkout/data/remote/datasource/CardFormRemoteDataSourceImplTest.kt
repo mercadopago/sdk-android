@@ -24,7 +24,7 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service returns successful response then fetchInitialization returns Success`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any(), any()) } returns Response.success(body)
 
         val result = dataSource.fetchInitialization(amount, checkoutType)
 
@@ -35,7 +35,7 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then fetchInitialization returns Error`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.initialization(any(), any(), any()) } returns Response.error(404, errorBody)
 
         val result = dataSource.fetchInitialization(amount, checkoutType)
 
@@ -47,7 +47,7 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given invoke is called then passes amount and checkoutType to service`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any(), any()) } returns Response.success(body)
 
         dataSource.fetchInitialization(amount = amount, checkoutType = checkoutType)
 

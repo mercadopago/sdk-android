@@ -85,6 +85,7 @@ internal data class Validation(
 internal data class CardFieldConfig(
     val type: String,
     val length: LengthRange,
+    val mask: String? = null,
 )
 
 internal data class LengthRange(

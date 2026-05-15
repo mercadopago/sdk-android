@@ -50,7 +50,11 @@ internal fun CardNumberConfig.toCardNumberField(
             errorMethodNotAllowed = "",
             errorTypeNotAllowed = "",
         ),
-        config = CardFieldConfig(type = type, length = LengthRange(min = length.min, max = length.max)),
+        config = CardFieldConfig(
+            type = type,
+            length = LengthRange(min = length.min, max = length.max),
+            mask = mask.takeIf { it.isNotBlank() },
+        ),
     )
 
 internal fun HolderNameConfig.toCardHolderField(

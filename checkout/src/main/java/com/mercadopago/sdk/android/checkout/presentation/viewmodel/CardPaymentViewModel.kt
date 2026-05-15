@@ -386,7 +386,12 @@ internal class CardPaymentViewModel(
                     filter = CardBinFilter(cardTypes = cardTypes, cardBrands = cardBrands),
                 ).fold(
                     onSuccess = { data ->
-                        _viewState.value = _viewState.value.applyCardBinData(data)
+                        val updated = _viewState.value.applyCardBinData(data)
+                        _viewState.value = if (updated.secureCodeState.length > 0) {
+                            errorHandler.applySecurityCodeError(updated)
+                        } else {
+                            updated
+                        }
                     },
                     onError = { error ->
                         _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {

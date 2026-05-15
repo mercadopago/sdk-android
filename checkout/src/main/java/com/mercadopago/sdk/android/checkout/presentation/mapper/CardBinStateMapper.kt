@@ -8,15 +8,18 @@ import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 
 internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
-): CardPaymentScreenState =
-    copy(
+): CardPaymentScreenState {
+    val cardNumberMaxLength = data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength
+    return copy(
         currencySymbol = data.currencySymbol.orCurrent(currencySymbol),
         cardNumberState = cardNumberState.copy(
-            maxLength = data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength,
-            mask = (data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength).toMask(),
+            maxLength = cardNumberMaxLength,
+            mask = data.cardNumber?.config?.mask?.takeIf { it.isNotBlank() }
+                ?: cardNumberMaxLength.toMask(),
             image = null,
             label = data.cardNumber?.label.orCurrent(cardNumberState.label),
             placeHolder = data.cardNumber?.placeholder.orCurrent(cardNumberState.placeHolder),
+            validation = data.cardNumber?.validation?.toValidationState() ?: cardNumberState.validation,
         ),
         secureCodeState = secureCodeState.copy(
             maxLength = data.securityCode?.config?.length?.max ?: secureCodeState.maxLength,
@@ -25,15 +28,18 @@ internal fun CardPaymentScreenState.applyCardBinData(
             placeHolder = data.securityCode?.placeholder.orCurrent(secureCodeState.placeHolder),
             helper = data.securityCode?.helper.orCurrent(secureCodeState.helper),
             messageTooltip = data.securityCode?.tooltip.orCurrent(secureCodeState.messageTooltip),
+            validation = data.securityCode?.validation?.toValidationState() ?: secureCodeState.validation,
         ),
         cardHolderState = cardHolderState.copy(
             label = data.holderName?.label.orCurrent(cardHolderState.label),
             placeHolder = data.holderName?.placeholder.orCurrent(cardHolderState.placeHolder),
             helper = data.holderName?.helper.orCurrent(cardHolderState.helper),
+            validation = data.holderName?.validation?.toValidationState() ?: cardHolderState.validation,
         ),
         expirationDateState = expirationDateState.copy(
             label = data.expirationDate?.label.orCurrent(expirationDateState.label),
             placeHolder = data.expirationDate?.placeholder.orCurrent(expirationDateState.placeHolder),
+            validation = data.expirationDate?.validation?.toValidationState() ?: expirationDateState.validation,
         ),
         cardIssuers = data.issuers.map { CardIssuer(id = it.id, thumbnail = null) },
         installmentsState = installmentsState.copy(
@@ -46,6 +52,7 @@ internal fun CardPaymentScreenState.applyCardBinData(
         ),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
     )
+}
 
 private fun String?.orCurrent(
     current: String,

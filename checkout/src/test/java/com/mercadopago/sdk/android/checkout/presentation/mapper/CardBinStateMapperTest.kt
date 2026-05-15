@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFieldConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
+import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
@@ -14,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -271,6 +273,148 @@ internal class CardBinStateMapperTest {
     }
 
     @Test
+    fun `given cardNumber with mask then uses BFF mask`() {
+        val data = emptyBinData.copy(
+            cardNumber = cardNumberField(
+                maxLength = 15,
+                mask = "#### ###### #####",
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("#### ###### #####", result.cardNumberState.mask)
+    }
+
+    @Test
+    fun `given cardNumber with blank mask then falls back to length-derived mask`() {
+        val data = emptyBinData.copy(
+            cardNumber = cardNumberField(maxLength = 16, mask = ""),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("#### #### #### ####", result.cardNumberState.mask)
+    }
+
+    @Test
+    fun `given null cardNumber then falls back to current maxLength-derived mask`() {
+        val state = baseState.copy(
+            cardNumberState = baseState.cardNumberState.copy(maxLength = 16),
+        )
+
+        val result = state.applyCardBinData(emptyBinData)
+
+        assertEquals("#### #### #### ####", result.cardNumberState.mask)
+    }
+
+    @Test
+    fun `given cardNumber with validation then refreshes cardNumber validation`() {
+        val data = emptyBinData.copy(
+            cardNumber = CardNumberField(
+                label = "",
+                placeholder = "",
+                validation = CardNumberValidation(
+                    errorEmpty = "empty-bin",
+                    errorIncomplete = "incomplete-bin",
+                    errorInvalid = "invalid-bin",
+                    errorMethodNotAllowed = "",
+                    errorTypeNotAllowed = "",
+                ),
+                config = CardFieldConfig(type = "text", length = LengthRange(min = 15, max = 15)),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("empty-bin", result.cardNumberState.validation.errorEmpty)
+        assertEquals("incomplete-bin", result.cardNumberState.validation.errorIncomplete)
+        assertEquals("invalid-bin", result.cardNumberState.validation.errorInvalid)
+    }
+
+    @Test
+    fun `given null cardNumber then keeps current cardNumber validation`() {
+        val state = baseState.copy(
+            cardNumberState = baseState.cardNumberState.copy(
+                validation = ValidationState(errorEmpty = "keep"),
+            ),
+        )
+
+        val result = state.applyCardBinData(emptyBinData)
+
+        assertEquals("keep", result.cardNumberState.validation.errorEmpty)
+    }
+
+    @Test
+    fun `given securityCode with validation then refreshes secureCode validation`() {
+        val data = emptyBinData.copy(
+            securityCode = SecurityCodeField(
+                label = "",
+                placeholder = "",
+                helper = "",
+                tooltip = "",
+                validation = Validation(
+                    errorEmpty = "empty-cvv",
+                    errorIncomplete = "incomplete-cvv",
+                    errorInvalid = "invalid-cvv",
+                ),
+                config = CardFieldConfig(type = "text", length = LengthRange(min = 4, max = 4)),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("empty-cvv", result.secureCodeState.validation.errorEmpty)
+        assertEquals("incomplete-cvv", result.secureCodeState.validation.errorIncomplete)
+        assertEquals("invalid-cvv", result.secureCodeState.validation.errorInvalid)
+    }
+
+    @Test
+    fun `given holderName with validation then refreshes cardHolder validation`() {
+        val data = emptyBinData.copy(
+            holderName = CardHolderField(
+                label = "",
+                placeholder = "",
+                helper = "",
+                validation = Validation(
+                    errorEmpty = "empty-holder",
+                    errorIncomplete = "incomplete-holder",
+                    errorInvalid = "invalid-holder",
+                ),
+                config = emptyFieldConfig(),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("empty-holder", result.cardHolderState.validation.errorEmpty)
+        assertEquals("incomplete-holder", result.cardHolderState.validation.errorIncomplete)
+        assertEquals("invalid-holder", result.cardHolderState.validation.errorInvalid)
+    }
+
+    @Test
+    fun `given expirationDate with validation then refreshes expirationDate validation`() {
+        val data = emptyBinData.copy(
+            expirationDate = ExpirationDateField(
+                label = "",
+                placeholder = "",
+                validation = Validation(
+                    errorEmpty = "empty-exp",
+                    errorIncomplete = "incomplete-exp",
+                    errorInvalid = "invalid-exp",
+                ),
+                config = emptyFieldConfig(),
+            ),
+        )
+
+        val result = baseState.applyCardBinData(data)
+
+        assertEquals("empty-exp", result.expirationDateState.validation.errorEmpty)
+        assertEquals("incomplete-exp", result.expirationDateState.validation.errorIncomplete)
+        assertEquals("invalid-exp", result.expirationDateState.validation.errorInvalid)
+    }
+
+    @Test
     fun `given holderName field then updates cardHolder label`() {
         val data = emptyBinData.copy(
             holderName = CardHolderField(
@@ -292,6 +436,7 @@ internal class CardBinStateMapperTest {
         label: String = "",
         placeholder: String = "",
         maxLength: Int = 16,
+        mask: String? = null,
     ) = CardNumberField(
         label = label,
         placeholder = placeholder,
@@ -302,7 +447,11 @@ internal class CardBinStateMapperTest {
             errorMethodNotAllowed = "",
             errorTypeNotAllowed = "",
         ),
-        config = CardFieldConfig(type = "text", length = LengthRange(min = maxLength, max = maxLength)),
+        config = CardFieldConfig(
+            type = "text",
+            length = LengthRange(min = maxLength, max = maxLength),
+            mask = mask,
+        ),
     )
 
     private fun securityCodeField(

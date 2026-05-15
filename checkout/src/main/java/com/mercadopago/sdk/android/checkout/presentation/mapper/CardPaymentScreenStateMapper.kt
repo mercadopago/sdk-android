@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
@@ -32,12 +33,18 @@ internal fun CardFormInitializationOutput.toCardPaymentScreenState() =
         )
     }
 
-private fun CardNumberField.toCardNumberState() =
-    CardNumberState(
+private fun CardNumberField.toCardNumberState(): CardNumberState {
+    val maxLength = config.length.max.takeIf { it > 0 }
+    return CardNumberState(
         label = label,
         placeHolder = placeholder,
         validation = validation.toValidationState(),
+        maxLength = maxLength ?: CardNumberState().maxLength,
+        mask = config.mask?.takeIf { it.isNotBlank() }
+            ?: maxLength?.toMask()
+            ?: CardNumberState().mask,
     )
+}
 
 private fun CardHolderField.toCardHolderState() =
     CardHolderState(
@@ -54,14 +61,18 @@ private fun ExpirationDateField.toExpirationDateState() =
         validation = validation.toValidationState(),
     )
 
-private fun SecurityCodeField.toSecurityCodeState() =
-    SecurityCodeState(
+private fun SecurityCodeField.toSecurityCodeState(): SecurityCodeState {
+    val length = config.length.max
+    return SecurityCodeState(
         label = label,
         placeHolder = placeholder,
         helper = helper,
         messageTooltip = tooltip,
         validation = validation.toValidationState(),
+        maxLength = length.takeIf { it > 0 } ?: SecurityCodeState().maxLength,
+        optional = length <= 0,
     )
+}
 
 private fun DocumentField.toIdentificationTypeState(
     identificationTypes: List<IdentificationTypeItem>,
@@ -89,14 +100,14 @@ private fun IdentificationTypeItem.toCoreType(): IdentificationType =
         placeholder = placeholder,
     )
 
-private fun Validation.toValidationState() =
+internal fun Validation.toValidationState() =
     ValidationState(
         errorEmpty = errorEmpty,
         errorIncomplete = errorIncomplete,
         errorInvalid = errorInvalid,
     )
 
-private fun CardNumberValidation.toValidationState() =
+internal fun CardNumberValidation.toValidationState() =
     ValidationState(
         errorEmpty = errorEmpty,
         errorIncomplete = errorIncomplete,
