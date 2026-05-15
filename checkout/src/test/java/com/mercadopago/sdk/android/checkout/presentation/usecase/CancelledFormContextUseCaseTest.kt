@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
+import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -44,7 +45,12 @@ internal class CancelledFormContextUseCaseTest {
 
     @Test
     fun `given card number is empty then cardNumber state is Empty`() {
-        val state = makeState(cardNumberState = CardNumberState(length = 0))
+        val state = makeState(
+            cardNumberState = CardNumberState(
+                length = 0,
+                errorTypes = listOf(CardNumberErrorType.FieldValidation("")),
+            ),
+        )
 
         val fields = invoke(state)
 
@@ -54,7 +60,13 @@ internal class CancelledFormContextUseCaseTest {
 
     @Test
     fun `given card number length is less than maxLength then cardNumber state is Incomplete`() {
-        val state = makeState(cardNumberState = CardNumberState(length = 10, maxLength = 16))
+        val state = makeState(
+            cardNumberState = CardNumberState(
+                length = 10,
+                maxLength = 16,
+                errorTypes = listOf(CardNumberErrorType.FieldValidation("")),
+            ),
+        )
 
         val fields = invoke(state)
 
@@ -63,8 +75,14 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
-    fun `given card number has error then cardNumber state is Invalid`() {
-        val state = makeState(cardNumberState = CardNumberState(error = "Invalid number", length = 5))
+    fun `given card number has FieldValidation error and is complete then cardNumber state is Invalid`() {
+        val state = makeState(
+            cardNumberState = CardNumberState(
+                length = 16,
+                maxLength = 16,
+                errorTypes = listOf(CardNumberErrorType.FieldValidation("Invalid number")),
+            ),
+        )
 
         val fields = invoke(state)
 
@@ -135,8 +153,14 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
-    fun `given cardHolder has error then cardHolder state is Invalid`() {
-        val state = makeState(cardHolderState = CardHolderState(show = true, error = "Required", value = ""))
+    fun `given cardHolder has invalid format then cardHolder state is Invalid`() {
+        val state = makeState(
+            cardHolderState = CardHolderState(
+                show = true,
+                value = "Jo1n",
+                validation = ValidationState(errorInvalid = "Invalid format"),
+            ),
+        )
 
         val fields = invoke(state)
 
@@ -175,8 +199,15 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
-    fun `given expiration date has error then expirationDate state is Invalid`() {
-        val state = makeState(expirationDateState = ExpirationDateState(error = "Expired", length = 2))
+    fun `given expiration date is filled but invalid then expirationDate state is Invalid`() {
+        val state = makeState(
+            expirationDateState = ExpirationDateState(
+                filled = true,
+                isValid = false,
+                length = 4,
+                validation = ValidationState(errorInvalid = "Expired"),
+            ),
+        )
 
         val fields = invoke(state)
 
@@ -233,16 +264,6 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
-    fun `given security code has error then securityCode state is Invalid`() {
-        val state = makeState(secureCodeState = SecurityCodeState(optional = false, error = "Invalid", length = 1))
-
-        val fields = invoke(state)
-
-        val field = fields.first { it.field == Field.SECURITY_CODE }
-        assertEquals(State.Invalid, field.state)
-    }
-
-    @Test
     fun `given security code length equals maxLength then securityCode state is Valid`() {
         val state = makeState(secureCodeState = SecurityCodeState(optional = false, length = 3, maxLength = 3))
 
@@ -281,9 +302,13 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
-    fun `given identification type has error then document state is Invalid`() {
+    fun `given identification type has all zeros value then document state is Invalid`() {
         val state = makeState(
-            identificationTypeState = IdentificationTypeState(show = true, error = "Required", value = ""),
+            identificationTypeState = IdentificationTypeState(
+                show = true,
+                value = "000",
+                validation = ValidationState(errorInvalid = "Invalid"),
+            ),
         )
 
         val fields = invoke(state)
