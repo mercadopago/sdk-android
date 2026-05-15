@@ -1,0 +1,16 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCase.kt
+  h_e120d9bb8a4c69 12,43-53,64
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/CardType.kt
+  h_e120d9bb8a4c69 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "c8461e54019192a81ebedc3867c9e1501f11cce7",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}

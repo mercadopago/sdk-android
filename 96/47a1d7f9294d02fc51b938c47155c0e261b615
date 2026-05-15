@@ -1,0 +1,14 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  h_e120d9bb8a4c69 16,50-52,66-68,78,81-84,156,160-162,202,205-209,305,309-310
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "9647a1d7f9294d02fc51b938c47155c0e261b615",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
