@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.data.repository
 
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.response.OrderProcessResponse
 import com.mercadopago.sdk.android.checkout.domain.extensions.withErrorHandling
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
@@ -11,7 +12,7 @@ internal class OrderRepositoryImpl(
 ) : OrderRepository {
     override suspend fun process(
         orderId: String,
-    ): Result<Unit, ResponseError> =
+    ): Result<OrderProcessResponse, ResponseError> =
         withErrorHandling {
             dataSource.process(orderId = orderId)
         }
