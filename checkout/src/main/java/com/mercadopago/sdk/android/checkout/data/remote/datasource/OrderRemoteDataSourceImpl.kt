@@ -12,8 +12,4 @@ internal class OrderRemoteDataSourceImpl(
     override suspend fun process(
         orderId: String,
     ): Result<OrderProcessResponse, ResponseError> = service.process(orderId = orderId).toInternalResponse()
-
-    override suspend fun transactions(
-        orderId: String,
-    ): Result<Unit, ResponseError> = service.transactions(orderId = orderId).toInternalResponse()
 }

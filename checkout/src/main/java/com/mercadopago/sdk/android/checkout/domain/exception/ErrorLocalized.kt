@@ -5,5 +5,4 @@ internal enum class ErrorLocalized {
     CARD_FORM_INITIALIZATION,
     CARD_BIN,
     ORDER_PROCESS,
-    ORDER_TRANSACTIONS,
 }

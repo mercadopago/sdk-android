@@ -13,9 +13,4 @@ internal interface OrderService {
     suspend fun process(
         @Path("order_id") orderId: String,
     ): Response<OrderProcessResponse>
-
-    @POST("$BRICKS_API/$VERSION/{order_id}/transactions")
-    suspend fun transactions(
-        @Path("order_id") orderId: String,
-    ): Response<Unit>
 }

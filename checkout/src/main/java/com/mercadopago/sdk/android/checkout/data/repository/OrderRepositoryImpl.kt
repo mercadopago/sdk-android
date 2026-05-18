@@ -16,11 +16,4 @@ internal class OrderRepositoryImpl(
         withErrorHandling {
             dataSource.process(orderId = orderId)
         }
-
-    override suspend fun transactions(
-        orderId: String,
-    ): Result<Unit, ResponseError> =
-        withErrorHandling {
-            dataSource.transactions(orderId = orderId)
-        }
 }

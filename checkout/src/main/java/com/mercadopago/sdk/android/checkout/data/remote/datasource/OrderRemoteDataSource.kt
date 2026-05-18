@@ -8,8 +8,4 @@ internal interface OrderRemoteDataSource {
     suspend fun process(
         orderId: String,
     ): Result<OrderProcessResponse, ResponseError>
-
-    suspend fun transactions(
-        orderId: String,
-    ): Result<Unit, ResponseError>
 }
