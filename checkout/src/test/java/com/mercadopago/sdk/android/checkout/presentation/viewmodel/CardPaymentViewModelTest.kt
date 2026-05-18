@@ -18,6 +18,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
@@ -142,12 +143,18 @@ internal class CardPaymentViewModelTest {
         holderName = holderName,
         expirationDate = expirationDate,
         issuers = issuers,
-        quotas = quotas,
-        displayType = displayType,
-        currencySymbol = currencySymbol,
-        installmentsTitle = installmentsTitle,
-        installmentsTotalLabel = installmentsTotalLabel,
-        installmentsButtonLabel = installmentsButtonLabel,
+        installmentData = MPInstallmentData(
+            quotas = quotas,
+            display = MPInstallmentData.InstallmentDisplay(
+                title = installmentsTitle,
+                currencySymbol = currencySymbol,
+                displayType = displayType,
+                footer = MPInstallmentData.InstallmentFooterDisplay(
+                    footerTitle = installmentsTotalLabel,
+                    buttonLabel = installmentsButtonLabel,
+                ),
+            ),
+        ),
     )
 
     @Before

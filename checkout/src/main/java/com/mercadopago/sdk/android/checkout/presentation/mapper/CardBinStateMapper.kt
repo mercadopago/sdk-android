@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.maskOrFallback
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -10,11 +11,12 @@ internal fun CardPaymentScreenState.applyCardBinData(
     data: CardBinData,
 ): CardPaymentScreenState {
     val cardNumberMaxLength = data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength
+    val installmentDisplay = data.installmentData.display
     return copy(
-        currencySymbol = data.currencySymbol.orCurrent(currencySymbol),
+        currencySymbol = installmentDisplay.currencySymbol.orCurrent(currencySymbol),
         cardNumberState = cardNumberState.copy(
             maxLength = cardNumberMaxLength,
-            mask = data.cardNumber?.config?.mask?.takeIf { it.isNotBlank() }
+            mask = data.cardNumber?.config?.maskOrFallback(cardNumberMaxLength)
                 ?: cardNumberMaxLength.toMask(),
             image = null,
             label = data.cardNumber?.label.orCurrent(cardNumberState.label),
@@ -43,12 +45,12 @@ internal fun CardPaymentScreenState.applyCardBinData(
         ),
         cardIssuers = data.issuers.map { CardIssuer(id = it.id, thumbnail = null) },
         installmentsState = installmentsState.copy(
-            showList = data.quotas.isNotEmpty(),
-            installments = data.quotas,
-            title = data.installmentsTitle.orCurrent(installmentsState.title),
-            totalLabel = data.installmentsTotalLabel.orCurrent(installmentsState.totalLabel),
-            buttonLabel = data.installmentsButtonLabel.orCurrent(installmentsState.buttonLabel),
-            displayType = data.displayType,
+            showList = data.installmentData.quotas.isNotEmpty(),
+            installments = data.installmentData.quotas,
+            title = installmentDisplay.title.orCurrent(installmentsState.title),
+            totalLabel = installmentDisplay.footer.footerTitle.orCurrent(installmentsState.totalLabel),
+            buttonLabel = installmentDisplay.footer.buttonLabel.orCurrent(installmentsState.buttonLabel),
+            displayType = installmentDisplay.displayType,
         ),
         paymentState = PaymentState(paymentMethodId = data.id, paymentTypeId = data.paymentTypeId),
     )

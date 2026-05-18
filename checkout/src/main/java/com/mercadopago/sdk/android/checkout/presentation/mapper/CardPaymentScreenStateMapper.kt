@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
+import com.mercadopago.sdk.android.checkout.domain.extensions.maskOrNull
+import com.mercadopago.sdk.android.checkout.domain.extensions.maxLengthOrNull
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
@@ -34,15 +36,13 @@ internal fun CardFormInitializationOutput.toCardPaymentScreenState() =
     }
 
 private fun CardNumberField.toCardNumberState(): CardNumberState {
-    val maxLength = config.length.max.takeIf { it > 0 }
+    val maxLength = config.maxLengthOrNull()
     return CardNumberState(
         label = label,
         placeHolder = placeholder,
         validation = validation.toValidationState(),
         maxLength = maxLength ?: CardNumberState().maxLength,
-        mask = config.mask?.takeIf { it.isNotBlank() }
-            ?: maxLength?.toMask()
-            ?: CardNumberState().mask,
+        mask = config.maskOrNull() ?: maxLength?.toMask() ?: CardNumberState().mask,
     )
 }
 
@@ -62,15 +62,15 @@ private fun ExpirationDateField.toExpirationDateState() =
     )
 
 private fun SecurityCodeField.toSecurityCodeState(): SecurityCodeState {
-    val length = config.length.max
+    val maxLength = config.maxLengthOrNull()
     return SecurityCodeState(
         label = label,
         placeHolder = placeholder,
         helper = helper,
         messageTooltip = tooltip,
         validation = validation.toValidationState(),
-        maxLength = length.takeIf { it > 0 } ?: SecurityCodeState().maxLength,
-        optional = length <= 0,
+        maxLength = maxLength ?: SecurityCodeState().maxLength,
+        optional = maxLength == null,
     )
 }
 

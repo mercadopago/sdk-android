@@ -207,10 +207,10 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(1, domain.quotas.size)
-        assertEquals(1, domain.quotas[0].installments)
-        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].installmentAmount))
-        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.quotas[0].totalAmount))
+        assertEquals(1, domain.installmentData.quotas.size)
+        assertEquals(1, domain.installmentData.quotas[0].installments)
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.installmentData.quotas[0].installmentAmount))
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.installmentData.quotas[0].totalAmount))
     }
 
     @Test
@@ -221,7 +221,7 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(InstallmentsDisplayType.RadioButton, domain.displayType)
+        assertEquals(InstallmentsDisplayType.RadioButton, domain.installmentData.display.displayType)
     }
 
     @Test
@@ -232,14 +232,14 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(InstallmentsDisplayType.Chevron, domain.displayType)
+        assertEquals(InstallmentsDisplayType.Chevron, domain.installmentData.display.displayType)
     }
 
     @Test
     fun `toDomain defaults to RadioButton displayType when installment is null`() {
         val domain = minimalResponse().copy(installment = null).toDomain()
 
-        assertEquals(InstallmentsDisplayType.RadioButton, domain.displayType)
+        assertEquals(InstallmentsDisplayType.RadioButton, domain.installmentData.display.displayType)
     }
 
     @Test
@@ -250,14 +250,14 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals("R$", domain.currencySymbol)
+        assertEquals("R$", domain.installmentData.display.currencySymbol)
     }
 
     @Test
     fun `toDomain returns empty currency symbol when translations are missing`() {
         val domain = minimalResponse(translations = null).toDomain()
 
-        assertEquals("", domain.currencySymbol)
+        assertEquals("", domain.installmentData.display.currencySymbol)
     }
 
     @Test
@@ -274,9 +274,9 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals("Cuotas", domain.installmentsTitle)
-        assertEquals("Total", domain.installmentsTotalLabel)
-        assertEquals("Pagar", domain.installmentsButtonLabel)
+        assertEquals("Cuotas", domain.installmentData.display.title)
+        assertEquals("Total", domain.installmentData.display.footer.footerTitle)
+        assertEquals("Pagar", domain.installmentData.display.footer.buttonLabel)
     }
 
     @Test
@@ -290,7 +290,7 @@ internal class CardBinResponseMapperTest {
         val domain = response.toDomain()
 
         assertTrue(domain.issuers.isEmpty())
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.installmentData.quotas.isEmpty())
         assertNull(domain.cardNumber)
         assertNull(domain.securityCode)
         assertNull(domain.id)
@@ -310,7 +310,7 @@ internal class CardBinResponseMapperTest {
             .copy(installment = null)
             .toDomain()
 
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.installmentData.quotas.isEmpty())
     }
 
     @Test
@@ -319,7 +319,7 @@ internal class CardBinResponseMapperTest {
             installment = InstallmentConfigResponse(selectionType = null, quotas = null),
         ).toDomain()
 
-        assertTrue(domain.quotas.isEmpty())
+        assertTrue(domain.installmentData.quotas.isEmpty())
     }
 
     @Test

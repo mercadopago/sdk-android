@@ -449,16 +449,17 @@ internal class CardPaymentViewModel(
                     _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                         payment = paymentData,
                         installment = MPInstallmentData(
-                            brand = state.paymentState.paymentMethodId.orEmpty(),
-                            lastFourDigits = state.cardNumberState.lastFourDigits,
-                            transactionAmount = checkoutConfiguration?.getCardFormAmount(),
                             quotas = state.installmentsState.installments,
-                            display = MPInstallmentData.Display(
-                                displayType = state.installmentsState.displayType,
+                            display = MPInstallmentData.InstallmentDisplay(
                                 title = state.installmentsState.title,
-                                totalLabel = state.installmentsState.totalLabel,
-                                buttonLabel = state.installmentsState.buttonLabel,
                                 currencySymbol = state.currencySymbol,
+                                displayType = state.installmentsState.displayType,
+                                footer = MPInstallmentData.InstallmentFooterDisplay(
+                                    footerTitle = state.installmentsState.totalLabel,
+                                    lastFourDigits = state.cardNumberState.lastFourDigits,
+                                    brand = state.paymentState.paymentMethodId.orEmpty(),
+                                    buttonLabel = state.installmentsState.buttonLabel,
+                                ),
                             ),
                         ),
                     )

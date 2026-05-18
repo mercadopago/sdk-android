@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
@@ -44,12 +45,7 @@ internal class CardBinStateMapperTest {
         holderName = null,
         expirationDate = null,
         issuers = emptyList(),
-        quotas = emptyList(),
-        displayType = InstallmentsDisplayType.RadioButton,
-        currencySymbol = "",
-        installmentsTitle = "",
-        installmentsTotalLabel = "",
-        installmentsButtonLabel = "",
+        installmentData = MPInstallmentData(),
     )
 
     @Test
@@ -179,11 +175,13 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given non-empty quotas then showList is true`() {
         val data = emptyBinData.copy(
-            quotas = listOf(
-                Quota(
-                    installments = 1,
-                    installmentAmount = BigDecimal.valueOf(100.0),
-                    totalAmount = BigDecimal.valueOf(100.0),
+            installmentData = MPInstallmentData(
+                quotas = listOf(
+                    Quota(
+                        installments = 1,
+                        installmentAmount = BigDecimal.valueOf(100.0),
+                        totalAmount = BigDecimal.valueOf(100.0),
+                    ),
                 ),
             ),
         )
@@ -203,11 +201,13 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given quotas then exposes them on installments state`() {
         val data = emptyBinData.copy(
-            quotas = listOf(
-                Quota(
-                    installments = 3,
-                    installmentAmount = BigDecimal.valueOf(33.33),
-                    totalAmount = BigDecimal.valueOf(100.0),
+            installmentData = MPInstallmentData(
+                quotas = listOf(
+                    Quota(
+                        installments = 3,
+                        installmentAmount = BigDecimal.valueOf(33.33),
+                        totalAmount = BigDecimal.valueOf(100.0),
+                    ),
                 ),
             ),
         )
@@ -232,7 +232,13 @@ internal class CardBinStateMapperTest {
 
     @Test
     fun `given displayType RadioButton then exposes it on installments state`() {
-        val data = emptyBinData.copy(displayType = InstallmentsDisplayType.RadioButton)
+        val data = emptyBinData.copy(
+            installmentData = MPInstallmentData(
+                display = MPInstallmentData.InstallmentDisplay(
+                    displayType = InstallmentsDisplayType.RadioButton,
+                ),
+            ),
+        )
 
         val result = baseState.applyCardBinData(data)
 
@@ -241,7 +247,13 @@ internal class CardBinStateMapperTest {
 
     @Test
     fun `given displayType Chevron then exposes it on installments state`() {
-        val data = emptyBinData.copy(displayType = InstallmentsDisplayType.Chevron)
+        val data = emptyBinData.copy(
+            installmentData = MPInstallmentData(
+                display = MPInstallmentData.InstallmentDisplay(
+                    displayType = InstallmentsDisplayType.Chevron,
+                ),
+            ),
+        )
 
         val result = baseState.applyCardBinData(data)
 
@@ -251,9 +263,15 @@ internal class CardBinStateMapperTest {
     @Test
     fun `given installments translations then updates installments labels`() {
         val data = emptyBinData.copy(
-            installmentsTitle = "Cuotas",
-            installmentsTotalLabel = "Total",
-            installmentsButtonLabel = "Pagar",
+            installmentData = MPInstallmentData(
+                display = MPInstallmentData.InstallmentDisplay(
+                    title = "Cuotas",
+                    footer = MPInstallmentData.InstallmentFooterDisplay(
+                        footerTitle = "Total",
+                        buttonLabel = "Pagar",
+                    ),
+                ),
+            ),
         )
 
         val result = baseState.applyCardBinData(data)
@@ -265,7 +283,11 @@ internal class CardBinStateMapperTest {
 
     @Test
     fun `given currency symbol then exposes it on screen state`() {
-        val data = emptyBinData.copy(currencySymbol = "R$")
+        val data = emptyBinData.copy(
+            installmentData = MPInstallmentData(
+                display = MPInstallmentData.InstallmentDisplay(currencySymbol = "R$"),
+            ),
+        )
 
         val result = baseState.applyCardBinData(data)
 

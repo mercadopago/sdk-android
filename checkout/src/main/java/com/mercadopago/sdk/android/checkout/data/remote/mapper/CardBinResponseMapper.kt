@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.toExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
@@ -23,12 +24,18 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         holderName = translations?.holderName?.toCardHolderField(),
         expirationDate = translations?.expirationDate?.toExpirationDateField(),
         issuers = paymentMethod?.issuers?.map { BinIssuer(id = it.id?.toString(), name = it.name) } ?: emptyList(),
-        quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
-        displayType = installment?.selectionType.toDisplayType(),
-        currencySymbol = translations?.currencySymbol.orEmpty(),
-        installmentsTitle = installmentsTexts?.header?.title.orEmpty(),
-        installmentsTotalLabel = installmentsTexts?.totalLabel.orEmpty(),
-        installmentsButtonLabel = installmentsTexts?.payButtonLabel.orEmpty(),
+        installmentData = MPInstallmentData(
+            quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
+            display = MPInstallmentData.InstallmentDisplay(
+                title = installmentsTexts?.header?.title.orEmpty(),
+                currencySymbol = translations?.currencySymbol.orEmpty(),
+                displayType = installment?.selectionType.toDisplayType(),
+                footer = MPInstallmentData.InstallmentFooterDisplay(
+                    footerTitle = installmentsTexts?.totalLabel.orEmpty(),
+                    buttonLabel = installmentsTexts?.payButtonLabel.orEmpty(),
+                ),
+            ),
+        ),
     )
 }
 

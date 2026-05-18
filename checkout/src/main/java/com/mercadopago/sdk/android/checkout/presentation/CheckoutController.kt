@@ -25,12 +25,8 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CheckoutDestinati
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
-import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-
-@Serializable
-private data object CheckoutGraph
 
 @Composable
 internal fun CheckoutController(

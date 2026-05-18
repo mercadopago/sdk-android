@@ -30,10 +30,14 @@ internal class InstallmentsViewModelTest {
     private fun makeData(
         displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
     ) = MPInstallmentData(
-        brand = "visa",
-        lastFourDigits = "1234",
         quotas = quotas,
-        display = MPInstallmentData.Display(displayType = displayType),
+        display = MPInstallmentData.InstallmentDisplay(
+            displayType = displayType,
+            footer = MPInstallmentData.InstallmentFooterDisplay(
+                brand = "visa",
+                lastFourDigits = "1234",
+            ),
+        ),
     )
 
     private fun makeViewModel(
