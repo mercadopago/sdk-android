@@ -20,6 +20,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUse
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isEmpty
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -47,6 +48,7 @@ internal class CardPaymentViewModel(
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
@@ -404,6 +406,7 @@ internal class CardPaymentViewModel(
                             errorHandler.handleResultError(
                                 state = _viewState.value,
                                 message = error.errorMessage,
+                                genericErrorMessage = cardPaymentScreenStateFactory.getGenericErrorMessage(),
                             )
                         }
                     },
