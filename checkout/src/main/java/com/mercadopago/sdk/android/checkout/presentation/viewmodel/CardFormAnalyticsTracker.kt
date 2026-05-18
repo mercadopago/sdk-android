@@ -46,7 +46,7 @@ internal class CardFormAnalyticsTracker(
 
     fun trackSubmit(
         cardBrand: String,
-        transactionAmount: Double?,
+        transactionAmount: Double,
         issuer: String,
         paymentTypeId: String,
     ) {
