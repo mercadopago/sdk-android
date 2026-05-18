@@ -17,7 +17,19 @@ internal sealed interface CardPaymentViewEvent {
 }
 
 internal sealed interface InstallmentViewEvent {
-    data class OnSuccess(val payment: MPPaymentData) : InstallmentViewEvent
+    data class OnSuccess(
+        val installment: Int = 0,
+        // tech-debt: campo será removido na PR 4/4 quando CheckoutController migrar para installment: Int
+        val payment: MPPaymentData = MPPaymentData(
+            token = "",
+            transactionAmount = null,
+            paymentMethodId = "",
+            paymentTypeId = "",
+            payer = null,
+            installment = null,
+            issuerId = null,
+        ),
+    ) : InstallmentViewEvent
 
     data class OnFailure(val error: MercadoPagoCheckoutError) : InstallmentViewEvent
 
