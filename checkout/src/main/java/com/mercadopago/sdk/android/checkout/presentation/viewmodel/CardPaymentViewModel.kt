@@ -45,22 +45,20 @@ import kotlinx.coroutines.launch
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
+    private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
     private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
-    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
     val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
 
-    private var isCancelling = false
+    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
 
     private val analyticsTracker = CardFormAnalyticsTracker(
-        isCancelling = { isCancelling },
         isLoading = { _viewState.value.isLoading },
     )
 
@@ -307,14 +305,13 @@ internal class CardPaymentViewModel(
     fun onBackPressed(
         reason: CancelReason = CancelReason.SystemBack,
     ) {
-        isCancelling = true
         analyticsTracker.trackUserCanceled(reason)
         val currentState = _viewState.value
         val context = cancelledFormContextUseCase(currentState)
         _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
     }
 
-    fun clearViewEvent() {
+    fun onViewEventConsumed() {
         _viewEvent.value = null
     }
 
@@ -392,7 +389,12 @@ internal class CardPaymentViewModel(
                     filter = CardBinFilter(cardTypes = cardTypes, cardBrands = cardBrands),
                 ).fold(
                     onSuccess = { data ->
-                        _viewState.value = _viewState.value.applyCardBinData(data)
+                        val updated = _viewState.value.applyCardBinData(data)
+                        _viewState.value = if (updated.secureCodeState.length > 0) {
+                            errorHandler.applySecurityCodeError(updated)
+                        } else {
+                            updated
+                        }
                     },
                     onError = { error ->
                         _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {
@@ -446,9 +448,23 @@ internal class CardPaymentViewModel(
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
+                    val state = _viewState.value
                     _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                         payment = paymentData,
-                        installment = MPInstallmentData(),
+                        installment = MPInstallmentData(
+                            quotas = state.installmentsState.installments,
+                            display = MPInstallmentData.InstallmentDisplay(
+                                title = state.installmentsState.title,
+                                currencySymbol = state.currencySymbol,
+                                displayType = state.installmentsState.displayType,
+                                footer = MPInstallmentData.InstallmentFooterDisplay(
+                                    footerTitle = state.installmentsState.totalLabel,
+                                    lastFourDigits = state.cardNumberState.lastFourDigits,
+                                    brand = state.paymentState.paymentMethodId.orEmpty(),
+                                    buttonLabel = state.installmentsState.buttonLabel,
+                                ),
+                            ),
+                        ),
                     )
                 },
                 onError = { checkoutError ->

@@ -1,22 +1,17 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
-
 internal data class CardBinData(
     val id: String?,
     val paymentTypeId: String?,
-    val cardNumber: CardNumberConfig?,
-    val securityCode: SecurityCodeConfig?,
+    val cardNumber: CardNumberField?,
+    val securityCode: SecurityCodeField?,
+    val holderName: CardHolderField?,
+    val expirationDate: ExpirationDateField?,
     val issuers: List<BinIssuer>,
-    val quotas: List<Quota>,
-    val installmentsSelectionType: String?,
-    val translations: Translations?,
+    val installmentData: MPInstallmentData,
 )
 
 internal data class BinIssuer(
-    val id: Long?,
+    val id: String?,
     val name: String?,
-    val secureThumbnail: String?,
 )

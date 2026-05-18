@@ -317,7 +317,7 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertTrue(result.fixedFooterState.isVisible)
+        assertTrue(result.footerState.isVisible)
     }
 
     @Test
@@ -328,6 +328,6 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertFalse(result.fixedFooterState.isVisible)
+        assertFalse(result.footerState.isVisible)
     }
 }

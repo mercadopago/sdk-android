@@ -69,7 +69,7 @@ internal class InstallmentsScreenStateMapperTest {
             currencySymbol = "R$",
             quotas = listOf(
                 quota(installments = 1, totalAmount = BigDecimal("1000.00")),
-                quota(installments = 3, totalAmount = BigDecimal("1112.30"), state = QuotaState.Selected),
+                quota(installments = 3, totalAmount = BigDecimal("1112.30"), state = QuotaState.Success),
                 quota(installments = 6, totalAmount = BigDecimal("1143.20")),
             ),
             selectedInstallment = null,
@@ -77,19 +77,6 @@ internal class InstallmentsScreenStateMapperTest {
 
         assertEquals("1112", state.footerState.amountIntegerPart)
         assertEquals("30", state.footerState.amountDecimalPart)
-    }
-
-    @Test
-    fun `footer falls back to transactionAmount when no quota matches`() {
-        val state = installmentDataWith(
-            currencySymbol = "R$",
-            quotas = emptyList(),
-            transactionAmount = BigDecimal("500.55"),
-        ).toInstallmentsScreenState()
-
-        assertEquals("R$", state.footerState.currencySymbol)
-        assertEquals("500", state.footerState.amountIntegerPart)
-        assertEquals("55", state.footerState.amountDecimalPart)
     }
 
     @Test
@@ -161,22 +148,22 @@ internal class InstallmentsScreenStateMapperTest {
     private fun installmentDataWith(
         quotas: List<Quota>,
         selectedInstallment: Int? = null,
-        transactionAmount: BigDecimal? = BigDecimal("100"),
         displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
         buttonLabel: String = "",
         currencySymbol: String = "",
     ): MPInstallmentData = MPInstallmentData(
-        brand = "visa",
-        lastFourDigits = "1234",
-        transactionAmount = transactionAmount,
         quotas = quotas,
         selectedInstallment = selectedInstallment,
-        display = MPInstallmentData.Display(
-            displayType = displayType,
+        display = MPInstallmentData.InstallmentDisplay(
             title = "Escolha o parcelamento",
-            totalLabel = "Total",
-            buttonLabel = buttonLabel,
             currencySymbol = currencySymbol,
+            displayType = displayType,
+            footer = MPInstallmentData.InstallmentFooterDisplay(
+                footerTitle = "Total",
+                brand = "visa",
+                lastFourDigits = "1234",
+                buttonLabel = buttonLabel,
+            ),
         ),
     )
 }

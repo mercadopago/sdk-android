@@ -6,7 +6,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTransla
 import com.mercadopago.sdk.android.checkout.data.remote.response.ExpirationDateConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.HolderNameConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.domain.model.CardFieldConfig
@@ -26,7 +25,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.IdentificationT
 internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
     CardFormInitializationOutput(
         title = translations.cardFormTitle,
-        button = translations.cardFormFooterButtonLabel,
+        buttonLabel = translations.cardFormFooterButtonLabel,
         fields = CardFormFields(
             cardNumber = cardNumber.toCardNumberField(translations.cardNumber),
             holderName = holderName.toCardHolderField(translations.holderName),
@@ -37,7 +36,7 @@ internal fun CardFormInitResponse.toDomain(): CardFormInitializationOutput =
         identificationTypes = identificationTypes.map { it.toDomain() },
     )
 
-private fun CardNumberConfig.toCardNumberField(
+internal fun CardNumberConfig.toCardNumberField(
     translations: FieldTranslations,
 ): CardNumberField =
     CardNumberField(
@@ -53,65 +52,63 @@ private fun CardNumberConfig.toCardNumberField(
         ),
         config = CardFieldConfig(
             type = type,
-            length = length.toLengthRange(),
+            length = LengthRange(min = length.min, max = length.max),
+            mask = mask.takeIf { it.isNotBlank() },
         ),
     )
 
-private fun HolderNameConfig.toCardHolderField(
+internal fun HolderNameConfig.toCardHolderField(
     translations: FieldTranslations,
 ): CardHolderField =
     CardHolderField(
         label = translations.label,
         placeholder = translations.placeholder,
         helper = translations.helper.orEmpty(),
-        validation = Validation(
-            errorEmpty = translations.errorEmptyField,
-            errorIncomplete = translations.errorIncompleteField,
-            errorInvalid = translations.errorInvalidField,
-        ),
-        config = CardFieldConfig(
-            type = type,
-            length = length.toLengthRange(),
-        ),
+        validation = translations.toValidation(),
+        config = CardFieldConfig(type = type, length = LengthRange(min = length.min, max = length.max)),
     )
 
-private fun ExpirationDateConfig.toExpirationDateField(
+internal fun ExpirationDateConfig.toExpirationDateField(
     translations: FieldTranslations,
 ): ExpirationDateField =
     ExpirationDateField(
         label = translations.label,
         placeholder = translations.placeholder,
-        validation = Validation(
-            errorEmpty = translations.errorEmptyField,
-            errorIncomplete = translations.errorIncompleteField,
-            errorInvalid = translations.errorInvalidField,
-        ),
-        config = CardFieldConfig(
-            type = type,
-            length = length.toLengthRange(),
-        ),
+        validation = translations.toValidation(),
+        config = CardFieldConfig(type = type, length = LengthRange(min = length.min, max = length.max)),
     )
 
-private fun SecurityCodeConfig.toSecurityCodeField(
+internal fun SecurityCodeConfig.toSecurityCodeField(
     translations: SecurityCodeTranslations,
 ): SecurityCodeField =
     SecurityCodeField(
         label = translations.label,
-        placeholder = translations.placeholder,
+        placeholder = placeholder ?: translations.placeholder,
         helper = translations.helper.orEmpty(),
-        tooltip = translations.tooltip,
+        tooltip = tooltip ?: translations.tooltip,
         validation = Validation(
             errorEmpty = translations.errorEmptyField,
             errorIncomplete = translations.errorIncompleteField,
             errorInvalid = translations.errorInvalidField.orEmpty(),
         ),
-        config = CardFieldConfig(
-            type = type,
-            length = LengthRange(
-                min = length,
-                max = length,
-            ),
-        ),
+        config = CardFieldConfig(type = type, length = LengthRange(min = length, max = length)),
+    )
+
+internal fun FieldTranslations.toCardHolderField(): CardHolderField =
+    CardHolderField(
+        label = label,
+        placeholder = placeholder,
+        helper = helper.orEmpty(),
+        validation = toValidation(),
+        config = CardFieldConfig(type = "", length = LengthRange(min = 0, max = 0)),
+    )
+
+internal fun FieldTranslations.toExpirationDateField(): ExpirationDateField =
+    ExpirationDateField(
+        label = label,
+        placeholder = placeholder,
+        validation = toValidation(),
+        config = CardFieldConfig(type = "", length = LengthRange(min = 0, max = 0)),
     )
 
 private fun DocumentTranslations.toDocumentField(): DocumentField =
@@ -124,10 +121,11 @@ private fun DocumentTranslations.toDocumentField(): DocumentField =
         ),
     )
 
-private fun LengthConfig.toLengthRange(): LengthRange =
-    LengthRange(
-        min = min,
-        max = max,
+private fun FieldTranslations.toValidation(): Validation =
+    Validation(
+        errorEmpty = errorEmptyField,
+        errorIncomplete = errorIncompleteField,
+        errorInvalid = errorInvalidField,
     )
 
 private fun ResponseIdentificationType.toDomain(): IdentificationTypeItem =

@@ -25,12 +25,12 @@ internal fun MPInstallmentData.toInstallmentsScreenState(): InstallmentsScreenSt
         displayType = display.displayType,
         items = items,
         footerState = FooterState(
-            title = display.totalLabel,
+            title = display.footer.footerTitle,
             currencySymbol = amount.currencySymbol,
             amountIntegerPart = amount.integerPart,
             amountDecimalPart = amount.decimalPart,
             subtitle = toSubtitle(),
-            buttonLabel = display.buttonLabel.takeIf {
+            buttonLabel = display.footer.buttonLabel.takeIf {
                 display.displayType == InstallmentsDisplayType.RadioButton && it.isNotEmpty()
             },
             isVisible = true,
@@ -59,7 +59,7 @@ private fun List<InstallmentState>.applySelection(
         else -> mapIndexed { index, item -> item.copy(isSelected = index == 0) }
     }
 
-private fun List<Quota>.preselected(): Int? = firstOrNull { it.state == QuotaState.Selected }?.installments
+private fun List<Quota>.preselected(): Int? = firstOrNull { it.state == QuotaState.Success }?.installments
 
 private fun MPInstallmentData.effectiveSelectedQuota(
     selectedNumber: Int?,
@@ -74,7 +74,7 @@ private fun MPInstallmentData.footerAmount(
     selectedQuota?.secondaryLabel
         ?.takeIf { it.isNotEmpty() }
         ?.let { return it.toAmountParts(symbol) }
-    val total = selectedQuota?.totalAmount ?: transactionAmount ?: BigDecimal.ZERO
+    val total = selectedQuota?.totalAmount ?: BigDecimal.ZERO
     return AmountParts(
         currencySymbol = symbol,
         integerPart = total.getTotal(),
@@ -83,6 +83,6 @@ private fun MPInstallmentData.footerAmount(
 }
 
 private fun MPInstallmentData.toSubtitle(): String =
-    listOf(brand.toBrandLabel(), "****", lastFourDigits)
+    listOf(display.footer.brand.toBrandLabel(), "****", display.footer.lastFourDigits)
         .filter { it.isNotEmpty() }
         .joinToString(separator = " ")

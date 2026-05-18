@@ -36,7 +36,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FixedFooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -284,16 +284,16 @@ internal fun CardPaymentScreenContent(
                 }
             }
 
-            if (viewState.fixedFooterState.isVisible) {
+            if (viewState.footerState.isVisible) {
                 Surface(
                     shadowElevation = 8.dp,
                     tonalElevation = 0.dp,
                 ) {
                     MPFixedFooter(
-                        title = viewState.fixedFooterState.title,
-                        subtitle = viewState.fixedFooterState.subtitle,
+                        title = viewState.footerState.title,
+                        subtitle = viewState.footerState.subtitle,
                         button = MPFixedFooterButtonData(
-                            text = viewState.fixedFooterState.buttonText,
+                            text = viewState.footerState.buttonLabel.orEmpty(),
                             onClick = onFooterButtonClick,
                         ),
                     )
@@ -381,13 +381,13 @@ private fun CardPaymentScreenContentPreview() {
                         maxLength = 11,
                     ),
                 ),
-                fixedFooterState = FixedFooterState(
+                footerState = FooterState(
                     title = "Total a pagar",
                     currencySymbol = "$",
                     amountIntegerPart = "1.000",
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
-                    buttonText = "Pagar",
+                    buttonLabel = "Pagar",
                     isVisible = true,
                 ),
             ),
@@ -431,12 +431,12 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                 ),
                 cardHolderState = CardHolderState(show = false),
                 identificationTypeState = IdentificationTypeState(show = false),
-                fixedFooterState = FixedFooterState(
+                footerState = FooterState(
                     title = "Total",
                     currencySymbol = "$",
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
-                    buttonText = "Continuar",
+                    buttonLabel = "Continuar",
                     isVisible = true,
                 ),
             ),
@@ -501,13 +501,13 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                         maxLength = 11,
                     ),
                 ),
-                fixedFooterState = FixedFooterState(
+                footerState = FooterState(
                     title = "Total a pagar",
                     currencySymbol = "$",
                     amountIntegerPart = "2.500",
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
-                    buttonText = "Pagar",
+                    buttonLabel = "Pagar",
                     isVisible = false,
                 ),
             ),

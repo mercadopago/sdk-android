@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
@@ -32,18 +33,21 @@ internal fun CheckoutController(
     checkoutConfiguration: CheckoutConfiguration?,
     navController: NavHostController = rememberNavController(),
 ) {
+    var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
 
     NavHost(
         navController = navController,
         startDestination = CheckoutDestination.Form,
+        route = CheckoutGraph::class,
         enterTransition = { slideInHorizontally { it } },
         exitTransition = { slideOutHorizontally { it } },
     ) {
         composable<CheckoutDestination.Form> {
             CardFormScreenDestination(
                 checkoutConfiguration = checkoutConfiguration,
-                onNavigateToInstallments = { paymentData ->
+                onNavigateToInstallments = { installmentData, paymentData ->
+                    pendingInstallmentData = installmentData
                     pendingPaymentData = paymentData
                     navController.navigate(CheckoutDestination.Installment)
                 },
@@ -51,8 +55,10 @@ internal fun CheckoutController(
         }
 
         composable<CheckoutDestination.Installment> {
+            val installmentData = pendingInstallmentData ?: return@composable
             val paymentData = pendingPaymentData ?: return@composable
             InstallmentsScreenDestination(
+                installmentData = installmentData,
                 paymentData = paymentData,
                 onBackClick = { navController.popBackStack() },
             )
@@ -63,67 +69,77 @@ internal fun CheckoutController(
 @Composable
 private fun CardFormScreenDestination(
     checkoutConfiguration: CheckoutConfiguration?,
-    onNavigateToInstallments: (MPPaymentData) -> Unit,
+    onNavigateToInstallments: (MPInstallmentData, MPPaymentData) -> Unit,
 ) {
-    val viewModel: CardPaymentViewModel = koinViewModel { parametersOf(checkoutConfiguration) }
-    val viewEvent by viewModel.viewEvent.collectAsState()
+    val cardPaymentViewModel: CardPaymentViewModel = koinViewModel {
+        parametersOf(checkoutConfiguration)
+    }
+    val viewEvent by cardPaymentViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is CardPaymentViewEvent.OnSuccess -> {
-                if (event.installment.showInstallment) {
-                    onNavigateToInstallments(event.payment)
+                if (event.installment.quotas.isNotEmpty()) {
+                    onNavigateToInstallments(event.installment, event.payment)
                 } else {
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
                 }
-                viewModel.clearViewEvent()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             is CardPaymentViewEvent.OnFailure -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
-                viewModel.clearViewEvent()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             is CardPaymentViewEvent.OnUserCancelled -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
-                viewModel.clearViewEvent()
+                cardPaymentViewModel.onViewEventConsumed()
             }
 
             null -> Unit
         }
     }
 
-    CardPaymentScreen(viewModel = viewModel)
+    CardPaymentScreen(viewModel = cardPaymentViewModel)
 }
 
 @Composable
 private fun InstallmentsScreenDestination(
+    installmentData: MPInstallmentData,
     paymentData: MPPaymentData,
     onBackClick: () -> Unit,
 ) {
-    val viewModel: InstallmentsViewModel = koinViewModel { parametersOf(paymentData) }
-    val viewEvent by viewModel.viewEvent.collectAsState()
+    val installmentsViewModel: InstallmentsViewModel = koinViewModel {
+        parametersOf(installmentData)
+    }
+    val viewEvent by installmentsViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is InstallmentViewEvent.OnSuccess -> {
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
-                viewModel.clearViewEvent()
+                CheckoutCallbackHolder.notify(
+                    MercadoPagoCheckoutResult.Success(paymentData.copy(installment = event.installment)),
+                )
+                installmentsViewModel.onViewEventConsumed()
             }
 
             is InstallmentViewEvent.OnFailure -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
-                viewModel.clearViewEvent()
+                installmentsViewModel.onViewEventConsumed()
             }
 
             is InstallmentViewEvent.OnUserCancelled -> {
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
-                viewModel.clearViewEvent()
+                installmentsViewModel.onViewEventConsumed()
             }
 
             null -> Unit
         }
     }
 
-    InstallmentsScreen(viewModel = viewModel, onBackClick = onBackClick)
+    InstallmentsScreen(
+        viewModel = installmentsViewModel,
+        onBackClick = onBackClick,
+    )
 }

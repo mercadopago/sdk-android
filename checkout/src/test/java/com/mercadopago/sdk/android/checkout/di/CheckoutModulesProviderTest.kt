@@ -10,7 +10,6 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
-import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -103,14 +102,12 @@ internal class CheckoutModulesProviderTest {
                 Gson::class,
                 CardFormInitializationOutput::class,
                 MPInstallmentData::class,
-                MPPaymentData::class,
             ),
         )
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
             withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
             withInstance<MPInstallmentData>(mockk(relaxed = true))
-            withInstance<MPPaymentData>(mockk(relaxed = true))
         }
     }
 }
