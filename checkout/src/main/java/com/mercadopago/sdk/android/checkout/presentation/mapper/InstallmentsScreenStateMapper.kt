@@ -59,7 +59,7 @@ private fun List<InstallmentState>.applySelection(
         else -> mapIndexed { index, item -> item.copy(isSelected = index == 0) }
     }
 
-private fun List<Quota>.preselected(): Int? = firstOrNull { it.state == QuotaState.Selected }?.installments
+private fun List<Quota>.preselected(): Int? = firstOrNull { it.state == QuotaState.Success }?.installments
 
 private fun MPInstallmentData.effectiveSelectedQuota(
     selectedNumber: Int?,

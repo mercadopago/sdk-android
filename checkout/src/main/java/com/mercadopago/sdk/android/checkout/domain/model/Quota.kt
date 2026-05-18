@@ -14,6 +14,5 @@ internal data class Quota(
 
 internal enum class QuotaState {
     None,
-    Selected,
-    Disabled,
+    Success,
 }

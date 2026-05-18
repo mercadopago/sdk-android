@@ -19,9 +19,9 @@ internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
 ) : ViewModel() {
     private val initialSelection = installmentData.selectedInstallment
-        ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Selected }?.installments
+        ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Success }?.installments
         ?: installmentData.quotas
-            .firstOrNull { it.state != QuotaState.Disabled }
+            .firstOrNull()
             ?.installments
             ?.takeIf { installmentData.display.displayType == InstallmentsDisplayType.RadioButton }
     private val selectedNumber = MutableStateFlow(initialSelection)
@@ -44,8 +44,7 @@ internal class InstallmentsViewModel(
     fun onInstallmentSelected(
         installment: Int,
     ) {
-        val quota = installmentData.quotas.firstOrNull { it.installments == installment } ?: return
-        if (quota.state == QuotaState.Disabled) return
+        installmentData.quotas.firstOrNull { it.installments == installment } ?: return
         when (installmentData.display.displayType) {
             InstallmentsDisplayType.RadioButton -> selectedNumber.value = installment
             InstallmentsDisplayType.Chevron -> _viewEvent.value = InstallmentViewEvent.OnSuccess(installment)

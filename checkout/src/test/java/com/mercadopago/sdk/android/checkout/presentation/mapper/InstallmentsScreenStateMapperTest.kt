@@ -69,7 +69,7 @@ internal class InstallmentsScreenStateMapperTest {
             currencySymbol = "R$",
             quotas = listOf(
                 quota(installments = 1, totalAmount = BigDecimal("1000.00")),
-                quota(installments = 3, totalAmount = BigDecimal("1112.30"), state = QuotaState.Selected),
+                quota(installments = 3, totalAmount = BigDecimal("1112.30"), state = QuotaState.Success),
                 quota(installments = 6, totalAmount = BigDecimal("1143.20")),
             ),
             selectedInstallment = null,

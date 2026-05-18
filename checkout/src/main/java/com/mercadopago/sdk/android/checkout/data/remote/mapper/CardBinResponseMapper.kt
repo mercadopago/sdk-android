@@ -45,8 +45,7 @@ private fun QuotaResponse.toDomain(): Quota =
 
 private fun String?.toQuotaState(): QuotaState =
     when (this?.lowercase()) {
-        "selected" -> QuotaState.Selected
-        "disabled" -> QuotaState.Disabled
+        "success", "selected" -> QuotaState.Success
         else -> QuotaState.None
     }
 
