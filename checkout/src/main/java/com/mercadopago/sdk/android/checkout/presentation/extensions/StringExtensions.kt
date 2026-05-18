@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
+import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
+
 internal const val ZERO = "0"
 
 internal fun String.hasAllSameDigits(): Boolean {
@@ -17,12 +19,6 @@ internal fun String.toBrandLabel(): String =
     split('_')
         .filter { it.isNotEmpty() }
         .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
-
-internal data class AmountParts(
-    val currencySymbol: String,
-    val integerPart: String,
-    val decimalPart: String,
-)
 
 internal fun String.toAmountParts(
     currencySymbol: String,
