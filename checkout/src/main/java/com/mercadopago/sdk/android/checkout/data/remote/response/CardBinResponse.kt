@@ -29,4 +29,8 @@ internal data class QuotaResponse(
     val installments: Int?,
     val installmentAmount: Float?,
     val totalAmount: Float?,
+    val primaryLabel: String? = null,
+    val secondaryLabel: String? = null,
+    val tertiaryLabel: String? = null,
+    val state: String? = null,
 )
