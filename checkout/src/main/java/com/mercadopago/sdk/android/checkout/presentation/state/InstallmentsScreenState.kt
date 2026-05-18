@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
-import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
-
 internal data class InstallmentsScreenState(
     val title: String = "",
     val items: List<InstallmentState> = emptyList(),

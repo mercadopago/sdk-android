@@ -8,9 +8,9 @@ import com.mercadopago.sdk.android.checkout.domain.mapper.toExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.mapper.toSecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()
@@ -22,7 +22,7 @@ internal fun CardBinResponse.toDomain(): CardBinData {
         securityCode = translations?.securityCode?.let { paymentMethod?.securityCode?.toSecurityCodeField(it) },
         holderName = translations?.holderName?.toCardHolderField(),
         expirationDate = translations?.expirationDate?.toExpirationDateField(),
-        issuers = paymentMethod?.issuers?.map { BinIssuer(id = it.id, name = it.name) } ?: emptyList(),
+        issuers = paymentMethod?.issuers?.map { BinIssuer(id = it.id?.toString(), name = it.name) } ?: emptyList(),
         quotas = installment?.quotas?.map { it.toDomain() } ?: emptyList(),
         displayType = installment?.selectionType.toDisplayType(),
         currencySymbol = translations?.currencySymbol.orEmpty(),

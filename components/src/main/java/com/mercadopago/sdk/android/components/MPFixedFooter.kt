@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.components.extensions.isPositive
+import com.mercadopago.sdk.android.components.extensions.isGreaterThan
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
@@ -75,7 +75,7 @@ fun MPFixedFooter(
                 vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
     ) {
-        if (amount?.integerPart?.isPositive() == true) {
+        if (amount?.integerPart?.isGreaterThan() == true) {
             HeaderSection(
                 title = title,
                 amount = amount,
@@ -145,7 +145,7 @@ private fun AmountText(
             style = MercadoPagoTheme.typography.heading.default.medium,
             color = MercadoPagoTheme.color.text.primary,
         )
-        if (amount.decimalPart.isPositive()) {
+        if (amount.decimalPart.isGreaterThan()) {
             Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
             MPText(
                 text = amount.decimalPart,

@@ -1,16 +1,16 @@
 package com.mercadopago.sdk.android.checkout.presentation.mapper
 
-import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.extensions.AmountParts
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toAmountParts
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toBrandLabel
+import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import java.math.BigDecimal
 
