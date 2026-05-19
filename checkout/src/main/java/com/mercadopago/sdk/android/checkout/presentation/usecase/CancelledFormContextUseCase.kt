@@ -15,9 +15,15 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCode
 internal class CancelledFormContextUseCase {
     operator fun invoke(
         screenState: CardPaymentScreenState,
+        installmentsWasPresented: Boolean = false,
     ): UserCancelledContext.CardForm {
         val fields = buildCancelledFieldStates(screenState)
-        return UserCancelledContext.CardForm(CardFormUserCancelledContext(fields))
+        return UserCancelledContext.CardForm(
+            CardFormUserCancelledContext(
+                fields = fields,
+                installmentsWasPresented = installmentsWasPresented,
+            ),
+        )
     }
 
     private fun buildCancelledFieldStates(

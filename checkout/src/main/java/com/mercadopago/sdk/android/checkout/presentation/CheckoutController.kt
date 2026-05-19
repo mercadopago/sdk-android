@@ -80,6 +80,7 @@ private fun CardFormScreenDestination(
         when (val event = viewEvent) {
             is CardPaymentViewEvent.OnSuccess -> {
                 if (event.installment.quotas.isNotEmpty()) {
+                    cardPaymentViewModel.markInstallmentsPresented()
                     onNavigateToInstallments(event.installment, event.payment)
                 } else {
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))
