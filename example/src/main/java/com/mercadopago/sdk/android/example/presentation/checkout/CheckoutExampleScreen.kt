@@ -50,6 +50,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import android.widget.Toast
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
@@ -107,7 +108,11 @@ internal fun CheckoutExampleScreen(
                         checkout.show { result ->
                             when (result) {
                                 is MercadoPagoCheckoutResult.Success ->
-                                    state = CheckoutState.Success(result.paymentData.token)
+                                    when (val data = result.paymentData) {
+                                        is MPPaymentData.CardToken ->
+                                            state = CheckoutState.Success(data.token)
+                                        is MPPaymentData.Order -> Unit
+                                    }
 
                                 is MercadoPagoCheckoutResult.Error ->
                                     Toast.makeText(

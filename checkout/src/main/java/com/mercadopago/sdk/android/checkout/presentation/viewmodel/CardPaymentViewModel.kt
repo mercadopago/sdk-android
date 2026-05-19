@@ -420,7 +420,7 @@ internal class CardPaymentViewModel(
                 buyerIdentification = buyerIdentification,
             ).fold(
                 onSuccess = { cardToken ->
-                    val paymentData = MPPaymentData(
+                    val paymentData = MPPaymentData.CardToken(
                         transactionAmount = checkoutConfiguration?.getCardFormAmount(),
                         token = cardToken.token,
                         installment = 1,
