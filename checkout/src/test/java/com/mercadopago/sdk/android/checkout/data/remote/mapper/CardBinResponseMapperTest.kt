@@ -200,6 +200,7 @@ internal class CardBinResponseMapperTest {
                         secondaryLabel = null,
                         tertiaryLabel = null,
                         state = null,
+                        accessibilityLabel = null,
                     ),
                 ),
             ),
@@ -211,6 +212,59 @@ internal class CardBinResponseMapperTest {
         assertEquals(1, domain.installmentData.quotas[0].installments)
         assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.installmentData.quotas[0].installmentAmount))
         assertEquals(0, BigDecimal.valueOf(10.0).compareTo(domain.installmentData.quotas[0].totalAmount))
+    }
+
+    @Test
+    fun `toDomain maps quota accessibilityLabel`() {
+        val response = minimalResponse().copy(
+            installment = InstallmentConfigResponse(
+                selectionType = null,
+                quotas = listOf(
+                    QuotaResponse(
+                        installments = 3,
+                        installmentAmount = 33.34f,
+                        totalAmount = 100.00f,
+                        primaryLabel = "3x R$ 33,34",
+                        secondaryLabel = "Sem juros",
+                        tertiaryLabel = null,
+                        state = "success",
+                        accessibilityLabel = "3 parcelas de R$ 33,34, sem acréscimo",
+                    ),
+                ),
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals(
+            "3 parcelas de R$ 33,34, sem acréscimo",
+            domain.installmentData.quotas[0].accessibilityLabel,
+        )
+    }
+
+    @Test
+    fun `toDomain maps quota accessibilityLabel as null when absent`() {
+        val response = minimalResponse().copy(
+            installment = InstallmentConfigResponse(
+                selectionType = null,
+                quotas = listOf(
+                    QuotaResponse(
+                        installments = 1,
+                        installmentAmount = 10.0f,
+                        totalAmount = 10.0f,
+                        primaryLabel = "1x R$ 10,00",
+                        secondaryLabel = null,
+                        tertiaryLabel = null,
+                        state = null,
+                        accessibilityLabel = null,
+                    ),
+                ),
+            ),
+        )
+
+        val domain = response.toDomain()
+
+        assertNull(domain.installmentData.quotas[0].accessibilityLabel)
     }
 
     @Test

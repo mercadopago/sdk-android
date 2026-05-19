@@ -48,6 +48,7 @@ private fun QuotaResponse.toDomain(): Quota =
         secondaryLabel = secondaryLabel,
         tertiaryLabel = tertiaryLabel,
         state = state.toQuotaState(),
+        accessibilityLabel = accessibilityLabel,
     )
 
 private fun String?.toQuotaState(): QuotaState =

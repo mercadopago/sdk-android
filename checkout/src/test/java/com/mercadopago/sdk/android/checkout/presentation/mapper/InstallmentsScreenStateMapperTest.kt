@@ -115,6 +115,35 @@ internal class InstallmentsScreenStateMapperTest {
     }
 
     @Test
+    fun `installment item uses accessibilityLabel from quota when present`() {
+        val state = installmentDataWith(
+            quotas = listOf(
+                quota(
+                    installments = 3,
+                    primary = "3x R$ 33,34",
+                    accessibilityLabel = "3 parcelas de R$ 33,34, sem acréscimo",
+                ),
+            ),
+        ).toInstallmentsScreenState()
+
+        assertEquals(
+            "3 parcelas de R$ 33,34, sem acréscimo",
+            state.items.first().accessibilityLabel,
+        )
+    }
+
+    @Test
+    fun `installment item falls back to primaryLabel when accessibilityLabel is null`() {
+        val state = installmentDataWith(
+            quotas = listOf(
+                quota(installments = 1, primary = "1x R$ 1.000,00", accessibilityLabel = null),
+            ),
+        ).toInstallmentsScreenState()
+
+        assertEquals("1x R$ 1.000,00", state.items.first().accessibilityLabel)
+    }
+
+    @Test
     fun `secondaryLabel without decimal separator is treated as integer only`() {
         val state = installmentDataWith(
             currencySymbol = "¥",
@@ -136,6 +165,7 @@ internal class InstallmentsScreenStateMapperTest {
         primary: String = "",
         secondary: String = "",
         state: QuotaState = QuotaState.None,
+        accessibilityLabel: String? = null,
     ) = Quota(
         installments = installments,
         installmentAmount = installmentAmount,
@@ -143,6 +173,7 @@ internal class InstallmentsScreenStateMapperTest {
         primaryLabel = primary,
         secondaryLabel = secondary,
         state = state,
+        accessibilityLabel = accessibilityLabel,
     )
 
     private fun installmentDataWith(
