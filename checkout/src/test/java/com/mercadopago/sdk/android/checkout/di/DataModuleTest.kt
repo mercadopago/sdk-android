@@ -7,7 +7,9 @@ import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
+import com.mercadopago.sdk.android.checkout.data.remote.service.OrderService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
@@ -69,6 +71,7 @@ internal class DataModuleTest {
             includes(provideDataModule())
             single { checkoutConfiguration }
             single { mockk<CardFormService>(relaxed = true) }
+            single { mockk<OrderService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -82,7 +85,9 @@ internal class DataModuleTest {
                 CheckoutType::class,
                 List::class,
                 CardFormService::class,
+                OrderService::class,
                 GetCardBinUseCase::class,
+                ProcessOrderUseCase::class,
                 GenerateTokenUseCase::class,
             ),
         )
