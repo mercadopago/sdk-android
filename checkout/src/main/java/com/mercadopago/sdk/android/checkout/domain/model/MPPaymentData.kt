@@ -5,53 +5,30 @@ import java.math.BigDecimal
 /**
  * Contains the payment data resulting from a successful checkout.
  *
- * Implementations:
- * - [CardToken] Checkout completed with a card token (card-form only scenario).
- * - [Order] Checkout completed with an order (payment scenario).
+ * In the card-form only scenario, [token] is populated and [orderId]/[orderStatus] are null.
+ * In the payment with order scenario, [orderId] and [orderStatus] are populated and [token] is null.
+ *
+ * @property token Payment token generated for the transaction. Present in the card-form only scenario.
+ * @property orderId Order identifier. Present in the payment with order scenario.
+ * @property orderStatus Order status. Present in the payment with order scenario.
+ * @property transactionAmount Total amount of the transaction.
+ * @property paymentMethodId Identifier of the selected payment method.
+ * @property paymentTypeId Identifier of the selected payment type.
+ * @property payer Payer information associated with the payment.
+ * @property installment Number of installments selected.
+ * @property issuerId Identifier of the card issuer.
  */
-sealed class MPPaymentData {
-    /**
-     * Payment data for the card-form only scenario.
-     *
-     * @property token Payment token generated for the transaction.
-     * @property transactionAmount Total amount of the transaction.
-     * @property paymentMethodId Identifier of the selected payment method.
-     * @property paymentTypeId Identifier of the selected payment type.
-     * @property payer Payer information associated with the payment.
-     * @property installment Number of installments selected.
-     * @property issuerId Identifier of the card issuer.
-     */
-    data class CardToken(
-        val token: String,
-        val transactionAmount: BigDecimal?,
-        val paymentMethodId: String,
-        val paymentTypeId: String,
-        val payer: Payer?,
-        val installment: Int?,
-        val issuerId: String?,
-    ) : MPPaymentData()
-
-    /**
-     * Payment data for the payment with order scenario.
-     *
-     * @property id Order identifier.
-     * @property status Order status.
-     * @property paymentMethodId Identifier of the selected payment method.
-     * @property paymentTypeId Identifier of the selected payment type.
-     * @property payer Payer information associated with the payment.
-     * @property installment Number of installments selected.
-     * @property issuerId Identifier of the card issuer.
-     */
-    data class Order(
-        val id: String,
-        val status: String,
-        val paymentMethodId: String,
-        val paymentTypeId: String,
-        val payer: Payer?,
-        val installment: Int?,
-        val issuerId: String?,
-    ) : MPPaymentData()
-}
+data class MPPaymentData(
+    val token: String? = null,
+    val orderId: String? = null,
+    val orderStatus: String? = null,
+    val transactionAmount: BigDecimal?,
+    val paymentMethodId: String,
+    val paymentTypeId: String,
+    val payer: Payer?,
+    val installment: Int?,
+    val issuerId: String?,
+)
 
 /**
  * Represents the payer information for a payment.
