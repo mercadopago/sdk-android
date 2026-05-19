@@ -1,0 +1,45 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_cda2b58efe53af::t_7cf62d0c9a6dfa 312,316-317
+  s_cda2b58efe53af::t_146e607ba47755 61-62
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_cda2b58efe53af::t_73b9720b94570b 667-688
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/coremethods/PaymentExampleScreen.kt
+  s_7d04a005159263::t_ebb440114fbd21 15-16
+  s_7d04a005159263::t_0fb6a7cc05ca17 161-165
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/UserCancelledContext.kt
+  s_cda2b58efe53af::t_ce6f0ecaa4c84f 16-20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCase.kt
+  s_cda2b58efe53af::t_dbfd40377b2201 18,21-26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardFormUserCancelledContext.kt
+  s_cda2b58efe53af::t_00963a73220654 12-13,17
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_cda2b58efe53af::t_78deab9a6b9440 83
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_cda2b58efe53af::t_d742977dfce4a3 121-123,126-130,134
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_cda2b58efe53af::t_50714fc5e9a7f7 329-344
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "e2701c8f02442e338176117562319ba752a49fa8",
+  "prompts": {},
+  "sessions": {
+    "s_7d04a005159263": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "09943908-5ea3-480c-8fda-387e08da4311",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_cda2b58efe53af": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bca2ffc6-6c1e-41a7-9208-683ec79e76e2",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
