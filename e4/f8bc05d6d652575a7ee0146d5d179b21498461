@@ -1,0 +1,37 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/Quota.kt
+  s_89197fcdf18581::t_4d45cb2227c5bc 13
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_89197fcdf18581::t_4e6b25c7083169 49
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_89197fcdf18581::t_82200ae3508969 187,195
+  s_89197fcdf18581::t_b995904474d4d2 226,234
+  s_89197fcdf18581::t_3c24eb8d1c304a 130-135,156-161
+  s_89197fcdf18581::t_09c4b7696badff 21-24
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_89197fcdf18581::t_f679a5b1a6df59 51
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_89197fcdf18581::t_af0aae58383dd2 203,217-267
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_89197fcdf18581::t_7466abb90f4b66 118-145
+  s_89197fcdf18581::t_05e2463aaebf2f 168,176
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_89197fcdf18581::t_d76c986a88851e 35
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenState.kt
+  s_89197fcdf18581::t_99bf9456164d19 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "e4f8bc05d6d652575a7ee0146d5d179b21498461",
+  "prompts": {},
+  "sessions": {
+    "s_89197fcdf18581": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "93fd8920-3b41-4bac-b2af-ab7a6630d246",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
