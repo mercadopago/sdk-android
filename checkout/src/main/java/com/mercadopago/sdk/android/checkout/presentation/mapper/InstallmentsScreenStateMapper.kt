@@ -46,6 +46,7 @@ private fun List<Quota>.toInstallmentStates(): List<InstallmentState> =
             description = quota.tertiaryLabel.orEmpty(),
             isSelected = false,
             number = quota.installments ?: 1,
+            accessibilityLabel = quota.accessibilityLabel ?: quota.primaryLabel.orEmpty(),
         )
     }
 

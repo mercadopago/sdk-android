@@ -13,4 +13,5 @@ internal data class InstallmentState(
     val description: String,
     val isSelected: Boolean,
     val number: Int,
+    val accessibilityLabel: String,
 )

@@ -10,6 +10,7 @@ internal data class Quota(
     val secondaryLabel: String? = null,
     val tertiaryLabel: String? = null,
     val state: QuotaState = QuotaState.None,
+    val accessibilityLabel: String? = null,
 )
 
 internal enum class QuotaState {

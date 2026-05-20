@@ -18,6 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
@@ -123,7 +127,12 @@ private fun ChevronInstallmentItem(
             title = item.text,
             description = item.description.takeIf { it.isNotEmpty() },
         ),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics {
+                contentDescription = item.accessibilityLabel
+                role = Role.Button
+            },
         trailing = MPListItemTrailing(
             text = item.trailing,
             type = MPListItemTrailing.Type.Icon(
@@ -144,7 +153,12 @@ private fun RadioButtonInstallmentItem(
             title = item.text,
             description = item.description.takeIf { it.isNotEmpty() },
         ),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics {
+                contentDescription = item.accessibilityLabel
+                role = Role.Button
+            },
         type = MPListItemType.RadioButton(selected = item.isSelected),
         trailing = if (item.trailing.isNotEmpty()) {
             MPListItemTrailing(text = item.trailing)
@@ -170,6 +184,7 @@ private fun InstallmentsScreenChevronPreview() {
                         description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = false,
                         number = 1,
+                        accessibilityLabel = "1x R$ 300,00",
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
@@ -177,6 +192,7 @@ private fun InstallmentsScreenChevronPreview() {
                         description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
                         number = 2,
+                        accessibilityLabel = "2x R$ 190,00",
                     ),
                 ),
                 footerState = FooterState(
@@ -207,6 +223,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
                         description = "CFT: 0,00%  TEA: 0,00%",
                         isSelected = true,
                         number = 1,
+                        accessibilityLabel = "1x R$ 300,00",
                     ),
                     InstallmentState(
                         text = "2x R$ 190,00",
@@ -214,6 +231,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
                         description = "CFT: 369,00%  TEA: 265,00%",
                         isSelected = false,
                         number = 2,
+                        accessibilityLabel = "2x R$ 190,00",
                     ),
                 ),
                 footerState = FooterState(

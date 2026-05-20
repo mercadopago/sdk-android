@@ -32,4 +32,5 @@ internal data class QuotaResponse(
     val secondaryLabel: String?,
     val tertiaryLabel: String?,
     val state: String?,
+    val accessibilityLabel: String?,
 )
