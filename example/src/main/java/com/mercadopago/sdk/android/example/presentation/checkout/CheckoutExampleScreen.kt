@@ -118,15 +118,15 @@ internal fun CheckoutExampleScreen(
                                     ).show()
 
                                 is MercadoPagoCheckoutResult.UserCancelled -> {
-                                    val fieldsInfo = when (val ctx = result.context) {
-                                        is UserCancelledContext.CardForm ->
-                                            ctx.context.fields.joinToString(", ") { field ->
-                                                "${field.field.name}: ${field.state::class.simpleName}"
-                                            }
+                                    val ctx = (result.context as UserCancelledContext.CardForm).context
+                                    val fieldsInfo = ctx.fields.joinToString(", ") { field ->
+                                        "${field.field.name}: ${field.state::class.simpleName}"
                                     }
+                                    val message = "CardForm (installmentsWasPresented=" +
+                                        "${ctx.installmentsWasPresented})\n$fieldsInfo"
                                     Toast.makeText(
                                         context,
-                                        "Cancelado pelo usuário\n$fieldsInfo",
+                                        "Cancelado pelo usuário\n$message",
                                         Toast.LENGTH_LONG,
                                     ).show()
                                 }

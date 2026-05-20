@@ -58,6 +58,8 @@ internal class CardPaymentViewModel(
 
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
 
+    private var installmentsWasPresented: Boolean = false
+
     private val analyticsTracker = CardFormAnalyticsTracker(
         isLoading = { _viewState.value.isLoading },
     )
@@ -307,8 +309,12 @@ internal class CardPaymentViewModel(
     ) {
         analyticsTracker.trackUserCanceled(reason)
         val currentState = _viewState.value
-        val context = cancelledFormContextUseCase(currentState)
+        val context = cancelledFormContextUseCase(currentState, installmentsWasPresented)
         _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
+    }
+
+    fun markInstallmentsPresented() {
+        installmentsWasPresented = true
     }
 
     fun onViewEventConsumed() {

@@ -22,6 +22,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
@@ -660,6 +661,29 @@ internal class CardPaymentViewModelTest {
         viewModel.onBackPressed(reason = CancelReason.UiButton)
 
         assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
+    }
+
+    @Test
+    fun `when onBackPressed without installments presented then context flag is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onBackPressed()
+
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
+        val context = event.context as UserCancelledContext.CardForm
+        assertFalse(context.context.installmentsWasPresented)
+    }
+
+    @Test
+    fun `when markInstallmentsPresented and onBackPressed then context flag is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.markInstallmentsPresented()
+        viewModel.onBackPressed()
+
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
+        val context = event.context as UserCancelledContext.CardForm
+        assertTrue(context.context.installmentsWasPresented)
     }
 
     @Test
