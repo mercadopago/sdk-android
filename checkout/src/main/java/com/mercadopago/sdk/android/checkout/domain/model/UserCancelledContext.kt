@@ -13,9 +13,4 @@ sealed class UserCancelledContext {
      * @property context Context containing the state of all card form fields when cancelled
      */
     data class CardForm(val context: CardFormUserCancelledContext) : UserCancelledContext()
-
-    /**
-     * Represents the cancelled state when the user dismissed the installments screen.
-     */
-    data object Installments : UserCancelledContext()
 }
