@@ -10,10 +10,12 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
@@ -102,12 +104,17 @@ internal class CheckoutModulesProviderTest {
                 Gson::class,
                 CardFormInitializationOutput::class,
                 MPInstallmentData::class,
+                MPPaymentData::class,
+                String::class,
+                InstallmentsAnalyticsTracker::class,
             ),
         )
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
             withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
             withInstance<MPInstallmentData>(mockk(relaxed = true))
+            withInstance<MPPaymentData>(mockk(relaxed = true))
+            withInstance<String>("card_form")
         }
     }
 }

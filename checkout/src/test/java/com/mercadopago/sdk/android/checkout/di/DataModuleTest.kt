@@ -9,8 +9,10 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
@@ -93,6 +95,9 @@ internal class DataModuleTest {
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
                 MPInstallmentData::class,
+                MPPaymentData::class,
+                String::class,
+                InstallmentsAnalyticsTracker::class,
             ),
         )
 
@@ -100,6 +105,8 @@ internal class DataModuleTest {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
             withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
             withInstance<MPInstallmentData>(mockk(relaxed = true))
+            withInstance<MPPaymentData>(mockk(relaxed = true))
+            withInstance<String>("card_form")
         }
     }
 }

@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemot
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -52,7 +53,11 @@ internal fun provideDataModule() =
                 cardPaymentScreenStateFactory = get(),
             )
         }
-        viewModel { (installmentData: MPInstallmentData) ->
-            InstallmentsViewModel(installmentData = installmentData)
+        viewModel { (installmentData: MPInstallmentData, paymentData: MPPaymentData, checkoutType: String) ->
+            InstallmentsViewModel(
+                installmentData = installmentData,
+                paymentData = paymentData,
+                checkoutType = checkoutType,
+            )
         }
     }

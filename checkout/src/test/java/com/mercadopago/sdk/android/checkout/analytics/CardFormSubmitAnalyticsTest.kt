@@ -38,17 +38,17 @@ internal class CardFormSubmitAnalyticsTest {
     }
 
     @Test
-    fun `when metricCardFormSubmit called with null optional fields then data reflects nulls`() {
+    fun `when metricCardFormSubmit called with zero transactionAmount and null paymentType then data reflects them`() {
         val metric = metricCardFormSubmit(
             cardBrand = "amex",
-            transactionAmount = null,
+            transactionAmount = 0.0,
             issuer = "",
             paymentType = null,
         )
 
         val data = assertIs<CardFormSubmitEventData>(metric.data)
         assertEquals("amex", data.cardBrand)
-        assertNull(data.transactionAmount)
+        assertEquals(0.0, data.transactionAmount)
         assertEquals("", data.issuer)
         assertNull(data.paymentType)
     }

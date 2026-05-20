@@ -1,9 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
+import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import java.math.BigDecimal
@@ -27,6 +31,16 @@ internal class InstallmentsViewModelTest {
         ),
     )
 
+    private val paymentData = MPPaymentData(
+        token = "tok",
+        transactionAmount = BigDecimal("100.00"),
+        paymentMethodId = "visa",
+        paymentTypeId = "credit_card",
+        payer = null,
+        installment = null,
+        issuerId = "1",
+    )
+
     private fun makeData(
         displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
     ) = MPInstallmentData(
@@ -42,7 +56,13 @@ internal class InstallmentsViewModelTest {
 
     private fun makeViewModel(
         installmentData: MPInstallmentData = makeData(),
-    ) = InstallmentsViewModel(installmentData = installmentData)
+        tracker: InstallmentsAnalyticsTracker = mockk(relaxed = true),
+    ) = InstallmentsViewModel(
+        installmentData = installmentData,
+        paymentData = paymentData,
+        checkoutType = "card_form",
+        analyticsTracker = tracker,
+    )
 
     @Test
     fun `viewState reflects quotas from installmentData`() = runTest {
@@ -80,11 +100,64 @@ internal class InstallmentsViewModelTest {
     }
 
     @Test
-    fun `onInstallmentSelected ignored in Chevron mode`() = runTest {
+    fun `onInstallmentSelected ignored in Chevron mode keeps no selection`() = runTest {
         val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
 
         viewModel.onInstallmentSelected(installment = 3)
 
         assertFalse(viewModel.viewState.value.items.any { it.isSelected })
+    }
+
+    @Test
+    fun `init tracks initialize event`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+
+        makeViewModel(tracker = tracker)
+
+        verify { tracker.trackInitialize() }
+    }
+
+    @Test
+    fun `RadioButton onInstallmentSelected tracks selected`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        verify { tracker.trackSelected(3) }
+    }
+
+    @Test
+    fun `Chevron onInstallmentSelected tracks submit`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(
+            installmentData = makeData(InstallmentsDisplayType.Chevron),
+            tracker = tracker,
+        )
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        verify { tracker.trackSubmit(quotas.first { it.installments == 3 }) }
+    }
+
+    @Test
+    fun `onPayClicked tracks submit in RadioButton mode`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+        viewModel.onInstallmentSelected(installment = 3)
+
+        viewModel.onPayClicked()
+
+        verify { tracker.trackSubmit(quotas.first { it.installments == 3 }) }
+    }
+
+    @Test
+    fun `onBackPressed tracks user canceled with back_pressed`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+
+        viewModel.onBackPressed()
+
+        verify { tracker.trackUserCanceled(InstallmentsCancelReason.BackPressed) }
     }
 }
