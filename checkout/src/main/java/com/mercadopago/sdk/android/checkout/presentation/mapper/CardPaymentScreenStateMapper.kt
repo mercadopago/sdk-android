@@ -38,7 +38,7 @@ internal fun CardFormInitializationOutput.toCardPaymentScreenState(
         secureCodeState = securityCode.toSecurityCodeState(),
         identificationTypeState = document.toIdentificationTypeState(identificationTypes),
         footerState = FooterState(
-            title = positiveAmount?.let { totalLabel }.orEmpty(),
+            title = positiveAmount?.let { footerTitle }.orEmpty(),
             currencySymbol = positiveAmount?.let { currencySymbol }.orEmpty(),
             amountIntegerPart = positiveAmount?.getTotal().orEmpty(),
             amountDecimalPart = positiveAmount?.getTotalDecimalPart().orEmpty(),

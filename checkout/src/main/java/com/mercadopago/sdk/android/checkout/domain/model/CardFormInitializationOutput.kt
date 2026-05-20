@@ -4,7 +4,7 @@ internal data class CardFormInitializationOutput(
     val title: String,
     val buttonLabel: String,
     val currencySymbol: String = "",
-    val totalLabel: String = "",
+    val footerTitle: String = "",
     val fields: CardFormFields,
     val identificationTypes: List<IdentificationTypeItem>,
 )
