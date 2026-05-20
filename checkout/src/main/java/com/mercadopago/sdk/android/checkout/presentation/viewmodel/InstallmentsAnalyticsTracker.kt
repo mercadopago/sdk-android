@@ -28,7 +28,7 @@ internal class InstallmentsAnalyticsTracker(
                     paymentType = paymentData.paymentTypeId,
                     selectionType = installmentData.display.displayType.toAnalyticsString(),
                     quotasCount = installmentData.quotas.size,
-                    transactionAmount = paymentData.transactionAmount?.toDouble(),
+                    transactionAmount = paymentData.transactionAmount?.toDouble() ?: 0.0,
                 ),
             ),
         )

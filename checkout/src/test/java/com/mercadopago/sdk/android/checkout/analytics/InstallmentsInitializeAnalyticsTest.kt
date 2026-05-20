@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDispl
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
-import kotlin.test.assertNull
 
 internal class InstallmentsInitializeAnalyticsTest {
     private fun eventData(
@@ -14,7 +13,7 @@ internal class InstallmentsInitializeAnalyticsTest {
         paymentType: String = "credit_card",
         selectionType: String = "radio_button",
         quotasCount: Int = 6,
-        transactionAmount: Double? = 500.0,
+        transactionAmount: Double = 500.0,
     ) = InstallmentsInitializeEventData(
         checkoutType = checkoutType,
         paymentMethodId = paymentMethodId,
@@ -46,19 +45,19 @@ internal class InstallmentsInitializeAnalyticsTest {
     }
 
     @Test
-    fun `when metricInstallmentsInitialize called with null transactionAmount then data reflects null`() {
+    fun `when metricInstallmentsInitialize called with zero transactionAmount then data reflects zero`() {
         val metric = metricInstallmentsInitialize(
             eventData(
                 paymentMethodId = "master",
                 paymentType = "debit_card",
                 selectionType = "chevron",
                 quotasCount = 3,
-                transactionAmount = null,
+                transactionAmount = 0.0,
             ),
         )
 
         val data = assertIs<InstallmentsInitializeEventData>(metric.data)
-        assertNull(data.transactionAmount)
+        assertEquals(0.0, data.transactionAmount)
         assertEquals("chevron", data.selectionType)
         assertEquals(3, data.quotasCount)
     }
