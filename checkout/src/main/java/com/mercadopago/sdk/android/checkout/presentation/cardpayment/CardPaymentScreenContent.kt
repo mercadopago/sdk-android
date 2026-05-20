@@ -7,8 +7,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -28,6 +30,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,8 @@ import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.components.MPAmountData
+import com.mercadopago.sdk.android.components.MPButton
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -132,6 +137,8 @@ internal fun CardPaymentScreenContent(
 ) {
     val cardNumberFocusRequester = remember { FocusRequester() }
     var showIdentificationBottomSheet by remember { mutableStateOf(false) }
+    val density = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
 
     LaunchedEffect(Unit) {
         cardNumberFocusRequester.requestFocus()
@@ -144,14 +151,13 @@ internal fun CardPaymentScreenContent(
             .navigationBarsPadding(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .imePadding(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .imePadding(),
             ) {
                 MPHeader(
                     modifier = Modifier.fillMaxSize(),
@@ -284,18 +290,43 @@ internal fun CardPaymentScreenContent(
                 }
             }
 
-            if (viewState.footerState.isVisible) {
+            if (!isImeVisible) {
                 Surface(
                     shadowElevation = 8.dp,
                     tonalElevation = 0.dp,
                 ) {
                     MPFixedFooter(
                         title = viewState.footerState.title,
+                        amount = viewState.footerState.toAmountData(),
                         subtitle = viewState.footerState.subtitle,
                         button = MPFixedFooterButtonData(
                             text = viewState.footerState.buttonLabel.orEmpty(),
+                            enabled = viewState.footerState.isButtonEnabled,
                             onClick = onFooterButtonClick,
                         ),
+                    )
+                }
+            }
+        }
+
+        if (isImeVisible) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .imePadding(),
+                shadowElevation = 8.dp,
+                tonalElevation = 0.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 12.dp),
+                ) {
+                    MPButton(
+                        text = viewState.footerState.buttonLabel.orEmpty(),
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = viewState.footerState.isButtonEnabled,
+                        onClick = onFooterButtonClick,
                     )
                 }
             }
@@ -388,7 +419,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonLabel = "Pagar",
-                    isVisible = true,
+                    isButtonEnabled = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -437,7 +468,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonLabel = "Continuar",
-                    isVisible = true,
+                    isButtonEnabled = true,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -508,7 +539,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonLabel = "Pagar",
-                    isVisible = false,
+                    isButtonEnabled = false,
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -526,3 +557,14 @@ private fun CardPaymentScreenContentWithErrorPreview() {
         )
     }
 }
+
+private fun FooterState.toAmountData(): MPAmountData? =
+    if (amountIntegerPart.isNotEmpty()) {
+        MPAmountData(
+            currencySymbol = currencySymbol,
+            integerPart = amountIntegerPart,
+            decimalPart = amountDecimalPart,
+        )
+    } else {
+        null
+    }

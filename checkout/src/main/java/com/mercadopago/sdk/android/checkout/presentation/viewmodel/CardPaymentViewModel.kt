@@ -329,7 +329,9 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
-                    _viewState.value = data.toCardPaymentScreenState()
+                    _viewState.value = data.toCardPaymentScreenState(
+                        totalAmount = checkoutConfiguration?.getCardFormAmount(),
+                    )
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)

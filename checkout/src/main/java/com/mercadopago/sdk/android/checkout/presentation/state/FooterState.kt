@@ -8,4 +8,5 @@ internal data class FooterState(
     val subtitle: String? = null,
     val buttonLabel: String? = null,
     val isVisible: Boolean = false,
+    val isButtonEnabled: Boolean = false,
 )
