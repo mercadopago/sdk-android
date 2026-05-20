@@ -1,0 +1,20 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_dca0bf2b560846::t_70e2207dcf0f36 132,158
+  s_dca0bf2b560846::t_1aeeafa9676096 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "b0fbc1eab4e5dec0539409d5af4e61a48f638460",
+  "prompts": {},
+  "sessions": {
+    "s_dca0bf2b560846": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "981b417e-9376-4aad-830f-358bfb7401d6",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
