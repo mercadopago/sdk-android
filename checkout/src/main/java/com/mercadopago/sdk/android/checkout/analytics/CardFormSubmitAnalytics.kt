@@ -16,7 +16,7 @@ private const val USER_CANCELED_PATH = "/user_canceled_error"
 @KoverIgnore("in development")
 internal fun metricCardFormSubmit(
     cardBrand: String,
-    transactionAmount: Double?,
+    transactionAmount: Double,
     issuer: String,
     paymentType: String? = null,
 ) = Metric(
@@ -53,7 +53,7 @@ internal data class CardFormSubmitEventData(
     @SerializedName("card_brand")
     val cardBrand: String,
     @SerializedName("transaction_amount")
-    val transactionAmount: Double?,
+    val transactionAmount: Double,
     @SerializedName("issuer")
     val issuer: String,
     @SerializedName("payment_type")

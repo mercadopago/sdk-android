@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -26,13 +25,24 @@ internal fun metricCardIssuersCallSuccess(
 @KoverIgnore("in development")
 internal fun metricCardIssuersCallError(
     error: String,
+    issuers: List<String> = emptyList(),
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH$ERROR_PATH",
     type = TrackType.EVENT,
-    data = AnalyticsConstants.buildErrorData(error),
+    data = CardIssuersErrorData(
+        errorType = error,
+        issuers = issuers,
+    ),
 )
 
 internal data class CardIssuersAnalyticsEventData(
+    @SerializedName("issuers")
+    val issuers: List<String>,
+) : EventData
+
+internal data class CardIssuersErrorData(
+    @SerializedName("error_type")
+    val errorType: String,
     @SerializedName("issuers")
     val issuers: List<String>,
 ) : EventData

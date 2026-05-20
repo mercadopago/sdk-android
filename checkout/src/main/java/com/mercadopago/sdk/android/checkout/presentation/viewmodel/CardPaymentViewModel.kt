@@ -434,7 +434,7 @@ internal class CardPaymentViewModel(
                     )
                     analyticsTracker.trackSubmit(
                         cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble(),
+                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble() ?: 0.0,
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
