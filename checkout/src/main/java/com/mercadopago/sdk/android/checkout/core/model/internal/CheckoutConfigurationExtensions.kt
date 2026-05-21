@@ -2,11 +2,12 @@ package com.mercadopago.sdk.android.checkout.core.model.internal
 
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 
-internal const val CARD_FORM = "card_form"
+internal const val CARD_TRANSACTION = "card_transaction"
+internal const val CARD_SAVE = "card_save"
 internal const val AMOUNT_DEFAULT = "0"
 
 internal fun CheckoutConfiguration.getCardFormAmount() =
-    (checkoutType as? CheckoutType.CardForm)
+    (checkoutType as? CheckoutType.CardTransaction)
         ?.cardFormConfiguration
         ?.amount
 
@@ -15,8 +16,8 @@ internal fun CheckoutConfiguration.getCardFormAmountOrZero(): String =
         ?: AMOUNT_DEFAULT
 
 internal fun CheckoutConfiguration?.toCheckoutType(): String =
-    if (this?.checkoutType is CheckoutType.CardForm) {
-        CARD_FORM
-    } else {
-        ""
+    when (this?.checkoutType) {
+        is CheckoutType.CardSave -> CARD_SAVE
+        is CheckoutType.CardTransaction -> CARD_TRANSACTION
+        null -> ""
     }

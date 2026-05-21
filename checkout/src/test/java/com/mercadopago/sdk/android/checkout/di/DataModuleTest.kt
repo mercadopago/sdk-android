@@ -3,8 +3,8 @@ package com.mercadopago.sdk.android.checkout.di
 import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
-import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.Order
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -61,7 +61,7 @@ internal class DataModuleTest {
         every { context.createConfigurationContext(any()) } returns context
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardTransaction(Order()),
             paymentMethods = emptyList(),
         )
 
