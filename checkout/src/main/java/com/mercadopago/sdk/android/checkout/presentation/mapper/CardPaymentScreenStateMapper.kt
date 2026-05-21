@@ -12,6 +12,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.IdentificationTypeItem
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
+import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -21,19 +23,29 @@ import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTyp
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
+import java.math.BigDecimal
 
-internal fun CardFormInitializationOutput.toCardPaymentScreenState() =
-    with(fields) {
-        CardPaymentScreenState(
-            title = title,
-            cardNumberState = cardNumber.toCardNumberState(),
-            cardHolderState = holderName.toCardHolderState(),
-            expirationDateState = expirationDate.toExpirationDateState(),
-            secureCodeState = securityCode.toSecurityCodeState(),
-            identificationTypeState = document.toIdentificationTypeState(identificationTypes),
-            footerState = FooterState(buttonLabel = buttonLabel),
-        )
-    }
+internal fun CardFormInitializationOutput.toCardPaymentScreenState(
+    totalAmount: BigDecimal? = null,
+) = with(fields) {
+    val positiveAmount = totalAmount?.takeIf { it.signum() > 0 }
+    CardPaymentScreenState(
+        title = title,
+        currencySymbol = currencySymbol,
+        cardNumberState = cardNumber.toCardNumberState(),
+        cardHolderState = holderName.toCardHolderState(),
+        expirationDateState = expirationDate.toExpirationDateState(),
+        secureCodeState = securityCode.toSecurityCodeState(),
+        identificationTypeState = document.toIdentificationTypeState(identificationTypes),
+        footerState = FooterState(
+            title = positiveAmount?.let { footerTitle }.orEmpty(),
+            currencySymbol = positiveAmount?.let { currencySymbol }.orEmpty(),
+            amountIntegerPart = positiveAmount?.getTotal().orEmpty(),
+            amountDecimalPart = positiveAmount?.getTotalDecimalPart().orEmpty(),
+            buttonLabel = buttonLabel,
+        ),
+    )
+}
 
 private fun CardNumberField.toCardNumberState(): CardNumberState {
     val maxLength = config.maxLengthOrNull()

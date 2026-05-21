@@ -3,6 +3,8 @@ package com.mercadopago.sdk.android.checkout.domain.model
 internal data class CardFormInitializationOutput(
     val title: String,
     val buttonLabel: String,
+    val currencySymbol: String = "",
+    val footerTitle: String = "",
     val fields: CardFormFields,
     val identificationTypes: List<IdentificationTypeItem>,
 )
