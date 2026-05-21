@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import com.google.gson.Gson
-import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
@@ -69,7 +68,7 @@ internal class CheckoutModulesProviderTest {
         )
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardSave(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardSave,
             paymentMethods = emptyList(),
         )
         val module = module {

@@ -5,10 +5,8 @@ import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 internal const val CARD_SAVE = "card_save"
 internal const val AMOUNT_DEFAULT = "0"
 
-internal fun CheckoutConfiguration.getCardFormAmount() =
-    (checkoutType as? CheckoutType.CardSave)
-        ?.cardFormConfiguration
-        ?.amount
+@Suppress("FunctionOnlyReturningConstant")
+internal fun CheckoutConfiguration.getCardFormAmount(): java.math.BigDecimal? = null
 
 internal fun CheckoutConfiguration.getCardFormAmountOrZero(): String =
     getCardFormAmount()?.toPlainString()
