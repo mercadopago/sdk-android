@@ -1,0 +1,21 @@
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/AnalyticsSDKConfig.kt
+  s_c49fa86d561352::t_798898578dc1cf 11
+buildSrc/src/main/kotlin/com/mercadopago/sdk/android/MercadoPagoSDKConfig.kt
+  s_c49fa86d561352::t_798898578dc1cf 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "308fd01bf151b74313b0ec3ffeec55130f738f4e",
+  "prompts": {},
+  "sessions": {
+    "s_c49fa86d561352": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e64640bc-6676-4caa-bcb2-c22c84ab85ca",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
