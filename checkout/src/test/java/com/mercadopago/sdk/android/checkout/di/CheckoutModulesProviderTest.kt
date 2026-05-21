@@ -69,7 +69,7 @@ internal class CheckoutModulesProviderTest {
         )
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardSave(CardFormConfiguration()),
             paymentMethods = emptyList(),
         )
         val module = module {

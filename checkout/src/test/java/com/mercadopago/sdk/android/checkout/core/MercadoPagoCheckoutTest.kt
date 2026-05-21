@@ -29,7 +29,7 @@ import kotlin.test.assertSame
 
 internal class MercadoPagoCheckoutTest {
     private val context = mockk<Context>(relaxed = true)
-    private val checkoutType = CheckoutType.CardForm()
+    private val checkoutType = CheckoutType.CardSave()
     private val mockThemePreferences = mockk<CheckoutThemePreferences>(relaxed = true)
     private val mockKoin = mockk<Koin>(relaxed = true)
 

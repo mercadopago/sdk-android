@@ -63,7 +63,7 @@ internal class DataModuleTest {
         every { context.createConfigurationContext(any()) } returns context
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardSave(CardFormConfiguration()),
             paymentMethods = emptyList(),
         )
 
