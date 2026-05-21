@@ -71,7 +71,7 @@ internal class CardPaymentViewModelTest {
     private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
-        checkoutType = mockk<CheckoutType.CardForm>(relaxed = true),
+        checkoutType = mockk<CheckoutType.CardSave>(relaxed = true),
         paymentMethods = listOf(
             PaymentMethod.Card(
                 allowedTypes = listOf(CardType.CREDIT, CardType.DEBIT),

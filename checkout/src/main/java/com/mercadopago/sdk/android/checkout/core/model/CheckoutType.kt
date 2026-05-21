@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
  */
 sealed class CheckoutType : Parcelable {
     /**
-     * CardForm class, used to configure the card form
+     * CardSave class, used to configure the card save
      * @param cardFormConfiguration CardFormConfiguration
      */
     @Parcelize
-    data class CardForm(val cardFormConfiguration: CardFormConfiguration = CardFormConfiguration()) : CheckoutType()
+    data class CardSave(val cardFormConfiguration: CardFormConfiguration = CardFormConfiguration()) : CheckoutType()
 }

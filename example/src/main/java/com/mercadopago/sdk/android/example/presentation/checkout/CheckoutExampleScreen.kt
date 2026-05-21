@@ -69,7 +69,7 @@ internal fun CheckoutExampleScreen(
     val checkout = remember {
         MercadoPagoCheckout.Builder(
             context = context,
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardSave(CardFormConfiguration()),
         ).setPaymentMethods(listOf(PaymentMethod.Card()))
             .build()
     }

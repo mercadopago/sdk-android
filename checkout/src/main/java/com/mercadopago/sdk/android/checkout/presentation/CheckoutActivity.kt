@@ -62,7 +62,7 @@ internal class CheckoutActivity : ComponentActivity() {
     ) {
         val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
-            is CheckoutType.CardForm -> "card_form"
+            is CheckoutType.CardSave -> "card_save"
             null -> ""
         }
         MPAnalytics.tryGetInstance()?.trackMetric(
