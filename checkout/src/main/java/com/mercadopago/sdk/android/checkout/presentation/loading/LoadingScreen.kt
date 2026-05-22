@@ -11,12 +11,6 @@ import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
-/**
- * Tela de loading do checkout — renderiza um de três modos conforme [type]:
- * - [LoadingType.Spinner]: indicador circular centralizado
- * - [LoadingType.SkeletonMajor]: skeleton de tela cheia (header, seller, list rows, summary)
- * - [LoadingType.SkeletonMinor]: skeleton enxuto (header, área única, summary)
- */
 @Composable
 internal fun LoadingScreen(
     type: LoadingType,
