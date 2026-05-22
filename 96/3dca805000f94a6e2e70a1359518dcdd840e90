@@ -1,0 +1,27 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentData.kt
+  s_8c05c49af2654f::t_08a3b9f3cd1e60 6-8,10-46
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_8c05c49af2654f::t_2453b8361c448e 5
+  s_8c05c49af2654f::t_cfc179b6a27e76 424-426,428-444
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "963dca805000f94a6e2e70a1359518dcdd840e90",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_8c05c49af2654f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1bdfe05e-3b4f-4e56-9d26-ef733608e237",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
