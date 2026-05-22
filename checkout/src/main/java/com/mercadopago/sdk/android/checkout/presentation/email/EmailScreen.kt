@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.email
 
-import android.util.Patterns
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -10,14 +9,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.checkout.presentation.state.EmailScreenState
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.EmailViewModel
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
@@ -28,6 +28,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
+ * @param viewModel Detém o estado e a lógica de validação do email.
  * @param translate Textos exibidos na tela (título, label, placeholder, botão e mensagens de erro).
  * @param baseEmail Usado apenas para habilitar o botão no início quando o caller já conhece
  *   um email válido. Não pré-preenche o campo visualmente (PCIFieldState não expõe seed público).
@@ -38,33 +39,34 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  */
 @Composable
 internal fun EmailScreen(
+    viewModel: EmailViewModel,
     translate: EmailScreenState.Translate,
     baseEmail: String? = null,
     deeplink: String = "",
     onBackClick: () -> Unit = {},
     onContinueClick: (deeplink: String) -> Unit = {},
 ) {
-    var state by remember(translate, baseEmail) {
-        mutableStateOf(buildInitialState(translate, baseEmail))
+    val viewState by viewModel.viewState.collectAsState()
+
+    LaunchedEffect(translate, baseEmail) {
+        viewModel.initialize(translate, baseEmail)
     }
 
-    EmailScreenContent(
-        state = state,
-        onBackClick = onBackClick,
-        onEmailChange = { newValue ->
-            state = state.copy(
-                value = newValue,
-                isError = isInvalidFormat(newValue),
-                isButtonEnabled = isValidEmail(newValue),
-            )
-        },
-        onContinueClick = { onContinueClick(deeplink) },
-    )
+    viewState?.let { state ->
+        EmailScreenContent(
+            state = state,
+            errorMessage = viewModel.resolveErrorMessage(state),
+            onBackClick = onBackClick,
+            onEmailChange = viewModel::onEmailChanged,
+            onContinueClick = { onContinueClick(deeplink) },
+        )
+    }
 }
 
 @Composable
 private fun EmailScreenContent(
     state: EmailScreenState,
+    errorMessage: String,
     onBackClick: () -> Unit,
     onEmailChange: (String) -> Unit,
     onContinueClick: () -> Unit,
@@ -87,7 +89,11 @@ private fun EmailScreenContent(
                         top = MercadoPagoTheme.spacing.paddings.xsmall,
                     ),
             ) {
-                EmailField(state = state, onValueChange = onEmailChange)
+                EmailField(
+                    state = state,
+                    errorMessage = errorMessage,
+                    onValueChange = onEmailChange,
+                )
             }
         }
 
@@ -106,6 +112,7 @@ private fun EmailScreenContent(
 @Composable
 private fun EmailField(
     state: EmailScreenState,
+    errorMessage: String,
     onValueChange: (String) -> Unit,
 ) {
     val fieldState = rememberPCIFieldState()
@@ -117,7 +124,7 @@ private fun EmailField(
         showPlaceHolder = true,
         label = state.translate.fieldLabel,
         placeHolder = state.translate.fieldPlaceholder,
-        error = if (state.isError) resolveErrorMessage(state) else "",
+        error = errorMessage,
         onEvent = { event ->
             if (event is SimpleTextFieldEvent.OnValueChanged) {
                 onValueChange(event.value)
@@ -126,48 +133,13 @@ private fun EmailField(
     )
 }
 
-private fun buildInitialState(
-    translate: EmailScreenState.Translate,
-    baseEmail: String?,
-): EmailScreenState {
-    val value = baseEmail.orEmpty()
-    return EmailScreenState(
-        translate = translate,
-        value = value,
-        isError = false,
-        isButtonEnabled = isValidEmail(value),
-    )
-}
-
-private fun resolveErrorMessage(
-    state: EmailScreenState,
-): String {
-    if (!state.isError) return ""
-    return when {
-        state.value.isBlank() -> state.translate.errorFieldEmpty
-        !isValidEmail(state.value) -> state.translate.errorEmailInvalid
-        else -> state.translate.errorFieldRequired
-    }
-}
-
-private fun isValidEmail(
-    value: String,
-): Boolean {
-    return value.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(value).matches()
-}
-
-private fun isInvalidFormat(
-    value: String,
-): Boolean {
-    return value.isNotBlank() && !isValidEmail(value)
-}
-
 @Preview(showBackground = true, name = "Email Screen - Empty")
 @Composable
 private fun EmailScreenEmptyPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         EmailScreenContent(
             state = EmailScreenState(translate = previewTranslate()),
+            errorMessage = "",
             onBackClick = {},
             onEmailChange = {},
             onContinueClick = {},
@@ -186,6 +158,7 @@ private fun EmailScreenFilledPreview() {
                 isError = false,
                 isButtonEnabled = true,
             ),
+            errorMessage = "",
             onBackClick = {},
             onEmailChange = {},
             onContinueClick = {},
@@ -196,14 +169,16 @@ private fun EmailScreenFilledPreview() {
 @Preview(showBackground = true, name = "Email Screen - Error")
 @Composable
 private fun EmailScreenErrorPreview() {
+    val translate = previewTranslate()
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         EmailScreenContent(
             state = EmailScreenState(
-                translate = previewTranslate(),
+                translate = translate,
                 value = "maria.sosa@",
                 isError = true,
                 isButtonEnabled = false,
             ),
+            errorMessage = translate.errorEmailInvalid,
             onBackClick = {},
             onEmailChange = {},
             onContinueClick = {},
