@@ -31,5 +31,5 @@ object MercadoPagoSDKConfig {
     const val ARTIFACT_ID = "sdk-android"
 
     // SDK Android
-    const val VERSION_NAME = "0.2.1"
+    const val VERSION_NAME = "0.2.2"
 }

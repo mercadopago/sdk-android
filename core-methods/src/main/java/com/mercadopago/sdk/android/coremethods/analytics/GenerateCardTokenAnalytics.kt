@@ -10,36 +10,35 @@ import com.mercadopago.sdk.android.coremethods.analytics.CoreMethodsAnalyticsCon
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 private const val GENERATE_CARD_TOKEN_PATH = "/tokenization"
+private const val TYPE_WALLET_CORE_METHODS = "coremethods"
 
 @KoverIgnore("in development")
 internal fun metricGenerateCardTokenCallSuccess(
     identityType: String? = null,
     isSavedCard: Boolean = false,
-    typeWallet: String = "coremethods",
+    typeWallet: String = TYPE_WALLET_CORE_METHODS,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH",
     type = TrackType.EVENT,
     data = GenerateCardAnalyticsData(
-        identityType,
-        isSavedCard,
-        typeWallet,
+        identityType = identityType,
+        isSavedCard = isSavedCard,
+        typeWallet = typeWallet,
     ),
 )
 
 @KoverIgnore("in development")
 internal fun metricGenerateCardTokenCallError(
-    identityType: String? = null,
-    isSavedCard: Boolean = false,
-    typeWallet: String = "coremethods",
     error: String,
+    identityType: String? = null,
+    typeWallet: String = TYPE_WALLET_CORE_METHODS,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
     type = TrackType.EVENT,
-    data = GenerateCardAnalyticsData(
-        identityType,
-        isSavedCard,
-        typeWallet,
-        error,
+    data = GenerateCardTokenErrorData(
+        errorType = error,
+        identityType = identityType,
+        typeWallet = typeWallet,
     ),
 )
 
@@ -50,7 +49,15 @@ internal data class GenerateCardAnalyticsData(
     @SerializedName("is_saved_card")
     val isSavedCard: Boolean,
     @SerializedName("type_wallet")
-    val typeWallet: String?,
+    val typeWallet: String,
+) : EventData
+
+@KoverIgnore("in development")
+internal data class GenerateCardTokenErrorData(
     @SerializedName("error_type")
-    val errorType: String? = null,
+    val errorType: String,
+    @SerializedName("identity_document_type")
+    val identityType: String?,
+    @SerializedName("type_wallet")
+    val typeWallet: String,
 ) : EventData

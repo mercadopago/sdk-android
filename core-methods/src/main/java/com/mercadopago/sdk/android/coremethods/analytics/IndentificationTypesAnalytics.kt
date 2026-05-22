@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -24,13 +23,24 @@ internal fun metricIdentificationCallSuccess(
 @KoverIgnore("in development")
 internal fun metricIdentificationCallError(
     error: String,
+    documentTypes: List<String> = emptyList(),
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH$ERROR_PATH",
     type = TrackType.EVENT,
-    data = AnalyticsConstants.buildErrorData(error = error),
+    data = IdentificationTypesErrorData(
+        errorType = error,
+        documentTypes = documentTypes,
+    ),
 )
 
 internal data class IdentificationTypesEventData(
+    @SerializedName("document_types")
+    val documentTypes: List<String>,
+) : EventData
+
+internal data class IdentificationTypesErrorData(
+    @SerializedName("error_type")
+    val errorType: String,
     @SerializedName("document_types")
     val documentTypes: List<String>,
 ) : EventData

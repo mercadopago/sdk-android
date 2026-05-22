@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class CardFormSubmitAnalyticsTest {
@@ -38,17 +39,18 @@ internal class CardFormSubmitAnalyticsTest {
     }
 
     @Test
-    fun `when metricCardFormSubmit called with null optional fields then data reflects nulls`() {
+    fun `when metricCardFormSubmit called with null paymentType then data reflects null only for paymentType`() {
         val metric = metricCardFormSubmit(
             cardBrand = "amex",
-            transactionAmount = null,
+            transactionAmount = 0.0,
             issuer = "",
             paymentType = null,
         )
 
         val data = assertIs<CardFormSubmitEventData>(metric.data)
         assertEquals("amex", data.cardBrand)
-        assertNull(data.transactionAmount)
+        assertNotNull(data.transactionAmount)
+        assertEquals(0.0, data.transactionAmount)
         assertEquals("", data.issuer)
         assertNull(data.paymentType)
     }
