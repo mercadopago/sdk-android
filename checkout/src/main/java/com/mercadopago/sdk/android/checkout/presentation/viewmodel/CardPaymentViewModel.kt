@@ -434,6 +434,8 @@ internal class CardPaymentViewModel(
                             payer = payer,
                         )
                         is CheckoutType.CardTransaction, null -> MPPaymentData.CardTransaction(
+                            orderId = "",
+                            orderStatus = "",
                             transactionAmount = checkoutConfiguration?.getCardFormAmount(),
                             installment = 1,
                             paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),

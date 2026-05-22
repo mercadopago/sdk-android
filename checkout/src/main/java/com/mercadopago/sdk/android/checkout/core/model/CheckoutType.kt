@@ -15,10 +15,10 @@ sealed class CheckoutType : Parcelable {
 
     /**
      * CardTransaction class, used to configure the card transaction
-     * @param cardFormConfiguration Order
+     * @param order Order
      */
     @Parcelize
     data class CardTransaction(
-        val cardFormConfiguration: Order = Order(),
+        val order: Order,
     ) : CheckoutType()
 }
