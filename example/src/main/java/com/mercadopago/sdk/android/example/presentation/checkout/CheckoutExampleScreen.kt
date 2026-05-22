@@ -45,7 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
-import com.mercadopago.sdk.android.checkout.core.model.CardFormConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.Order
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import android.widget.Toast
@@ -69,7 +69,7 @@ internal fun CheckoutExampleScreen(
     val checkout = remember {
         MercadoPagoCheckout.Builder(
             context = context,
-            checkoutType = CheckoutType.CardForm(CardFormConfiguration()),
+            checkoutType = CheckoutType.CardTransaction(Order()),
         ).setPaymentMethods(listOf(PaymentMethod.Card()))
             .build()
     }
