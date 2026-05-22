@@ -4,9 +4,11 @@ All notable changes to the Mercado Pago SDK Android will be documented in this f
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## Unreleased
+### Added
+- Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
 
 ## [0.2.2] - 2026-05-21
-
 ### Added
 - `core-methods` error tracks now carry domain-specific context through dedicated event-data classes: `CardIssuersErrorData`, `IdentificationTypesErrorData`, `InstallmentsErrorData`, `PaymentMethodErrorData`, and `GenerateCardTokenErrorData`
 - `payment_type` and `security_length` fields added to the `payment_methods` success event (`PaymentMethodEventData`)
@@ -52,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [CI/CD] - 2026-04-23
 
 ### Added
-- Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
+- Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module
 - Added Gradle dependency cache keyed on `libs.versions.toml` + `build.gradle.kts` + `settings.gradle.kts` with `v1-` prefix for manual invalidation
 - Enforced 80% diff coverage threshold via `diff-cover`: only lines added or modified in the PR are checked, avoiding failures on existing legacy code
 - Added version consistency check in `publish-maven`: fails if a module version is bumped without bumping its dependents, preventing partial releases
