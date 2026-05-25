@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
 import com.google.gson.annotations.SerializedName
-import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants
 import com.mercadopago.sdk.android.analytics.domain.constants.AnalyticsConstants.ERROR_PATH
 import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
@@ -29,10 +28,14 @@ internal fun metricInstallmentsCallSuccess(
 @KoverIgnore("in development")
 internal fun metricInstallmentsCallError(
     error: String,
+    transactionAmount: BigDecimal,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$INSTALLMENTS_PATH$ERROR_PATH",
     type = TrackType.EVENT,
-    data = AnalyticsConstants.buildErrorData(error = error),
+    data = InstallmentsErrorData(
+        errorType = error,
+        transactionAmount = transactionAmount,
+    ),
 )
 
 @KoverIgnore("in development")
@@ -40,5 +43,13 @@ internal data class InstallmentAnalyticsData(
     @SerializedName("payment_type")
     val paymentType: String?,
     @SerializedName("transaction_amount")
-    val transactionAmount: BigDecimal?,
+    val transactionAmount: BigDecimal,
+) : EventData
+
+@KoverIgnore("in development")
+internal data class InstallmentsErrorData(
+    @SerializedName("error_type")
+    val errorType: String,
+    @SerializedName("transaction_amount")
+    val transactionAmount: BigDecimal,
 ) : EventData

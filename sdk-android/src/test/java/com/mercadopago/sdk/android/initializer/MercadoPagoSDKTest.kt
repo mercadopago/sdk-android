@@ -17,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import io.mockk.verify
 import io.mockk.verifyOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,7 @@ internal class MercadoPagoSDKTest {
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.initialize(any(), any()) } returns Unit
-        every { SdkInitializerAnalytics.buildSdkInitializerEvent(any(), any(), any()) } answers { callOriginal() }
+        every { SdkInitializerAnalytics.buildSdkInitializerEvent(any(), any()) } answers { callOriginal() }
         mockkStatic(DeviceSDK::class)
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
@@ -125,8 +126,8 @@ internal class MercadoPagoSDKTest {
         verifyOrder {
             setSiteIdUseCase(publicKey, countryCode)
             Log.d(any(), any(), exception)
-            mpAnalytics.trackMetric(any())
         }
+        verify(exactly = 0) { mpAnalytics.trackMetric(any()) }
     }
 
     @Test

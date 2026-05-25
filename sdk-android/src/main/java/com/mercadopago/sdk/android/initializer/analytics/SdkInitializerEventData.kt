@@ -24,7 +24,6 @@ internal object SdkInitializerAnalytics {
     internal fun buildSdkInitializerEvent(
         context: Context,
         publicKey: String,
-        errorType: String? = null,
     ) = Metric(
         type = TrackType.EVENT,
         path = "$SDK_NATIVE_PATH$INITIALIZE_PATH",
@@ -35,7 +34,6 @@ internal object SdkInitializerAnalytics {
                 MIN_SDK_23
             },
             distribution = MAVEN,
-            errorType = errorType,
             publicKey = publicKey,
             sdkVersion = BuildConfig.SdkVersion,
             developerMode = isDebugApp(context),
@@ -48,8 +46,6 @@ internal class SdkInitializerEventData(
     val distribution: String,
     @SerializedName("locale")
     val locale: String = Locale.getDefault().toString().replace("_", "-"),
-    @SerializedName("error_type")
-    val errorType: String?,
     @SerializedName("public_key")
     val publicKey: String,
     @SerializedName("min_version")

@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
@@ -438,18 +439,11 @@ internal class CardPaymentViewModel(
                 buyerIdentification = buyerIdentification,
             ).fold(
                 onSuccess = { cardToken ->
-                    val paymentData = MPPaymentData(
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount(),
-                        token = cardToken.token,
-                        installment = 1,
-                        paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                        paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                        issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                        payer = Payer(
-                            documentType = buyerIdentification.type,
-                            documentNumber = buyerIdentification.number,
-                        ),
+                    val payer = Payer(
+                        documentType = buyerIdentification.type,
+                        documentNumber = buyerIdentification.number,
                     )
+                    val paymentData = buildPaymentData(token = cardToken.token, payer = payer)
                     analyticsTracker.trackSubmit(
                         cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
                         transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble() ?: 0.0,
@@ -484,4 +478,26 @@ internal class CardPaymentViewModel(
             }
         }
     }
+
+    private fun buildPaymentData(
+        token: String,
+        payer: Payer,
+    ): MPPaymentData =
+        when (checkoutConfiguration?.checkoutType) {
+            is CheckoutType.CardSave -> MPPaymentData.CardSave(
+                token = token,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+            is CheckoutType.CardTransaction, null -> MPPaymentData.CardTransaction(
+                transactionAmount = checkoutConfiguration?.getCardFormAmount(),
+                installment = 1,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+        }
 }

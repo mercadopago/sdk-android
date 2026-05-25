@@ -31,8 +31,7 @@ internal class InstallmentsViewModelTest {
         ),
     )
 
-    private val paymentData = MPPaymentData(
-        token = "tok",
+    private val paymentData = MPPaymentData.CardTransaction(
         transactionAmount = BigDecimal("100.00"),
         paymentMethodId = "visa",
         paymentTypeId = "credit_card",

@@ -20,15 +20,16 @@ internal class InstallmentsAnalyticsTracker(
     private var terminated = false
 
     fun trackInitialize() {
+        val transaction = paymentData as? MPPaymentData.CardTransaction
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricInstallmentsInitialize(
                 InstallmentsInitializeEventData(
                     checkoutType = checkoutType,
-                    paymentMethodId = paymentData.paymentMethodId,
-                    paymentType = paymentData.paymentTypeId,
+                    paymentMethodId = transaction?.paymentMethodId.orEmpty(),
+                    paymentType = transaction?.paymentTypeId.orEmpty(),
                     selectionType = installmentData.display.displayType.toAnalyticsString(),
                     quotasCount = installmentData.quotas.size,
-                    transactionAmount = paymentData.transactionAmount?.toDouble() ?: 0.0,
+                    transactionAmount = transaction?.transactionAmount?.toDouble() ?: 0.0,
                 ),
             ),
         )

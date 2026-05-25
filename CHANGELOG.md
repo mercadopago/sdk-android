@@ -4,10 +4,15 @@ All notable changes to the Mercado Pago SDK Android will be documented in this f
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
+## Unreleased
 ### Added
+- Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
+
+## [0.2.2] - 2026-05-21
+### Added
+- `core-methods` error tracks now carry domain-specific context through dedicated event-data classes: `CardIssuersErrorData`, `IdentificationTypesErrorData`, `InstallmentsErrorData`, `PaymentMethodErrorData`, and `GenerateCardTokenErrorData`
+- `payment_type` and `security_length` fields added to the `payment_methods` success event (`PaymentMethodEventData`)
+- Unit tests `GenerateCardTokenAnalyticsTest` and `PaymentMethodAnalyticsTest` covering success and error metrics
 - `check-changelog` CircleCI job warns when `CHANGELOG.md` has not been updated in the branch — non-blocking, pipeline continues (#205)
 - `lib.sh` created with shared helpers (`config_to_module`, `project_ref_to_module`, `artifact_exists`, `bom_published_modules`) used by `check-version-consistency` and `publish-maven` (#204)
 - `lint` job runs in parallel with `test-coverage`, providing faster feedback on static analysis without blocking the test pipeline
@@ -15,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `build-artifacts` Collect AARs step now filters by BOM modules via `bom_published_modules`, avoiding collection of non-published modules
 
 ### Changed
+- `transaction_amount` is no longer nullable in `CardFormSubmitEventData` (Double) and `InstallmentAnalyticsData` (BigDecimal) — callers default to `0.0` when amount is unavailable
+- `core-methods` error tracks (`card_issuers`, `identification_types`, `installments`, `payment_methods`, `tokenization`) no longer use the generic `AnalyticsConstants.buildErrorData` / `MetricErrorData` — each endpoint uses its own event-data class with relevant fields
+- `metricGenerateCardTokenCallError` signature simplified: `error` is now required, `isSavedCard` removed, and the payload uses the new `GenerateCardTokenErrorData`
 - Monolithic `build-test` job split into `lint`, `test-coverage`, `documentation-write`, and `build` for better parallelism and separation of concerns
 - `lint` uses `resource_class: large` instead of `xlarge` — detekt and ktlint do not require high memory
 - `documentation-write` restricted to `main` branch only — no value generating docs on feature branches
@@ -24,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `build-artifacts` and `verify-artifacts` now run on all branches to catch artifact issues before merge
 - `save_cache` for Gradle dependencies moved to `lint` job with `when: always` — `lint` always completes before `test-coverage`, ensuring cache is available for downstream jobs
 - Git LFS installation removed from all CI jobs — LFS content is not used by any active pipeline step
+
+### Removed
+- `error_type` field removed from `SdkInitializerEventData` and the error metric on SDK reconfiguration failures in `ConfigureSdkUseCase` — failures now log only, avoiding duplicate/misleading initialization events
 
 ### Fixed
 - `check-version-consistency` now derives the list of modules to validate from `sdk-android-bom/build.gradle.kts` via `bom_published_modules`, avoiding false positives on non-published modules (#204)
@@ -43,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [CI/CD] - 2026-04-23
 
 ### Added
-- Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module 
+- Added `store_artifacts` for Detekt, KtLint and Kover HTML reports under `artifacts/reports/` per module
 - Added Gradle dependency cache keyed on `libs.versions.toml` + `build.gradle.kts` + `settings.gradle.kts` with `v1-` prefix for manual invalidation
 - Enforced 80% diff coverage threshold via `diff-cover`: only lines added or modified in the PR are checked, avoiding failures on existing legacy code
 - Added version consistency check in `publish-maven`: fails if a module version is bumped without bumping its dependents, preventing partial releases

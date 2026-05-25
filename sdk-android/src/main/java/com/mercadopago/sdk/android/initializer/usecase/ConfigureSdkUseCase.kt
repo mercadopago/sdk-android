@@ -40,13 +40,6 @@ internal class ConfigureSdkUseCase(
             }
             .catch { error ->
                 Log.d(TAG, "Error reconfiguring SDK: ${error.message}", error)
-                MPAnalytics.getInstance().trackMetric(
-                    SdkInitializerAnalytics.buildSdkInitializerEvent(
-                        context = params.context,
-                        publicKey = params.publicKey,
-                        errorType = "Error reconfiguring SDK: ${error.message}",
-                    )
-                )
             }
     }
 

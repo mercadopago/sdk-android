@@ -122,9 +122,11 @@ private fun InstallmentsScreenDestination(
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is InstallmentViewEvent.OnSuccess -> {
-                CheckoutCallbackHolder.notify(
-                    MercadoPagoCheckoutResult.Success(paymentData.copy(installment = event.installment)),
-                )
+                val updated = when (paymentData) {
+                    is MPPaymentData.CardTransaction -> paymentData.copy(installment = event.installment)
+                    is MPPaymentData.CardSave -> paymentData
+                }
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(updated))
                 installmentsViewModel.onViewEventConsumed()
             }
 
