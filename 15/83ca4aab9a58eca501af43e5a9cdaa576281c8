@@ -1,0 +1,69 @@
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/GenerateCardTokenAnalytics.kt
+  s_b652478f8950b0::t_67befa998f15a0 13,19,24-26,33-34,38-41,52-56,58-62
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/IndentificationTypesAnalytics.kt
+  s_b652478f8950b0::t_67befa998f15a0 26,30-33,40-43
+CHANGELOG.md
+  s_b652478f8950b0::t_67befa998f15a0 7-9,11,13-15,23-25,36-38,57
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/analytics/GenerateCardTokenAnalyticsTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 1-58
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/analytics/PaymentMethodAnalyticsTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 1-65
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsAnalyticsTracker.kt
+  s_b652478f8950b0::t_56b3aceeab5242 23,28-29,32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentData.kt
+  s_b652478f8950b0::t_67befa998f15a0 6-8,10-46
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsAnalyticsTrackerTest.kt
+  s_b652478f8950b0::t_7feaf5786f6077 12
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/PaymentMethodAnalytics.kt
+  s_b652478f8950b0::t_67befa998f15a0 18-19,26-27,34-35,39-43,51-59
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/Order.kt
+  s_b652478f8950b0::t_67befa998f15a0 1-17
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 77
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/CardIssuersAnalytics.kt
+  s_b652478f8950b0::t_67befa998f15a0 28,32-35,42-45
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/CheckoutType.kt
+  s_b652478f8950b0::t_67befa998f15a0 11,14-23
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 32
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/domain/interactor/CoreMethods.kt
+  s_b652478f8950b0::t_67befa998f15a0 116,125,202,211,282,291,504,507-510,552,561
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_b652478f8950b0::t_5f10c0a82d4302 125-129
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 8,80
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_b652478f8950b0::t_e952066cfa9481 482-485
+  s_b652478f8950b0::t_028430e7c1d8c3 481
+  s_b652478f8950b0::t_1f433ab1f9de57 446
+  s_b652478f8950b0::t_67befa998f15a0 5,442-444
+  s_b652478f8950b0::t_ec23377930dff0 486-502
+sdk-android/src/test/java/com/mercadopago/sdk/android/initializer/MercadoPagoSDKTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 20,60,130
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/InstallmentsAnalytics.kt
+  s_b652478f8950b0::t_67befa998f15a0 31,35-38,46-54
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_b652478f8950b0::t_67befa998f15a0 7,73
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  s_b652478f8950b0::t_67befa998f15a0 5-6,10,19-22
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_b652478f8950b0::t_5c9a692401efa3 34
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  s_b652478f8950b0::t_67befa998f15a0 13-14,66-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "1583ca4aab9a58eca501af43e5a9cdaa576281c8",
+  "prompts": {},
+  "sessions": {
+    "s_b652478f8950b0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5d8834f1-47cd-4e5f-8417-b523bdd58a1f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
