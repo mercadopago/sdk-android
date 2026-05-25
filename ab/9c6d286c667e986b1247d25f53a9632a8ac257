@@ -1,0 +1,52 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/CheckoutType.kt
+  s_dbca5994035d95::t_4c0cacffccce8a 4
+  s_dbca5994035d95::t_51a9410e928987 8-10,12,14-15,18,21-22,28
+  h_e120d9bb8a4c69 23,27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfiguration.kt
+  s_dbca5994035d95::t_68cf3a14968a78 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/MercadoPagoCheckoutResult.kt
+  s_dbca5994035d95::t_4fafff09c090e1 33,41
+  s_dbca5994035d95::t_dcf30196ecb8dc 10-12,18,23-24,26
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  s_dbca5994035d95::t_1191b08b69f6ad 73
+  h_e120d9bb8a4c69 13
+  s_dbca5994035d95::t_9604720d006627 41
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  h_e120d9bb8a4c69 109
+  s_dbca5994035d95::t_8d2944bbd542c6 108
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolderTest.kt
+  s_dbca5994035d95::t_8a33a30afcd040 3,13,19-20,40-41,55,65,79,81
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  s_dbca5994035d95::t_6691a0dcdc1d26 11
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_dbca5994035d95::t_6fa683a261a44a 665
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolder.kt
+  s_dbca5994035d95::t_9bad06f931f6c9 3-4
+  s_dbca5994035d95::t_caff188abf7d05 6,9-10,12-13,23
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckout.kt
+  h_e120d9bb8a4c69 14
+  s_dbca5994035d95::t_a753a87befd222 22-26,29,35-37,40,56,58-59,62,64,83
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_dbca5994035d95::t_4f0f4c68901e1d 434-458
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "ab9c6d286c667e986b1247d25f53a9632a8ac257",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_dbca5994035d95": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "91cd98a9-3647-4f16-a75e-887f2b2e84c5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
