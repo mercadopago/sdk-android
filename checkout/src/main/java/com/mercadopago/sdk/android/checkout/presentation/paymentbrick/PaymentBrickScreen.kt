@@ -3,10 +3,12 @@ package com.mercadopago.sdk.android.checkout.presentation.paymentbrick
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
@@ -14,7 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentOptionState
@@ -72,6 +77,7 @@ internal fun PaymentBrickScreenContent(
                     title = viewState.title,
                     onBackClick = onBackPressed,
                 ) {
+                    Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xsmall))
                     PaymentSectionsList(
                         sections = viewState.sections,
                         onOptionClick = onOptionSelected,
@@ -110,7 +116,11 @@ private fun PaymentSectionsList(
                         title = option.title,
                         description = option.description,
                     ),
-                    leftImage = MPListItemLeading.Thumbnail(url = option.thumbnailUrl),
+                    leftImage = if (option.thumbnailIcon != null) {
+                        MPListItemLeading.Icon(icon = option.thumbnailIcon)
+                    } else {
+                        MPListItemLeading.Thumbnail(url = option.thumbnailUrl.orEmpty())
+                    },
                     trailing = MPListItemTrailing(
                         type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight),
                     ),
@@ -127,7 +137,7 @@ private fun SectionTitle(
 ) {
     MPText(
         text = title,
-        style = MercadoPagoTheme.typography.heading.default.small,
+        style = MercadoPagoTheme.typography.heading.default.medium,
         color = MercadoPagoTheme.color.text.primary,
         modifier = Modifier
             .fillMaxWidth()
@@ -152,12 +162,12 @@ private fun PaymentBrickScreenContentPreview() {
                             PaymentOptionState(
                                 id = "mp_balance",
                                 title = "Saldo em conta ou cartões salvos",
-                                thumbnailUrl = "",
+                                thumbnailIcon = ImageVector.vectorResource(R.drawable.ic_mercadopago),
                             ),
                             PaymentOptionState(
                                 id = "credit_line",
                                 title = "Linha de Crédito",
-                                thumbnailUrl = "",
+                                thumbnailIcon = ImageVector.vectorResource(R.drawable.ic_mercadopago),
                             ),
                         ),
                     ),
@@ -167,18 +177,18 @@ private fun PaymentBrickScreenContentPreview() {
                             PaymentOptionState(
                                 id = "pix",
                                 title = "Pix",
-                                thumbnailUrl = "",
+                                thumbnailIcon = ImageVector.vectorResource(R.drawable.ic_pix),
                             ),
                             PaymentOptionState(
                                 id = "boleto",
                                 title = "Boleto",
-                                thumbnailUrl = "",
+                                thumbnailIcon = ImageVector.vectorResource(R.drawable.ic_bill_payment),
                             ),
                             PaymentOptionState(
                                 id = "new_card",
                                 title = "Novo cartão",
                                 description = "Crédito ou pré-pago",
-                                thumbnailUrl = "",
+                                thumbnailIcon = ImageVector.vectorResource(R.drawable.ic_add_card),
                             ),
                         ),
                     ),

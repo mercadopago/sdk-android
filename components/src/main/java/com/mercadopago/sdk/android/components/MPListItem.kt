@@ -33,9 +33,19 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
 
+/** Size type of the list item. */
+enum class MPListSizeType {
+    /** Large size variant. */
+    Large,
+
+    /** Medium size variant. */
+    Medium,
+}
+
 /**
  * List Item component
  * @param modifier component modifier
+ * @param sizeType component size type (Large or Medium)
  * @param contentInfo component content information (title, header, description)
  * @param trailing component trailing content (text, icon, color)
  * @param leftImage component left image
@@ -45,6 +55,7 @@ private const val LIST_GROUP = "LIST_ITEM"
 @Composable
 fun MPListItem(
     modifier: Modifier = Modifier,
+    sizeType: MPListSizeType = MPListSizeType.Large,
     contentInfo: MPListItemContentInfo,
     trailing: MPListItemTrailing? = null,
     leftImage: MPListItemLeading? = null,
@@ -73,9 +84,10 @@ fun MPListItem(
             is MPListItemLeading.Icon -> Icon(
                 imageVector = leftImage.icon,
                 contentDescription = null,
-                tint = MercadoPagoTheme.color.icon.accent,
+                tint = leftImage.tint,
                 modifier = Modifier.size(40.dp),
             )
+
             is MPListItemLeading.Thumbnail -> AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(leftImage.url)
@@ -87,13 +99,14 @@ fun MPListItem(
                     .height(32.dp)
                     .clip(RoundedCornerShape(8.dp)),
             )
+
             null -> Unit
         }
 
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            MPListItemContentInfo(contentInfo = contentInfo)
+            MPListItemContentInfo(sizeType = sizeType, contentInfo = contentInfo)
         }
 
         Row(
@@ -107,24 +120,33 @@ fun MPListItem(
 
 @Composable
 private fun MPListItemContentInfo(
+    sizeType: MPListSizeType,
     contentInfo: MPListItemContentInfo,
 ) {
     if (contentInfo.header.isNotNull()) {
         MPText(
             text = contentInfo.header,
-            style = MercadoPagoTheme.typography.body.default.medium,
+            style = if (sizeType == MPListSizeType.Large) {
+                MercadoPagoTheme.typography.heading.narrow.medium
+            } else {
+                MercadoPagoTheme.typography.heading.narrow.small
+            },
             color = MercadoPagoTheme.color.text.primary,
         )
     }
     MPText(
         text = contentInfo.title.orEmpty(),
-        style = MercadoPagoTheme.typography.body.emphasis.medium,
+        style = if (sizeType == MPListSizeType.Large) {
+            MercadoPagoTheme.typography.heading.narrow.medium
+        } else {
+            MercadoPagoTheme.typography.heading.narrow.small
+        },
         color = MercadoPagoTheme.color.text.primary,
     )
     if (contentInfo.description.isNotNull()) {
         MPText(
             text = contentInfo.description,
-            style = MercadoPagoTheme.typography.body.default.small,
+            style = MercadoPagoTheme.typography.body.default.medium,
             color = MercadoPagoTheme.color.text.secondary,
         )
     }
@@ -148,9 +170,10 @@ private fun MPListItemTrailing(
                 Icon(
                     imageVector = it.type.icon,
                     contentDescription = null,
-                    tint = MercadoPagoTheme.color.icon.secondary,
-                    modifier = Modifier.size(20.dp),
+                    tint = MercadoPagoTheme.color.icon.accent,
+                    modifier = Modifier.size(MercadoPagoTheme.radius.xlarge),
                 )
+
             is MPListItemTrailing.Type.None, null -> Unit
         }
     }

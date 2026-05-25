@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.components.model
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -11,8 +12,10 @@ sealed class MPListItemLeading {
     /**
      * Leading icon.
      * @param icon Icon vector drawable
+     * @param tint Tint color applied to the icon. Use [Color.Unspecified] (default) to preserve
+     * the original drawable colors, or pass an explicit color for monochrome icons.
      */
-    data class Icon(val icon: ImageVector) : MPListItemLeading()
+    data class Icon(val icon: ImageVector, val tint: Color = Color.Unspecified) : MPListItemLeading()
 
     /**
      * Leading thumbnail loaded from a remote URL.
