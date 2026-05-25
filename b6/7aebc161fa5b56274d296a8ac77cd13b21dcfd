@@ -1,0 +1,48 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeletonListRow.kt
+  s_28c18c4f82526c::t_e25a05c9a365d8 1-94
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/SkeletonMajorContent.kt
+  s_28c18c4f82526c::t_fe40def7bc282b 20-24,65,72,83,91,109,115,121,127-128,140,150-151,157,164,174
+  s_28c18c4f82526c::t_67c7c623b5915d 29-31,45,60,69-71,73,79,84,87-90,92
+  s_28c18c4f82526c::t_be34bb5f99ba68 113-114,119-120
+  s_28c18c4f82526c::t_3ce8529b54c0d6 26-28
+  s_28c18c4f82526c::t_76a8ecb446607b 147-149,152-153
+  s_28c18c4f82526c::t_8d30244cbf51d5 1-19,25,32-44,46-59,61-64,66-68,74-78,80-82,85-86,93-108,110-112,116-118,122-126,129-139,141-146,154-156,158-163,165-173,175-178
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/SkeletonMinorContent.kt
+  s_28c18c4f82526c::t_3f414ac9548500 83-84
+  s_28c18c4f82526c::t_b8f5809050a60b 62-63
+  s_28c18c4f82526c::t_3ce8529b54c0d6 25-27,71-73
+  s_28c18c4f82526c::t_352505df09d8b1 1-19,24,28-55,57-61,65-70,74-76,78-82,86-90,92-102,104-112,115-119,121-126,128-136,138-141
+  s_28c18c4f82526c::t_f6c93759506677 20-23,56,64,77,85,91,103,113-114,120,127,137
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/MPSkeletonExtensions.kt
+  s_28c18c4f82526c::t_e5be4c1f14e2a9 18-22
+  s_28c18c4f82526c::t_c7467276cee900 24-31
+  s_28c18c4f82526c::t_cc8ba97d911ee9 1-17,23
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeleton.kt
+  s_28c18c4f82526c::t_d32d23b77def9a 5
+  s_28c18c4f82526c::t_e11b9fa4182542 1-4,6-131
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeletonThumbnail.kt
+  s_28c18c4f82526c::t_34671cea382f9f 1-56
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/LoadingType.kt
+  s_28c18c4f82526c::t_a40b32d3db7bd1 1-7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/LoadingScreen.kt
+  s_28c18c4f82526c::t_f4f659343b7fae 1-61
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPSkeletonThumbnailType.kt
+  s_28c18c4f82526c::t_14a33ec0382a8e 7-10,12-16,18-22,24-28
+  s_28c18c4f82526c::t_a5f9867b5e5faa 1-6,11,17,23,29-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "b67aebc161fa5b56274d296a8ac77cd13b21dcfd",
+  "prompts": {},
+  "sessions": {
+    "s_28c18c4f82526c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8dad489c-4cf1-452a-bc18-a10430334dfc",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
