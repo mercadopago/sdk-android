@@ -8,7 +8,7 @@ internal const val AMOUNT_DEFAULT = "0"
 
 internal fun CheckoutConfiguration.getCardFormAmount() =
     (checkoutType as? CheckoutType.CardTransaction)
-        ?.cardFormConfiguration
+        ?.order
         ?.amount
 
 internal fun CheckoutConfiguration.getCardFormAmountOrZero(): String =
