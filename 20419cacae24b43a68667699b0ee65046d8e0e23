@@ -1,0 +1,83 @@
+bricks-nativos/src/App.tsx
+  ai_agent 1-170
+bricks-nativos/src/config/demoConfig.ts
+  ai_agent 1-475
+bricks-nativos/src/RevisaYConfirma.module.css
+  ai_agent 1-511
+bricks-nativos/src/components/AndroidKeyboard.module.css
+  ai_agent 1-197
+bricks-nativos/src/components/Tooltip.module.css
+  ai_agent 1-34
+bricks-nativos/tsconfig.json
+  ai_agent 1-21
+bricks-nativos/src/config/DemoConfigContext.ts
+  ai_agent 1-7
+bricks-nativos/vite.config.ts
+  ai_agent 1-6
+bricks-nativos/src/Email.module.css
+  ai_agent 1-172
+bricks-nativos/src/SavedCardForm.tsx
+  ai_agent 1-150
+bricks-nativos/src/main.tsx
+  ai_agent 1-10
+bricks-nativos/src/assets/icons/bag.svg
+  ai_agent 1-5
+bricks-nativos/src/ConfigPanel.tsx
+  ai_agent 1-317
+bricks-nativos/src/PaymentBrick.tsx
+  ai_agent 1-264
+bricks-nativos/src/assets/icons/close.svg
+  ai_agent 1-3
+bricks-nativos/src/bricks-tokens.css
+  ai_agent 1-76
+bricks-nativos/src/components/BottomSheet.tsx
+  ai_agent 1-72
+bricks-nativos/src/components/TextField.module.css
+  ai_agent 1-209
+bricks-nativos/src/tokens.css
+  ai_agent 1-52
+bricks-nativos/src/components/TextField.tsx
+  ai_agent 1-176
+bricks-nativos/src/CardForm.module.css
+  ai_agent 1-268
+bricks-nativos/src/Installments.tsx
+  ai_agent 1-182
+bricks-nativos/.gitignore
+  ai_agent 1-4
+bricks-nativos/index.html
+  ai_agent 1-12
+bricks-nativos/src/ConfigPanel.module.css
+  ai_agent 1-470
+bricks-nativos/package.json
+  ai_agent 1-25
+bricks-nativos/src/PaymentBrick.module.css
+  ai_agent 1-450
+bricks-nativos/src/Installments.module.css
+  ai_agent 1-387
+bricks-nativos/src/components/AndroidKeyboard.tsx
+  ai_agent 1-166
+bricks-nativos/package-lock.json
+  ai_agent 1-1824
+bricks-nativos/src/CardForm.tsx
+  ai_agent 1-179
+bricks-nativos/src/CardFormBricks.tsx
+  ai_agent 1-215
+bricks-nativos/src/components/BottomSheet.module.css
+  ai_agent 1-118
+bricks-nativos/src/components/Tooltip.tsx
+  ai_agent 1-73
+bricks-nativos/tsconfig.node.json
+  ai_agent 1-10
+bricks-nativos/src/Email.tsx
+  ai_agent 1-107
+bricks-nativos/src/RevisaYConfirma.tsx
+  ai_agent 1-206
+bricks-nativos/src/vite-env.d.ts
+  ai_agent 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.12",
+  "base_commit_sha": "20419cacae24b43a68667699b0ee65046d8e0e23",
+  "prompts": {}
+}
