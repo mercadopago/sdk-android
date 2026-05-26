@@ -37,3 +37,6 @@
 -keepclassmembers class com.mercadopago.sdk.android.coremethods.domain.model.ResultError$Request {
     *;
 }
+-keepclassmembers class com.mercadopago.sdk.android.coremethods.domain.model.ResultError$Validation {
+    *;
+}
