@@ -1,0 +1,18 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  h_e120d9bb8a4c69 8,31,66
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/CheckoutType.kt
+  h_e120d9bb8a4c69 27
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  h_e120d9bb8a4c69 9,35,74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "6f28093dd0d4b1d52ead06b8b83363dfd037188e",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
