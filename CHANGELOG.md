@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
 
+### Changed
+- `PaymentMethod.Card` fields renamed from `allowedTypes`/`allowedBrands` to `excludedPaymentTypes`/`excludedPaymentMethods` — filter semantics changed from allowlist to excludelist; defaults changed from full lists to empty lists (breaking change for callers using named parameters)
+
 ## [0.2.2] - 2026-05-21
 ### Added
 - `core-methods` error tracks now carry domain-specific context through dedicated event-data classes: `CardIssuersErrorData`, `IdentificationTypesErrorData`, `InstallmentsErrorData`, `PaymentMethodErrorData`, and `GenerateCardTokenErrorData`
