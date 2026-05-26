@@ -93,15 +93,15 @@ internal class PaymentMethodExtensionsTest {
 
     @Test
     fun `given list with Card type then extractCardFilters returns its filters`() {
-        val allowedTypes = listOf(CardType.CREDIT)
-        val allowedBrands = listOf(CardBrand.Visa)
+        val excludedTypes = listOf(CardType.CREDIT)
+        val excludedMethods = listOf(CardBrand.Visa)
         val paymentMethods = listOf(
-            CheckoutPaymentMethod.Card(allowedTypes = allowedTypes, allowedBrands = allowedBrands),
+            CheckoutPaymentMethod.Card(excludedPaymentTypes = excludedTypes, excludedPaymentMethods = excludedMethods),
         )
 
         val result = paymentMethods.extractCardFilters()
 
-        assertEquals(allowedTypes, result.first)
-        assertEquals(allowedBrands, result.second)
+        assertEquals(excludedTypes, result.first)
+        assertEquals(excludedMethods, result.second)
     }
 }

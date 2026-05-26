@@ -375,14 +375,17 @@ internal class CardPaymentViewModel(
                 installmentsState = _viewState.value.installmentsState.copy(showList = false),
             )
         } else {
-            val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+            val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethods.extractCardFilters()
             viewModelScope.launch {
                 getCardBinUseCase(
                     bin = cardBin.orEmpty(),
                     amount = checkoutConfiguration?.getCardFormAmount()?.toPlainString(),
                     checkoutType = checkoutConfiguration.toCheckoutType(),
                     processingMode = PROCESSING_MODE,
-                    filter = CardBinFilter(cardTypes = cardTypes, cardBrands = cardBrands),
+                    filter = CardBinFilter(
+                        excludedPaymentTypes = excludedTypes,
+                        excludedPaymentMethods = excludedMethods,
+                    ),
                 ).fold(
                     onSuccess = { data ->
                         _viewState.value = _viewState.value.applyCardBinData(data)

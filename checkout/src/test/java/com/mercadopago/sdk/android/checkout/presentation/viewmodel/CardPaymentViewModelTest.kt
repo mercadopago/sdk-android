@@ -74,8 +74,8 @@ internal class CardPaymentViewModelTest {
         checkoutType = mockk<CheckoutType.CardTransaction>(relaxed = true),
         paymentMethods = listOf(
             PaymentMethod.Card(
-                allowedTypes = listOf(CardType.CREDIT, CardType.DEBIT),
-                allowedBrands = listOf(CardBrand.Visa, CardBrand.Mastercard),
+                excludedPaymentTypes = listOf(CardType.CREDIT, CardType.DEBIT),
+                excludedPaymentMethods = listOf(CardBrand.Visa, CardBrand.Mastercard),
             ),
         ),
     )

@@ -4,6 +4,6 @@ import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 
 internal data class CardBinFilter(
-    val cardTypes: List<CardType>,
-    val cardBrands: List<CardBrand>,
+    val excludedPaymentTypes: List<CardType>,
+    val excludedPaymentMethods: List<CardBrand>,
 )

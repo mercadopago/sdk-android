@@ -24,5 +24,5 @@ internal fun PaymentMethod.hasIssuers() =
 
 internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
-    return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
+    return cardPayment?.excludedPaymentTypes.orEmpty() to cardPayment?.excludedPaymentMethods.orEmpty()
 }

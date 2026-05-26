@@ -10,14 +10,14 @@ import kotlinx.parcelize.Parcelize
 sealed class PaymentMethod : Parcelable {
     /**
      * Card payment method
-     * @param allowedTypes List of allowed card types
-     * @param allowedBrands List of allowed card brands
+     * @param excludedPaymentTypes List of excluded card types
+     * @param excludedPaymentMethods List of excluded card brands
      * @param installment Installment
      */
     @Parcelize
     data class Card(
-        val allowedTypes: List<CardType> = listOf(CardType.CREDIT, CardType.DEBIT, CardType.PREPAID),
-        val allowedBrands: List<CardBrand> = CardBrand.default,
+        val excludedPaymentTypes: List<CardType> = emptyList(),
+        val excludedPaymentMethods: List<CardBrand> = emptyList(),
         val installment: Installment? = Installment(),
     ) : PaymentMethod()
 

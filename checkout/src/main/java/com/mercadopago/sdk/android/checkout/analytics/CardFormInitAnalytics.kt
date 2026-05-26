@@ -17,8 +17,8 @@ internal fun metricCardFormInitialize(
     checkoutType: String,
     appearance: String,
     sellerCustomization: List<String>,
-    allowedPaymentTypes: List<String>,
-    allowedPaymentMethods: List<String>,
+    excludedPaymentTypes: List<String>,
+    excludedPaymentMethods: List<String>,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_PATH",
     type = TrackType.EVENT,
@@ -26,8 +26,8 @@ internal fun metricCardFormInitialize(
         checkoutType = checkoutType,
         appearance = appearance,
         sellerCustomization = sellerCustomization,
-        allowedPaymentTypes = allowedPaymentTypes,
-        allowedPaymentMethods = allowedPaymentMethods,
+        excludedPaymentTypes = excludedPaymentTypes,
+        excludedPaymentMethods = excludedPaymentMethods,
     ),
 )
 
@@ -48,8 +48,8 @@ internal data class CardFormInitEventData(
     val appearance: String,
     @SerializedName("seller_customization")
     val sellerCustomization: List<String>,
-    @SerializedName("allowed_payment_types")
-    val allowedPaymentTypes: List<String>,
-    @SerializedName("allowed_payment_methods")
-    val allowedPaymentMethods: List<String>,
+    @SerializedName("excluded_payment_types")
+    val excludedPaymentTypes: List<String>,
+    @SerializedName("excluded_payment_methods")
+    val excludedPaymentMethods: List<String>,
 ) : EventData
