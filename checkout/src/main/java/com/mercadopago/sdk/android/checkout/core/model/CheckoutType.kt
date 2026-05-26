@@ -24,6 +24,6 @@ sealed class CheckoutType<out T : MPPaymentData> : Parcelable {
      */
     @Parcelize
     data class CardTransaction(
-        val order: Order = Order(),
+        val order: Order,
     ) : CheckoutType<MPPaymentData.CardTransaction>()
 }
