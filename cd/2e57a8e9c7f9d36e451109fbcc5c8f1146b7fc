@@ -1,0 +1,14 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/Order.kt
+  h_e120d9bb8a4c69 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "cd2e57a8e9c7f9d36e451109fbcc5c8f1146b7fc",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
