@@ -1,0 +1,30 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  h_e120d9bb8a4c69 10-12,15-16,24,27,37,39-41,73,96-100,106-109
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  h_e120d9bb8a4c69 13-14,45-47,66,68-70
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  h_e120d9bb8a4c69 14,30,43,50,57-58,60-62,313-322,334,339,401-406,446,453-469,474,481-488,495-496,502-504
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_af90055f4b6450::t_69c33e957b2528 58,71-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "4259e597db80cefdadd24f6977880e4393f03048",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_af90055f4b6450": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "77f7a1ac-a121-45b6-8fe2-2605ae9ee2ca",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
