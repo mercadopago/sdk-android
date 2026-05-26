@@ -1,0 +1,33 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  h_e120d9bb8a4c69 23
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  h_e120d9bb8a4c69 18
+  s_7b4ffe6002d399::t_d49178e728ce75 22
+  s_7b4ffe6002d399::t_a98e6c7fe4ca16 473
+  s_7b4ffe6002d399::t_031fdefb5af64a 486-529
+  s_7b4ffe6002d399::t_28c4ca8474eb37 54
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_7b4ffe6002d399::t_658b8abdc31880 64
+  s_7b4ffe6002d399::t_50ad5756b8e8c3 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "a6e8034b6864fe0a5caec39662b4183224d428b1",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_7b4ffe6002d399": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "62aac1b2-bb2f-4ea4-b9c5-3751b0134ce7",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}
