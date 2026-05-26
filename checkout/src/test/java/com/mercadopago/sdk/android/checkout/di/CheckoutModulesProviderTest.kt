@@ -9,12 +9,15 @@ import com.mercadopago.sdk.android.checkout.core.model.Order
 import com.mercadopago.sdk.android.checkout.core.model.Payer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
+import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
@@ -24,7 +27,9 @@ import io.mockk.mockk
 import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
+import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
@@ -35,7 +40,11 @@ import org.koin.test.verify.verify
 import java.math.BigDecimal
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class CheckoutModulesProviderTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Before
     fun setUp() {
         MockProvider.register { mockk(relaxed = true) }
@@ -43,20 +52,15 @@ internal class CheckoutModulesProviderTest {
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
         mockkObject(CheckoutType::class)
-        mockkObject(CardPaymentScreenStateFactory::class)
         mockkConstructor(Configuration::class)
     }
 
-    @OptIn(KoinExperimentalAPI::class)
-    @Test
-    fun `when provideModules is called Then modules should be verified`() {
+    private fun createMockContext(): Application {
         val configuration = mockk<Configuration>(relaxed = true)
         every { configuration.setLocale(any()) } returns Unit
         every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
-
         val resources = mockk<android.content.res.Resources>(relaxed = true)
         every { resources.configuration } returns configuration
-
         val context = mockk<Application>(relaxed = true)
         every { context.applicationInfo } returns mockk(relaxed = true)
         every { context.applicationContext } returns context
@@ -64,6 +68,13 @@ internal class CheckoutModulesProviderTest {
         every { context.createConfigurationContext(any()) } returns context
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
         every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
+        return context
+    }
+
+    @OptIn(KoinExperimentalAPI::class)
+    @Test
+    fun `when provideModules is called Then modules should be verified`() {
+        val context = createMockContext()
         val modulesProvider = CheckoutModulesProvider(context = context)
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
@@ -98,16 +109,23 @@ internal class CheckoutModulesProviderTest {
                 CheckoutConfiguration::class,
                 CheckoutThemePreferences::class,
                 CardPaymentViewModel::class,
-                InstallmentsViewModel::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
-                CardPaymentScreenStateFactory::class,
                 CancelledFormContextUseCase::class,
                 Gson::class,
+                CardFormInitializationOutput::class,
+                MPInstallmentData::class,
+                MPPaymentData::class,
+                String::class,
+                InstallmentsAnalyticsTracker::class,
             ),
         )
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
+            withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
+            withInstance<MPInstallmentData>(mockk(relaxed = true))
+            withInstance<MPPaymentData>(mockk(relaxed = true))
+            withInstance<String>("card_form")
         }
     }
 }

@@ -7,27 +7,29 @@ import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.FieldTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeaderTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
-import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.checkout.domain.model.CardFieldConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
+import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
+import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
+import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -57,6 +59,7 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -87,47 +90,73 @@ internal class CardPaymentViewModelTest {
         throwable = null,
     )
 
-    private val fullTranslations = Translations(
-        cardFormTitle = "",
-        cardFormFooterButtonLabel = "",
-        cardNumber = FieldTranslations(
-            label = "Número",
-            placeholder = "•••• ••••",
-            errorEmptyField = "",
-            errorIncompleteField = "",
-            errorInvalidField = "",
+    private val emptyValidation = Validation(errorEmpty = "", errorIncomplete = "", errorInvalid = "")
+    private val emptyFieldConfig = CardFieldConfig(type = "", length = LengthRange(min = 0, max = 0))
+
+    private fun cardNumberField(
+        label: String = "",
+        placeholder: String = "",
+        maxLength: Int = 16,
+    ) = CardNumberField(
+        label = label,
+        placeholder = placeholder,
+        validation = CardNumberValidation(
+            errorEmpty = "",
+            errorIncomplete = "",
+            errorInvalid = "",
+            errorMethodNotAllowed = "",
+            errorTypeNotAllowed = "",
         ),
-        holderName = FieldTranslations(
-            label = "Titular",
-            placeholder = "Nome",
-            errorEmptyField = "",
-            errorIncompleteField = "",
-            errorInvalidField = "",
-        ),
-        expirationDate = FieldTranslations(
-            label = "Vencimento",
-            placeholder = "MM/AA",
-            errorEmptyField = "",
-            errorIncompleteField = "",
-            errorInvalidField = "",
-        ),
-        securityCode = SecurityCodeTranslations(
-            label = "CVV",
-            placeholder = "123",
-            tooltip = "3 dígitos no verso",
-            errorEmptyField = "",
-            errorIncompleteField = "",
-        ),
-        document = DocumentTranslations(
-            label = "",
-            errorEmptyField = "",
-            errorIncompleteField = "",
-            errorInvalidField = "",
-        ),
-        installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(chevron = "", radio = "", title = ""),
-            interestFreeLabel = "",
-            totalLabel = "",
+        config = CardFieldConfig(type = "text", length = LengthRange(min = maxLength, max = maxLength)),
+    )
+
+    private fun securityCodeField(
+        label: String = "",
+        placeholder: String = "",
+        tooltip: String = "",
+        length: Int,
+    ) = SecurityCodeField(
+        label = label,
+        placeholder = placeholder,
+        helper = "",
+        tooltip = tooltip,
+        validation = emptyValidation,
+        config = CardFieldConfig(type = "text", length = LengthRange(min = length, max = length)),
+    )
+
+    private fun binData(
+        id: String? = "visa",
+        paymentTypeId: String? = "credit_card",
+        cardNumber: CardNumberField? = null,
+        securityCode: SecurityCodeField? = null,
+        holderName: CardHolderField? = null,
+        expirationDate: ExpirationDateField? = null,
+        issuers: List<BinIssuer> = emptyList(),
+        quotas: List<Quota> = emptyList(),
+        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+        currencySymbol: String = "",
+        installmentsTitle: String = "",
+        installmentsTotalLabel: String = "",
+        installmentsButtonLabel: String = "",
+    ) = CardBinData(
+        id = id,
+        paymentTypeId = paymentTypeId,
+        cardNumber = cardNumber,
+        securityCode = securityCode,
+        holderName = holderName,
+        expirationDate = expirationDate,
+        issuers = issuers,
+        installmentData = MPInstallmentData(
+            quotas = quotas,
+            display = MPInstallmentData.InstallmentDisplay(
+                title = installmentsTitle,
+                currencySymbol = currencySymbol,
+                displayType = displayType,
+                footer = MPInstallmentData.InstallmentFooterDisplay(
+                    footerTitle = installmentsTotalLabel,
+                    buttonLabel = installmentsButtonLabel,
+                ),
+            ),
         ),
     )
 
@@ -180,13 +209,13 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when initialization fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when initialization fails then emits OnFailure viewEvent`() = runTest {
         coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
@@ -269,22 +298,17 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when BIN call succeeds then card number maxLength is updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
-            issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
+        val data = binData(
+            cardNumber = cardNumberField(maxLength = 16),
+            securityCode = securityCodeField(length = 3),
+            issuers = listOf(BinIssuer(id = "1", name = "Banco")),
             quotas = listOf(
                 Quota(
-                    quantity = 1,
-                    installmentAmount = "100",
-                    totalAmount = "100",
-                    label = "1x",
-                    discountRate = 0.0,
+                    installments = 1,
+                    installmentAmount = java.math.BigDecimal("100"),
+                    totalAmount = java.math.BigDecimal("100"),
                 ),
             ),
-            translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
@@ -296,15 +320,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when BIN call succeeds then security code maxLength is updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
-        )
+        val data = binData(securityCode = securityCodeField(length = 3))
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
@@ -316,15 +332,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when BIN call succeeds with optional security code then optional is true`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
-        )
+        val data = binData(securityCode = securityCodeField(length = 0))
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
@@ -335,14 +343,22 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when BIN call succeeds with translations then field labels are updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = fullTranslations,
+        val data = binData(
+            cardNumber = cardNumberField(label = "Número", placeholder = "•••• ••••"),
+            securityCode = securityCodeField(label = "CVV", placeholder = "123", tooltip = "3 dígitos", length = 3),
+            holderName = CardHolderField(
+                label = "Titular",
+                placeholder = "Nome",
+                helper = "",
+                validation = emptyValidation,
+                config = emptyFieldConfig,
+            ),
+            expirationDate = ExpirationDateField(
+                label = "Vencimento",
+                placeholder = "MM/AA",
+                validation = emptyValidation,
+                config = emptyFieldConfig,
+            ),
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
@@ -357,16 +373,68 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when BIN call succeeds then paymentState is updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
-            quotas = emptyList(),
-            translations = null,
+    fun `when BIN succeeds with longer CVV than typed digits then secureCode shows incomplete error`() = runTest {
+        val cvv4Data = binData(
+            securityCode = securityCodeField(length = 4).copy(
+                validation = Validation(
+                    errorEmpty = "Required CVV",
+                    errorIncomplete = "Digite os 4 dígitos do código de segurança",
+                    errorInvalid = "Invalid CVV",
+                ),
+            ),
         )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(cvv4Data)
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 3))
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        val secureCodeState = viewModel.viewState.value.secureCodeState
+        assertEquals(4, secureCodeState.maxLength)
+        assertEquals("Digite os 4 dígitos do código de segurança", secureCodeState.error)
+    }
+
+    @Test
+    fun `when BIN succeeds and CVV not typed yet then secureCode has no error`() = runTest {
+        val cvv4Data = binData(
+            securityCode = securityCodeField(length = 4).copy(
+                validation = Validation(
+                    errorEmpty = "Required CVV",
+                    errorIncomplete = "Incomplete CVV",
+                    errorInvalid = "Invalid CVV",
+                ),
+            ),
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(cvv4Data)
+        val viewModel = makeViewModel()
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        assertEquals("", viewModel.viewState.value.secureCodeState.error)
+    }
+
+    @Test
+    fun `when BIN succeeds with custom mask then cardNumberState mask uses BFF value`() = runTest {
+        val data = binData(
+            cardNumber = cardNumberField(maxLength = 15).copy(
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 15, max = 15),
+                    mask = "#### ###### #####",
+                ),
+            ),
+        )
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        val viewModel = makeViewModel()
+
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+
+        assertEquals("#### ###### #####", viewModel.viewState.value.cardNumberState.mask)
+    }
+
+    @Test
+    fun `when BIN call succeeds then paymentState is updated`() = runTest {
+        val data = binData()
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
@@ -391,17 +459,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when BIN call succeeds with issuers then cardIssuers state is updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = listOf(
-                BinIssuer(id = 1L, name = "Banco do Brasil", secureThumbnail = "https://thumb.png"),
-            ),
-            quotas = emptyList(),
-            translations = null,
-        )
+        val data = binData(issuers = listOf(BinIssuer(id = "1", name = "Banco do Brasil")))
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
@@ -410,34 +468,24 @@ internal class CardPaymentViewModelTest {
         val issuers = viewModel.viewState.value.cardIssuers
         assertEquals(1, issuers.size)
         assertEquals("1", issuers.first().id)
-        assertEquals("https://thumb.png", issuers.first().thumbnail)
+        assertNull(issuers.first().thumbnail)
     }
 
     @Test
     fun `when BIN call succeeds with quotas then installments state is updated`() = runTest {
-        val data = CardBinData(
-            id = "visa",
-            paymentTypeId = "credit_card",
-            cardNumber = null,
-            securityCode = null,
-            issuers = emptyList(),
+        val data = binData(
             quotas = listOf(
                 Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = "1x sem juros",
-                    discountRate = 0.0,
+                    installments = 1,
+                    installmentAmount = java.math.BigDecimal("100.00"),
+                    totalAmount = java.math.BigDecimal("100.00"),
                 ),
                 Quota(
-                    quantity = 3,
-                    installmentAmount = "34.00",
-                    totalAmount = "102.00",
-                    label = "3x",
-                    discountRate = 0.0,
+                    installments = 3,
+                    installmentAmount = java.math.BigDecimal("34.00"),
+                    totalAmount = java.math.BigDecimal("102.00"),
                 ),
             ),
-            translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
@@ -447,7 +495,7 @@ internal class CardPaymentViewModelTest {
         val installmentsState = viewModel.viewState.value.installmentsState
         assertTrue(installmentsState.showList)
         assertEquals(2, installmentsState.installments.size)
-        assertEquals(1, installmentsState.installments.first().instalments)
+        assertEquals(1, installmentsState.installments.first().installments)
     }
 
     @Test
@@ -587,12 +635,12 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed then notifies CheckoutCallbackHolder with UserCancelled`() = runTest {
+    fun `when onBackPressed then emits OnUserCancelled viewEvent`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
     }
 
     @Test
@@ -607,12 +655,35 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed with UiButton reason then notifies UserCancelled`() = runTest {
+    fun `when onBackPressed with UiButton reason then emits OnUserCancelled viewEvent`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed(reason = CancelReason.UiButton)
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
+    }
+
+    @Test
+    fun `when onBackPressed without installments presented then context flag is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onBackPressed()
+
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
+        val context = event.context as UserCancelledContext.CardForm
+        assertFalse(context.context.installmentsWasPresented)
+    }
+
+    @Test
+    fun `when markInstallmentsPresented and onBackPressed then context flag is true`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.markInstallmentsPresented()
+        viewModel.onBackPressed()
+
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
+        val context = event.context as UserCancelledContext.CardForm
+        assertTrue(context.context.installmentsWasPresented)
     }
 
     @Test
@@ -650,7 +721,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds then notifies CheckoutCallbackHolder with Success`() = runTest {
+    fun `when onSubmit succeeds then emits OnSuccess viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -662,11 +733,11 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 
     @Test
-    fun `when onSubmit fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when onSubmit fails then emits OnFailure viewEvent`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Error(networkError)
@@ -678,7 +749,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test

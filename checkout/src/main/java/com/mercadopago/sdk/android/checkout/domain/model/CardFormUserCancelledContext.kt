@@ -9,7 +9,10 @@ package com.mercadopago.sdk.android.checkout.domain.model
  *
  * @property fields List of field states showing which fields were filled, empty,
  * incomplete, or invalid when the form was cancelled
+ * @property installmentsWasPresented Whether the installments screen was presented
+ * before the user cancelled
  */
 data class CardFormUserCancelledContext(
     val fields: List<CancelledFieldState>,
+    val installmentsWasPresented: Boolean = false,
 )

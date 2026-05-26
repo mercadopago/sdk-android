@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.Order
 import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
 import android.widget.Toast
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -53,6 +54,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 private sealed interface CheckoutState {
     data object Idle : CheckoutState
@@ -69,7 +71,7 @@ internal fun CheckoutExampleScreen(
     val checkout = remember {
         MercadoPagoCheckout.Builder(
             context = context,
-            checkoutType = CheckoutType.CardSave,
+            checkoutType = CheckoutType.CardTransaction(Order(amount = BigDecimal(1000))),
         ).setPaymentMethods(listOf(PaymentMethod.Card()))
             .build()
     }
@@ -122,15 +124,15 @@ internal fun CheckoutExampleScreen(
                                     ).show()
 
                                 is MercadoPagoCheckoutResult.UserCancelled -> {
-                                    val fieldsInfo = when (val ctx = result.context) {
-                                        is UserCancelledContext.CardForm ->
-                                            ctx.context.fields.joinToString(", ") { field ->
-                                                "${field.field.name}: ${field.state::class.simpleName}"
-                                            }
+                                    val ctx = (result.context as UserCancelledContext.CardForm).context
+                                    val fieldsInfo = ctx.fields.joinToString(", ") { field ->
+                                        "${field.field.name}: ${field.state::class.simpleName}"
                                     }
+                                    val message = "CardForm (installmentsWasPresented=" +
+                                        "${ctx.installmentsWasPresented})\n$fieldsInfo"
                                     Toast.makeText(
                                         context,
-                                        "Cancelado pelo usuário\n$fieldsInfo",
+                                        "Cancelado pelo usuário\n$message",
                                         Toast.LENGTH_LONG,
                                     ).show()
                                 }

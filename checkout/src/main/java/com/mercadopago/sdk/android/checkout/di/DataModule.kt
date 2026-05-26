@@ -10,12 +10,13 @@ import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDa
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
 import com.mercadopago.sdk.android.checkout.data.repository.OrderRepositoryImpl
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
-import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -41,17 +42,14 @@ internal fun provideDataModule() =
         factory<CardFormRepository> {
             CardFormRepositoryImpl(dataSource = get())
         }
+        factory {
+            InitializeCardFormUseCase(repository = get())
+        }
         factory<OrderRemoteDataSource> {
             OrderRemoteDataSourceImpl(service = get())
         }
         factory<OrderRepository> {
             OrderRepositoryImpl(dataSource = get())
-        }
-        factory {
-            InitializeCardFormUseCase(repository = get())
-        }
-        factory {
-            ProcessOrderUseCase(repository = get())
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
@@ -65,9 +63,11 @@ internal fun provideDataModule() =
                 cardPaymentScreenStateFactory = get(),
             )
         }
-    }
-
-internal fun provideInstallmentsModule() =
-    module {
-        viewModel { InstallmentsViewModel() }
+        viewModel { (installmentData: MPInstallmentData, paymentData: MPPaymentData, checkoutType: String) ->
+            InstallmentsViewModel(
+                installmentData = installmentData,
+                paymentData = paymentData,
+                checkoutType = checkoutType,
+            )
+        }
     }
