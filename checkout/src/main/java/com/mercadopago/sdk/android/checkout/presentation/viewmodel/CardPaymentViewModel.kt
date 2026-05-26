@@ -15,9 +15,11 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isEmpty
@@ -49,6 +51,7 @@ internal class CardPaymentViewModel(
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
     private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val processOrderUseCase: ProcessOrderUseCase,
     private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
@@ -467,11 +470,56 @@ internal class CardPaymentViewModel(
                                 ),
                             ),
                         ),
+                        token = cardToken.token,
                     )
                 },
                 onError = { checkoutError ->
                     analyticsTracker.trackSubmitError(checkoutError)
                     _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError)
+                },
+            ).apply {
+                _viewState.value = _viewState.value.copy(isLoading = false)
+            }
+        }
+    }
+
+    fun processOrder(
+        token: String,
+        installment: Int,
+    ) {
+        val order = (checkoutConfiguration?.checkoutType as? CheckoutType.CardTransaction)?.order
+            ?: return
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            processOrderUseCase(
+                params = ProcessOrderParams(
+                    orderId = order.orderId,
+                    amount = order.amount.toPlainString(),
+                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                    paymentMethodType = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                    token = token,
+                    installments = installment,
+                ),
+            ).fold(
+                onSuccess = { response ->
+                    _viewEvent.value = CardPaymentViewEvent.OnOrderProcessed(
+                        payment = MPPaymentData.CardTransaction(
+                            orderId = response.id.orEmpty(),
+                            orderStatus = response.status.orEmpty(),
+                            transactionAmount = order.amount,
+                            installment = installment,
+                            paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                            issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                            payer = Payer(
+                                documentType = viewState.value.identificationTypeState.selected?.name,
+                                documentNumber = viewState.value.identificationTypeState.value,
+                            ),
+                        ),
+                    )
+                },
+                onError = { error ->
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)

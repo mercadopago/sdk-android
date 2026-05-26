@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
     private val paymentData: MPPaymentData,
-    checkoutType: String,
+    private val checkoutType: String,
     private val analyticsTracker: InstallmentsAnalyticsTracker = InstallmentsAnalyticsTracker(
         checkoutType = checkoutType,
         paymentData = paymentData,
