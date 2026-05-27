@@ -4,21 +4,21 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * CheckoutType enum, used to configure the checkout type
+ * MPCheckoutType enum, used to configure the checkout type
  */
-sealed class CheckoutType : Parcelable {
+sealed class MPCheckoutType : Parcelable {
     /**
      * CardSave class, used to configure the card form
      */
     @Parcelize
-    object CardSave : CheckoutType()
+    object CardSave : MPCheckoutType()
 
     /**
      * CardTransaction class, used to configure the card transaction
-     * @param cardFormConfiguration Order
+     * @param cardFormConfiguration MPOrder
      */
     @Parcelize
     data class CardTransaction(
-        val cardFormConfiguration: Order = Order(),
-    ) : CheckoutType()
+        val cardFormConfiguration: MPOrder = MPOrder(),
+    ) : MPCheckoutType()
 }

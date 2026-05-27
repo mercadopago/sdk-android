@@ -6,7 +6,7 @@ package com.mercadopago.sdk.android.checkout.core.model
  * This value is used to represent the selected card category and may affect
  * available payment options and UI/UX decisions during the checkout.
  */
-enum class CardType(internal val value: String) {
+enum class MPCardType(internal val value: String) {
     /**
      * CREDIT: Credit card.
      */
@@ -26,7 +26,7 @@ enum class CardType(internal val value: String) {
     internal companion object {
         internal fun fromString(
             value: String,
-        ): CardType? =
+        ): MPCardType? =
             entries.find {
                 it.value.equals(value, ignoreCase = true) ||
                     it.name.equals(value, ignoreCase = true)

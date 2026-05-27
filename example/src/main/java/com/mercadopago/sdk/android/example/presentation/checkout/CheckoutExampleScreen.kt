@@ -45,12 +45,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod
 import android.widget.Toast
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
 
@@ -69,8 +69,8 @@ internal fun CheckoutExampleScreen(
     val checkout = remember {
         MercadoPagoCheckout.Builder(
             context = context,
-            checkoutType = CheckoutType.CardSave,
-        ).setPaymentMethods(listOf(PaymentMethod.Card()))
+            checkoutType = MPCheckoutType.CardSave,
+        ).setPaymentMethods(listOf(MPPaymentMethod.Card()))
             .build()
     }
 
@@ -123,7 +123,7 @@ internal fun CheckoutExampleScreen(
 
                                 is MercadoPagoCheckoutResult.UserCancelled -> {
                                     val fieldsInfo = when (val ctx = result.context) {
-                                        is UserCancelledContext.CardForm ->
+                                        is MPUserCancelledContext.CardForm ->
                                             ctx.context.fields.joinToString(", ") { field ->
                                                 "${field.field.name}: ${field.state::class.simpleName}"
                                             }

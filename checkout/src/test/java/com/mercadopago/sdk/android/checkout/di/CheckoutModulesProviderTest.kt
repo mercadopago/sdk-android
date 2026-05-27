@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import com.google.gson.Gson
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.Order
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -40,7 +40,7 @@ internal class CheckoutModulesProviderTest {
         mockkObject(MercadoPagoSDK.Companion)
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
-        mockkObject(CheckoutType::class)
+        mockkObject(MPCheckoutType::class)
         mockkObject(CardPaymentScreenStateFactory::class)
         mockkConstructor(Configuration::class)
     }
@@ -69,7 +69,7 @@ internal class CheckoutModulesProviderTest {
         )
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardTransaction(Order()),
+            checkoutType = MPCheckoutType.CardTransaction(MPOrder()),
             paymentMethods = emptyList(),
         )
         val module = module {
@@ -85,7 +85,7 @@ internal class CheckoutModulesProviderTest {
         module.verify(
             extraTypes = listOf(
                 CoreMethods::class,
-                CheckoutType::class,
+                MPCheckoutType::class,
                 List::class,
                 CheckoutConfiguration::class,
                 CheckoutThemePreferences::class,

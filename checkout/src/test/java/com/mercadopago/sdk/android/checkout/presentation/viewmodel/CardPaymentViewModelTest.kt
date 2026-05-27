@@ -2,10 +2,10 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
@@ -71,11 +71,11 @@ internal class CardPaymentViewModelTest {
     private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
-        checkoutType = mockk<CheckoutType.CardTransaction>(relaxed = true),
+        checkoutType = mockk<MPCheckoutType.CardTransaction>(relaxed = true),
         paymentMethods = listOf(
-            PaymentMethod.Card(
-                allowedTypes = listOf(CardType.CREDIT, CardType.DEBIT),
-                allowedBrands = listOf(CardBrand.Visa, CardBrand.Mastercard),
+            MPPaymentMethod.Card(
+                allowedTypes = listOf(MPCardType.CREDIT, MPCardType.DEBIT),
+                allowedBrands = listOf(MPCardBrand.Visa, MPCardBrand.Mastercard),
             ),
         ),
     )

@@ -3,9 +3,9 @@ package com.mercadopago.sdk.android.checkout.core
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Stable
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutAppearance
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutAppearance
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -24,7 +24,7 @@ internal const val EXTRA_CONFIGURATION = "extra_configuration"
 class MercadoPagoCheckout private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
-    private val checkoutAppearance: CheckoutAppearance?,
+    private val checkoutAppearance: MPCheckoutAppearance?,
 ) {
     /**
      * Launches the checkout
@@ -49,25 +49,25 @@ class MercadoPagoCheckout private constructor(
     /**
      * Builder for MercadoPagoCheckout
      * @param context Context
-     * @param checkoutType CheckoutType
-     * @param checkoutAppearance CheckoutAppearance
+     * @param checkoutType MPCheckoutType
+     * @param checkoutAppearance MPCheckoutAppearance
      */
     class Builder(
         private val context: Context,
-        private val checkoutType: CheckoutType,
-        private val checkoutAppearance: CheckoutAppearance? = CheckoutAppearance(
+        private val checkoutType: MPCheckoutType,
+        private val checkoutAppearance: MPCheckoutAppearance? = MPCheckoutAppearance(
             theme = MercadoPagoThemes.Default,
             style = MercadoPagoUserInterfaceStyle.System,
         ),
     ) {
-        private var paymentMethods: List<PaymentMethod> = emptyList()
+        private var paymentMethods: List<MPPaymentMethod> = emptyList()
 
         /**
          * Sets the payment methods
          * @param paymentMethods List of payment methods
          */
         fun setPaymentMethods(
-            paymentMethods: List<PaymentMethod> = PaymentMethod.defaults,
+            paymentMethods: List<MPPaymentMethod> = MPPaymentMethod.defaults,
         ) = apply { this.paymentMethods = paymentMethods }
 
         /**

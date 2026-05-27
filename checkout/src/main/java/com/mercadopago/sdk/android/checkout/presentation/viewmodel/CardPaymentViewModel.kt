@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
@@ -426,14 +426,14 @@ internal class CardPaymentViewModel(
                         documentNumber = buyerIdentification.number,
                     )
                     val paymentData = when (checkoutConfiguration?.checkoutType) {
-                        is CheckoutType.CardSave -> MPPaymentData.CardSave(
+                        is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
                             token = cardToken.token,
                             paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
                             paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                             issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
                             payer = payer,
                         )
-                        is CheckoutType.CardTransaction, null -> MPPaymentData.CardTransaction(
+                        is MPCheckoutType.CardTransaction, null -> MPPaymentData.CardTransaction(
                             transactionAmount = checkoutConfiguration?.getCardFormAmount(),
                             installment = 1,
                             paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
