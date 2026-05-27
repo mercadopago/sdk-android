@@ -2,8 +2,8 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
-import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 
 internal sealed interface CardPaymentViewEvent {
     data class OnSuccess(
@@ -13,7 +13,7 @@ internal sealed interface CardPaymentViewEvent {
 
     data class OnFailure(val error: MercadoPagoCheckoutError) : CardPaymentViewEvent
 
-    data class OnUserCancelled(val context: UserCancelledContext) : CardPaymentViewEvent
+    data class OnUserCancelled(val context: MPUserCancelledContext) : CardPaymentViewEvent
 }
 
 internal sealed interface InstallmentViewEvent {
@@ -21,5 +21,5 @@ internal sealed interface InstallmentViewEvent {
 
     data class OnFailure(val error: MercadoPagoCheckoutError) : InstallmentViewEvent
 
-    data class OnUserCancelled(val context: UserCancelledContext) : InstallmentViewEvent
+    data class OnUserCancelled(val context: MPUserCancelledContext) : InstallmentViewEvent
 }
