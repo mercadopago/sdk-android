@@ -1,0 +1,19 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolder.kt
+  ai_agent 3-4,6,9-10,12-13,23
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolderTest.kt
+  ai_agent 3,13,19-20,40-41,55,65,79,81
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  ai_agent 13,41,73
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  ai_agent 67
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  ai_agent 665
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  ai_agent 75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "15140e2139c12d414e074b29dbd2bc8dfa0ebbbc",
+  "prompts": {}
+}
