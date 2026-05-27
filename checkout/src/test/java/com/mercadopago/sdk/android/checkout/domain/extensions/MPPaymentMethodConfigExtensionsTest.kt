@@ -9,9 +9,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig as CheckoutPaymentMethod
 
-internal class PaymentMethodExtensionsTest {
+internal class MPPaymentMethodConfigExtensionsTest {
     @Test
     fun `given paymentMethod with securityCode then toSecurityCode maps all fields`() {
         val paymentMethod = PaymentMethod(

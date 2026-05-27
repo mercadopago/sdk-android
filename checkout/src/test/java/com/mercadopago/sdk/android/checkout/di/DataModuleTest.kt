@@ -62,7 +62,7 @@ internal class DataModuleTest {
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = CheckoutType.CardTransaction(Order()),
-            paymentMethods = emptyList(),
+            paymentMethodConfigs = emptyList(),
         )
 
         val module = module {

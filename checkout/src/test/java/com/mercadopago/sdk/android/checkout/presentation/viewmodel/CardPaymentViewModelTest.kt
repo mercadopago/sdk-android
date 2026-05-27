@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.DocumentTranslations
@@ -72,8 +72,8 @@ internal class CardPaymentViewModelTest {
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<CheckoutType.CardTransaction>(relaxed = true),
-        paymentMethods = listOf(
-            PaymentMethod.Card(
+        paymentMethodConfigs = listOf(
+            MPPaymentMethodConfig.Card(
                 excludedPaymentTypes = listOf(CardType.CREDIT, CardType.DEBIT),
                 excludedPaymentMethods = listOf(CardBrand.Visa, CardBrand.Mastercard),
             ),

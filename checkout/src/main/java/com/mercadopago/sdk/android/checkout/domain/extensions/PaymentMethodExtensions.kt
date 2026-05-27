@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardBrand
 import com.mercadopago.sdk.android.checkout.core.model.CardType
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig as CheckoutPaymentMethod
 
 private const val DEFAULT_SECURITY_CODE_LENGTH = 3
 private const val DEFAULT_SECURITY_CODE_MODE = "mandatory"

@@ -62,7 +62,7 @@ internal class CheckoutActivity : ComponentActivity() {
     private fun trackInitialize(
         checkoutConfiguration: CheckoutConfiguration?,
     ) {
-        val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+        val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethodConfigs.extractCardFilters()
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
             is CheckoutType.CardSave -> CARD_SAVE
             is CheckoutType.CardTransaction -> CARD_TRANSACTION

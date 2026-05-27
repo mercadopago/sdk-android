@@ -61,7 +61,7 @@ internal class MercadoPagoCheckoutTest {
     fun `when setPaymentMethods called then returns same builder instance`() {
         val builder = MercadoPagoCheckout.Builder(context, checkoutType)
 
-        val result = builder.setPaymentMethods()
+        val result = builder.setPaymentMethodConfiguration()
 
         assertSame(builder, result)
     }

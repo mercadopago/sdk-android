@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.compose.runtime.Stable
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -60,15 +60,15 @@ class MercadoPagoCheckout private constructor(
             style = MercadoPagoUserInterfaceStyle.System,
         ),
     ) {
-        private var paymentMethods: List<PaymentMethod> = emptyList()
+        private var paymentMethodConfigs: List<MPPaymentMethodConfig> = emptyList()
 
         /**
-         * Sets the payment methods
-         * @param paymentMethods List of payment methods
+         * Sets the payment methods configuration
+         * @param paymentMethodConfigs List of payment methods
          */
-        fun setPaymentMethods(
-            paymentMethods: List<PaymentMethod> = PaymentMethod.defaults,
-        ) = apply { this.paymentMethods = paymentMethods }
+        fun setPaymentMethodConfiguration(
+            paymentMethodConfigs: List<MPPaymentMethodConfig> = MPPaymentMethodConfig.defaults,
+        ) = apply { this.paymentMethodConfigs = paymentMethodConfigs }
 
         /**
          * Builds the MercadoPagoCheckout
@@ -79,7 +79,7 @@ class MercadoPagoCheckout private constructor(
                 checkoutAppearance = checkoutAppearance,
                 checkoutConfiguration = CheckoutConfiguration(
                     checkoutType = checkoutType,
-                    paymentMethods = paymentMethods,
+                    paymentMethodConfigs = paymentMethodConfigs,
                 ),
             )
     }
