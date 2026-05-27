@@ -1,0 +1,76 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapperTest.kt
+  s_b6fb13d22fc6a2::t_92eee9965887e4 73
+  s_b6fb13d22fc6a2::t_822be81f80c50a 94,99
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandler.kt
+  s_b6fb13d22fc6a2::t_23ea1c299c9c78 163
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenState.kt
+  s_b6fb13d22fc6a2::t_d53efa7b1b63d7 6-8
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_b6fb13d22fc6a2::t_c091d53eece523 50,254,261
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterState.kt
+  s_b6fb13d22fc6a2::t_6457d7fe84740d 4-8,10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardFormInitializationOutput.kt
+  s_b6fb13d22fc6a2::t_a095b8b3c1c422 8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_b6fb13d22fc6a2::t_9f2cc5add30988 44
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  s_b6fb13d22fc6a2::t_c091d53eece523 320,331
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_b6fb13d22fc6a2::t_2c036520623a20 287,293-294,296
+  s_b6fb13d22fc6a2::t_fce22a0a201040 390,510
+  s_b6fb13d22fc6a2::t_03b606c61198e2 39
+  s_b6fb13d22fc6a2::t_cd8df4e9e719d6 384,434,504
+  s_b6fb13d22fc6a2::t_649c12c43236f4 439
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_b6fb13d22fc6a2::t_17fff15e6f4a8c 33,36
+  s_b6fb13d22fc6a2::t_5bc73cd75cb728 26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_b6fb13d22fc6a2::t_483dd400679064 166,203
+  s_b6fb13d22fc6a2::t_c3a0bbde69b5c6 226
+  s_b6fb13d22fc6a2::t_7cdd1f47b698da 188
+  s_b6fb13d22fc6a2::t_bc162d0f52eec4 68,78,92-93
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_b6fb13d22fc6a2::t_c091d53eece523 279
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapperTest.kt
+  s_b6fb13d22fc6a2::t_b76a8b6907e01a 122
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapper.kt
+  s_b6fb13d22fc6a2::t_50a2698c2fa286 28
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_b6fb13d22fc6a2::t_c091d53eece523 100,111
+  s_b6fb13d22fc6a2::t_822be81f80c50a 125
+  s_b6fb13d22fc6a2::t_b64fc5a2bb971d 29-31,45-47,62-63,78-79,90-92,103,114,140-142,166,178
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_b6fb13d22fc6a2::t_c6355e9e7ca631 28
+  s_b6fb13d22fc6a2::t_c53ecacf09c2ba 124
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPInstallmentData.kt
+  s_b6fb13d22fc6a2::t_da8289d570df40 18
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_b6fb13d22fc6a2::t_305507f216a503 31
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_b6fb13d22fc6a2::t_822be81f80c50a 47,56,64,73,84
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_b6fb13d22fc6a2::t_c091d53eece523 136,150
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapper.kt
+  s_b6fb13d22fc6a2::t_2dcc997d1f263e 31
+  s_b6fb13d22fc6a2::t_57444eb91431dc 16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_b6fb13d22fc6a2::t_4d840da17e1d69 454
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  s_b6fb13d22fc6a2::t_7386c5aa6e4b19 16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "3a1e67a1b38fb82971bcfbd150ca5177e2dce5f7",
+  "prompts": {},
+  "sessions": {
+    "s_b6fb13d22fc6a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8de676cc-ddc1-4aa8-b47c-7b82fc0d40f5",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/analytics/PaymentMethodAnalyticsTest.kt
+  s_5571bbc77a29b0::t_53458e21333fbf 43-48,52-63
+  s_5571bbc77a29b0::t_20a515ff0447ea 1-42,49-51,64-65
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/analytics/CardFormSubmitAnalyticsTest.kt
+  s_5571bbc77a29b0::t_2f17192ce87776 42,45,52-53
+  s_5571bbc77a29b0::t_7103ea8223d6ad 8
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/IndentificationTypesAnalytics.kt
+  s_5571bbc77a29b0::t_cfe2ef85ec1a40 26,30-33,40-43
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTracker.kt
+  s_5571bbc77a29b0::t_da5b8641a574e8 49
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/InstallmentsAnalytics.kt
+  s_5571bbc77a29b0::t_fd557cc27529c8 31,35-38,46-52
+  s_5571bbc77a29b0::t_ffb9db349e18d1 54
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/GenerateCardTokenAnalytics.kt
+  s_5571bbc77a29b0::t_17a94ffda7b37a 13,19,24-26,62
+  s_5571bbc77a29b0::t_dce32a142f6478 33-34,38-41,52-56,58-60
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/CardIssuersAnalytics.kt
+  s_5571bbc77a29b0::t_6616009dd30af4 28,32-35,42-45
+sdk-android/src/test/java/com/mercadopago/sdk/android/initializer/MercadoPagoSDKTest.kt
+  s_5571bbc77a29b0::t_72e92e718c00f3 20
+  s_5571bbc77a29b0::t_a0200c6bf51847 60
+  s_5571bbc77a29b0::t_a8b24f8ba9cf0e 130
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_5571bbc77a29b0::t_17a360ae424eb0 437
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/domain/interactor/CoreMethods.kt
+  s_5571bbc77a29b0::t_9ee1260b32eabc 552,561
+  s_5571bbc77a29b0::t_d184cafcea4319 116,125
+  s_5571bbc77a29b0::t_27c6090b4ea094 282,291
+  s_5571bbc77a29b0::t_a90bd35688c6cf 202,211
+  s_5571bbc77a29b0::t_f5434c279391b1 504,507-510
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/analytics/PaymentMethodAnalytics.kt
+  s_5571bbc77a29b0::t_10acaf9724b059 34-35,39-43,55-63
+  s_5571bbc77a29b0::t_718bedf8641aac 18-19,26-27,51-54
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/CardFormSubmitAnalytics.kt
+  s_5571bbc77a29b0::t_78b1453e7c0579 56
+  s_5571bbc77a29b0::t_b5e2593b2431e3 19
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/analytics/GenerateCardTokenAnalyticsTest.kt
+  s_5571bbc77a29b0::t_d2432b8e86b371 36-41,45-56
+  s_5571bbc77a29b0::t_fe2a1a1a2b1510 1-35,42-44,57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "7e0069e525dfa7a87ee0449e6cd6f5a0e671bda4",
+  "prompts": {},
+  "sessions": {
+    "s_5571bbc77a29b0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "818028f0-3f6f-47d5-9308-7f6b8bc49dcc",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

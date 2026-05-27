@@ -1,0 +1,19 @@
+example/src/main/java/com/mercadopago/sdk/android/example/extensions/BigDecimalExt.kt
+  s_0dacca3d2656f6::t_2bc07a7da0deb3 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "f51f936c14d1fd32891a06368bb581b374ca4a19",
+  "prompts": {},
+  "sessions": {
+    "s_0dacca3d2656f6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d39545cb-a3d8-4b17-9da6-fd201f53d2f2",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_7f7c8b45026128::t_95ff28b589c707 71-73,103-107
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_7f7c8b45026128::t_95ff28b589c707 7,119-120
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/controller/CheckoutCardPayment.kt
+  s_7f7c8b45026128::t_95ff28b589c707 4,22,28-29,51-52,57-60,69,72-78
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentViewEvent.kt
+  s_7f7c8b45026128::t_95ff28b589c707 4
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_7f7c8b45026128::t_95ff28b589c707 40,280-284,426-430,433-437,450,625-629,641-645,659-663,675-679,691-694,697
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "29acdfde462cd3dbe5ce4ef480acbf597b93587b",
+  "prompts": {},
+  "sessions": {
+    "s_7f7c8b45026128": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e38a236-fdd0-4b90-97ea-32a8fffd6d21",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_60435b1410db7a::t_762a6d0510aacc 121-123,125-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "9a04dded27186ad92920588b595790a8bccb01ae",
+  "prompts": {},
+  "sessions": {
+    "s_60435b1410db7a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "912f9222-36ca-4842-ab87-98ff6a6ffe5b",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

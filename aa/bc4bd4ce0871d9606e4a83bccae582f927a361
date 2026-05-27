@@ -1,0 +1,14 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPListItem.kt
+  h_e120d9bb8a4c69 9,12-13,20-22,25-26,29,50,59-60,63,72-74,79-90,100,121,141,180-212
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "aabc4bd4ce0871d9606e4a83bccae582f927a361",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}

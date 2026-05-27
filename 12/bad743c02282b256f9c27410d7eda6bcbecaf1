@@ -1,0 +1,23 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPTooltip.kt
+  7a3dc9d70e030bd4 1-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "12bad743c02282b256f9c27410d7eda6bcbecaf1",
+  "prompts": {
+    "7a3dc9d70e030bd4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4d74ff5a-6c29-4d9d-a862-d58aa9535922",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 115,
+      "total_deletions": 36,
+      "accepted_lines": 79,
+      "overriden_lines": 0
+    }
+  }
+}

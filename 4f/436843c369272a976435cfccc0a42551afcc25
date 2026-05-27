@@ -1,0 +1,25 @@
+sdk-android/src/test/java/com/mercadopago/sdk/android/di/MercadoPagoSdkModulesProviderTest.kt
+  dfba1336f563d044 5,50
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  dfba1336f563d044 44,225,234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "4f436843c369272a976435cfccc0a42551afcc25",
+  "prompts": {
+    "dfba1336f563d044": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73a7160b-6aa6-4c1a-a177-f9573d898914",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 5,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}

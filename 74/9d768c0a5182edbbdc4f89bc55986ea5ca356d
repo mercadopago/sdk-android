@@ -1,0 +1,18 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapper.kt
+  h_e120d9bb8a4c69 66
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/exception/ExceptionFactory.kt
+  h_e120d9bb8a4c69 41
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardFormInitializationOutput.kt
+  h_e120d9bb8a4c69 47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.6",
+  "base_commit_sha": "749d768c0a5182edbbdc4f89bc55986ea5ca356d",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+core-methods/proguard-rules.pro
+  s_6084c2e3ba02d0::t_d0ec81c6e350fd 40-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "6a8349ecb884f9a6b128971bbca7d80870b4b7c6",
+  "prompts": {},
+  "sessions": {
+    "s_6084c2e3ba02d0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3d03922a-de11-474c-b2d0-5edc6e3fcae9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

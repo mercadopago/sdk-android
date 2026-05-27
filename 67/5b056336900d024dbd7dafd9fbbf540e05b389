@@ -1,0 +1,43 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenState.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 3-4,6-8,15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 1-88
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 15-44
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensionsTest.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 48-82
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPInstallmentData.kt
+  s_f6c15261dff194::t_42e847b2885bdd 3-5,7,9-32,34-45
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterState.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 4-8,10
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 1-182
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/StringExtensions.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 1,5-8
+components/src/test/java/com/mercadopago/sdk/android/components/extensions/StringExtensionsTest.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 1-52
+components/src/main/java/com/mercadopago/sdk/android/components/MPListItem.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 50,52,77,98,118
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/LoadingScreen.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 1-35
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 14,23,62,68,78,92-93,124,145,150,166,170,176-177,188,203,207,213-214,226
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_f6c15261dff194::t_d98267c9a84b2d 17,78,148-155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "675b056336900d024dbd7dafd9fbbf540e05b389",
+  "prompts": {},
+  "sessions": {
+    "s_f6c15261dff194": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "201f5c19-ac06-49a4-aec9-645a13b1b704",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": null
+    }
+  }
+}

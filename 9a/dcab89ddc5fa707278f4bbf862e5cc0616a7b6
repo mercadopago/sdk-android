@@ -1,0 +1,53 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/extensions/PaymentMethodExtensions.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSourceImpl.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 32-33
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/CardFormService.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 29-30
+components/build.gradle.kts
+  s_501569ccc718f1::t_c481a04872a6af 72-75
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/CardBinFilter.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 7-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/request/CardBinRequest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 8-9
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/repository/CardFormRepositoryImpl.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 41-42
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 65,76-77
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 77-78
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/CardFormInitAnalytics.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 20-21,29-30,51-54
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/GetCardBinUseCaseTest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 378,385-388
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/analytics/CardFormInitAnalyticsTest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 16-17,30-31,38-39
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/CardFormRepositoryImplTest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 38,129,137-138
+foundation/build.gradle.kts
+  s_501569ccc718f1::t_f39026d5c3e8e0 73-76
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/extensions/PaymentMethodExtensionsTest.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 96-97,99,104-105
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/PaymentMethod.kt
+  s_501569ccc718f1::t_f39026d5c3e8e0 13-14,19-20
+checkout/proguard-rules.pro
+  s_501569ccc718f1::t_912963ed2e83e1 37-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "9adcab89ddc5fa707278f4bbf862e5cc0616a7b6",
+  "prompts": {},
+  "sessions": {
+    "s_501569ccc718f1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5907c8c8-fc82-428c-99c8-37b55442ad43",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

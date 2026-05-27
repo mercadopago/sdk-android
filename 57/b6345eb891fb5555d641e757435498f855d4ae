@@ -1,0 +1,19 @@
+CHANGELOG.md
+  s_0e2d651296e595::t_256f3ba4946d44 11-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "57b6345eb891fb5555d641e757435498f855d4ae",
+  "prompts": {},
+  "sessions": {
+    "s_0e2d651296e595": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "741cb5d2-a271-427b-81c7-bb8f6464a4df",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

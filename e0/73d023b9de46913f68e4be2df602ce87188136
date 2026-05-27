@@ -1,0 +1,25 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  564e1364a609a789 10,85
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/InitializeCardFormUseCaseTest.kt
+  564e1364a609a789 7-8,16,20-21,25,29,39-44,57-63,75-76,78,82-83,88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "e073d023b9de46913f68e4be2df602ce87188136",
+  "prompts": {
+    "564e1364a609a789": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "93daa9f3-f54e-4007-a6eb-8d5cb014abe9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 31,
+      "total_deletions": 27,
+      "accepted_lines": 31,
+      "overriden_lines": 0
+    }
+  }
+}

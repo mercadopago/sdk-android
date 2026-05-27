@@ -1,0 +1,22 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModel.kt
+  s_76e6ede7aa2a09::t_0779fc66575175 21-23,32-34,57-59,63-65
+  s_76e6ede7aa2a09::t_ab5c368671de81 1-20,24-31,35-56,60-62,66-68
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_76e6ede7aa2a09::t_9ef6d8a867f8e2 12-13,20,31,42,49-52,55-63,69,92-96,115,127,142,161,172,176,181
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "e412c4550954abaad5e13ae0f5ad519dc620daf9",
+  "prompts": {},
+  "sessions": {
+    "s_76e6ede7aa2a09": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b16938b-e9bc-4c40-99ed-3f7a92ccd0b3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

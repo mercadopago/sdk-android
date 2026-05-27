@@ -1,0 +1,23 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/Translations.kt
+  s_f6c15261dff194::t_00392d32628472 6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/InstallmentsTranslations.kt
+  s_f6c15261dff194::t_e669705afe9692 5,8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_f6c15261dff194::t_577a15e41ef947 32-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "57ce1ce2e12197dd337987c81d29962727a4d0a1",
+  "prompts": {},
+  "sessions": {
+    "s_f6c15261dff194": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "201f5c19-ac06-49a4-aec9-645a13b1b704",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": null
+    }
+  }
+}

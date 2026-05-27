@@ -1,0 +1,21 @@
+CHANGELOG.md
+  s_10ac7515206b86::t_010ad10264d0b0 11-13
+  s_10ac7515206b86::t_34b843f834abf1 34-36
+  s_10ac7515206b86::t_f502cb42117070 21-23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "be8f8dc8fe1b25c8f825ef0d8a3a32d5f61d8652",
+  "prompts": {},
+  "sessions": {
+    "s_10ac7515206b86": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7e99bb8f-1fef-4d1a-9d54-c5af4b09b108",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

@@ -1,0 +1,127 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckout.kt
+  s_753496b9178c49::t_c81db0394e3a94 6-8
+  s_753496b9178c49::t_f554db97e7290c 52-53,57-58,63,70
+  s_753496b9178c49::t_4a58d19b8ebc18 27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPCancelledFieldState.kt
+  s_753496b9178c49::t_aeb80df8f38c7b 3-4,16,69,75
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  s_753496b9178c49::t_13a727aaa64683 91,101,127
+  s_753496b9178c49::t_d4ee63ac4cd3bc 6-7
+  s_753496b9178c49::t_e87f03f391600e 32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPPaymentMethod.kt
+  s_753496b9178c49::t_0dd7cb4c4b8ad3 7,10,15,19-22,28,34,38,42-43,52
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_753496b9178c49::t_52c4a1e6f69bf9 126
+  s_753496b9178c49::t_79f58d947ac6ff 72-73
+  s_753496b9178c49::t_5e98413de0c6f3 48-49,53
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPPayer.kt
+  s_753496b9178c49::t_6c6e0da7458525 7,11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  s_753496b9178c49::t_3509666f631ec4 7,9,14,18,22-23
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_753496b9178c49::t_cee27965442c0a 43
+  s_753496b9178c49::t_f9c7261af6f895 88
+  s_753496b9178c49::t_801888b18e8570 72
+  s_753496b9178c49::t_34b8545fe48726 7-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/extensions/PaymentMethodExtensions.kt
+  s_753496b9178c49::t_3d8f4057bd0d47 25
+  s_753496b9178c49::t_b4cbe77415759c 3-4,7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContext.kt
+  s_753496b9178c49::t_ffafbc899ed270 9,15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfiguration.kt
+  s_753496b9178c49::t_48833705aece5f 10-11
+  s_753496b9178c49::t_541313fc348de0 4-5
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/analytics/CardTypeAnalyticsTest.kt
+  s_753496b9178c49::t_ccb026740ab6f5 10,15,20
+  s_753496b9178c49::t_a7f781b0d3cf8d 3
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutAppearance.kt
+  s_753496b9178c49::t_12f3087bbd3c14 8,12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTracker.kt
+  s_753496b9178c49::t_c8c4167bd6089e 58
+  s_753496b9178c49::t_52aa3073900950 12
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_753496b9178c49::t_e64ad37b241310 82
+  s_753496b9178c49::t_48b6ab708b896e 6-7
+  s_753496b9178c49::t_1771a374cfaa49 64
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentData.kt
+  s_753496b9178c49::t_a16bd5fca101fb 7,12,29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/MercadoPagoCheckoutResult.kt
+  s_753496b9178c49::t_9c61002d93cd2c 36
+  s_753496b9178c49::t_d8489273066bae 4
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  s_753496b9178c49::t_cd0d193a9bac4e 3
+  s_753496b9178c49::t_1ffc89e4b79cde 10,20-21
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardNumberErrorType.kt
+  s_753496b9178c49::t_e48a2c90c2bda2 3-4
+  s_753496b9178c49::t_0fc516f7f5729a 13,15
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_753496b9178c49::t_91a49be437f222 74,76-78
+  s_753496b9178c49::t_fdfac0016db1b1 5-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCardBrand.kt
+  s_753496b9178c49::t_1013717ed63ef7 12,22,30,38,46,54,62,70,78,86,94,102,110,121,143,160
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPInstallment.kt
+  s_753496b9178c49::t_cac605af0efc4e 10,15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/CardBinFilter.kt
+  s_753496b9178c49::t_95beed4f17c475 3-4,7-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/CardTypeAnalytics.kt
+  s_753496b9178c49::t_1167fa2fe29120 3,7,9-11
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/extensions/PaymentMethodExtensionsTest.kt
+  s_753496b9178c49::t_d4a22564dfbccc 96-97
+  s_753496b9178c49::t_9a86f3ea4b3345 3-4,12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCase.kt
+  s_753496b9178c49::t_8f5404ae4a2dbd 4-6
+  s_753496b9178c49::t_bf16a9c8037d01 18,20,25
+  s_753496b9178c49::t_0e70a7a4abc435 70
+  s_753496b9178c49::t_ca92517bc2fb67 75
+  s_753496b9178c49::t_86e82e7d2d9196 84
+  s_753496b9178c49::t_85b384bb8853cd 102
+  s_753496b9178c49::t_b6044eba979c4a 89
+  s_753496b9178c49::t_eafb1203442aa2 97
+  s_753496b9178c49::t_1d57311712cd1e 56
+  s_753496b9178c49::t_cc3d80335fab4e 61
+  s_753496b9178c49::t_f0e0d684afda51 111
+  s_753496b9178c49::t_01b06cf09b4412 42
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPOrder.kt
+  s_753496b9178c49::t_53e4297727eb43 9,11,14,16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  s_753496b9178c49::t_0cd502886b8a4c 67-68
+  s_753496b9178c49::t_1335820ff97428 12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPCardFormUserCancelledContext.kt
+  s_753496b9178c49::t_6eb2049d6e6055 13-14
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_753496b9178c49::t_486b5459213b45 6
+  s_753496b9178c49::t_2c3dc5e6da94d2 95
+  s_753496b9178c49::t_d81ec0b1ce1145 102
+  s_753496b9178c49::t_b2e555babe7187 114
+  s_753496b9178c49::t_144c318ee3860d 324
+  s_753496b9178c49::t_3cef70f525accb 107
+  s_753496b9178c49::t_a457d9e1bc104b 40,42
+  s_753496b9178c49::t_91eaf33e03e96b 3-4,7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCardType.kt
+  s_753496b9178c49::t_09effa9f7cc853 9,29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_753496b9178c49::t_f189520e77a099 5
+  s_753496b9178c49::t_774281092139e8 436
+  s_753496b9178c49::t_2fba19d2aaaa48 429
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "db5da74acd3b974026dd219a270fff0c814da263",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_753496b9178c49": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "588ed43d-d39a-4db5-950c-7a55c0dda238",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

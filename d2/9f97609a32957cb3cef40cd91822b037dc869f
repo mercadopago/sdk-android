@@ -1,0 +1,14 @@
+CHANGELOG.md
+  h_e120d9bb8a4c69 7-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "d29f97609a32957cb3cef40cd91822b037dc869f",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}

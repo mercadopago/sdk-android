@@ -1,0 +1,67 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/NumberExtensions.kt
+  s_0dacca3d2656f6::t_7c95d0bf7d8e04 12-15
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/domain/model/InstallmentModelTest.kt
+  s_0dacca3d2656f6::t_b6863c16c6d07a 26,29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  s_0dacca3d2656f6::t_a400e0fc49eda6 13-15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_0dacca3d2656f6::t_9ee01601d9009c 335
+  s_0dacca3d2656f6::t_7b03782e5d6bd3 450-452,457,460,466
+  s_0dacca3d2656f6::t_928840e3e9b1da 497
+  s_0dacca3d2656f6::t_829b9f3655e38d 420,422-424,434-436,441-446,453-455,462
+  s_0dacca3d2656f6::t_523ef7666e7030 7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_0dacca3d2656f6::t_26589b317d441a 14-16,19-20
+  s_0dacca3d2656f6::t_a678a5cf498e64 61-64,74-75,107-109
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/controller/CheckoutCardPayment.kt
+  s_0dacca3d2656f6::t_c9805e12ea5d90 89-94
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_0dacca3d2656f6::t_fe0454a95ef4b7 34-35
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_0dacca3d2656f6::t_3c0eccf1dda287 84
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/domain/model/Installment.kt
+  s_0dacca3d2656f6::t_59725719517479 68,71
+  s_0dacca3d2656f6::t_0935343d718ae7 3-4
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_0dacca3d2656f6::t_0a8768c135f366 30-31
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_0dacca3d2656f6::t_18238cf03d496f 347-357
+  s_0dacca3d2656f6::t_0d05dd1b521ec8 267-268
+  s_0dacca3d2656f6::t_827efb3d3d9731 40,43
+  s_0dacca3d2656f6::t_87e2a0de63806a 19
+  s_0dacca3d2656f6::t_6526a95acb8bb1 233-234,257-258
+core-methods/src/test/java/com/mercadopago/sdk/android/coremethods/data/remote/mappers/InstallmentsResponseMapperTest.kt
+  s_0dacca3d2656f6::t_b5c610cfb6ccee 95,98
+  s_0dacca3d2656f6::t_2c754a0c37218b 56,59
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_0dacca3d2656f6::t_ac9da07c7a017e 285-286
+  s_0dacca3d2656f6::t_202443ba72e1cb 711-712,716-717
+  s_0dacca3d2656f6::t_1febfda4562504 435-436,440-441
+  s_0dacca3d2656f6::t_25dd97c367e410 56
+example/src/main/java/com/mercadopago/sdk/android/example/extensions/FloatExt.kt
+  s_0dacca3d2656f6::t_528201aadeb8ed 3,11-12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_0dacca3d2656f6::t_e62e2d02f3121a 125
+core-methods/src/main/java/com/mercadopago/sdk/android/coremethods/data/remote/mappers/InstallmentsResponseMapper.kt
+  s_0dacca3d2656f6::t_b348d6aed448cb 28,31
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_0dacca3d2656f6::t_655e6586dac4e5 18
+  s_0dacca3d2656f6::t_3141a3f55811a1 177-178
+  s_0dacca3d2656f6::t_6ed67f8c09d13a 166-167
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "65cd4b7e91a43c3187cba12bc0fc7e7b36e2e934",
+  "prompts": {},
+  "sessions": {
+    "s_0dacca3d2656f6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d39545cb-a3d8-4b17-9da6-fd201f53d2f2",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

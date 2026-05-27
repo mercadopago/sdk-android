@@ -1,0 +1,37 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPListItem.kt
+  s_9d8d8806316745::t_c4fba6880e1e46 58-59,61
+  s_9d8d8806316745::t_4ba9c2b7b4ae69 60
+  s_9d8d8806316745::t_61393510083246 9,12
+  s_9d8d8806316745::t_359b08897b1b1d 85
+  s_770798dc6e1757::t_77522adc0ac624 84,86-88
+  s_9d8d8806316745::t_cc45f701a3b76b 13,20-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.1",
+  "base_commit_sha": "fd55ace7c511357e66a9c1232d2ef1f161dc746c",
+  "prompts": {},
+  "humans": {
+    "h_e120d9bb8a4c69": {
+      "author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  },
+  "sessions": {
+    "s_770798dc6e1757": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b24e4b2f-3944-480e-b715-91b4270c7fae",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    },
+    "s_9d8d8806316745": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73f8139a-36ab-4c7b-926e-6ad48c132bed",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "samantaalbanez <saah_albanez@hotmail.com>"
+    }
+  }
+}

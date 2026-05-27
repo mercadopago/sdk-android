@@ -1,0 +1,29 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_76e6ede7aa2a09::t_82320fda9edc9c 5-6,24-26,32-33,90,106-128
+  s_76e6ede7aa2a09::t_ca57814c3ea221 142-144,153-155,159-161
+  s_76e6ede7aa2a09::t_0136df15299f7d 85-87
+  s_76e6ede7aa2a09::t_4a5c8b0031e4ea 102
+  s_76e6ede7aa2a09::t_28cd3d0dee5b6a 72-76
+  s_76e6ede7aa2a09::t_2b6f70ebe58531 31,36-37
+  s_76e6ede7aa2a09::t_b0edaa01e19172 30,34-35,38
+  s_76e6ede7aa2a09::t_dd659892c58893 1-4,7-23,27-29,39-71,77-84,88-89,91-101,103-105,129-141,145-152,156-158,162-213
+  s_76e6ede7aa2a09::t_b2f833e0fa0670 214-223
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/EmailScreenState.kt
+  s_76e6ede7aa2a09::t_5efd627b072e10 1-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "356cb41fd0a4a0e81dcd881625b4809a940f8967",
+  "prompts": {},
+  "sessions": {
+    "s_76e6ede7aa2a09": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b16938b-e9bc-4c40-99ed-3f7a92ccd0b3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

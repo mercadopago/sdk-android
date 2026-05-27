@@ -1,0 +1,37 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/AmountParts.kt
+  s_f6c15261dff194::t_a5437835c5447a 1-7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
+  s_f6c15261dff194::t_b6d76336c52452 3-4
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_f6c15261dff194::t_b6d76336c52452 10,13
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_f6c15261dff194::t_8dd93f8133cbd2 17,78,148
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_f6c15261dff194::t_8dd93f8133cbd2 6
+components/src/test/java/com/mercadopago/sdk/android/components/extensions/StringExtensionsTest.kt
+  s_f6c15261dff194::t_8dd93f8133cbd2 9-10,14-15,19-20,24-25,29-30,34-35,39-40,44-45,49-50
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_f6c15261dff194::t_c02a3b1c25d52b 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_f6c15261dff194::t_cea0fed51f9b57 25
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_f6c15261dff194::t_cb6037aacf7b31 5
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/StringExtensions.kt
+  s_f6c15261dff194::t_8dd93f8133cbd2 5-7,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "9f91c00d3b17bc424effaad2ae1d1d6438ab3200",
+  "prompts": {},
+  "sessions": {
+    "s_f6c15261dff194": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "201f5c19-ac06-49a4-aec9-645a13b1b704",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

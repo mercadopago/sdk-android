@@ -1,0 +1,27 @@
+mp-extended/.gitignore
+  c089429446047111 1
+mp-extended/consumer-rules.pro
+  c089429446047111 1-3
+mp-extended/build.gradle.kts
+  c089429446047111 1-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "819f96aaa6b629288132df844d1176431707b5e3",
+  "prompts": {
+    "c089429446047111": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "621627c6-ed4d-4a98-9e29-2bcbc2b3ad1e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao",
+      "messages": [],
+      "total_additions": 1375,
+      "total_deletions": 0,
+      "accepted_lines": 1375,
+      "overriden_lines": 0
+    }
+  }
+}

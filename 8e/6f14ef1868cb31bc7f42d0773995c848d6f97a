@@ -1,0 +1,58 @@
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/StringExtensions.kt
+  s_f8b4674733849c::t_079523668570c2 1-8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/Quota.kt
+  s_888f80317f6f7b::t_e46ede9a0fdb5c 11
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_888f80317f6f7b::t_391d9b0b85215b 168
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapper.kt
+  s_888f80317f6f7b::t_4e1dcedc8ce399 49
+components/src/main/java/com/mercadopago/sdk/android/components/MPListItem.kt
+  s_f8b4674733849c::t_7f029070168773 77
+  s_f8b4674733849c::t_0b6f46d8d0a6c8 118
+  s_f8b4674733849c::t_cb722e7e747558 98
+  s_f8b4674733849c::t_605c054ff64cfb 50,52
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenState.kt
+  s_888f80317f6f7b::t_03d9a7c5f15505 13
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_888f80317f6f7b::t_f0cc772b5658e3 33
+components/src/test/java/com/mercadopago/sdk/android/components/extensions/StringExtensionsTest.kt
+  s_f8b4674733849c::t_7c26d15cdfeaab 1-52
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_f8b4674733849c::t_18ef8651d24c8a 153
+  s_888f80317f6f7b::t_e9bd6fd3b5c48a 169,176
+  s_888f80317f6f7b::t_f499c122a5fe33 205,212
+  s_888f80317f6f7b::t_4ca62ed1740f90 123,144
+  s_f8b4674733849c::t_0c76338eb6ad3c 132
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSourceImplTest.kt
+  s_f8b4674733849c::t_74a272b6f27bbf 27,38,50
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_f8b4674733849c::t_b2f10543cb2722 148-155
+  s_f8b4674733849c::t_dba2f3da759912 78
+  s_f8b4674733849c::t_16c0fec73f7f67 17
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_888f80317f6f7b::t_98fd5bedc9bdc7 41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "8e6f14ef1868cb31bc7f42d0773995c848d6f97a",
+  "prompts": {},
+  "sessions": {
+    "s_888f80317f6f7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01535576-a710-452e-916a-66ac0bb5bfaf",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    },
+    "s_f8b4674733849c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d325018d-53e1-4de6-9c94-0cf09a266945",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

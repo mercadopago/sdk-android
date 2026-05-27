@@ -1,0 +1,19 @@
+.circleci/scripts/check-version-consistency.sh
+  s_3152e276875f04::t_d8496f6647deaa 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "96b21fcf6908223f39f2a0dc8e314be3ff4295ca",
+  "prompts": {},
+  "sessions": {
+    "s_3152e276875f04": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3ca29b49-030e-4760-8260-2d4727dd3e74",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

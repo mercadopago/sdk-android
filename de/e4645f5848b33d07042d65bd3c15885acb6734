@@ -1,0 +1,45 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapperTest.kt
+  s_dcf3cfc3853fd8::t_660c6de185e39c 224,226-230,241,248,250-254,264
+  s_dcf3cfc3853fd8::t_eac27d11219e7a 17
+  s_dcf3cfc3853fd8::t_27f3f4ed50de3d 90
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_dcf3cfc3853fd8::t_b55aea76d7f285 306,326,345,368,403
+  s_dcf3cfc3853fd8::t_eac27d11219e7a 35
+  s_dcf3cfc3853fd8::t_6e3e9aef061a7e 281-285
+  s_dcf3cfc3853fd8::t_e6f169d292a2b0 425-429,431-434,700-704,706-709
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/CardBinResponse.kt
+  s_dcf3cfc3853fd8::t_219e18f0ac8cfe 30
+  s_dcf3cfc3853fd8::t_9bc804dda3ccd8 28-29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardBinData.kt
+  s_dcf3cfc3853fd8::t_5e651f1e1d4d77 6,14
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapper.kt
+  s_dcf3cfc3853fd8::t_f7bc11d6ff827b 8,18,30-34
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_dcf3cfc3853fd8::t_a650bc8fa2d8a2 73
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_dcf3cfc3853fd8::t_efe760735896b9 444,448,450-453
+  s_dcf3cfc3853fd8::t_1eeb30b081fcd9 449
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/CardBinResponseMapperTest.kt
+  s_dcf3cfc3853fd8::t_007be550354cdc 243,264,273
+  s_dcf3cfc3853fd8::t_468a6f7c1e1715 165
+  s_dcf3cfc3853fd8::t_54a06dede4d4a1 163-164
+  s_dcf3cfc3853fd8::t_24117948f63d21 173-176
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardBinStateMapper.kt
+  s_dcf3cfc3853fd8::t_93224777666eb0 74-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "dee4645f5848b33d07042d65bd3c15885acb6734",
+  "prompts": {},
+  "sessions": {
+    "s_dcf3cfc3853fd8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7ee9178f-ef49-4c7c-9e6c-e31a94670baf",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

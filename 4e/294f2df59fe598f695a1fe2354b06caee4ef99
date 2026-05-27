@@ -1,0 +1,48 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterState.kt
+  s_320043afc0c2fc::t_2b1f49611484a8 11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_320043afc0c2fc::t_86b1ead99d111f 332-334
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandler.kt
+  s_320043afc0c2fc::t_76d6386102b362 181
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  s_320043afc0c2fc::t_9928d82b679b5d 313,320,324,331
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardFormInitMapper.kt
+  s_320043afc0c2fc::t_a12913bec8b3ea 30
+  s_320043afc0c2fc::t_4563b0f0d43a87 29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_320043afc0c2fc::t_20ae15af159b57 10,13
+  s_320043afc0c2fc::t_b75c56ce0dec05 46-47
+  s_320043afc0c2fc::t_acbe9977fbfdc0 293,300,304
+  s_320043afc0c2fc::t_a3e4d5c2937a83 140-141,154,159-160
+  s_320043afc0c2fc::t_b76657f00af89f 542,560-570
+  s_320043afc0c2fc::t_6a02da0c0379f7 33
+  s_320043afc0c2fc::t_276c4d77cd0d69 471
+  s_320043afc0c2fc::t_979ecca405d5fa 422
+  s_320043afc0c2fc::t_72ac6db73a7855 312-329
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/mapper/CardPaymentScreenStateMapper.kt
+  s_320043afc0c2fc::t_81a4b6dabdbfd8 15-16
+  s_320043afc0c2fc::t_83d79b35aeed24 26,28-30,32-40,45-48
+  s_320043afc0c2fc::t_1949e69f5e3e7e 31,41-44
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CardFormInitializationOutput.kt
+  s_320043afc0c2fc::t_44cb1dc8d1e66d 6
+  s_320043afc0c2fc::t_63a2bae7509f41 7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_320043afc0c2fc::t_43b2b8e80fed18 8,10
+  s_320043afc0c2fc::t_8aabdcf2aeda55 71-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "4e294f2df59fe598f695a1fe2354b06caee4ef99",
+  "prompts": {},
+  "sessions": {
+    "s_320043afc0c2fc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7478fffe-a170-4853-93e5-d2edf88471f4",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
