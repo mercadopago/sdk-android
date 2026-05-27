@@ -2,7 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
@@ -432,7 +432,7 @@ internal class CardPaymentViewModel(
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
                     when (checkoutConfiguration?.checkoutType) {
-                        is CheckoutType.CardSave -> CheckoutCallbackHolder.notify(
+                        is MPCheckoutType.CardSave -> CheckoutCallbackHolder.notify(
                             MercadoPagoCheckoutResult.Success(
                                 MPPaymentData.CardSave(
                                     token = cardToken.token,
@@ -443,7 +443,7 @@ internal class CardPaymentViewModel(
                                 ),
                             ),
                         )
-                        is CheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
+                        is MPCheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
                             MercadoPagoCheckoutResult.Success(
                                 MPPaymentData.CardTransaction(
                                     transactionAmount = checkoutConfiguration?.getCardFormAmount(),

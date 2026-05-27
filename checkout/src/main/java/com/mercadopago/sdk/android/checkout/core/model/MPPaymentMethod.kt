@@ -4,43 +4,43 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * PaymentMethod class, used to determine the payment method
+ * MPPaymentMethod class, used to determine the payment method
  * This its used to change the payment method showed in checkout
  */
-sealed class PaymentMethod : Parcelable {
+sealed class MPPaymentMethod : Parcelable {
     /**
      * Card payment method
      * @param allowedTypes List of allowed card types
      * @param allowedBrands List of allowed card brands
-     * @param installment Installment
+     * @param installment MPInstallment
      */
     @Parcelize
     data class Card(
-        val allowedTypes: List<CardType> = listOf(CardType.CREDIT, CardType.DEBIT, CardType.PREPAID),
-        val allowedBrands: List<CardBrand> = CardBrand.default,
-        val installment: Installment? = Installment(),
-    ) : PaymentMethod()
+        val allowedTypes: List<MPCardType> = listOf(MPCardType.CREDIT, MPCardType.DEBIT, MPCardType.PREPAID),
+        val allowedBrands: List<MPCardBrand> = MPCardBrand.default,
+        val installment: MPInstallment? = MPInstallment(),
+    ) : MPPaymentMethod()
 
     /**
      * Pix payment method
      */
     @Parcelize
-    internal object Pix : PaymentMethod()
+    internal object Pix : MPPaymentMethod()
 
     /**
      * Boleto payment method
      */
     @Parcelize
-    internal object Boleto : PaymentMethod()
+    internal object Boleto : MPPaymentMethod()
 
     /**
      * Loan payment method
-     * @param installment Installment
+     * @param installment MPInstallment
      */
     @Parcelize
     data class Loan(
-        val installment: Installment,
-    ) : PaymentMethod()
+        val installment: MPInstallment,
+    ) : MPPaymentMethod()
 
     /**
      * Default payment methods
@@ -49,6 +49,6 @@ sealed class PaymentMethod : Parcelable {
         /**
          * Default payment methods
          */
-        val defaults: List<PaymentMethod> = listOf(Card(), Pix, Boleto)
+        val defaults: List<MPPaymentMethod> = listOf(Card(), Pix, Boleto)
     }
 }
