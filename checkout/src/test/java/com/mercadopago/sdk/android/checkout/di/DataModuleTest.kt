@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.Order
+import com.mercadopago.sdk.android.checkout.core.model.Payer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -27,6 +28,7 @@ import org.koin.dsl.module
 import org.koin.test.check.checkModules
 import org.koin.test.mock.MockProvider
 import org.koin.test.verify.verify
+import java.math.BigDecimal
 import kotlin.test.Test
 
 internal class DataModuleTest {
@@ -61,7 +63,7 @@ internal class DataModuleTest {
         every { context.createConfigurationContext(any()) } returns context
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardTransaction(Order()),
+            checkoutType = CheckoutType.CardTransaction(Order(amount = BigDecimal.TEN, payer = Payer(email = ""))),
             paymentMethods = emptyList(),
         )
 

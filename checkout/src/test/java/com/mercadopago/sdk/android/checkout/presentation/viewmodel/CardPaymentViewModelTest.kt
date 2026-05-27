@@ -662,7 +662,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success }) }
+        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success<*> }) }
     }
 
     @Test
