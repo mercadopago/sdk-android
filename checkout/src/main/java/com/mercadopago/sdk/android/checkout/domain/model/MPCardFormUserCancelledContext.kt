@@ -12,7 +12,7 @@ package com.mercadopago.sdk.android.checkout.domain.model
  * @property installmentsWasPresented Whether the installments screen was presented
  * before the user cancelled
  */
-data class CardFormUserCancelledContext(
-    val fields: List<CancelledFieldState>,
+data class MPCardFormUserCancelledContext(
+    val fields: List<MPCancelledFieldState>,
     val installmentsWasPresented: Boolean = false,
 )

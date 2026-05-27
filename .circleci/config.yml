@@ -83,7 +83,10 @@ jobs:
           command: ./gradlew cleanTest
       - run:
           name: Run Code Coverage
-          command: ./gradlew koverHtmlReportDebug koverXmlReportDebug --no-build-cache
+          command: ./gradlew koverHtmlReport koverXmlReport --no-build-cache
+      - run:
+          name: Verify Coverage (80%)
+          command: ./gradlew koverVerify
       - run:
           name: Verify Diff Coverage (80%)
           command: .circleci/scripts/verify-diff-coverage.sh

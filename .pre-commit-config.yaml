@@ -16,3 +16,9 @@ repos:
             language: script
             entry: .git/hooks/pre-commit
             files: \.kt
+        -   id: ux-reference-immutability
+            name: UX Reference Immutability Check
+            description: Blocks modifications to UX deliveries already merged to main.
+            language: script
+            entry: scripts/ux_reference/check_immutability.sh
+            files: ^ux-reference/deliveries/
