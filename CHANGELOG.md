@@ -19,7 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ProGuard rules added for `core-methods`' `ResultError.Request` and `ResultError.Validation` — prevents member stripping in release builds
 
 ### Changed
-- `PaymentMethod.Card` fields renamed from `allowedTypes`/`allowedBrands` to `excludedPaymentTypes`/`excludedPaymentMethods` — filter semantics changed from allowlist to excludelist; defaults changed from full lists to empty lists (breaking change for callers using named parameters)
+- `PaymentMethod.Card` fields renamed from `allowedTypes`/`allowedBrands` to `excludedPaymentTypes`/`excludedPaymentMethods` — filter semantics changed from allowlist to excludelist;
+- `PaymentMethod.Card` renamed to `MPPaymentMethodConfig.Card`
+- defaults changed from full lists to empty lists (breaking change for callers using named parameters)
 
 ## [0.2.2] - 2026-05-21
 ### Added
