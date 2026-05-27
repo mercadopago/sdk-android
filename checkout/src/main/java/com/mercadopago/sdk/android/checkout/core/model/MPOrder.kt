@@ -6,14 +6,12 @@ import kotlinx.parcelize.Parcelize
 import java.math.BigDecimal
 
 /**
- * Order class, used to configure the card form
- * @param orderId orderId
+ * MPOrder class, used to configure the card form
  * @param amount BigDecimal
- * @param payer Payer
+ * @param payer MPPayer
  */
 @Parcelize
-data class Order(
-    val orderId: String,
+data class MPOrder(
     val amount: BigDecimal,
-    val payer: Payer,
+    val payer: MPPayer,
 ) : CheckoutTypeConfiguration, Parcelable
