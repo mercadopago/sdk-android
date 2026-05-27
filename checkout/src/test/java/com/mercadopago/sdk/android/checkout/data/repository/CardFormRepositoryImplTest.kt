@@ -35,7 +35,7 @@ internal class CardFormRepositoryImplTest {
         amount = "150.00",
         checkoutType = "card_payment",
         processingMode = "aggregator",
-        filter = CardBinFilter(cardTypes = emptyList(), cardBrands = emptyList()),
+        filter = CardBinFilter(excludedPaymentTypes = emptyList(), excludedPaymentMethods = emptyList()),
     )
 
     @Test
@@ -126,7 +126,7 @@ internal class CardFormRepositoryImplTest {
     }
 
     @Test
-    fun `given empty filter then allowCardTypes and allowCardBrands are null`() = runTest {
+    fun `given empty filter then excludedPaymentTypes and excludedPaymentMethods are null`() = runTest {
         val requestSlot = slot<CardBinRequest>()
         coEvery { dataSource.getCardBin(capture(requestSlot)) } returns Result.Success(
             mockk(relaxed = true),
@@ -134,8 +134,8 @@ internal class CardFormRepositoryImplTest {
 
         repository.getCardBin(binParams)
 
-        assertNull(requestSlot.captured.allowCardTypes)
-        assertNull(requestSlot.captured.allowCardBrands)
+        assertNull(requestSlot.captured.excludedPaymentTypes)
+        assertNull(requestSlot.captured.excludedPaymentMethods)
     }
 
     @Test

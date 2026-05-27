@@ -5,6 +5,6 @@ internal data class CardBinRequest(
     val amount: String,
     val checkoutType: String,
     val processingMode: String,
-    val allowCardTypes: String?,
-    val allowCardBrands: String?,
+    val excludedPaymentTypes: String?,
+    val excludedPaymentMethods: String?,
 )

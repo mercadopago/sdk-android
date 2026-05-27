@@ -66,7 +66,7 @@ internal class DataModuleTest {
             checkoutType = MPCheckoutType.CardTransaction(
                 MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
             ),
-            paymentMethods = emptyList(),
+            paymentMethodConfigs = emptyList(),
         )
 
         val module = module {

@@ -23,7 +23,7 @@ internal class GetCardBinUseCaseTest {
     private val amount = "100.00"
     private val checkoutType = "card_payment"
     private val processingMode = "aggregator"
-    private val filter = CardBinFilter(cardTypes = emptyList(), cardBrands = emptyList())
+    private val filter = CardBinFilter(excludedPaymentTypes = emptyList(), excludedPaymentMethods = emptyList())
     private val cardBinData = mockk<CardBinData>()
     private val error = ResponseError(code = "ERROR", message = "Error")
 
