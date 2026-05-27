@@ -143,6 +143,7 @@ internal fun IdentificationTextFieldEmptyPreview() {
             type = "number",
             minLength = 11,
             maxLength = 11,
+            mask = "###.###.###-##",
         ),
         onEvent = { },
     )

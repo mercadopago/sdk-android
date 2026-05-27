@@ -61,4 +61,17 @@ internal data class PaymentMethodErrorData(
     val issuer: String,
     @SerializedName("card_brand")
     val cardBrand: String,
+    @SerializedName("payment_type")
+    val paymentType: String?,
+    @SerializedName("security_length")
+    val securityLength: Int?,
+) : EventData
+
+internal data class PaymentMethodErrorData(
+    @SerializedName("error_type")
+    val errorType: String,
+    @SerializedName("issuer")
+    val issuer: String,
+    @SerializedName("card_brand")
+    val cardBrand: String,
 ) : EventData
