@@ -12,10 +12,10 @@ internal class EmailViewModel : ViewModel() {
     val viewState: StateFlow<EmailScreenState?> = _viewState.asStateFlow()
 
     fun initialize(
-        translate: EmailScreenState.Translate,
+        labels: EmailScreenState.Labels,
         baseEmail: String? = null,
     ) {
-        _viewState.value = buildInitialState(translate, baseEmail)
+        _viewState.value = buildInitialState(labels, baseEmail)
     }
 
     fun onEmailChanged(
@@ -23,7 +23,7 @@ internal class EmailViewModel : ViewModel() {
     ) {
         val current = _viewState.value ?: return
         _viewState.value = current.copy(
-            value = newValue,
+            email = newValue,
             isError = isInvalidFormat(newValue),
             isButtonEnabled = isValidEmail(newValue),
         )
@@ -33,22 +33,22 @@ internal class EmailViewModel : ViewModel() {
         state: EmailScreenState,
     ): String {
         if (!state.isError) return ""
-        val translate = state.translate
+        val translate = state.labels
         return when {
-            state.value.isBlank() -> translate.errorFieldEmpty
-            !isValidEmail(state.value) -> translate.errorEmailInvalid
+            state.email.isBlank() -> translate.errorFieldEmpty
+            !isValidEmail(state.email) -> translate.errorEmailInvalid
             else -> translate.errorFieldRequired
         }
     }
 
     private fun buildInitialState(
-        translate: EmailScreenState.Translate,
+        labels: EmailScreenState.Labels,
         baseEmail: String?,
     ): EmailScreenState {
         val value = baseEmail.orEmpty()
         return EmailScreenState(
-            translate = translate,
-            value = value,
+            labels = labels,
+            email = value,
             isError = false,
             isButtonEnabled = isValidEmail(value),
         )

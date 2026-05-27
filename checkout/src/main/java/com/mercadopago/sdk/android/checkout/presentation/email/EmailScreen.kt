@@ -29,7 +29,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 /**
  * @param viewModel Detém o estado e a lógica de validação do email.
- * @param translate Textos exibidos na tela (título, label, placeholder, botão e mensagens de erro).
+ * @param labels Textos exibidos na tela (título, label, placeholder, botão e mensagens de erro).
  * @param baseEmail Usado apenas para habilitar o botão no início quando o caller já conhece
  *   um email válido. Não pré-preenche o campo visualmente (PCIFieldState não expõe seed público).
  * @param deeplink Acionado ao clicar no botão. Será substituído por callback no futuro
@@ -40,7 +40,7 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 @Composable
 internal fun EmailScreen(
     viewModel: EmailViewModel,
-    translate: EmailScreenState.Translate,
+    labels: EmailScreenState.Labels,
     baseEmail: String? = null,
     deeplink: String = "",
     onBackClick: () -> Unit = {},
@@ -48,8 +48,8 @@ internal fun EmailScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
-    LaunchedEffect(translate, baseEmail) {
-        viewModel.initialize(translate, baseEmail)
+    LaunchedEffect(labels, baseEmail) {
+        viewModel.initialize(labels, baseEmail)
     }
 
     viewState?.let { state ->
@@ -77,7 +77,7 @@ private fun EmailScreenContent(
             .background(MercadoPagoTheme.color.background.primary),
     ) {
         MPHeader(
-            title = state.translate.title,
+            title = state.labels.title,
             onBackClick = onBackClick,
         ) {
             Column(
@@ -101,7 +101,7 @@ private fun EmailScreenContent(
             title = "",
             modifier = Modifier.align(Alignment.BottomCenter),
             button = MPFixedFooterButtonData(
-                text = state.translate.buttonLabel,
+                text = state.labels.buttonLabel,
                 enabled = state.isButtonEnabled,
                 onClick = onContinueClick,
             ),
@@ -122,8 +122,8 @@ private fun EmailField(
         state = fieldState,
         isFocused = isFocused,
         showPlaceHolder = true,
-        label = state.translate.fieldLabel,
-        placeHolder = state.translate.fieldPlaceholder,
+        label = state.labels.fieldLabel,
+        placeHolder = state.labels.fieldPlaceholder,
         error = errorMessage,
         onEvent = { event ->
             if (event is SimpleTextFieldEvent.OnValueChanged) {
@@ -138,7 +138,7 @@ private fun EmailField(
 private fun EmailScreenEmptyPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         EmailScreenContent(
-            state = EmailScreenState(translate = previewTranslate()),
+            state = EmailScreenState(labels = previewTranslate()),
             errorMessage = "",
             onBackClick = {},
             onEmailChange = {},
@@ -153,8 +153,8 @@ private fun EmailScreenFilledPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         EmailScreenContent(
             state = EmailScreenState(
-                translate = previewTranslate(),
-                value = "maria.sosa@gmail.com",
+                labels = previewTranslate(),
+                email = "maria.sosa@gmail.com",
                 isError = false,
                 isButtonEnabled = true,
             ),
@@ -173,8 +173,8 @@ private fun EmailScreenErrorPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         EmailScreenContent(
             state = EmailScreenState(
-                translate = translate,
-                value = "maria.sosa@",
+                labels = translate,
+                email = "maria.sosa@",
                 isError = true,
                 isButtonEnabled = false,
             ),
@@ -187,7 +187,7 @@ private fun EmailScreenErrorPreview() {
 }
 
 private fun previewTranslate() =
-    EmailScreenState.Translate(
+    EmailScreenState.Labels(
         title = "Completá el e-mail",
         fieldLabel = "E-mail",
         fieldPlaceholder = "maria.sosa@gmail.com",

@@ -1,12 +1,12 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
 internal data class EmailScreenState(
-    val translate: Translate,
-    val value: String = "",
+    val labels: Labels,
+    val email: String = "",
     val isError: Boolean = false,
     val isButtonEnabled: Boolean = false,
 ) {
-    internal data class Translate(
+    internal data class Labels(
         val title: String,
         val fieldLabel: String,
         val fieldPlaceholder: String,
