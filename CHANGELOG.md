@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
+- `koverVerify` step added to CI pipeline to enforce 80% overall coverage threshold
+- `AndroidManifest.xml` added to `core-methods` test source set — enables Robolectric-based unit tests that require an `Activity` context
+
+### Changed
+- CI coverage tasks updated from `koverHtmlReportDebug`/`koverXmlReportDebug` to `koverHtmlReport`/`koverXmlReport` (variant-agnostic tasks)
+- `components` and `foundation` modules excluded from Kover coverage (`kover { disable() }`) — UI-only modules with no business logic to measure
+
+### Fixed
+- ProGuard rule added for `checkout`'s `ResponseError` — prevents member stripping in release builds
+- ProGuard rules added for `core-methods`' `ResultError.Request` and `ResultError.Validation` — prevents member stripping in release builds
 
 ### Changed
 - `PaymentMethod.Card` fields renamed from `allowedTypes`/`allowedBrands` to `excludedPaymentTypes`/`excludedPaymentMethods` — filter semantics changed from allowlist to excludelist; defaults changed from full lists to empty lists (breaking change for callers using named parameters)

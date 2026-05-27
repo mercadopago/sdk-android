@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 
 /**
  * Represents the state of a form field at a specific point in time.
@@ -13,7 +13,7 @@ import com.mercadopago.sdk.android.checkout.core.model.CardType
  * @property field The identifier of the form field (e.g., card number, expiration date)
  * @property state The current state of the field (e.g., valid, empty, incomplete, invalid)
  */
-data class CancelledFieldState(
+data class MPCancelledFieldState(
     val field: Field,
     val state: State,
 )
@@ -66,11 +66,11 @@ sealed class State {
      * The card brand is not accepted by the seller.
      * @property brand The card brand that is not accepted
      */
-    data class CardBrandNotAccepted(val brand: CardBrand) : State()
+    data class CardBrandNotAccepted(val brand: MPCardBrand) : State()
 
     /**
      * The card type is not accepted by the seller.
      * @property cardType The card type that is not accepted (e.g., credit card, debit card)
      */
-    data class CardTypeNotAccepted(val cardType: CardType?) : State()
+    data class CardTypeNotAccepted(val cardType: MPCardType?) : State()
 }

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * PaymentMethod class, used to determine the payment method
+ * MPPaymentMethod class, used to determine the payment method
  * This its used to change the payment method showed in checkout
  */
 sealed class MPPaymentMethodConfig : Parcelable {
@@ -16,9 +16,9 @@ sealed class MPPaymentMethodConfig : Parcelable {
      */
     @Parcelize
     data class Card(
-        val excludedPaymentTypes: List<CardType> = emptyList(),
-        val excludedPaymentMethods: List<CardBrand> = emptyList(),
-        val installment: Installment? = Installment(),
+        val excludedPaymentTypes: List<MPCardType> = emptyList(),
+        val excludedPaymentMethods: List<MPCardBrand> = emptyList(),
+        val installment: MPInstallment? = MPInstallment(),
     ) : MPPaymentMethodConfig()
 
     /**
@@ -35,11 +35,11 @@ sealed class MPPaymentMethodConfig : Parcelable {
 
     /**
      * Loan payment method
-     * @param installment Installment
+     * @param installment MPInstallment
      */
     @Parcelize
     data class Loan(
-        val installment: Installment,
+        val installment: MPInstallment,
     ) : MPPaymentMethodConfig()
 
     /**

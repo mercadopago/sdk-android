@@ -1,11 +1,11 @@
 package com.mercadopago.sdk.android.checkout.presentation.usecase
 
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
-import com.mercadopago.sdk.android.checkout.domain.model.CancelledFieldState
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.Field
+import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.State
-import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
@@ -37,9 +37,9 @@ internal class CancelledFormContextUseCaseTest {
 
     private fun invoke(
         state: CardPaymentScreenState,
-    ): List<CancelledFieldState> {
+    ): List<MPCancelledFieldState> {
         val result = useCase(state)
-        assertIs<UserCancelledContext.CardForm>(result)
+        assertIs<MPUserCancelledContext.CardForm>(result)
         return result.context.fields
     }
 
@@ -92,26 +92,26 @@ internal class CancelledFormContextUseCaseTest {
 
     @Test
     fun `given card number has CardBrandNotAccepted error then state is CardBrandNotAccepted`() {
-        val errorType = CardNumberErrorType.CardBrandNotAccepted(CardBrand.Visa)
+        val errorType = CardNumberErrorType.CardBrandNotAccepted(MPCardBrand.Visa)
         val state = makeState(cardNumberState = CardNumberState(errorTypes = listOf(errorType)))
 
         val fields = invoke(state)
 
         val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
         assertIs<State.CardBrandNotAccepted>(cardNumberField.state)
-        assertEquals(CardBrand.Visa, cardNumberField.state.brand)
+        assertEquals(MPCardBrand.Visa, cardNumberField.state.brand)
     }
 
     @Test
     fun `given card number has CardTypeNotAccepted error then state is CardTypeNotAccepted`() {
-        val errorType = CardNumberErrorType.CardTypeNotAccepted(CardType.CREDIT)
+        val errorType = CardNumberErrorType.CardTypeNotAccepted(MPCardType.CREDIT)
         val state = makeState(cardNumberState = CardNumberState(errorTypes = listOf(errorType)))
 
         val fields = invoke(state)
 
         val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
         assertIs<State.CardTypeNotAccepted>(cardNumberField.state)
-        assertEquals(CardType.CREDIT, cardNumberField.state.cardType)
+        assertEquals(MPCardType.CREDIT, cardNumberField.state.cardType)
     }
 
     @Test
@@ -321,7 +321,7 @@ internal class CancelledFormContextUseCaseTest {
     fun `given default state then result contains cardNumber and expirationDate fields`() {
         val result = useCase(makeState())
 
-        assertIs<UserCancelledContext.CardForm>(result)
+        assertIs<MPUserCancelledContext.CardForm>(result)
         val fields = result.context.fields
         assertEquals(true, fields.any { it.field == Field.CARD_NUMBER })
         assertEquals(true, fields.any { it.field == Field.EXPIRATION_DATE })

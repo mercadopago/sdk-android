@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitialize
 import com.mercadopago.sdk.android.checkout.analytics.sellerCustomization
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_SAVE
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_TRANSACTION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
@@ -64,8 +64,8 @@ internal class CheckoutActivity : ComponentActivity() {
     ) {
         val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethodConfigs.extractCardFilters()
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
-            is CheckoutType.CardSave -> CARD_SAVE
-            is CheckoutType.CardTransaction -> CARD_TRANSACTION
+            is MPCheckoutType.CardSave -> CARD_SAVE
+            is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
             null -> ""
         }
         MPAnalytics.tryGetInstance()?.trackMetric(
