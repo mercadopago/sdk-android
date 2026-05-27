@@ -1,0 +1,22 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModelTest.kt
+  s_b23e03397dff58::t_35e11258b52515 1-155,157-195
+  s_b23e03397dff58::t_45a4ca1a219142 156
+checkout/build.gradle.kts
+  s_b23e03397dff58::t_1d6fe8570d2167 129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "22f027b92e9ca1fd1b8e1c1876d23618c59e92cc",
+  "prompts": {},
+  "sessions": {
+    "s_b23e03397dff58": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d8712278-94d4-4e63-9b3c-2b5aa28578ed",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}

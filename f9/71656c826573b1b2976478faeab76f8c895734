@@ -1,0 +1,19 @@
+CHANGELOG.md
+  s_f9a700750c4801::t_d7c30c62c39870 10-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "f971656c826573b1b2976478faeab76f8c895734",
+  "prompts": {},
+  "sessions": {
+    "s_f9a700750c4801": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1a535193-8977-4ae0-87be-fdd0dbe026e2",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
