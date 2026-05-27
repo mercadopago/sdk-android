@@ -12,6 +12,6 @@ import java.math.BigDecimal
  */
 @Parcelize
 data class MPOrder(
-    val amount: BigDecimal? = null,
-    val payer: MPPayer? = null,
+    val amount: BigDecimal,
+    val payer: MPPayer,
 ) : CheckoutTypeConfiguration, Parcelable

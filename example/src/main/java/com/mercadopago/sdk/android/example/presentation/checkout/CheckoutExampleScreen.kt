@@ -106,13 +106,8 @@ internal fun CheckoutExampleScreen(
                     onRegisterCard = {
                         checkout.show { result ->
                             when (result) {
-                                is MercadoPagoCheckoutResult.Success -> {
-                                    val token = when (val data = result.paymentData) {
-                                        is MPPaymentData.CardSave -> data.token
-                                        is MPPaymentData.CardTransaction -> ""
-                                    }
-                                    state = CheckoutState.Success(token)
-                                }
+                                is MercadoPagoCheckoutResult.Success ->
+                                    state = CheckoutState.Success(result.paymentData.token)
 
                                 is MercadoPagoCheckoutResult.Error ->
                                     Toast.makeText(

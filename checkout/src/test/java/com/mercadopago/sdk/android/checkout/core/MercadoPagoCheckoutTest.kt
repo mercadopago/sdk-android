@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.di.CheckoutModulesProvider
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
 import io.mockk.Runs
@@ -37,7 +38,7 @@ internal class MercadoPagoCheckoutTest {
     fun setUp() {
         mockkObject(CheckoutCallbackHolder)
         mockkConstructor(CheckoutModulesProvider::class, Intent::class)
-        every { CheckoutCallbackHolder.setCallback(any()) } just Runs
+        every { CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave>(any()) } just Runs
         every { anyConstructed<CheckoutModulesProvider>().koinApp } returns mockKoin
         every { mockKoin.get<CheckoutThemePreferences>() } returns mockThemePreferences
         every { anyConstructed<Intent>().putExtra(any<String>(), any<Parcelable>()) } returns mockk(relaxed = true)
@@ -69,7 +70,7 @@ internal class MercadoPagoCheckoutTest {
     @Test
     fun `when show called then setCallback is called with provided callback`() {
         val checkout = buildCheckout()
-        val callback: (MercadoPagoCheckoutResult) -> Unit = {}
+        val callback: (MercadoPagoCheckoutResult<MPPaymentData.CardSave>) -> Unit = {}
 
         checkout.show(callback)
 

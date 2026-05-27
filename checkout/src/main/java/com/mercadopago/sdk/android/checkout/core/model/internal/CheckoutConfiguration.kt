@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 internal data class CheckoutConfiguration(
-    val checkoutType: MPCheckoutType,
+    val checkoutType: MPCheckoutType<*>,
     val paymentMethods: List<MPPaymentMethod>,
 ) : Parcelable

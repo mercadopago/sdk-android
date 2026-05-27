@@ -425,30 +425,37 @@ internal class CardPaymentViewModel(
                         documentType = buyerIdentification.type,
                         documentNumber = buyerIdentification.number,
                     )
-                    val paymentData = when (checkoutConfiguration?.checkoutType) {
-                        is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
-                            token = cardToken.token,
-                            paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                            issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                            payer = payer,
-                        )
-                        is MPCheckoutType.CardTransaction, null -> MPPaymentData.CardTransaction(
-                            transactionAmount = checkoutConfiguration?.getCardFormAmount(),
-                            installment = 1,
-                            paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                            issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                            payer = payer,
-                        )
-                    }
                     analyticsTracker.trackSubmit(
                         cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
                         transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble() ?: 0.0,
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                    when (checkoutConfiguration?.checkoutType) {
+                        is MPCheckoutType.CardSave -> CheckoutCallbackHolder.notify(
+                            MercadoPagoCheckoutResult.Success(
+                                MPPaymentData.CardSave(
+                                    token = cardToken.token,
+                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                                    payer = payer,
+                                ),
+                            ),
+                        )
+                        is MPCheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
+                            MercadoPagoCheckoutResult.Success(
+                                MPPaymentData.CardTransaction(
+                                    transactionAmount = checkoutConfiguration?.getCardFormAmount(),
+                                    installment = 1,
+                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                                    payer = payer,
+                                ),
+                            ),
+                        )
+                    }
                 },
                 onError = { checkoutError ->
                     analyticsTracker.trackSubmitError(checkoutError)
