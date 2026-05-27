@@ -1,0 +1,19 @@
+gradle.properties
+  s_b4d337e4ab0698::t_38883a2f023e23 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "75afed9fb47fa6b1c7714ac36185b5293575feec",
+  "prompts": {},
+  "sessions": {
+    "s_b4d337e4ab0698": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3642e8a6-ca5f-4dab-b6bd-c42574500f4c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    }
+  }
+}
