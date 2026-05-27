@@ -1,0 +1,26 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModel.kt
+  s_9f696a227ad49c::t_f913c09a5ee84c 51
+  s_9f696a227ad49c::t_fd6fa7b08accb3 26
+  s_9f696a227ad49c::t_044d8960f8d2a9 38-39
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_9f696a227ad49c::t_afa4e7dfa7f957 177
+  s_9f696a227ad49c::t_209fb1e23cf789 157
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/EmailScreenState.kt
+  s_9f696a227ad49c::t_423709932cf095 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "49ef88073cc5744f71a23b68f2607447a25ac1d9",
+  "prompts": {},
+  "sessions": {
+    "s_9f696a227ad49c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2333a34f-e85d-40f4-9106-cec589fe92c8",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
