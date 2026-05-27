@@ -4,10 +4,10 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * Payer class, used to configure the payer
+ * MPPayer class, used to configure the payer
  * @param email String
  */
 @Parcelize
-data class Payer(
+data class MPPayer(
     val email: String,
 ) : Parcelable

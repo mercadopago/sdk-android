@@ -70,6 +70,10 @@ android {
     }
 }
 
+kover {
+    disable()
+}
+
 ksp {
     arg("skipPrivatePreviews", "true")
 }

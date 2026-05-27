@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.coremethods.domain.model.CardModel
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.SecurityCodeModel
@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod as CheckoutPaymentMethod
 
 internal class PaymentMethodExtensionsTest {
     @Test
@@ -93,8 +93,8 @@ internal class PaymentMethodExtensionsTest {
 
     @Test
     fun `given list with Card type then extractCardFilters returns its filters`() {
-        val allowedTypes = listOf(CardType.CREDIT)
-        val allowedBrands = listOf(CardBrand.Visa)
+        val allowedTypes = listOf(MPCardType.CREDIT)
+        val allowedBrands = listOf(MPCardBrand.Visa)
         val paymentMethods = listOf(
             CheckoutPaymentMethod.Card(allowedTypes = allowedTypes, allowedBrands = allowedBrands),
         )

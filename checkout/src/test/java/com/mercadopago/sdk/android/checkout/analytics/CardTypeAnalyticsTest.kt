@@ -1,22 +1,22 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
-import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class CardTypeAnalyticsTest {
     @Test
     fun `when CardType CREDIT then toAnalyticsString returns credit`() {
-        assertEquals("credit", CardType.CREDIT.toAnalyticsString())
+        assertEquals("credit", MPCardType.CREDIT.toAnalyticsString())
     }
 
     @Test
     fun `when CardType DEBIT then toAnalyticsString returns debit`() {
-        assertEquals("debit", CardType.DEBIT.toAnalyticsString())
+        assertEquals("debit", MPCardType.DEBIT.toAnalyticsString())
     }
 
     @Test
     fun `when CardType PREPAID then toAnalyticsString returns prepaid`() {
-        assertEquals("prepaid", CardType.PREPAID.toAnalyticsString())
+        assertEquals("prepaid", MPCardType.PREPAID.toAnalyticsString())
     }
 }
