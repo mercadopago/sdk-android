@@ -34,3 +34,6 @@
 -keep class * {
     @com.google.gson.annotations.SerializedName *;
 }
+-keepclassmembers class com.mercadopago.sdk.android.checkout.domain.model.ResponseError {
+    *;
+}

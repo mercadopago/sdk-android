@@ -4,12 +4,12 @@ import java.math.BigDecimal
 
 /**
  * Sealed class representing the payment data resulting from a successful checkout.
- * The subtype corresponds to the [com.mercadopago.sdk.android.checkout.core.model.CheckoutType]
+ * The subtype corresponds to the [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType]
  * configured in the builder.
  */
 sealed class MPPaymentData {
     /**
-     * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.CheckoutType.CardSave] checkout.
+     * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.CardSave] checkout.
      *
      * @property token Payment token generated for the transaction.
      * @property paymentMethodId Identifier of the selected payment method.
@@ -26,7 +26,7 @@ sealed class MPPaymentData {
     ) : MPPaymentData()
 
     /**
-     * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.CheckoutType.CardTransaction] checkout.
+     * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.CardTransaction] checkout.
      *
      * @property orderId Identifier of the order associated with the transaction.
      * @property orderStatus Current status of the order.

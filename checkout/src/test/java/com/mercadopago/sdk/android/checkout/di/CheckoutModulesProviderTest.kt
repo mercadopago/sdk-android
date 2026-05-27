@@ -4,15 +4,16 @@ import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
 import com.google.gson.Gson
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.Order
-import com.mercadopago.sdk.android.checkout.core.model.Payer
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPOrder
+import com.mercadopago.sdk.android.checkout.core.model.MPPayer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -51,7 +52,8 @@ internal class CheckoutModulesProviderTest {
         mockkObject(MercadoPagoSDK.Companion)
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
-        mockkObject(CheckoutType::class)
+        mockkObject(MPCheckoutType::class)
+        mockkObject(CardPaymentScreenStateFactory::class)
         mockkConstructor(Configuration::class)
     }
 
@@ -61,20 +63,20 @@ internal class CheckoutModulesProviderTest {
         every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
         val resources = mockk<android.content.res.Resources>(relaxed = true)
         every { resources.configuration } returns configuration
-        val context = mockk<Application>(relaxed = true)
-        every { context.applicationInfo } returns mockk(relaxed = true)
-        every { context.applicationContext } returns context
-        every { context.resources } returns resources
-        every { context.createConfigurationContext(any()) } returns context
-        every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
-        every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
-        return context
+        return mockk<Application>(relaxed = true).also { ctx ->
+            every { ctx.applicationInfo } returns mockk(relaxed = true)
+            every { ctx.applicationContext } returns ctx
+            every { ctx.resources } returns resources
+            every { ctx.createConfigurationContext(any()) } returns ctx
+        }
     }
 
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideModules is called Then modules should be verified`() {
         val context = createMockContext()
+        every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
+        every { CoreKoinFactory.createKoinApp(any(), any(), any()) } returns mockk()
         val modulesProvider = CheckoutModulesProvider(context = context)
         val mercadoPagoSdkModulesProvider = MercadoPagoSdkModulesProvider(
             publicKey = "public_key",
@@ -82,12 +84,8 @@ internal class CheckoutModulesProviderTest {
         )
 
         val checkoutConfiguration = CheckoutConfiguration(
-            checkoutType = CheckoutType.CardTransaction(
-                Order(
-                    orderId = "",
-                    amount = BigDecimal.ZERO,
-                    payer = Payer(email = ""),
-                ),
+            checkoutType = MPCheckoutType.CardTransaction(
+                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
             ),
             paymentMethods = emptyList(),
         )
@@ -104,7 +102,7 @@ internal class CheckoutModulesProviderTest {
         module.verify(
             extraTypes = listOf(
                 CoreMethods::class,
-                CheckoutType::class,
+                MPCheckoutType::class,
                 List::class,
                 CheckoutConfiguration::class,
                 CheckoutThemePreferences::class,

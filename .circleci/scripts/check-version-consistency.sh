@@ -49,6 +49,7 @@ done
 ERRORS=""
 for changed in $CHANGED_MODULES; do
   for dependent in ${DEPENDENTS[$changed]:-}; do
+    echo "$PUBLISHED_MODULES" | grep -qw "$dependent" || continue
     if ! echo "$CHANGED_MODULES" | grep -qw "$dependent"; then
       ERRORS="$ERRORS\n  ✗ '$dependent' depends on '$changed' but VERSION_NAME was not bumped"
     fi
