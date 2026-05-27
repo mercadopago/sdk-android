@@ -16,6 +16,8 @@ internal class InstallmentsAnalyticsTrackerTest {
         payer = null,
         installment = null,
         issuerId = "1",
+        orderId = "123",
+        orderStatus = "approved",
     )
 
     private val installmentData = MPInstallmentData(
