@@ -19,10 +19,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
-import com.mercadopago.sdk.android.checkout.domain.model.UserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
@@ -670,7 +670,7 @@ internal class CardPaymentViewModelTest {
         viewModel.onBackPressed()
 
         val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
-        val context = event.context as UserCancelledContext.CardForm
+        val context = event.context as MPUserCancelledContext.CardForm
         assertFalse(context.context.installmentsWasPresented)
     }
 
@@ -682,7 +682,7 @@ internal class CardPaymentViewModelTest {
         viewModel.onBackPressed()
 
         val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnUserCancelled
-        val context = event.context as UserCancelledContext.CardForm
+        val context = event.context as MPUserCancelledContext.CardForm
         assertTrue(context.context.installmentsWasPresented)
     }
 
