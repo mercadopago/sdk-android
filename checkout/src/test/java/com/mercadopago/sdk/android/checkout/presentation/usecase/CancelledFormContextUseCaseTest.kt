@@ -331,7 +331,7 @@ internal class CancelledFormContextUseCaseTest {
     fun `given installmentsWasPresented is not provided then context flag is false`() {
         val result = useCase(makeState())
 
-        assertIs<UserCancelledContext.CardForm>(result)
+        assertIs<MPUserCancelledContext.CardForm>(result)
         assertEquals(false, result.context.installmentsWasPresented)
     }
 
@@ -339,7 +339,7 @@ internal class CancelledFormContextUseCaseTest {
     fun `given installmentsWasPresented is true then context flag is true`() {
         val result = useCase(makeState(), installmentsWasPresented = true)
 
-        assertIs<UserCancelledContext.CardForm>(result)
+        assertIs<MPUserCancelledContext.CardForm>(result)
         assertEquals(true, result.context.installmentsWasPresented)
     }
 }
