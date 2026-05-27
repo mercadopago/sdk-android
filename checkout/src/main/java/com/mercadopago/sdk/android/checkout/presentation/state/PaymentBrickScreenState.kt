@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
-import androidx.compose.ui.graphics.vector.ImageVector
-
 /**
  * Represents the UI state for the PaymentBrick screen.
  *
@@ -33,15 +31,13 @@ data class PaymentSectionState(
  *
  * @property id Unique identifier for routing on selection.
  * @property title Option label shown as the row title.
- * @property thumbnailUrl Remote URL for the leading thumbnail image.
- * @property thumbnailIcon Local icon for the leading thumbnail image.
+ * @property thumbnailUrl Remote URL for the leading thumbnail image, provided by the BFF.
  * @property description Optional secondary text shown below the title.
  */
 data class PaymentOptionState(
     val id: String,
     val title: String,
     val thumbnailUrl: String? = null,
-    val thumbnailIcon: ImageVector? = null,
     val description: String? = null,
 )
 

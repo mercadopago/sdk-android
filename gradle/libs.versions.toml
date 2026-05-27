@@ -45,8 +45,6 @@ constraintlayout = "2.1.4"
 constraintlayout-compose = "1.1.0"
 desugarJdkLibs = "2.0.4"
 usdk = "6.6.81"
-volley = "1.2.1"
-
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -108,7 +106,6 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 usdk = { module = "com.usdk.android:usdk", version.ref = "usdk" }
-volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
