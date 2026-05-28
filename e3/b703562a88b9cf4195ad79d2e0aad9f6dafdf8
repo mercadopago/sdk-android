@@ -1,0 +1,30 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/EmailScreenState.kt
+  s_c1492c08a8ceb9::t_600a75dcef7c39 8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_c1492c08a8ceb9::t_fd748d8daddde8 58
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/extensions/EmailExtensions.kt
+  s_c1492c08a8ceb9::t_c0f77ceb3ddd50 1-5
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModel.kt
+  s_c1492c08a8ceb9::t_39633658ce438e 53
+  s_c1492c08a8ceb9::t_65a191fbaa1e6e 5,26-27,30-31,46,50-52,55,57
+  s_c1492c08a8ceb9::t_9b26dc3d301209 32
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModelTest.kt
+  s_c1492c08a8ceb9::t_b94779ec71cefc 42,53,63,84,118,163,168,171,174,183,187,191-197,199
+  s_c1492c08a8ceb9::t_d89f2ef0caa405 178,180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "e3b703562a88b9cf4195ad79d2e0aad9f6dafdf8",
+  "prompts": {},
+  "sessions": {
+    "s_c1492c08a8ceb9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e8a3aef1-5afa-4f02-a9d9-1c8129d05e59",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
