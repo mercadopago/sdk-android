@@ -55,7 +55,7 @@ internal fun EmailScreen(
     viewState?.let { state ->
         EmailScreenContent(
             state = state,
-            errorMessage = viewModel.resolveErrorMessage(state),
+            errorMessage = state.errorMessage,
             onBackClick = onBackClick,
             onEmailChange = viewModel::onEmailChanged,
             onContinueClick = { onContinueClick(deeplink) },

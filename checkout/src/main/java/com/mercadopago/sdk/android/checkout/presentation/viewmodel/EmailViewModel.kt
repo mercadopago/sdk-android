@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import com.mercadopago.sdk.android.checkout.domain.extensions.isInvalidEmailFormat
 import com.mercadopago.sdk.android.checkout.presentation.state.EmailScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,23 +23,14 @@ internal class EmailViewModel : ViewModel() {
         newValue: String,
     ) {
         val current = _viewState.value ?: return
+        val isError = newValue.isInvalidEmailFormat()
+        val isValid = isValidEmail(newValue)
         _viewState.value = current.copy(
             email = newValue,
-            isError = isInvalidFormat(newValue),
-            isButtonEnabled = isValidEmail(newValue),
+            isError = isError,
+            isButtonEnabled = isValid,
+            errorMessage = resolveErrorMessage(current.labels, isError),
         )
-    }
-
-    fun resolveErrorMessage(
-        state: EmailScreenState,
-    ): String {
-        if (!state.isError) return ""
-        val translate = state.labels
-        return when {
-            state.email.isBlank() -> translate.errorFieldEmpty
-            !isValidEmail(state.email) -> translate.errorEmailInvalid
-            else -> translate.errorFieldRequired
-        }
     }
 
     private fun buildInitialState(
@@ -51,18 +43,16 @@ internal class EmailViewModel : ViewModel() {
             email = value,
             isError = false,
             isButtonEnabled = isValidEmail(value),
+            errorMessage = "",
         )
     }
 
+    private fun resolveErrorMessage(
+        labels: EmailScreenState.Labels,
+        isError: Boolean,
+    ): String = if (isError) labels.errorEmailInvalid else ""
+
     private fun isValidEmail(
         value: String,
-    ): Boolean {
-        return value.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(value).matches()
-    }
-
-    private fun isInvalidFormat(
-        value: String,
-    ): Boolean {
-        return value.isNotBlank() && !isValidEmail(value)
-    }
+    ): Boolean = value.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(value).matches()
 }

@@ -39,6 +39,7 @@ internal class EmailViewModelTest {
         assertEquals("", state.email)
         assertFalse(state.isButtonEnabled)
         assertFalse(state.isError)
+        assertEquals("", state.errorMessage)
     }
 
     @Test
@@ -49,6 +50,7 @@ internal class EmailViewModelTest {
         assertEquals("user@example.com", state.email)
         assertTrue(state.isButtonEnabled)
         assertFalse(state.isError)
+        assertEquals("", state.errorMessage)
     }
 
     @Test
@@ -58,6 +60,7 @@ internal class EmailViewModelTest {
         val state = viewModel.viewState.value!!
         assertFalse(state.isButtonEnabled)
         assertFalse(state.isError)
+        assertEquals("", state.errorMessage)
     }
 
     @Test
@@ -78,6 +81,7 @@ internal class EmailViewModelTest {
         val state = viewModel.viewState.value!!
         assertTrue(state.isButtonEnabled)
         assertFalse(state.isError)
+        assertEquals("", state.errorMessage)
     }
 
     @Test
@@ -111,6 +115,7 @@ internal class EmailViewModelTest {
         val state = viewModel.viewState.value!!
         assertFalse(state.isError)
         assertFalse(state.isButtonEnabled)
+        assertEquals("", state.errorMessage)
     }
 
     @Test
@@ -155,40 +160,43 @@ internal class EmailViewModelTest {
         val state = viewModel.viewState.value!!
         assertFalse(state.isError)
         assertFalse(state.isButtonEnabled)
+        assertEquals("", state.errorMessage)
     }
 
     // endregion
 
-    // region resolveErrorMessage
+    // region errorMessage in state
 
     @Test
-    fun `when no error then resolveErrorMessage returns empty string`() {
+    fun `when no error then errorMessage is empty`() {
         viewModel.initialize(labels, baseEmail = "user@example.com")
 
-        val message = viewModel.resolveErrorMessage(viewModel.viewState.value!!)
-
-        assertEquals("", message)
+        assertEquals("", viewModel.viewState.value!!.errorMessage)
     }
 
     @Test
-    fun `when email is blank and isError then resolveErrorMessage returns errorFieldEmpty`() {
+    fun `when email goes back to blank after invalid input then errorMessage is empty`() {
         viewModel.initialize(labels)
+        viewModel.onEmailChanged("invalid-email")
         viewModel.onEmailChanged("")
-        val state = viewModel.viewState.value!!.copy(isError = true)
 
-        val message = viewModel.resolveErrorMessage(state)
-
-        assertEquals(labels.errorFieldEmpty, message)
+        assertEquals("", viewModel.viewState.value!!.errorMessage)
     }
 
     @Test
-    fun `when email is invalid format and isError then resolveErrorMessage returns errorEmailInvalid`() {
+    fun `when email is invalid format then errorMessage returns errorEmailInvalid`() {
         viewModel.initialize(labels)
         viewModel.onEmailChanged("invalid-email")
 
-        val message = viewModel.resolveErrorMessage(viewModel.viewState.value!!)
+        assertEquals(labels.errorEmailInvalid, viewModel.viewState.value!!.errorMessage)
+    }
 
-        assertEquals(labels.errorEmailInvalid, message)
+    @Test
+    fun `when email is invalid with missing domain then errorMessage returns errorEmailInvalid`() {
+        viewModel.initialize(labels)
+        viewModel.onEmailChanged("user@")
+
+        assertEquals(labels.errorEmailInvalid, viewModel.viewState.value!!.errorMessage)
     }
 
     // endregion

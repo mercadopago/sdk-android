@@ -5,6 +5,7 @@ internal data class EmailScreenState(
     val email: String = "",
     val isError: Boolean = false,
     val isButtonEnabled: Boolean = false,
+    val errorMessage: String = "",
 ) {
     internal data class Labels(
         val title: String,
