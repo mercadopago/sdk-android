@@ -14,9 +14,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 
 internal class CardFormAnalyticsTracker(
-    private val isCancelling: () -> Boolean,
     private val isLoading: () -> Boolean,
 ) {
+    private var canceled = false
+
     fun trackInitializeError(
         error: MercadoPagoCheckoutError,
     ) {
@@ -29,7 +30,7 @@ internal class CardFormAnalyticsTracker(
         field: String,
         isValid: Boolean,
     ) {
-        if (isCancelling() || isLoading()) return
+        if (canceled || isLoading()) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormInputValidation(field = field, isInputValid = isValid),
         )
@@ -38,7 +39,7 @@ internal class CardFormAnalyticsTracker(
     fun trackDropdownSelection(
         type: String,
     ) {
-        if (isCancelling() || isLoading()) return
+        if (canceled || isLoading()) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormDropdownSelection(dropdownSelectionType = type),
         )
@@ -71,6 +72,7 @@ internal class CardFormAnalyticsTracker(
     fun trackUserCanceled(
         reason: CancelReason,
     ) {
+        canceled = true
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormUserCanceledError(errorType = reason.analyticsValue),
         )
