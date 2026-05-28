@@ -29,18 +29,10 @@ import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemLeading
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
+import com.mercadopago.sdk.android.components.model.MPListSizeType
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val LIST_GROUP = "LIST_ITEM"
-
-/** Size type of the list item. */
-enum class MPListSizeType {
-    /** Large size variant. */
-    Large,
-
-    /** Medium size variant. */
-    Medium,
-}
 
 /**
  * List Item component
