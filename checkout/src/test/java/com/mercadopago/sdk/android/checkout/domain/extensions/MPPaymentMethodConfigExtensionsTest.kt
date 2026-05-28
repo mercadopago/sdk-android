@@ -9,9 +9,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod as CheckoutPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig as CheckoutPaymentMethod
 
-internal class PaymentMethodExtensionsTest {
+internal class MPPaymentMethodConfigExtensionsTest {
     @Test
     fun `given paymentMethod with securityCode then toSecurityCode maps all fields`() {
         val paymentMethod = PaymentMethod(
@@ -93,15 +93,15 @@ internal class PaymentMethodExtensionsTest {
 
     @Test
     fun `given list with Card type then extractCardFilters returns its filters`() {
-        val allowedTypes = listOf(MPCardType.CREDIT)
-        val allowedBrands = listOf(MPCardBrand.Visa)
+        val excludedTypes = listOf(MPCardType.CREDIT)
+        val excludedMethods = listOf(MPCardBrand.Visa)
         val paymentMethods = listOf(
-            CheckoutPaymentMethod.Card(allowedTypes = allowedTypes, allowedBrands = allowedBrands),
+            CheckoutPaymentMethod.Card(excludedPaymentTypes = excludedTypes, excludedPaymentMethods = excludedMethods),
         )
 
         val result = paymentMethods.extractCardFilters()
 
-        assertEquals(allowedTypes, result.first)
-        assertEquals(allowedBrands, result.second)
+        assertEquals(excludedTypes, result.first)
+        assertEquals(excludedMethods, result.second)
     }
 }

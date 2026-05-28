@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
-import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
@@ -75,10 +75,10 @@ internal class CardPaymentViewModelTest {
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<MPCheckoutType.CardTransaction>(relaxed = true),
-        paymentMethods = listOf(
-            MPPaymentMethod.Card(
-                allowedTypes = listOf(MPCardType.CREDIT, MPCardType.DEBIT),
-                allowedBrands = listOf(MPCardBrand.Visa, MPCardBrand.Mastercard),
+        paymentMethodConfigs = listOf(
+            MPPaymentMethodConfig.Card(
+                excludedPaymentTypes = listOf(MPCardType.CREDIT, MPCardType.DEBIT),
+                excludedPaymentMethods = listOf(MPCardBrand.Visa, MPCardBrand.Mastercard),
             ),
         ),
     )

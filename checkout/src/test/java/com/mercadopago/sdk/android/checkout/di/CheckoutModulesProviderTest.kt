@@ -87,7 +87,7 @@ internal class CheckoutModulesProviderTest {
             checkoutType = MPCheckoutType.CardTransaction(
                 MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
             ),
-            paymentMethods = emptyList(),
+            paymentMethodConfigs = emptyList(),
         )
         val module = module {
             includes(modulesProvider.provideModules())

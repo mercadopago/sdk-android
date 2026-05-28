@@ -26,7 +26,7 @@ internal interface CardFormService {
         @Query("checkout_type") checkoutType: String,
         @Query("processing_mode") processingMode: String,
         @Query("amount") amount: String,
-        @Query("allow_payment_types") allowCardTypes: String?,
-        @Query("allow_payment_methods") allowCardBrands: String?,
+        @Query("excluded_payment_types") excludedPaymentTypes: String?,
+        @Query("excluded_payment_methods") excludedPaymentMethods: String?,
     ): Response<CardBinResponse>
 }

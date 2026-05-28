@@ -61,7 +61,7 @@ internal class CheckoutActivity : ComponentActivity() {
     private fun trackInitialize(
         checkoutConfiguration: CheckoutConfiguration?,
     ) {
-        val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+        val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethodConfigs.extractCardFilters()
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
             is MPCheckoutType.CardSave -> CARD_SAVE
             is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
@@ -72,8 +72,8 @@ internal class CheckoutActivity : ComponentActivity() {
                 checkoutType = checkoutType,
                 appearance = checkoutThemePreferences.getCurrentStyle().toAnalyticsString(),
                 sellerCustomization = checkoutThemePreferences.getCurrentThemeScheme().sellerCustomization,
-                allowedPaymentTypes = cardTypes.map { it.toAnalyticsString() },
-                allowedPaymentMethods = cardBrands.map { it.name },
+                excludedPaymentTypes = excludedTypes.map { it.toAnalyticsString() },
+                excludedPaymentMethods = excludedMethods.map { it.name },
             ),
         )
     }
