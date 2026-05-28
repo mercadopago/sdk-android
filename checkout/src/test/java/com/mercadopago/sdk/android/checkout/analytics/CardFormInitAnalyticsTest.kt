@@ -13,8 +13,8 @@ internal class CardFormInitAnalyticsTest {
             checkoutType = "card_form",
             appearance = "light",
             sellerCustomization = listOf("customized_token"),
-            allowedPaymentTypes = listOf("credit", "debit"),
-            allowedPaymentMethods = listOf("visa", "master"),
+            excludedPaymentTypes = listOf("credit", "debit"),
+            excludedPaymentMethods = listOf("visa", "master"),
         )
 
         assertEquals("/checkout_api_native/checkout/card_form/initialize", metric.path)
@@ -27,16 +27,16 @@ internal class CardFormInitAnalyticsTest {
             checkoutType = "card_form",
             appearance = "system",
             sellerCustomization = emptyList(),
-            allowedPaymentTypes = listOf("credit"),
-            allowedPaymentMethods = listOf("visa"),
+            excludedPaymentTypes = listOf("credit"),
+            excludedPaymentMethods = listOf("visa"),
         )
 
         val data = assertIs<CardFormInitEventData>(metric.data)
         assertEquals("card_form", data.checkoutType)
         assertEquals("system", data.appearance)
         assertEquals(emptyList(), data.sellerCustomization)
-        assertEquals(listOf("credit"), data.allowedPaymentTypes)
-        assertEquals(listOf("visa"), data.allowedPaymentMethods)
+        assertEquals(listOf("credit"), data.excludedPaymentTypes)
+        assertEquals(listOf("visa"), data.excludedPaymentMethods)
     }
 
     @Test

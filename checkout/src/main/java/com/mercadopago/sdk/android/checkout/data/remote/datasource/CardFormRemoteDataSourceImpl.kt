@@ -29,8 +29,8 @@ internal class CardFormRemoteDataSourceImpl(
                 amount = amount,
                 checkoutType = checkoutType,
                 processingMode = processingMode,
-                allowCardTypes = allowCardTypes,
-                allowCardBrands = allowCardBrands,
+                excludedPaymentTypes = excludedPaymentTypes,
+                excludedPaymentMethods = excludedPaymentMethods,
             ).toInternalResponse()
         }
 }

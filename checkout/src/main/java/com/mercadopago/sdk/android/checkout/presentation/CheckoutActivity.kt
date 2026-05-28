@@ -9,7 +9,7 @@ import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitialize
 import com.mercadopago.sdk.android.checkout.analytics.sellerCustomization
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.core.EXTRA_CONFIGURATION
-import com.mercadopago.sdk.android.checkout.core.model.CheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_SAVE
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_TRANSACTION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
@@ -17,7 +17,6 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
-import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import org.koin.compose.KoinContext
 
@@ -48,7 +47,7 @@ internal class CheckoutActivity : ComponentActivity() {
                     theme = checkoutThemePreferences.getCurrentThemeScheme(),
                     style = checkoutThemePreferences.getCurrentStyle(),
                 ) {
-                    MPCardPayment(checkoutConfiguration = checkoutConfiguration)
+                    CheckoutController(checkoutConfiguration = checkoutConfiguration)
                 }
             }
         }
@@ -62,10 +61,10 @@ internal class CheckoutActivity : ComponentActivity() {
     private fun trackInitialize(
         checkoutConfiguration: CheckoutConfiguration?,
     ) {
-        val (cardTypes, cardBrands) = checkoutConfiguration?.paymentMethods.extractCardFilters()
+        val (excludedTypes, excludedMethods) = checkoutConfiguration?.paymentMethodConfigs.extractCardFilters()
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
-            is CheckoutType.CardSave -> CARD_SAVE
-            is CheckoutType.CardTransaction -> CARD_TRANSACTION
+            is MPCheckoutType.CardSave -> CARD_SAVE
+            is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
             null -> ""
         }
         MPAnalytics.tryGetInstance()?.trackMetric(
@@ -73,8 +72,8 @@ internal class CheckoutActivity : ComponentActivity() {
                 checkoutType = checkoutType,
                 appearance = checkoutThemePreferences.getCurrentStyle().toAnalyticsString(),
                 sellerCustomization = checkoutThemePreferences.getCurrentThemeScheme().sellerCustomization,
-                allowedPaymentTypes = cardTypes.map { it.toAnalyticsString() },
-                allowedPaymentMethods = cardBrands.map { it.name },
+                excludedPaymentTypes = excludedTypes.map { it.toAnalyticsString() },
+                excludedPaymentMethods = excludedMethods.map { it.name },
             ),
         )
     }

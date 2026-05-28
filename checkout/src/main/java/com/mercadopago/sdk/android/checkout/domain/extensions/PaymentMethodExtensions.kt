@@ -1,10 +1,10 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCode
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
-import com.mercadopago.sdk.android.checkout.core.model.PaymentMethod as CheckoutPaymentMethod
+import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig as CheckoutPaymentMethod
 
 private const val DEFAULT_SECURITY_CODE_LENGTH = 3
 private const val DEFAULT_SECURITY_CODE_MODE = "mandatory"
@@ -22,7 +22,7 @@ internal fun PaymentMethod.hasIssuers() =
     this.additionalInfoNeeded?.contains(ISSUER_ID) == true &&
         this.id != null
 
-internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<CardType>, List<CardBrand>> {
+internal fun List<CheckoutPaymentMethod>?.extractCardFilters(): Pair<List<MPCardType>, List<MPCardBrand>> {
     val cardPayment = this?.filterIsInstance<CheckoutPaymentMethod.Card>()?.firstOrNull()
-    return cardPayment?.allowedTypes.orEmpty() to cardPayment?.allowedBrands.orEmpty()
+    return cardPayment?.excludedPaymentTypes.orEmpty() to cardPayment?.excludedPaymentMethods.orEmpty()
 }

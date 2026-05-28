@@ -38,8 +38,8 @@ internal class CardFormRepositoryImpl(
                     amount = params.amount,
                     checkoutType = params.checkoutType,
                     processingMode = params.processingMode,
-                    allowCardTypes = params.filter.cardTypes.joinOrNull { it.value },
-                    allowCardBrands = params.filter.cardBrands.joinOrNull { it.name },
+                    excludedPaymentTypes = params.filter.excludedPaymentTypes.joinOrNull { it.value },
+                    excludedPaymentMethods = params.filter.excludedPaymentMethods.joinOrNull { it.name },
                 ),
             )
         }.map { it.toDomain() }

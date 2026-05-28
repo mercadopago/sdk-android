@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
-import com.mercadopago.sdk.android.checkout.core.model.CardBrand
-import com.mercadopago.sdk.android.checkout.core.model.CardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 
 internal sealed class CardNumberErrorType {
     data class FieldValidation(val message: String) : CardNumberErrorType()
@@ -10,7 +10,7 @@ internal sealed class CardNumberErrorType {
 
     data object LuhnValidation : CardNumberErrorType()
 
-    data class CardBrandNotAccepted(val brand: CardBrand) : CardNumberErrorType()
+    data class CardBrandNotAccepted(val brand: MPCardBrand) : CardNumberErrorType()
 
-    data class CardTypeNotAccepted(val cardType: CardType?) : CardNumberErrorType()
+    data class CardTypeNotAccepted(val cardType: MPCardType?) : CardNumberErrorType()
 }

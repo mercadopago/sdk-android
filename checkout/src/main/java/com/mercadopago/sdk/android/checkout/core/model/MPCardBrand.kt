@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
  * This value represents the card issuer network and may affect validation rules,
  * available payment options, and card number formatting during the checkout.
  */
-sealed class CardBrand : Parcelable {
+sealed class MPCardBrand : Parcelable {
     /**
      * The name identifier of the card brand.
      */
@@ -19,7 +19,7 @@ sealed class CardBrand : Parcelable {
      * VISA: Visa card network.
      */
     @Parcelize
-    data object Visa : CardBrand() {
+    data object Visa : MPCardBrand() {
         override val name: String get() = VISA
     }
 
@@ -27,7 +27,7 @@ sealed class CardBrand : Parcelable {
      * MASTERCARD: Mastercard network.
      */
     @Parcelize
-    data object Mastercard : CardBrand() {
+    data object Mastercard : MPCardBrand() {
         override val name: String get() = MASTERCARD
     }
 
@@ -35,7 +35,7 @@ sealed class CardBrand : Parcelable {
      * AMEX: American Express card network.
      */
     @Parcelize
-    data object Amex : CardBrand() {
+    data object Amex : MPCardBrand() {
         override val name: String get() = AMEX
     }
 
@@ -43,7 +43,7 @@ sealed class CardBrand : Parcelable {
      * ELO: Elo card network (Brazil).
      */
     @Parcelize
-    data object Elo : CardBrand() {
+    data object Elo : MPCardBrand() {
         override val name: String get() = ELO
     }
 
@@ -51,7 +51,7 @@ sealed class CardBrand : Parcelable {
      * HIPERCARD: Hipercard network (Brazil).
      */
     @Parcelize
-    data object Hipercard : CardBrand() {
+    data object Hipercard : MPCardBrand() {
         override val name: String get() = HIPERCARD
     }
 
@@ -59,7 +59,7 @@ sealed class CardBrand : Parcelable {
      * DINERS: Diners Club card network.
      */
     @Parcelize
-    data object Diners : CardBrand() {
+    data object Diners : MPCardBrand() {
         override val name: String get() = DINERS
     }
 
@@ -67,7 +67,7 @@ sealed class CardBrand : Parcelable {
      * DISCOVER: Discover card network.
      */
     @Parcelize
-    data object Discover : CardBrand() {
+    data object Discover : MPCardBrand() {
         override val name: String get() = DISCOVER
     }
 
@@ -75,7 +75,7 @@ sealed class CardBrand : Parcelable {
      * JCB: Japan Credit Bureau card network.
      */
     @Parcelize
-    data object Jcb : CardBrand() {
+    data object Jcb : MPCardBrand() {
         override val name: String get() = JCB
     }
 
@@ -83,7 +83,7 @@ sealed class CardBrand : Parcelable {
      * MAESTRO: Maestro debit card network.
      */
     @Parcelize
-    data object Maestro : CardBrand() {
+    data object Maestro : MPCardBrand() {
         override val name: String get() = MAESTRO
     }
 
@@ -91,7 +91,7 @@ sealed class CardBrand : Parcelable {
      * UNIONPAY: UnionPay card network (China).
      */
     @Parcelize
-    data object UnionPay : CardBrand() {
+    data object UnionPay : MPCardBrand() {
         override val name: String get() = UNIONPAY
     }
 
@@ -99,7 +99,7 @@ sealed class CardBrand : Parcelable {
      * CABAL: Cabal card network (Argentina).
      */
     @Parcelize
-    data object Cabal : CardBrand() {
+    data object Cabal : MPCardBrand() {
         override val name: String get() = CABAL
     }
 
@@ -107,7 +107,7 @@ sealed class CardBrand : Parcelable {
      * NARANJA: Naranja card network (Argentina).
      */
     @Parcelize
-    data object Naranja : CardBrand() {
+    data object Naranja : MPCardBrand() {
         override val name: String get() = NARANJA
     }
 
@@ -118,7 +118,7 @@ sealed class CardBrand : Parcelable {
      * @param name The name identifier of the custom card brand
      */
     @Parcelize
-    data class Custom(override val name: String) : CardBrand()
+    data class Custom(override val name: String) : MPCardBrand()
 
     /**
      * Companion object containing string constants and utility values for card brands.
@@ -140,7 +140,7 @@ sealed class CardBrand : Parcelable {
         /**
          * All predefined card brands.
          */
-        val default: List<CardBrand> = listOf(
+        val default: List<MPCardBrand> = listOf(
             Visa,
             Mastercard,
             Amex,
@@ -157,7 +157,7 @@ sealed class CardBrand : Parcelable {
 
         internal fun fromString(
             value: String,
-        ): CardBrand =
+        ): MPCardBrand =
             default.find { it.name.equals(value, ignoreCase = true) }
                 ?: Custom(value)
     }
