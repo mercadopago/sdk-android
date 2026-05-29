@@ -1,0 +1,31 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModelTest.kt
+  s_5df32ec15ed7b9::t_d6056e8aed09f1 32-33,43-44,54-55,99,105,107,144,150,152,157,163,168
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/extensions/EmailExtensionsTest.kt
+  s_5df32ec15ed7b9::t_594ab80d228627 1-45
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/EmailVerifierTest.kt
+  s_5df32ec15ed7b9::t_3c2626e332dbd8 1-41
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_5df32ec15ed7b9::t_18f5ff7d895ada 34,41-42
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModel.kt
+  s_5df32ec15ed7b9::t_a00f4f99db81ce 4,6,15-16,19,21,28,31-33,39,41,46
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/extensions/EmailExtensions.kt
+  s_5df32ec15ed7b9::t_511d016962c081 6-7
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/EmailVerifier.kt
+  s_5df32ec15ed7b9::t_d271d9db1d8233 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "04d866dd155a54d23c87839cac991d1cdf6073d8",
+  "prompts": {},
+  "sessions": {
+    "s_5df32ec15ed7b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9fdb4d6-e564-4911-8540-936bbe145565",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
