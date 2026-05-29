@@ -1,0 +1,63 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_00dd747b7728cc::t_6049cd75eefb5a 323,325,334-335,337-338
+  s_00dd747b7728cc::t_b6021d619f7108 326
+  s_00dd747b7728cc::t_dd3fe0207cd9e4 462-465,473
+  s_00dd747b7728cc::t_641205c9b2c105 18
+  s_00dd747b7728cc::t_bf6a2a44a82c6a 474
+  s_00dd747b7728cc::t_6bef022541ab29 339-340
+  s_00dd747b7728cc::t_651d6ea76ff1bf 20
+  s_00dd747b7728cc::t_2b489ed5d0dc4c 545,556-557
+  s_00dd747b7728cc::t_7077358e8e6498 475
+  h_6960b1a5f865cc 324,327-329,332-333,336,520,526
+  s_00dd747b7728cc::t_8a7f4895f7bbe9 517
+  s_00dd747b7728cc::t_15f3a0d7e9ba4a 56
+  s_00dd747b7728cc::t_5a698f439d0e2f 330-331
+  s_00dd747b7728cc::t_f601493e5d1c99 528-529
+  s_00dd747b7728cc::t_5d5baf9aeccc17 68
+  s_00dd747b7728cc::t_ff68e4d841e0f3 9
+  s_00dd747b7728cc::t_3213f5a769b87b 515,525,532
+  s_00dd747b7728cc::t_656ddd3c9eab92 24
+  s_00dd747b7728cc::t_da5c70d259fa96 512-514,516,518-519,521-524,527,530-531,533-541
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/ProcessOrderUseCase.kt
+  s_00dd747b7728cc::t_cd7128c0c6a403 7,17
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPOrder.kt
+  h_6960b1a5f865cc 10,16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/repository/OrderRepository.kt
+  s_00dd747b7728cc::t_d69b77f43232ef 3,11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_00dd747b7728cc::t_4348206988a002 64
+  s_00dd747b7728cc::t_32485910aca357 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  h_6960b1a5f865cc 24,26-28
+  s_00dd747b7728cc::t_dfd94b4128fbc0 25
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_00dd747b7728cc::t_0ba847bc17223c 48-51,53,65-68,74
+  s_00dd747b7728cc::t_154ac37747a796 73,75-76,85,124,135-139
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/OrderProcessResponseMapper.kt
+  s_00dd747b7728cc::t_2dbe23826b4f70 1-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/OrderProcessOutput.kt
+  s_00dd747b7728cc::t_88392208cffaf2 1-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/repository/OrderRepositoryImpl.kt
+  s_00dd747b7728cc::t_fed3ed7655e812 4-5,7,18,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "291cb5ff3af63ccdcdb671b18b75627953d166c3",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_00dd747b7728cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5699d96c-828b-46e9-a58c-aa7307d63c91",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
