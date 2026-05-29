@@ -1,0 +1,19 @@
+.gitignore
+  s_3194722ccbba22::t_c20a7126461ac5 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "8417cb7d90a9c3c33ac68f31de7e56fe7f5df44d",
+  "prompts": {},
+  "sessions": {
+    "s_3194722ccbba22": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ef9c11b-7c53-4d8a-916a-f2ae501723a9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
