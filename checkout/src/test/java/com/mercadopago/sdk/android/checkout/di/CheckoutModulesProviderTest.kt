@@ -85,7 +85,7 @@ internal class CheckoutModulesProviderTest {
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
-                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
+                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = ""), orderId = ""),
             ),
             paymentMethodConfigs = emptyList(),
         )
