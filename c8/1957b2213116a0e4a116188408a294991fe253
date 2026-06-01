@@ -1,0 +1,37 @@
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/MPSkeletonExtensions.kt
+  s_954d93030d1157::t_2aefb4e5b66e43 42
+  s_954d93030d1157::t_0a0d590a708d3b 41
+  s_954d93030d1157::t_cb39bafa9a5b03 8
+  s_954d93030d1157::t_58cd089207d738 33-40
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeletonListRow.kt
+  s_954d93030d1157::t_46e96ea87129b1 22,31-32,52
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPSkeletonType.kt
+  s_954d93030d1157::t_808aed08b89a98 1-10,13-22,24-28,30-37,47
+  s_954d93030d1157::t_b00e2fac731207 11-12,23,29,38-46
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeleton.kt
+  s_954d93030d1157::t_781483c558b810 149,151,157,159,161-177
+  s_954d93030d1157::t_4b5263b6eb5e55 206-224,226-227,241
+  s_954d93030d1157::t_756a3cd549a14c 125,178-205,225,228-240,242-251,253-266,268-273,275-299,301-305
+  s_954d93030d1157::t_efa172f570f75f 252,267,274
+  s_954d93030d1157::t_60bd313e243cf7 33
+  s_954d93030d1157::t_f98c98e86eef81 10,13,15,22,34
+  s_954d93030d1157::t_61d9d12430b452 11,24,32,35,45-50,56-58,67,74,76,78,96,99-122
+  s_954d93030d1157::t_4601486df69789 63-65,68-69,90-95,97
+  s_954d93030d1157::t_17b7f82b862bfe 300,306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "c81957b2213116a0e4a116188408a294991fe253",
+  "prompts": {},
+  "sessions": {
+    "s_954d93030d1157": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "974439e3-0f8a-4bc4-a47f-00c48eae2669",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
