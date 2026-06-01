@@ -65,7 +65,7 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
 
     private var installmentsWasPresented: Boolean = false
-    private var pendingToken: String? = null
+    private var pendingOrderData: PendingOrderData? = null
 
     private val analyticsTracker = CardFormAnalyticsTracker(
         isLoading = { _viewState.value.isLoading },
@@ -323,17 +323,9 @@ internal class CardPaymentViewModel(
     fun onInstallmentConfirmed(
         installment: Int,
     ) {
-        val token = pendingToken ?: return
-        val payer = with(_viewState.value.identificationTypeState) {
-            Payer(
-                documentType = selected?.name,
-                documentNumber = value,
-            )
-        }
-
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
-            processOrder(token = token, payer = payer, installments = installment)
+            processOrder(installments = installment)
             _viewState.value = _viewState.value.copy(isLoading = false)
         }
     }
@@ -471,7 +463,7 @@ internal class CardPaymentViewModel(
             ).fold(
                 onSuccess = { cardToken ->
                     if (checkoutConfiguration?.checkoutType is MPCheckoutType.CardTransaction) {
-                        pendingToken = cardToken.token
+                        pendingOrderData = PendingOrderData(token = cardToken.token, payer = payer)
                     }
                     val paymentData = buildPaymentData(token = cardToken.token, payer = payer)
                     analyticsTracker.trackSubmit(
@@ -510,11 +502,11 @@ internal class CardPaymentViewModel(
     }
 
     private suspend fun processOrder(
-        token: String,
-        payer: Payer,
         installments: Int,
     ) {
         val orderId = checkoutConfiguration.getOrderId()
+        val token = pendingOrderData?.token.orEmpty()
+        val payer = pendingOrderData?.payer ?: Payer()
         processOrderUseCase(
             ProcessOrderParams(
                 orderId = orderId,
@@ -526,10 +518,16 @@ internal class CardPaymentViewModel(
             ),
         ).fold(
             onSuccess = { orderOutput ->
-                val paymentData = buildPaymentData(token = token, payer = payer, orderOutput = orderOutput)
+                val paymentData =
+                    buildPaymentData(
+                        token = token,
+                        payer = payer,
+                        orderOutput = orderOutput,
+                        installments = installments,
+                    )
                 _viewEvent.value = CardPaymentViewEvent.OnSuccess(
                     payment = paymentData,
-                    installment = MPInstallmentData(),
+                    installment = MPInstallmentData(selectedInstallment = installments),
                 )
             },
             onError = { error ->
@@ -543,6 +541,7 @@ internal class CardPaymentViewModel(
         token: String,
         payer: Payer,
         orderOutput: OrderProcessOutput? = null,
+        installments: Int = 1,
     ): MPPaymentData =
         when (checkoutConfiguration?.checkoutType) {
             is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
@@ -556,7 +555,7 @@ internal class CardPaymentViewModel(
                 orderId = orderOutput?.id.orEmpty(),
                 orderStatus = orderOutput?.status.orEmpty(),
                 transactionAmount = checkoutConfiguration?.getCardFormAmount(),
-                installment = 1,
+                installment = installments,
                 paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
                 paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                 issuerId = viewState.value.cardIssuers.firstOrNull()?.id,

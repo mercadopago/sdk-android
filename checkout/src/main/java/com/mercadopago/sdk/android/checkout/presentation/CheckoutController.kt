@@ -71,8 +71,8 @@ internal fun CheckoutController(
                 paymentData = paymentData,
                 checkoutType = checkoutConfiguration.toCheckoutType(),
                 onInstallmentConfirmed = { installments ->
-                    navController.popBackStack()
                     cardPaymentViewModel.onInstallmentConfirmed(installments)
+                    navController.popBackStack()
                 },
                 onBackClick = { navController.popBackStack() },
             )

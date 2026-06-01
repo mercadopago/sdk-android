@@ -11,7 +11,7 @@ private const val BRICKS_API = "cho-off"
 private const val VERSION = "v1"
 
 internal interface OrderService {
-    @POST("$BRICKS_API/$VERSION/{order_id}/process")
+    @POST("$BRICKS_API/$VERSION/orders/{order_id}/process")
     suspend fun process(
         @Path("order_id") orderId: String,
         @Body body: OrderProcessRequest,

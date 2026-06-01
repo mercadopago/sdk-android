@@ -796,16 +796,30 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onInstallmentConfirmed without prior submit then processOrderUseCase is not called`() = runTest {
+    fun `when onInstallmentConfirmed without prior submit then calls processOrderUseCase with empty token`() = runTest {
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "", status = ""))
+        val viewModel = makeViewModel()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("", paramsSlot.captured.token)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed without prior submit and processOrder fails then emits OnFailure`() = runTest {
+        coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.onInstallmentConfirmed(installment = 3)
 
-        coVerify(exactly = 0) { processOrderUseCase(any()) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
-    fun `when onInstallmentConfirmed succeeds then emits OnSuccess with empty installment quotas`() = runTest {
+    fun `when onInstallmentConfirmed succeeds then emits OnSuccess with selected installment`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -823,6 +837,7 @@ internal class CardPaymentViewModelTest {
 
         val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnSuccess
         assertTrue(event.installment.quotas.isEmpty())
+        assertEquals(3, event.installment.selectedInstallment)
     }
 
     @Test
@@ -846,6 +861,28 @@ internal class CardPaymentViewModelTest {
         val payment = event.payment as MPPaymentData.CardTransaction
         assertEquals("order_123", payment.orderId)
         assertEquals("opened", payment.orderStatus)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then payment contains selected installment`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 6)
+
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnSuccess
+        val payment = event.payment as MPPaymentData.CardTransaction
+        assertEquals(6, payment.installment)
     }
 
     @Test
@@ -907,5 +944,53 @@ internal class CardPaymentViewModelTest {
         viewModel.onInstallmentConfirmed(installment = 3)
 
         assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed then calls processOrderUseCase with token from generateToken`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 1)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("token_abc", paramsSlot.captured.token)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed then calls processOrderUseCase with paymentMethod from state`() = runTest {
+        val data = binData(id = "visa", paymentTypeId = "credit_card")
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 1)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("visa", paramsSlot.captured.paymentMethodId)
+        assertEquals("credit_card", paramsSlot.captured.paymentMethodType)
     }
 }
