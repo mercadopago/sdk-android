@@ -1,0 +1,30 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_74bfdbb8ab9a3c::t_e56d0f5bb1c7d5 33,43
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreenTest.kt
+  s_9a0c17ca2f0d7f::t_4b52f94e98b1f5 87-89,94
+  s_9a0c17ca2f0d7f::t_7147ce35fc4005 41,43,47,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "84390315284770faedd6b8307119b784e895a10c",
+  "prompts": {},
+  "sessions": {
+    "s_74bfdbb8ab9a3c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "018f4821-5258-489c-9d04-f07c46cab376",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_9a0c17ca2f0d7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "82b1e918-0bd2-4eca-a19f-c891339285b3",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
