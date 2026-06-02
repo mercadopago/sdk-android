@@ -1,0 +1,22 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/paymentbrick/PaymentBrickScreen.kt
+  s_f5c88deedf982a::t_bae2e08eb59292 56
+  s_f5c88deedf982a::t_81626c3b1eed69 105
+  s_f5c88deedf982a::t_400a7668024a80 131
+  s_f5c88deedf982a::t_c99ba0f64e1a66 34,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "c5c8622f3ef4b8d859149c61247a8b24d06f023a",
+  "prompts": {},
+  "sessions": {
+    "s_f5c88deedf982a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d38e697e-1010-4aea-959b-77d1c4270565",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
