@@ -28,6 +28,8 @@ sealed class MPPaymentData {
     /**
      * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.CardTransaction] checkout.
      *
+     * @property orderId Identifier of the order associated with the transaction.
+     * @property orderStatus Current status of the order.
      * @property transactionAmount Total amount of the transaction.
      * @property paymentMethodId Identifier of the selected payment method.
      * @property paymentTypeId Identifier of the selected payment type.
@@ -36,6 +38,8 @@ sealed class MPPaymentData {
      * @property issuerId Optional identifier of the card issuer.
      */
     data class CardTransaction(
+        val orderId: String,
+        val orderStatus: String,
         val transactionAmount: BigDecimal?,
         val paymentMethodId: String,
         val paymentTypeId: String,

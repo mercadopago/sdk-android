@@ -21,3 +21,8 @@ internal fun CheckoutConfiguration?.toCheckoutType(): String =
         is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
         null -> ""
     }
+
+internal fun CheckoutConfiguration?.getOrderId(): String = this.asCardTransaction()?.order?.orderId.orEmpty()
+
+internal fun CheckoutConfiguration?.asCardTransaction(): MPCheckoutType.CardTransaction? =
+    this?.checkoutType as? MPCheckoutType.CardTransaction

@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationO
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -85,7 +86,7 @@ internal class CheckoutModulesProviderTest {
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
-                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
+                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = ""), orderId = ""),
             ),
             paymentMethodConfigs = emptyList(),
         )
@@ -109,6 +110,7 @@ internal class CheckoutModulesProviderTest {
                 CardPaymentViewModel::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
+                ProcessOrderUseCase::class,
                 CancelledFormContextUseCase::class,
                 Gson::class,
                 CardFormInitializationOutput::class,
