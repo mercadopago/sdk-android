@@ -31,10 +31,12 @@ import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemLeading
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
+import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val PAYMENT_BRICK_GROUP = "PAYMENT_BRICK"
 
+@KoverIgnore("composable screen, covered by Paparazzi in showkase")
 @Composable
 internal fun PaymentBrickScreen(
     viewModel: PaymentBrickViewModel,
@@ -51,6 +53,7 @@ internal fun PaymentBrickScreen(
     )
 }
 
+@KoverIgnore("composable screen, covered by Paparazzi in showkase")
 @Composable
 internal fun PaymentBrickScreenContent(
     viewState: PaymentBrickScreenState,
@@ -99,6 +102,7 @@ internal fun PaymentBrickScreenContent(
     }
 }
 
+@KoverIgnore("composable screen, covered by Paparazzi in showkase")
 @Composable
 private fun PaymentSectionsList(
     sections: List<PaymentSectionState>,
@@ -124,6 +128,7 @@ private fun PaymentSectionsList(
     }
 }
 
+@KoverIgnore("composable screen, covered by Paparazzi in showkase")
 @Composable
 private fun SectionTitle(
     title: String,
