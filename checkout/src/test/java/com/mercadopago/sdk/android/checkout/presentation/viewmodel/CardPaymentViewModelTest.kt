@@ -11,7 +11,6 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfi
 import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -22,6 +21,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -80,17 +80,17 @@ internal class CardPaymentViewModelTest {
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        mockkObject(CheckoutCallbackHolder)
-        every { CheckoutCallbackHolder.notify(any()) } returns Unit
         mockkObject(MercadoPagoSDK.Companion)
         every { MercadoPagoSDK.countryCode } returns null
+        mockkObject(CheckoutCallbackHolder)
+        every { CheckoutCallbackHolder.notify(any()) } returns Unit
     }
 
     @After
     fun tearDown() {
         unmockkObject(MPAnalytics.Companion)
-        unmockkObject(CheckoutCallbackHolder)
         unmockkObject(MercadoPagoSDK.Companion)
+        unmockkObject(CheckoutCallbackHolder)
     }
 
     private fun makeViewModel(
@@ -125,13 +125,13 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when initialization fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when initialization fails then emits OnFailure view event`() = runTest {
         coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
@@ -297,12 +297,12 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed then notifies CheckoutCallbackHolder with UserCancelled`() = runTest {
+    fun `when onBackPressed then emits OnUserCancelled view event`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed()
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
     }
 
     @Test
@@ -317,12 +317,12 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onBackPressed with UiButton reason then notifies UserCancelled`() = runTest {
+    fun `when onBackPressed with UiButton reason then emits OnUserCancelled view event`() = runTest {
         val viewModel = makeViewModel()
 
         viewModel.onBackPressed(reason = CancelReason.UiButton)
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.UserCancelled }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnUserCancelled)
     }
 
     @Test
@@ -360,7 +360,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds then notifies CheckoutCallbackHolder with Success`() = runTest {
+    fun `when onSubmit succeeds then emits OnSuccess view event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -372,11 +372,11 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success<*> }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 
     @Test
-    fun `when onSubmit fails then notifies CheckoutCallbackHolder with Error`() = runTest {
+    fun `when onSubmit fails then emits OnFailure view event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Error(networkError)
@@ -388,7 +388,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
     }
 
     @Test
@@ -408,7 +408,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds with CardSave checkoutType then notifies Success`() = runTest {
+    fun `when onSubmit succeeds with CardSave checkoutType then emits OnSuccess view event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -425,11 +425,11 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success<*> }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 
     @Test
-    fun `when onSubmit succeeds with null config then notifies Success with CardTransaction`() = runTest {
+    fun `when onSubmit succeeds with null config then emits OnSuccess view event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -441,6 +441,6 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Success<*> }) }
+        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
     }
 }

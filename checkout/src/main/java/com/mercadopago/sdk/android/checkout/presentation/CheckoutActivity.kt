@@ -18,7 +18,6 @@ import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePrefer
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
-import com.mercadopago.sdk.android.checkout.presentation.controller.MPCardPayment
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import org.koin.compose.KoinContext
 
@@ -49,7 +48,7 @@ internal class CheckoutActivity : ComponentActivity() {
                     theme = checkoutThemePreferences.getCurrentThemeScheme(),
                     style = checkoutThemePreferences.getCurrentStyle(),
                 ) {
-                    MPCardPayment(checkoutConfiguration = checkoutConfiguration)
+                    CheckoutController(checkoutConfiguration = checkoutConfiguration)
                 }
             }
         }

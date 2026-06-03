@@ -23,3 +23,9 @@ internal fun CheckoutConfiguration?.toCheckoutType(): String =
         is MPCheckoutType.PaymentSelection -> PAYMENT_SELECTION
         null -> ""
     }
+
+internal fun CheckoutConfiguration?.showsInstallments(): Boolean = this?.checkoutType is MPCheckoutType.CardTransaction
+
+internal fun CheckoutConfiguration?.startsWithPaymentBrick(): Boolean {
+    return this?.checkoutType is MPCheckoutType.PaymentSelection
+}

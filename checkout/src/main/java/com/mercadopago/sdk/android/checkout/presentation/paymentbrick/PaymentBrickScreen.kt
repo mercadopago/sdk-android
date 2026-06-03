@@ -38,7 +38,6 @@ private const val PAYMENT_BRICK_GROUP = "PAYMENT_BRICK"
 @Composable
 internal fun PaymentBrickScreen(
     viewModel: PaymentBrickViewModel,
-    onOptionSelected: (String) -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
@@ -46,7 +45,7 @@ internal fun PaymentBrickScreen(
 
     PaymentBrickScreenContent(
         viewState = viewState,
-        onOptionSelected = onOptionSelected,
+        onOptionSelected = viewModel::onOptionSelected,
         onBackPressed = viewModel::onBackPressed,
     )
 }
