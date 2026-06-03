@@ -446,7 +446,10 @@ internal class CardPaymentViewModel(
                                 ),
                             ),
                         )
-                        is MPCheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
+                        is MPCheckoutType.CardTransaction,
+                        is MPCheckoutType.PaymentSelection,
+                        null,
+                        -> CheckoutCallbackHolder.notify(
                             MercadoPagoCheckoutResult.Success(
                                 MPPaymentData.CardTransaction(
                                     transactionAmount = checkoutConfiguration?.getCardFormAmount(),

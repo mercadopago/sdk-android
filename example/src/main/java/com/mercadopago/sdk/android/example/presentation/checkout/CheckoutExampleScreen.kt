@@ -122,6 +122,9 @@ internal fun CheckoutExampleScreen(
                                             ctx.context.fields.joinToString(", ") { field ->
                                                 "${field.field.name}: ${field.state::class.simpleName}"
                                             }
+
+                                        is MPUserCancelledContext.PaymentBrick ->
+                                            "Payment brick"
                                     }
                                     Toast.makeText(
                                         context,
