@@ -318,6 +318,21 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
+    fun `given identification type has valid value then document state is Valid`() {
+        val state = makeState(
+            identificationTypeState = IdentificationTypeState(
+                show = true,
+                value = "12345678909",
+            ),
+        )
+
+        val fields = invoke(state)
+
+        val field = fields.first { it.field == Field.DOCUMENT }
+        assertEquals(State.Valid, field.state)
+    }
+
+    @Test
     fun `given default state then result contains cardNumber and expirationDate fields`() {
         val result = useCase(makeState())
 
