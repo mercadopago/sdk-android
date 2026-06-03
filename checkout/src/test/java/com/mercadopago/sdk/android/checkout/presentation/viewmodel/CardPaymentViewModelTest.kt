@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -809,17 +810,19 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onInstallmentConfirmed without prior submit and processOrder fails then emits OnFailure`() = runTest {
+    fun `when processOrder fails without prior submit then notifies callback with error`() = runTest {
         coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.onInstallmentConfirmed(installment = 3)
 
-        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Error)
     }
 
     @Test
-    fun `when onInstallmentConfirmed succeeds then emits OnSuccess with selected installment`() = runTest {
+    fun `when onInstallmentConfirmed succeeds then notifies callback with success`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -835,9 +838,9 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onInstallmentConfirmed(installment = 3)
 
-        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnSuccess
-        assertTrue(event.installment.quotas.isEmpty())
-        assertEquals(3, event.installment.selectedInstallment)
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Success<*>)
     }
 
     @Test
@@ -857,8 +860,10 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onInstallmentConfirmed(installment = 3)
 
-        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnSuccess
-        val payment = event.payment as MPPaymentData.CardTransaction
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        val captured = notifySlot.captured as MercadoPagoCheckoutResult.Success<*>
+        val payment = captured.paymentData as MPPaymentData.CardTransaction
         assertEquals("order_123", payment.orderId)
         assertEquals("opened", payment.orderStatus)
     }
@@ -880,8 +885,10 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onInstallmentConfirmed(installment = 6)
 
-        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnSuccess
-        val payment = event.payment as MPPaymentData.CardTransaction
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        val captured = notifySlot.captured as MercadoPagoCheckoutResult.Success<*>
+        val payment = captured.paymentData as MPPaymentData.CardTransaction
         assertEquals(6, payment.installment)
     }
 
@@ -908,7 +915,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onInstallmentConfirmed fails then emits OnFailure`() = runTest {
+    fun `when onInstallmentConfirmed fails then notifies callback with error`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -923,7 +930,9 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onInstallmentConfirmed(installment = 3)
 
-        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Error)
     }
 
     @Test

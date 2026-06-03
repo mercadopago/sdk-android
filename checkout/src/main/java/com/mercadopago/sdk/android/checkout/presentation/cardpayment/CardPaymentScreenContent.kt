@@ -89,7 +89,9 @@ internal fun CardPaymentScreen(
     }
 
     BackHandler {
-        viewModel.onBackPressed(CancelReason.SystemBack)
+        if (!viewState.isLoading) {
+            viewModel.onBackPressed(CancelReason.SystemBack)
+        }
     }
 
     CardPaymentScreenContent(

@@ -9,6 +9,8 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmoun
 import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
@@ -323,6 +325,7 @@ internal class CardPaymentViewModel(
     fun onInstallmentConfirmed(
         installment: Int,
     ) {
+        if (_viewState.value.isLoading) return
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
             processOrder(installments = installment)
@@ -525,14 +528,11 @@ internal class CardPaymentViewModel(
                         orderOutput = orderOutput,
                         installments = installments,
                     )
-                _viewEvent.value = CardPaymentViewEvent.OnSuccess(
-                    payment = paymentData,
-                    installment = MPInstallmentData(selectedInstallment = installments),
-                )
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
             },
             onError = { error ->
                 analyticsTracker.trackSubmitError(error)
-                _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
             },
         )
     }
