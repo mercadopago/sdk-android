@@ -7,11 +7,13 @@ import java.math.BigDecimal
 
 /**
  * MPOrder class, used to configure the card form
+ * @param orderId orderId
  * @param amount BigDecimal
  * @param payer MPPayer
  */
 @Parcelize
 data class MPOrder(
+    val orderId: String,
     val amount: BigDecimal,
     val payer: MPPayer,
 ) : CheckoutTypeConfiguration, Parcelable

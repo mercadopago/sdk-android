@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -19,13 +20,17 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
@@ -62,6 +67,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@Suppress("LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CardPaymentViewModelTest {
     @get:Rule
@@ -71,6 +77,7 @@ internal class CardPaymentViewModelTest {
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
+    private val processOrderUseCase = mockk<ProcessOrderUseCase>(relaxed = true)
     private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
@@ -184,6 +191,7 @@ internal class CardPaymentViewModelTest {
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
+        processOrderUseCase = processOrderUseCase,
         cardPaymentScreenStateFactory = cardPaymentScreenStateFactory,
     )
 
@@ -766,5 +774,232 @@ internal class CardPaymentViewModelTest {
         )
 
         assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when onSubmit succeeds with CardSave then processOrderUseCase is not called`() = runTest {
+        val cardSaveConfig = CheckoutConfiguration(
+            checkoutType = MPCheckoutType.CardSave,
+            paymentMethodConfigs = emptyList(),
+        )
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        val viewModel = makeViewModel(config = cardSaveConfig)
+
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+
+        coVerify(exactly = 0) { processOrderUseCase(any()) }
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed without prior submit then calls processOrderUseCase with empty token`() = runTest {
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "", status = ""))
+        val viewModel = makeViewModel()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("", paramsSlot.captured.token)
+    }
+
+    @Test
+    fun `when processOrder fails without prior submit then notifies callback with error`() = runTest {
+        coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
+        val viewModel = makeViewModel()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Error)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then notifies callback with success`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Success<*>)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then payment contains orderId and status from response`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        val captured = notifySlot.captured as MercadoPagoCheckoutResult.Success<*>
+        val payment = captured.paymentData as MPPaymentData.CardTransaction
+        assertEquals("order_123", payment.orderId)
+        assertEquals("opened", payment.orderStatus)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then payment contains selected installment`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 6)
+
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        val captured = notifySlot.captured as MercadoPagoCheckoutResult.Success<*>
+        val payment = captured.paymentData as MPPaymentData.CardTransaction
+        assertEquals(6, payment.installment)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed then calls processOrderUseCase with selected installments`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 6)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals(6, paramsSlot.captured.installments)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed fails then notifies callback with error`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val notifySlot = slot<MercadoPagoCheckoutResult<*>>()
+        verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
+        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Error)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then isLoading is false`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed then calls processOrderUseCase with token from generateToken`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 1)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("token_abc", paramsSlot.captured.token)
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed then calls processOrderUseCase with paymentMethod from state`() = runTest {
+        val data = binData(id = "visa", paymentTypeId = "credit_card")
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+        val paramsSlot = slot<ProcessOrderParams>()
+
+        viewModel.onInstallmentConfirmed(installment = 1)
+
+        coVerify { processOrderUseCase(capture(paramsSlot)) }
+        assertEquals("visa", paramsSlot.captured.paymentMethodId)
+        assertEquals("credit_card", paramsSlot.captured.paymentMethodType)
     }
 }

@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.installments
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
@@ -36,6 +39,7 @@ import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
+import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
@@ -45,21 +49,27 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 @Composable
 internal fun InstallmentsScreen(
     viewModel: InstallmentsViewModel,
+    isLoading: Boolean = false,
     onBackClick: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
+    BackHandler(enabled = isLoading) { }
+
     InstallmentsScreenContent(
         viewState = viewState,
+        isLoading = isLoading,
         onBackClick = onBackClick,
         onItemClick = viewModel::onInstallmentSelected,
         onPayClick = viewModel::onPayClicked,
     )
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun InstallmentsScreenContent(
     viewState: InstallmentsScreenState,
+    isLoading: Boolean = false,
     onBackClick: () -> Unit = {},
     onItemClick: (Int) -> Unit = {},
     onPayClick: () -> Unit = {},
@@ -120,6 +130,17 @@ private fun InstallmentsScreenContent(
                     .align(Alignment.BottomCenter)
                     .onGloballyPositioned { footerHeightPx = it.size.height },
             )
+        }
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                contentAlignment = Alignment.Center,
+            ) {
+                MPProgressIndicator()
+            }
         }
     }
 }
