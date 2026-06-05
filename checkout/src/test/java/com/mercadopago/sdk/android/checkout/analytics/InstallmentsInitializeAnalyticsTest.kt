@@ -21,6 +21,7 @@ internal class InstallmentsInitializeAnalyticsTest {
         selectionType = selectionType,
         quotasCount = quotasCount,
         transactionAmount = transactionAmount,
+        orderId = "",
     )
 
     @Test

@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -72,6 +73,7 @@ internal fun CheckoutController(
                 installmentData = installmentData,
                 paymentData = paymentData,
                 checkoutType = checkoutConfiguration.toCheckoutType(),
+                orderId = checkoutConfiguration?.getOrderId().orEmpty(),
                 onInstallmentConfirmed = { installments ->
                     cardPaymentViewModel.onInstallmentConfirmed(installments)
                 },
@@ -131,12 +133,13 @@ private fun InstallmentsScreenDestination(
     installmentData: MPInstallmentData,
     paymentData: MPPaymentData,
     checkoutType: String,
+    orderId: String,
     onInstallmentConfirmed: (Int) -> Unit,
     isLoading: Boolean,
     onBackClick: () -> Unit,
 ) {
     val installmentsViewModel: InstallmentsViewModel = koinViewModel {
-        parametersOf(installmentData, paymentData, checkoutType)
+        parametersOf(installmentData, paymentData, checkoutType, orderId)
     }
     val viewEvent by installmentsViewModel.viewEvent.collectAsState()
 

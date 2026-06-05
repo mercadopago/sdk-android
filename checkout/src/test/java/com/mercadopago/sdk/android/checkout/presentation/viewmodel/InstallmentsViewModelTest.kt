@@ -62,6 +62,7 @@ internal class InstallmentsViewModelTest {
         installmentData = installmentData,
         paymentData = paymentData,
         checkoutType = "card_form",
+        orderId = "order_123",
         analyticsTracker = tracker,
     )
 

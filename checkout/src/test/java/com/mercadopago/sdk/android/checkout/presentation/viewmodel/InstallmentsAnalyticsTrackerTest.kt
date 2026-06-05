@@ -37,6 +37,7 @@ internal class InstallmentsAnalyticsTrackerTest {
         checkoutType = "card_form",
         paymentData = paymentData,
         installmentData = installmentData,
+        orderId = "order",
     )
 
     @Test

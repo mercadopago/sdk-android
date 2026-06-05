@@ -65,11 +65,17 @@ internal fun provideDataModule() =
                 cardPaymentScreenStateFactory = get(),
             )
         }
-        viewModel { (installmentData: MPInstallmentData, paymentData: MPPaymentData, checkoutType: String) ->
+        viewModel { params ->
+            val (
+                installmentData: MPInstallmentData,
+                paymentData: MPPaymentData,
+                checkoutType: String,
+            ) = params
             InstallmentsViewModel(
                 installmentData = installmentData,
                 paymentData = paymentData,
                 checkoutType = checkoutType,
+                orderId = (params.component4() as? String).orEmpty(),
             )
         }
     }

@@ -521,6 +521,10 @@ internal class CardPaymentViewModel(
             ),
         ).fold(
             onSuccess = { orderOutput ->
+                analyticsTracker.trackOrderSubmit(
+                    orderId = orderOutput.id,
+                    orderStatus = orderOutput.status,
+                )
                 val paymentData =
                     buildPaymentData(
                         token = token,
@@ -531,7 +535,7 @@ internal class CardPaymentViewModel(
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
             },
             onError = { error ->
-                analyticsTracker.trackSubmitError(error)
+                analyticsTracker.trackOrderError(error = error, orderId = orderId)
                 CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
             },
         )
