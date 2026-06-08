@@ -8,11 +8,11 @@ internal sealed interface CheckoutDestination {
     data object Loading : CheckoutDestination
 
     @Serializable
-    data object PaymentBrick : CheckoutDestination
-
-    @Serializable
     data object Form : CheckoutDestination
 
     @Serializable
-    data object Installments : CheckoutDestination
+    data object Installment : CheckoutDestination
+
+    @Serializable
+    data object PaymentBrick : CheckoutDestination
 }

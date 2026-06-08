@@ -10,7 +10,7 @@ internal class CheckoutDestinationTest {
             CheckoutDestination.Loading,
             CheckoutDestination.PaymentBrick,
             CheckoutDestination.Form,
-            CheckoutDestination.Installments,
+            CheckoutDestination.Installment,
         )
 
         assertTrue(destinations.all { it is CheckoutDestination })
@@ -22,7 +22,7 @@ internal class CheckoutDestinationTest {
             CheckoutDestination.Loading,
             CheckoutDestination.PaymentBrick,
             CheckoutDestination.Form,
-            CheckoutDestination.Installments,
+            CheckoutDestination.Installment,
         )
 
         assertTrue(destinations.size == 4)

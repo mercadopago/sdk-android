@@ -341,4 +341,20 @@ internal class CancelledFormContextUseCaseTest {
         assertEquals(true, fields.any { it.field == Field.CARD_NUMBER })
         assertEquals(true, fields.any { it.field == Field.EXPIRATION_DATE })
     }
+
+    @Test
+    fun `given installmentsWasPresented is not provided then context flag is false`() {
+        val result = useCase(makeState())
+
+        assertIs<MPUserCancelledContext.CardForm>(result)
+        assertEquals(false, result.context.installmentsWasPresented)
+    }
+
+    @Test
+    fun `given installmentsWasPresented is true then context flag is true`() {
+        val result = useCase(makeState(), installmentsWasPresented = true)
+
+        assertIs<MPUserCancelledContext.CardForm>(result)
+        assertEquals(true, result.context.installmentsWasPresented)
+    }
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.mercadopago.sdk.android.components.extensions.isNotNull
+import com.mercadopago.sdk.android.components.extensions.isGreaterThan
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
@@ -38,12 +38,14 @@ data class MPAmountData(
  * @property text The button label text
  * @property style The button style (default: Loud)
  * @property enabled Whether the button is enabled
+ * @property isLoading When true, shows a loading animation inside the button and disables interaction
  * @property onClick Callback executed when button is clicked
  */
 data class MPFixedFooterButtonData(
     val text: String,
     val style: MPButtonStyle = MPButtonStyle.Loud,
     val enabled: Boolean = true,
+    val isLoading: Boolean = false,
     val onClick: () -> Unit,
 )
 
@@ -75,7 +77,7 @@ fun MPFixedFooter(
                 vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
     ) {
-        if (amount.isNotNull()) {
+        if (amount?.integerPart?.isGreaterThan() == true) {
             HeaderSection(
                 title = title,
                 amount = amount,
@@ -89,6 +91,7 @@ fun MPFixedFooter(
                 modifier = Modifier.fillMaxWidth(),
                 style = it.style,
                 enabled = it.enabled,
+                isLoading = it.isLoading,
                 onClick = it.onClick,
             )
         }
@@ -145,12 +148,14 @@ private fun AmountText(
             style = MercadoPagoTheme.typography.heading.default.medium,
             color = MercadoPagoTheme.color.text.primary,
         )
-        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
-        MPText(
-            text = amount.decimalPart,
-            style = MercadoPagoTheme.typography.body.emphasis.small,
-            color = MercadoPagoTheme.color.text.primary,
-        )
+        if (amount.decimalPart.isGreaterThan()) {
+            Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
+            MPText(
+                text = amount.decimalPart,
+                style = MercadoPagoTheme.typography.body.emphasis.small,
+                color = MercadoPagoTheme.color.text.primary,
+            )
+        }
     }
 }
 

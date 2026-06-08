@@ -1,5 +1,13 @@
+@file:Suppress("TooManyFunctions") // Showkase preview functions and private composable helpers inflate the count
+
 package com.mercadopago.sdk.android.components
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -10,6 +18,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +35,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -342,6 +354,7 @@ private fun RightIcon(
  * @param iconType: type of icon placement (None, Left, Right)
  * @param size: button size (Large, Medium)
  * @param enabled: Boolean indicates if the component is enabled
+ * @param isLoading: when true, shows a loading fill animation behind the text and disables interaction
  * @param onClick: callback function executed when button is clicked
  */
 @Composable
@@ -353,6 +366,7 @@ fun MPButton(
     iconType: MPButtonIconType = MPButtonIconType.None,
     size: MPButtonSize = MPButtonSize.Large,
     enabled: Boolean = true,
+    isLoading: Boolean = false,
     onClick: () -> Unit,
 ) {
     val defaults = getMPButtonDefaults()
@@ -361,6 +375,7 @@ fun MPButton(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
 
+    val isClickable = enabled && !isLoading
     val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed, defaults)
     val textColor = getTextColor(style, defaults)
     val iconColor = getIconColor(style, defaults)
@@ -378,23 +393,27 @@ fun MPButton(
             .height(buttonHeight)
             .clip(defaults.shape.medium)
             .background(backgroundColor)
+            .semantics { if (isLoading) stateDescription = "Carregando" }
             .clickable(
-                enabled = enabled,
+                enabled = isClickable,
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick,
-            )
-            .padding(horizontal = contentPaddingHorizontal),
-        contentAlignment = Alignment.Center,
+            ),
     ) {
+        if (isLoading) {
+            ButtonLoadingFill(style = style, defaults = defaults)
+        }
         Row(
-            modifier = Modifier.height(20.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .height(20.dp)
+                .padding(horizontal = contentPaddingHorizontal),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (drawIcon && iconType == MPButtonIconType.Left) {
-                LeftIcon(icon!!, size, enabled, iconColor, defaults)
+                LeftIcon(icon!!, size, isClickable, iconColor, defaults)
             }
-
             MPText(
                 text = text,
                 style = if (size == MPButtonSize.Large) {
@@ -404,12 +423,38 @@ fun MPButton(
                 },
                 color = textColor,
             )
-
             if (drawIcon && iconType == MPButtonIconType.Right) {
-                RightIcon(icon!!, size, enabled, iconColor, defaults)
+                RightIcon(icon!!, size, isClickable, iconColor, defaults)
             }
         }
     }
+}
+
+@Composable
+private fun ButtonLoadingFill(
+    style: MPButtonStyle,
+    defaults: MPButtonDefaults,
+) {
+    val fillColor = when (style) {
+        MPButtonStyle.Loud -> defaults.colors.loudActive
+        MPButtonStyle.Quiet, MPButtonStyle.Transparent -> defaults.colors.quietActive
+    }
+    val infiniteTransition = rememberInfiniteTransition(label = "button_loading")
+    val fillFraction by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "loading_fill",
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(fraction = fillFraction)
+            .background(fillColor),
+    )
 }
 
 @Preview(name = "Button Styles Large", group = BUTTON_GROUP)

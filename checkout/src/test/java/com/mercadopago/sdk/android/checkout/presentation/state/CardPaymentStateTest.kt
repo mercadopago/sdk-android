@@ -128,7 +128,7 @@ internal class CardPaymentStateTest {
         assertEquals(IdentificationTypeState(), state.identificationTypeState)
         assertEquals(InstallmentsState(), state.installmentsState)
         assertEquals(PaymentState(), state.paymentState)
-        assertEquals(FixedFooterState(), state.fixedFooterState)
+        assertEquals(FooterState(), state.footerState)
         assertEquals(emptyList(), state.cardIssuers)
         assertEquals(MessageError(), state.messageError)
         assertFalse(state.isLoading)
@@ -230,14 +230,14 @@ internal class CardPaymentStateTest {
     }
 
     @Test
-    fun `given FixedFooterState explicit values then properties are assigned`() {
-        val state = FixedFooterState(
+    fun `given FooterState explicit values then properties are assigned`() {
+        val state = FooterState(
             title = "Total",
             currencySymbol = "R$",
             amountIntegerPart = "100",
             amountDecimalPart = "00",
             subtitle = "subtitle",
-            buttonText = "Pay",
+            buttonLabel = "Pay",
             isVisible = true,
         )
 
@@ -246,7 +246,7 @@ internal class CardPaymentStateTest {
         assertEquals("100", state.amountIntegerPart)
         assertEquals("00", state.amountDecimalPart)
         assertEquals("subtitle", state.subtitle)
-        assertEquals("Pay", state.buttonText)
+        assertEquals("Pay", state.buttonLabel)
         assertTrue(state.isVisible)
     }
 

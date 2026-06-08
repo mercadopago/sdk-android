@@ -2,7 +2,9 @@ package com.mercadopago.sdk.android.checkout.domain.model
 
 internal data class CardFormInitializationOutput(
     val title: String,
-    val button: String,
+    val buttonLabel: String,
+    val currencySymbol: String = "",
+    val footerTitle: String = "",
     val fields: CardFormFields,
     val identificationTypes: List<IdentificationTypeItem>,
 )
@@ -79,6 +81,7 @@ internal data class Validation(
 internal data class CardFieldConfig(
     val type: String,
     val length: LengthRange,
+    val mask: String? = null,
 )
 
 internal data class LengthRange(
