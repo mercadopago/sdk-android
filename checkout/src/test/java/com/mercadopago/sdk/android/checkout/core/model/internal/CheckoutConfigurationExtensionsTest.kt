@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -105,6 +106,46 @@ internal class CheckoutConfigurationExtensionsTest {
 
         assertTrue(checkoutType.toString().contains("CardTransaction"))
         assertEquals(order, checkoutType.component1())
+    }
+
+    @Test
+    fun `given card transaction when showsInstallments then returns true`() {
+        assertTrue(configWith(MPCheckoutType.CardTransaction(order)).showsInstallments())
+    }
+
+    @Test
+    fun `given card save when showsInstallments then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardSave).showsInstallments())
+    }
+
+    @Test
+    fun `given payment selection when showsInstallments then returns false`() {
+        assertFalse(configWith(MPCheckoutType.PaymentSelection(order = order, cardIds = null)).showsInstallments())
+    }
+
+    @Test
+    fun `given null configuration when showsInstallments then returns false`() {
+        assertFalse(configWith(null).showsInstallments())
+    }
+
+    @Test
+    fun `given payment selection when startsWithPaymentBrick then returns true`() {
+        assertTrue(configWith(MPCheckoutType.PaymentSelection(order = order, cardIds = null)).startsWithPaymentBrick())
+    }
+
+    @Test
+    fun `given card transaction when startsWithPaymentBrick then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardTransaction(order)).startsWithPaymentBrick())
+    }
+
+    @Test
+    fun `given card save when startsWithPaymentBrick then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardSave).startsWithPaymentBrick())
+    }
+
+    @Test
+    fun `given null configuration when startsWithPaymentBrick then returns false`() {
+        assertFalse(configWith(null).startsWithPaymentBrick())
     }
 
     @Test

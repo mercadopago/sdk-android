@@ -23,6 +23,7 @@ tasks.withType<Detekt>().configureEach {
     exclude("resources/")
     exclude("**/build/**")
     exclude("**/example/**")
+    exclude("**/.claude/**")
     reports {
         xml.required.set(true)
         html.required.set(true)

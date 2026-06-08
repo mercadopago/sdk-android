@@ -8,8 +8,6 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmoun
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
-import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
@@ -28,6 +26,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScr
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -53,6 +52,9 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
+
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
 
     private var isCancelling = false
 
@@ -308,7 +310,11 @@ internal class CardPaymentViewModel(
         analyticsTracker.trackUserCanceled(reason)
         val currentState = _viewState.value
         val context = cancelledFormContextUseCase(currentState)
-        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+        _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
     }
 
     fun initialization() {
@@ -323,7 +329,7 @@ internal class CardPaymentViewModel(
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
@@ -434,38 +440,31 @@ internal class CardPaymentViewModel(
                         issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
                         paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                     )
-                    when (checkoutConfiguration?.checkoutType) {
-                        is MPCheckoutType.CardSave -> CheckoutCallbackHolder.notify(
-                            MercadoPagoCheckoutResult.Success(
-                                MPPaymentData.CardSave(
-                                    token = cardToken.token,
-                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                                    payer = payer,
-                                ),
-                            ),
+                    val payment: MPPaymentData = when (checkoutConfiguration?.checkoutType) {
+                        is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
+                            token = cardToken.token,
+                            paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                            issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                            payer = payer,
                         )
                         is MPCheckoutType.CardTransaction,
                         is MPCheckoutType.PaymentSelection,
                         null,
-                        -> CheckoutCallbackHolder.notify(
-                            MercadoPagoCheckoutResult.Success(
-                                MPPaymentData.CardTransaction(
-                                    transactionAmount = checkoutConfiguration?.getCardFormAmount(),
-                                    installment = 1,
-                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                                    payer = payer,
-                                ),
-                            ),
+                        -> MPPaymentData.CardTransaction(
+                            transactionAmount = checkoutConfiguration?.getCardFormAmount(),
+                            installment = 1,
+                            paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                            issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                            payer = payer,
                         )
                     }
+                    _viewEvent.value = CardPaymentViewEvent.OnSuccess(payment)
                 },
                 onError = { checkoutError ->
                     analyticsTracker.trackSubmitError(checkoutError)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)

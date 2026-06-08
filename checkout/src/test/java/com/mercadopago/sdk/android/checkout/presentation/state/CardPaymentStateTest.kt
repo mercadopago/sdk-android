@@ -2,6 +2,8 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
+import com.mercadopago.sdk.android.checkout.domain.model.MPCardFormUserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -289,14 +291,18 @@ internal class CardPaymentStateTest {
     }
 
     @Test
-    fun `given CardPaymentViewEvent OnBackPressed then it is the sealed subtype`() {
-        val event: CardPaymentViewEvent = CardPaymentViewEvent.OnBackPressed
+    fun `given CardPaymentViewEvent OnBackPressed then it carries the user cancelled context`() {
+        val context = MPUserCancelledContext.CardForm(MPCardFormUserCancelledContext(emptyList()))
+        val event: CardPaymentViewEvent = CardPaymentViewEvent.OnBackPressed(context)
 
         val handled: Boolean = when (event) {
-            CardPaymentViewEvent.OnBackPressed -> true
+            is CardPaymentViewEvent.OnBackPressed -> true
+            is CardPaymentViewEvent.OnFailure -> false
+            is CardPaymentViewEvent.OnSuccess -> false
+            is CardPaymentViewEvent.OnUserCancelled -> false
         }
 
         assertTrue(handled)
-        assertEquals(CardPaymentViewEvent.OnBackPressed, event)
+        assertEquals(context, (event as CardPaymentViewEvent.OnBackPressed).context)
     }
 }
