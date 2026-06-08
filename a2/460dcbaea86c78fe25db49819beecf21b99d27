@@ -1,15 +1,12 @@
-components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
-  s_22e9b200bbb535::t_ab2d28bf491ebd 41
-components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
-  s_22e9b200bbb535::t_2306db9e7211cf 1-2
-  s_22e9b200bbb535::t_0a26f40d39344f 402,430-454
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
-  s_22e9b200bbb535::t_32973da8d06c43 41
-  s_22e9b200bbb535::t_6424534620e237 37,87
-  s_22e9b200bbb535::t_9ddd40da6e43b3 39-40,42
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
-  s_22e9b200bbb535::t_8be42a21412056 104-106
-  s_22e9b200bbb535::t_1bfa2910cfaa91 167-191
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreenTest.kt
+  s_bca5d4fa7d3376::t_4c705581d5b128 8-9
+  s_bca5d4fa7d3376::t_1961ee946ba6b0 63
+  s_bca5d4fa7d3376::t_21c0ffd69b408a 1-7,10-62,64-113
+checkout/build.gradle.kts
+  s_bca5d4fa7d3376::t_2d3e62df02dcab 81-85
+  s_bca5d4fa7d3376::t_9867295582a637 135-136
+checkout/src/test/AndroidManifest.xml
+  s_bca5d4fa7d3376::t_cdd9290bc26737 1-8
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -17,11 +14,11 @@ checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/install
   "base_commit_sha": "a2460dcbaea86c78fe25db49819beecf21b99d27",
   "prompts": {},
   "sessions": {
-    "s_22e9b200bbb535": {
+    "s_bca5d4fa7d3376": {
       "agent_id": {
         "tool": "claude",
-        "id": "b2cd4804-f84c-4ae6-9505-a59460d20de6",
-        "model": "claude-sonnet-4-6"
+        "id": "b6c3b19e-c51a-4c10-905c-9de3a41b72e8",
+        "model": "claude-opus-4-8"
       },
       "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
     }
