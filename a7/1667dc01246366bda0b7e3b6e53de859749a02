@@ -1,0 +1,19 @@
+core/src/test/java/com/mercadopago/sdk/android/core/di/PublicKeyInterceptorTest.kt
+  s_5dac020d1770bf::t_920a5a7f0d428b 4-7,9-10,15-24,28,30,32-47,49,51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "a71667dc01246366bda0b7e3b6e53de859749a02",
+  "prompts": {},
+  "sessions": {
+    "s_5dac020d1770bf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c977782a-5de2-4026-b87f-bbb13873d5bb",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
