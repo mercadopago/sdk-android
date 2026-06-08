@@ -28,7 +28,7 @@ internal class InstallmentsInitializeAnalyticsTest {
         val metric = metricInstallmentsInitialize(eventData())
 
         assertEquals("/checkout_api_native/checkout/installments/initialize", metric.path)
-        assertEquals(TrackType.EVENT, metric.type)
+        assertEquals(TrackType.VIEW, metric.type)
     }
 
     @Test

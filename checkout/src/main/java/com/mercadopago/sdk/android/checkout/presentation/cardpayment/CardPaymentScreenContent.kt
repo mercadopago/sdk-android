@@ -218,6 +218,7 @@ internal fun CardPaymentScreenContent(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 buttonLabel = viewState.footerState.buttonLabel.orEmpty(),
                 enabled = viewState.footerState.isButtonEnabled,
+                isLoading = viewState.footerState.isButtonLoading,
                 onClick = onFooterButtonClick,
                 onHeightChanged = { overlayButtonHeightPx = it },
             )
@@ -591,6 +592,7 @@ private fun CardPaymentFooter(
             button = MPFixedFooterButtonData(
                 text = footerState.buttonLabel.orEmpty(),
                 enabled = footerState.isButtonEnabled,
+                isLoading = footerState.isButtonLoading,
                 onClick = onFooterButtonClick,
             ),
         )
@@ -601,6 +603,7 @@ private fun CardPaymentFooter(
 private fun CardPaymentFooterButtonOverlay(
     buttonLabel: String,
     enabled: Boolean,
+    isLoading: Boolean,
     onClick: () -> Unit,
     onHeightChanged: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -624,6 +627,7 @@ private fun CardPaymentFooterButtonOverlay(
                 text = buttonLabel,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = enabled,
+                isLoading = isLoading,
                 onClick = onClick,
             )
         }

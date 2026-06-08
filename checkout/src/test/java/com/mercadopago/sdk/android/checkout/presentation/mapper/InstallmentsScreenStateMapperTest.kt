@@ -158,6 +158,21 @@ internal class InstallmentsScreenStateMapperTest {
         assertEquals("", state.footerState.amountDecimalPart)
     }
 
+    @Test
+    fun `secondaryLabel with BRL thousands dot and no decimal keeps full integer part`() {
+        val state = installmentDataWith(
+            currencySymbol = "R$",
+            quotas = listOf(
+                quota(installments = 1, totalAmount = BigDecimal("1000"), secondary = "R$ 1.000"),
+            ),
+            selectedInstallment = 1,
+        ).toInstallmentsScreenState()
+
+        assertEquals("R$", state.footerState.currencySymbol)
+        assertEquals("1.000", state.footerState.amountIntegerPart)
+        assertEquals("", state.footerState.amountDecimalPart)
+    }
+
     private fun quota(
         installments: Int = 1,
         installmentAmount: BigDecimal = BigDecimal("100"),

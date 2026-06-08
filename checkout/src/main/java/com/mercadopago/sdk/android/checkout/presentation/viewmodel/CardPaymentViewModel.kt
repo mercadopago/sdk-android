@@ -434,7 +434,9 @@ internal class CardPaymentViewModel(
         buyerIdentification: BuyerIdentification,
     ) {
         viewModelScope.launch {
-            _viewState.value = _viewState.value.copy(isLoading = true)
+            _viewState.value = _viewState.value.copy(
+                footerState = _viewState.value.footerState.copy(isButtonLoading = true),
+            )
             generateTokenUseCase(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
@@ -477,7 +479,9 @@ internal class CardPaymentViewModel(
                     _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError)
                 },
             ).apply {
-                _viewState.value = _viewState.value.copy(isLoading = false)
+                _viewState.value = _viewState.value.copy(
+                    footerState = _viewState.value.footerState.copy(isButtonLoading = false),
+                )
             }
         }
     }

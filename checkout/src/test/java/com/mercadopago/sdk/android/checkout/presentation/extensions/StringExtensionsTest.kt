@@ -81,4 +81,49 @@ internal class StringExtensionsTest {
         assertEquals("1.000", parts.integerPart)
         assertEquals("00", parts.decimalPart)
     }
+
+    @Test
+    fun `toAmountParts does not treat thousands dot separator as decimal`() {
+        val parts = "R$ 1.000".toAmountParts(currencySymbol = "R$")
+
+        assertEquals("R$", parts.currencySymbol)
+        assertEquals("1.000", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts does not treat thousands dot separator as decimal for larger values`() {
+        val parts = "$ 1.096".toAmountParts(currencySymbol = "$")
+
+        assertEquals("$", parts.currencySymbol)
+        assertEquals("1.096", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts with comma thousands separator and no decimal returns correct parts`() {
+        val parts = "US$ 1,000".toAmountParts(currencySymbol = "US$")
+
+        assertEquals("US$", parts.currencySymbol)
+        assertEquals("1,000", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts with 1-digit suffix treats it as integer part`() {
+        val parts = "R$ 10,5".toAmountParts(currencySymbol = "R$")
+
+        assertEquals("R$", parts.currencySymbol)
+        assertEquals("10,5", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `toAmountParts with 3-digit suffix treats it as integer part`() {
+        val parts = "R$ 1.000,500".toAmountParts(currencySymbol = "R$")
+
+        assertEquals("R$", parts.currencySymbol)
+        assertEquals("1.000,500", parts.integerPart)
+        assertEquals("", parts.decimalPart)
+    }
 }

@@ -101,21 +101,9 @@ private fun InstallmentsScreenContent(
             }
         }
         if (viewState.footerState.isVisible) {
-            val footer = viewState.footerState
-            MPFixedFooter(
-                title = footer.title,
-                amount = MPAmountData(
-                    currencySymbol = footer.currencySymbol,
-                    integerPart = footer.amountIntegerPart,
-                    decimalPart = footer.amountDecimalPart,
-                ),
-                subtitle = footer.subtitle,
-                button = footer.buttonLabel?.let { label ->
-                    MPFixedFooterButtonData(
-                        text = label,
-                        onClick = onPayClick,
-                    )
-                },
+            InstallmentsFooter(
+                footerState = viewState.footerState,
+                onPayClick = onPayClick,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .onGloballyPositioned { footerHeightPx = it.size.height },
@@ -173,6 +161,31 @@ private fun RadioButtonInstallmentItem(
             null
         },
         onClick = { onItemClick(item.number) },
+    )
+}
+
+@Composable
+private fun InstallmentsFooter(
+    footerState: FooterState,
+    onPayClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    MPFixedFooter(
+        title = footerState.title,
+        amount = MPAmountData(
+            currencySymbol = footerState.currencySymbol,
+            integerPart = footerState.amountIntegerPart,
+            decimalPart = footerState.amountDecimalPart,
+        ),
+        subtitle = footerState.subtitle,
+        button = footerState.buttonLabel?.let { label ->
+            MPFixedFooterButtonData(
+                text = label,
+                isLoading = footerState.isButtonLoading,
+                onClick = onPayClick,
+            )
+        },
+        modifier = modifier,
     )
 }
 

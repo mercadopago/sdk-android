@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 internal class InstallmentsViewModel(
@@ -34,14 +34,21 @@ internal class InstallmentsViewModel(
             ?.installments
             ?.takeIf { installmentData.display.displayType == InstallmentsDisplayType.RadioButton }
     private val selectedNumber = MutableStateFlow(initialSelection)
+    private val buttonLoadingFlow = MutableStateFlow(false)
 
-    val viewState: StateFlow<InstallmentsScreenState> = selectedNumber
-        .map { installmentData.copy(selectedInstallment = it).toInstallmentsScreenState() }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = installmentData.copy(selectedInstallment = initialSelection).toInstallmentsScreenState(),
-        )
+    val viewState: StateFlow<InstallmentsScreenState> = combine(
+        selectedNumber,
+        buttonLoadingFlow,
+    ) { selected, loading ->
+        installmentData.copy(selectedInstallment = selected)
+            .toInstallmentsScreenState()
+            .run { copy(footerState = footerState.copy(isButtonLoading = loading)) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = installmentData.copy(selectedInstallment = initialSelection)
+            .toInstallmentsScreenState(),
+    )
 
     private val _viewEvent = MutableStateFlow<InstallmentViewEvent?>(null)
     val viewEvent: StateFlow<InstallmentViewEvent?> = _viewEvent.asStateFlow()
@@ -52,6 +59,7 @@ internal class InstallmentsViewModel(
 
     fun onViewEventConsumed() {
         _viewEvent.value = null
+        buttonLoadingFlow.value = false
     }
 
     fun onInstallmentSelected(
@@ -77,6 +85,7 @@ internal class InstallmentsViewModel(
             .firstOrNull { it.installments == number }
             ?.let { quota ->
                 analyticsTracker.trackSubmit(quota)
+                buttonLoadingFlow.value = true
                 _viewEvent.value = InstallmentViewEvent.OnSuccess(number)
             }
     }

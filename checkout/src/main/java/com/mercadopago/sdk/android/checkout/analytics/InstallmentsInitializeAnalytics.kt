@@ -16,7 +16,7 @@ internal fun metricInstallmentsInitialize(
     data: InstallmentsInitializeEventData,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CHECKOUT_INSTALLMENTS_PATH$INITIALIZE_PATH",
-    type = TrackType.EVENT,
+    type = TrackType.VIEW,
     data = data,
 )
 

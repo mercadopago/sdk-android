@@ -159,4 +159,32 @@ internal class InstallmentsViewModelTest {
 
         verify { tracker.trackUserCanceled(InstallmentsCancelReason.BackPressed) }
     }
+
+    @Test
+    fun `onPayClicked sets isButtonLoading true in viewState`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+
+        viewModel.onPayClicked()
+
+        kotlin.test.assertTrue(viewModel.viewState.value.footerState.isButtonLoading)
+    }
+
+    @Test
+    fun `isButtonLoading is false before onPayClicked`() = runTest {
+        val viewModel = makeViewModel()
+
+        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+    }
+
+    @Test
+    fun `onViewEventConsumed resets isButtonLoading to false`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+        viewModel.onPayClicked()
+
+        viewModel.onViewEventConsumed()
+
+        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+    }
 }
