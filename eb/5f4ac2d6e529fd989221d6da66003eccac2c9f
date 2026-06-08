@@ -1,13 +1,9 @@
-components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
-  s_22e9b200bbb535::t_7c271f2354e2cf 3-8,19-20
-  s_22e9b200bbb535::t_38ca0476b9134e 375,397,400-402,404-412,414-443
 checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
-  s_22e9b200bbb535::t_0b38d0624fc22f 437-439
-  s_22e9b200bbb535::t_afadd4e0b19f0d 482-484
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
-  s_22e9b200bbb535::t_d80809161691fc 595
-  s_22e9b200bbb535::t_a7bf04e95f0078 606,630
-  s_22e9b200bbb535::t_5104715a71d0f4 221
+  s_2168b0c5394d17::t_8ba2a48a9ef145 30
+  s_2168b0c5394d17::t_532d1ac127dce0 57,59
+  s_2168b0c5394d17::t_f69b70e46c4aaa 314,319-322
+  s_2168b0c5394d17::t_0eb1a4a7421604 339
+  s_2168b0c5394d17::t_9f44982eb99cbf 476
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -15,11 +11,11 @@ checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpay
   "base_commit_sha": "eb5f4ac2d6e529fd989221d6da66003eccac2c9f",
   "prompts": {},
   "sessions": {
-    "s_22e9b200bbb535": {
+    "s_2168b0c5394d17": {
       "agent_id": {
         "tool": "claude",
-        "id": "b2cd4804-f84c-4ae6-9505-a59460d20de6",
-        "model": "claude-sonnet-4-6"
+        "id": "84bfdaf8-c1f2-4ac7-aa99-dedd2966dc99",
+        "model": "claude-opus-4-8"
       },
       "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
     }

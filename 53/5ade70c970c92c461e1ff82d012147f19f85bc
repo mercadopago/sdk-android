@@ -1,15 +1,5 @@
 checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
-  s_478af67118676f::t_3fd5c70ce90c9f 179-189
-checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensionsTest.kt
-  s_478af67118676f::t_6e1fd270d706bb 111-128
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
-  s_478af67118676f::t_d15149104fa064 62
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
-  s_478af67118676f::t_bdbde81592fba8 28-29
-components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
-  s_478af67118676f::t_24c637cae861a1 396
-  s_478af67118676f::t_c633a2193e8156 357
-  s_478af67118676f::t_41d38cef66f17d 38-39
+  s_7a4f017825ed94::t_08b03cecdb2d45 1-2,8-9,11-14,16-20,65,69,72-73,75-76,81-83,86,88-90,92-93,95,99-101,104,106,108-110,113,115,117-119,123,125,127-129,136,138,140-142,147,149,161,190
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -17,11 +7,11 @@ components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
   "base_commit_sha": "535ade70c970c92c461e1ff82d012147f19f85bc",
   "prompts": {},
   "sessions": {
-    "s_478af67118676f": {
+    "s_7a4f017825ed94": {
       "agent_id": {
         "tool": "claude",
-        "id": "48cb4a8f-7cba-4a5b-a0cd-dc276a64c90e",
-        "model": "claude-sonnet-4-6"
+        "id": "d959fdea-9640-4bdc-a80b-ea3a2bed7bdd",
+        "model": "claude-opus-4-8"
       },
       "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
     }

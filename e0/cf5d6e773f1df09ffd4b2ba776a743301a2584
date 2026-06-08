@@ -1,29 +1,5 @@
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
-  s_22e9b200bbb535::t_41c1ae9acf5152 116
-components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
-  s_22e9b200bbb535::t_15b3a333d70780 18,28
-  s_22e9b200bbb535::t_612606c3e78ebb 347,359,368-369,387,395-398,400-405,407-428
-checkout/src/test/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsInitializeAnalyticsTest.kt
-  s_22e9b200bbb535::t_5ea7d7abbbe24c 31
-checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
-  s_22e9b200bbb535::t_efa909900251ca 161-175
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
-  s_22e9b200bbb535::t_e04c8b661f93bb 30
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterState.kt
-  s_22e9b200bbb535::t_55591713fd4c13 12
-checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensionsTest.kt
-  s_22e9b200bbb535::t_f35dd640e67fcd 84-110
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsInitializeAnalytics.kt
-  s_22e9b200bbb535::t_0890d2305da352 19
-checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
-  s_22e9b200bbb535::t_f2dba292c9b153 17
-  s_22e9b200bbb535::t_1cdcaddd389b3e 37,39-48
-  s_22e9b200bbb535::t_6bf4e6beb23e38 84
-components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
-  s_22e9b200bbb535::t_025e8826297554 93
-  s_22e9b200bbb535::t_3d5a5362956edb 47
 checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
-  s_22e9b200bbb535::t_8c171e10e8dbdb 162-178
+  s_7a4f017825ed94::t_08b03cecdb2d45 1-2,8-9,11-14,16-20,65,69,72-73,75-76,81-83,86,88-90,92-93,95,99-101,104,106,108-110,113,115,117-119,123,125,127-129,136,138,140-142,147,149,161,179
 ---
 {
   "schema_version": "authorship/3.0.0",
@@ -31,11 +7,11 @@ checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmod
   "base_commit_sha": "e0cf5d6e773f1df09ffd4b2ba776a743301a2584",
   "prompts": {},
   "sessions": {
-    "s_22e9b200bbb535": {
+    "s_7a4f017825ed94": {
       "agent_id": {
         "tool": "claude",
-        "id": "b2cd4804-f84c-4ae6-9505-a59460d20de6",
-        "model": "claude-sonnet-4-6"
+        "id": "d959fdea-9640-4bdc-a80b-ea3a2bed7bdd",
+        "model": "claude-opus-4-8"
       },
       "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
     }
