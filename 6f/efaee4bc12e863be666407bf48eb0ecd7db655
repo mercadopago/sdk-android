@@ -1,0 +1,159 @@
+checkout/build.gradle.kts
+  s_790519c46c1f18::t_bdf74af8f54510 81-85,134-136
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutDestination.kt
+  s_790519c46c1f18::t_bdf74af8f54510 8-9,15-17
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensionsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 84-128
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/paymentbrick/PaymentBrickScreen.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-197
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/IdentificationTypeExtensionsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-61
+.github/workflows/sync-external-prs.yml
+  s_790519c46c1f18::t_bdf74af8f54510 15,24-26,29,49,52,55,59,62,71,76-77
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPPaymentMethodConfigTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-106
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPListSizeType.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-10
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentDataTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-141
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 333-394
+components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-2,5-10,21-22,38-39,357,369,378,396,398,402,404-406,408-411,415,427,433-457
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreenTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-109
+foundation/src/main/java/com/mercadopago/sdk/android/foundation/typography/Typography.kt
+  s_790519c46c1f18::t_bdf74af8f54510 109-112,127-130
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  s_790519c46c1f18::t_bdf74af8f54510 29-44
+.mirrorignore
+  s_790519c46c1f18::t_bdf74af8f54510 6
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutTypeTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-98
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/validation/EmailVerifierTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-40
+components/src/main/java/com/mercadopago/sdk/android/components/extensions/MPSkeletonExtensions.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-37
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_790519c46c1f18::t_bdf74af8f54510 25,82
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_790519c46c1f18::t_bdf74af8f54510 133-139
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_790519c46c1f18::t_bdf74af8f54510 41,48,94
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 321-334
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModel.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-66
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPModelsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-113
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/validation/EmailVerifier.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-25
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModelTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-46
+components/src/main/java/com/mercadopago/sdk/android/components/MPListItem.kt
+  s_790519c46c1f18::t_bdf74af8f54510 32,40,50,79,82,94,101,115,121-125,131-135,141,165-166,168
+.github/workflows/mirror-pr.yml
+  s_790519c46c1f18::t_bdf74af8f54510 17,44,97,123
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPSkeletonType.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-47
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/EmailInitializationOutput.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-11
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 7,166-205
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterStateTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-44
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_790519c46c1f18::t_fb52cfe8aa8051 38
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/EmailViewModelTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-210
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPListItemLeading.kt
+  s_790519c46c1f18::t_bdf74af8f54510 3,15-16,18
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_790519c46c1f18::t_bdf74af8f54510 13,18,20,41,43-55,66,92-96,108-110
+.github/workflows/pr-size-limit.yml
+  s_790519c46c1f18::t_bdf74af8f54510 21
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensionsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-161
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/PaymentBrickScreenState.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-57
+components/src/main/java/com/mercadopago/sdk/android/components/MPSkeleton.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-310
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContext.kt
+  s_790519c46c1f18::t_bdf74af8f54510 11-14
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutDestinationTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-30
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsInitializeAnalyticsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_790519c46c1f18::t_bdf74af8f54510 220,236,238-241,589,600,624
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/InstallmentsScreenStateTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-96
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/PaymentBrickScreenStateTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-114
+checkout/src/test/AndroidManifest.xml
+  s_790519c46c1f18::t_bdf74af8f54510 1-8
+components/src/main/java/com/mercadopago/sdk/android/components/model/MPSkeletonThumbnailType.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-30
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsInitializeAnalytics.kt
+  s_790519c46c1f18::t_bdf74af8f54510 19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutViewEvents.kt
+  s_790519c46c1f18::t_bdf74af8f54510 8-32,34-39,45-49,52-56,58-64
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/extensions/EmailExtensionsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-35
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/mapper/InstallmentsScreenStateMapperTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 161-175
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/email/EmailScreen.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-178
+build.gradle.kts
+  s_790519c46c1f18::t_bdf74af8f54510 26,44,60
+core/src/test/java/com/mercadopago/sdk/android/core/di/PublicKeyInterceptorTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 4-7,9-10,15-24,28,30,32-47,49,51
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/extensions/EmailExtensions.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-5
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/CardFormRepositoryImplTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 3-4,143-159
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentStateTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-308
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/extensions/StringExtensions.kt
+  s_790519c46c1f18::t_bdf74af8f54510 28-29,32
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/EmailScreenState.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-22
+components/src/main/java/com/mercadopago/sdk/android/components/inputs/MPSimpleTextField.kt
+  s_790519c46c1f18::t_bdf74af8f54510 7-8,12,82-155
+CHANGELOG.md
+  s_790519c46c1f18::t_bdf74af8f54510 8-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/installments/InstallmentsScreen.kt
+  s_790519c46c1f18::t_bdf74af8f54510 114-116,188-209
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPCardBrandTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-122
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelFieldEventTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-540
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/FooterState.kt
+  s_790519c46c1f18::t_bdf74af8f54510 12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModel.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-30
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/CardFormRemoteDataSourceImplTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 3-4,26-34,67-114
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/model/MercadoPagoCheckoutErrorTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 1-113
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/extensions/ResultExtensionsTest.kt
+  s_790519c46c1f18::t_bdf74af8f54510 3-4,6-10,115-332
+.gitignore
+  s_790519c46c1f18::t_bdf74af8f54510 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "6fefaee4bc12e863be666407bf48eb0ecd7db655",
+  "prompts": {},
+  "sessions": {
+    "s_790519c46c1f18": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9bf140e1-1e85-465b-97d2-3f6c55414d68",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
