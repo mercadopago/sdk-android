@@ -2,8 +2,6 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
-import com.mercadopago.sdk.android.checkout.domain.model.MPCardFormUserCancelledContext
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.State
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -14,13 +12,6 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCode
 
 internal class CancelledFormContextUseCase {
     operator fun invoke(
-        screenState: CardPaymentScreenState,
-    ): MPUserCancelledContext.CardForm {
-        val fields = buildCancelledFieldStates(screenState)
-        return MPUserCancelledContext.CardForm(MPCardFormUserCancelledContext(fields))
-    }
-
-    private fun buildCancelledFieldStates(
         screenState: CardPaymentScreenState,
     ): List<MPCancelledFieldState> =
         buildList {

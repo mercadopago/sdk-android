@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
@@ -306,9 +307,15 @@ internal class CardPaymentViewModel(
     ) {
         isCancelling = true
         analyticsTracker.trackUserCanceled(reason)
-        val currentState = _viewState.value
-        val context = cancelledFormContextUseCase(currentState)
-        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+        val fields = cancelledFormContextUseCase(_viewState.value)
+        when (checkoutConfiguration?.checkoutType) {
+            is MPCheckoutType.CardSave -> CheckoutCallbackHolder.notify(
+                MercadoPagoCheckoutResult.UserCancelled(MPUserCancelledContext.CardSave(fields)),
+            )
+            is MPCheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
+                MercadoPagoCheckoutResult.UserCancelled(MPUserCancelledContext.CardTransaction(fields)),
+            )
+        }
     }
 
     fun initialization() {

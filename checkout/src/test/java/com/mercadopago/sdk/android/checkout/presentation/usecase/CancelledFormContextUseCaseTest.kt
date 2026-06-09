@@ -4,7 +4,6 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.State
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
@@ -37,11 +36,7 @@ internal class CancelledFormContextUseCaseTest {
 
     private fun invoke(
         state: CardPaymentScreenState,
-    ): List<MPCancelledFieldState> {
-        val result = useCase(state)
-        assertIs<MPUserCancelledContext.CardForm>(result)
-        return result.context.fields
-    }
+    ): List<MPCancelledFieldState> = useCase(state)
 
     @Test
     fun `given card number is empty then cardNumber state is Empty`() {
@@ -319,10 +314,8 @@ internal class CancelledFormContextUseCaseTest {
 
     @Test
     fun `given default state then result contains cardNumber and expirationDate fields`() {
-        val result = useCase(makeState())
+        val fields = useCase(makeState())
 
-        assertIs<MPUserCancelledContext.CardForm>(result)
-        val fields = result.context.fields
         assertEquals(true, fields.any { it.field == Field.CARD_NUMBER })
         assertEquals(true, fields.any { it.field == Field.EXPIRATION_DATE })
     }
