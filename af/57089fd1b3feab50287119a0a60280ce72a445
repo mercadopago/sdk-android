@@ -1,0 +1,43 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfiguration.kt
+  s_cf310151e345ce::t_43b0aeeb005b43 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  s_cf310151e345ce::t_9ab444c18c8a88 5,9,12-13,15,19,22,27,33
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolder.kt
+  s_cf310151e345ce::t_aa8eb2ad73e31b 4,7,10-11,14,24
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckout.kt
+  s_cf310151e345ce::t_755e6c7749d0b6 15,25-27,30,38-39,42,60-61,64,66,85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_cf310151e345ce::t_4f368a64b4ba0e 310-318
+  s_cf310151e345ce::t_b8eeb2bc4d826a 17
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_cf310151e345ce::t_a1ec97d49cc7b4 119-122
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_cf310151e345ce::t_2d0a55b960ac7e 317
+  s_cf310151e345ce::t_800555e14a3c38 39
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContext.kt
+  s_cf310151e345ce::t_fbcf37b627b7b4 4,6,12,17,19-23,26-27,29
+  s_cf310151e345ce::t_b3acc55cc34591 7-8,14-15,18,24-25,28
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/MercadoPagoCheckoutResult.kt
+  s_cf310151e345ce::t_6182441deeee33 10-13,20,25,28,35,40-42,44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "af57089fd1b3feab50287119a0a60280ce72a445",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_cf310151e345ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c1c06ad6-f9e9-4545-80c7-bda10e65ca15",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
