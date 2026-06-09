@@ -294,6 +294,7 @@ internal fun CardPaymentScreenContent(
                         subtitle = viewState.fixedFooterState.subtitle,
                         button = MPFixedFooterButtonData(
                             text = viewState.fixedFooterState.buttonText,
+                            isLoading = viewState.fixedFooterState.isButtonLoading,
                             onClick = onFooterButtonClick,
                         ),
                     )

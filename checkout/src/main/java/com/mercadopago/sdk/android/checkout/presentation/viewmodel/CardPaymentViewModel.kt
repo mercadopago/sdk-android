@@ -416,7 +416,9 @@ internal class CardPaymentViewModel(
         buyerIdentification: BuyerIdentification,
     ) {
         viewModelScope.launch {
-            _viewState.value = _viewState.value.copy(isLoading = true)
+            _viewState.value = _viewState.value.copy(
+                fixedFooterState = _viewState.value.fixedFooterState.copy(isButtonLoading = true),
+            )
             generateTokenUseCase(
                 cardNumberState = cardNumberState,
                 expirationDateState = expirationDateState,
@@ -465,7 +467,9 @@ internal class CardPaymentViewModel(
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
                 },
             ).apply {
-                _viewState.value = _viewState.value.copy(isLoading = false)
+                _viewState.value = _viewState.value.copy(
+                    fixedFooterState = _viewState.value.fixedFooterState.copy(isButtonLoading = false),
+                )
             }
         }
     }

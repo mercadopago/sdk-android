@@ -682,7 +682,7 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit is called then isLoading is false after completion`() = runTest {
+    fun `when onSubmit is called then isButtonLoading is false after completion`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
@@ -694,6 +694,6 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        assertFalse(viewModel.viewState.value.isLoading)
+        assertFalse(viewModel.viewState.value.fixedFooterState.isButtonLoading)
     }
 }

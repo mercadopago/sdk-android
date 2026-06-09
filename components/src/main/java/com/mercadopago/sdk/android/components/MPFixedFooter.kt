@@ -38,12 +38,14 @@ data class MPAmountData(
  * @property text The button label text
  * @property style The button style (default: Loud)
  * @property enabled Whether the button is enabled
+ * @property isLoading When true, shows a loading animation inside the button and disables interaction
  * @property onClick Callback executed when button is clicked
  */
 data class MPFixedFooterButtonData(
     val text: String,
     val style: MPButtonStyle = MPButtonStyle.Loud,
     val enabled: Boolean = true,
+    val isLoading: Boolean = false,
     val onClick: () -> Unit,
 )
 
@@ -89,6 +91,7 @@ fun MPFixedFooter(
                 modifier = Modifier.fillMaxWidth(),
                 style = it.style,
                 enabled = it.enabled,
+                isLoading = it.isLoading,
                 onClick = it.onClick,
             )
         }
