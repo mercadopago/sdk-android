@@ -130,6 +130,13 @@ internal fun CheckoutExampleScreen(
                                                 Toast.LENGTH_LONG,
                                             ).show()
                                         }
+
+                                        is MPUserCancelledContext.PaymentBrick ->
+                                            Toast.makeText(
+                                                context,
+                                                "Cancelado pelo usuário\nPayment brick",
+                                                Toast.LENGTH_LONG,
+                                            ).show()
                                     }
                                 }
                             }

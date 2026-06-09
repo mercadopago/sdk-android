@@ -4,6 +4,7 @@ import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import io.mockk.mockk
@@ -161,13 +162,25 @@ internal class InstallmentsViewModelTest {
     }
 
     @Test
-    fun `onPayClicked sets isButtonLoading true in viewState`() = runTest {
+    fun `onPayClicked sets isButtonLoading true before delay`() = runTest {
         val viewModel = makeViewModel()
         viewModel.onInstallmentSelected(installment = 1)
 
         viewModel.onPayClicked()
 
         kotlin.test.assertTrue(viewModel.viewState.value.footerState.isButtonLoading)
+    }
+
+    @Test
+    fun `onPayClicked emits OnSuccess only after delay`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+
+        viewModel.onPayClicked()
+
+        kotlin.test.assertNull(viewModel.viewEvent.value)
+        testScheduler.advanceTimeBy(400)
+        kotlin.test.assertTrue(viewModel.viewEvent.value is InstallmentViewEvent.OnSuccess)
     }
 
     @Test
@@ -182,6 +195,7 @@ internal class InstallmentsViewModelTest {
         val viewModel = makeViewModel()
         viewModel.onInstallmentSelected(installment = 1)
         viewModel.onPayClicked()
+        testScheduler.advanceTimeBy(400)
 
         viewModel.onViewEventConsumed()
 

@@ -330,4 +330,66 @@ internal class CardFormFieldErrorHandlerTest {
 
         assertFalse(result.footerState.isButtonEnabled)
     }
+
+    @Test
+    fun `given clearCardNumberErrors then errorTypes are emptied and isValid is false`() {
+        val stateWithErrors = baseState.copy(
+            cardNumberState = baseState.cardNumberState.copy(
+                errorTypes = listOf(CardNumberErrorType.LuhnValidation),
+                error = "Número inválido",
+            ),
+        )
+
+        val result = handler.clearCardNumberErrors(stateWithErrors)
+
+        assertTrue(result.cardNumberState.errorTypes.isEmpty())
+        assertEquals("", result.cardNumberState.error)
+        assertFalse(result.cardNumberState.isValid)
+    }
+
+    @Test
+    fun `given applyPaymentMethodNotFoundError then PaymentMethodNotFound is added with message`() {
+        val result = handler.applyPaymentMethodNotFoundError(baseState, message = "Método não suportado")
+
+        val error = result.cardNumberState.errorTypes
+            .filterIsInstance<CardNumberErrorType.PaymentMethodNotFound>()
+            .first()
+        assertEquals("Método não suportado", error.message)
+        assertEquals("Método não suportado", result.cardNumberState.error)
+    }
+
+    @Test
+    fun `given PaymentMethodNotFound with empty message then error falls back to errorInvalid`() {
+        val result = handler.applyCardNumberErrorState(
+            state = baseState,
+            errors = listOf(CardNumberErrorType.PaymentMethodNotFound(message = "")),
+            isValid = true,
+        )
+
+        assertEquals("Número inválido", result.cardNumberState.error)
+    }
+
+    @Test
+    fun `given handleResultError with unfocused card then message is shown`() {
+        val state = baseState.copy(
+            cardNumberState = baseState.cardNumberState.copy(isFocused = false),
+        )
+
+        val result = handler.handleResultError(state, message = "Erro", genericErrorMessage = "Tente novamente")
+
+        assertEquals("Erro", result.messageError.title)
+        assertEquals("Tente novamente", result.messageError.description)
+        assertTrue(result.showMessage)
+    }
+
+    @Test
+    fun `given handleResultError with focused card then message is hidden`() {
+        val state = baseState.copy(
+            cardNumberState = baseState.cardNumberState.copy(isFocused = true),
+        )
+
+        val result = handler.handleResultError(state, message = "Erro", genericErrorMessage = "Tente novamente")
+
+        assertFalse(result.showMessage)
+    }
 }

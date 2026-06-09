@@ -1,7 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.cardpayment
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -29,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -52,7 +50,6 @@ import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPMessage
 import com.mercadopago.sdk.android.components.MPMessageType
-import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.MPTooltip
 import com.mercadopago.sdk.android.components.bottomsheet.MPListBottomSheet
 import com.mercadopago.sdk.android.components.inputs.MPCardNumberTextField
@@ -234,17 +231,12 @@ internal fun CardPaymentScreenContent(
                     ) { onTooltipClick() },
             )
         }
+    }
 
-        if (viewState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                contentAlignment = Alignment.Center,
-            ) {
-                MPProgressIndicator()
-            }
-        }
+    if (viewState.isLoading) {
+        com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen(
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 
     if (showIdentificationBottomSheet) {

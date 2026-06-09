@@ -23,6 +23,7 @@ tasks.withType<Detekt>().configureEach {
     exclude("resources/")
     exclude("**/build/**")
     exclude("**/example/**")
+    exclude("**/.claude/**")
     reports {
         xml.required.set(true)
         html.required.set(true)
@@ -40,6 +41,7 @@ allprojects {
                     // exclusions for all report variants
                     annotatedBy(
                         "androidx.compose.ui.tooling.preview.Preview",
+                        "androidx.compose.runtime.Composable",
                         "*Generated",
                         "*Sampled",
                         "*KoverIgnore"
@@ -55,7 +57,7 @@ allprojects {
                         "*.*\$*Sample\$*",
                         "*.*\$*KoverIgnore\$*",
                         "*Exception*",
-                        "*Activity",
+                        "*Activity*",
                     )
                     packages(
                         "com.airbnb.android.showkase*",

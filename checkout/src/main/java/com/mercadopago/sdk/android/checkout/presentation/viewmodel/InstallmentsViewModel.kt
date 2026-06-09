@@ -10,12 +10,14 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsSc
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
@@ -85,8 +87,11 @@ internal class InstallmentsViewModel(
             .firstOrNull { it.installments == number }
             ?.let { quota ->
                 analyticsTracker.trackSubmit(quota)
-                buttonLoadingFlow.value = true
-                _viewEvent.value = InstallmentViewEvent.OnSuccess(number)
+                viewModelScope.launch {
+                    buttonLoadingFlow.value = true
+                    delay(SUBMIT_LOADING_DELAY_MS)
+                    _viewEvent.value = InstallmentViewEvent.OnSuccess(number)
+                }
             }
     }
 
@@ -97,5 +102,9 @@ internal class InstallmentsViewModel(
     override fun onCleared() {
         analyticsTracker.trackUserCanceled(InstallmentsCancelReason.UserDismissed)
         super.onCleared()
+    }
+
+    private companion object {
+        const val SUBMIT_LOADING_DELAY_MS = 300L
     }
 }
