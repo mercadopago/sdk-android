@@ -26,4 +26,20 @@ sealed class MPCheckoutType<out T : MPPaymentData> : Parcelable {
     data class CardTransaction(
         val order: MPOrder,
     ) : MPCheckoutType<MPPaymentData.CardTransaction>()
+
+    /**
+     * PaymentSelection class, used to configure the payment-method selection flow.
+     * On success, delivers [MPPaymentData.CardTransaction].
+     * @param order MPOrder
+     * @param cardIds Optional saved-card ids used by the BFF to fetch and display the buyer's cards.
+     * @param showReviewConfirm Whether to show the review & confirm screen before finishing. Default true.
+     * @param showStatusScreen Whether to show the status screen at the end of the flow. Default true.
+     */
+    @Parcelize
+    data class PaymentSelection(
+        val order: MPOrder,
+        val cardIds: List<String>?,
+        val showReviewConfirm: Boolean = true,
+        val showStatusScreen: Boolean = true,
+    ) : MPCheckoutType<MPPaymentData.CardTransaction>()
 }

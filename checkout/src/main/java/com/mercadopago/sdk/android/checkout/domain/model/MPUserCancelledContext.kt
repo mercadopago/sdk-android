@@ -8,6 +8,11 @@ package com.mercadopago.sdk.android.checkout.domain.model
  */
 sealed class MPUserCancelledContext {
     /**
+     * User left on the brick's initial screen, before selecting any payment method.
+     */
+    object PaymentBrick : MPUserCancelledContext()
+
+    /**
      * Represents the cancelled state of a card payment form.
      *
      * @property context Context containing the state of all card form fields when cancelled

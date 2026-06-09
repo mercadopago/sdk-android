@@ -15,6 +15,7 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -51,6 +52,7 @@ internal fun provideDataModule() =
                 cardPaymentScreenStateFactory = get(),
             )
         }
+        viewModel { PaymentBrickViewModel() }
     }
 
 internal fun provideInstallmentsModule() =
