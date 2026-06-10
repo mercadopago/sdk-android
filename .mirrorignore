@@ -2,4 +2,5 @@
 # Caminhos listados aqui são removidos de todos os pushes para o repo público.
 # O workflow lê este arquivo — nenhuma alteração no workflow é necessária para novas exclusões.
 ux-reference/
+Flowbook/
 .github/
