@@ -7,16 +7,20 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
-import com.mercadopago.sdk.android.checkout.data.remote.response.CardNumberConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.LengthConfig
-import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
+import com.mercadopago.sdk.android.checkout.domain.model.CardFieldConfig
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
+import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
+import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
@@ -208,19 +212,30 @@ internal class CardPaymentViewModelTest {
         val data = CardBinData(
             id = "visa",
             paymentTypeId = "credit_card",
-            cardNumber = CardNumberConfig(type = "standard", length = LengthConfig(min = 16, max = 16), mask = ""),
-            securityCode = SecurityCodeConfig(type = "text", length = 3, mode = "mandatory", cardLocation = "back"),
-            issuers = listOf(BinIssuer(id = 1L, name = "Banco", secureThumbnail = null)),
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100",
-                    totalAmount = "100",
-                    label = "1x",
-                    discountRate = 0.0,
+            cardNumber = CardNumberField(
+                label = "",
+                placeholder = "",
+                validation = CardNumberValidation(
+                    errorEmpty = "",
+                    errorIncomplete = "",
+                    errorInvalid = "",
+                    errorMethodNotAllowed = "",
+                    errorTypeNotAllowed = "",
                 ),
+                config = CardFieldConfig(type = "standard", length = LengthRange(min = 16, max = 16)),
             ),
-            translations = null,
+            securityCode = SecurityCodeField(
+                label = "",
+                placeholder = "",
+                helper = "",
+                tooltip = "",
+                validation = Validation(errorEmpty = "", errorIncomplete = "", errorInvalid = ""),
+                config = CardFieldConfig(type = "text", length = LengthRange(min = 3, max = 3)),
+            ),
+            holderName = null,
+            expirationDate = null,
+            issuers = listOf(BinIssuer(id = "1", name = "Banco")),
+            installmentData = MPInstallmentData(),
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
@@ -237,24 +252,23 @@ internal class CardPaymentViewModelTest {
             paymentTypeId = "credit_card",
             cardNumber = null,
             securityCode = null,
+            holderName = null,
+            expirationDate = null,
             issuers = emptyList(),
-            quotas = listOf(
-                Quota(
-                    quantity = 1,
-                    installmentAmount = "100.00",
-                    totalAmount = "100.00",
-                    label = "1x sem juros",
-                    discountRate = 0.0,
-                ),
-                Quota(
-                    quantity = 3,
-                    installmentAmount = "34.00",
-                    totalAmount = "102.00",
-                    label = "3x",
-                    discountRate = 0.0,
+            installmentData = MPInstallmentData(
+                quotas = listOf(
+                    Quota(
+                        installments = 1,
+                        installmentAmount = java.math.BigDecimal("100.00"),
+                        totalAmount = java.math.BigDecimal("100.00"),
+                    ),
+                    Quota(
+                        installments = 3,
+                        installmentAmount = java.math.BigDecimal("34.00"),
+                        totalAmount = java.math.BigDecimal("102.00"),
+                    ),
                 ),
             ),
-            translations = null,
         )
         coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
@@ -264,7 +278,7 @@ internal class CardPaymentViewModelTest {
         val installmentsState = viewModel.viewState.value.installmentsState
         assertTrue(installmentsState.showList)
         assertEquals(2, installmentsState.installments.size)
-        assertEquals(1, installmentsState.installments.first().instalments)
+        assertEquals(1, installmentsState.installments.first().installments)
     }
 
     @Test

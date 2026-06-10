@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -31,11 +32,15 @@ internal sealed interface PaymentBrickViewEvent {
  */
 internal sealed interface CardPaymentViewEvent {
     /**
-     * Card tokenization succeeded.
+     * Card tokenization succeeded and installments data is available.
      *
      * @property payment The payment data resulting from the successful tokenization.
+     * @property installment The installment data returned by the BFF.
      */
-    data class OnSuccess(val payment: MPPaymentData) : CardPaymentViewEvent
+    data class OnSuccess(
+        val payment: MPPaymentData,
+        val installment: MPInstallmentData,
+    ) : CardPaymentViewEvent
 
     /**
      * Card form initialization or tokenization failed.
@@ -57,4 +62,12 @@ internal sealed interface CardPaymentViewEvent {
      * @property context Information about the form state when the user navigated back.
      */
     data class OnBackPressed(val context: MPUserCancelledContext) : CardPaymentViewEvent
+}
+
+internal sealed interface InstallmentViewEvent {
+    data class OnSuccess(val installment: Int) : InstallmentViewEvent
+
+    data class OnFailure(val error: MercadoPagoCheckoutError) : InstallmentViewEvent
+
+    data class OnUserCancelled(val context: MPUserCancelledContext) : InstallmentViewEvent
 }
