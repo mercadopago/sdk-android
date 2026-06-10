@@ -1,0 +1,50 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutDestination.kt
+  h_6960b1a5f865cc 11
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  s_465634e9fa65f7::t_9dee8fe068c044 4,6
+  s_465634e9fa65f7::t_948ce15e3c8995 36,39-41,44
+  h_6960b1a5f865cc 5,10,12,27,33-34,38,42-43
+  s_465634e9fa65f7::t_bff48df706c4fa 37
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContext.kt
+  s_465634e9fa65f7::t_29667be0a66008 36-40
+  h_6960b1a5f865cc 35,41
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  h_6960b1a5f865cc 12,450-451,455,474-475,478-480,488,499,502
+  s_465634e9fa65f7::t_3da3e0ef3d9470 471-473,481-487,489-490,492-498,500-501
+  s_465634e9fa65f7::t_b9fb2b4097931b 314-319
+  s_465634e9fa65f7::t_8d4faa2e8efec2 452-453,456
+  s_465634e9fa65f7::t_26c18518117f52 454
+  s_465634e9fa65f7::t_5b1a397946ff79 448-449
+  s_465634e9fa65f7::t_3a9d19a73bb858 491
+  s_465634e9fa65f7::t_cd7dfc0ba2f06e 17
+  s_465634e9fa65f7::t_aee5919ec54e31 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  h_6960b1a5f865cc 16,69
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  h_6960b1a5f865cc 37,42,45
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  h_6960b1a5f865cc 18,43-44,65
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentData.kt
+  h_6960b1a5f865cc 46-64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "c2c6fb3de22cf4d52d895f13675779bd1a02a84d",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_465634e9fa65f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e854248-9653-426b-addb-93ef07cd5244",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
