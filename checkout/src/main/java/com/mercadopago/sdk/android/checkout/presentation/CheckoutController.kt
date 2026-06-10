@@ -21,6 +21,7 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
@@ -131,6 +132,7 @@ private fun CardFormScreenDestination(
         when (val event = viewEvent) {
             is CardPaymentViewEvent.OnSuccess -> {
                 if (checkoutConfiguration.showsInstallments()) {
+                    cardPaymentViewModel.markScreenPresented(Screen.INSTALLMENTS)
                     onNavigateToInstallments(event.installment, event.payment)
                 } else {
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(event.payment))

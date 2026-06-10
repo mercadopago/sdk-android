@@ -36,6 +36,8 @@ internal class CancelledFormContextUseCase {
                 add(buildDocumentFieldState(screenState))
             }
         }
+        return CancelledFormContext(fields = fields, screens = presentedScreens.toList())
+    }
 
     private fun buildCardNumberFieldState(
         screenState: CardPaymentScreenState,
