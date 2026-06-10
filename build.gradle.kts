@@ -62,6 +62,11 @@ allprojects {
                     packages(
                         "com.airbnb.android.showkase*",
                         "com.mercadopago.sdk.android.coremethods.ui.components.samples*",
+                        "com.mercadopago.sdk.android.checkout.presentation.cardpayment*",
+                        "com.mercadopago.sdk.android.checkout.presentation.installments*",
+                        "com.mercadopago.sdk.android.checkout.presentation.controller*",
+                        "com.mercadopago.sdk.android.components*",
+                        "com.mercadopago.sdk.android.foundation*",
                     )
                 }
             }

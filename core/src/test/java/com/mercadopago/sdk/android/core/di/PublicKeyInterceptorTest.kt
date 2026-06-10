@@ -1,29 +1,53 @@
 package com.mercadopago.sdk.android.core.di
 
 import com.mercadopago.sdk.android.core.utils.interceptor.PublicKeyInterceptor
-import okhttp3.OkHttpClient
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import okhttp3.Interceptor
 import okhttp3.Request
-import org.junit.Assert.assertEquals
+import okhttp3.Response
+import org.junit.Before
 import org.junit.Test
 
 class PublicKeyInterceptorTest {
 
+    private val chain = mockk<Interceptor.Chain>()
+    private val mockResponse = mockk<Response>(relaxed = true)
+    private val request = Request.Builder().url("http://myurl.com/teste").build()
+
+    @Before
+    fun setUp() {
+        every { chain.request() } returns request
+        every { chain.proceed(any()) } returns mockResponse
+    }
+
     @Test
     fun `should add public key to request URL`() {
-        val url = "http://myurl.com/teste"
         val publicKey = "teste_public_key"
+        val interceptor = PublicKeyInterceptor { publicKey }
 
-        val originalRequest = Request.Builder()
-            .url(url)
-            .build()
+        interceptor.intercept(chain)
 
-        val client = OkHttpClient.Builder()
-            .addInterceptor(PublicKeyInterceptor { publicKey })
-            .build()
+        val expectedUrl = "http://myurl.com/teste?public_key=$publicKey"
+        verify { chain.proceed(match { it.url.toString() == expectedUrl }) }
+    }
 
-        val newResponse = client.newCall(originalRequest).execute()
+    @Test
+    fun `given publicKey is null then proceeds without adding query param`() {
+        val interceptor = PublicKeyInterceptor { null }
 
-        val expectedUrl = "$url?public_key=$publicKey"
-        assertEquals(expectedUrl, newResponse.request.url.toString())
+        interceptor.intercept(chain)
+
+        verify { chain.proceed(match { it.url.queryParameter("public_key") == null }) }
+    }
+
+    @Test
+    fun `given publicKey is empty then proceeds without adding query param`() {
+        val interceptor = PublicKeyInterceptor { "" }
+
+        interceptor.intercept(chain)
+
+        verify { chain.proceed(match { it.url.queryParameter("public_key") == null }) }
     }
 }

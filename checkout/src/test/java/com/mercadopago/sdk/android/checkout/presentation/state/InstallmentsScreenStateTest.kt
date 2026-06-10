@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class InstallmentsScreenStateTest {
@@ -12,9 +11,9 @@ internal class InstallmentsScreenStateTest {
     fun `given defaults then InstallmentsScreenState has empty values`() {
         val state = InstallmentsScreenState()
 
-        assertNull(state.title)
-        assertEquals(emptyList(), state.installmentsState)
-        assertNull(state.footerState)
+        assertEquals("", state.title)
+        assertEquals(emptyList(), state.items)
+        assertEquals(FooterState(), state.footerState)
     }
 
     @Test
@@ -23,9 +22,9 @@ internal class InstallmentsScreenStateTest {
             text = "3x",
             description = "of R$ 33,33",
             trailing = "R$ 100,00",
-            interestFree = true,
             isSelected = true,
             number = 3,
+            accessibilityLabel = "3x of R$ 33,33",
         )
         val footer = FooterState(
             title = "Total",
@@ -37,12 +36,12 @@ internal class InstallmentsScreenStateTest {
 
         val state = InstallmentsScreenState(
             title = "Installments",
-            installmentsState = listOf(installment),
+            items = listOf(installment),
             footerState = footer,
         )
 
         assertEquals("Installments", state.title)
-        assertEquals(listOf(installment), state.installmentsState)
+        assertEquals(listOf(installment), state.items)
         assertEquals(footer, state.footerState)
     }
 
@@ -53,7 +52,7 @@ internal class InstallmentsScreenStateTest {
         val copy = state.copy(title = "Choose installments")
 
         assertEquals("Choose installments", copy.title)
-        assertEquals(state.installmentsState, copy.installmentsState)
+        assertEquals(state.items, copy.items)
         assertEquals(state.footerState, copy.footerState)
         assertNotEquals(state, copy)
     }
@@ -64,15 +63,14 @@ internal class InstallmentsScreenStateTest {
             text = "6x",
             description = "of R$ 20,00",
             trailing = "R$ 120,00",
-            interestFree = false,
             isSelected = false,
             number = 6,
+            accessibilityLabel = "6x of R$ 20,00",
         )
 
         assertEquals("6x", installment.text)
         assertEquals("of R$ 20,00", installment.description)
         assertEquals("R$ 120,00", installment.trailing)
-        assertFalse(installment.interestFree)
         assertFalse(installment.isSelected)
         assertEquals(6, installment.number)
     }
@@ -83,9 +81,9 @@ internal class InstallmentsScreenStateTest {
             text = "1x",
             description = "no interest",
             trailing = "R$ 100,00",
-            interestFree = true,
             isSelected = false,
             number = 1,
+            accessibilityLabel = "1x no interest",
         )
 
         val copy = installment.copy(isSelected = true)
