@@ -1,0 +1,21 @@
+.mirrorignore
+  s_6cfea7d6954f35::t_a824ad70a55e86 5
+.pre-commit-config.yaml
+  s_6cfea7d6954f35::t_af7fccbf8d311f 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "772d6a6313097cad6972023adf955c0eae229c62",
+  "prompts": {},
+  "sessions": {
+    "s_6cfea7d6954f35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6bdb1e03-3b54-4cdf-83d9-82e0c5b9ec99",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    }
+  }
+}
