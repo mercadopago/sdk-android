@@ -5,7 +5,6 @@ import com.mercadopago.sdk.android.checkout.core.model.MPInstallment
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPayer
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,7 +13,11 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CheckoutConfigurationExtensionsTest {
-    private val order = MPOrder(amount = BigDecimal("188000.00"), payer = MPPayer(email = "buyer@mp.com"))
+    private val order = MPOrder(
+        orderId = "ORD_TEST",
+        amount = BigDecimal("188000.00"),
+        payer = MPPayer(email = "buyer@mp.com"),
+    )
 
     private fun configWith(
         checkoutType: MPCheckoutType<*, *>?,
@@ -82,11 +85,6 @@ internal class CheckoutConfigurationExtensionsTest {
     }
 
     @Test
-    fun `given payment cancelled context then it is a user cancelled context`() {
-        assertTrue(MPUserCancelledContext.Payment is MPUserCancelledContext)
-    }
-
-    @Test
     fun `given payment then toString and hashCode reflect its content`() {
         val checkoutType = MPCheckoutType.Payment(order = order, cardIds = listOf("1"))
         val same = MPCheckoutType.Payment(order = order, cardIds = listOf("1"))
@@ -107,22 +105,22 @@ internal class CheckoutConfigurationExtensionsTest {
 
     @Test
     fun `given card transaction when showsInstallments then returns true`() {
-        assertTrue(configWith(MPCheckoutType.CardTransaction(order)).showsInstallments())
+        assertTrue(configWith(MPCheckoutType.CardTransaction(order)).isCardTransaction())
     }
 
     @Test
     fun `given card save when showsInstallments then returns false`() {
-        assertFalse(configWith(MPCheckoutType.CardSave).showsInstallments())
+        assertFalse(configWith(MPCheckoutType.CardSave).isCardTransaction())
     }
 
     @Test
     fun `given payment when showsInstallments then returns false`() {
-        assertFalse(configWith(MPCheckoutType.Payment(order = order, cardIds = null)).showsInstallments())
+        assertFalse(configWith(MPCheckoutType.Payment(order = order, cardIds = null)).isCardTransaction())
     }
 
     @Test
     fun `given null configuration when showsInstallments then returns false`() {
-        assertFalse(configWith(null).showsInstallments())
+        assertFalse(configWith(null).isCardTransaction())
     }
 
     @Test

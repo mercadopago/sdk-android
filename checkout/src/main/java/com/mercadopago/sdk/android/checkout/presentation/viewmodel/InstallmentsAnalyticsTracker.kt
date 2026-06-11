@@ -16,6 +16,7 @@ internal class InstallmentsAnalyticsTracker(
     private val checkoutType: String,
     private val paymentData: MPPaymentData,
     private val installmentData: MPInstallmentData,
+    private val orderId: String,
 ) {
     private var terminated = false
 
@@ -30,6 +31,7 @@ internal class InstallmentsAnalyticsTracker(
                     selectionType = installmentData.display.displayType.toAnalyticsString(),
                     quotasCount = installmentData.quotas.size,
                     transactionAmount = transaction?.transactionAmount?.toDouble() ?: 0.0,
+                    orderId = orderId,
                 ),
             ),
         )

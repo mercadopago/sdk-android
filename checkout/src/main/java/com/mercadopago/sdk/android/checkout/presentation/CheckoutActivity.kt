@@ -14,6 +14,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_SAVE
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_TRANSACTION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.PAYMENT
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
@@ -76,6 +77,7 @@ internal class CheckoutActivity : ComponentActivity() {
                 sellerCustomization = checkoutThemePreferences.getCurrentThemeScheme().sellerCustomization,
                 excludedPaymentTypes = excludedTypes.map { it.toAnalyticsString() },
                 excludedPaymentMethods = excludedMethods.map { it.name },
+                orderId = checkoutConfiguration?.getOrderId().orEmpty(),
             ),
         )
     }

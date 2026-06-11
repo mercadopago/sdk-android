@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 internal class CancelledFormContextUseCaseTest {
     private val useCase = CancelledFormContextUseCase()

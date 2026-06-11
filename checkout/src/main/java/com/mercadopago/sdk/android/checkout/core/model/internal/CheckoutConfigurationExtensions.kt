@@ -28,7 +28,12 @@ internal fun CheckoutConfiguration?.toCheckoutType(): String =
         null -> ""
     }
 
-internal fun CheckoutConfiguration?.showsInstallments(): Boolean = this?.checkoutType is MPCheckoutType.CardTransaction
+internal fun CheckoutConfiguration?.getOrderId(): String = this.asCardTransaction()?.order?.orderId.orEmpty()
+
+internal fun CheckoutConfiguration?.asCardTransaction(): MPCheckoutType.CardTransaction? =
+    this?.checkoutType as? MPCheckoutType.CardTransaction
+
+internal fun CheckoutConfiguration?.isCardTransaction(): Boolean = this?.checkoutType is MPCheckoutType.CardTransaction
 
 internal fun CheckoutConfiguration?.startsWithPayment(): Boolean {
     return this?.checkoutType is MPCheckoutType.Payment

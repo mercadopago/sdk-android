@@ -23,10 +23,12 @@ internal class InstallmentsViewModel(
     private val installmentData: MPInstallmentData,
     private val paymentData: MPPaymentData,
     checkoutType: String,
+    orderId: String,
     private val analyticsTracker: InstallmentsAnalyticsTracker = InstallmentsAnalyticsTracker(
         checkoutType = checkoutType,
         paymentData = paymentData,
         installmentData = installmentData,
+        orderId = orderId,
     ),
 ) : ViewModel() {
     private val initialSelection = installmentData.selectedInstallment
