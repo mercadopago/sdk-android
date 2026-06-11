@@ -49,6 +49,8 @@ internal class MPPaymentDataTest {
     @Test
     fun `given card transaction data then exposes all fields`() {
         val data = MPPaymentData.CardTransaction(
+            orderId = "ORD_123",
+            orderStatus = "opened",
             transactionAmount = BigDecimal("188000.00"),
             paymentMethodId = "master",
             paymentTypeId = "credit_card",
@@ -57,6 +59,8 @@ internal class MPPaymentDataTest {
             issuerId = "310",
         )
 
+        assertEquals("ORD_123", data.orderId)
+        assertEquals("opened", data.orderStatus)
         assertEquals(BigDecimal("188000.00"), data.transactionAmount)
         assertEquals("master", data.paymentMethodId)
         assertEquals("credit_card", data.paymentTypeId)
@@ -68,6 +72,8 @@ internal class MPPaymentDataTest {
     @Test
     fun `given card transaction data when copy with new installment then equality changes`() {
         val data = MPPaymentData.CardTransaction(
+            orderId = "ORD_123",
+            orderStatus = "opened",
             transactionAmount = BigDecimal("100.00"),
             paymentMethodId = "master",
             paymentTypeId = "credit_card",
@@ -125,6 +131,8 @@ internal class MPPaymentDataTest {
     @Test
     fun `given card transaction with null optionals then exposes nulls`() {
         val data = MPPaymentData.CardTransaction(
+            orderId = "",
+            orderStatus = "",
             transactionAmount = null,
             paymentMethodId = "master",
             paymentTypeId = "credit_card",

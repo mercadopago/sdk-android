@@ -86,7 +86,9 @@ internal fun CardPaymentScreen(
     }
 
     BackHandler {
-        viewModel.onBackPressed(CancelReason.SystemBack)
+        if (!viewState.isLoading) {
+            viewModel.onBackPressed(CancelReason.SystemBack)
+        }
     }
 
     CardPaymentScreenContent(
@@ -101,7 +103,7 @@ internal fun CardPaymentScreen(
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
         onCardHolderEvent = viewModel::onCardHolderEvent,
         onIdentificationEvent = viewModel::onIdentificationEvent,
-        onBackPressed = { viewModel.onBackPressed(CancelReason.UiButton) },
+        onBackPressed = { if (!viewState.isLoading) viewModel.onBackPressed(CancelReason.UiButton) },
         onTooltipClick = viewModel::onTooltipClick,
         onMessageClick = viewModel::onMessageClick,
         onFooterButtonClick = {
@@ -566,6 +568,7 @@ private fun CardPaymentFormFields(
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Composable
 private fun CardPaymentFooter(
     footerState: FooterState,
@@ -589,6 +592,7 @@ private fun CardPaymentFooter(
     }
 }
 
+@Suppress("UnusedPrivateMember")
 @Composable
 private fun CardPaymentFooterButtonOverlay(
     buttonLabel: String,

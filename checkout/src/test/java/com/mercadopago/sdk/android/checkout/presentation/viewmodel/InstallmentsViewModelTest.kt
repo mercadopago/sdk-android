@@ -39,6 +39,8 @@ internal class InstallmentsViewModelTest {
         payer = null,
         installment = null,
         issuerId = "1",
+        orderId = "123",
+        orderStatus = "approved",
     )
 
     private fun makeData(
@@ -61,6 +63,7 @@ internal class InstallmentsViewModelTest {
         installmentData = installmentData,
         paymentData = paymentData,
         checkoutType = "card_form",
+        orderId = "order_123",
         analyticsTracker = tracker,
     )
 

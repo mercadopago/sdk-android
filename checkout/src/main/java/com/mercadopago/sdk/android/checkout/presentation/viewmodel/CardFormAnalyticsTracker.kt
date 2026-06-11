@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInputValidat
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmit
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmitError
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormUserCanceledError
+import com.mercadopago.sdk.android.checkout.analytics.metricOrderError
+import com.mercadopago.sdk.android.checkout.analytics.metricOrderSubmit
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
@@ -61,11 +63,35 @@ internal class CardFormAnalyticsTracker(
         )
     }
 
+    fun trackOrderSubmit(
+        orderId: String,
+        orderStatus: String,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricOrderSubmit(
+                orderId = orderId,
+                orderStatus = orderStatus,
+            ),
+        )
+    }
+
     fun trackSubmitError(
         error: MercadoPagoCheckoutError,
     ) {
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormSubmitError(errorType = error.toErrorTypeString()),
+        )
+    }
+
+    fun trackOrderError(
+        error: MercadoPagoCheckoutError,
+        orderId: String,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricOrderError(
+                errorType = error.toErrorTypeString(),
+                orderId = orderId,
+            ),
         )
     }
 

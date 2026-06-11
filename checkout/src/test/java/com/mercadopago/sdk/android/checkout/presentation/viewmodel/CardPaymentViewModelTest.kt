@@ -1,13 +1,17 @@
+@file:Suppress("NoUnusedImports")
+
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.checkout.analytics.OrderSubmitEventData
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.BinIssuer
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
@@ -17,12 +21,16 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
@@ -30,9 +38,14 @@ import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
+import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.IdentificationTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -52,6 +65,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@Suppress("LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CardPaymentViewModelTest {
     @get:Rule
@@ -61,6 +75,7 @@ internal class CardPaymentViewModelTest {
     private val getCardBinUseCase = mockk<GetCardBinUseCase>(relaxed = true)
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
+    private val processOrderUseCase = mockk<ProcessOrderUseCase>(relaxed = true)
     private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
@@ -104,6 +119,7 @@ internal class CardPaymentViewModelTest {
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
         generateTokenUseCase = generateTokenUseCase,
+        processOrderUseCase = processOrderUseCase,
         cardPaymentScreenStateFactory = cardPaymentScreenStateFactory,
     )
 
@@ -145,9 +161,9 @@ internal class CardPaymentViewModelTest {
 
         viewModel.initialization()
 
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/initialize_error"))
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/initialize_error") })
     }
 
     @Test
@@ -193,9 +209,9 @@ internal class CardPaymentViewModelTest {
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.IsValid(isValid = true))
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnFocusChanged(isFocused = false))
 
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/input_validation"))
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/input_validation") })
     }
 
     @Test
@@ -282,6 +298,113 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when ExpirationDate IsValid then updates isValid`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.IsValid(isValid = true))
+
+        assertTrue(viewModel.viewState.value.expirationDateState.isValid)
+    }
+
+    @Test
+    fun `when ExpirationDate IsValid event then tracks input_validation`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.IsValid(isValid = false))
+
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/input_validation") })
+    }
+
+    @Test
+    fun `when ExpirationDate OnLengthChanged then updates length`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnLengthChanged(length = 3))
+
+        assertEquals(3, viewModel.viewState.value.expirationDateState.length)
+    }
+
+    @Test
+    fun `when ExpirationDate OnInputFilled then updates filled`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onExpirationDateEvent(ExpirationDateTextFieldEvent.OnInputFilled(isFilled = true))
+
+        assertTrue(viewModel.viewState.value.expirationDateState.filled)
+    }
+
+    @Test
+    fun `when SecurityCode OnLengthChanged then updates length`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 2))
+
+        assertEquals(2, viewModel.viewState.value.secureCodeState.length)
+    }
+
+    @Test
+    fun `when SecurityCode OnInputFilled then updates filled`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnInputFilled(isFilled = true))
+
+        assertTrue(viewModel.viewState.value.secureCodeState.filled)
+    }
+
+    @Test
+    fun `when CardHolder OnValueChanged then updates value`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged("John Doe"))
+
+        assertEquals("John Doe", viewModel.viewState.value.cardHolderState.value)
+    }
+
+    @Test
+    fun `when CardHolder OnFocusChanged false then isFocused is false`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnFocusChanged(isFocused = false))
+
+        assertFalse(viewModel.viewState.value.cardHolderState.isFocused)
+    }
+
+    @Test
+    fun `when Identification OnValueChanged then updates value`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678"))
+
+        assertEquals("12345678", viewModel.viewState.value.identificationTypeState.value)
+    }
+
+    @Test
+    fun `when Identification OnTypeSelected then tracks dropdown_selection`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onIdentificationEvent(
+            IdentificationTextFieldEvent.OnTypeSelected(mockk<IdentificationType>(relaxed = true)),
+        )
+
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/dropdown_selection") })
+    }
+
+    @Test
+    fun `when Identification OnTypeSelected then updates selected and clears placeholder`() = runTest {
+        val viewModel = makeViewModel()
+        val identificationType = mockk<IdentificationType>(relaxed = true)
+
+        viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(identificationType))
+
+        assertEquals(identificationType, viewModel.viewState.value.identificationTypeState.selected)
+        assertEquals("", viewModel.viewState.value.identificationTypeState.placeHolder)
+    }
+
+    @Test
     fun `when onTooltipClick called once then showTooltip is true`() = runTest {
         val viewModel = makeViewModel()
 
@@ -325,9 +448,9 @@ internal class CardPaymentViewModelTest {
 
         viewModel.onBackPressed()
 
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/user_canceled_error"))
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/user_canceled_error") })
     }
 
     @Test
@@ -356,11 +479,15 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
-    fun `when onSubmit succeeds then tracks submit event`() = runTest {
+    fun `when onSubmit succeeds with CardSave then tracks submit event`() = runTest {
+        val cardSaveConfig = CheckoutConfiguration(
+            checkoutType = MPCheckoutType.CardSave,
+            paymentMethodConfigs = emptyList(),
+        )
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
-        val viewModel = makeViewModel()
+        val viewModel = makeViewModel(config = cardSaveConfig)
 
         viewModel.onSubmit(
             cardNumberState = mockk<PCIFieldState>(relaxed = true),
@@ -368,9 +495,34 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        val metricSlot = slot<Metric>()
-        verify { mockMPAnalytics.trackMetric(capture(metricSlot)) }
-        assertTrue(metricSlot.captured.path.endsWith("/submit"))
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/submit") })
+    }
+
+    @Test
+    fun `when onInstallmentConfirmed succeeds then tracks order submit event with order data`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc"))
+        coEvery { processOrderUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "order_123", status = "opened"))
+        val viewModel = makeViewModel()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        val orderSubmitMetric = metricSlots.first { it.path.endsWith("/order/submit") }
+        val data = orderSubmitMetric.data as OrderSubmitEventData
+        assertEquals("order_123", data.orderId)
+        assertEquals("opened", data.orderStatus)
     }
 
     @Test

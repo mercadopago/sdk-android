@@ -34,6 +34,8 @@ internal data class InstallmentsInitializeEventData(
     val quotasCount: Int,
     @SerializedName("transaction_amount")
     val transactionAmount: Double,
+    @SerializedName("order_id")
+    val orderId: String,
 ) : EventData
 
 internal fun InstallmentsDisplayType.toAnalyticsString(): String =
