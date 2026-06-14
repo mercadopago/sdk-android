@@ -7,9 +7,9 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.internal.unsupportedTypeError
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
-import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
-import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
@@ -28,6 +28,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScr
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -53,6 +54,9 @@ internal class CardPaymentViewModel(
     private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
+
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
 
     private var isCancelling = false
 
@@ -323,7 +327,7 @@ internal class CardPaymentViewModel(
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
@@ -467,6 +471,38 @@ internal class CardPaymentViewModel(
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
             }
+        }
+    }
+
+    private fun buildPaymentData(
+        token: String,
+        buyerIdentification: BuyerIdentification,
+    ): MPPaymentData? {
+        val payer = Payer(
+            documentType = buyerIdentification.type,
+            documentNumber = buyerIdentification.number,
+        )
+        return when (checkoutConfiguration?.checkoutType) {
+            is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
+                token = token,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+
+            is MPCheckoutType.CardTransaction,
+            is MPCheckoutType.Payment,
+            -> MPPaymentData.CardTransaction(
+                transactionAmount = checkoutConfiguration.getCardFormAmount(),
+                installment = 1,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+
+            else -> null
         }
     }
 }
