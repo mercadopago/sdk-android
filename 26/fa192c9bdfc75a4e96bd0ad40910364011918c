@@ -1,0 +1,51 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/params/ProcessOrderParams.kt
+  h_6960b1a5f865cc 5
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPOrder.kt
+  h_6960b1a5f865cc 11,18
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/OrderRemoteDataSourceImpl.kt
+  h_6960b1a5f865cc 19
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/cardpayment/CardTransactionExampleScreen.kt
+  h_6960b1a5f865cc 75
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/OrderRepositoryImplTest.kt
+  s_38f162ee1c827f::t_d7fcd6fe56a293 29
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutTypeTest.kt
+  h_6960b1a5f865cc 15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  h_6960b1a5f865cc 9,546-547
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/OrderRemoteDataSourceImplTest.kt
+  s_38f162ee1c827f::t_e688102403b926 69
+  h_6960b1a5f865cc 26,37,48,59,63
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensions.kt
+  h_6960b1a5f865cc 4,34
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_38f162ee1c827f::t_a527fc404d86fe 82
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/OrderService.kt
+  h_6960b1a5f865cc 7,18
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensionsTest.kt
+  h_6960b1a5f865cc 20
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/ProcessOrderUseCaseTest.kt
+  s_38f162ee1c827f::t_0beb8192fee967 30
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_38f162ee1c827f::t_d9547cfce099a1 89-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "26fa192c9bdfc75a4e96bd0ad40910364011918c",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_38f162ee1c827f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a8b81ea9-3d6e-4cf1-91ef-74e9362b5ba7",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
