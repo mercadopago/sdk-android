@@ -14,5 +14,8 @@ internal sealed interface CheckoutDestination {
     data object Form : CheckoutDestination
 
     @Serializable
-    data object Installments : CheckoutDestination
+    data object Installment : CheckoutDestination
+
+    @Serializable
+    data object PaymentBrick : CheckoutDestination
 }

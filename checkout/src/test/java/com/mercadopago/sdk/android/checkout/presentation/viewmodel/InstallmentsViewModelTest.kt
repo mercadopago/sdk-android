@@ -1,143 +1,207 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
+import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
-import com.mercadopago.sdk.android.coremethods.domain.model.Installment
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
-import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
-import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import java.math.BigDecimal
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertFalse
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class InstallmentsViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    private val coreMethods = mockk<CoreMethods>(relaxed = true)
+    private val quotas = listOf(
+        Quota(
+            installments = 1,
+            installmentAmount = BigDecimal("100.00"),
+            totalAmount = BigDecimal("100.00"),
+        ),
+        Quota(
+            installments = 3,
+            installmentAmount = BigDecimal("34.00"),
+            totalAmount = BigDecimal("102.00"),
+        ),
+    )
 
-    private val amount = BigDecimal("100.00")
+    private val paymentData = MPPaymentData.CardTransaction(
+        transactionAmount = BigDecimal("100.00"),
+        paymentMethodId = "visa",
+        paymentTypeId = "credit_card",
+        payer = null,
+        installment = null,
+        issuerId = "1",
+        orderId = "123",
+        orderStatus = "approved",
+    )
 
-    private fun makeViewModel() = InstallmentsViewModel(coreMethods = coreMethods)
+    private fun makeData(
+        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+    ) = MPInstallmentData(
+        quotas = quotas,
+        display = MPInstallmentData.InstallmentDisplay(
+            displayType = displayType,
+            footer = MPInstallmentData.InstallmentFooterDisplay(
+                brand = "visa",
+                lastFourDigits = "1234",
+            ),
+        ),
+    )
+
+    private fun makeViewModel(
+        installmentData: MPInstallmentData = makeData(),
+        tracker: InstallmentsAnalyticsTracker = mockk(relaxed = true),
+    ) = InstallmentsViewModel(
+        installmentData = installmentData,
+        paymentData = paymentData,
+        checkoutType = "card_form",
+        orderId = "order_123",
+        analyticsTracker = tracker,
+    )
 
     @Test
-    fun `when initialized then viewState is default`() {
+    fun `viewState reflects quotas from installmentData`() = runTest {
         val viewModel = makeViewModel()
 
-        assertEquals(InstallmentsScreenState(), viewModel.viewState.value)
+        kotlin.test.assertEquals(2, viewModel.viewState.value.items.size)
     }
 
     @Test
-    fun `when initialized then viewEvent is Idle`() {
+    fun `RadioButton mode auto-selects first item`() = runTest {
         val viewModel = makeViewModel()
 
-        assertEquals(InstallmentsScreenEvent.Idle, viewModel.viewEvent.value)
-    }
-
-    @Test
-    fun `when getInstallments succeeds then viewState title is updated`() = runTest {
-        coEvery { coreMethods.getInstallments(bin = any(), amount = any()) } returns
-            Result.Success(
-                listOf(
-                    Installment(
-                        payerCost = listOf(
-                            PayerCost(instalments = 1, installmentAmount = 100f, totalAmount = 100f),
-                        ),
-                    ),
-                ),
-            )
-        val viewModel = makeViewModel()
-
-        viewModel.getInstallments(bin = "123456", amount = amount)
-
-        assertEquals("Escolha o parcelamento", viewModel.viewState.value.title)
-    }
-
-    @Test
-    fun `when getInstallments succeeds then installmentsState is mapped from first installment`() = runTest {
-        coEvery { coreMethods.getInstallments(bin = any(), amount = any()) } returns
-            Result.Success(
-                listOf(
-                    Installment(
-                        payerCost = listOf(
-                            PayerCost(instalments = 1, installmentAmount = 100f, totalAmount = 100f),
-                            PayerCost(instalments = 3, installmentAmount = 34f, totalAmount = 102f),
-                        ),
-                    ),
-                ),
-            )
-        val viewModel = makeViewModel()
-
-        viewModel.getInstallments(bin = "123456", amount = amount)
-
-        val installmentsState = viewModel.viewState.value.installmentsState
-        assertEquals(2, installmentsState.size)
-        assertEquals(1, installmentsState.first().number)
-        assertEquals(3, installmentsState[1].number)
-    }
-
-    @Test
-    fun `when getInstallments succeeds then footerState is populated`() = runTest {
-        coEvery { coreMethods.getInstallments(bin = any(), amount = any()) } returns
-            Result.Success(
-                listOf(
-                    Installment(
-                        payerCost = listOf(
-                            PayerCost(instalments = 1, installmentAmount = 100f, totalAmount = 100f),
-                        ),
-                    ),
-                ),
-            )
-        val viewModel = makeViewModel()
-
-        viewModel.getInstallments(bin = "123456", amount = amount)
-
-        val footerState = viewModel.viewState.value.footerState
-        assertEquals("Total", footerState?.title)
-        assertEquals("Santander Credito **** 1234", footerState?.subtitle)
-    }
-
-    @Test
-    fun `when getInstallments succeeds with empty list then installmentsState is empty`() = runTest {
-        coEvery { coreMethods.getInstallments(bin = any(), amount = any()) } returns
-            Result.Success(emptyList())
-        val viewModel = makeViewModel()
-
-        viewModel.getInstallments(bin = "123456", amount = amount)
-
-        assertEquals("Escolha o parcelamento", viewModel.viewState.value.title)
-        assertTrue(viewModel.viewState.value.installmentsState.isEmpty())
-    }
-
-    @Test
-    fun `when getInstallments fails then viewState stays default`() = runTest {
-        coEvery { coreMethods.getInstallments(bin = any(), amount = any()) } returns
-            Result.Error(ResultError.Request(message = "error", code = "CONNECTION_ERROR"))
-        val viewModel = makeViewModel()
-
-        viewModel.getInstallments(bin = "123456", amount = amount)
-
-        assertEquals(InstallmentsScreenState(), viewModel.viewState.value)
-    }
-
-    @Test
-    fun `when onInstallmentSelected then viewEvent is OnInstallmentsSelected with the value`() {
-        val viewModel = makeViewModel()
-
-        viewModel.onInstallmentSelected(installment = 6)
-
-        assertEquals(
-            InstallmentsScreenEvent.OnInstallmentsSelected(installment = 6),
-            viewModel.viewEvent.value,
+        kotlin.test.assertEquals(
+            true,
+            viewModel.viewState.value.items.first().isSelected,
         )
+    }
+
+    @Test
+    fun `Chevron mode does not pre-select`() = runTest {
+        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
+
+        assertFalse(viewModel.viewState.value.items.any { it.isSelected })
+    }
+
+    @Test
+    fun `onInstallmentSelected updates selection in RadioButton mode`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        val states = viewModel.viewState.value.items
+        kotlin.test.assertEquals(true, states.first { it.number == 3 }.isSelected)
+        kotlin.test.assertEquals(false, states.first { it.number == 1 }.isSelected)
+    }
+
+    @Test
+    fun `onInstallmentSelected ignored in Chevron mode keeps no selection`() = runTest {
+        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        assertFalse(viewModel.viewState.value.items.any { it.isSelected })
+    }
+
+    @Test
+    fun `init tracks initialize event`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+
+        makeViewModel(tracker = tracker)
+
+        verify { tracker.trackInitialize() }
+    }
+
+    @Test
+    fun `RadioButton onInstallmentSelected tracks selected`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        verify { tracker.trackSelected(3) }
+    }
+
+    @Test
+    fun `Chevron onInstallmentSelected tracks submit`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(
+            installmentData = makeData(InstallmentsDisplayType.Chevron),
+            tracker = tracker,
+        )
+
+        viewModel.onInstallmentSelected(installment = 3)
+
+        verify { tracker.trackSubmit(quotas.first { it.installments == 3 }) }
+    }
+
+    @Test
+    fun `onPayClicked tracks submit in RadioButton mode`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+        viewModel.onInstallmentSelected(installment = 3)
+
+        viewModel.onPayClicked()
+
+        verify { tracker.trackSubmit(quotas.first { it.installments == 3 }) }
+    }
+
+    @Test
+    fun `onBackPressed tracks user canceled with back_pressed`() = runTest {
+        val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
+        val viewModel = makeViewModel(tracker = tracker)
+
+        viewModel.onBackPressed()
+
+        verify { tracker.trackUserCanceled(InstallmentsCancelReason.BackPressed) }
+    }
+
+    @Test
+    fun `onPayClicked sets isButtonLoading true before delay`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+
+        viewModel.onPayClicked()
+
+        kotlin.test.assertTrue(viewModel.viewState.value.footerState.isButtonLoading)
+    }
+
+    @Test
+    fun `onPayClicked emits OnSuccess only after delay`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+
+        viewModel.onPayClicked()
+
+        kotlin.test.assertNull(viewModel.viewEvent.value)
+        testScheduler.advanceTimeBy(400)
+        kotlin.test.assertTrue(viewModel.viewEvent.value is InstallmentViewEvent.OnSuccess)
+    }
+
+    @Test
+    fun `isButtonLoading is false before onPayClicked`() = runTest {
+        val viewModel = makeViewModel()
+
+        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+    }
+
+    @Test
+    fun `onViewEventConsumed resets isButtonLoading to false`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.onInstallmentSelected(installment = 1)
+        viewModel.onPayClicked()
+        testScheduler.advanceTimeBy(400)
+
+        viewModel.onViewEventConsumed()
+
+        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
     }
 }

@@ -8,19 +8,17 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class MPCheckoutTypeTest {
-    private val order = MPOrder(amount = BigDecimal("100.00"), payer = MPPayer(email = "buyer@test.com"))
-
-    @Test
-    fun `given card save then it is a checkout type`() {
-        assertTrue(MPCheckoutType.CardSave is MPCheckoutType<*, *>)
-    }
+    private val order = MPOrder(
+        orderId = "ORD_TEST",
+        amount = BigDecimal("100.00"),
+        payer = MPPayer(email = "buyer@test.com"),
+    )
 
     @Test
     fun `given card transaction then exposes order`() {
         val type = MPCheckoutType.CardTransaction(order = order)
 
         assertEquals(order, type.order)
-        assertTrue(type is MPCheckoutType<*, *>)
     }
 
     @Test

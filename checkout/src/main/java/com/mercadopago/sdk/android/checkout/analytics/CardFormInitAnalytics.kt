@@ -6,12 +6,14 @@ import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.checkout.analytics.CheckoutAnalyticsConstants.CHECKOUT_CARD_FORM_PATH
+import com.mercadopago.sdk.android.checkout.analytics.CheckoutAnalyticsConstants.NOT_APPLY
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 private const val INITIALIZE_PATH = "/initialize"
 private const val INITIALIZE_ERROR_PATH = "/initialize_error"
 
+@Suppress("LongParameterList")
 @KoverIgnore("in development")
 internal fun metricCardFormInitialize(
     checkoutType: String,
@@ -19,6 +21,7 @@ internal fun metricCardFormInitialize(
     sellerCustomization: List<String>,
     excludedPaymentTypes: List<String>,
     excludedPaymentMethods: List<String>,
+    orderId: String,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CHECKOUT_CARD_FORM_PATH$INITIALIZE_PATH",
     type = TrackType.EVENT,
@@ -28,6 +31,7 @@ internal fun metricCardFormInitialize(
         sellerCustomization = sellerCustomization,
         excludedPaymentTypes = excludedPaymentTypes,
         excludedPaymentMethods = excludedPaymentMethods,
+        orderId = orderId.ifEmpty { NOT_APPLY },
     ),
 )
 
@@ -52,4 +56,6 @@ internal data class CardFormInitEventData(
     val excludedPaymentTypes: List<String>,
     @SerializedName("excluded_payment_methods")
     val excludedPaymentMethods: List<String>,
+    @SerializedName("order_id")
+    val orderId: String,
 ) : EventData

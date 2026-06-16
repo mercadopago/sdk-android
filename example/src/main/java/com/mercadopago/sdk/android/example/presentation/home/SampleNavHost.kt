@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mercadopago.sdk.android.example.navigation.SampleDestination
+import com.mercadopago.sdk.android.example.presentation.cardpayment.CardTransactionExampleScreen
 import com.mercadopago.sdk.android.example.presentation.checkout.CheckoutExampleScreen
 import com.mercadopago.sdk.android.example.presentation.coremethods.PaymentExampleScreen
 import com.mercadopago.sdk.android.example.presentation.features.SampleFeaturesScreen
@@ -40,6 +41,9 @@ internal fun SampleNavHost(
         }
         composable<SampleDestination.Checkout> {
             CheckoutExampleScreen()
+        }
+        composable<SampleDestination.CardTransaction> {
+            CardTransactionExampleScreen()
         }
     }
 }

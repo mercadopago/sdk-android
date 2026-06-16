@@ -41,27 +41,29 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
+    private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val processOrderUseCase: ProcessOrderUseCase,
     private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
-    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
     private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
-    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
 
-    private var isCancelling = false
+    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
+
+    private var pendingOrderData: PendingOrderData? = null
 
     private val analyticsTracker = CardFormAnalyticsTracker(
-        isCancelling = { isCancelling },
         isLoading = { _viewState.value.isLoading },
     )
 
@@ -323,7 +325,9 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
-                    _viewState.value = data.toCardPaymentScreenState()
+                    _viewState.value = data.toCardPaymentScreenState(
+                        totalAmount = checkoutConfiguration?.getCardFormAmount(),
+                    )
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
@@ -392,7 +396,12 @@ internal class CardPaymentViewModel(
                     ),
                 ).fold(
                     onSuccess = { data ->
-                        _viewState.value = _viewState.value.applyCardBinData(data)
+                        val updated = _viewState.value.applyCardBinData(data)
+                        _viewState.value = if (updated.secureCodeState.length > 0) {
+                            errorHandler.applySecurityCodeError(updated)
+                        } else {
+                            updated
+                        }
                     },
                     onError = { error ->
                         _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {
@@ -494,8 +503,10 @@ internal class CardPaymentViewModel(
             is MPCheckoutType.CardTransaction,
             is MPCheckoutType.Payment,
             -> MPPaymentData.CardTransaction(
+                orderId = orderOutput?.id.orEmpty(),
+                orderStatus = orderOutput?.status.orEmpty(),
                 transactionAmount = checkoutConfiguration.getCardFormAmount(),
-                installment = 1,
+                installment = installments,
                 paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
                 paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
                 issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
@@ -504,5 +515,4 @@ internal class CardPaymentViewModel(
 
             else -> null
         }
-    }
 }
