@@ -8,10 +8,15 @@ import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPayer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
+import com.mercadopago.sdk.android.checkout.data.remote.service.OrderService
+import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
+import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
@@ -19,8 +24,10 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
@@ -31,7 +38,11 @@ import org.koin.test.verify.verify
 import java.math.BigDecimal
 import kotlin.test.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class DataModuleTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Before
     fun setUp() {
         MockProvider.register { mockk(relaxed = true) }
@@ -64,7 +75,7 @@ internal class DataModuleTest {
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
-                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = "")),
+                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = ""), orderId = "test"),
             ),
             paymentMethodConfigs = emptyList(),
         )
@@ -73,6 +84,7 @@ internal class DataModuleTest {
             includes(provideDataModule())
             single { checkoutConfiguration }
             single { mockk<CardFormService>(relaxed = true) }
+            single { mockk<OrderService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -86,34 +98,24 @@ internal class DataModuleTest {
                 MPCheckoutType::class,
                 List::class,
                 CardFormService::class,
+                OrderService::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
+                CardFormInitializationOutput::class,
+                MPInstallmentData::class,
+                MPPaymentData::class,
+                String::class,
+                InstallmentsAnalyticsTracker::class,
+                ProcessOrderUseCase::class,
             ),
         )
 
         koin.checkModules {
             withInstance<CheckoutConfiguration>(checkoutConfiguration)
+            withInstance<CardFormInitializationOutput>(mockk(relaxed = true))
+            withInstance<MPInstallmentData>(mockk(relaxed = true))
+            withInstance<MPPaymentData>(mockk(relaxed = true))
+            withInstance<String>("card_form")
         }
-    }
-
-    @OptIn(KoinExperimentalAPI::class)
-    @Test
-    fun `when provideInstallmentsModule is called then InstallmentsViewModel should be provided`() {
-        val module = module {
-            includes(provideInstallmentsModule())
-        }
-
-        val koin = koinApplication {
-            modules(module)
-        }
-
-        module.verify(
-            extraTypes = listOf(
-                CoreMethods::class,
-                InstallmentsViewModel::class,
-            ),
-        )
-
-        koin.checkModules()
     }
 }

@@ -28,6 +28,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScr
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -40,24 +41,29 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
+    private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val processOrderUseCase: ProcessOrderUseCase,
     private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
-    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
-    private var isCancelling = false
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
+
+    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
+
+    private var pendingOrderData: PendingOrderData? = null
 
     private val analyticsTracker = CardFormAnalyticsTracker(
-        isCancelling = { isCancelling },
         isLoading = { _viewState.value.isLoading },
     )
 
@@ -319,11 +325,13 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
-                    _viewState.value = data.toCardPaymentScreenState()
+                    _viewState.value = data.toCardPaymentScreenState(
+                        totalAmount = checkoutConfiguration?.getCardFormAmount(),
+                    )
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
@@ -388,7 +396,12 @@ internal class CardPaymentViewModel(
                     ),
                 ).fold(
                     onSuccess = { data ->
-                        _viewState.value = _viewState.value.applyCardBinData(data)
+                        val updated = _viewState.value.applyCardBinData(data)
+                        _viewState.value = if (updated.secureCodeState.length > 0) {
+                            errorHandler.applySecurityCodeError(updated)
+                        } else {
+                            updated
+                        }
                     },
                     onError = { error ->
                         _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {

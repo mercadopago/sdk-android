@@ -2,9 +2,9 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
+import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.coremethods.domain.model.PayerCost
 
 internal const val CARD_NUMBER_BIN_LENGTH = 6
 
@@ -16,6 +16,7 @@ internal data class ValidationState(
 
 internal data class CardPaymentScreenState(
     val title: String = "",
+    val currencySymbol: String = "",
     val expirationDateState: ExpirationDateState = ExpirationDateState(),
     val secureCodeState: SecurityCodeState = SecurityCodeState(),
     val cardNumberState: CardNumberState = CardNumberState(),
@@ -23,6 +24,7 @@ internal data class CardPaymentScreenState(
     val identificationTypeState: IdentificationTypeState = IdentificationTypeState(),
     val installmentsState: InstallmentsState = InstallmentsState(),
     val paymentState: PaymentState = PaymentState(),
+    val footerState: FooterState = FooterState(),
     val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
     val messageError: MessageError = MessageError(),
@@ -116,8 +118,11 @@ internal data class IdentificationTypeState(
 
 internal data class InstallmentsState(
     val showList: Boolean = false,
-    val installments: List<PayerCost> = emptyList(),
-    val selectedInstallment: PayerCost? = null,
+    val installments: List<Quota> = emptyList(),
+    val title: String = "",
+    val totalLabel: String = "",
+    val buttonLabel: String = "",
+    val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
 )
 
 internal data class MessageError(
