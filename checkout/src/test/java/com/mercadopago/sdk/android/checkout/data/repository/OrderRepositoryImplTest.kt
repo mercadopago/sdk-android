@@ -26,6 +26,7 @@ internal class OrderRepositoryImplTest {
         paymentMethodType = "credit_card",
         token = "TOKEN_XYZ",
         installments = 1,
+        clientToken = "test-token",
     )
 
     @Test

@@ -27,6 +27,7 @@ internal class ProcessOrderUseCaseTest {
         paymentMethodType = "credit_card",
         token = "TOKEN_ABC",
         installments = 3,
+        clientToken = "test-token",
     )
 
     @Test

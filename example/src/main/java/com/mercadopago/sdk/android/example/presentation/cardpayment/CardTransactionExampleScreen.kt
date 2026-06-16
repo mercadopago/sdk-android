@@ -72,6 +72,7 @@ internal fun CardTransactionExampleScreen(
             checkoutType = MPCheckoutType.CardTransaction(
                 order = MPOrder(
                     orderId = "MOCK_ORD_APPROVED",
+                    clientToken = "f30f8688-a2bf-4558-ba79-ddf108bece11",
                     amount = BigDecimal(100),
                     payer = MPPayer(email = "test"),
                 ),

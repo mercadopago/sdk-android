@@ -23,6 +23,7 @@ internal class OrderRemoteDataSourceImplTest {
 
     private val params = ProcessOrderParams(
         orderId = "ORD_789",
+        clientToken = "test-order",
         amount = "300.00",
         paymentMethodId = "visa",
         paymentMethodType = "credit_card",
@@ -33,7 +34,7 @@ internal class OrderRemoteDataSourceImplTest {
     @Test
     fun `given service returns successful response then process returns Result Success`() = runTest {
         val body = mockk<OrderProcessResponse>(relaxed = true)
-        coEvery { service.process(any(), any()) } returns Response.success(body)
+        coEvery { service.process(any(), any(), any()) } returns Response.success(body)
 
         val result = dataSource.process(params)
 
@@ -44,7 +45,7 @@ internal class OrderRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then process returns Result Error`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.process(any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.process(any(), any(), any()) } returns Response.error(404, errorBody)
 
         val result = dataSource.process(params)
 
@@ -55,17 +56,17 @@ internal class OrderRemoteDataSourceImplTest {
 
     @Test
     fun `given process is called then passes orderId to service`() = runTest {
-        coEvery { service.process(any(), any()) } returns Response.success(mockk(relaxed = true))
+        coEvery { service.process(any(), any(), any()) } returns Response.success(mockk(relaxed = true))
 
         dataSource.process(params)
 
-        coVerify { service.process(orderId = params.orderId, body = any()) }
+        coVerify { service.process(orderId = params.orderId, any(), body = any()) }
     }
 
     @Test
     fun `given process is called then passes correct body fields to service`() = runTest {
         val bodySlot = slot<OrderProcessRequest>()
-        coEvery { service.process(any(), capture(bodySlot)) } returns
+        coEvery { service.process(any(), any(), capture(bodySlot)) } returns
             Response.success(mockk(relaxed = true))
 
         dataSource.process(params)
