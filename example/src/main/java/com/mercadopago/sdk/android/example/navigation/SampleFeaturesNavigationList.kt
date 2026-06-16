@@ -19,6 +19,12 @@ internal val SampleFeaturesNavigationList: List<SampleFeature> = listOf(
         description = R.string.checkout_feature_description,
         destination = SampleDestination.Checkout,
         isEnabled = true,
+    ),
+    SampleFeature(
+        title = R.string.card_transaction_feature_title,
+        description = R.string.card_transaction_feature_description,
+        destination = SampleDestination.CardTransaction,
+        isEnabled = true,
     )
 )
 

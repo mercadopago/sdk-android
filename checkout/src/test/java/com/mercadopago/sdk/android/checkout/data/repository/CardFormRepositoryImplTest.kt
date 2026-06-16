@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.data.repository
 
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.request.CardBinRequest
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
@@ -136,6 +138,25 @@ internal class CardFormRepositoryImplTest {
 
         assertNull(requestSlot.captured.excludedPaymentTypes)
         assertNull(requestSlot.captured.excludedPaymentMethods)
+    }
+
+    @Test
+    fun `given non-empty filter then excludedPaymentTypes and excludedPaymentMethods are joined`() = runTest {
+        val requestSlot = slot<CardBinRequest>()
+        coEvery { dataSource.getCardBin(capture(requestSlot)) } returns Result.Success(
+            mockk(relaxed = true),
+        )
+        val params = binParams.copy(
+            filter = CardBinFilter(
+                excludedPaymentTypes = listOf(MPCardType.CREDIT, MPCardType.DEBIT),
+                excludedPaymentMethods = listOf(MPCardBrand.Visa, MPCardBrand.Mastercard),
+            ),
+        )
+
+        repository.getCardBin(params)
+
+        assertEquals("credit_card,debit_card", requestSlot.captured.excludedPaymentTypes)
+        assertEquals("visa,master", requestSlot.captured.excludedPaymentMethods)
     }
 
     @Test
