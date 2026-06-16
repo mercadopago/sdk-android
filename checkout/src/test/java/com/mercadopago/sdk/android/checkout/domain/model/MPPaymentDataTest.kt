@@ -129,6 +129,49 @@ internal class MPPaymentDataTest {
     }
 
     @Test
+    fun `given payment data then exposes order based fields`() {
+        val data = MPPaymentData.Payment(
+            orderId = "ORD_123",
+            orderStatus = "processed",
+            barcodeContent = "12345678901234567890",
+            dateOfExpiration = "2026-12-31T23:59:59.000-03:00",
+        )
+
+        assertEquals("ORD_123", data.orderId)
+        assertEquals("processed", data.orderStatus)
+        assertEquals("12345678901234567890", data.barcodeContent)
+        assertEquals("2026-12-31T23:59:59.000-03:00", data.dateOfExpiration)
+        assertTrue(data is MPPaymentData)
+    }
+
+    @Test
+    fun `given payment data with default offline fields then both are null`() {
+        val data = MPPaymentData.Payment(
+            orderId = "ORD_123",
+            orderStatus = "processed",
+        )
+
+        assertNull(data.barcodeContent)
+        assertNull(data.dateOfExpiration)
+    }
+
+    @Test
+    fun `given payment data when copy with new status then equality changes`() {
+        val data = MPPaymentData.Payment(
+            orderId = "ORD_123",
+            orderStatus = "opened",
+        )
+
+        val updated = data.copy(orderStatus = "processed")
+
+        assertEquals("processed", updated.orderStatus)
+        assertEquals(data.orderId, updated.orderId)
+        assertNotEquals(data, updated)
+        assertEquals(data.hashCode(), data.copy().hashCode())
+        assertTrue(data.toString().contains("Payment"))
+    }
+
+    @Test
     fun `given card transaction with null optionals then exposes nulls`() {
         val data = MPPaymentData.CardTransaction(
             orderId = "",
