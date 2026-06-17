@@ -8,13 +8,17 @@ import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemot
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSourceImpl
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
 import com.mercadopago.sdk.android.checkout.data.repository.OrderRepositoryImpl
+import com.mercadopago.sdk.android.checkout.data.repository.PaymentBrickInitializationRepositoryImpl
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
+import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -52,6 +56,12 @@ internal fun provideDataModule() =
         }
         factory<OrderRepository> {
             OrderRepositoryImpl(dataSource = get())
+        }
+        factory<PaymentBrickInitializationRemoteDataSource> {
+            PaymentBrickInitializationRemoteDataSourceImpl(service = get())
+        }
+        factory<PaymentBrickInitializationRepository> {
+            PaymentBrickInitializationRepositoryImpl(dataSource = get())
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())

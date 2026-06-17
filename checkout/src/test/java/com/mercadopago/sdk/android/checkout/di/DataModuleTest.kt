@@ -9,9 +9,11 @@ import com.mercadopago.sdk.android.checkout.core.model.MPPayer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.data.remote.service.OrderService
+import com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickInitializationService
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -90,6 +92,7 @@ internal class DataModuleTest {
             single { checkoutConfiguration }
             single { mockk<CardFormService>(relaxed = true) }
             single { mockk<OrderService>(relaxed = true) }
+            single { mockk<PaymentBrickInitializationService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -104,6 +107,8 @@ internal class DataModuleTest {
                 List::class,
                 CardFormService::class,
                 OrderService::class,
+                PaymentBrickInitializationService::class,
+                PaymentBrickInitializationRepository::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
