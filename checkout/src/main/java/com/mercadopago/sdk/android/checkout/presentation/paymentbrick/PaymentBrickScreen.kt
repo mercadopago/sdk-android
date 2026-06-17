@@ -1,8 +1,10 @@
 package com.mercadopago.sdk.android.checkout.presentation.paymentbrick
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,16 +17,15 @@ import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentOptionState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentSectionState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
-import com.mercadopago.sdk.android.components.MPAmountData
-import com.mercadopago.sdk.android.components.MPFixedFooter
-import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.MPText
@@ -56,6 +57,23 @@ internal fun PaymentBrickScreenContent(
     onOptionSelected: (String) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
+    when {
+        viewState.isLoading -> LoadingScreen()
+        viewState.isError -> PaymentBrickErrorContent(onBackPressed = onBackPressed)
+        else -> PaymentBrickMainContent(
+            viewState = viewState,
+            onOptionSelected = onOptionSelected,
+            onBackPressed = onBackPressed,
+        )
+    }
+}
+
+@Composable
+private fun PaymentBrickMainContent(
+    viewState: PaymentBrickScreenState,
+    onOptionSelected: (String) -> Unit,
+    onBackPressed: () -> Unit,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -81,20 +99,68 @@ internal fun PaymentBrickScreenContent(
                 }
             }
             viewState.footerState?.let { footer ->
-                MPFixedFooter(
-                    title = "Total",
-                    amount = MPAmountData(
-                        currencySymbol = footer.currencySymbol,
-                        integerPart = footer.amountInteger,
-                        decimalPart = footer.amountDecimal,
-                    ),
-                    button = MPFixedFooterButtonData(
-                        text = footer.buttonLabel,
-                        onClick = {},
-                    ),
-                )
+                PaymentBrickFooter(footer = footer)
             }
         }
+    }
+}
+
+@Composable
+private fun PaymentBrickErrorContent(
+    onBackPressed: () -> Unit = {},
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+    ) {
+        MPHeader(
+            modifier = Modifier.fillMaxWidth(),
+            title = "",
+            onBackClick = onBackPressed,
+            content = {},
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            MPText(
+                text = "Ocurrió un error. Por favor, intentá de nuevo.",
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.primary,
+                modifier = Modifier.padding(horizontal = MercadoPagoTheme.spacing.paddings.xtiny),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PaymentBrickFooter(
+    footer: PaymentBrickFooterState,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+                vertical = MercadoPagoTheme.spacing.paddings.xsmall,
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        MPText(
+            text = footer.totalLabel,
+            style = MercadoPagoTheme.typography.body.default.medium,
+            color = MercadoPagoTheme.color.text.secondary,
+        )
+        MPText(
+            text = footer.totalAmount,
+            style = MercadoPagoTheme.typography.body.emphasis.medium,
+            color = MercadoPagoTheme.color.text.primary,
+        )
     }
 }
 
@@ -186,12 +252,26 @@ private fun PaymentBrickScreenContentPreview() {
                     ),
                 ),
                 footerState = PaymentBrickFooterState(
-                    currencySymbol = "R$",
-                    amountInteger = "500",
-                    amountDecimal = "00",
-                    buttonLabel = "Continuar",
+                    totalLabel = "Total",
+                    totalAmount = "$ 500,00",
                 ),
             ),
         )
+    }
+}
+
+@Preview(name = "PaymentBrick Loading", group = PAYMENT_BRICK_GROUP, showBackground = true)
+@Composable
+private fun PaymentBrickLoadingPreview() {
+    MercadoPagoTheme {
+        PaymentBrickScreenContent(viewState = PaymentBrickScreenState(isLoading = true))
+    }
+}
+
+@Preview(name = "PaymentBrick Error", group = PAYMENT_BRICK_GROUP, showBackground = true)
+@Composable
+private fun PaymentBrickErrorPreview() {
+    MercadoPagoTheme {
+        PaymentBrickScreenContent(viewState = PaymentBrickScreenState(isError = true))
     }
 }

@@ -22,12 +22,7 @@ internal class PaymentBrickScreenStateTest {
     fun `given explicit values then PaymentBrickScreenState properties are assigned`() {
         val option = PaymentOptionState(id = "card", title = "Credit card")
         val section = PaymentSectionState(title = "Cards", options = listOf(option))
-        val footer = PaymentBrickFooterState(
-            currencySymbol = "R$",
-            amountInteger = "100",
-            amountDecimal = "00",
-            buttonLabel = "Pay",
-        )
+        val footer = PaymentBrickFooterState(totalLabel = "Total", totalAmount = "$ 100")
 
         val state = PaymentBrickScreenState(
             title = "How do you want to pay?",
@@ -94,21 +89,14 @@ internal class PaymentBrickScreenStateTest {
 
     @Test
     fun `given PaymentBrickFooterState with values then properties are assigned and copy works`() {
-        val footer = PaymentBrickFooterState(
-            currencySymbol = "R$",
-            amountInteger = "250",
-            amountDecimal = "50",
-            buttonLabel = "Continue",
-        )
+        val footer = PaymentBrickFooterState(totalLabel = "Total", totalAmount = "$ 250,50")
 
-        assertEquals("R$", footer.currencySymbol)
-        assertEquals("250", footer.amountInteger)
-        assertEquals("50", footer.amountDecimal)
-        assertEquals("Continue", footer.buttonLabel)
+        assertEquals("Total", footer.totalLabel)
+        assertEquals("$ 250,50", footer.totalAmount)
 
-        val copy = footer.copy(buttonLabel = "Pay now")
-        assertEquals("Pay now", copy.buttonLabel)
-        assertEquals(footer.currencySymbol, copy.currencySymbol)
+        val copy = footer.copy(totalAmount = "$ 300,00")
+        assertEquals("$ 300,00", copy.totalAmount)
+        assertEquals(footer.totalLabel, copy.totalLabel)
         assertNotEquals(footer, copy)
     }
 }

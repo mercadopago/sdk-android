@@ -8,6 +8,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.PaymentSectionOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 internal class PaymentBrickInitializationOutputMapperTest {
@@ -132,10 +133,12 @@ internal class PaymentBrickInitializationOutputMapperTest {
     }
 
     @Test
-    fun `given output then footer state is null (mapped in A8)`() {
+    fun `given output then footer is mapped from domain footer`() {
         val state = buildOutput().toScreenState()
 
-        assertNull(state.footerState)
+        val footer = assertNotNull(state.footerState)
+        assertEquals("Total", footer.totalLabel)
+        assertEquals("$ 500", footer.totalAmount)
     }
 
     @Test

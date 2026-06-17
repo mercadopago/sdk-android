@@ -44,16 +44,13 @@ data class PaymentOptionState(
 )
 
 /**
- * Represents the fixed footer configuration for the PaymentBrick screen.
+ * Represents the informational footer for the PaymentBrick screen.
  *
- * @property currencySymbol Currency symbol (e.g. "R$").
- * @property amountInteger Integer part of the total amount.
- * @property amountDecimal Decimal part of the total amount.
- * @property buttonLabel CTA button label text.
+ * @property totalLabel Label for the total row — translated by the BFF.
+ * @property totalAmount Pre-formatted total string provided by the BFF (e.g. "$ 188.000").
+ *   Displayed as-is; the SDK does not reformat this value.
  */
 data class PaymentBrickFooterState(
-    val currencySymbol: String,
-    val amountInteger: String,
-    val amountDecimal: String,
-    val buttonLabel: String,
+    val totalLabel: String,
+    val totalAmount: String,
 )
