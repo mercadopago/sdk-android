@@ -16,7 +16,6 @@ internal class OrderRemoteDataSourceImpl(
     ): Result<OrderProcessResponse, ResponseError> =
         service.process(
             orderId = params.orderId,
-            clientToken = params.clientToken,
             body = OrderProcessRequest(
                 amount = params.amount,
                 paymentMethodId = params.paymentMethodId,

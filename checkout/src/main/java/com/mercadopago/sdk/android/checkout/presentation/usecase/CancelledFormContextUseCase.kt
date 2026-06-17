@@ -52,9 +52,8 @@ internal class CancelledFormContextUseCase {
                     cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
                     else -> State.Invalid
                 }
-                is CardNumberErrorType.PaymentMethodNotFound,
-                is CardNumberErrorType.LuhnValidation,
-                -> State.Invalid
+                is CardNumberErrorType.PaymentMethodNotFound -> State.Invalid
+                is CardNumberErrorType.LuhnValidation -> State.Invalid
             }
         } ?: State.Valid
         return MPCancelledFieldState(field = Field.CARD_NUMBER, state = state)

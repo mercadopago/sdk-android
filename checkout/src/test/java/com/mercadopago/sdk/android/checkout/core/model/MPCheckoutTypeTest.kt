@@ -12,7 +12,6 @@ internal class MPCheckoutTypeTest {
         orderId = "ORD_TEST",
         amount = BigDecimal("100.00"),
         payer = MPPayer(email = "buyer@test.com"),
-        clientToken = "token-test",
     )
 
     @Test

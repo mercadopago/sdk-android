@@ -17,7 +17,6 @@ internal class CheckoutConfigurationExtensionsTest {
         orderId = "ORD_TEST",
         amount = BigDecimal("188000.00"),
         payer = MPPayer(email = "buyer@mp.com"),
-        clientToken = "token-test",
     )
 
     private fun configWith(

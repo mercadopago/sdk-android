@@ -506,8 +506,7 @@ internal class CardPaymentViewModel(
         val payer = pendingOrderData?.payer ?: Payer()
         processOrderUseCase(
             ProcessOrderParams(
-                orderId = checkoutConfiguration.getOrder()?.orderId.orEmpty(),
-                clientToken = checkoutConfiguration.getOrder()?.clientToken.orEmpty(),
+                orderId = orderId,
                 amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
                 paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
                 paymentMethodType = viewState.value.paymentState.paymentTypeId.orEmpty(),

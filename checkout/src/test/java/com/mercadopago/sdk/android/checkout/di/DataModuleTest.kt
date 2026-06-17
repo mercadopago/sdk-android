@@ -75,12 +75,7 @@ internal class DataModuleTest {
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
-                MPOrder(
-                    amount = BigDecimal.TEN,
-                    payer = MPPayer(email = ""),
-                    orderId = "test",
-                    clientToken = "test-token",
-                ),
+                MPOrder(amount = BigDecimal.TEN, payer = MPPayer(email = ""), orderId = "test"),
             ),
             paymentMethodConfigs = emptyList(),
         )
