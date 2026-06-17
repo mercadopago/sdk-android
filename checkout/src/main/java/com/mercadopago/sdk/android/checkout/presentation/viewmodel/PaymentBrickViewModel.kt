@@ -81,7 +81,7 @@ internal class PaymentBrickViewModel(
                     val paymentData = MPPaymentData.Payment(
                         orderId = orderOutput.id,
                         orderStatus = orderOutput.status,
-                        transactionAmount = null,
+                        transactionAmount = paymentType.order.amount,
                         paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
                         paymentTypeId = method.cardData?.paymentTypeId.orEmpty(),
                         payer = null,
