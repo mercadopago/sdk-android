@@ -8,12 +8,14 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.CardDataOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickFooterOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentSectionOutput
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
@@ -308,13 +310,113 @@ internal class PaymentBrickViewModelTest {
         assertEquals(null, vm.viewEvent.value)
     }
 
+    // ─── A11 – onUserCancelled ────────────────────────────────────────────────
+
     @Test
-    fun `given onBackPressed then does not emit any event`() = runTest {
+    fun `given onBackPressed then notifies UserCancelled with Payment context`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
         val vm = viewModel()
+        advanceUntilIdle()
 
         vm.onBackPressed()
 
-        assertEquals(null, vm.viewEvent.value)
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { it is MercadoPagoCheckoutResult.UserCancelled<*> },
+            )
+        }
+    }
+
+    @Test
+    fun `given onBackPressed then screens list contains PAYMENT_METHOD_SELECTOR`() = runTest {
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onBackPressed()
+
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { result ->
+                    result is MercadoPagoCheckoutResult.UserCancelled<*> &&
+                        (result.cancelledData as? MPUserCancelledContext.Payment)
+                            ?.screens?.contains(Screen.PAYMENT_METHOD_SELECTOR) == true
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `given markScreenPresented then screen is added to visited list`() = runTest {
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.markScreenPresented(Screen.INSTALLMENTS)
+        vm.onBackPressed()
+
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { result ->
+                    result is MercadoPagoCheckoutResult.UserCancelled<*> &&
+                        (result.cancelledData as? MPUserCancelledContext.Payment)?.screens?.let { screens ->
+                            screens.contains(Screen.PAYMENT_METHOD_SELECTOR) &&
+                                screens.contains(Screen.INSTALLMENTS)
+                        } == true
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `given markScreenPresented called twice with same screen then screen is not duplicated`() = runTest {
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.markScreenPresented(Screen.INSTALLMENTS)
+        vm.markScreenPresented(Screen.INSTALLMENTS)
+        vm.onBackPressed()
+
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { result ->
+                    result is MercadoPagoCheckoutResult.UserCancelled<*> &&
+                        (result.cancelledData as? MPUserCancelledContext.Payment)
+                            ?.screens?.count { it == Screen.INSTALLMENTS } == 1
+                },
+            )
+        }
+    }
+
+    // ─── A12 – onError (process order) ───────────────────────────────────────
+
+    @Test
+    fun `given process error then emits Error result to CheckoutCallbackHolder`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_ERR")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        val error = mockk<MercadoPagoCheckoutError>(relaxed = true)
+        coEvery { processUseCase(any()) } returns Result.Error(error)
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_ERR")
+        advanceUntilIdle()
+
+        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+    }
+
+    @Test
+    fun `given process error then no retry is triggered`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_ERR")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        coEvery { processUseCase(any()) } returns Result.Error(mockk(relaxed = true))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_ERR")
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { processUseCase(any()) }
     }
 }
