@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -8,15 +9,15 @@ import kotlin.test.assertTrue
 
 internal class CardFormAnalyticsTrackerTest {
     @Test
-    fun `given isCancelling true then trackInputValidation short-circuits before isLoading`() {
+    fun `given trackUserCanceled was called then trackInputValidation short-circuits before isLoading`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = { true },
             isLoading = {
                 isLoadingCalled = true
                 false
             },
         )
+        tracker.trackUserCanceled(CancelReason.SystemBack)
 
         tracker.trackInputValidation("cvv", true)
 
@@ -24,10 +25,9 @@ internal class CardFormAnalyticsTrackerTest {
     }
 
     @Test
-    fun `given isCancelling false and isLoading true then trackInputValidation returns early`() {
+    fun `given not canceled and isLoading true then trackInputValidation returns early`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = { false },
             isLoading = {
                 isLoadingCalled = true
                 true
@@ -40,14 +40,9 @@ internal class CardFormAnalyticsTrackerTest {
     }
 
     @Test
-    fun `given both false then trackInputValidation calls both lambdas`() {
-        var isCancellingCalled = false
+    fun `given not canceled and not loading then trackInputValidation calls isLoading`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = {
-                isCancellingCalled = true
-                false
-            },
             isLoading = {
                 isLoadingCalled = true
                 false
@@ -56,20 +51,19 @@ internal class CardFormAnalyticsTrackerTest {
 
         tracker.trackInputValidation("card_holder", false)
 
-        assertTrue(isCancellingCalled)
         assertTrue(isLoadingCalled)
     }
 
     @Test
-    fun `given isCancelling true then trackDropdownSelection short-circuits before isLoading`() {
+    fun `given trackUserCanceled was called then trackDropdownSelection short-circuits before isLoading`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = { true },
             isLoading = {
                 isLoadingCalled = true
                 false
             },
         )
+        tracker.trackUserCanceled(CancelReason.SystemBack)
 
         tracker.trackDropdownSelection("installments")
 
@@ -80,7 +74,6 @@ internal class CardFormAnalyticsTrackerTest {
     fun `given isLoading true then trackDropdownSelection returns early`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = { false },
             isLoading = {
                 isLoadingCalled = true
                 true
@@ -93,14 +86,9 @@ internal class CardFormAnalyticsTrackerTest {
     }
 
     @Test
-    fun `given both false then trackDropdownSelection calls both lambdas`() {
-        var isCancellingCalled = false
+    fun `given not canceled and not loading then trackDropdownSelection calls isLoading`() {
         var isLoadingCalled = false
         val tracker = CardFormAnalyticsTracker(
-            isCancelling = {
-                isCancellingCalled = true
-                false
-            },
             isLoading = {
                 isLoadingCalled = true
                 false
@@ -109,36 +97,26 @@ internal class CardFormAnalyticsTrackerTest {
 
         tracker.trackDropdownSelection("document")
 
-        assertTrue(isCancellingCalled)
         assertTrue(isLoadingCalled)
     }
 
     @Test
     fun `given error then trackInitializeError does not throw`() {
-        val tracker = CardFormAnalyticsTracker(
-            isCancelling = { false },
-            isLoading = { false },
-        )
+        val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
         tracker.trackInitializeError(mockk<MercadoPagoCheckoutError>(relaxed = true))
     }
 
     @Test
     fun `given error then trackSubmitError does not throw`() {
-        val tracker = CardFormAnalyticsTracker(
-            isCancelling = { false },
-            isLoading = { false },
-        )
+        val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
         tracker.trackSubmitError(mockk<MercadoPagoCheckoutError>(relaxed = true))
     }
 
     @Test
     fun `given params then trackSubmit does not throw`() {
-        val tracker = CardFormAnalyticsTracker(
-            isCancelling = { false },
-            isLoading = { false },
-        )
+        val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
         tracker.trackSubmit(
             cardBrand = "visa",

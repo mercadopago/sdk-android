@@ -36,6 +36,8 @@ internal class CancelledFormContextUseCase {
                 add(buildDocumentFieldState(screenState))
             }
         }
+        return CancelledFormContext(fields = fields, screens = presentedScreens.toList())
+    }
 
     private fun buildCardNumberFieldState(
         screenState: CardPaymentScreenState,
@@ -45,12 +47,15 @@ internal class CancelledFormContextUseCase {
             when (it) {
                 is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(it.brand)
                 is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(it.cardType)
-                is CardNumberErrorType.FieldValidation -> when {
-                    cardNumberState.length == 0 -> State.Empty
-                    cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
-                    else -> State.Invalid
+                is CardNumberErrorType.FieldValidation -> {
+                    when {
+                        cardNumberState.length == 0 -> State.Empty
+                        cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
+                        else -> State.Invalid
+                    }
                 }
-                else -> State.Invalid
+                is CardNumberErrorType.PaymentMethodNotFound -> State.Invalid
+                is CardNumberErrorType.LuhnValidation -> State.Invalid
             }
         } ?: State.Valid
         return MPCancelledFieldState(field = Field.CARD_NUMBER, state = state)
