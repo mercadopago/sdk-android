@@ -50,7 +50,6 @@ import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import android.widget.Toast
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
 
@@ -117,12 +116,10 @@ internal fun CheckoutExampleScreen(
                                     ).show()
 
                                 is MercadoPagoCheckoutResult.UserCancelled -> {
-                                    val fieldsInfo = when (val ctx = result.context) {
-                                        is MPUserCancelledContext.CardForm ->
-                                            ctx.context.fields.joinToString(", ") { field ->
-                                                "${field.field.name}: ${field.state::class.simpleName}"
-                                            }
-                                    }
+                                    val fieldsInfo = result.cancelledData.fields
+                                        .joinToString(", ") { field ->
+                                            "${field.field.name}: ${field.state::class.simpleName}"
+                                        }
                                     Toast.makeText(
                                         context,
                                         "Cancelado pelo usuário\n$fieldsInfo",

@@ -6,19 +6,30 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrder
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
+import com.mercadopago.sdk.android.checkout.core.model.internal.isCardTransaction
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.internal.unsupportedTypeError
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isEmpty
@@ -310,11 +321,37 @@ internal class CardPaymentViewModel(
     fun onBackPressed(
         reason: CancelReason = CancelReason.SystemBack,
     ) {
-        isCancelling = true
         analyticsTracker.trackUserCanceled(reason)
-        val currentState = _viewState.value
-        val context = cancelledFormContextUseCase(currentState)
-        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+        val result = cancelledFormContextUseCase(_viewState.value)
+        val context: MPUserCancelledContext = when (checkoutConfiguration?.checkoutType) {
+            is MPCheckoutType.CardSave -> MPUserCancelledContext.CardSave(result.fields)
+            is MPCheckoutType.CardTransaction, null -> MPUserCancelledContext.CardTransaction(
+                fields = result.fields,
+                screens = result.screens,
+            )
+            is MPCheckoutType.Payment -> MPUserCancelledContext.Payment(screens = result.screens)
+        }
+        _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
+    }
+
+    fun onInstallmentConfirmed(
+        installment: Int,
+    ) {
+        if (_viewState.value.isLoading) return
+        _viewState.value = _viewState.value.copy(isLoading = true)
+        viewModelScope.launch {
+            processOrder(installments = installment)
+        }
+    }
+
+    fun markScreenPresented(
+        screen: Screen,
+    ) {
+        cancelledFormContextUseCase.markScreenPresented(screen)
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
     }
 
     fun initialization() {

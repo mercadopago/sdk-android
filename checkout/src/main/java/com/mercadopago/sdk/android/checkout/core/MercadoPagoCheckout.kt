@@ -12,6 +12,7 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.interactor.Checkout
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoUserInterfaceStyle
@@ -21,12 +22,12 @@ internal const val EXTRA_CONFIGURATION = "extra_configuration"
 /**
  * MercadoPagoCheckout class, used to configure the checkout.
  *
- * The type parameter [T] is inferred from the [CheckoutType] passed to [Builder],
- * so the callback in [show] receives a typed [MercadoPagoCheckoutResult] —
- * no runtime cast needed to access payment-specific fields.
+ * Both type parameters are inferred from the [MPCheckoutType] passed to [Builder]:
+ * - [T] types [MercadoPagoCheckoutResult.Success.paymentData] — no runtime cast needed.
+ * - [C] types [MercadoPagoCheckoutResult.UserCancelled.cancelledData] — no runtime cast needed.
  */
 @Stable
-class MercadoPagoCheckout<T : MPPaymentData> private constructor(
+class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private constructor(
     private val context: Context,
     private val checkoutConfiguration: CheckoutConfiguration,
     private val checkoutAppearance: MPCheckoutAppearance?,
@@ -34,10 +35,11 @@ class MercadoPagoCheckout<T : MPPaymentData> private constructor(
     /**
      * Launches the checkout.
      * @param callback Lambda to be invoked when checkout completes with the result.
-     * [MercadoPagoCheckoutResult.Success.paymentData] is already the concrete [T] subtype.
+     * [MercadoPagoCheckoutResult.Success.paymentData] and
+     * [MercadoPagoCheckoutResult.UserCancelled.cancelledData] are already the concrete subtypes.
      */
     fun show(
-        callback: (MercadoPagoCheckoutResult<T>) -> Unit,
+        callback: (MercadoPagoCheckoutResult<T, C>) -> Unit,
     ) {
         CheckoutCallbackHolder.setCallback(callback)
         Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
@@ -55,13 +57,13 @@ class MercadoPagoCheckout<T : MPPaymentData> private constructor(
     /**
      * Builder for MercadoPagoCheckout.
      * @param context Context
-     * @param checkoutType MPCheckoutType — determines [T] and therefore the type of
-     * [MercadoPagoCheckoutResult.Success.paymentData] delivered to [show]'s callback.
+     * @param checkoutType MPCheckoutType — determines [T] and [C], and therefore the concrete types of
+     * [MercadoPagoCheckoutResult.Success.paymentData] and [MercadoPagoCheckoutResult.UserCancelled.cancelledData].
      * @param checkoutAppearance MPCheckoutAppearance
      */
-    class Builder<T : MPPaymentData>(
+    class Builder<T : MPPaymentData, C : MPUserCancelledContext>(
         private val context: Context,
-        private val checkoutType: MPCheckoutType<T>,
+        private val checkoutType: MPCheckoutType<T, C>,
         private val checkoutAppearance: MPCheckoutAppearance? = MPCheckoutAppearance(
             theme = MercadoPagoThemes.Default,
             style = MercadoPagoUserInterfaceStyle.System,
@@ -80,7 +82,7 @@ class MercadoPagoCheckout<T : MPPaymentData> private constructor(
         /**
          * Builds the MercadoPagoCheckout
          */
-        fun build(): MercadoPagoCheckout<T> =
+        fun build(): MercadoPagoCheckout<T, C> =
             MercadoPagoCheckout(
                 context = context,
                 checkoutAppearance = checkoutAppearance,

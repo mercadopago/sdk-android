@@ -1,3 +1,6 @@
+# Paparazzi snapshot images
+showkase/src/test/snapshots/images/
+
 # Gradle files
 .gradle/
 build/

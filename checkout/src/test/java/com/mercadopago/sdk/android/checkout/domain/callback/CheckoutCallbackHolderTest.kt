@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.callback
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.After
@@ -10,14 +11,15 @@ import kotlin.test.assertEquals
 internal class CheckoutCallbackHolderTest {
     @After
     fun tearDown() {
-        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave>(null)
+        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>(null)
         CheckoutCallbackHolder.setActivityCallback(null)
     }
 
     @Test
     fun `given callback is set then notify invokes it with the result`() {
-        val result = mockk<MercadoPagoCheckoutResult<MPPaymentData.CardSave>>()
-        val callback = mockk<(MercadoPagoCheckoutResult<MPPaymentData.CardSave>) -> Unit>(relaxed = true)
+        val result = mockk<MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>>()
+        val callback: (MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>) -> Unit =
+            mockk(relaxed = true)
         CheckoutCallbackHolder.setCallback(callback)
 
         CheckoutCallbackHolder.notify(result)
@@ -37,8 +39,9 @@ internal class CheckoutCallbackHolderTest {
 
     @Test
     fun `given both callbacks are set then notify invokes both`() {
-        val result = mockk<MercadoPagoCheckoutResult<MPPaymentData.CardSave>>()
-        val callback = mockk<(MercadoPagoCheckoutResult<MPPaymentData.CardSave>) -> Unit>(relaxed = true)
+        val result = mockk<MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>>()
+        val callback: (MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>) -> Unit =
+            mockk(relaxed = true)
         val activityCallback = mockk<() -> Unit>(relaxed = true)
         CheckoutCallbackHolder.setCallback(callback)
         CheckoutCallbackHolder.setActivityCallback(activityCallback)
@@ -52,7 +55,7 @@ internal class CheckoutCallbackHolderTest {
     @Test
     fun `given notify is called then callbacks are cleared`() {
         var invokeCount = 0
-        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave> { invokeCount++ }
+        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave> { invokeCount++ }
 
         CheckoutCallbackHolder.notify(mockk())
         CheckoutCallbackHolder.notify(mockk())
@@ -62,7 +65,7 @@ internal class CheckoutCallbackHolderTest {
 
     @Test
     fun `given callback is null then notify does not throw`() {
-        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave>(null)
+        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>(null)
 
         CheckoutCallbackHolder.notify(mockk())
     }
@@ -76,9 +79,10 @@ internal class CheckoutCallbackHolderTest {
 
     @Test
     fun `given setCallback with null then previous callback is not invoked on notify`() {
-        val callback = mockk<(MercadoPagoCheckoutResult<MPPaymentData.CardSave>) -> Unit>(relaxed = true)
+        val callback: (MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>) -> Unit =
+            mockk(relaxed = true)
         CheckoutCallbackHolder.setCallback(callback)
-        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave>(null)
+        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>(null)
 
         CheckoutCallbackHolder.notify(mockk())
 
