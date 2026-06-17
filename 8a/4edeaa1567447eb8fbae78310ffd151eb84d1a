@@ -1,0 +1,27 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContextTest.kt
+  s_b6884ce9228587::t_0123f06130a833 1-54
+.gitignore
+  s_b6884ce9228587::t_f33a403eee20ed 1-3
+CHANGELOG.md
+  s_b6884ce9228587::t_bb40796eac812f 8-10
+ux-reference/CODEOWNERS
+  s_b6884ce9228587::t_10c5691e5ac9f0 1
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/model/ScreenTest.kt
+  s_b6884ce9228587::t_f8b282e158363b 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "8a4edeaa1567447eb8fbae78310ffd151eb84d1a",
+  "prompts": {},
+  "sessions": {
+    "s_b6884ce9228587": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2017f4f9-fa57-479e-a353-9418518f4894",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
