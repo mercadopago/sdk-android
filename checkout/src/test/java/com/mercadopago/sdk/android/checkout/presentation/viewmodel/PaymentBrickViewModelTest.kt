@@ -16,7 +16,9 @@ import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializat
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentSectionOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -286,17 +288,70 @@ internal class PaymentBrickViewModelTest {
         coVerify(exactly = 0) { processUseCase(any()) }
     }
 
+    // ─── A21 – Routing on option selected ────────────────────────────────────
+
+    @Test
+    fun `given saved card with cvv screen then NavigateToCVV is emitted`() = runTest {
+        val cvvScreen = SecurityCodeScreenOutput(
+            headerTitle = "CVV",
+            field = SecurityCodeFieldOutput(label = "CVV", placeholder = "123", helper = ""),
+            continueButtonLabel = "Continue",
+        )
+        val card = savedCardMethod(cardId = "CARD_CVV").copy(
+            cardData = savedCardMethod(cardId = "CARD_CVV").cardData?.copy(
+                securityCode = SecurityCodeOutput(length = 3, screen = cvvScreen),
+            ),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("CARD_CVV")
+
+        assertIs<PaymentBrickViewEvent.NavigateToCVV>(vm.viewEvent.value)
+        val event = vm.viewEvent.value as PaymentBrickViewEvent.NavigateToCVV
+        assertEquals("CARD_CVV", event.optionId)
+        assertEquals(3, event.cvvExpectedLength)
+    }
+
+    @Test
+    fun `given saved card without cvv screen then processPaymentMethod is called directly`() = runTest {
+        val cardNoCVV = savedCardMethod(cardId = "CARD_NOCVV")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(cardNoCVV)))
+        coEvery { processUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "ORD", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("CARD_NOCVV")
+        advanceUntilIdle()
+
+        assertEquals(null, vm.viewEvent.value)
+        coVerify(exactly = 1) { processUseCase(any()) }
+    }
+
+    @Test
+    fun `given new card option then OnOptionSelected is emitted`() = runTest {
+        val newCard = PaymentMethodOutput(type = "new_card", title = "New card")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(newCard)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("new_card")
+
+        assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
+    }
+
     // ─── Events ───────────────────────────────────────────────────────────────
 
     @Test
-    fun `given onOptionSelected then emits OnOptionSelected event`() = runTest {
+    fun `given onOptionSelected with unknown id then emits OnOptionSelected event`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
         val vm = viewModel()
 
-        vm.onOptionSelected("saved_card_123")
+        vm.onOptionSelected("unknown_id")
 
         assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
-        assertEquals("saved_card_123", (vm.viewEvent.value as PaymentBrickViewEvent.OnOptionSelected).optionId)
     }
 
     @Test

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 private const val DEFAULT_INSTALLMENTS = 1
+private const val SAVED_CARD_TYPE = "saved_card"
 
 internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
@@ -104,7 +105,23 @@ internal class PaymentBrickViewModel(
     fun onOptionSelected(
         optionId: String,
     ) {
-        _viewEvent.value = PaymentBrickViewEvent.OnOptionSelected(optionId)
+        val method = findMethodByOptionId(optionId)
+        val cardData = method?.cardData
+
+        if (method?.type == SAVED_CARD_TYPE && cardData != null) {
+            val screen = cardData.securityCode.screen
+            if (screen != null) {
+                _viewEvent.value = PaymentBrickViewEvent.NavigateToCVV(
+                    securityCodeScreen = screen,
+                    cvvExpectedLength = cardData.securityCode.length,
+                    optionId = optionId,
+                )
+            } else {
+                processPaymentMethod(optionId)
+            }
+        } else {
+            _viewEvent.value = PaymentBrickViewEvent.OnOptionSelected(optionId)
+        }
     }
 
     fun onViewEventConsumed() {

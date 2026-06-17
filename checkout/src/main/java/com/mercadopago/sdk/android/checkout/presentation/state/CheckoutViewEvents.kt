@@ -4,6 +4,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
 
 /**
  * One-shot events emitted by the checkout screens for the
@@ -20,6 +21,19 @@ internal sealed interface PaymentBrickViewEvent {
      * @property optionId Identifier of the selected payment option.
      */
     data class OnOptionSelected(val optionId: String) : PaymentBrickViewEvent
+
+    /**
+     * The selected saved card requires CVV entry before processing.
+     *
+     * @property securityCodeScreen BFF-supplied CVV screen configuration.
+     * @property cvvExpectedLength Expected digit count for the CVV (3 or 4).
+     * @property optionId Card identifier — used after CVV is confirmed to call processPaymentMethod.
+     */
+    data class NavigateToCVV(
+        val securityCodeScreen: SecurityCodeScreenOutput,
+        val cvvExpectedLength: Int,
+        val optionId: String,
+    ) : PaymentBrickViewEvent
 }
 
 /**

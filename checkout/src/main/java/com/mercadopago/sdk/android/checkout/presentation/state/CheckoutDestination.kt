@@ -18,4 +18,7 @@ internal sealed interface CheckoutDestination {
 
     @Serializable
     data object PaymentBrick : CheckoutDestination
+
+    @Serializable
+    data object CVV : CheckoutDestination
 }
