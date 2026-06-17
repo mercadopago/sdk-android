@@ -1,0 +1,14 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  h_6960b1a5f865cc 45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "bd89cf63010ae83e795fdad9181bb0e6e5b670f7",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}
