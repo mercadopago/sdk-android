@@ -1,0 +1,19 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_c981b91b8f7749::t_f391db91a1eaf5 141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "eda4ab7855065b6dea5817b5e56cd19cffb975fb",
+  "prompts": {},
+  "sessions": {
+    "s_c981b91b8f7749": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "056306b7-bc60-459e-9153-cb979f1aac65",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
