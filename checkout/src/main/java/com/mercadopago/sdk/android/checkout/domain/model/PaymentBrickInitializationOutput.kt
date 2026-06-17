@@ -16,10 +16,10 @@ internal data class PaymentSectionOutput(
 internal data class PaymentMethodOutput(
     val type: String,
     val title: String,
-    val subtitle: String?,
-    val iconUrl: String?,
-    val cardData: CardDataOutput?,
-    val options: List<TicketOptionOutput>?,
+    val subtitle: String? = null,
+    val iconUrl: String? = null,
+    val cardData: CardDataOutput? = null,
+    val options: List<TicketOptionOutput>? = null,
 )
 
 internal data class CardDataOutput(

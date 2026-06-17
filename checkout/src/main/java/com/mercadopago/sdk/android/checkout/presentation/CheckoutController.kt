@@ -70,6 +70,7 @@ internal fun CheckoutController(
 
         composable<CheckoutDestination.Payment> {
             PaymentBrickScreenDestination(
+                checkoutConfiguration = checkoutConfiguration,
                 onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
             )
         }
@@ -115,9 +116,12 @@ internal fun CheckoutController(
 
 @Composable
 private fun PaymentBrickScreenDestination(
+    checkoutConfiguration: CheckoutConfiguration?,
     onNavigateToForm: () -> Unit,
 ) {
-    val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel()
+    val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
+        parametersOf(checkoutConfiguration)
+    }
     val viewEvent by paymentBrickViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {

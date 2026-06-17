@@ -7,12 +7,14 @@ package com.mercadopago.sdk.android.checkout.presentation.state
  * @property sections Grouped payment options to display.
  * @property footerState Footer configuration with total amount and CTA button.
  * @property isLoading Whether the screen is loading data.
+ * @property isError Whether an unrecoverable error occurred during initialization.
  */
 data class PaymentBrickScreenState(
     val title: String = "",
     val sections: List<PaymentSectionState> = emptyList(),
     val footerState: PaymentBrickFooterState? = null,
     val isLoading: Boolean = false,
+    val isError: Boolean = false,
 )
 
 /**

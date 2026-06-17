@@ -19,6 +19,7 @@ import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -31,6 +32,7 @@ import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+@Suppress("LongMethod") // Koin module aggregates all checkout bindings by design — length grows with features
 internal fun provideDataModule() =
     module {
         single<CheckoutThemePreferences> {
@@ -64,6 +66,9 @@ internal fun provideDataModule() =
             PaymentBrickInitializationRepositoryImpl(dataSource = get())
         }
         factory {
+            FetchPaymentBrickInitializationUseCase(repository = get())
+        }
+        factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
@@ -89,5 +94,10 @@ internal fun provideDataModule() =
                 orderId = (params.component4() as? String).orEmpty(),
             )
         }
-        viewModel { PaymentBrickViewModel() }
+        viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
+            PaymentBrickViewModel(
+                checkoutConfiguration = checkoutConfiguration,
+                fetchInitializationUseCase = get(),
+            )
+        }
     }
