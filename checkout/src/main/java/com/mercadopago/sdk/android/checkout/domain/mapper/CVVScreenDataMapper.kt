@@ -5,11 +5,14 @@ import com.mercadopago.sdk.android.checkout.domain.model.CVVScreenData
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
 
-internal fun SecurityCodeScreenOutput.toCVVScreenData(): CVVScreenData =
+internal fun SecurityCodeScreenOutput.toCVVScreenData(
+    expectedLength: Int,
+): CVVScreenData =
     CVVScreenData(
         headerTitle = headerTitle,
         field = field.toCVVFieldConfig(),
         continueButtonLabel = continueButtonLabel,
+        expectedLength = expectedLength,
     )
 
 internal fun SecurityCodeFieldOutput.toCVVFieldConfig(): CVVFieldConfig =

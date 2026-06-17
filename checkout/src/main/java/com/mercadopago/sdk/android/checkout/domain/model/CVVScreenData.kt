@@ -10,11 +10,13 @@ package com.mercadopago.sdk.android.checkout.domain.model
  * @property headerTitle Screen title — translated by the BFF.
  * @property field Configuration for the CVV input field.
  * @property continueButtonLabel Label for the continue button — translated by the BFF.
+ * @property expectedLength Expected CVV digit count from `SecurityCodeOutput.length` (3 for Visa/Master, 4 for Amex).
  */
 internal data class CVVScreenData(
     val headerTitle: String,
     val field: CVVFieldConfig,
     val continueButtonLabel: String,
+    val expectedLength: Int,
 )
 
 /**
