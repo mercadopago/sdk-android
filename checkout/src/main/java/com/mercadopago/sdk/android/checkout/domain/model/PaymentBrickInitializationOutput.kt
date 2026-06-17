@@ -30,7 +30,7 @@ internal data class CardDataOutput(
     val paymentTypeId: String,
     val issuerId: Int,
     val securityCode: SecurityCodeOutput,
-    val installments: InstallmentsOutput?,
+    val installments: InstallmentsOutput? = null,
 )
 
 internal data class SecurityCodeOutput(

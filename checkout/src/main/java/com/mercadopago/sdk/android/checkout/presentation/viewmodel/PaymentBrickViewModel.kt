@@ -4,8 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.extensions.fold
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
@@ -15,15 +23,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private const val DEFAULT_INSTALLMENTS = 1
+
 internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val fetchInitializationUseCase: FetchPaymentBrickInitializationUseCase,
+    private val processOrderUseCase: ProcessOrderUseCase,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(PaymentBrickScreenState(isLoading = true))
     val viewState: StateFlow<PaymentBrickScreenState> = _viewState.asStateFlow()
 
     private val _viewEvent = MutableStateFlow<PaymentBrickViewEvent?>(null)
     val viewEvent: StateFlow<PaymentBrickViewEvent?> = _viewEvent.asStateFlow()
+
+    private var initializationOutput: PaymentBrickInitializationOutput? = null
 
     init {
         loadInitialization()
@@ -37,9 +50,51 @@ internal class PaymentBrickViewModel(
         viewModelScope.launch {
             _viewState.value = PaymentBrickScreenState(isLoading = true)
             when (val result = fetchInitializationUseCase(params)) {
-                is Result.Success -> _viewState.value = result.data.toScreenState()
+                is Result.Success -> {
+                    initializationOutput = result.data
+                    _viewState.value = result.data.toScreenState()
+                }
                 is Result.Error -> _viewState.value = PaymentBrickScreenState(isError = true)
             }
+        }
+    }
+
+    fun processPaymentMethod(
+        optionId: String,
+    ) {
+        val method = findMethodByOptionId(optionId) ?: return
+        val paymentType = checkoutConfiguration?.checkoutType as? MPCheckoutType.Payment ?: return
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            processOrderUseCase(
+                ProcessOrderParams(
+                    orderId = paymentType.order.orderId,
+                    amount = paymentType.order.amount.toPlainString(),
+                    paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                    paymentMethodType = method.cardData?.paymentTypeId.orEmpty(),
+                    token = "",
+                    installments = DEFAULT_INSTALLMENTS,
+                ),
+            ).fold(
+                onSuccess = { orderOutput ->
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                    val paymentData = MPPaymentData.Payment(
+                        orderId = orderOutput.id,
+                        orderStatus = orderOutput.status,
+                        transactionAmount = null,
+                        paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                        paymentTypeId = method.cardData?.paymentTypeId.orEmpty(),
+                        payer = null,
+                        installment = null,
+                        issuerId = method.cardData?.issuerId?.toString(),
+                    )
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                },
+                onError = { error ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewState.value = _viewState.value.copy(isLoading = false, isError = true)
+                },
+            )
         }
     }
 
@@ -56,6 +111,16 @@ internal class PaymentBrickViewModel(
     // TECH_DEBT: define specific UserCancelledContext for PaymentBrick and emit a cancellation
     // viewEvent so CheckoutController can notify CheckoutCallbackHolder.
     fun onBackPressed() = Unit
+
+    private fun findMethodByOptionId(
+        optionId: String,
+    ): PaymentMethodOutput? =
+        initializationOutput?.sections
+            ?.flatMap { it.methods }
+            ?.firstOrNull { method ->
+                // saved_card: matched by unique card ID; others (new_card, ticket) by type string
+                if (method.cardData != null) method.cardData.id == optionId else method.type == optionId
+            }
 
     private fun CheckoutConfiguration.buildInitializationParams(): FetchPaymentBrickInitializationParams? {
         val paymentType = checkoutType as? MPCheckoutType.Payment ?: return null

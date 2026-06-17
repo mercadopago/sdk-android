@@ -98,6 +98,7 @@ internal fun provideDataModule() =
             PaymentBrickViewModel(
                 checkoutConfiguration = checkoutConfiguration,
                 fetchInitializationUseCase = get(),
+                processOrderUseCase = ProcessOrderUseCase(repository = get()),
             )
         }
     }
