@@ -1,0 +1,24 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/PaymentBrickInitializationRemoteDataSourceImplTest.kt
+  s_a54faad17ccc90::t_af63c34d98ab3c 32
+  s_a54faad17ccc90::t_ce0d9bbc3594ac 43
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/PaymentBrickInitializationRepositoryImplTest.kt
+  s_a54faad17ccc90::t_dd5127c22f1488 79
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_a54faad17ccc90::t_99f4acf85e8a33 106
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "70eb11ea02122428e30139c6f79e3ca7df661751",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}

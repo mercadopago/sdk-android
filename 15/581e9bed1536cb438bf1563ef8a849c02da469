@@ -1,0 +1,28 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CVVScreenData.kt
+  s_a54faad17ccc90::t_219e77f85b7b89 13,19
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapperTest.kt
+  s_a54faad17ccc90::t_61d88fd47801bf 23,30,37,44,51,73-74
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapper.kt
+  s_a54faad17ccc90::t_4b080638289cf4 8-10
+  s_a54faad17ccc90::t_1b0a1b5b2bd55a 15
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CVVViewModel.kt
+  s_a54faad17ccc90::t_fb4f968390e44e 29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cvv/CVVScreen.kt
+  s_a54faad17ccc90::t_a3eebd059d3318 25,42,58,88-89,125,134,136,148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "15581e9bed1536cb438bf1563ef8a849c02da469",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
