@@ -13,4 +13,6 @@
     <string name="checkout_feature_title">Checkout</string>
     <string name="checkout_feature_description">The Checkout feature offers a seamless payment experience without requiring any component building. You can leverage one of the default themes or customize your own to create a complete payment solution.</string>
     <string name="payment_button_text">Pay</string>
+    <string name="card_transaction_feature_title">Card Transaction</string>
+    <string name="card_transaction_feature_description">Demonstrates MPCheckoutType.CardTransaction, which processes a card payment linked to an existing order.</string>
 </resources>

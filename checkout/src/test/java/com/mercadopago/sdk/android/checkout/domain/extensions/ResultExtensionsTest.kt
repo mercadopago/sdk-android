@@ -1,6 +1,13 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
+import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
+import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import kotlinx.coroutines.test.runTest
+import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -104,5 +111,224 @@ internal class ResultExtensionsTest {
         result.onError { executed = true }
 
         assertEquals(false, executed)
+    }
+
+    @Test
+    fun `given block returns success then withErrorHandling returns it`() = runTest {
+        val result = withErrorHandling { Result.Success("ok") }
+
+        assertIs<Result.Success<String>>(result)
+        assertEquals("ok", result.data)
+    }
+
+    @Test
+    fun `given SocketTimeoutException then withErrorHandling returns TIMEOUT response error`() = runTest {
+        val result = withErrorHandling<String> { throw SocketTimeoutException("timeout") }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("TIMEOUT", error.error.code)
+        assertEquals("timeout", error.error.message)
+    }
+
+    @Test
+    fun `given UnknownHostException then withErrorHandling returns NO_INTERNET response error`() = runTest {
+        val result = withErrorHandling<String> { throw UnknownHostException("no host") }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("NO_INTERNET", error.error.code)
+    }
+
+    @Test
+    fun `given ConnectException then withErrorHandling returns CONNECTION response error`() = runTest {
+        val result = withErrorHandling<String> { throw ConnectException("connect") }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("CONNECTION", error.error.code)
+    }
+
+    @Test
+    fun `given IOException then withErrorHandling returns NETWORK response error`() = runTest {
+        val result = withErrorHandling<String> { throw IOException("io") }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("NETWORK", error.error.code)
+    }
+
+    @Test
+    fun `given generic Exception then withErrorHandling returns EXCEPTION response error`() = runTest {
+        val result = withErrorHandling<String> { throw IllegalStateException("boom") }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("EXCEPTION", error.error.code)
+        assertEquals("boom", error.error.message)
+    }
+
+    @Test
+    fun `given generic Exception without message then withErrorHandling uses default message`() = runTest {
+        val result = withErrorHandling<String> { throw IllegalStateException() }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("EXCEPTION", error.error.code)
+        assertEquals("An error occurred", error.error.message)
+    }
+
+    @Test
+    fun `given default shouldRetry and null httpStatus then withServiceRetry retries`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry<String>(maxAttempts = 2) {
+            attempts++
+            Result.Error(ResponseError(code = "ERR", message = "no status", httpStatus = null))
+        }
+
+        assertIs<Result.Error<ResponseError>>(result)
+        assertEquals(2, attempts)
+    }
+
+    @Test
+    fun `given default shouldRetry and server error httpStatus then withServiceRetry retries`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry<String>(maxAttempts = 2) {
+            attempts++
+            Result.Error(ResponseError(code = "500", message = "server", httpStatus = 503))
+        }
+
+        assertIs<Result.Error<ResponseError>>(result)
+        assertEquals(2, attempts)
+    }
+
+    @Test
+    fun `given default shouldRetry and client error httpStatus then withServiceRetry does not retry`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry<String>(maxAttempts = 2) {
+            attempts++
+            Result.Error(ResponseError(code = "404", message = "not found", httpStatus = 404))
+        }
+
+        assertIs<Result.Error<ResponseError>>(result)
+        assertEquals(1, attempts)
+    }
+
+    @Test
+    fun `given zero maxAttempts then withServiceRetry returns RETRY_EXHAUSTED fallback`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry<String>(maxAttempts = 0) {
+            attempts++
+            Result.Success("never")
+        }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("RETRY_EXHAUSTED", error.error.code)
+        assertEquals(0, attempts)
+    }
+
+    @Test
+    fun `given SocketTimeoutException then withResultErrorHandling returns TIMEOUT request error`() = runTest {
+        val result = withResultErrorHandling<String> { throw SocketTimeoutException("timeout") }
+
+        val error = assertIs<Result.Error<ResultError>>(result)
+        val request = assertIs<ResultError.Request>(error.error)
+        assertEquals("TIMEOUT", request.code)
+        assertEquals("timeout", request.message)
+    }
+
+    @Test
+    fun `given UnknownHostException then withResultErrorHandling returns NO_INTERNET request error`() = runTest {
+        val result = withResultErrorHandling<String> { throw UnknownHostException("no host") }
+
+        val error = assertIs<Result.Error<ResultError>>(result)
+        val request = assertIs<ResultError.Request>(error.error)
+        assertEquals("NO_INTERNET", request.code)
+    }
+
+    @Test
+    fun `given ConnectException then withResultErrorHandling returns CONNECTION request error`() = runTest {
+        val result = withResultErrorHandling<String> { throw ConnectException("connect") }
+
+        val error = assertIs<Result.Error<ResultError>>(result)
+        val request = assertIs<ResultError.Request>(error.error)
+        assertEquals("CONNECTION", request.code)
+    }
+
+    @Test
+    fun `given IOException then withResultErrorHandling returns NETWORK request error`() = runTest {
+        val result = withResultErrorHandling<String> { throw IOException("io") }
+
+        val error = assertIs<Result.Error<ResultError>>(result)
+        val request = assertIs<ResultError.Request>(error.error)
+        assertEquals("NETWORK", request.code)
+    }
+
+    @Test
+    fun `given generic Exception then withResultErrorHandling returns EXCEPTION request error`() = runTest {
+        val result = withResultErrorHandling<String> { throw IllegalStateException("boom") }
+
+        val error = assertIs<Result.Error<ResultError>>(result)
+        val request = assertIs<ResultError.Request>(error.error)
+        assertEquals("EXCEPTION", request.code)
+        assertEquals("boom", request.message)
+    }
+
+    @Test
+    fun `given block returns success then withResultErrorHandling returns it`() = runTest {
+        val result = withResultErrorHandling { Result.Success("ok") }
+
+        assertIs<Result.Success<String>>(result)
+        assertEquals("ok", result.data)
+    }
+
+    @Test
+    fun `given success on first attempt then withServiceRetry does not retry`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry {
+            attempts++
+            Result.Success("ok")
+        }
+
+        assertIs<Result.Success<String>>(result)
+        assertEquals(1, attempts)
+    }
+
+    @Test
+    fun `given retryable error then withServiceRetry retries up to maxAttempts and returns last error`() = runTest {
+        var attempts = 0
+        val responseError = ResponseError(code = "500", message = "server", httpStatus = 500)
+
+        val result = withServiceRetry<String>(maxAttempts = 3) {
+            attempts++
+            Result.Error(responseError)
+        }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("500", error.error.code)
+        assertEquals(3, attempts)
+    }
+
+    @Test
+    fun `given non-retryable error then withServiceRetry returns immediately`() = runTest {
+        var attempts = 0
+
+        val result = withServiceRetry<String>(shouldRetry = { false }) {
+            attempts++
+            Result.Error(ResponseError(code = "400", message = "bad", httpStatus = 400))
+        }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("400", error.error.code)
+        assertEquals(1, attempts)
+    }
+
+    @Test
+    fun `given exception thrown inside block then withServiceRetry converts it via toResponseError`() = runTest {
+        val result = withServiceRetry<String>(shouldRetry = { false }) {
+            throw SocketTimeoutException("timeout")
+        }
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("TIMEOUT", error.error.code)
     }
 }
