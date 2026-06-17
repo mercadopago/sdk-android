@@ -1,0 +1,19 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cvv/CVVScreen.kt
+  s_a54faad17ccc90::t_ad682d0b5ab5db 1-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b8c4f375829f80a615df521bc648ac6da80bb64a",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
