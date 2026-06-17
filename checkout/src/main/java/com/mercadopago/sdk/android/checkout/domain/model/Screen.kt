@@ -9,4 +9,16 @@ package com.mercadopago.sdk.android.checkout.domain.model
 enum class Screen {
     /** The installments selection screen. */
     INSTALLMENTS,
+
+    /** The payment method selector screen (PaymentBrick entry). */
+    PAYMENT_METHOD_SELECTOR,
+
+    /** The CVV entry screen shown for saved cards that require security code. */
+    CVV,
+
+    /** The new card form screen. */
+    CARD_FORM,
+
+    /** The offline payment method selector screen (boleto, ticket, etc.). */
+    OFFLINE_METHOD_SELECTOR,
 }
