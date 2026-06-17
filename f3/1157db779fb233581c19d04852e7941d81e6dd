@@ -1,0 +1,19 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCase.kt
+  s_960e238023b5e4::t_bcabd4f1abaf61 57-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "f31157db779fb233581c19d04852e7941d81e6dd",
+  "prompts": {},
+  "sessions": {
+    "s_960e238023b5e4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3447cf5c-bbef-4cbb-bddf-3ae02bd1f921",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
