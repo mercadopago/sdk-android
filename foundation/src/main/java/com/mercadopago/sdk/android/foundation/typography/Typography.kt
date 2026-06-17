@@ -106,10 +106,10 @@ internal val HeadingSmallDefault = TextStyle(
 @ShowkaseTypography(name = "Heading Small Narrow", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingSmallNarrow = TextStyle(
     fontFamily = InterFontFamily,
-    fontWeight = FontWeight.W400,
-    fontSize = 16.sp,
-    lineHeight = 22.sp,
-    letterSpacing = (-1).sp,
+    fontWeight = FontWeight.W600,
+    fontSize = 14.sp,
+    lineHeight = 18.sp,
+    letterSpacing = (0).sp,
 )
 
 @ShowkaseTypography(name = "Heading Medium Default", group = TYPOGRAPHY_HEADING_GROUP)
@@ -124,10 +124,10 @@ internal val HeadingMediumDefault = TextStyle(
 @ShowkaseTypography(name = "Heading Medium Narrow", group = TYPOGRAPHY_HEADING_GROUP)
 internal val HeadingMediumNarrow = TextStyle(
     fontFamily = InterFontFamily,
-    fontWeight = FontWeight.W400,
-    fontSize = 20.sp,
-    lineHeight = 28.sp,
-    letterSpacing = (-1).sp,
+    fontWeight = FontWeight.W600,
+    fontSize = 16.sp,
+    lineHeight = 20.sp,
+    letterSpacing = (0).sp,
 )
 
 @ShowkaseTypography(name = "Heading Huge Default", group = TYPOGRAPHY_HEADING_GROUP)

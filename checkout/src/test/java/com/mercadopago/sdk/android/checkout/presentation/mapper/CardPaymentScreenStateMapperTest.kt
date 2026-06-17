@@ -70,7 +70,7 @@ internal class CardPaymentScreenStateMapperTest {
         ),
     ) = CardFormInitializationOutput(
         title = title,
-        button = button,
+        buttonLabel = button,
         fields = CardFormFields(
             cardNumber = cardNumber,
             holderName = holderName,
@@ -91,12 +91,12 @@ internal class CardPaymentScreenStateMapperTest {
     }
 
     @Test
-    fun `given output then button is mapped to fixedFooterState buttonText`() {
+    fun `given output then buttonLabel is mapped to footerState buttonLabel`() {
         val output = buildOutput(button = "Confirm")
 
         val state = output.toCardPaymentScreenState()
 
-        assertEquals("Confirm", state.fixedFooterState.buttonText)
+        assertEquals("Confirm", state.footerState.buttonLabel)
     }
 
     @Test
@@ -179,6 +179,91 @@ internal class CardPaymentScreenStateMapperTest {
         assertEquals("empty", state.validation.errorEmpty)
         assertEquals("incomplete", state.validation.errorIncomplete)
         assertEquals("invalid", state.validation.errorInvalid)
+    }
+
+    @Test
+    fun `given cardNumber config with length and mask then state reflects both`() {
+        val output = buildOutput(
+            cardNumber = CardNumberField(
+                label = "",
+                placeholder = "",
+                validation = defaultCardNumberValidation,
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 15, max = 15),
+                    mask = "#### ###### #####",
+                ),
+            ),
+        )
+
+        val state = output.toCardPaymentScreenState().cardNumberState
+
+        assertEquals(15, state.maxLength)
+        assertEquals("#### ###### #####", state.mask)
+    }
+
+    @Test
+    fun `given cardNumber config with length but no mask then mask is derived from length`() {
+        val output = buildOutput(
+            cardNumber = CardNumberField(
+                label = "",
+                placeholder = "",
+                validation = defaultCardNumberValidation,
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 16, max = 16),
+                    mask = null,
+                ),
+            ),
+        )
+
+        val state = output.toCardPaymentScreenState().cardNumberState
+
+        assertEquals(16, state.maxLength)
+        assertEquals("#### #### #### ####", state.mask)
+    }
+
+    @Test
+    fun `given securityCode length zero then field is optional`() {
+        val output = buildOutput(
+            securityCode = SecurityCodeField(
+                label = "",
+                placeholder = "",
+                helper = "",
+                tooltip = "",
+                validation = defaultValidation,
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 0, max = 0),
+                ),
+            ),
+        )
+
+        val state = output.toCardPaymentScreenState().secureCodeState
+
+        assertTrue(state.optional)
+    }
+
+    @Test
+    fun `given securityCode length 4 then maxLength is 4 and field is not optional`() {
+        val output = buildOutput(
+            securityCode = SecurityCodeField(
+                label = "",
+                placeholder = "",
+                helper = "",
+                tooltip = "",
+                validation = defaultValidation,
+                config = CardFieldConfig(
+                    type = "text",
+                    length = LengthRange(min = 4, max = 4),
+                ),
+            ),
+        )
+
+        val state = output.toCardPaymentScreenState().secureCodeState
+
+        assertEquals(4, state.maxLength)
+        assertFalse(state.optional)
     }
 
     @Test

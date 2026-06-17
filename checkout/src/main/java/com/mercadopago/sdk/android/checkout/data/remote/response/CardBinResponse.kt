@@ -15,19 +15,22 @@ internal data class PaymentMethodResponse(
 )
 
 internal data class IssuerResponse(
-    val id: Long?,
+    val id: String?,
     val name: String?,
-    val secureThumbnail: String?,
 )
 
 internal data class InstallmentConfigResponse(
+    val selectionType: String?,
     val quotas: List<QuotaResponse>?,
 )
 
 internal data class QuotaResponse(
-    val quantity: Int?,
-    val installmentAmount: String?,
-    val totalAmount: String?,
-    val label: String?,
-    val discountRate: Double?,
+    val installments: Int?,
+    val installmentAmount: Float?,
+    val totalAmount: Float?,
+    val primaryLabel: String?,
+    val secondaryLabel: String?,
+    val tertiaryLabel: String?,
+    val state: String?,
+    val accessibilityLabel: String?,
 )
