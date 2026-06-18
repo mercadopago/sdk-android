@@ -60,6 +60,7 @@ internal class DataModuleTest {
         unmockkAll()
     }
 
+    @Suppress("LongMethod") // Koin verification requires listing every binding — grows with features
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideDataModule is called then bindings should be verified`() {
@@ -93,6 +94,11 @@ internal class DataModuleTest {
             single { mockk<CardFormService>(relaxed = true) }
             single { mockk<OrderService>(relaxed = true) }
             single { mockk<PaymentBrickInitializationService>(relaxed = true) }
+            single {
+                mockk<com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickCardService>(
+                    relaxed = true,
+                )
+            }
         }
 
         val koin = koinApplication {
@@ -109,6 +115,8 @@ internal class DataModuleTest {
                 OrderService::class,
                 PaymentBrickInitializationService::class,
                 PaymentBrickInitializationRepository::class,
+                com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickCardRepository::class,
+                com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickCardService::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
