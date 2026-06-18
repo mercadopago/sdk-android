@@ -1,0 +1,44 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_a54faad17ccc90::t_d5b6a35d1be501 91
+  s_f6f6ded453ad0b::t_84cc2b57c9244c 59-62
+  s_0bb2882e648fdb::t_c245e4a15fa310 55,128,135-137
+  s_a54faad17ccc90::t_06560bc088db02 82
+  s_a54faad17ccc90::t_00651436be67ee 83,85
+  s_a54faad17ccc90::t_e16f1d7c6dcf36 347-353
+  s_a54faad17ccc90::t_1fbdcc95583115 340-343,345-346,355-356,358,360-361
+  s_0bb2882e648fdb::t_13b848032f5189 282-287,289-290,297-298,330-332
+  s_a54faad17ccc90::t_25110f3719d6ee 117
+  s_a54faad17ccc90::t_31e33b028ca48d 99,103,112-114
+  s_a54faad17ccc90::t_ed500e7e75e1af 52
+  s_a54faad17ccc90::t_215f4c9ddb3d68 54
+  s_a54faad17ccc90::t_6d59dc8eeefd33 203,212,218-219
+  s_a54faad17ccc90::t_0ed574ebe5bfbc 148-155
+  s_a54faad17ccc90::t_e1725368dcdd74 84,87-88,94-98,100-101
+  s_4b27daacfb9e3b::t_a949396410fe2e 1-6,12-13,16,21,26,29-32,36,38,47-49,63-64,66-72,74-78,196,234,236,245-246,249,274-275
+  s_a54faad17ccc90::t_2fd504c71c3c52 202,214
+  s_a54faad17ccc90::t_a620eec10057b6 228,230-232
+  s_a54faad17ccc90::t_b17e68ccf6fc50 134
+  s_a54faad17ccc90::t_c9de53266bdc63 89-90,92-93
+  s_4b27daacfb9e3b::t_3ad5f9e111ca72 7-8,34
+  s_09767c4b20556d::t_5312134a38af6c 272,277,279-280
+  s_2168b0c5394d17::t_3461d35125a2f6 14-15,20,41-43,45-46,80,120-123,195,197-200,205,209-211,213,215,233,235,237-241,244,247-248
+  s_a54faad17ccc90::t_0a1054df2e8f67 140-141,143-147,156-194
+  s_a54faad17ccc90::t_036dcac6c62f7f 204
+  s_a54faad17ccc90::t_4e543f1c4bbef5 102,104-108
+  s_a54faad17ccc90::t_2681e8dcbb7035 229
+  s_a54faad17ccc90::t_d2b6a3ede01827 53
+  s_a54faad17ccc90::t_477852d147f630 86
+  s_a54faad17ccc90::t_d7b97fe1846ff6 271,273,276,278
+  s_a54faad17ccc90::t_deddab99197629 344,354,357,359
+  s_4b27daacfb9e3b::t_92f29df1635c77 216-217
+  s_a54faad17ccc90::t_0aabc0ca870697 39-40
+  s_0bb2882e648fdb::t_4f41c12bc0b7c6 9-11,23,28,37
+  s_a54faad17ccc90::t_c3f4446404c20d 25,27,35
+  s_a54faad17ccc90::t_85539939bb6812 109-111,115-116,118-119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "cc315e2f236644a2614f8c76d03c775d2e1fc8c0",
+  "prompts": {}
+}
