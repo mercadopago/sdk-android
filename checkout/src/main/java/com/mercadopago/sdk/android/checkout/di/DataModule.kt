@@ -23,6 +23,7 @@ import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickCardRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickCardUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
@@ -31,6 +32,7 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.NewCardViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -79,6 +81,9 @@ internal fun provideDataModule() =
             PaymentBrickCardRepositoryImpl(dataSource = get())
         }
         factory {
+            FetchPaymentBrickCardUseCase(repository = get())
+        }
+        factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
         viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
@@ -110,5 +115,8 @@ internal fun provideDataModule() =
                 fetchInitializationUseCase = get(),
                 processOrderUseCase = ProcessOrderUseCase(repository = get()),
             )
+        }
+        viewModel {
+            NewCardViewModel(fetchCardUseCase = get())
         }
     }
