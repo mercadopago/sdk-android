@@ -1,0 +1,55 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/InstallmentsOutputMapper.kt
+  s_a54faad17ccc90::t_15f6a79393c900 45
+  s_a54faad17ccc90::t_42bd9b0fdfb852 1-44,46-47
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModel.kt
+  s_a54faad17ccc90::t_f59d3b602eefbd 91
+  s_a54faad17ccc90::t_150b2af13f4bea 70,83
+  s_4b27daacfb9e3b::t_6048629c76c2a8 22,41-43,108-110,149-154,171-188
+  s_a54faad17ccc90::t_22348130f30946 87
+  s_a54faad17ccc90::t_097ae5495c390b 117-136
+  s_a54faad17ccc90::t_366b0d9976278d 7-9,11,13-14,17,19,29,32,36,44,46,59-62,68-69,71-81,84-86,88-90,92-104,192-193
+  s_a54faad17ccc90::t_57b4c952e6ba36 111-113,146,148
+  s_a54faad17ccc90::t_3ebb1694cdfd39 163-165
+  s_a54faad17ccc90::t_1c208802715535 189-191
+  s_a54faad17ccc90::t_2e8e1c35ac163f 194-197
+  s_a54faad17ccc90::t_ed242027550428 82
+  s_a54faad17ccc90::t_5d0c800215aa04 12,15,45,155-162,166-169
+  s_a54faad17ccc90::t_753cae9261cefc 30
+  s_a54faad17ccc90::t_6d44fed574f332 10
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/InstallmentsOutputMapperTest.kt
+  s_a54faad17ccc90::t_d32dfa55fd9854 119
+  s_a54faad17ccc90::t_bb9aaaf679bab2 1-107,109-118,120-121
+  s_a54faad17ccc90::t_295e08c96b8da1 108
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_4b27daacfb9e3b::t_92f29df1635c77 188-189
+  s_2168b0c5394d17::t_3461d35125a2f6 14-15,20,39-41,43-44,78,80,100,102-104,167,169-172,174,177,181-183,185-187,205,207,209-213,216,219-220
+  s_f6f6ded453ad0b::t_84cc2b57c9244c 57-60
+  s_a54faad17ccc90::t_d7da028f6d6753 129-136
+  s_09767c4b20556d::t_5312134a38af6c 244,246-249,251-252
+  s_a54faad17ccc90::t_c9de53266bdc63 87,90-91
+  s_a54faad17ccc90::t_28c63f97d3a838 325
+  s_a54faad17ccc90::t_150a6c96ee5df8 81,83,86,88-89
+  s_a54faad17ccc90::t_e16f1d7c6dcf36 318-324
+  s_0bb2882e648fdb::t_4f41c12bc0b7c6 9-11,23,28,37
+  s_a54faad17ccc90::t_960eedb352eb0d 51-52
+  s_0bb2882e648fdb::t_c245e4a15fa310 53,109,115-118
+  s_a54faad17ccc90::t_a620eec10057b6 200,202-204
+  s_a54faad17ccc90::t_cc52bd3eac2e56 176
+  s_a54faad17ccc90::t_6d59dc8eeefd33 175,184,190-191
+  s_a54faad17ccc90::t_e1725368dcdd74 82,84-85,92-99
+  s_4b27daacfb9e3b::t_a949396410fe2e 1-6,12-13,16,21,26,29-32,36,38,45-47,61-62,64-70,72-76,168,206,208,217-218,221
+  s_a54faad17ccc90::t_f7d5b047e6166e 201
+  s_a54faad17ccc90::t_c3f4446404c20d 25,27,35
+  s_a54faad17ccc90::t_6bf9d42cfc9042 101
+  s_a54faad17ccc90::t_6d87c3f4458b7e 121-128,137-166
+  s_a54faad17ccc90::t_1fbdcc95583115 312-317,326-330
+  s_4b27daacfb9e3b::t_3ad5f9e111ca72 7-8,34
+  s_0bb2882e648fdb::t_13b848032f5189 254-259,261-262,269-270,302-304
+  s_a54faad17ccc90::t_ed500e7e75e1af 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b33acaf4707ea5e3de281aeb8fb80c92211e9cdc",
+  "prompts": {}
+}
