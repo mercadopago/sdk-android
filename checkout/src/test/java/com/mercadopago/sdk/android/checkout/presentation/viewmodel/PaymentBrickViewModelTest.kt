@@ -461,6 +461,71 @@ internal class PaymentBrickViewModelTest {
         assertEquals(1, event.installmentData.quotas.size)
     }
 
+    // ─── A25 – CVV confirmed routing ─────────────────────────────────────────
+
+    @Test
+    fun `given cvv confirmed for card with installments then NavigateToInstallmentsFromCard emitted`() = runTest {
+        val installments = InstallmentsOutput(
+            header = InstallmentsHeaderOutput(title = "Elegí"),
+            totalLabel = "Total",
+            payButtonLabel = "Pagar",
+            selectionType = "radio_button",
+            quotas = listOf(
+                QuotaOutput(
+                    installments = 3,
+                    installmentAmount = BigDecimal("170"),
+                    totalAmount = BigDecimal("510"),
+                    primaryLabel = "3x",
+                    secondaryLabel = "",
+                    state = "none",
+                ),
+            ),
+        )
+        val cvvScreen = SecurityCodeScreenOutput(
+            headerTitle = "CVV",
+            field = SecurityCodeFieldOutput(label = "CVV", placeholder = "123", helper = ""),
+            continueButtonLabel = "Continuar",
+        )
+        val card = savedCardMethod(cardId = "CARD_CVV_INST").copy(
+            cardData = savedCardMethod(cardId = "CARD_CVV_INST").cardData?.copy(
+                securityCode = SecurityCodeOutput(length = 3, screen = cvvScreen),
+                installments = installments,
+            ),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onCVVConfirmed("CARD_CVV_INST")
+
+        assertIs<PaymentBrickViewEvent.NavigateToInstallmentsFromCard>(vm.viewEvent.value)
+    }
+
+    @Test
+    fun `given cvv confirmed for card without installments then process is called`() = runTest {
+        val cvvScreen = SecurityCodeScreenOutput(
+            headerTitle = "CVV",
+            field = SecurityCodeFieldOutput(label = "CVV", placeholder = "123", helper = ""),
+            continueButtonLabel = "Continuar",
+        )
+        val card = savedCardMethod(cardId = "CARD_CVV_NOINST").copy(
+            cardData = savedCardMethod(cardId = "CARD_CVV_NOINST").cardData?.copy(
+                securityCode = SecurityCodeOutput(length = 3, screen = cvvScreen),
+                installments = null,
+            ),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        coEvery { processUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "ORD", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onCVVConfirmed("CARD_CVV_NOINST")
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { processUseCase(any()) }
+    }
+
     // ─── A11 – onUserCancelled ────────────────────────────────────────────────
 
     @Test

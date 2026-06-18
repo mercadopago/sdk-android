@@ -33,6 +33,7 @@ private const val CVV_SCREEN_GROUP = "CVV_SCREEN"
 internal fun CVVScreen(
     viewModel: CVVViewModel,
     onBackPressed: () -> Unit = {},
+    onConfirm: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val cvvPCIState = rememberPCIFieldState()
@@ -48,7 +49,12 @@ internal fun CVVScreen(
                 else -> Unit
             }
         },
-        onContinue = viewModel::onContinue,
+        onContinue = {
+            viewModel.onContinue()
+            if (viewState.isContinueEnabled) {
+                onConfirm()
+            }
+        },
     )
 }
 

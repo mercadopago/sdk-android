@@ -167,6 +167,24 @@ internal class PaymentBrickViewModel(
         }
     }
 
+    /**
+     * Called after the user has successfully entered CVV on the CVV screen.
+     * Routes to installments (if the card supports them) or directly to processing.
+     */
+    fun onCVVConfirmed(
+        optionId: String,
+    ) {
+        val cardData = findMethodByOptionId(optionId)?.cardData
+        if (cardData?.installments != null) {
+            _viewEvent.value = PaymentBrickViewEvent.NavigateToInstallmentsFromCard(
+                installmentData = cardData.installments.toInstallmentData(),
+                optionId = optionId,
+            )
+        } else {
+            processPaymentMethod(optionId)
+        }
+    }
+
     private fun findMethodByOptionId(
         optionId: String,
     ): PaymentMethodOutput? =
