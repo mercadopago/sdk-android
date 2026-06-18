@@ -80,6 +80,20 @@ internal fun CheckoutController(
                     pendingCVVEvent = event
                     navController.navigate(CheckoutDestination.CVV)
                 },
+                onNavigateToInstallments = { event ->
+                    pendingInstallmentData = event.installmentData
+                    pendingPaymentData = MPPaymentData.Payment(
+                        orderId = "",
+                        orderStatus = "",
+                        transactionAmount = null,
+                        paymentMethodId = "",
+                        paymentTypeId = "",
+                        payer = null,
+                        installment = null,
+                        issuerId = event.optionId,
+                    )
+                    navController.navigate(CheckoutDestination.Installment)
+                },
             )
         }
 
@@ -136,6 +150,7 @@ private fun PaymentBrickScreenDestination(
     checkoutConfiguration: CheckoutConfiguration?,
     onNavigateToForm: () -> Unit,
     onNavigateToCVV: (PaymentBrickViewEvent.NavigateToCVV, PaymentBrickViewModel) -> Unit,
+    onNavigateToInstallments: (PaymentBrickViewEvent.NavigateToInstallmentsFromCard) -> Unit,
 ) {
     val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
         parametersOf(checkoutConfiguration)
@@ -151,6 +166,16 @@ private fun PaymentBrickScreenDestination(
 
             is PaymentBrickViewEvent.NavigateToCVV -> {
                 onNavigateToCVV(event, paymentBrickViewModel)
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.NavigateToOfflineSelector -> {
+                // TODO(A22): navigate to offline method selector screen with event.options
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.NavigateToInstallmentsFromCard -> {
+                onNavigateToInstallments(event)
                 paymentBrickViewModel.onViewEventConsumed()
             }
 

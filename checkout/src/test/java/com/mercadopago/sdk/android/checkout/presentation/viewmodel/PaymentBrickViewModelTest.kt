@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.model.CardDataOutput
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsHeaderOutput
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -15,10 +17,12 @@ import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickFooterOutpu
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentSectionOutput
+import com.mercadopago.sdk.android.checkout.domain.model.QuotaOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
+import com.mercadopago.sdk.android.checkout.domain.model.TicketOptionOutput
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -342,6 +346,61 @@ internal class PaymentBrickViewModelTest {
         assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
     }
 
+    // ─── A22 – Ticket routing ─────────────────────────────────────────────────
+
+    @Test
+    fun `given ticket with multiple options then NavigateToOfflineSelector is emitted`() = runTest {
+        val ticket = PaymentMethodOutput(
+            type = "ticket",
+            title = "Efectivo",
+            options = listOf(
+                TicketOptionOutput(id = "pagofacil", name = "Pago Fácil", iconUrl = "url1"),
+                TicketOptionOutput(id = "rapipago", name = "Rapipago", iconUrl = "url2"),
+            ),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(ticket)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("ticket")
+
+        val event = assertIs<PaymentBrickViewEvent.NavigateToOfflineSelector>(vm.viewEvent.value)
+        assertEquals(2, event.options.size)
+    }
+
+    @Test
+    fun `given ticket with single option then processPaymentMethod is called directly`() = runTest {
+        val ticket = PaymentMethodOutput(
+            type = "ticket",
+            title = "Rapipago",
+            options = listOf(TicketOptionOutput(id = "rapipago", name = "Rapipago", iconUrl = "url")),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(ticket)))
+        coEvery { processUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "ORD", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("ticket")
+        advanceUntilIdle()
+
+        assertEquals(null, vm.viewEvent.value)
+        coVerify(exactly = 1) { processUseCase(any()) }
+    }
+
+    @Test
+    fun `given ticket with empty options then NavigateToOfflineSelector with empty list is emitted`() = runTest {
+        val ticket = PaymentMethodOutput(type = "ticket", title = "Efectivo", options = emptyList())
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(ticket)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("ticket")
+
+        val event = assertIs<PaymentBrickViewEvent.NavigateToOfflineSelector>(vm.viewEvent.value)
+        assertEquals(0, event.options.size)
+    }
+
     // ─── Events ───────────────────────────────────────────────────────────────
 
     @Test
@@ -363,6 +422,43 @@ internal class PaymentBrickViewModelTest {
         vm.onViewEventConsumed()
 
         assertEquals(null, vm.viewEvent.value)
+    }
+
+    // ─── A23 – Installments routing (saved card, no CVV) ─────────────────────
+
+    @Test
+    fun `given saved card no cvv and with installments then NavigateToInstallmentsFromCard emitted`() = runTest {
+        val installments = InstallmentsOutput(
+            header = InstallmentsHeaderOutput(title = "Elegí"),
+            totalLabel = "Total",
+            payButtonLabel = "Pagar",
+            selectionType = "radio_button",
+            quotas = listOf(
+                QuotaOutput(
+                    installments = 1,
+                    installmentAmount = BigDecimal("500"),
+                    totalAmount = BigDecimal("500"),
+                    primaryLabel = "1x",
+                    secondaryLabel = "",
+                    state = "none",
+                ),
+            ),
+        )
+        val card = savedCardMethod(cardId = "CARD_INST").copy(
+            cardData = savedCardMethod(cardId = "CARD_INST").cardData?.copy(
+                securityCode = SecurityCodeOutput(length = 3, screen = null),
+                installments = installments,
+            ),
+        )
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("CARD_INST")
+
+        val event = assertIs<PaymentBrickViewEvent.NavigateToInstallmentsFromCard>(vm.viewEvent.value)
+        assertEquals("CARD_INST", event.optionId)
+        assertEquals(1, event.installmentData.quotas.size)
     }
 
     // ─── A11 – onUserCancelled ────────────────────────────────────────────────

@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
+import com.mercadopago.sdk.android.checkout.domain.mapper.toInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_INSTALLMENTS = 1
 private const val SAVED_CARD_TYPE = "saved_card"
+private const val TICKET_TYPE = "ticket"
 
 internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
@@ -108,19 +110,40 @@ internal class PaymentBrickViewModel(
         val method = findMethodByOptionId(optionId)
         val cardData = method?.cardData
 
-        if (method?.type == SAVED_CARD_TYPE && cardData != null) {
-            val screen = cardData.securityCode.screen
-            if (screen != null) {
-                _viewEvent.value = PaymentBrickViewEvent.NavigateToCVV(
-                    securityCodeScreen = screen,
-                    cvvExpectedLength = cardData.securityCode.length,
-                    optionId = optionId,
-                )
-            } else {
-                processPaymentMethod(optionId)
+        when {
+            method?.type == SAVED_CARD_TYPE && cardData != null -> {
+                val screen = cardData.securityCode.screen
+                when {
+                    screen != null -> {
+                        // CVV required — A25 will also route to installments after CVV
+                        _viewEvent.value = PaymentBrickViewEvent.NavigateToCVV(
+                            securityCodeScreen = screen,
+                            cvvExpectedLength = cardData.securityCode.length,
+                            optionId = optionId,
+                        )
+                    }
+                    cardData.installments != null -> {
+                        // No CVV, has installments → show installment selector (A23)
+                        _viewEvent.value = PaymentBrickViewEvent.NavigateToInstallmentsFromCard(
+                            installmentData = cardData.installments.toInstallmentData(),
+                            optionId = optionId,
+                        )
+                    }
+                    else -> {
+                        // No CVV, no installments → process directly
+                        processPaymentMethod(optionId)
+                    }
+                }
             }
-        } else {
-            _viewEvent.value = PaymentBrickViewEvent.OnOptionSelected(optionId)
+            method?.type == TICKET_TYPE -> {
+                val options = method.options.orEmpty()
+                if (options.size == 1) {
+                    processPaymentMethod(optionId)
+                } else {
+                    _viewEvent.value = PaymentBrickViewEvent.NavigateToOfflineSelector(options)
+                }
+            }
+            else -> _viewEvent.value = PaymentBrickViewEvent.OnOptionSelected(optionId)
         }
     }
 
