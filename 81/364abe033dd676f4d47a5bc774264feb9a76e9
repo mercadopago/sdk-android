@@ -1,0 +1,45 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModelTest.kt
+  s_a54faad17ccc90::t_8dc0b9d86cff6b 57
+  s_a54faad17ccc90::t_f8c8a0c0515ced 88
+  s_a54faad17ccc90::t_effd5abfa6238a 161
+  s_a54faad17ccc90::t_d587747a3cf9ca 30
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_a54faad17ccc90::t_f67199dcc94b3e 19
+  s_a54faad17ccc90::t_7c17db9229f55d 118
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_a54faad17ccc90::t_0aabc0ca870697 39-40
+  s_a54faad17ccc90::t_deddab99197629 307,317,320,322
+  s_a54faad17ccc90::t_4e543f1c4bbef5 109,111-115
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_a54faad17ccc90::t_50581f90e477c4 114
+  s_a54faad17ccc90::t_a69a825c6074f8 19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/usecase/GenerateCardTokenForPaymentBrickUseCase.kt
+  s_a54faad17ccc90::t_fb23db0ffa593b 1-28,30-38
+  s_a54faad17ccc90::t_a9e56e72a90b38 29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cvv/CVVScreen.kt
+  s_a54faad17ccc90::t_354fdaf0e987b1 35
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModel.kt
+  s_a54faad17ccc90::t_0aabc0ca870697 23,25
+  s_a54faad17ccc90::t_e430506be21b5e 39-40
+  s_a54faad17ccc90::t_e66fb3eb36c922 118
+  s_a54faad17ccc90::t_5f36187a2a4e98 72-102,106
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_a54faad17ccc90::t_1120aac5a29c2c 32
+  s_a54faad17ccc90::t_4a7e0edace81a9 118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "81364abe033dd676f4d47a5bc774264feb9a76e9",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
