@@ -22,33 +22,12 @@ sealed class MPPaymentMethodConfig : Parcelable {
     ) : MPPaymentMethodConfig()
 
     /**
-     * Pix payment method
-     */
-    @Parcelize
-    internal object Pix : MPPaymentMethodConfig()
-
-    /**
-     * Boleto payment method
-     */
-    @Parcelize
-    internal object Boleto : MPPaymentMethodConfig()
-
-    /**
-     * Loan payment method
-     * @param installment MPInstallment
-     */
-    @Parcelize
-    data class Loan(
-        val installment: MPInstallment,
-    ) : MPPaymentMethodConfig()
-
-    /**
      * Default payment methods
      */
     companion object {
         /**
          * Default payment methods
          */
-        val defaults: List<MPPaymentMethodConfig> = listOf(Card(), Pix, Boleto)
+        val defaults: List<MPPaymentMethodConfig> = listOf(Card())
     }
 }
