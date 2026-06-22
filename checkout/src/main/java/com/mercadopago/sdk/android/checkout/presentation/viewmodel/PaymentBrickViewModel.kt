@@ -91,7 +91,7 @@ internal class PaymentBrickViewModel(
                         paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
                         paymentTypeId = method.cardData?.paymentTypeId.orEmpty(),
                         payer = null,
-                        installment = null,
+                        installment = installments,
                         issuerId = method.cardData?.issuerId?.toString(),
                     )
                     CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
