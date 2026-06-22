@@ -8,8 +8,10 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
@@ -37,6 +39,7 @@ internal class PaymentBrickViewModel(
     val viewEvent: StateFlow<PaymentBrickViewEvent?> = _viewEvent.asStateFlow()
 
     private var initializationOutput: PaymentBrickInitializationOutput? = null
+    private val visitedScreens = mutableListOf(Screen.PAYMENT_METHOD_SELECTOR)
 
     init {
         loadInitialization()
@@ -108,9 +111,21 @@ internal class PaymentBrickViewModel(
         _viewEvent.value = null
     }
 
-    // TECH_DEBT: define specific UserCancelledContext for PaymentBrick and emit a cancellation
-    // viewEvent so CheckoutController can notify CheckoutCallbackHolder.
-    fun onBackPressed() = Unit
+    fun onBackPressed() {
+        CheckoutCallbackHolder.notify(
+            MercadoPagoCheckoutResult.UserCancelled(
+                MPUserCancelledContext.Payment(screens = visitedScreens.toList()),
+            ),
+        )
+    }
+
+    fun markScreenPresented(
+        screen: Screen,
+    ) {
+        if (!visitedScreens.contains(screen)) {
+            visitedScreens.add(screen)
+        }
+    }
 
     private fun findMethodByOptionId(
         optionId: String,

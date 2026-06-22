@@ -9,4 +9,7 @@ package com.mercadopago.sdk.android.checkout.domain.model
 enum class Screen {
     /** The installments selection screen. */
     INSTALLMENTS,
+
+    /** The payment-method selector screen (PaymentBrick). */
+    PAYMENT_METHOD_SELECTOR,
 }
