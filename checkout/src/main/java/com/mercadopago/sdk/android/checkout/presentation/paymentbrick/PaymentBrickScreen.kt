@@ -19,7 +19,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickFooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
@@ -128,7 +130,7 @@ private fun PaymentBrickErrorContent(
             contentAlignment = Alignment.Center,
         ) {
             MPText(
-                text = "Ocurrió un error. Por favor, intentá de nuevo.",
+                text = stringResource(R.string.card_form_generic_error),
                 style = MercadoPagoTheme.typography.body.default.medium,
                 color = MercadoPagoTheme.color.text.primary,
                 modifier = Modifier.padding(horizontal = MercadoPagoTheme.spacing.paddings.xtiny),

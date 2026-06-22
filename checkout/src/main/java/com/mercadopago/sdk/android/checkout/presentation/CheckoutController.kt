@@ -22,7 +22,9 @@ import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutR
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.usecase.ValidateCVUseCase
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
+import com.mercadopago.sdk.android.checkout.presentation.cvv.CVVScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.paymentbrick.PaymentBrickScreen
@@ -30,6 +32,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEv
 import com.mercadopago.sdk.android.checkout.presentation.state.CheckoutDestination
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CVVViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
@@ -44,6 +47,7 @@ internal fun CheckoutController(
 ) {
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
+    var pendingCVVEvent by remember { mutableStateOf<PaymentBrickViewEvent.NavigateToCVV?>(null) }
 
     val startDestination: CheckoutDestination =
         if (checkoutConfiguration.startsWithPayment()) {
@@ -72,7 +76,20 @@ internal fun CheckoutController(
             PaymentBrickScreenDestination(
                 checkoutConfiguration = checkoutConfiguration,
                 onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
+                onNavigateToCVV = { event, _ ->
+                    pendingCVVEvent = event
+                    navController.navigate(CheckoutDestination.CVV)
+                },
             )
+        }
+
+        composable<CheckoutDestination.CVV> {
+            val cvvEvent = pendingCVVEvent ?: return@composable
+            CVVScreenDestination(
+                cvvEvent = cvvEvent,
+                onBackPressed = { navController.popBackStack() },
+            )
+            // TODO(A25): call paymentBrickViewModel.processPaymentMethod(cvvEvent.optionId) after CVV entry
         }
 
         composable<CheckoutDestination.Form> {
@@ -118,6 +135,7 @@ internal fun CheckoutController(
 private fun PaymentBrickScreenDestination(
     checkoutConfiguration: CheckoutConfiguration?,
     onNavigateToForm: () -> Unit,
+    onNavigateToCVV: (PaymentBrickViewEvent.NavigateToCVV, PaymentBrickViewModel) -> Unit,
 ) {
     val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
         parametersOf(checkoutConfiguration)
@@ -125,9 +143,14 @@ private fun PaymentBrickScreenDestination(
     val viewEvent by paymentBrickViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
-        when (viewEvent) {
+        when (val event = viewEvent) {
             is PaymentBrickViewEvent.OnOptionSelected -> {
                 onNavigateToForm()
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.NavigateToCVV -> {
+                onNavigateToCVV(event, paymentBrickViewModel)
                 paymentBrickViewModel.onViewEventConsumed()
             }
 
@@ -236,5 +259,24 @@ private fun InstallmentsScreenDestination(
             installmentsViewModel.onBackPressed()
             onBackClick()
         },
+    )
+}
+
+@Composable
+private fun CVVScreenDestination(
+    cvvEvent: PaymentBrickViewEvent.NavigateToCVV,
+    onBackPressed: () -> Unit,
+) {
+    val cvvViewModel = remember(cvvEvent) {
+        CVVViewModel(
+            securityCodeScreen = cvvEvent.securityCodeScreen,
+            cvvExpectedLength = cvvEvent.cvvExpectedLength,
+            validateCVUseCase = ValidateCVUseCase(),
+        )
+    }
+    // TODO(A25): wire cvvEvent.optionId → processPaymentMethod after CVV confirmation
+    CVVScreen(
+        viewModel = cvvViewModel,
+        onBackPressed = onBackPressed,
     )
 }
