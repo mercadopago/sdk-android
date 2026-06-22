@@ -1,0 +1,31 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/paymentbrick/PaymentBrickScreen.kt
+  s_90849a96613f6a::t_796fa20b7ceb97 24
+  s_90849a96613f6a::t_bed0ed0db9bf36 22
+  s_90849a96613f6a::t_279953226ede32 133
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/FetchPaymentBrickInitializationUseCaseTest.kt
+  s_90849a96613f6a::t_52ba45fbc72bfc 51
+  s_90849a96613f6a::t_334eb2c1666e5f 47,59
+  s_90849a96613f6a::t_ef2d050b613bd5 38
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/exception/ErrorLocalized.kt
+  s_90849a96613f6a::t_36000ef9538f82 8
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/FetchPaymentBrickInitializationUseCase.kt
+  s_90849a96613f6a::t_9c29015a15cf47 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_90849a96613f6a::t_66375b2a5757f5 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "78fe9e425c58e51e877c2e017d60a8a8271f952a",
+  "prompts": {},
+  "sessions": {
+    "s_90849a96613f6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bc3ea17f-6084-48a8-b75b-64596de53a95",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
