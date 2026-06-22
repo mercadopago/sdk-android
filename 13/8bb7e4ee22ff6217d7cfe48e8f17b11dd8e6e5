@@ -1,0 +1,87 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
+  s_253d603a11061b::t_566c937a74b981 1-2,5-10,21-22,36,38-39,41,44,48-128,192,197,199,202,207,209,212,219-220,222-223,225-227,234,237-239,246-247,249,251,256,258-259,261,263,268-270,273-275,278-280,283-289,299,306,311,313,325,330,332,341,357,369,372,378-383,386,393-394,396,398,402,404-406,408-411,415,418-420,422,424,427,433-440,442-457
+  s_253d603a11061b::t_043e645c7cadac 441
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_253d603a11061b::t_566c937a74b981 136
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_253d603a11061b::t_566c937a74b981 297
+.mirrorignore
+  s_6cfea7d6954f35::t_a824ad70a55e86 5
+  s_b4d337e4ab0698::t_8c4fb160d818a5 6
+gradle.properties
+  s_b4d337e4ab0698::t_38883a2f023e23 26
+.gitignore
+  s_3194722ccbba22::t_c20a7126461ac5 1-3
+.github/workflows/mirror-ci-status.yml
+  s_b4d337e4ab0698::t_0c67cdb86051ef 82-88
+.github/workflows/mirror-pr.yml
+  s_b4d337e4ab0698::t_6e52a5a62582cf 38-59,65-84,113-130,135-151
+  s_b4d337e4ab0698::t_c23f95d2453616 61
+  s_b4d337e4ab0698::t_69ae4924c8d47e 131
+  s_b4d337e4ab0698::t_3dfcf2d9efed4b 60,63-64
+  s_c606be74efd586::t_b7a61a95c3f501 16-22
+  s_b4d337e4ab0698::t_07c74409f855e8 62
+  s_b4d337e4ab0698::t_e64e017c65e30d 132
+  s_b4d337e4ab0698::t_bf17275340bdc3 133-134
+  s_c606be74efd586::t_31f410301b4e8d 90-96
+  s_b4d337e4ab0698::t_de46f11e512bab 5
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_253d603a11061b::t_566c937a74b981 685-697
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_253d603a11061b::t_566c937a74b981 426-470,472-479
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_253d603a11061b::t_566c937a74b981 41,48,59,61,67,69,76-77,80-88,90,92-94
+CHANGELOG.md
+  s_3194722ccbba22::t_060d10aa3e2bb4 8
+.pre-commit-config.yaml
+  s_6cfea7d6954f35::t_af7fccbf8d311f 11
+  s_b4d337e4ab0698::t_20ff6daf47237d 20-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.8",
+  "base_commit_sha": "138bb7e4ee22ff6217d7cfe48e8f17b11dd8e6e5",
+  "prompts": {},
+  "sessions": {
+    "s_253d603a11061b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3273ecfa-4a8b-41a1-820f-0c1c5f5a5f3d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_3194722ccbba22": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ef9c11b-7c53-4d8a-916a-f2ae501723a9",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_6cfea7d6954f35": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6bdb1e03-3b54-4cdf-83d9-82e0c5b9ec99",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    },
+    "s_b4d337e4ab0698": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3642e8a6-ca5f-4dab-b6bd-c42574500f4c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    },
+    "s_c606be74efd586": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1fe13e81-7248-4d1d-93ba-7b0c01c57c01",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}
