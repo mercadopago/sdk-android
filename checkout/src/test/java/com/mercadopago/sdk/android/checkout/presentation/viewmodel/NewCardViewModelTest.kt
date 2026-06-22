@@ -4,12 +4,15 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardFieldTranslationsOu
 import com.mercadopago.sdk.android.checkout.domain.model.CardHolderNameTranslationsOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardInstallmentsHeaderOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardInstallmentsTranslationsOutput
+import com.mercadopago.sdk.android.checkout.domain.model.CardQuotaOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardSecurityCodeTranslationsOutput
 import com.mercadopago.sdk.android.checkout.domain.model.CardTranslationsOutput
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentConfigOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickCardOutput
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickCardUseCase
+import com.mercadopago.sdk.android.checkout.presentation.state.NewCardViewEvent
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
@@ -18,9 +21,12 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
+import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -111,5 +117,67 @@ internal class NewCardViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.viewState.value.isError)
+    }
+
+    // ─── A24 – installments for new card ─────────────────────────────────────
+
+    @Test
+    fun `given card output with installments then NavigateToInstallments event emitted`() = runTest {
+        val installment = InstallmentConfigOutput(
+            selectionType = "radio_button",
+            quotas = listOf(
+                CardQuotaOutput(
+                    installments = 1,
+                    installmentAmount = BigDecimal("500"),
+                    totalAmount = BigDecimal("500"),
+                    primaryLabel = "1x",
+                    secondaryLabel = "",
+                    state = "none",
+                    accessibilityLabel = null,
+                ),
+            ),
+        )
+        coEvery { useCase(any()) } returns Result.Success(cardOutput().copy(installment = installment))
+
+        viewModel.loadCardData(orderId = "ORD", bin = "503143")
+        advanceUntilIdle()
+
+        val event = assertIs<NewCardViewEvent.NavigateToInstallments>(viewModel.viewEvent.value)
+        assertEquals(1, event.installmentData.quotas.size)
+    }
+
+    @Test
+    fun `given card output without installments then no NavigateToInstallments event`() = runTest {
+        coEvery { useCase(any()) } returns Result.Success(cardOutput())
+
+        viewModel.loadCardData(orderId = "ORD", bin = "503143")
+        advanceUntilIdle()
+
+        assertNull(viewModel.viewEvent.value)
+    }
+
+    @Test
+    fun `given onViewEventConsumed then event is cleared`() = runTest {
+        val installment = InstallmentConfigOutput(
+            selectionType = "radio_button",
+            quotas = listOf(
+                CardQuotaOutput(
+                    installments = 1,
+                    installmentAmount = BigDecimal("500"),
+                    totalAmount = BigDecimal("500"),
+                    primaryLabel = "1x",
+                    secondaryLabel = "",
+                    state = "none",
+                    accessibilityLabel = null,
+                ),
+            ),
+        )
+        coEvery { useCase(any()) } returns Result.Success(cardOutput().copy(installment = installment))
+        viewModel.loadCardData(orderId = "ORD", bin = "503143")
+        advanceUntilIdle()
+
+        viewModel.onViewEventConsumed()
+
+        assertNull(viewModel.viewEvent.value)
     }
 }

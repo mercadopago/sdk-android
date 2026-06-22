@@ -38,7 +38,7 @@ import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-@Suppress("LongMethod") // Koin module aggregates all checkout bindings by design — length grows with features
+@Suppress("LongMethod")
 internal fun provideDataModule() =
     module {
         single<CheckoutThemePreferences> {
