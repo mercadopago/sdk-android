@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
+import com.mercadopago.sdk.android.checkout.domain.model.TicketOptionOutput
 
 /**
  * One-shot events emitted by the checkout screens for the
@@ -32,6 +33,27 @@ internal sealed interface PaymentBrickViewEvent {
     data class NavigateToCVV(
         val securityCodeScreen: SecurityCodeScreenOutput,
         val cvvExpectedLength: Int,
+        val optionId: String,
+    ) : PaymentBrickViewEvent
+
+    /**
+     * The user selected the ticket (offline) payment method and there are multiple
+     * offline options — navigate to the offline method selector.
+     *
+     * @property options List of available offline methods to display.
+     */
+    data class NavigateToOfflineSelector(
+        val options: List<TicketOptionOutput>,
+    ) : PaymentBrickViewEvent
+
+    /**
+     * The selected saved card has installments available — navigate to the installment selector.
+     *
+     * @property installmentData Installment options for the selected card.
+     * @property optionId Card identifier — used after installment is confirmed to call processPaymentMethod.
+     */
+    data class NavigateToInstallmentsFromCard(
+        val installmentData: MPInstallmentData,
         val optionId: String,
     ) : PaymentBrickViewEvent
 }

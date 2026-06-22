@@ -48,6 +48,8 @@ internal fun CheckoutController(
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
     var pendingCVVEvent by remember { mutableStateOf<PaymentBrickViewEvent.NavigateToCVV?>(null) }
+    var pendingPaymentBrickViewModel by remember { mutableStateOf<PaymentBrickViewModel?>(null) }
+    var pendingPaymentBrickOptionId by remember { mutableStateOf<String?>(null) }
 
     val startDestination: CheckoutDestination =
         if (checkoutConfiguration.startsWithPayment()) {
@@ -76,9 +78,16 @@ internal fun CheckoutController(
             PaymentBrickScreenDestination(
                 checkoutConfiguration = checkoutConfiguration,
                 onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
-                onNavigateToCVV = { event, _ ->
+                onNavigateToCVV = { event, vm ->
                     pendingCVVEvent = event
+                    pendingPaymentBrickViewModel = vm
                     navController.navigate(CheckoutDestination.CVV)
+                },
+                onNavigateToInstallments = { event, vm ->
+                    pendingInstallmentData = event.installmentData
+                    pendingPaymentBrickViewModel = vm
+                    pendingPaymentBrickOptionId = event.optionId
+                    navController.navigate(CheckoutDestination.Installment)
                 },
             )
         }
@@ -109,24 +118,52 @@ internal fun CheckoutController(
 
         composable<CheckoutDestination.Installment> {
             val installmentData = pendingInstallmentData ?: return@composable
-            val paymentData = pendingPaymentData ?: return@composable
-            val graphEntry = remember { navController.getBackStackEntry<CheckoutGraph>() }
-            val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
-                viewModelStoreOwner = graphEntry,
-            ) { parametersOf(checkoutConfiguration) }
-            val cardPaymentViewState by cardPaymentViewModel.viewState.collectAsState()
+            val pbVm = pendingPaymentBrickViewModel
+            val pbOptionId = pendingPaymentBrickOptionId
 
-            InstallmentsScreenDestination(
-                installmentData = installmentData,
-                paymentData = paymentData,
-                checkoutType = checkoutConfiguration.toCheckoutType(),
-                orderId = checkoutConfiguration?.getOrderId().orEmpty(),
-                onInstallmentConfirmed = { installments ->
-                    cardPaymentViewModel.onInstallmentConfirmed(installments)
-                },
-                isLoading = cardPaymentViewState.isLoading,
-                onBackClick = { navController.popBackStack() },
-            )
+            if (pbVm != null && pbOptionId != null) {
+                // PaymentBrick flow: saved card installments
+                InstallmentsScreenDestination(
+                    installmentData = installmentData,
+                    paymentData = MPPaymentData.Payment(
+                        orderId = "",
+                        orderStatus = "",
+                        transactionAmount = null,
+                        paymentMethodId = "",
+                        paymentTypeId = "",
+                        payer = null,
+                        installment = null,
+                        issuerId = null,
+                    ),
+                    checkoutType = checkoutConfiguration.toCheckoutType(),
+                    orderId = checkoutConfiguration?.getOrderId().orEmpty(),
+                    onInstallmentConfirmed = { installments ->
+                        pbVm.processPaymentMethod(pbOptionId, installments)
+                        navController.popBackStack()
+                    },
+                    isLoading = false,
+                    onBackClick = { navController.popBackStack() },
+                )
+            } else {
+                val paymentData = pendingPaymentData ?: return@composable
+                val graphEntry = remember { navController.getBackStackEntry<CheckoutGraph>() }
+                val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
+                    viewModelStoreOwner = graphEntry,
+                ) { parametersOf(checkoutConfiguration) }
+                val cardPaymentViewState by cardPaymentViewModel.viewState.collectAsState()
+
+                InstallmentsScreenDestination(
+                    installmentData = installmentData,
+                    paymentData = paymentData,
+                    checkoutType = checkoutConfiguration.toCheckoutType(),
+                    orderId = checkoutConfiguration?.getOrderId().orEmpty(),
+                    onInstallmentConfirmed = { installments ->
+                        cardPaymentViewModel.onInstallmentConfirmed(installments)
+                    },
+                    isLoading = cardPaymentViewState.isLoading,
+                    onBackClick = { navController.popBackStack() },
+                )
+            }
         }
     }
 }
@@ -136,6 +173,7 @@ private fun PaymentBrickScreenDestination(
     checkoutConfiguration: CheckoutConfiguration?,
     onNavigateToForm: () -> Unit,
     onNavigateToCVV: (PaymentBrickViewEvent.NavigateToCVV, PaymentBrickViewModel) -> Unit,
+    onNavigateToInstallments: (PaymentBrickViewEvent.NavigateToInstallmentsFromCard, PaymentBrickViewModel) -> Unit,
 ) {
     val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
         parametersOf(checkoutConfiguration)
@@ -151,6 +189,16 @@ private fun PaymentBrickScreenDestination(
 
             is PaymentBrickViewEvent.NavigateToCVV -> {
                 onNavigateToCVV(event, paymentBrickViewModel)
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.NavigateToOfflineSelector -> {
+                // TODO(A22): navigate to offline method selector screen with event.options
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.NavigateToInstallmentsFromCard -> {
+                onNavigateToInstallments(event, paymentBrickViewModel)
                 paymentBrickViewModel.onViewEventConsumed()
             }
 
