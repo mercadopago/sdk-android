@@ -12,4 +12,13 @@ enum class Screen {
 
     /** The payment-method selector screen (PaymentBrick). */
     PAYMENT_METHOD_SELECTOR,
+
+    /** The CVV entry screen (PaymentBrick saved card). */
+    CVV,
+
+    /** The new card form screen (PaymentBrick). */
+    CARD_FORM,
+
+    /** The offline payment method selection screen (PaymentBrick ticket). */
+    OFFLINE_METHOD_SELECTOR,
 }

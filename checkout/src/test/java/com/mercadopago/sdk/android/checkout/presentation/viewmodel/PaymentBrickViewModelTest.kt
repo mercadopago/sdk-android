@@ -247,7 +247,7 @@ internal class PaymentBrickViewModelTest {
         val vm = viewModel(paymentConfig(orderId = "ORD_ID", amount = BigDecimal("500.00")))
         advanceUntilIdle()
 
-        vm.processPaymentMethod("CARD_123")
+        vm.processPaymentMethod("CARD_123", installments = 3)
         advanceUntilIdle()
 
         verify {
@@ -260,7 +260,8 @@ internal class PaymentBrickViewModelTest {
                                 payment.transactionAmount == BigDecimal("500.00") &&
                                 payment.paymentMethodId == "visa" &&
                                 payment.paymentTypeId == "credit_card" &&
-                                payment.issuerId == "1"
+                                payment.issuerId == "1" &&
+                                payment.installment == 3
                         } == true
                 },
             )
