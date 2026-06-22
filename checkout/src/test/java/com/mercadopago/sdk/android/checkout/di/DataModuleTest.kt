@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenForPaymentBrickUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
@@ -119,6 +120,7 @@ internal class DataModuleTest {
                 com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickCardService::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
+                GenerateCardTokenForPaymentBrickUseCase::class,
                 CardFormInitializationOutput::class,
                 MPInstallmentData::class,
                 MPPaymentData::class,

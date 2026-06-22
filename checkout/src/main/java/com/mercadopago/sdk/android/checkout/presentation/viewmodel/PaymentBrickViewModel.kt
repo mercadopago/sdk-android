@@ -20,7 +20,9 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenForPaymentBrickUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,6 +36,8 @@ internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val fetchInitializationUseCase: FetchPaymentBrickInitializationUseCase,
     private val processOrderUseCase: ProcessOrderUseCase,
+    private val generateCardTokenUseCase: GenerateCardTokenForPaymentBrickUseCase =
+        GenerateCardTokenForPaymentBrickUseCase(),
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(PaymentBrickScreenState(isLoading = true))
     val viewState: StateFlow<PaymentBrickScreenState> = _viewState.asStateFlow()

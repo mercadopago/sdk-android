@@ -29,6 +29,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenForPaymentBrickUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
@@ -114,6 +115,7 @@ internal fun provideDataModule() =
                 checkoutConfiguration = checkoutConfiguration,
                 fetchInitializationUseCase = get(),
                 processOrderUseCase = ProcessOrderUseCase(repository = get()),
+                generateCardTokenUseCase = GenerateCardTokenForPaymentBrickUseCase(),
             )
         }
         viewModel {

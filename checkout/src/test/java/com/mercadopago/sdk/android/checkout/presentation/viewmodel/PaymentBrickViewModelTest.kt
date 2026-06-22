@@ -27,6 +27,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBric
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateCardTokenForPaymentBrickUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
@@ -53,6 +54,7 @@ internal class PaymentBrickViewModelTest {
 
     private val fetchUseCase = mockk<FetchPaymentBrickInitializationUseCase>()
     private val processUseCase = mockk<ProcessOrderUseCase>()
+    private val tokenizeUseCase = mockk<GenerateCardTokenForPaymentBrickUseCase>()
 
     @Before
     fun setUp() {
@@ -83,6 +85,7 @@ internal class PaymentBrickViewModelTest {
             checkoutConfiguration = config,
             fetchInitializationUseCase = fetchUseCase,
             processOrderUseCase = processUseCase,
+            generateCardTokenUseCase = tokenizeUseCase,
         )
 
     private fun minimalOutput(
@@ -155,7 +158,7 @@ internal class PaymentBrickViewModelTest {
 
     @Test
     fun `given null checkoutConfiguration then state has isError true immediately`() = runTest {
-        val vm = PaymentBrickViewModel(null, fetchUseCase, processUseCase)
+        val vm = PaymentBrickViewModel(null, fetchUseCase, processUseCase, tokenizeUseCase)
 
         assertEquals(true, vm.viewState.value.isError)
         assertEquals(false, vm.viewState.value.isLoading)

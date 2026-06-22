@@ -36,6 +36,8 @@ import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CVVViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -104,9 +106,13 @@ internal fun CheckoutController(
             val paymentBrickVm = pendingPaymentBrickViewModel
             CVVScreenDestination(
                 cvvEvent = cvvEvent,
-                onCVVConfirmed = {
+                onCVVConfirmed = { securityCodeState ->
                     if (paymentBrickVm != null) {
-                        paymentBrickVm.onCVVConfirmed(cvvEvent.optionId)
+                        // A28: tokenize CVV then route to installments or process
+                        paymentBrickVm.processPaymentMethodWithTokenization(
+                            optionId = cvvEvent.optionId,
+                            securityCodeState = securityCodeState,
+                        )
                         navController.popBackStack()
                     }
                 },
@@ -298,7 +304,7 @@ private fun InstallmentsScreenDestination(
 @Composable
 private fun CVVScreenDestination(
     cvvEvent: PaymentBrickViewEvent.NavigateToCVV,
-    onCVVConfirmed: () -> Unit,
+    onCVVConfirmed: (PCIFieldState) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     val cvvViewModel = remember(cvvEvent) {
@@ -308,9 +314,11 @@ private fun CVVScreenDestination(
             validateCVUseCase = ValidateCVUseCase(),
         )
     }
+    val cvvPCIState = rememberPCIFieldState()
     CVVScreen(
         viewModel = cvvViewModel,
+        cvvPCIState = cvvPCIState,
         onBackPressed = onBackPressed,
-        onConfirm = onCVVConfirmed,
+        onConfirm = { onCVVConfirmed(cvvPCIState) },
     )
 }

@@ -32,11 +32,11 @@ private const val CVV_SCREEN_GROUP = "CVV_SCREEN"
 @Composable
 internal fun CVVScreen(
     viewModel: CVVViewModel,
+    cvvPCIState: PCIFieldState = rememberPCIFieldState(),
     onBackPressed: () -> Unit = {},
     onConfirm: () -> Unit = {},
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cvvPCIState = rememberPCIFieldState()
 
     CVVScreenContent(
         viewState = viewState,
