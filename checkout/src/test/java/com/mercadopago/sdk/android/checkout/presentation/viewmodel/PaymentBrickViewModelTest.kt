@@ -228,12 +228,12 @@ internal class PaymentBrickViewModelTest {
     }
 
     @Test
-    fun `given process success then payment data carries orderId and orderStatus`() = runTest {
+    fun `given process success then payment data carries all required fields`() = runTest {
         val card = savedCardMethod(cardId = "CARD_123")
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
         coEvery { processUseCase(any()) } returns
             Result.Success(OrderProcessOutput(id = "ORD_ID", status = "processed"))
-        val vm = viewModel()
+        val vm = viewModel(paymentConfig(orderId = "ORD_ID", amount = BigDecimal("500.00")))
         advanceUntilIdle()
 
         vm.processPaymentMethod("CARD_123")
@@ -243,8 +243,14 @@ internal class PaymentBrickViewModelTest {
             CheckoutCallbackHolder.notify(
                 match { result ->
                     result is MercadoPagoCheckoutResult.Success<*> &&
-                        (result.paymentData as? MPPaymentData.Payment)?.orderId == "ORD_ID" &&
-                        (result.paymentData as? MPPaymentData.Payment)?.orderStatus == "processed"
+                        (result.paymentData as? MPPaymentData.Payment)?.let { payment ->
+                            payment.orderId == "ORD_ID" &&
+                                payment.orderStatus == "processed" &&
+                                payment.transactionAmount == BigDecimal("500.00") &&
+                                payment.paymentMethodId == "visa" &&
+                                payment.paymentTypeId == "credit_card" &&
+                                payment.issuerId == "1"
+                        } == true
                 },
             )
         }
