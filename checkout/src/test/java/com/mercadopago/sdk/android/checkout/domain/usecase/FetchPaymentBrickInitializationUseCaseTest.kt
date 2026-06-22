@@ -35,7 +35,7 @@ internal class FetchPaymentBrickInitializationUseCaseTest {
     }
 
     @Test
-    fun `given repository returns service error then returns ServiceError localized to PAYMENT_BRICK`() = runTest {
+    fun `given repository returns service error then errorLocalized is PAYMENT_INITIALIZATION`() = runTest {
         val error = ResponseError(code = "500", message = "Internal error", httpStatus = 500)
         coEvery { repository.fetch(params) } returns Result.Error(error)
 
@@ -44,11 +44,11 @@ internal class FetchPaymentBrickInitializationUseCaseTest {
         val checkoutError = assertIs<Result.Error<MercadoPagoCheckoutError>>(result).error
         assertIs<MercadoPagoCheckoutError.ServiceError>(checkoutError)
         assertEquals(ErrorCode.SERVICE_ERROR, checkoutError.errorCode)
-        assertEquals(ErrorLocalized.PAYMENT_BRICK_INITIALIZATION.name, checkoutError.errorLocalized)
+        assertEquals(ErrorLocalized.PAYMENT_INITIALIZATION.name, checkoutError.errorLocalized)
     }
 
     @Test
-    fun `given repository returns network error then returns NetworkError localized to PAYMENT_BRICK`() = runTest {
+    fun `given repository returns network error then errorLocalized is PAYMENT_INITIALIZATION`() = runTest {
         val error = ResponseError(code = "TIMEOUT", message = "Timeout", httpStatus = null)
         coEvery { repository.fetch(params) } returns Result.Error(error)
 
@@ -56,7 +56,7 @@ internal class FetchPaymentBrickInitializationUseCaseTest {
 
         val checkoutError = assertIs<Result.Error<MercadoPagoCheckoutError>>(result).error
         assertIs<MercadoPagoCheckoutError.NetworkError>(checkoutError)
-        assertEquals(ErrorLocalized.PAYMENT_BRICK_INITIALIZATION.name, checkoutError.errorLocalized)
+        assertEquals(ErrorLocalized.PAYMENT_INITIALIZATION.name, checkoutError.errorLocalized)
     }
 
     @Test

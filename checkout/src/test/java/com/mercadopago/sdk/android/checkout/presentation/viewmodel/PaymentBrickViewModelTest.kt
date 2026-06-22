@@ -4,20 +4,34 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPayer
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
+import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.model.CardDataOutput
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickFooterOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
+import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
+import com.mercadopago.sdk.android.checkout.domain.model.PaymentSectionOutput
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import java.math.BigDecimal
 import kotlin.test.Test
@@ -30,6 +44,17 @@ internal class PaymentBrickViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val fetchUseCase = mockk<FetchPaymentBrickInitializationUseCase>()
+    private val processUseCase = mockk<ProcessOrderUseCase>()
+
+    @Before
+    fun setUp() {
+        mockkObject(CheckoutCallbackHolder)
+    }
+
+    @After
+    fun tearDown() {
+        unmockkObject(CheckoutCallbackHolder)
+    }
 
     private fun paymentConfig(
         orderId: String = "ORDER_123",
@@ -43,82 +68,116 @@ internal class PaymentBrickViewModelTest {
         paymentMethodConfigs = emptyList(),
     )
 
-    private fun minimalOutput() = PaymentBrickInitializationOutput(
-        headerTitle = "Elegí cómo pagar",
-        sections = emptyList(),
-        footer = PaymentBrickFooterOutput(totalLabel = "Total", totalAmount = "$ 500"),
+    private fun viewModel(
+        config: CheckoutConfiguration? = paymentConfig(),
+    ) =
+        PaymentBrickViewModel(
+            checkoutConfiguration = config,
+            fetchInitializationUseCase = fetchUseCase,
+            processOrderUseCase = processUseCase,
+        )
+
+    private fun minimalOutput(
+        methods: List<PaymentMethodOutput> = emptyList(),
+    ) =
+        PaymentBrickInitializationOutput(
+            headerTitle = "Elegí cómo pagar",
+            sections = if (methods.isEmpty()) {
+                emptyList()
+            } else {
+                listOf(
+                    PaymentSectionOutput(title = "Section", methods = methods),
+                )
+            },
+            footer = PaymentBrickFooterOutput(totalLabel = "Total", totalAmount = "$ 500"),
+        )
+
+    private fun savedCardMethod(
+        cardId: String = "CARD_123",
+    ) = PaymentMethodOutput(
+        type = "saved_card",
+        title = "Visa **** 1234",
+        cardData = CardDataOutput(
+            id = cardId,
+            bin = "503143",
+            lastFourDigits = "1234",
+            paymentMethodId = "visa",
+            paymentTypeId = "credit_card",
+            issuerId = 1,
+            securityCode = SecurityCodeOutput(length = 3, screen = null),
+            installments = null,
+        ),
     )
+
+    // ─── Initialization ───────────────────────────────────────────────────────
 
     @Test
     fun `given valid config and success response then state is populated with title`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
+        val vm = viewModel()
 
         advanceUntilIdle()
 
-        assertEquals("Elegí cómo pagar", viewModel.viewState.value.title)
-        assertEquals(false, viewModel.viewState.value.isLoading)
-        assertEquals(false, viewModel.viewState.value.isError)
+        assertEquals("Elegí cómo pagar", vm.viewState.value.title)
+        assertEquals(false, vm.viewState.value.isLoading)
+        assertEquals(false, vm.viewState.value.isError)
     }
 
     @Test
     fun `given valid config and success then sections are mapped`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
+        val vm = viewModel()
 
         advanceUntilIdle()
 
-        assertEquals(emptyList(), viewModel.viewState.value.sections)
+        assertEquals(emptyList(), vm.viewState.value.sections)
     }
 
     @Test
     fun `given use case returns error then state has isError true`() = runTest {
         val error = mockk<MercadoPagoCheckoutError>(relaxed = true)
         coEvery { fetchUseCase(any()) } returns Result.Error(error)
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
+        val vm = viewModel()
 
         advanceUntilIdle()
 
-        assertEquals(true, viewModel.viewState.value.isError)
-        assertEquals(false, viewModel.viewState.value.isLoading)
+        assertEquals(true, vm.viewState.value.isError)
+        assertEquals(false, vm.viewState.value.isLoading)
     }
 
     @Test
     fun `given null checkoutConfiguration then state has isError true immediately`() = runTest {
-        val viewModel = PaymentBrickViewModel(checkoutConfiguration = null, fetchInitializationUseCase = fetchUseCase)
+        val vm = PaymentBrickViewModel(null, fetchUseCase, processUseCase)
 
-        assertEquals(true, viewModel.viewState.value.isError)
-        assertEquals(false, viewModel.viewState.value.isLoading)
+        assertEquals(true, vm.viewState.value.isError)
+        assertEquals(false, vm.viewState.value.isLoading)
         coVerify(exactly = 0) { fetchUseCase(any()) }
     }
 
     @Test
     fun `given non-payment checkout type then state has isError true immediately`() = runTest {
-        val cardTransactionConfig = CheckoutConfiguration(
+        val config = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
                 MPOrder(orderId = "ORD", amount = BigDecimal.TEN, payer = MPPayer(email = "")),
             ),
             paymentMethodConfigs = emptyList(),
         )
-        val viewModel = PaymentBrickViewModel(cardTransactionConfig, fetchUseCase)
+        val vm = viewModel(config)
 
-        assertEquals(true, viewModel.viewState.value.isError)
+        assertEquals(true, vm.viewState.value.isError)
         coVerify(exactly = 0) { fetchUseCase(any()) }
     }
 
     @Test
     fun `given valid config then fetch is called with correct orderId and totalAmount`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        PaymentBrickViewModel(paymentConfig(orderId = "ORD_XYZ", amount = BigDecimal("188.00")), fetchUseCase)
+        viewModel(paymentConfig(orderId = "ORD_XYZ", amount = BigDecimal("188.00")))
 
         advanceUntilIdle()
 
         coVerify {
             fetchUseCase(
-                FetchPaymentBrickInitializationParams(
-                    orderId = "ORD_XYZ",
-                    totalAmount = "188.00",
-                ),
+                FetchPaymentBrickInitializationParams(orderId = "ORD_XYZ", totalAmount = "188.00"),
             )
         }
     }
@@ -126,46 +185,130 @@ internal class PaymentBrickViewModelTest {
     @Test
     fun `given cardIds then fetch is called with joined cardIds string`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        PaymentBrickViewModel(paymentConfig(cardIds = listOf("C1", "C2")), fetchUseCase)
+        viewModel(paymentConfig(cardIds = listOf("C1", "C2")))
 
         advanceUntilIdle()
 
-        coVerify {
-            fetchUseCase(
-                match { it.cardIds == "C1,C2" },
+        coVerify { fetchUseCase(match { it.cardIds == "C1,C2" }) }
+    }
+
+    // ─── processPaymentMethod ────────────────────────────────────────────────
+
+    @Test
+    fun `given known saved card optionId then processPaymentMethod calls processOrderUseCase`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_123")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        coEvery { processUseCase(any()) } returns Result.Success(OrderProcessOutput(id = "ORD", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_123")
+        advanceUntilIdle()
+
+        coVerify(exactly = 1) { processUseCase(any()) }
+    }
+
+    @Test
+    fun `given process success then notifies CheckoutCallbackHolder with Payment`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_123")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        coEvery { processUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "ORD_SUCCESS", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_123")
+        advanceUntilIdle()
+
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { it is MercadoPagoCheckoutResult.Success<*> },
             )
         }
     }
 
     @Test
+    fun `given process success then payment data carries orderId and orderStatus`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_123")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        coEvery { processUseCase(any()) } returns
+            Result.Success(OrderProcessOutput(id = "ORD_ID", status = "processed"))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_123")
+        advanceUntilIdle()
+
+        verify {
+            CheckoutCallbackHolder.notify(
+                match { result ->
+                    result is MercadoPagoCheckoutResult.Success<*> &&
+                        (result.paymentData as? MPPaymentData.Payment)?.orderId == "ORD_ID" &&
+                        (result.paymentData as? MPPaymentData.Payment)?.orderStatus == "processed"
+                },
+            )
+        }
+    }
+
+    @Test
+    fun `given process error then notifies CheckoutCallbackHolder with Error`() = runTest {
+        val card = savedCardMethod(cardId = "CARD_123")
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(card)))
+        val error = mockk<MercadoPagoCheckoutError>(relaxed = true)
+        coEvery { processUseCase(any()) } returns Result.Error(error)
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("CARD_123")
+        advanceUntilIdle()
+
+        verify { CheckoutCallbackHolder.notify(match { it is MercadoPagoCheckoutResult.Error }) }
+        assertEquals(true, vm.viewState.value.isError)
+    }
+
+    @Test
+    fun `given unknown optionId then processPaymentMethod does not call processOrderUseCase`() = runTest {
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(emptyList()))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.processPaymentMethod("UNKNOWN_ID")
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { processUseCase(any()) }
+    }
+
+    // ─── Events ───────────────────────────────────────────────────────────────
+
+    @Test
     fun `given onOptionSelected then emits OnOptionSelected event`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
+        val vm = viewModel()
 
-        viewModel.onOptionSelected("saved_card_123")
+        vm.onOptionSelected("saved_card_123")
 
-        assertIs<PaymentBrickViewEvent.OnOptionSelected>(viewModel.viewEvent.value)
-        assertEquals("saved_card_123", (viewModel.viewEvent.value as PaymentBrickViewEvent.OnOptionSelected).optionId)
+        assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
+        assertEquals("saved_card_123", (vm.viewEvent.value as PaymentBrickViewEvent.OnOptionSelected).optionId)
     }
 
     @Test
     fun `given onViewEventConsumed then clears viewEvent`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
-        viewModel.onOptionSelected("any")
+        val vm = viewModel()
+        vm.onOptionSelected("any")
 
-        viewModel.onViewEventConsumed()
+        vm.onViewEventConsumed()
 
-        assertEquals(null, viewModel.viewEvent.value)
+        assertEquals(null, vm.viewEvent.value)
     }
 
     @Test
     fun `given onBackPressed then does not emit any event`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput())
-        val viewModel = PaymentBrickViewModel(paymentConfig(), fetchUseCase)
+        val vm = viewModel()
 
-        viewModel.onBackPressed()
+        vm.onBackPressed()
 
-        assertEquals(null, viewModel.viewEvent.value)
+        assertEquals(null, vm.viewEvent.value)
     }
 }

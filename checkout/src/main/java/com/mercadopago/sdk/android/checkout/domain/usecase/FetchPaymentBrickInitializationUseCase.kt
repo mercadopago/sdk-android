@@ -17,5 +17,5 @@ internal class FetchPaymentBrickInitializationUseCase(
     ): Result<PaymentBrickInitializationOutput, MercadoPagoCheckoutError> =
         withServiceRetry {
             repository.fetch(params = params)
-        }.mapError(ErrorLocalized.PAYMENT_BRICK_INITIALIZATION)
+        }.mapError(ErrorLocalized.PAYMENT_INITIALIZATION)
 }
