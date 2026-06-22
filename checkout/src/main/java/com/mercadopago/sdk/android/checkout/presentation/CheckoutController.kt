@@ -79,7 +79,11 @@ internal fun CheckoutController(
         composable<CheckoutDestination.Payment> {
             PaymentBrickScreenDestination(
                 checkoutConfiguration = checkoutConfiguration,
-                onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
+                onNavigateToForm = { vm ->
+                    pendingPaymentBrickViewModel = vm
+                    vm.markScreenPresented(Screen.CARD_FORM)
+                    navController.navigate(CheckoutDestination.Form)
+                },
                 onNavigateToCVV = { event, vm ->
                     pendingCVVEvent = event
                     pendingPaymentBrickViewModel = vm
@@ -130,7 +134,16 @@ internal fun CheckoutController(
                 onNavigateToInstallments = { installmentData, paymentData ->
                     pendingInstallmentData = installmentData
                     pendingPaymentData = paymentData
+                    pendingPaymentBrickViewModel?.markScreenPresented(Screen.INSTALLMENTS)
                     navController.navigate(CheckoutDestination.Installment)
+                },
+                onBackToPaymentBrick = if (pendingPaymentBrickViewModel != null) {
+                    {
+                        navController.popBackStack(CheckoutDestination.Payment, inclusive = false)
+                        pendingPaymentBrickViewModel = null
+                    }
+                } else {
+                    null
                 },
             )
         }
@@ -199,7 +212,7 @@ internal fun CheckoutController(
 @Composable
 private fun PaymentBrickScreenDestination(
     checkoutConfiguration: CheckoutConfiguration?,
-    onNavigateToForm: () -> Unit,
+    onNavigateToForm: (PaymentBrickViewModel) -> Unit,
     onNavigateToCVV: (PaymentBrickViewEvent.NavigateToCVV, PaymentBrickViewModel) -> Unit,
     onNavigateToInstallments: (PaymentBrickViewEvent.NavigateToInstallmentsFromCard) -> Unit,
 ) {
@@ -211,7 +224,7 @@ private fun PaymentBrickScreenDestination(
     LaunchedEffect(viewEvent) {
         when (val event = viewEvent) {
             is PaymentBrickViewEvent.OnOptionSelected -> {
-                onNavigateToForm()
+                onNavigateToForm(paymentBrickViewModel)
                 paymentBrickViewModel.onViewEventConsumed()
             }
 
@@ -241,6 +254,7 @@ private fun PaymentBrickScreenDestination(
 private fun CardFormScreenDestination(
     cardPaymentViewModel: CardPaymentViewModel,
     onNavigateToInstallments: (MPInstallmentData, MPPaymentData) -> Unit,
+    onBackToPaymentBrick: (() -> Unit)? = null,
 ) {
     val viewEvent by cardPaymentViewModel.viewEvent.collectAsState()
 
@@ -249,8 +263,7 @@ private fun CardFormScreenDestination(
             is CardPaymentViewEvent.OnSuccess -> {
                 cardPaymentViewModel.onViewEventConsumed()
                 when {
-                    event.payment is MPPaymentData.CardTransaction &&
-                        event.installment.quotas.size == 1 ->
+                    event.installment.quotas.size == 1 ->
                         cardPaymentViewModel.onInstallmentConfirmed(
                             event.installment.quotas.first().installments ?: 1,
                         )
@@ -270,12 +283,20 @@ private fun CardFormScreenDestination(
 
             is CardPaymentViewEvent.OnUserCancelled -> {
                 cardPaymentViewModel.onViewEventConsumed()
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+                if (onBackToPaymentBrick != null) {
+                    onBackToPaymentBrick()
+                } else {
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+                }
             }
 
             is CardPaymentViewEvent.OnBackPressed -> {
                 cardPaymentViewModel.onViewEventConsumed()
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+                if (onBackToPaymentBrick != null) {
+                    onBackToPaymentBrick()
+                } else {
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+                }
             }
 
             null -> Unit

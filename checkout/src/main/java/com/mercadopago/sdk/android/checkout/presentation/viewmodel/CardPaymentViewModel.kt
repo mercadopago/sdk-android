@@ -564,9 +564,18 @@ internal class CardPaymentViewModel(
                 payer = payer,
             )
 
-            is MPCheckoutType.CardTransaction,
-            is MPCheckoutType.Payment,
-            -> MPPaymentData.CardTransaction(
+            is MPCheckoutType.CardTransaction -> MPPaymentData.CardTransaction(
+                orderId = orderOutput?.id.orEmpty(),
+                orderStatus = orderOutput?.status.orEmpty(),
+                transactionAmount = checkoutConfiguration.getCardFormAmount(),
+                installment = installments,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+
+            is MPCheckoutType.Payment -> MPPaymentData.Payment(
                 orderId = orderOutput?.id.orEmpty(),
                 orderStatus = orderOutput?.status.orEmpty(),
                 transactionAmount = checkoutConfiguration.getCardFormAmount(),

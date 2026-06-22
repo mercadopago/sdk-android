@@ -454,6 +454,30 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when onBackPressed in Payment checkoutType then does not track user_canceled_error`() = runTest {
+        val paymentConfig = CheckoutConfiguration(
+            checkoutType = mockk<MPCheckoutType.Payment>(relaxed = true),
+            paymentMethodConfigs = emptyList(),
+        )
+        val viewModel = makeViewModel(config = paymentConfig)
+
+        viewModel.onBackPressed()
+
+        verify(exactly = 0) { mockMPAnalytics.trackMetric(match { it.path.endsWith("/user_canceled_error") }) }
+    }
+
+    @Test
+    fun `when onBackPressed in CardTransaction checkoutType then tracks user_canceled_error`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onBackPressed()
+
+        val metricSlots = mutableListOf<Metric>()
+        verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
+        assertTrue(metricSlots.any { it.path.endsWith("/user_canceled_error") })
+    }
+
+    @Test
     fun `when onBackPressed with UiButton reason then emits OnUserCancelled view event`() = runTest {
         val viewModel = makeViewModel()
 

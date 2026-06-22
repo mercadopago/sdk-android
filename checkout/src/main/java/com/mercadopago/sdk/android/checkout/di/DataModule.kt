@@ -118,7 +118,4 @@ internal fun provideDataModule() =
                 generateCardTokenUseCase = GenerateCardTokenForPaymentBrickUseCase(),
             )
         }
-        viewModel {
-            NewCardViewModel(fetchCardUseCase = get())
-        }
     }
