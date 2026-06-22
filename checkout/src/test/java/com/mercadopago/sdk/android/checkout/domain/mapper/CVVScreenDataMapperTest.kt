@@ -20,35 +20,35 @@ internal class CVVScreenDataMapperTest {
 
     @Test
     fun `given SecurityCodeScreenOutput then headerTitle is mapped`() {
-        val data = buildScreen(headerTitle = "Enter CVV").toCVVScreenData()
+        val data = buildScreen(headerTitle = "Enter CVV").toCVVScreenData(expectedLength = 3)
 
         assertEquals("Enter CVV", data.headerTitle)
     }
 
     @Test
     fun `given SecurityCodeScreenOutput then continueButtonLabel is mapped`() {
-        val data = buildScreen(continueButtonLabel = "Continue").toCVVScreenData()
+        val data = buildScreen(continueButtonLabel = "Continue").toCVVScreenData(expectedLength = 3)
 
         assertEquals("Continue", data.continueButtonLabel)
     }
 
     @Test
     fun `given SecurityCodeScreenOutput then field label is mapped`() {
-        val data = buildScreen(label = "Security code").toCVVScreenData()
+        val data = buildScreen(label = "Security code").toCVVScreenData(expectedLength = 3)
 
         assertEquals("Security code", data.field.label)
     }
 
     @Test
     fun `given SecurityCodeScreenOutput then field placeholder is mapped`() {
-        val data = buildScreen(placeholder = "Ej.: 1234").toCVVScreenData()
+        val data = buildScreen(placeholder = "Ej.: 1234").toCVVScreenData(expectedLength = 3)
 
         assertEquals("Ej.: 1234", data.field.placeholder)
     }
 
     @Test
     fun `given SecurityCodeScreenOutput then field helper is mapped`() {
-        val data = buildScreen(helper = "4 digits on front").toCVVScreenData()
+        val data = buildScreen(helper = "4 digits on front").toCVVScreenData(expectedLength = 3)
 
         assertEquals("4 digits on front", data.field.helper)
     }
@@ -70,8 +70,8 @@ internal class CVVScreenDataMapperTest {
 
     @Test
     fun `given full screen then CVVScreenData is a value type`() {
-        val data1 = buildScreen().toCVVScreenData()
-        val data2 = buildScreen().toCVVScreenData()
+        val data1 = buildScreen().toCVVScreenData(expectedLength = 3)
+        val data2 = buildScreen().toCVVScreenData(expectedLength = 3)
 
         assertEquals(data1, data2)
         assertEquals(data1.hashCode(), data2.hashCode())

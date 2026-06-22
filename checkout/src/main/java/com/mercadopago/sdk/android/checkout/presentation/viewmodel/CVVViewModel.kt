@@ -26,7 +26,7 @@ internal class CVVViewModel(
     private val validateCVUseCase: ValidateCVUseCase = ValidateCVUseCase(),
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(
-        CVVScreenState(screenData = securityCodeScreen.toCVVScreenData()),
+        CVVScreenState(screenData = securityCodeScreen.toCVVScreenData(cvvExpectedLength)),
     )
     val viewState: StateFlow<CVVScreenState> = _viewState.asStateFlow()
 
