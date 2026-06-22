@@ -8,16 +8,20 @@ import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemot
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSourceImpl
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickCardRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickCardRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
 import com.mercadopago.sdk.android.checkout.data.repository.OrderRepositoryImpl
+import com.mercadopago.sdk.android.checkout.data.repository.PaymentBrickCardRepositoryImpl
 import com.mercadopago.sdk.android.checkout.data.repository.PaymentBrickInitializationRepositoryImpl
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
+import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickCardRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
@@ -67,6 +71,12 @@ internal fun provideDataModule() =
         }
         factory {
             FetchPaymentBrickInitializationUseCase(repository = get())
+        }
+        factory<PaymentBrickCardRemoteDataSource> {
+            PaymentBrickCardRemoteDataSourceImpl(service = get())
+        }
+        factory<PaymentBrickCardRepository> {
+            PaymentBrickCardRepositoryImpl(dataSource = get())
         }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
