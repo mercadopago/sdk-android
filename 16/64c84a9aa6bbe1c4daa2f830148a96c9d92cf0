@@ -19,8 +19,10 @@ checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/response
   s_4de4d4facad76f::t_54b2a442a8b406 57
 checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapperTest.kt
   s_4de4d4facad76f::t_99193dd36c7da6 14,18,29,32
+  s_4de4d4facad76f::t_8978d7769e00e2 30
 checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CVVScreenData.kt
   s_4de4d4facad76f::t_10809834c2d565 18
+  s_4de4d4facad76f::t_cfa22a964ae265 12
 ---
 {
   "schema_version": "authorship/3.0.0",
