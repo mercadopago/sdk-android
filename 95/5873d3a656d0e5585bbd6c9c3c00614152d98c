@@ -1,0 +1,20 @@
+components/src/main/java/com/mercadopago/sdk/android/components/MPTooltip.kt
+  s_1494748c687a4d::t_5af7d37620fc45 26-28,31,37
+  s_1494748c687a4d::t_11f6899d692b9f 89-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "955873d3a656d0e5585bbd6c9c3c00614152d98c",
+  "prompts": {},
+  "sessions": {
+    "s_1494748c687a4d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "33a64f2d-3749-485e-b8ef-76b2d8360433",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    }
+  }
+}
