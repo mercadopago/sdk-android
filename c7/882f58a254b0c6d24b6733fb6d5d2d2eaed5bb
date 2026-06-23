@@ -1,0 +1,46 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/ReviewConfirmResponse.kt
+  s_5edfe20887cd8b::t_02fcff83992237 1-24
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/ReviewConfirmItem.kt
+  s_5edfe20887cd8b::t_73fbffbcbedbd7 1-19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/ReviewConfirmRemoteDataSourceImpl.kt
+  s_3cf28812df03b1::t_711e1c63c5f81d 1-27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/repository/ReviewConfirmRepository.kt
+  s_3cf28812df03b1::t_5e247a58adb894 1-3,5-12,14
+  s_3cf28812df03b1::t_b77d41d4a3c1df 4,13
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/ReviewConfirmOutput.kt
+  s_3cf28812df03b1::t_76710ee201a5f7 1-33
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/ReviewConfirmService.kt
+  s_3cf28812df03b1::t_1e2160cbdcacf0 1-19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/ReviewConfirmResponseMapper.kt
+  s_3cf28812df03b1::t_f30be93c1bc3bf 1-3,22-25,27-28
+  s_3cf28812df03b1::t_8194a4ec1db351 4-21,26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/repository/ReviewConfirmRepositoryImpl.kt
+  s_3cf28812df03b1::t_285c1d330acd8e 4,7,19,25
+  s_3cf28812df03b1::t_44e9984da80379 1-3,5-6,8-18,20-24,26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/ReviewConfirmRemoteDataSource.kt
+  s_3cf28812df03b1::t_8d4bb8b3e75eac 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "c7882f58a254b0c6d24b6733fb6d5d2d2eaed5bb",
+  "prompts": {},
+  "sessions": {
+    "s_3cf28812df03b1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe3ab0b6-ce48-4794-a914-a20950d7542c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    },
+    "s_5edfe20887cd8b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73767a7a-fd91-4266-a774-e791c95e66d2",
+        "model": "unknown"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}
