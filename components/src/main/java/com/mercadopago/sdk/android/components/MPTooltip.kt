@@ -25,13 +25,13 @@ private const val TOOLTIP_GROUP = "Tooltip"
  *
  * @param text the contextual label to display
  * @param modifier component modifier
- * @param maxWidth maximum width constraint; defaults to 280.dp
+ * @param maxWidth maximum width constraint; defaults to 296.dp per Flowbook CVV tooltip spec
  */
 @Composable
 fun MPTooltip(
     text: String,
     modifier: Modifier = Modifier,
-    maxWidth: Dp = 280.dp,
+    maxWidth: Dp = 296.dp,
 ) {
     val shape = MercadoPagoTheme.shape.tiny
     MPText(
@@ -79,6 +79,23 @@ internal fun TooltipFixedPreview() {
             MPTooltip(
                 text = "Label",
                 modifier = Modifier.padding(horizontal = MercadoPagoTheme.spacing.paddings.small),
+            )
+        }
+    }
+}
+
+@Preview(name = "Tooltip - CVV", group = TOOLTIP_GROUP)
+@Composable
+internal fun TooltipCvvPreview() {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(16.dp),
+        ) {
+            MPTooltip(
+                text = "Ingresá el código de 3 dígitos que aparece en el reverso de tu tarjeta.",
+                maxWidth = 296.dp,
             )
         }
     }
