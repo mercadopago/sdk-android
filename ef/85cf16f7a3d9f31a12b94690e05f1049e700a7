@@ -1,0 +1,19 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/ValidateEmailUseCaseTest.kt
+  s_9baaead62594a4::t_1aa46128d23ce6 1-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "ef85cf16f7a3d9f31a12b94690e05f1049e700a7",
+  "prompts": {},
+  "sessions": {
+    "s_9baaead62594a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "26b187c1-de42-4bce-b9de-469c13f6d21c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}
