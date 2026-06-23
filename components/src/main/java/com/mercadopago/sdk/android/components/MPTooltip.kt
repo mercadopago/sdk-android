@@ -23,15 +23,18 @@ private const val TOOLTIP_GROUP = "Tooltip"
  * - Hug (default): tooltip wraps content width — pass no width modifier
  * - Fixed: tooltip fills available width — pass e.g. Modifier.fillMaxWidth()
  *
+ * Dismiss-on-scroll is the caller's responsibility: listen to the parent scroll state and
+ * hide the tooltip accordingly. The Flowbook spec (PR #45) defines this behavior for CVV tooltips.
+ *
  * @param text the contextual label to display
  * @param modifier component modifier
- * @param maxWidth maximum width constraint; defaults to 280.dp
+ * @param maxWidth maximum width constraint; defaults to 296.dp per Flowbook CVV tooltip spec (PR #45)
  */
 @Composable
 fun MPTooltip(
     text: String,
     modifier: Modifier = Modifier,
-    maxWidth: Dp = 280.dp,
+    maxWidth: Dp = 296.dp, // sem token: 296dp fora da escala de spacing (Flowbook PR #45)
 ) {
     val shape = MercadoPagoTheme.shape.tiny
     MPText(
@@ -41,7 +44,7 @@ fun MPTooltip(
         modifier = Modifier
             .widthIn(max = maxWidth)
             .then(modifier)
-            .shadow(elevation = 2.dp, shape = shape)
+            .shadow(elevation = 2.dp, shape = shape) // sem token: foundation não possui token de elevation
             .background(
                 color = MercadoPagoTheme.color.fill.inverse,
                 shape = shape,
@@ -79,6 +82,23 @@ internal fun TooltipFixedPreview() {
             MPTooltip(
                 text = "Label",
                 modifier = Modifier.padding(horizontal = MercadoPagoTheme.spacing.paddings.small),
+            )
+        }
+    }
+}
+
+@Preview(name = "Tooltip - CVV", group = TOOLTIP_GROUP)
+@Composable
+internal fun TooltipCvvPreview() {
+    MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(16.dp),
+        ) {
+            MPTooltip(
+                text = "Son 3 números que puedes encontrar en el dorso de la tarjeta o en la app de tu banco.",
+                maxWidth = 296.dp,
             )
         }
     }
