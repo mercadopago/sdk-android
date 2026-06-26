@@ -1,0 +1,20 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/OrderRemoteDataSourceImpl.kt
+  s_60cca4623748e1::t_b1affdf9f796d9 21
+  s_60cca4623748e1::t_29479e74f2e304 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "4a6ec29d416c26c09bb2acbcaa32881e5a2b866f",
+  "prompts": {},
+  "sessions": {
+    "s_60cca4623748e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6db19fbc-bd92-41cb-aa0c-b39c15b9f283",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}
