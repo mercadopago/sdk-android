@@ -1,0 +1,24 @@
+<resources>
+    <attr name="maxLength" format="integer" />
+    <attr name="readOnly" format="boolean" />
+    <attr name="cursorColor" format="color" />
+    <attr name="securityCodeSize" format="integer" />
+
+    <declare-styleable name="MPCardNumberTextFieldXML">
+        <attr name="maxLength" />
+        <attr name="readOnly" />
+        <attr name="cursorColor" />
+    </declare-styleable>
+
+    <declare-styleable name="MPExpirationDateTextFieldXML">
+        <attr name="readOnly" />
+        <attr name="cursorColor" />
+    </declare-styleable>
+
+    <declare-styleable name="MPSecurityFieldTextFieldXML">
+        <attr name="securityCodeSize" />
+        <attr name="readOnly" />
+        <attr name="cursorColor" />
+    </declare-styleable>
+
+</resources>

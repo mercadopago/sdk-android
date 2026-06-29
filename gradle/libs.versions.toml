@@ -1,0 +1,121 @@
+[versions]
+agp = "8.7.3"
+annotation = "1.9.1"
+coilCompose = "3.1.0"
+gson = "2.8.1"
+kotlin = "2.0.0"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+kotlinxSerializationJson = "1.8.1"
+lifecycleRuntimeKtx = "2.8.7"
+activityCompose = "1.9.3"
+composeBom = "2024.12.01"
+appcompat = "1.7.0"
+material = "1.12.0"
+detekt = "1.23.8"
+kotlinKover = "0.9.0"
+paparazzi = "1.3.5"
+playServicesAdsIdentifier = "18.2.0"
+playServicesAuthApiPhone = "18.2.0"
+playServicesLocation = "21.3.0"
+sdk = "4.0.1"
+showkase = "1.0.4"
+googleKsp = "2.0.21-1.0.25"
+supportV4 = "28.0.0"
+testParameterInjector = "1.17"
+converterGson = "2.6.4"
+converterKotlinxSerialization = "2.11.0"
+robolectric = "4.12"
+turbine = "1.2.0"
+ktlint = "12.1.2"
+koin-bom = "3.5.0"
+okhttp = "4.9.3"
+loggingInterceptor = "4.9.3"
+retrofit = "2.11.0"
+lifecycleViewmodelCompose = "2.8.7"
+mockk = "1.14.0"
+okhttpMockServer = "4.9.0"
+datastore = "1.1.2"
+coroutines = "1.3.9"
+navigationCompose = "2.9.0"
+activity = "1.8.0"
+constraintlayout = "2.1.4"
+constraintlayout-compose = "1.1.0"
+desugarJdkLibs = "2.0.4"
+usdk = "6.6.81"
+[libraries]
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+device-sdk = { module = "com.mercadolibre.android.device:sdk", version.ref = "sdk" }
+play-services-ads-identifier = { module = "com.google.android.gms:play-services-ads-identifier", version.ref = "playServicesAdsIdentifier" }
+play-services-auth-api-phone = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playServicesAuthApiPhone" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+showkase = { group = "com.airbnb.android", name = "showkase", version.ref = "showkase" }
+showkase-annotation = { group = "com.airbnb.android", name = "showkase-annotation", version.ref = "showkase" }
+showkase-processor = { group = "com.airbnb.android", name = "showkase-processor", version.ref = "showkase" }
+showkase-test = { group = "com.airbnb.android", name = "showkase-screenshot-testing", version.ref = "showkase" }
+support-v4 = { module = "com.android.support:support-v4", version.ref = "supportV4" }
+test-parameterInjector = { module = "com.google.testparameterinjector:test-parameter-injector", version.ref = "testParameterInjector" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "converterKotlinxSerialization" }
+cashapp-turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-androidx-compose" }
+koin-test = { module = "io.insert-koin:koin-test" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
+kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+squareup-retrofit = {module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+kotlin-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+okhttp-mockWebServer = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttpMockServer" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
+usdk = { module = "com.usdk.android:usdk", version.ref = "usdk" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kotlinKover" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "googleKsp" }
+cashapp-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
+
+# KLIN
+klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

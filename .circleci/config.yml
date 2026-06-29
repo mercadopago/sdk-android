@@ -1,0 +1,284 @@
+version: 2.1
+
+orbs:
+  android: circleci/android@3.0.2
+
+commands:
+  setup-android:
+    steps:
+      - checkout
+      - run:
+          name: Set Secrets File
+          command: echo "$SECRETS_FILE" | base64 --decode > secrets.properties
+      - restore_cache:
+          keys:
+            - v1-android-sdk-11076708
+      - run:
+          name: Download Android SDK
+          command: |
+            if [ ! -d "$HOME/android-sdk/cmdline-tools/latest" ]; then
+              mkdir -p "$HOME/android-sdk/cmdline-tools"
+              wget -q -P "$HOME/android-sdk" https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+              unzip -q "$HOME/android-sdk/platform-tools-latest-linux.zip" -d "$HOME/android-sdk"
+              wget -q -P "$HOME/android-sdk/cmdline-tools" https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+              unzip -q "$HOME/android-sdk/cmdline-tools/commandlinetools-linux-11076708_latest.zip" -d "$HOME/android-sdk/cmdline-tools"
+              mv "$HOME/android-sdk/cmdline-tools/cmdline-tools" "$HOME/android-sdk/cmdline-tools/latest"
+            fi
+      - save_cache:
+          key: v1-android-sdk-11076708
+          paths:
+            - ~/android-sdk
+      - run:
+          name: Set up Android Home
+          command: |
+            echo 'export ANDROID_HOME=$HOME/android-sdk
+            export PATH=$PATH:$HOME/android-sdk/cmdline-tools/latest/bin
+            export PATH=$PATH:$HOME/android-sdk/platform-tools' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Accept SDK licenses
+          command: |
+            yes | sdkmanager --licenses || exit 0
+            yes | sdkmanager --update || exit 0
+
+jobs:
+  lint:
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: large
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Run Detekt
+          command: ./gradlew detekt
+      - run:
+          name: Run KtLint Check
+          command: ./gradlew ktlintCheck
+      - save_cache:
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          when: always
+
+  test-coverage:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Clean Test Cache
+          command: ./gradlew cleanTest
+      - run:
+          name: Run Code Coverage
+          command: ./gradlew koverHtmlReport koverXmlReport --no-build-cache
+      - run:
+          name: Verify Coverage (80%)
+          command: ./gradlew koverVerify
+      - run:
+          name: Verify Diff Coverage (80%)
+          command: .circleci/scripts/verify-diff-coverage.sh
+      #      - run:
+      #          name: Run Screenshot Tests
+      #          command: ./gradlew verifyPaparazziDebug
+      - run:
+          name: Collect Test Results
+          command: |
+            mkdir -p ~/test-results
+            find . -path "*/build/test-results/testDebugUnitTest/*.xml" -exec cp {} ~/test-results/ \; 2>/dev/null || true
+          when: always
+      - store_test_results:
+          path: ~/test-results
+      - run:
+          name: Archive Reports
+          command: .circleci/scripts/archive-reports.sh
+
+  documentation-write:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Update Dokka Documentation
+          command: ./gradlew dokkaHtmlMultiModule
+      - persist_to_workspace:
+          root: build/dokka/
+          paths:
+            - htmlMultiModule
+
+  documentation-deploy:
+    docker:
+      - image: cimg/node:16.17
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: build/dokka/
+      - run:
+          name: Disable Jekyll for GitHub Pages
+          command: touch build/dokka/htmlMultiModule/.nojekyll
+      - run:
+          name: Install gh-pages tool
+          command: npm install gh-pages@3.2.3 --silent
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:CHbCMOR2Mcw/RHacZ+LuEOqsvk0Vis+R3lzMcdpy9y0"
+      - run:
+          name: Deploy documentation to GitHub Pages
+          command: .circleci/scripts/deploy-docs.sh
+
+  verify-changelog:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Check CHANGELOG.md update
+          command: .circleci/scripts/check-changelog.sh
+
+  verify-version-consistency:
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: Check version consistency
+          command: .circleci/scripts/check-version-consistency.sh
+
+  build-artifacts:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    resource_class: xlarge
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError"
+    steps:
+      - setup-android
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Build Debug and Release AARs
+          command: ./gradlew assembleDebug assembleRelease --parallel
+          no_output_timeout: 20m
+      - run:
+          name: Collect AARs
+          command: |
+            source .circleci/scripts/lib.sh
+            mkdir -p ~/artifacts/aars/release ~/artifacts/aars/debug
+            for module in $(bom_published_modules); do
+              [ "$module" = "sdk-android-bom" ] && continue
+              find . -path "*/build/outputs/aar/${module}-release.aar" -exec cp {} ~/artifacts/aars/release/ \; 2>/dev/null || true
+              find . -path "*/build/outputs/aar/${module}-debug.aar" -exec cp {} ~/artifacts/aars/debug/ \; 2>/dev/null || true
+            done
+      - persist_to_workspace:
+          root: ~/artifacts
+          paths:
+            - aars
+
+  verify-artifacts:
+    docker:
+      - image: cimg/base:2024.01
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/artifacts
+      - run:
+          name: Verify AAR Contents
+          command: .circleci/scripts/verify-artifacts.sh ~/artifacts/aars/release ~/artifacts/aars/debug
+
+  publish-maven:
+    circleci_ip_ranges: true
+    docker:
+      - image: cimg/openjdk:17.0.13
+    working_directory: ~/repo
+    steps:
+      - setup-android
+      - run:
+          name: Check Java Version
+          command: java -version
+      - restore_cache:
+          keys:
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+      - run:
+          name: Install Dependencies
+          command: ./gradlew dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
+      - run:
+          name: Publish to Maven
+          command: .circleci/scripts/publish-maven.sh
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - verify-changelog:
+          filters:
+            branches:
+              ignore: main
+      - lint
+      - test-coverage:
+          requires:
+            - lint
+      - verify-version-consistency:
+          requires:
+            - test-coverage
+          filters:
+            branches:
+              only:
+                - main
+                - /release\/.*/
+      - build-artifacts:
+          requires:
+            - test-coverage
+      - verify-artifacts:
+          requires:
+            - build-artifacts
+      - publish-maven:
+          requires:
+            - verify-artifacts
+            - verify-version-consistency
+          filters:
+            branches:
+              only: main
+      - documentation-write:
+          requires:
+            - publish-maven
+          filters:
+            branches:
+              only: main
+      - documentation-deploy:
+          requires:
+            - documentation-write
+          filters:
+            branches:
+              only: main

@@ -1,0 +1,128 @@
+package com.mercadopago.sdk.android.checkout.presentation.usecase
+
+import com.mercadopago.sdk.android.checkout.domain.model.Field
+import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.State
+import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
+
+internal data class CancelledFormContext(
+    val fields: List<MPCancelledFieldState>,
+    val screens: List<Screen>,
+)
+
+internal class CancelledFormContextUseCase {
+    private val presentedScreens = mutableListOf<Screen>()
+
+    fun markScreenPresented(
+        screen: Screen,
+    ) {
+        if (!presentedScreens.contains(screen)) {
+            presentedScreens.add(screen)
+        }
+    }
+
+    operator fun invoke(
+        screenState: CardPaymentScreenState,
+    ): CancelledFormContext {
+        val fields = buildList<MPCancelledFieldState> {
+            add(buildCardNumberFieldState(screenState))
+            if (screenState.cardHolderState.show) {
+                add(buildCardHolderFieldState(screenState))
+            }
+            add(buildExpirationDateFieldState(screenState))
+            if (!screenState.secureCodeState.optional) {
+                add(buildSecurityCodeFieldState(screenState))
+            }
+            if (screenState.identificationTypeState.show) {
+                add(buildDocumentFieldState(screenState))
+            }
+        }
+        return CancelledFormContext(fields = fields, screens = presentedScreens.toList())
+    }
+
+    private fun buildCardNumberFieldState(
+        screenState: CardPaymentScreenState,
+    ): MPCancelledFieldState {
+        val cardNumberState = screenState.cardNumberState
+        val error = cardNumberState.errorTypes.firstOrNull()
+        val state = if (error == null) {
+            State.Valid
+        } else {
+            when (error) {
+                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(error.brand)
+                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(error.cardType)
+                is CardNumberErrorType.FieldValidation -> {
+                    when {
+                        cardNumberState.length == 0 -> State.Empty
+                        cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
+                        else -> State.Invalid
+                    }
+                }
+                is CardNumberErrorType.PaymentMethodNotFound -> State.Invalid
+                is CardNumberErrorType.LuhnValidation -> State.Invalid
+            }
+        }
+        return MPCancelledFieldState(field = Field.CARD_NUMBER, state = state)
+    }
+
+    private fun buildCardHolderFieldState(
+        screenState: CardPaymentScreenState,
+    ): MPCancelledFieldState {
+        val verifier = CardHolderVerifier()
+        val cardHolderState = screenState.cardHolderState
+        val state = when {
+            verifier.checkEmpty(cardHolderState) != null -> State.Empty
+            verifier.checkIncomplete(cardHolderState) != null -> State.Incomplete
+            verifier.verify(cardHolderState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return MPCancelledFieldState(field = Field.CARD_HOLDER, state = state)
+    }
+
+    private fun buildExpirationDateFieldState(
+        screenState: CardPaymentScreenState,
+    ): MPCancelledFieldState {
+        val verifier = ExpirationDateVerifier()
+        val expirationDateState = screenState.expirationDateState
+        val state = when {
+            verifier.checkEmpty(expirationDateState) != null -> State.Empty
+            verifier.checkIncomplete(expirationDateState) != null -> State.Incomplete
+            verifier.verify(expirationDateState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return MPCancelledFieldState(field = Field.EXPIRATION_DATE, state = state)
+    }
+
+    private fun buildSecurityCodeFieldState(
+        screenState: CardPaymentScreenState,
+    ): MPCancelledFieldState {
+        val verifier = SecurityCodeVerifier()
+        val secureCodeState = screenState.secureCodeState
+        val state = when {
+            verifier.checkEmpty(secureCodeState) != null -> State.Empty
+            verifier.checkIncomplete(secureCodeState) != null -> State.Incomplete
+            else -> State.Valid
+        }
+        return MPCancelledFieldState(field = Field.SECURITY_CODE, state = state)
+    }
+
+    private fun buildDocumentFieldState(
+        screenState: CardPaymentScreenState,
+    ): MPCancelledFieldState {
+        val verifier = IdentificationTypeVerifier()
+        val identificationTypeState = screenState.identificationTypeState
+        val state = when {
+            verifier.checkEmpty(identificationTypeState) != null -> State.Empty
+            verifier.checkIncomplete(identificationTypeState) != null -> State.Incomplete
+            verifier.verify(identificationTypeState).isNotEmpty() -> State.Invalid
+            else -> State.Valid
+        }
+        return MPCancelledFieldState(field = Field.DOCUMENT, state = state)
+    }
+}

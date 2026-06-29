@@ -1,0 +1,192 @@
+package com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityfield
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.junit4.StateRestorationTester
+import androidx.compose.ui.test.junit4.createComposeRule
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import junit.framework.TestCase.assertFalse
+import junit.framework.TestCase.assertTrue
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.koin.core.Koin
+import org.robolectric.RobolectricTestRunner
+
+@RunWith(RobolectricTestRunner::class)
+internal class SecurityCodeTextFieldTest {
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private data class SecurityCodeState(
+        var isFocused: Boolean = false,
+        var filled: Boolean = false,
+        var length: Int = 0,
+    )
+
+    @Before
+    fun start() {
+        mockkObject(MPAnalytics.Companion)
+        every { MPAnalytics.getInstance() } returns mockk<MPAnalytics>(relaxed = true)
+        mockkObject(MercadoPagoSDK.Companion)
+        every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
+        mockkObject(CoreMethods.Companion)
+        val securityCodeLengthProvider: SecurityCodeLengthProvider = mockk(relaxed = true)
+        val koin: Koin = mockk(relaxed = true)
+        every { koin.get<SecurityCodeLengthProvider>() } returns securityCodeLengthProvider
+        val coreMethods: CoreMethods = CoreMethods(koin)
+        every { CoreMethods.getInstance() } returns coreMethods
+    }
+
+    @Test
+    fun `when field is empty Then input should be empty`() {
+        // Given
+        val input = ""
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField()
+
+            // Then
+            assertTextInput(input)
+        }
+    }
+
+    @Test
+    fun `when user types input Then input should be updated`() {
+        // Given
+        val input = "123"
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField()
+            performTapOnInput()
+            performTextInput(input)
+
+            // Then
+            assertTextInput(input)
+        }
+    }
+
+    @Test
+    fun `when user taps the input Then focus should be changed`() {
+        // Given
+        var secureCodeState = SecurityCodeState()
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField(
+                onEvent = { securityCodeFieldEvent ->
+                    when (securityCodeFieldEvent) {
+                        is SecurityCodeTextFieldEvent.OnFocusChanged -> {
+                            secureCodeState = secureCodeState.copy(
+                                isFocused = securityCodeFieldEvent.isFocused,
+                            )
+                        }
+                    }
+                },
+            )
+            performTapOnInput()
+
+            // Then
+            assertTrue(secureCodeState.isFocused)
+        }
+    }
+
+    @Test
+    fun `when field is disabled and user taps the input Then focus does not change`() {
+        // Given
+        var secureCodeState = SecurityCodeState()
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField(
+                onEvent = { securityCodeFieldEvent ->
+                    when (securityCodeFieldEvent) {
+                        is SecurityCodeTextFieldEvent.OnFocusChanged -> {
+                            secureCodeState = secureCodeState.copy(
+                                isFocused = securityCodeFieldEvent.isFocused,
+                            )
+                        }
+                    }
+                },
+                enabled = false,
+            )
+            performTapOnInput()
+
+            // Then
+            assertFalse(secureCodeState.isFocused)
+        }
+    }
+
+    @Test
+    fun `when field has decoration box Then text should be visible`() {
+        // Given
+        val input = "123"
+        val title = "Card Number Field"
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField(
+                decorationBox = { innerTextField ->
+                    Column {
+                        Text(text = title)
+                        innerTextField()
+                    }
+                },
+            )
+            performTapOnInput()
+            performTextInput(input)
+
+            // Then
+            assertTextInput(input)
+            assertTextIsDisplayed(title)
+        }
+    }
+
+    @Test
+    fun `when user types input and configuration is changed Then input should be cleared for PCI compliance`() {
+        // Given
+        val input = "123"
+        val stateRestorationTester = StateRestorationTester(composeTestRule)
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField(stateRestorationTester = stateRestorationTester)
+            performTextInput(input)
+
+            // Perform configuration change (simulates process death + Bundle restore)
+            stateRestorationTester.emulateSavedInstanceStateRestore()
+
+            // Then - PCI data must NOT survive serialization to Bundle
+            assertTextInput("")
+        }
+    }
+
+    @Test
+    fun `when user types text input and configuration is changed Then input should be cleared for PCI compliance`() {
+        // Given
+        val input = "123"
+        val stateRestorationTester = StateRestorationTester(composeTestRule)
+
+        // When
+        securityFieldRobot(composeTestRule) {
+            createSecurityField(stateRestorationTester = stateRestorationTester)
+            performTextInput(input)
+
+            // Perform configuration change (simulates process death + Bundle restore)
+            stateRestorationTester.emulateSavedInstanceStateRestore()
+
+            // Then - PCI data must NOT survive serialization to Bundle
+            assertTextInput("")
+        }
+    }
+}

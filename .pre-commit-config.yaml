@@ -1,0 +1,25 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  -   repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v3.2.0
+      hooks:
+        -   id: trailing-whitespace
+        -   id: end-of-file-fixer
+        -   id: check-yaml
+        -   id: check-added-large-files
+            exclude: ^Flowbook/
+  -   repo: local
+      hooks:
+        -   id: pre-commit
+            name: Code Quality Checks
+            description: Runs `detekt, ktlint and kover` on modified .kt files.
+            language: script
+            entry: .git/hooks/pre-commit
+            files: \.kt
+        -   id: ux-reference-immutability
+            name: UX Reference Immutability Check
+            description: Blocks modifications to UX deliveries already merged to main.
+            language: script
+            entry: scripts/ux_reference/check_immutability.sh
+            files: ^ux-reference/deliveries/

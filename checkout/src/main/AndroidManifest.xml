@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true">
+        <activity
+            android:name="com.mercadopago.sdk.android.checkout.presentation.CheckoutActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/MercadoPago.Checkout"
+            android:windowSoftInputMode="adjustResize"/>
+    </application>
+</manifest>

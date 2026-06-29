@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Mercado Pago SDK</string>
+    <string name="sdk_instance_feature_title">SDK Instance</string>
+    <string name="sdk_instance_feature_description">Initialize Mercado Pago\'s SDK with a public key to use the features.</string>
+    <string name="core_methods_feature_title">Core Methods</string>
+    <string name="core_methods_feature_description">Core methods provides APIs for you to create a fully customizable checkout experience. Use this demo to learn more about the core methods and how to use them.</string>
+    <string name="sdk_not_initialized_title">SDK not initialized</string>
+    <string name="sdk_not_initialized_description">Please initialize the SDK before using this feature</string>
+    <string name="empty_public_key_error_title">Empty public key</string>
+    <string name="empty_public_key_error_description">The public key cannot be empty</string>
+    <string name="ok">OK</string>
+    <string name="autofill_public_key">Autofill Public Key</string>
+    <string name="checkout_feature_title">Checkout</string>
+    <string name="checkout_feature_description">The Checkout feature offers a seamless payment experience without requiring any component building. You can leverage one of the default themes or customize your own to create a complete payment solution.</string>
+    <string name="payment_button_text">Pay</string>
+    <string name="card_transaction_feature_title">Card Transaction</string>
+    <string name="card_transaction_feature_description">Demonstrates MPCheckoutType.CardTransaction, which processes a card payment linked to an existing order.</string>
+</resources>
