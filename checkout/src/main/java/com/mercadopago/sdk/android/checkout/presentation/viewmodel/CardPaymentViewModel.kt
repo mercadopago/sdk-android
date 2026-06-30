@@ -6,19 +6,30 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrder
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
+import com.mercadopago.sdk.android.checkout.core.model.internal.isCardTransaction
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.internal.unsupportedTypeError
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.extensions.extractCardFilters
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Payer
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.usecase.CardBinFilter
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.extensions.fold
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isBeingCleared
 import com.mercadopago.sdk.android.checkout.presentation.extensions.isEmpty
@@ -28,6 +39,7 @@ import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScr
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
@@ -40,24 +52,29 @@ import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securityc
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield.SimpleTextFieldEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 internal class CardPaymentViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
-    private val getCardBinUseCase: GetCardBinUseCase,
     private val initializeCardFormUseCase: InitializeCardFormUseCase,
+    private val getCardBinUseCase: GetCardBinUseCase,
     private val generateTokenUseCase: GenerateTokenUseCase,
+    private val processOrderUseCase: ProcessOrderUseCase,
     private val cardPaymentScreenStateFactory: CardPaymentScreenStateFactory,
 ) : ViewModel() {
-    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
     private val _viewState = MutableStateFlow(CardPaymentScreenState())
     val viewState: StateFlow<CardPaymentScreenState> = _viewState
 
-    private var isCancelling = false
+    private val _viewEvent = MutableStateFlow<CardPaymentViewEvent?>(null)
+    val viewEvent: StateFlow<CardPaymentViewEvent?> = _viewEvent.asStateFlow()
+
+    private val cancelledFormContextUseCase = CancelledFormContextUseCase()
+
+    private var pendingOrderData: PendingOrderData? = null
 
     private val analyticsTracker = CardFormAnalyticsTracker(
-        isCancelling = { isCancelling },
         isLoading = { _viewState.value.isLoading },
     )
 
@@ -304,11 +321,36 @@ internal class CardPaymentViewModel(
     fun onBackPressed(
         reason: CancelReason = CancelReason.SystemBack,
     ) {
-        isCancelling = true
         analyticsTracker.trackUserCanceled(reason)
-        val currentState = _viewState.value
-        val context = cancelledFormContextUseCase(currentState)
-        CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+        val result = cancelledFormContextUseCase(_viewState.value)
+        val context: MPUserCancelledContext = when (checkoutConfiguration?.checkoutType) {
+            is MPCheckoutType.CardSave -> MPUserCancelledContext.CardSave(result.fields)
+            is MPCheckoutType.CardTransaction, null -> MPUserCancelledContext.CardTransaction(
+                fields = result.fields,
+                screens = result.screens,
+            )
+        }
+        _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
+    }
+
+    fun onInstallmentConfirmed(
+        installment: Int,
+    ) {
+        if (_viewState.value.isLoading) return
+        _viewState.value = _viewState.value.copy(isLoading = true)
+        viewModelScope.launch {
+            processOrder(installments = installment)
+        }
+    }
+
+    fun markScreenPresented(
+        screen: Screen,
+    ) {
+        cancelledFormContextUseCase.markScreenPresented(screen)
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
     }
 
     fun initialization() {
@@ -319,11 +361,13 @@ internal class CardPaymentViewModel(
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->
-                    _viewState.value = data.toCardPaymentScreenState()
+                    _viewState.value = data.toCardPaymentScreenState(
+                        totalAmount = checkoutConfiguration?.getCardFormAmount(),
+                    )
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
@@ -388,7 +432,12 @@ internal class CardPaymentViewModel(
                     ),
                 ).fold(
                     onSuccess = { data ->
-                        _viewState.value = _viewState.value.applyCardBinData(data)
+                        val updated = _viewState.value.applyCardBinData(data)
+                        _viewState.value = if (updated.secureCodeState.length > 0) {
+                            errorHandler.applySecurityCodeError(updated)
+                        } else {
+                            updated
+                        }
                     },
                     onError = { error ->
                         _viewState.value = if (error is MercadoPagoCheckoutError.ServiceError) {
@@ -417,7 +466,11 @@ internal class CardPaymentViewModel(
     ) {
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(
-                fixedFooterState = _viewState.value.fixedFooterState.copy(isButtonLoading = true),
+                footerState = _viewState.value.footerState.copy(isButtonLoading = true),
+            )
+            val payer = Payer(
+                documentType = buyerIdentification.type,
+                documentNumber = buyerIdentification.number,
             )
             generateTokenUseCase(
                 cardNumberState = cardNumberState,
@@ -425,52 +478,133 @@ internal class CardPaymentViewModel(
                 securityCodeState = securityCodeState,
                 buyerIdentification = buyerIdentification,
             ).fold(
-                onSuccess = { cardToken ->
-                    val payer = Payer(
-                        documentType = buyerIdentification.type,
-                        documentNumber = buyerIdentification.number,
-                    )
-                    analyticsTracker.trackSubmit(
-                        cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                        transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble() ?: 0.0,
-                        issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
-                        paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                    )
-                    when (checkoutConfiguration?.checkoutType) {
-                        is MPCheckoutType.CardSave -> CheckoutCallbackHolder.notify(
-                            MercadoPagoCheckoutResult.Success(
-                                MPPaymentData.CardSave(
-                                    token = cardToken.token,
-                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                                    payer = payer,
-                                ),
-                            ),
-                        )
-                        is MPCheckoutType.CardTransaction, null -> CheckoutCallbackHolder.notify(
-                            MercadoPagoCheckoutResult.Success(
-                                MPPaymentData.CardTransaction(
-                                    transactionAmount = checkoutConfiguration?.getCardFormAmount(),
-                                    installment = 1,
-                                    paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
-                                    paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
-                                    issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
-                                    payer = payer,
-                                ),
-                            ),
-                        )
-                    }
-                },
+                onSuccess = { cardToken -> handleToken(token = cardToken.token, payer = payer) },
                 onError = { checkoutError ->
                     analyticsTracker.trackSubmitError(checkoutError)
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(checkoutError))
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(
-                    fixedFooterState = _viewState.value.fixedFooterState.copy(isButtonLoading = false),
+                    footerState = _viewState.value.footerState.copy(isButtonLoading = false),
                 )
             }
         }
     }
+
+    private fun handleToken(
+        token: String,
+        payer: Payer,
+    ) {
+        if (checkoutConfiguration.isCardTransaction()) {
+            pendingOrderData = PendingOrderData(token = token, payer = payer)
+        }
+        analyticsTracker.trackSubmit(
+            cardBrand = viewState.value.paymentState.paymentMethodId.orEmpty(),
+            transactionAmount = checkoutConfiguration?.getCardFormAmount()?.toDouble() ?: 0.0,
+            issuer = viewState.value.cardIssuers.firstOrNull()?.id.orEmpty(),
+            paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+        )
+        val paymentData = buildPaymentData(token = token, payer = payer)
+        if (paymentData != null) {
+            val state = _viewState.value
+            _viewEvent.value = CardPaymentViewEvent.OnSuccess(
+                payment = paymentData,
+                installment = MPInstallmentData(
+                    quotas = state.installmentsState.installments,
+                    display = MPInstallmentData.InstallmentDisplay(
+                        title = state.installmentsState.title,
+                        currencySymbol = state.currencySymbol,
+                        displayType = state.installmentsState.displayType,
+                        footer = MPInstallmentData.InstallmentFooterDisplay(
+                            footerTitle = state.installmentsState.totalLabel,
+                            lastFourDigits = state.cardNumberState.lastFourDigits,
+                            brand = state.paymentState.paymentMethodId.orEmpty(),
+                            buttonLabel = state.installmentsState.buttonLabel,
+                        ),
+                    ),
+                ),
+            )
+        } else {
+            _viewEvent.value = CardPaymentViewEvent.OnFailure(
+                checkoutConfiguration?.checkoutType.unsupportedTypeError(
+                    localized = ErrorLocalized.TOKENIZATION,
+                ),
+            )
+        }
+    }
+
+    @Suppress("UnusedPrivateMember")
+    private suspend fun processOrder(
+        installments: Int,
+    ) {
+        val orderId = checkoutConfiguration.getOrderId()
+        val token = pendingOrderData?.token.orEmpty()
+        val payer = pendingOrderData?.payer ?: Payer()
+        processOrderUseCase(
+            ProcessOrderParams(
+                orderId = checkoutConfiguration.getOrder()?.orderId.orEmpty(),
+                clientToken = checkoutConfiguration.getOrder()?.clientToken.orEmpty(),
+                amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentMethodType = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                token = token,
+                installments = installments,
+            ),
+        ).fold(
+            onSuccess = { orderOutput ->
+                analyticsTracker.trackOrderSubmit(
+                    orderId = orderOutput.id,
+                    orderStatus = orderOutput.status,
+                )
+                val paymentData = buildPaymentData(
+                    token = token,
+                    payer = payer,
+                    orderOutput = orderOutput,
+                )
+                if (paymentData != null) {
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                } else {
+                    CheckoutCallbackHolder.notify(
+                        MercadoPagoCheckoutResult.Error(
+                            checkoutConfiguration?.checkoutType.unsupportedTypeError(
+                                localized = ErrorLocalized.TOKENIZATION,
+                            ),
+                        ),
+                    )
+                }
+                _viewState.value = _viewState.value.copy(isLoading = false)
+                pendingOrderData = null
+            },
+            onError = { error ->
+                analyticsTracker.trackOrderError(error = error, orderId = orderId)
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                _viewState.value = _viewState.value.copy(isLoading = false)
+                pendingOrderData = null
+            },
+        )
+    }
+
+    private fun buildPaymentData(
+        token: String,
+        payer: Payer,
+        orderOutput: OrderProcessOutput? = null,
+    ): MPPaymentData? =
+        when (checkoutConfiguration?.checkoutType) {
+            is MPCheckoutType.CardSave -> MPPaymentData.CardSave(
+                token = token,
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+                issuerId = viewState.value.cardIssuers.firstOrNull()?.id,
+                payer = payer,
+            )
+
+            is MPCheckoutType.CardTransaction -> MPPaymentData.CardTransaction(
+                orderId = orderOutput?.id.orEmpty(),
+                orderStatus = orderOutput?.status.orEmpty(),
+                paymentMethodId = viewState.value.paymentState.paymentMethodId.orEmpty(),
+                paymentTypeId = viewState.value.paymentState.paymentTypeId.orEmpty(),
+            )
+
+            else -> null
+        }
 }

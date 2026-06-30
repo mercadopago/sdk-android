@@ -19,7 +19,7 @@ internal val SampleFeaturesNavigationList: List<SampleFeature> = listOf(
         description = R.string.checkout_feature_description,
         destination = SampleDestination.Checkout,
         isEnabled = true,
-    )
+    ),
 )
 
 internal data class SampleFeature(

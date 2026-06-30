@@ -2,8 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
-import com.mercadopago.sdk.android.checkout.domain.model.MPCardFormUserCancelledContext
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.State
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
@@ -12,18 +11,26 @@ import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDa
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 
+internal data class CancelledFormContext(
+    val fields: List<MPCancelledFieldState>,
+    val screens: List<Screen>,
+)
+
 internal class CancelledFormContextUseCase {
-    operator fun invoke(
-        screenState: CardPaymentScreenState,
-    ): MPUserCancelledContext.CardForm {
-        val fields = buildCancelledFieldStates(screenState)
-        return MPUserCancelledContext.CardForm(MPCardFormUserCancelledContext(fields))
+    private val presentedScreens = mutableListOf<Screen>()
+
+    fun markScreenPresented(
+        screen: Screen,
+    ) {
+        if (!presentedScreens.contains(screen)) {
+            presentedScreens.add(screen)
+        }
     }
 
-    private fun buildCancelledFieldStates(
+    operator fun invoke(
         screenState: CardPaymentScreenState,
-    ): List<MPCancelledFieldState> =
-        buildList {
+    ): CancelledFormContext {
+        val fields = buildList<MPCancelledFieldState> {
             add(buildCardNumberFieldState(screenState))
             if (screenState.cardHolderState.show) {
                 add(buildCardHolderFieldState(screenState))
@@ -36,23 +43,31 @@ internal class CancelledFormContextUseCase {
                 add(buildDocumentFieldState(screenState))
             }
         }
+        return CancelledFormContext(fields = fields, screens = presentedScreens.toList())
+    }
 
     private fun buildCardNumberFieldState(
         screenState: CardPaymentScreenState,
     ): MPCancelledFieldState {
         val cardNumberState = screenState.cardNumberState
-        val state = cardNumberState.errorTypes.firstOrNull()?.let {
-            when (it) {
-                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(it.brand)
-                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(it.cardType)
-                is CardNumberErrorType.FieldValidation -> when {
-                    cardNumberState.length == 0 -> State.Empty
-                    cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
-                    else -> State.Invalid
+        val error = cardNumberState.errorTypes.firstOrNull()
+        val state = if (error == null) {
+            State.Valid
+        } else {
+            when (error) {
+                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(error.brand)
+                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(error.cardType)
+                is CardNumberErrorType.FieldValidation -> {
+                    when {
+                        cardNumberState.length == 0 -> State.Empty
+                        cardNumberState.length < cardNumberState.maxLength -> State.Incomplete
+                        else -> State.Invalid
+                    }
                 }
-                else -> State.Invalid
+                is CardNumberErrorType.PaymentMethodNotFound -> State.Invalid
+                is CardNumberErrorType.LuhnValidation -> State.Invalid
             }
-        } ?: State.Valid
+        }
         return MPCancelledFieldState(field = Field.CARD_NUMBER, state = state)
     }
 

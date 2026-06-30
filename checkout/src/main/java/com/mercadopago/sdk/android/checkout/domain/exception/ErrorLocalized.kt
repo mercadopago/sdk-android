@@ -4,4 +4,6 @@ internal enum class ErrorLocalized {
     TOKENIZATION,
     CARD_FORM_INITIALIZATION,
     CARD_BIN,
+    ORDER_PROCESS,
+    PAYMENT_INITIALIZATION,
 }

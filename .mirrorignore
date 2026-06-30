@@ -3,4 +3,5 @@
 # O workflow lê este arquivo — nenhuma alteração no workflow é necessária para novas exclusões.
 ux-reference/
 Flowbook/
-.github/
+.github/workflows/
+.claude
