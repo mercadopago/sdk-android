@@ -18,15 +18,14 @@ internal class CardFormRemoteDataSourceImplTest {
     private val service = mockk<CardFormService>()
     private val dataSource = CardFormRemoteDataSourceImpl(service)
 
-    private val amount = "100.00"
     private val checkoutType = "card_form"
 
     @Test
     fun `given service returns successful response then fetchInitialization returns Success`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any()) } returns Response.success(body)
 
-        val result = dataSource.fetchInitialization(amount, checkoutType)
+        val result = dataSource.fetchInitialization(checkoutType)
 
         assertIs<Result.Success<CardFormInitResponse>>(result)
         assertEquals(body, result.data)
@@ -35,9 +34,9 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then fetchInitialization returns Error`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.initialization(any(), any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.initialization(any(), any()) } returns Response.error(404, errorBody)
 
-        val result = dataSource.fetchInitialization(amount, checkoutType)
+        val result = dataSource.fetchInitialization(checkoutType)
 
         val error = assertIs<Result.Error<ResponseError>>(result)
         assertEquals("404", error.error.code)
@@ -45,12 +44,12 @@ internal class CardFormRemoteDataSourceImplTest {
     }
 
     @Test
-    fun `given invoke is called then passes amount and checkoutType to service`() = runTest {
+    fun `given invoke is called then passes checkoutType to service`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any()) } returns Response.success(body)
 
-        dataSource.fetchInitialization(amount = amount, checkoutType = checkoutType)
+        dataSource.fetchInitialization(checkoutType = checkoutType)
 
-        coVerify { service.initialization(any(), amount = amount, checkoutType = checkoutType) }
+        coVerify { service.initialization(any(), checkoutType = checkoutType) }
     }
 }

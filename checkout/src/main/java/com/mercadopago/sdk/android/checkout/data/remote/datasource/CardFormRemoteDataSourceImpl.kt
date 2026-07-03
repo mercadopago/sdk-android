@@ -12,11 +12,9 @@ internal class CardFormRemoteDataSourceImpl(
     private val service: CardFormService,
 ) : CardFormRemoteDataSource {
     override suspend fun fetchInitialization(
-        amount: String,
         checkoutType: String,
     ): Result<CardFormInitResponse, ResponseError> =
         service.initialization(
-            amount = amount,
             checkoutType = checkoutType,
         ).toInternalResponse()
 

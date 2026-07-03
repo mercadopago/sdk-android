@@ -14,7 +14,6 @@ internal interface CardFormService {
     @GET("$BRICKS_API/$VERSION/card_payment_brick/initialization")
     suspend fun initialization(
         @Query("product_id") productId: String? = PRODUCT_ID,
-        @Query("amount") amount: String,
         @Query("checkout_type") checkoutType: String,
     ): Response<CardFormInitResponse>
 

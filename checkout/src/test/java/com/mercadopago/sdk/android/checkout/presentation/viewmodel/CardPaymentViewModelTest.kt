@@ -160,7 +160,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization succeeds then isLoading is false`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns
+        coEvery { initializeCardFormUseCase(any()) } returns
             Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
         val viewModel = makeViewModel()
 
@@ -171,7 +171,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization fails then isLoading is false`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
@@ -181,7 +181,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization fails then notifies CheckoutCallbackHolder with Error`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
@@ -191,7 +191,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization fails then tracks initialize_error event`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any()) } returns Result.Error(networkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()

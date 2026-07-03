@@ -55,10 +55,15 @@ allprojects {
                         "*.*\$*Sample\$*",
                         "*.*\$*KoverIgnore\$*",
                         "*Exception*",
+                        // Compose screens and Activities cannot be unit tested
+                        "*Activity",
+                        "*ScreenKt",
+                        "*ScreenContentKt",
                     )
                     packages(
                         "com.airbnb.android.showkase*",
                         "com.mercadopago.sdk.android.coremethods.ui.components.samples*",
+                        "com.mercadopago.sdk.android.checkout.presentation.controller",
                     )
                 }
             }

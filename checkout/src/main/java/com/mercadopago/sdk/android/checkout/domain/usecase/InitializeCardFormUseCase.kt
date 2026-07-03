@@ -13,13 +13,11 @@ internal class InitializeCardFormUseCase(
     private val repository: CardFormRepository,
 ) {
     suspend operator fun invoke(
-        amount: String,
         checkoutType: String,
     ): Result<CardFormInitializationOutput, MercadoPagoCheckoutError> =
         withServiceRetry {
             repository.fetchInitialization(
                 InitializeCardFormParams(
-                    amount = amount,
                     checkoutType = checkoutType,
                 ),
             )

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmount
-import com.mercadopago.sdk.android.checkout.core.model.internal.getCardFormAmountOrZero
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.data.remote.utils.PROCESSING_MODE
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -315,7 +314,6 @@ internal class CardPaymentViewModel(
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true)
             initializeCardFormUseCase(
-                amount = checkoutConfiguration?.getCardFormAmountOrZero().orEmpty(),
                 checkoutType = checkoutConfiguration.toCheckoutType(),
             ).fold(
                 onSuccess = { data ->

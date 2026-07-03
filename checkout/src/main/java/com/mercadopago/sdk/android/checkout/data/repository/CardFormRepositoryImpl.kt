@@ -23,7 +23,6 @@ internal class CardFormRepositoryImpl(
     ): Result<CardFormInitializationOutput, ResponseError> =
         withErrorHandling {
             dataSource.fetchInitialization(
-                amount = params.amount,
                 checkoutType = params.checkoutType,
             )
         }.map { it.toDomain() }

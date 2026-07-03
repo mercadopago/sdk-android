@@ -20,16 +20,15 @@ internal class InitializeCardFormUseCaseTest {
     private val cardFormRepository = mockk<CardFormRepository>()
     private val useCase = InitializeCardFormUseCase(cardFormRepository)
 
-    private val amount = "100.00"
     private val checkoutType = "card_form"
-    private val params = InitializeCardFormParams(amount = amount, checkoutType = checkoutType)
+    private val params = InitializeCardFormParams(checkoutType = checkoutType)
 
     @Test
     fun `given fetchInitialization succeeds then returns Success with CardFormInitializationOutput`() = runTest {
         coEvery { cardFormRepository.fetchInitialization(params) } returns
             Result.Success(mockk(relaxed = true))
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(checkoutType)
 
         assertIs<Result.Success<CardFormInitializationOutput>>(result)
     }
@@ -39,7 +38,7 @@ internal class InitializeCardFormUseCaseTest {
         val error = ResponseError(code = "bad_request", message = "Service unavailable", httpStatus = 400)
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
         val checkoutError = result.error
@@ -53,7 +52,7 @@ internal class InitializeCardFormUseCaseTest {
         val error = ResponseError(code = "NO_INTERNET", message = "Connection failed")
         coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
         val checkoutError = result.error
@@ -66,7 +65,7 @@ internal class InitializeCardFormUseCaseTest {
     fun `given fetchInitialization throws exception then returns Result Error`() = runTest {
         coEvery { cardFormRepository.fetchInitialization(params) } throws RuntimeException("Unexpected error")
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
     }
@@ -76,7 +75,7 @@ internal class InitializeCardFormUseCaseTest {
         coEvery { cardFormRepository.fetchInitialization(params) } returns
             Result.Success(mockk(relaxed = true))
 
-        useCase(amount, checkoutType)
+        useCase(checkoutType)
 
         coVerify { cardFormRepository.fetchInitialization(params) }
     }

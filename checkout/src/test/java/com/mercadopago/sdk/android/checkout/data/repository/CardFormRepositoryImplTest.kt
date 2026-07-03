@@ -26,7 +26,6 @@ internal class CardFormRepositoryImplTest {
     private val repository = CardFormRepositoryImpl(dataSource)
 
     private val initParams = InitializeCardFormParams(
-        amount = "150.00",
         checkoutType = "card_payment",
     )
 
@@ -43,7 +42,6 @@ internal class CardFormRepositoryImplTest {
         val response = mockk<CardFormInitResponse>(relaxed = true)
         coEvery {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
                 checkoutType = initParams.checkoutType,
             )
         } returns Result.Success(response)
@@ -57,7 +55,7 @@ internal class CardFormRepositoryImplTest {
     fun `given dataSource returns error then fetchInitialization returns Result Error`() = runTest {
         val error = ResponseError(code = "404", message = "Not Found", httpStatus = 404)
         coEvery {
-            dataSource.fetchInitialization(any(), any())
+            dataSource.fetchInitialization(any())
         } returns Result.Error(error)
 
         val result = repository.fetchInitialization(initParams)
@@ -68,7 +66,7 @@ internal class CardFormRepositoryImplTest {
     @Test
     fun `given dataSource throws then fetchInitialization returns Result Error`() = runTest {
         coEvery {
-            dataSource.fetchInitialization(any(), any())
+            dataSource.fetchInitialization(any())
         } throws RuntimeException("Network failure")
 
         val result = repository.fetchInitialization(initParams)
@@ -81,7 +79,6 @@ internal class CardFormRepositoryImplTest {
         val response = mockk<CardFormInitResponse>(relaxed = true)
         coEvery {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
                 checkoutType = initParams.checkoutType,
             )
         } returns Result.Success(response)
@@ -90,7 +87,6 @@ internal class CardFormRepositoryImplTest {
 
         coVerify(exactly = 1) {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
                 checkoutType = initParams.checkoutType,
             )
         }
