@@ -39,7 +39,7 @@ internal class CardFormSubmitAnalyticsTest {
     }
 
     @Test
-    fun `when metricCardFormSubmit called with null paymentType then data reflects null only for paymentType`() {
+    fun `when metricCardFormSubmit called with zero transactionAmount and null paymentType then data reflects them`() {
         val metric = metricCardFormSubmit(
             cardBrand = "amex",
             transactionAmount = 0.0,
