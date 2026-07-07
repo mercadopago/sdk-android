@@ -9,6 +9,10 @@ internal fun Float.toCurrencyString(
     locale: Locale = Locale.getDefault(),
 ): String = NumberFormat.getCurrencyInstance(locale).format(this)
 
+internal fun BigDecimal.toCurrencyString(
+    locale: Locale = Locale.getDefault(),
+): String = NumberFormat.getCurrencyInstance(locale).format(this)
+
 internal fun BigDecimal.getTotal(): String {
     val scaled = setScale(2, RoundingMode.HALF_UP)
     return scaled.toBigInteger().toString()

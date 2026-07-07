@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.extensions
 
+import com.mercadopago.sdk.android.checkout.domain.model.CardFieldConfig
+
 private const val CARD_LENGTH_8 = 8
 private const val CARD_LENGTH_9 = 9
 private const val CARD_LENGTH_10 = 10
@@ -39,3 +41,11 @@ internal fun Int.toMask(): String =
         CARD_LENGTH_19 -> CARD_LENGTH_19_MASK
         else -> CARD_LENGTH_16_MASK
     }
+
+internal fun CardFieldConfig.maxLengthOrNull(): Int? = length.max.takeIf { it > 0 }
+
+internal fun CardFieldConfig.maskOrNull(): String? = mask?.takeIf { it.isNotBlank() }
+
+internal fun CardFieldConfig.maskOrFallback(
+    fallbackLength: Int,
+): String = maskOrNull() ?: fallbackLength.toMask()

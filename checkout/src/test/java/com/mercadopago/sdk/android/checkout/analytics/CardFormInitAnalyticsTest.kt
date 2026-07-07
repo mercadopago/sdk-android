@@ -15,6 +15,7 @@ internal class CardFormInitAnalyticsTest {
             sellerCustomization = listOf("customized_token"),
             excludedPaymentTypes = listOf("credit", "debit"),
             excludedPaymentMethods = listOf("visa", "master"),
+            orderId = "123",
         )
 
         assertEquals("/checkout_api_native/checkout/card_form/initialize", metric.path)
@@ -29,6 +30,7 @@ internal class CardFormInitAnalyticsTest {
             sellerCustomization = emptyList(),
             excludedPaymentTypes = listOf("credit"),
             excludedPaymentMethods = listOf("visa"),
+            orderId = "order-abc",
         )
 
         val data = assertIs<CardFormInitEventData>(metric.data)
@@ -37,6 +39,22 @@ internal class CardFormInitAnalyticsTest {
         assertEquals(emptyList(), data.sellerCustomization)
         assertEquals(listOf("credit"), data.excludedPaymentTypes)
         assertEquals(listOf("visa"), data.excludedPaymentMethods)
+        assertEquals("order-abc", data.orderId)
+    }
+
+    @Test
+    fun `when metricCardFormInitialize called with empty orderId then orderId resolves to NOT_APPLY`() {
+        val metric = metricCardFormInitialize(
+            checkoutType = "card_form",
+            appearance = "light",
+            sellerCustomization = emptyList(),
+            excludedPaymentTypes = emptyList(),
+            excludedPaymentMethods = emptyList(),
+            orderId = "",
+        )
+
+        val data = assertIs<CardFormInitEventData>(metric.data)
+        assertEquals("NOT_APPLY", data.orderId)
     }
 
     @Test
