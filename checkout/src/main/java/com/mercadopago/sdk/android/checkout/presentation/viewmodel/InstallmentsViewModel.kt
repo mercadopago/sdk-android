@@ -2,59 +2,112 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mercadopago.sdk.android.checkout.data.mapper.toInstallmentsState
-import com.mercadopago.sdk.android.checkout.presentation.event.InstallmentsScreenEvent
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getCurrencyString
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
-import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
+import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonLoading
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
-import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
-import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
-import com.mercadopago.sdk.android.coremethods.domain.utils.Result
-import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 internal class InstallmentsViewModel(
-    private val coreMethods: CoreMethods = MercadoPagoSDK.getInstance().coreMethods,
+    private val installmentData: MPInstallmentData,
+    private val paymentData: MPPaymentData,
+    checkoutType: String,
+    orderId: String,
+    private val analyticsTracker: InstallmentsAnalyticsTracker = InstallmentsAnalyticsTracker(
+        checkoutType = checkoutType,
+        paymentData = paymentData,
+        installmentData = installmentData,
+        orderId = orderId,
+    ),
 ) : ViewModel() {
-    private val _viewState = MutableStateFlow(InstallmentsScreenState())
-    val viewState: StateFlow<InstallmentsScreenState> = _viewState.asStateFlow()
+    private val initialSelection = installmentData.selectedInstallment
+        ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Success }?.installments
+        ?: installmentData.quotas
+            .firstOrNull()
+            ?.installments
+            ?.takeIf { installmentData.display.displayType == InstallmentsDisplayType.RadioButton }
+    private val selectedNumber = MutableStateFlow(initialSelection)
+    private val buttonLoadingFlow = MutableStateFlow(false)
 
-    private val _viewEvent = MutableStateFlow<InstallmentsScreenEvent>(InstallmentsScreenEvent.Idle)
-    val viewEvent: StateFlow<InstallmentsScreenEvent> = _viewEvent.asStateFlow()
+    val viewState: StateFlow<InstallmentsScreenState> = combine(
+        selectedNumber,
+        buttonLoadingFlow,
+    ) { selected, loading ->
+        installmentData.copy(selectedInstallment = selected)
+            .toInstallmentsScreenState()
+            .run { copy(footerState = footerState.withButtonLoading(loading)) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = installmentData.copy(selectedInstallment = initialSelection)
+            .toInstallmentsScreenState(),
+    )
 
-    fun getInstallments(
-        bin: String,
-        amount: BigDecimal,
-    ) {
-        viewModelScope.launch {
-            val result = coreMethods.getInstallments(bin = bin, amount = amount)
-            when (result) {
-                is Result.Success ->
-                    _viewState.value = _viewState.value.copy(
-                        title = "Escolha o parcelamento",
-                        installmentsState = result.data.getOrNull(0).toInstallmentsState(),
-                        footerState = FooterState(
-                            title = "Total",
-                            currencySymbol = null.getCurrencyString(),
-                            amountIntegerPart = amount.getTotal(),
-                            amountDecimalPart = amount.getTotalDecimalPart(),
-                            subtitle = "Santander Credito **** 1234",
-                        ),
-                    )
-                is Result.Error -> Unit
-            }
-        }
+    private val _viewEvent = MutableStateFlow<InstallmentViewEvent?>(null)
+    val viewEvent: StateFlow<InstallmentViewEvent?> = _viewEvent.asStateFlow()
+
+    init {
+        analyticsTracker.trackInitialize()
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
+        buttonLoadingFlow.value = false
     }
 
     fun onInstallmentSelected(
         installment: Int,
     ) {
-        _viewEvent.value = InstallmentsScreenEvent.OnInstallmentsSelected(installment = installment)
+        val quota = installmentData.quotas.firstOrNull { it.installments == installment } ?: return
+        when (installmentData.display.displayType) {
+            InstallmentsDisplayType.RadioButton -> {
+                analyticsTracker.trackSelected(installment)
+                selectedNumber.value = installment
+            }
+            InstallmentsDisplayType.Chevron -> {
+                analyticsTracker.trackSubmit(quota)
+                _viewEvent.value = InstallmentViewEvent.OnSuccess(installment)
+            }
+        }
+    }
+
+    fun onPayClicked() {
+        if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
+        val number = selectedNumber.value ?: return
+        installmentData.quotas
+            .firstOrNull { it.installments == number }
+            ?.let { quota ->
+                analyticsTracker.trackSubmit(quota)
+                viewModelScope.launch {
+                    buttonLoadingFlow.value = true
+                    delay(SUBMIT_LOADING_DELAY_MS)
+                    _viewEvent.value = InstallmentViewEvent.OnSuccess(number)
+                }
+            }
+    }
+
+    fun onBackPressed() {
+        analyticsTracker.trackUserCanceled(InstallmentsCancelReason.BackPressed)
+    }
+
+    override fun onCleared() {
+        analyticsTracker.trackUserCanceled(InstallmentsCancelReason.UserDismissed)
+        super.onCleared()
+    }
+
+    private companion object {
+        const val SUBMIT_LOADING_DELAY_MS = 300L
     }
 }

@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonEnabled
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
@@ -178,7 +179,7 @@ internal class CardFormFieldErrorHandler(
             state.cardHolderState.isValid &&
             isIdentificationValid
         return state.copy(
-            fixedFooterState = state.fixedFooterState.copy(isVisible = isFormValid),
+            footerState = state.footerState.withButtonEnabled(isFormValid),
         )
     }
 

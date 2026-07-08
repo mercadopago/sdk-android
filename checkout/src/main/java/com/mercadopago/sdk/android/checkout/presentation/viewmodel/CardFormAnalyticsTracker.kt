@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInputValidat
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmit
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormSubmitError
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormUserCanceledError
+import com.mercadopago.sdk.android.checkout.analytics.metricOrderError
+import com.mercadopago.sdk.android.checkout.analytics.metricOrderSubmit
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
@@ -14,9 +16,10 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 
 internal class CardFormAnalyticsTracker(
-    private val isCancelling: () -> Boolean,
     private val isLoading: () -> Boolean,
 ) {
+    private var canceled = false
+
     fun trackInitializeError(
         error: MercadoPagoCheckoutError,
     ) {
@@ -29,7 +32,7 @@ internal class CardFormAnalyticsTracker(
         field: String,
         isValid: Boolean,
     ) {
-        if (isCancelling() || isLoading()) return
+        if (canceled || isLoading()) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormInputValidation(field = field, isInputValid = isValid),
         )
@@ -38,7 +41,7 @@ internal class CardFormAnalyticsTracker(
     fun trackDropdownSelection(
         type: String,
     ) {
-        if (isCancelling() || isLoading()) return
+        if (canceled || isLoading()) return
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormDropdownSelection(dropdownSelectionType = type),
         )
@@ -60,6 +63,18 @@ internal class CardFormAnalyticsTracker(
         )
     }
 
+    fun trackOrderSubmit(
+        orderId: String,
+        orderStatus: String,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricOrderSubmit(
+                orderId = orderId,
+                orderStatus = orderStatus,
+            ),
+        )
+    }
+
     fun trackSubmitError(
         error: MercadoPagoCheckoutError,
     ) {
@@ -68,9 +83,22 @@ internal class CardFormAnalyticsTracker(
         )
     }
 
+    fun trackOrderError(
+        error: MercadoPagoCheckoutError,
+        orderId: String,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(
+            metricOrderError(
+                errorType = error.toErrorTypeString(),
+                orderId = orderId,
+            ),
+        )
+    }
+
     fun trackUserCanceled(
         reason: CancelReason,
     ) {
+        canceled = true
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricCardFormUserCanceledError(errorType = reason.analyticsValue),
         )

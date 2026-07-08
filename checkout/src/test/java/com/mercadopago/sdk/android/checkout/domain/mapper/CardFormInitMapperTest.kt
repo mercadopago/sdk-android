@@ -66,13 +66,9 @@ internal class CardFormInitMapperTest {
         securityCode = securityCode,
         document = document,
         installments = InstallmentsTranslations(
-            header = InstallmentsHeaderTranslations(
-                chevron = "",
-                radio = "",
-                title = "",
-            ),
-            interestFreeLabel = "",
+            header = InstallmentsHeaderTranslations(title = ""),
             totalLabel = "",
+            payButtonLabel = "",
         ),
     )
 
@@ -123,7 +119,7 @@ internal class CardFormInitMapperTest {
 
         val output = response.toDomain()
 
-        assertEquals("Confirm", output.button)
+        assertEquals("Confirm", output.buttonLabel)
     }
 
     @Test
@@ -175,6 +171,36 @@ internal class CardFormInitMapperTest {
         assertEquals("number", output.type)
         assertEquals(13, output.length.min)
         assertEquals(19, output.length.max)
+    }
+
+    @Test
+    fun `given cardNumber mask then config carries the mask`() {
+        val response = buildResponse(
+            cardNumber = CardNumberConfig(
+                type = "number",
+                length = LengthConfig(min = 15, max = 15),
+                mask = "#### ###### #####",
+            ),
+        )
+
+        val output = response.toDomain().fields.cardNumber.config
+
+        assertEquals("#### ###### #####", output.mask)
+    }
+
+    @Test
+    fun `given blank cardNumber mask then config mask is null`() {
+        val response = buildResponse(
+            cardNumber = CardNumberConfig(
+                type = "number",
+                length = LengthConfig(min = 16, max = 16),
+                mask = "",
+            ),
+        )
+
+        val output = response.toDomain().fields.cardNumber.config
+
+        assertEquals(null, output.mask)
     }
 
     @Test
