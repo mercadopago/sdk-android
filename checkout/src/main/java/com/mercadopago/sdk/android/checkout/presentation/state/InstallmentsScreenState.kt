@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
+
 internal data class InstallmentsScreenState(
     val title: String = "",
     val items: List<InstallmentState> = emptyList(),

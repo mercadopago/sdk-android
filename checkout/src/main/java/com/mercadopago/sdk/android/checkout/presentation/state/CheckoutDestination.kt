@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal sealed interface CheckoutDestination {
     @Serializable
+    data object PaymentBrick : CheckoutDestination
+
+    @Serializable
     data object Form : CheckoutDestination
 
     @Serializable

@@ -5,6 +5,14 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 
+internal sealed interface PaymentBrickViewEvent {
+    data class OnOptionSelected(val optionId: String) : PaymentBrickViewEvent
+
+    data class OnFailure(val error: MercadoPagoCheckoutError) : PaymentBrickViewEvent
+
+    data class OnUserCancelled(val context: MPUserCancelledContext.Payment) : PaymentBrickViewEvent
+}
+
 internal sealed interface CardPaymentViewEvent {
     data class OnSuccess(
         val payment: MPPaymentData,

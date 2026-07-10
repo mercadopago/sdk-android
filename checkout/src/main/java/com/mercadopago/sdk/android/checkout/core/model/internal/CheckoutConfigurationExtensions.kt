@@ -8,14 +8,18 @@ import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutErro
 
 internal const val CARD_TRANSACTION = "card_transaction"
 internal const val CARD_SAVE = "card_save"
+internal const val PAYMENT = "payment"
 private const val UNSUPPORTED = "Unsupported checkout type"
 
 internal fun CheckoutConfiguration?.toCheckoutType(): String =
     when (this?.checkoutType) {
         is MPCheckoutType.CardSave -> CARD_SAVE
         is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
+        is MPCheckoutType.Payment -> PAYMENT
         null -> ""
     }
+
+internal fun CheckoutConfiguration?.startsWithPayment(): Boolean = this?.checkoutType is MPCheckoutType.Payment
 
 internal fun CheckoutConfiguration?.getOrderId(): String = this.asCardTransaction()?.order?.orderId.orEmpty()
 

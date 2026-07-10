@@ -48,6 +48,7 @@ internal data class SecurityCodeFieldOutput(
     val label: String,
     val placeholder: String,
     val helper: String,
+    val error: String? = null,
 )
 
 internal data class InstallmentsOutput(
@@ -69,6 +70,7 @@ internal data class QuotaOutput(
     val primaryLabel: String,
     val secondaryLabel: String,
     val state: String,
+    val accessibilityLabel: String? = null,
 )
 
 internal data class TicketOptionOutput(
