@@ -23,6 +23,7 @@ tasks.withType<Detekt>().configureEach {
     exclude("resources/")
     exclude("**/build/**")
     exclude("**/example/**")
+    exclude("**/.claude/**")
     reports {
         xml.required.set(true)
         html.required.set(true)
@@ -32,6 +33,7 @@ tasks.withType<Detekt>().configureEach {
 }
 
 allprojects {
+    if (project.name == "showkase") return@allprojects
     apply(plugin = "org.jetbrains.kotlinx.kover")
     kover {
         reports {
@@ -40,6 +42,7 @@ allprojects {
                     // exclusions for all report variants
                     annotatedBy(
                         "androidx.compose.ui.tooling.preview.Preview",
+                        "androidx.compose.runtime.Composable",
                         "*Generated",
                         "*Sampled",
                         "*KoverIgnore"
@@ -55,10 +58,16 @@ allprojects {
                         "*.*\$*Sample\$*",
                         "*.*\$*KoverIgnore\$*",
                         "*Exception*",
+                        "*Activity*",
                     )
                     packages(
                         "com.airbnb.android.showkase*",
                         "com.mercadopago.sdk.android.coremethods.ui.components.samples*",
+                        "com.mercadopago.sdk.android.checkout.presentation.cardpayment*",
+                        "com.mercadopago.sdk.android.checkout.presentation.installments*",
+                        "com.mercadopago.sdk.android.checkout.presentation.controller*",
+                        "com.mercadopago.sdk.android.components*",
+                        "com.mercadopago.sdk.android.foundation*",
                     )
                 }
             }

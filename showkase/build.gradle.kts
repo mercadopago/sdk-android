@@ -41,10 +41,6 @@ android {
     }
 }
 
-kover.reports.filters.excludes {
-    classes("*")
-}
-
 dependencies {
     implementation(projects.coreMethods)
     implementation(projects.components)

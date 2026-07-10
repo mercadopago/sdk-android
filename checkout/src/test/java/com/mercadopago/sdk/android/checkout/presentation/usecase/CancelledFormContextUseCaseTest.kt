@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.State
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
@@ -37,11 +37,7 @@ internal class CancelledFormContextUseCaseTest {
 
     private fun invoke(
         state: CardPaymentScreenState,
-    ): List<MPCancelledFieldState> {
-        val result = useCase(state)
-        assertIs<MPUserCancelledContext.CardForm>(result)
-        return result.context.fields
-    }
+    ): List<MPCancelledFieldState> = useCase(state).fields
 
     @Test
     fun `given card number is empty then cardNumber state is Empty`() {
@@ -318,12 +314,51 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
+    fun `given identification type has valid value then document state is Valid`() {
+        val state = makeState(
+            identificationTypeState = IdentificationTypeState(
+                show = true,
+                value = "12345678909",
+            ),
+        )
+
+        val fields = invoke(state)
+
+        val field = fields.first { it.field == Field.DOCUMENT }
+        assertEquals(State.Valid, field.state)
+    }
+
+    @Test
     fun `given default state then result contains cardNumber and expirationDate fields`() {
         val result = useCase(makeState())
 
-        assertIs<MPUserCancelledContext.CardForm>(result)
-        val fields = result.context.fields
-        assertEquals(true, fields.any { it.field == Field.CARD_NUMBER })
-        assertEquals(true, fields.any { it.field == Field.EXPIRATION_DATE })
+        assertEquals(true, result.fields.any { it.field == Field.CARD_NUMBER })
+        assertEquals(true, result.fields.any { it.field == Field.EXPIRATION_DATE })
+    }
+
+    @Test
+    fun `given no screens marked then screens list is empty`() {
+        val result = useCase(makeState())
+
+        assertEquals(emptyList(), result.screens)
+    }
+
+    @Test
+    fun `given installments screen marked then screens contains INSTALLMENTS`() {
+        useCase.markScreenPresented(Screen.INSTALLMENTS)
+
+        val result = useCase(makeState())
+
+        assertEquals(listOf(Screen.INSTALLMENTS), result.screens)
+    }
+
+    @Test
+    fun `given same screen marked twice then screens has no duplicates`() {
+        useCase.markScreenPresented(Screen.INSTALLMENTS)
+        useCase.markScreenPresented(Screen.INSTALLMENTS)
+
+        val result = useCase(makeState())
+
+        assertEquals(1, result.screens.size)
     }
 }

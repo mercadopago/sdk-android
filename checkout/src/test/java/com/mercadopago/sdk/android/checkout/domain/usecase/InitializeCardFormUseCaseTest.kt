@@ -20,16 +20,26 @@ internal class InitializeCardFormUseCaseTest {
     private val cardFormRepository = mockk<CardFormRepository>()
     private val useCase = InitializeCardFormUseCase(cardFormRepository)
 
-    private val amount = "100.00"
+    private val orderId = "order-123"
+    private val clientToken = "token-abc"
     private val checkoutType = "card_form"
-    private val params = InitializeCardFormParams(amount = amount, checkoutType = checkoutType)
+    private val cardTransactionParams = InitializeCardFormParams(
+        orderId = orderId,
+        clientToken = clientToken,
+        checkoutType = checkoutType,
+    )
+    private val cardSaveParams = InitializeCardFormParams(
+        orderId = null,
+        clientToken = null,
+        checkoutType = "card_save",
+    )
 
     @Test
     fun `given fetchInitialization succeeds then returns Success with CardFormInitializationOutput`() = runTest {
-        coEvery { cardFormRepository.fetchInitialization(params) } returns
+        coEvery { cardFormRepository.fetchInitialization(cardTransactionParams) } returns
             Result.Success(mockk(relaxed = true))
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(orderId, clientToken, checkoutType)
 
         assertIs<Result.Success<CardFormInitializationOutput>>(result)
     }
@@ -37,9 +47,9 @@ internal class InitializeCardFormUseCaseTest {
     @Test
     fun `given request error then returns ServiceError localized to CARD_FORM_INITIALIZATION`() = runTest {
         val error = ResponseError(code = "bad_request", message = "Service unavailable", httpStatus = 400)
-        coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
+        coEvery { cardFormRepository.fetchInitialization(cardTransactionParams) } returns Result.Error(error)
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(orderId, clientToken, checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
         val checkoutError = result.error
@@ -51,9 +61,9 @@ internal class InitializeCardFormUseCaseTest {
     @Test
     fun `given network error then returns NetworkError localized to CARD_FORM_INITIALIZATION`() = runTest {
         val error = ResponseError(code = "NO_INTERNET", message = "Connection failed")
-        coEvery { cardFormRepository.fetchInitialization(params) } returns Result.Error(error)
+        coEvery { cardFormRepository.fetchInitialization(cardTransactionParams) } returns Result.Error(error)
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(orderId, clientToken, checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
         val checkoutError = result.error
@@ -64,20 +74,32 @@ internal class InitializeCardFormUseCaseTest {
 
     @Test
     fun `given fetchInitialization throws exception then returns Result Error`() = runTest {
-        coEvery { cardFormRepository.fetchInitialization(params) } throws RuntimeException("Unexpected error")
+        coEvery {
+            cardFormRepository.fetchInitialization(cardTransactionParams)
+        } throws RuntimeException("Unexpected error")
 
-        val result = useCase(amount, checkoutType)
+        val result = useCase(orderId, clientToken, checkoutType)
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
     }
 
     @Test
-    fun `given invoke is called then passes params to repository`() = runTest {
-        coEvery { cardFormRepository.fetchInitialization(params) } returns
+    fun `given card transaction then passes orderId and clientToken without amount`() = runTest {
+        coEvery { cardFormRepository.fetchInitialization(cardTransactionParams) } returns
             Result.Success(mockk(relaxed = true))
 
-        useCase(amount, checkoutType)
+        useCase(orderId, clientToken, checkoutType)
 
-        coVerify { cardFormRepository.fetchInitialization(params) }
+        coVerify { cardFormRepository.fetchInitialization(cardTransactionParams) }
+    }
+
+    @Test
+    fun `given card save then passes amount without orderId and clientToken`() = runTest {
+        coEvery { cardFormRepository.fetchInitialization(cardSaveParams) } returns
+            Result.Success(mockk(relaxed = true))
+
+        useCase(null, null, "card_save")
+
+        coVerify { cardFormRepository.fetchInitialization(cardSaveParams) }
     }
 }

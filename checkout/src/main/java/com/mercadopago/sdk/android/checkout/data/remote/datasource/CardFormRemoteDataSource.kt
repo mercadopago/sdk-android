@@ -8,7 +8,8 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal interface CardFormRemoteDataSource {
     suspend fun fetchInitialization(
-        amount: String,
+        orderId: String?,
+        clientToken: String?,
         checkoutType: String,
     ): Result<CardFormInitResponse, ResponseError>
 

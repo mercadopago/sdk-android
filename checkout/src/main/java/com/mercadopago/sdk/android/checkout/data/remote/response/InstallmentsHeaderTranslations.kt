@@ -1,7 +1,8 @@
 package com.mercadopago.sdk.android.checkout.data.remote.response
 
+import com.google.gson.annotations.SerializedName
+
 internal data class InstallmentsHeaderTranslations(
-    val chevron: String,
-    val radio: String,
+    @SerializedName("title")
     val title: String,
 )

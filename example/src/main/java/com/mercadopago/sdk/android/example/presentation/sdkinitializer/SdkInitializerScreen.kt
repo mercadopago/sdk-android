@@ -29,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -123,13 +124,13 @@ internal fun SdkInitializerScreen(
             value = viewState.publicKeyInput,
             onValueChange = onPublicKeyChange,
             label = { Text("Public Key") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag("sdk.publicKey")
         )
 
         ExposedDropdownMenuBox(
             expanded = countryCodeDropdownExpanded,
             onExpandedChange = { countryCodeDropdownExpanded = !countryCodeDropdownExpanded },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag("sdk.countryCode")
         ) {
             OutlinedTextField(
                 value = viewState.selectedCountryCode.toString(),
@@ -151,7 +152,8 @@ internal fun SdkInitializerScreen(
                         onClick = {
                             onCountryCodeSelected(CountryCode.valueOf(selectionOption.toString()))
                             countryCodeDropdownExpanded = false
-                        }
+                        },
+                        modifier = Modifier.testTag("sdk.country.${selectionOption.name.lowercase()}")
                     )
                 }
             }
@@ -159,7 +161,7 @@ internal fun SdkInitializerScreen(
 
         Button(
             onClick = onInitializeSdkClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("sdk.initializeSdk"),
             enabled = true,
         ) {
             Text("Change SDK Configuration")

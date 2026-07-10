@@ -1,16 +1,17 @@
 package com.mercadopago.sdk.android.checkout.domain.callback
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 
 internal object CheckoutCallbackHolder {
-    private var callback: ((MercadoPagoCheckoutResult<*>) -> Unit)? = null
+    private var callback: ((MercadoPagoCheckoutResult<*, *>) -> Unit)? = null
     private var activityCallback: (() -> Unit)? = null
 
-    fun <T : MPPaymentData> setCallback(
-        callback: ((MercadoPagoCheckoutResult<T>) -> Unit)?,
+    fun <T : MPPaymentData, C : MPUserCancelledContext> setCallback(
+        callback: ((MercadoPagoCheckoutResult<T, C>) -> Unit)?,
     ) {
         @Suppress("UNCHECKED_CAST")
-        this.callback = callback as? ((MercadoPagoCheckoutResult<*>) -> Unit)
+        this.callback = callback as? ((MercadoPagoCheckoutResult<*, *>) -> Unit)
     }
 
     fun setActivityCallback(
@@ -20,7 +21,7 @@ internal object CheckoutCallbackHolder {
     }
 
     fun notify(
-        result: MercadoPagoCheckoutResult<*>,
+        result: MercadoPagoCheckoutResult<*, *>,
     ) {
         activityCallback?.invoke()
         callback?.invoke(result)

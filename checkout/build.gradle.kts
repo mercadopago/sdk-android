@@ -78,6 +78,11 @@ android {
         sourceCompatibility = MercadoPagoSDKConfig.sourceCompatibility
         targetCompatibility = MercadoPagoSDKConfig.targetCompatibility
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
         allWarningsAsErrors = false
@@ -126,6 +131,9 @@ dependencies {
     testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.compose.test)
+    debugImplementation(libs.androidx.compose.test.manifest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

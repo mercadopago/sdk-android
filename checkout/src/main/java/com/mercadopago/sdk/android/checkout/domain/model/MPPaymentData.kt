@@ -1,7 +1,5 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import java.math.BigDecimal
-
 /**
  * Sealed class representing the payment data resulting from a successful checkout.
  * The subtype corresponds to the [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType]
@@ -28,20 +26,16 @@ sealed class MPPaymentData {
     /**
      * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.CardTransaction] checkout.
      *
-     * @property transactionAmount Total amount of the transaction.
+     * @property orderId Identifier of the order associated with the transaction.
+     * @property orderStatus Current status of the order.
      * @property paymentMethodId Identifier of the selected payment method.
      * @property paymentTypeId Identifier of the selected payment type.
-     * @property payer Payer information associated with the payment.
-     * @property installment Number of installments selected.
-     * @property issuerId Optional identifier of the card issuer.
      */
     data class CardTransaction(
-        val transactionAmount: BigDecimal?,
+        val orderId: String,
+        val orderStatus: String,
         val paymentMethodId: String,
         val paymentTypeId: String,
-        val payer: Payer?,
-        val installment: Int?,
-        val issuerId: String?,
     ) : MPPaymentData()
 }
 

@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.domain.model.params
 
 internal data class InitializeCardFormParams(
-    val amount: String,
+    val orderId: String?,
+    val clientToken: String?,
     val checkoutType: String,
 )

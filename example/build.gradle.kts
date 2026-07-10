@@ -29,8 +29,8 @@ android {
         applicationId = "com.mercadopago.sdk.android.example"
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         targetSdk = MercadoPagoSDKConfig.TARGET_SDK
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 6
+        versionName = "2.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
@@ -49,6 +49,11 @@ android {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        create("mds") {
+            initWith(getByName("debug"))
+            applicationIdSuffix = ".mds"
+            matchingFallbacks += listOf("debug")
         }
     }
     compileOptions {

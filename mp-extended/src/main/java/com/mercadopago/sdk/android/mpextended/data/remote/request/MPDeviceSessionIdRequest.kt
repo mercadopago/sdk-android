@@ -6,5 +6,6 @@ import com.mercadolibre.android.device.sdk.domain.Fingerprint
 internal data class MPDeviceSessionIdRequest(
     @SerializedName("finger_print")
     val fingerprint: Fingerprint?,
+    @SerializedName("site_id")
     val siteId: String,
 )
