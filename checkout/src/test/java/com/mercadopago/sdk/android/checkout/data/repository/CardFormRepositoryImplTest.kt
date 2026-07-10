@@ -1,5 +1,7 @@
 package com.mercadopago.sdk.android.checkout.data.repository
 
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
+import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.request.CardBinRequest
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
@@ -26,7 +28,8 @@ internal class CardFormRepositoryImplTest {
     private val repository = CardFormRepositoryImpl(dataSource)
 
     private val initParams = InitializeCardFormParams(
-        amount = "150.00",
+        orderId = "order-123",
+        clientToken = "token-abc",
         checkoutType = "card_payment",
     )
 
@@ -43,7 +46,8 @@ internal class CardFormRepositoryImplTest {
         val response = mockk<CardFormInitResponse>(relaxed = true)
         coEvery {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
+                orderId = initParams.orderId,
+                clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
             )
         } returns Result.Success(response)
@@ -57,7 +61,7 @@ internal class CardFormRepositoryImplTest {
     fun `given dataSource returns error then fetchInitialization returns Result Error`() = runTest {
         val error = ResponseError(code = "404", message = "Not Found", httpStatus = 404)
         coEvery {
-            dataSource.fetchInitialization(any(), any())
+            dataSource.fetchInitialization(any(), any(), any())
         } returns Result.Error(error)
 
         val result = repository.fetchInitialization(initParams)
@@ -68,7 +72,7 @@ internal class CardFormRepositoryImplTest {
     @Test
     fun `given dataSource throws then fetchInitialization returns Result Error`() = runTest {
         coEvery {
-            dataSource.fetchInitialization(any(), any())
+            dataSource.fetchInitialization(any(), any(), any())
         } throws RuntimeException("Network failure")
 
         val result = repository.fetchInitialization(initParams)
@@ -81,7 +85,8 @@ internal class CardFormRepositoryImplTest {
         val response = mockk<CardFormInitResponse>(relaxed = true)
         coEvery {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
+                orderId = initParams.orderId,
+                clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
             )
         } returns Result.Success(response)
@@ -90,7 +95,8 @@ internal class CardFormRepositoryImplTest {
 
         coVerify(exactly = 1) {
             dataSource.fetchInitialization(
-                amount = initParams.amount,
+                orderId = initParams.orderId,
+                clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
             )
         }
@@ -136,6 +142,25 @@ internal class CardFormRepositoryImplTest {
 
         assertNull(requestSlot.captured.excludedPaymentTypes)
         assertNull(requestSlot.captured.excludedPaymentMethods)
+    }
+
+    @Test
+    fun `given non-empty filter then excludedPaymentTypes and excludedPaymentMethods are joined`() = runTest {
+        val requestSlot = slot<CardBinRequest>()
+        coEvery { dataSource.getCardBin(capture(requestSlot)) } returns Result.Success(
+            mockk(relaxed = true),
+        )
+        val params = binParams.copy(
+            filter = CardBinFilter(
+                excludedPaymentTypes = listOf(MPCardType.CREDIT, MPCardType.DEBIT),
+                excludedPaymentMethods = listOf(MPCardBrand.Visa, MPCardBrand.Mastercard),
+            ),
+        )
+
+        repository.getCardBin(params)
+
+        assertEquals("credit_card,debit_card", requestSlot.captured.excludedPaymentTypes)
+        assertEquals("visa,master", requestSlot.captured.excludedPaymentMethods)
     }
 
     @Test

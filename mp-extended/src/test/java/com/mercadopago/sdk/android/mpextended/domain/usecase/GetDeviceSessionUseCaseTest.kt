@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.mpextended.domain.usecase
 import com.mercadolibre.android.device.sdk.DeviceSDK
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import com.mercadopago.sdk.android.mpextended.domain.model.MPDeviceSession
 import com.mercadopago.sdk.android.mpextended.domain.repository.MPExtendedRepository
@@ -39,7 +40,7 @@ internal class GetDeviceSessionUseCaseTest {
         val mockDeviceSDK = mockk<DeviceSDK>(relaxed = true)
         val expected = MPDeviceSession(session = "session_abc")
         every { DeviceSDK.getInstance() } returns mockDeviceSDK
-        every { MercadoPagoSDK.getSiteId() } returns "MLB"
+        every { MercadoPagoSDK.countryCode } returns CountryCode.BRA
         coEvery { repository.getDeviceSession(any()) } returns Result.Success(expected)
 
         val result = useCase()
@@ -52,7 +53,7 @@ internal class GetDeviceSessionUseCaseTest {
     fun `when DeviceSDK returns null then device is null and delegates to repository`() = runBlocking {
         val expected = MPDeviceSession(session = "session_abc")
         every { DeviceSDK.getInstance() } returns null
-        every { MercadoPagoSDK.getSiteId() } returns "MLB"
+        every { MercadoPagoSDK.countryCode } returns CountryCode.BRA
         coEvery { repository.getDeviceSession(any()) } returns Result.Success(expected)
 
         val result = useCase()
@@ -62,11 +63,11 @@ internal class GetDeviceSessionUseCaseTest {
     }
 
     @Test
-    fun `when siteId is empty then delegates to repository with empty siteId`() = runBlocking {
+    fun `when countryCode is null then delegates to repository with empty siteId`() = runBlocking {
         val mockDeviceSDK = mockk<DeviceSDK>(relaxed = true)
         val expected = MPDeviceSession(session = "session_abc")
         every { DeviceSDK.getInstance() } returns mockDeviceSDK
-        every { MercadoPagoSDK.getSiteId() } returns ""
+        every { MercadoPagoSDK.countryCode } returns null
         coEvery { repository.getDeviceSession(any()) } returns Result.Success(expected)
 
         val result = useCase()
@@ -80,7 +81,7 @@ internal class GetDeviceSessionUseCaseTest {
         val mockDeviceSDK = mockk<DeviceSDK>(relaxed = true)
         val error = ResultError.Request(code = "500", message = "Server Error")
         every { DeviceSDK.getInstance() } returns mockDeviceSDK
-        every { MercadoPagoSDK.getSiteId() } returns "MLB"
+        every { MercadoPagoSDK.countryCode } returns CountryCode.BRA
         coEvery { repository.getDeviceSession(any()) } returns Result.Error(error)
 
         val result = useCase()

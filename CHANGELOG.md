@@ -5,6 +5,9 @@ All notable changes to the Mercado Pago SDK Android will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Unreleased
+### Removed
+- Paparazzi snapshot images removed from git tracking — LFS objects were missing on the server (404); directory added to `.gitignore`
+
 ### Added
 - Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
 - `koverVerify` step added to CI pipeline to enforce 80% overall coverage threshold
