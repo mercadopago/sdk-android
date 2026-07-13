@@ -1,0 +1,24 @@
+checkout/build.gradle.kts
+  s_33009edb34baa4::t_9719a8f4dd41e9 96-108
+foundation/build.gradle.kts
+  s_33009edb34baa4::t_42a73950c59e27 71-83
+gradle.properties
+  s_33009edb34baa4::t_5b2dd16fc5207d 14
+  s_33009edb34baa4::t_8a248680c00169 9-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "a4fe5a9d6c95f56d4fa423800243414ee3b44a12",
+  "prompts": {},
+  "sessions": {
+    "s_33009edb34baa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c30c8f18-6eb5-4c7b-b851-4f2d593c7ece",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
