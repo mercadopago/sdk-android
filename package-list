@@ -1,6 +1,12 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
 
+module:checkout
+com.mercadopago.sdk.android.checkout.core
+com.mercadopago.sdk.android.checkout.core.model
+com.mercadopago.sdk.android.checkout.domain.callback
+com.mercadopago.sdk.android.checkout.domain.exception
+com.mercadopago.sdk.android.checkout.domain.model
 module:core-methods
 com.mercadopago.sdk.android.coremethods.domain.interactor
 com.mercadopago.sdk.android.coremethods.domain.model
@@ -15,6 +21,13 @@ com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.xml
 com.mercadopago.sdk.android.coremethods.ui.components.textfield.simpletextfield
 com.mercadopago.sdk.android.coremethods.ui.utils
+module:foundation
+com.mercadopago.sdk.android.foundation.color
+com.mercadopago.sdk.android.foundation.outline
+com.mercadopago.sdk.android.foundation.shape
+com.mercadopago.sdk.android.foundation.spacing
+com.mercadopago.sdk.android.foundation.theme
+com.mercadopago.sdk.android.foundation.typography
 module:sdk-android
 com.mercadopago.sdk.android.di
 com.mercadopago.sdk.android.domain.model
