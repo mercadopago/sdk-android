@@ -1,0 +1,19 @@
+.circleci/config.yml
+  s_33009edb34baa4::t_9d94176c62f165 270-273,277-279,283-285
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "d9ac294423260bae5edc73a20cd8c179eac16cb2",
+  "prompts": {},
+  "sessions": {
+    "s_33009edb34baa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c30c8f18-6eb5-4c7b-b851-4f2d593c7ece",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <capaixao@users.noreply.github.com>"
+    }
+  }
+}
