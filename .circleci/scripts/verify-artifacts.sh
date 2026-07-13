@@ -3,20 +3,18 @@ set -euo pipefail
 
 RELEASE_DIR="${1:-$HOME/artifacts/aars/release}"
 DEBUG_DIR="${2:-$HOME/artifacts/aars/debug}"
-THRESHOLD=50
 ERRORS=""
 
-count_classes() {
+# Extracts the sorted list of .class entries from an AAR's classes.jar.
+list_classes() {
   local aar="$1"
   local temp_dir
   temp_dir=$(mktemp -d)
   unzip -q "$aar" classes.jar -d "$temp_dir" 2>/dev/null || true
-  local count=0
   if [ -f "$temp_dir/classes.jar" ]; then
-    count=$(unzip -l "$temp_dir/classes.jar" 2>/dev/null | grep -c '\.class$' || echo "0")
+    unzip -l "$temp_dir/classes.jar" 2>/dev/null | grep '\.class$' | awk '{print $NF}' | sort
   fi
   rm -rf "$temp_dir"
-  echo "$count"
 }
 
 for release_aar in "$RELEASE_DIR"/*.aar; do
@@ -29,19 +27,27 @@ for release_aar in "$RELEASE_DIR"/*.aar; do
     continue
   fi
 
-  release_count=$(count_classes "$release_aar")
-  debug_count=$(count_classes "$debug_aar")
+  release_classes=$(list_classes "$release_aar")
+  debug_classes=$(list_classes "$debug_aar")
 
-  if [ "$debug_count" -eq 0 ]; then
-    echo "  ⚠️  $module: debug AAR has 0 classes, skipping ratio check"
-    continue
-  fi
+  release_count=$(echo "$release_classes" | grep -c '.' || echo "0")
+  debug_count=$(echo "$debug_classes" | grep -c '.' || echo "0")
 
-  ratio=$(( release_count * 100 / debug_count ))
-  echo "  $module: release=$release_count debug=$debug_count ratio=${ratio}%"
+  # Classes present in release but missing from debug indicate a build problem.
+  # Classes present in debug but absent from release are expected (e.g. Showkase
+  # KSP-generated previews, Compose tooling) — these must NOT trigger a failure.
+  # R8 generates single-letter synthetic accessor classes (e.g. a.class, b.class) only in
+  # release builds; filter them out so they don't produce false positives.
+  missing_list=$(comm -23 <(echo "$release_classes") <(echo "$debug_classes") \
+    | grep -v '/[a-zA-Z]\.class$' || true)
+  missing=$(echo "$missing_list" | grep -c '[^[:space:]]' || true)
 
-  if [ "$ratio" -lt "$THRESHOLD" ]; then
-    ERRORS="$ERRORS\n  ✗ '$module' release has only ${ratio}% of debug classes (${release_count}/${debug_count}) — possible ProGuard misconfiguration"
+  ratio=$(( debug_count > 0 ? release_count * 100 / debug_count : 0 ))
+  echo "    $module: release=$release_count debug=$debug_count ratio=${ratio}% missing_from_debug=$missing"
+
+  if [ "$missing" -gt 0 ]; then
+    echo "$missing_list" | sed 's/^/      - /'
+    ERRORS="$ERRORS\n  ✗ '$module': $missing release class(es) not found in debug build — possible build misconfiguration"
   fi
 done
 
