@@ -1,0 +1,44 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_57a73701034c94::t_bd94b89bf9a70e 45
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPUserCancelledContext.kt
+  s_57a73701034c94::t_04747937821df2 33
+example/src/main/java/com/mercadopago/sdk/android/example/presentation/checkout/CheckoutExampleScreen.kt
+  s_57a73701034c94::t_01dd6317908612 58
+  s_57a73701034c94::t_420edc7c7519ee 96-100
+  s_57a73701034c94::t_b141f7a8c0e04f 233,242
+  s_57a73701034c94::t_8c4fa893d8ca94 145,154,163,166,171,174,178
+  s_57a73701034c94::t_068744240453f7 156-157,159-162,164-165,167-170,172-173
+  s_57a73701034c94::t_9b1474c24923eb 201
+  s_57a73701034c94::t_a0dac21f4adcf5 114,134
+  s_57a73701034c94::t_4b876560255f86 284
+  s_57a73701034c94::t_34b0cdf59b7deb 3,17,19,24,29,32,62-63,72-73,227,271,281,290-293,298-301,311-313,315-319,321,323-331,334-337,343-344,346-351,357,359
+  s_57a73701034c94::t_ae7678c5640dd2 28,84,90,101,103-109,112-113,116-118,121,124-133,135-140,142,144,146-152,158,177,179-200,202-226,230,232,235,237-239,243-270,272-280,282,307,309-310,314,320,338,345
+  s_57a73701034c94::t_082e19e1d7dc3f 102,110-111,115,120,122
+  s_57a73701034c94::t_4fbe5ce6cf0634 332
+  s_57a73701034c94::t_1302431532acfc 56-57
+  s_57a73701034c94::t_8a588deb7fd434 51-52
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/MPPaymentData.kt
+  s_57a73701034c94::t_1fa9d81c04b4c7 42
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsAnalyticsTracker.kt
+  s_57a73701034c94::t_d15d7ddcc660bb 33
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_57a73701034c94::t_39bc9ae258072a 601
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  s_57a73701034c94::t_debb84a42bae68 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "bb2f7a9e8b7b17123d733aec5dd8f0931acaad5e",
+  "prompts": {},
+  "sessions": {
+    "s_57a73701034c94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e5d37ca-5e5b-4169-8216-193902838786",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

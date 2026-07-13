@@ -1,0 +1,19 @@
+.github/workflows/mirror-pr.yml
+  s_d8da19ce2afe14::t_3681f83176ea97 80-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "961a52efdf6416119583ed81ac4c640c88fd3ad1",
+  "prompts": {},
+  "sessions": {
+    "s_d8da19ce2afe14": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4a8390cc-8eb2-4f34-862f-0c5131d057a1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

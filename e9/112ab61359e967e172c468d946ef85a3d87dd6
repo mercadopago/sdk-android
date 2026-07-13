@@ -1,0 +1,65 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModel.kt
+  s_23d5beb70ba9a4::t_8e4a9aae9fbdfa 24,29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_23d5beb70ba9a4::t_4ec5f8adc2ff50 526-533,544
+  s_23d5beb70ba9a4::t_e0b69ed0af85c7 472-479
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  h_6960b1a5f865cc 17
+  s_23d5beb70ba9a4::t_9a108e23f73989 76
+  s_23d5beb70ba9a4::t_74cb83889e862a 136,142
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_23d5beb70ba9a4::t_729687e442c4ce 78
+  s_23d5beb70ba9a4::t_8153e6b8670f68 68-73
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_23d5beb70ba9a4::t_e6c16668f1c013 65
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/OrderErrorAnalytics.kt
+  s_23d5beb70ba9a4::t_bb7d66ffa896fb 1-29
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/CheckoutAnalyticsConstants.kt
+  s_23d5beb70ba9a4::t_0081cd7265ca25 7
+  s_23d5beb70ba9a4::t_c6611e4f6929d9 6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/CardFormSubmitAnalytics.kt
+  s_23d5beb70ba9a4::t_73fa37a24e65dc 66,68
+  s_23d5beb70ba9a4::t_29b1afeb8840b5 23-24
+  s_23d5beb70ba9a4::t_0e08d1e242ca45 9
+  s_23d5beb70ba9a4::t_cf04dcb3f2c503 33-34
+  s_23d5beb70ba9a4::t_0e894cd15be7c7 67,69
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsSelectionAnalytics.kt
+  s_23d5beb70ba9a4::t_c644de526632ee 68-70
+  s_23d5beb70ba9a4::t_0cca07c79d167e 71
+  s_23d5beb70ba9a4::t_d8e6031d4822af 9
+  s_23d5beb70ba9a4::t_e2df6671591536 31-32
+  s_23d5beb70ba9a4::t_cf952ba2f317c0 40-41
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/analytics/InstallmentsInitializeAnalytics.kt
+  s_23d5beb70ba9a4::t_07546232b111b9 37-38
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormAnalyticsTracker.kt
+  s_23d5beb70ba9a4::t_79a40bc5c98940 55-56
+  s_23d5beb70ba9a4::t_e8109fc1813f3b 64-65,78-86
+  s_23d5beb70ba9a4::t_7a225527bbeefe 11
+  s_23d5beb70ba9a4::t_790eedf442159c 4
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsAnalyticsTracker.kt
+  s_23d5beb70ba9a4::t_7ff0a103844616 65-66
+  s_23d5beb70ba9a4::t_537043111b6b4f 20,35
+  s_23d5beb70ba9a4::t_6ca5e19c16a8c8 52
+  s_23d5beb70ba9a4::t_790eedf442159c 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "e9112ab61359e967e172c468d946ef85a3d87dd6",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_23d5beb70ba9a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9ce073a-33d5-44ee-bbcc-6bc14d6dd4e2",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

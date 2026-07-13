@@ -1,0 +1,30 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProvider.kt
+  s_23d5beb70ba9a4::t_e5473d9f6c7262 20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/NetworkModule.kt
+  s_23d5beb70ba9a4::t_e5473d9f6c7262 6,9-10,13,17,22
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/NetworkModuleTest.kt
+  s_23d5beb70ba9a4::t_e5473d9f6c7262 30-35,53-58
+core/build.gradle.kts
+  s_23d5beb70ba9a4::t_e5473d9f6c7262 50-52,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "978328a012b82b9b8bde824bcdfaf923750bc28d",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_23d5beb70ba9a4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9ce073a-33d5-44ee-bbcc-6bc14d6dd4e2",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

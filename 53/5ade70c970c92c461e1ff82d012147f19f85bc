@@ -1,0 +1,19 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_7a4f017825ed94::t_08b03cecdb2d45 1-2,8-9,11-14,16-20,65,69,72-73,75-76,81-83,86,88-90,92-93,95,99-101,104,106,108-110,113,115,117-119,123,125,127-129,136,138,140-142,147,149,161,190
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "535ade70c970c92c461e1ff82d012147f19f85bc",
+  "prompts": {},
+  "sessions": {
+    "s_7a4f017825ed94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d959fdea-9640-4bdc-a80b-ea3a2bed7bdd",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}

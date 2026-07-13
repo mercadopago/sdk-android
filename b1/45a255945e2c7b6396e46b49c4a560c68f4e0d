@@ -1,0 +1,55 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/repository/PaymentBrickCardRepositoryImplTest.kt
+  s_a54faad17ccc90::t_0da000bac26584 1-33,38-39,44-45,50-53,57,60-104
+  s_a54faad17ccc90::t_9b605e2e0f1684 34-37,40-43,46-49,54-56,58-59
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_a54faad17ccc90::t_775621c9cfa3a6 118-119
+  s_a54faad17ccc90::t_027df0a553ad99 63
+  s_a54faad17ccc90::t_cdb39121d04e3e 97-98,100-101
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/NetworkModule.kt
+  s_a54faad17ccc90::t_2aedf92e126f9f 5
+  s_a54faad17ccc90::t_d158cfb0377995 24-26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/PaymentBrickCardRemoteDataSourceImpl.kt
+  s_a54faad17ccc90::t_bf583bf6119f22 1-20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/repository/PaymentBrickCardRepository.kt
+  s_a54faad17ccc90::t_9d2b49b7231f17 1-12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/repository/PaymentBrickCardRepositoryImpl.kt
+  s_a54faad17ccc90::t_c9c8f7a08a9140 1-22
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/params/FetchPaymentBrickCardParams.kt
+  s_a54faad17ccc90::t_92593b91ff677b 1-6
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/PaymentBrickCardMapper.kt
+  s_a54faad17ccc90::t_9b605e2e0f1684 7
+  s_a54faad17ccc90::t_98f8cd5843670d 1-6,8-12,16-18,20-29,31,33-36,39-51,61-103
+  s_a54faad17ccc90::t_5f886563228f0f 54
+  s_a54faad17ccc90::t_853f8be509e1db 13-15,19,30,32,37-38,52-53,55-60
+  s_a54faad17ccc90::t_09bdb1c7e45d8e 104
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/PaymentBrickCardService.kt
+  s_a54faad17ccc90::t_7612ee8b7ed613 1-19
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_a54faad17ccc90::t_dacd2dffe5943d 24
+  s_a54faad17ccc90::t_92eea80ec1a1f1 75-80
+  s_a54faad17ccc90::t_072a88d626731e 11-12,17
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/PaymentBrickCardOutput.kt
+  s_a54faad17ccc90::t_902f1fa7c7744e 1-93
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/PaymentBrickCardRemoteDataSource.kt
+  s_a54faad17ccc90::t_449b4bac5db5c2 1-12
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/PaymentBrickCardResponseMapper.kt
+  s_a54faad17ccc90::t_b463468c62d813 1-12
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/datasource/PaymentBrickCardRemoteDataSourceImplTest.kt
+  s_a54faad17ccc90::t_143e0e91a159dc 1-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "b145a255945e2c7b6396e46b49c4a560c68f4e0d",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}

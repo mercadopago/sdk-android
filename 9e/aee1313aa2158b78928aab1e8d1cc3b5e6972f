@@ -1,0 +1,33 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/NewCardScreenState.kt
+  s_a54faad17ccc90::t_c44ecc1ca57040 1-16
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/NewCardViewModel.kt
+  s_a54faad17ccc90::t_1e6a18a53a1139 1-46
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/NewCardViewModelTest.kt
+  s_a54faad17ccc90::t_0cc5aad805693e 34-37,43-48,51-55,58-63,66-68
+  s_a54faad17ccc90::t_f2603c4127ad76 1-33,38-42,49-50,56-57,64-65,69-115
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/usecase/FetchPaymentBrickCardUseCase.kt
+  s_a54faad17ccc90::t_2a612d013a89fb 1-27
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/di/DataModule.kt
+  s_a54faad17ccc90::t_56c9c3783f5f6b 83-84
+  s_a54faad17ccc90::t_fd9ae171652194 26
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/exception/ErrorLocalized.kt
+  s_a54faad17ccc90::t_45ca9157158d8d 9
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/usecase/FetchPaymentBrickCardUseCaseTest.kt
+  s_a54faad17ccc90::t_5df78fad59335b 1-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9eaee1313aa2158b78928aab1e8d1cc3b5e6972f",
+  "prompts": {},
+  "sessions": {
+    "s_a54faad17ccc90": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5f37bf48-7cb1-4bc7-b2ee-37127a588817",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}

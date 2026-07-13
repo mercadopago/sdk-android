@@ -1,0 +1,19 @@
+.pre-commit-config.yaml
+  s_0bdff75cb1007d::t_7a2b429a65294d 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "16c446aa33440ad140ebb7a21005bb9e6d40bc2b",
+  "prompts": {},
+  "sessions": {
+    "s_0bdff75cb1007d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ed9a8729-45e1-4ec0-b7cd-f85a4a31789e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    }
+  }
+}

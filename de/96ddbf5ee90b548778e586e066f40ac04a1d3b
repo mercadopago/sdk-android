@@ -1,0 +1,19 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/model/ScreenTest.kt
+  s_d8da19ce2afe14::t_fa7ec651f56e10 17-18,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "de96ddbf5ee90b548778e586e066f40ac04a1d3b",
+  "prompts": {},
+  "sessions": {
+    "s_d8da19ce2afe14": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4a8390cc-8eb2-4f34-862f-0c5131d057a1",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

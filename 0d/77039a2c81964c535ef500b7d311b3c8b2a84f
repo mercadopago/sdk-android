@@ -1,0 +1,42 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapper.kt
+  s_4de4d4facad76f::t_9a13dc8f6dbd8e 14
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/mapper/PaymentBrickInitializationResponseMapperTest.kt
+  s_4de4d4facad76f::t_9100340901e20a 59,168
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/response/PaymentBrickInitializationResponse.kt
+  s_4de4d4facad76f::t_f90e1365bd3bf7 70
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CardDataMapper.kt
+  s_4de4d4facad76f::t_ab654dbc9b814c 40
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CVVViewModel.kt
+  s_4de4d4facad76f::t_356902260498f2 39,47
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CVVViewModelTest.kt
+  s_4de4d4facad76f::t_0fefef255e5e82 51,55,60,65,70,74,79,92,98,102,108,112,118,127,136
+  s_4de4d4facad76f::t_7cb69d39e29164 25,29,43
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/PaymentBrickInitializationOutput.kt
+  s_4de4d4facad76f::t_58dd6272a7d3ce 44
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CVVScreenState.kt
+  s_4de4d4facad76f::t_05f43931c4dbe0 20
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/data/remote/response/PaymentBrickInitializationResponseTest.kt
+  s_4de4d4facad76f::t_54b2a442a8b406 57
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapperTest.kt
+  s_4de4d4facad76f::t_99193dd36c7da6 14,18,29,32
+  s_4de4d4facad76f::t_d35a5846130de9 30
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/model/CVVScreenData.kt
+  s_4de4d4facad76f::t_10809834c2d565 18
+  s_4de4d4facad76f::t_73f170319453e8 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "0d77039a2c81964c535ef500b7d311b3c8b2a84f",
+  "prompts": {},
+  "sessions": {
+    "s_4de4d4facad76f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d3ab1dca-828d-46d4-ba6e-33d107226795",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

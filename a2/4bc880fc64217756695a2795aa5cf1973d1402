@@ -1,0 +1,25 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapper.kt
+  s_e2cc0653fe07ec::t_edbd66ef51efc0 10-11
+  s_e2cc0653fe07ec::t_f1e8f139558a84 12,18
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cvv/CVVScreen.kt
+  s_e2cc0653fe07ec::t_777864c61ab429 102-103
+  s_e2cc0653fe07ec::t_c39805c442e45d 124,127
+  s_e2cc0653fe07ec::t_4de4d66d62ea23 147,150
+  s_e2cc0653fe07ec::t_396756d273654a 94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "a24bc880fc64217756695a2795aa5cf1973d1402",
+  "prompts": {},
+  "sessions": {
+    "s_e2cc0653fe07ec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2642e860-85f1-4aa0-97ad-c1af4a54c56b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutTypeTest.kt
+  h_6960b1a5f865cc 12
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  h_6960b1a5f865cc 7,40,333,335-352,354-362
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensionsTest.kt
+  h_6960b1a5f865cc 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9bbc09b1cf6fae58f18b714e7f7c12da6d0cae57",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

@@ -1,0 +1,96 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_0174e30bc2bbba::t_6637cbeaf6bd18 38
+  s_09767c4b20556d::t_44b0a06f97536b 167-168,176
+  s_0174e30bc2bbba::t_a850371f791709 263,269
+  s_7a4f017825ed94::t_1e29072b4e2882 769
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardFormFieldErrorHandlerTest.kt
+  s_7a4f017825ed94::t_0508c7d0f946dc 332
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutViewEvents.kt
+  s_4b27daacfb9e3b::t_46e536b7cc5c81 1-2
+  s_2168b0c5394d17::t_cd5d7d49bdde70 4-8,13-16
+  s_09767c4b20556d::t_346544087b39a4 23
+build.gradle.kts
+  s_7a4f017825ed94::t_f194588800a6d7 42
+  s_7a4f017825ed94::t_1464f623051a74 57
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/InstallmentsViewModelTest.kt
+  s_7a4f017825ed94::t_08b03cecdb2d45 1-2,8-9,11-14,16-20,65,69,72-73,75-76,81-83,86,88-90,92-93,95,99-101,104,106,108-110,113,115,117-119,123,125,127-129,136,138,140-142,147,149,161-162
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_2168b0c5394d17::t_8ba2a48a9ef145 30
+  s_2168b0c5394d17::t_532d1ac127dce0 57,59
+  s_2168b0c5394d17::t_f69b70e46c4aaa 314,319-322
+  s_2168b0c5394d17::t_0eb1a4a7421604 339
+  s_2168b0c5394d17::t_9f44982eb99cbf 474
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  s_4b27daacfb9e3b::t_a949396410fe2e 1-6,12-13,16,19,22,24-25,27,34-36,40-41,43-46,68,79-80,83
+  s_4b27daacfb9e3b::t_3ad5f9e111ca72 7-8
+  s_0bb2882e648fdb::t_4f41c12bc0b7c6 9-11,21,23,28
+  s_2168b0c5394d17::t_3461d35125a2f6 14-15,18,29-33,47,67,69-73,75-78,81-82
+  s_0bb2882e648fdb::t_c245e4a15fa310 39,48-49,54-57,61,65-66
+  s_0bb2882e648fdb::t_13b848032f5189 87-89,104-111,115-116,146-148
+  s_09767c4b20556d::t_5312134a38af6c 99-102
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutDestination.kt
+  s_4b27daacfb9e3b::t_2ab25f733d5e67 1-8
+  s_0bb2882e648fdb::t_2461628bacea1d 9-10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  s_4b27daacfb9e3b::t_7316b1f28b8056 49
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/loading/LoadingScreen.kt
+  s_4b27daacfb9e3b::t_1eab81259e6410 1-35
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutGraph.kt
+  s_4b27daacfb9e3b::t_aa5dce0f38cdcf 1-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "c9ea0db30dc65896ac6cec0e97e65963253c9173",
+  "prompts": {},
+  "sessions": {
+    "s_0174e30bc2bbba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "08304fff-7955-466d-a500-4126b49b44ee",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_09767c4b20556d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ac792198-a2fb-4b78-bbbf-d8c98d0d3e49",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_0bb2882e648fdb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c7ddee45-b114-4bc8-be08-1dd0d6d1a817",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_2168b0c5394d17": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "84bfdaf8-c1f2-4ac7-aa99-dedd2966dc99",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_4b27daacfb9e3b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "57b98671-6bf4-4ffd-a0ac-40b57ae703ab",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    },
+    "s_7a4f017825ed94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d959fdea-9640-4bdc-a80b-ea3a2bed7bdd",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "capaixao <carlos.paixao@mercadolivre.com>"
+    }
+  }
+}

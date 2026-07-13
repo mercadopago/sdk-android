@@ -1,0 +1,31 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cvv/CVVScreen.kt
+  s_e2cc0653fe07ec::t_ebb8a4af05a621 88
+  s_e2cc0653fe07ec::t_873fc4652b759c 126
+  s_e2cc0653fe07ec::t_fbf254960332fa 149
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PaymentBrickViewModelTest.kt
+  s_e2cc0653fe07ec::t_f8ce9d65c49a28 308
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CVVScreenState.kt
+  s_e2cc0653fe07ec::t_0ac6eefac76212 10,13,20
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapper.kt
+  s_e2cc0653fe07ec::t_2362a6ea09908a 8-9
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CVVViewModel.kt
+  s_e2cc0653fe07ec::t_e6b4fb9eff27d6 28-31,33-36
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/mapper/CVVScreenDataMapperTest.kt
+  s_e2cc0653fe07ec::t_2388e5088564a4 23,30,37,44,51,73-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.11",
+  "base_commit_sha": "d3378e263a18b24e1db3afdd4aeafbcfb35ae19c",
+  "prompts": {},
+  "sessions": {
+    "s_e2cc0653fe07ec": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2642e860-85f1-4aa0-97ad-c1af4a54c56b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Test User <test@test.com>"
+    }
+  }
+}

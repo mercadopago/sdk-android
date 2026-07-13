@@ -1,0 +1,41 @@
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentScreenState.kt
+  s_465634e9fa65f7::t_079d370baf79b6 136
+.github/workflows/mirror-pr.yml
+  s_465634e9fa65f7::t_079d370baf79b6 16-17,22,79,91,96-97,102,152,190-191,199-200,202-207,222-261,267,275,279,281
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_465634e9fa65f7::t_079d370baf79b6 39,332
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolderTest.kt
+  s_465634e9fa65f7::t_079d370baf79b6 4,14,20-22,42-44,58,68,82-83,85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckout.kt
+  s_465634e9fa65f7::t_079d370baf79b6 15,25-27,30,38-39,42,60-61,64,66,85
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolder.kt
+  s_465634e9fa65f7::t_079d370baf79b6 4,7,10-11,14,24
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  s_465634e9fa65f7::t_079d370baf79b6 14,42-44,76
+components/src/main/java/com/mercadopago/sdk/android/components/MPButton.kt
+  s_465634e9fa65f7::t_079d370baf79b6 1-2,5-10,21-22,38-39,357,369,378,396,398,402,404-406,408-411,415,427,433-457
+components/src/main/java/com/mercadopago/sdk/android/components/MPFixedFooter.kt
+  s_465634e9fa65f7::t_079d370baf79b6 41,48,94
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/cardpayment/CardPaymentScreenContent.kt
+  s_465634e9fa65f7::t_079d370baf79b6 297
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_465634e9fa65f7::t_079d370baf79b6 395,407
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfiguration.kt
+  s_465634e9fa65f7::t_079d370baf79b6 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "8cedee0ea0503324b2108e5e60a1770a4306731e",
+  "prompts": {},
+  "sessions": {
+    "s_465634e9fa65f7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e854248-9653-426b-addb-93ef07cd5244",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

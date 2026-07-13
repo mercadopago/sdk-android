@@ -1,0 +1,42 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/domain/callback/CheckoutCallbackHolderTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 4,14,20-22,42-44,58,68,82-83,85
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/CardPaymentStateTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 294-295,297
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/state/CheckoutDestinationTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 11,23
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/usecase/CancelledFormContextUseCaseTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 39,332
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfiguration.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 10
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckout.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 15,25-27,30,38-39,42,60-61,64,66,85
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutTypeTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 15,23,38-39,46-47,56-57,59,61,83-85
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/MercadoPagoCheckoutTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 14,42-44,76
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  s_aaf256c765157c::t_79bf05ecafd200 457-471,474
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/core/model/internal/CheckoutConfigurationExtensionsTest.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 20,35-36,38,55-56,63-64,74-75,77,79,85-86,90-92,94,119-120,129-130,134-135,139-140,144-145
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutActivity.kt
+  s_aaf256c765157c::t_3ab76afb6c5670 16,69
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/core/model/MPCheckoutType.kt
+  s_aaf256c765157c::t_135e0e20a4fd8f 45
+  s_aaf256c765157c::t_f85cf4349591c3 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "2090a8cc58ad8d49fc7cbab18c85d68cfb488eba",
+  "prompts": {},
+  "sessions": {
+    "s_aaf256c765157c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d27f768a-3362-47ee-bcc0-e022d0bd5d6f",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

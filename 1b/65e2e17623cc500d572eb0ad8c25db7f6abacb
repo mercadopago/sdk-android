@@ -1,0 +1,61 @@
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModelTest.kt
+  s_00dd747b7728cc::t_062f6c60ab6ca7 840
+  s_efcb2c0ca45f9d::t_cae8e1c4238cb4 948-971,973-995
+  s_00dd747b7728cc::t_901c5f716629c0 814,816,818-821
+  s_efcb2c0ca45f9d::t_e25e0fa9608600 972
+  s_00dd747b7728cc::t_6d88f7eee834a6 867-887
+  s_efcb2c0ca45f9d::t_335ff2c1430770 822
+  s_efcb2c0ca45f9d::t_73fa5799e261a9 799-801,803,807-808,812-813,815,817
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/PendingOrderData.kt
+  s_00dd747b7728cc::t_81e25023f40556 1-8
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/CheckoutModulesProviderTest.kt
+  s_efcb2c0ca45f9d::t_2aaf7ffd68ff22 16
+  s_efcb2c0ca45f9d::t_d526dd1afe7f94 113
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/CheckoutController.kt
+  h_6960b1a5f865cc 75
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/presentation/viewmodel/CardPaymentViewModel.kt
+  h_6960b1a5f865cc 508-509
+  s_00dd747b7728cc::t_ae627645e3d940 530
+  ai_agent 521-527
+  s_00dd747b7728cc::t_940c7024315fc5 544,558
+  s_00dd747b7728cc::t_3067d629cf863c 328
+  s_00dd747b7728cc::t_48327b248a526c 68
+  s_00dd747b7728cc::t_44968ab5e9dfc5 466
+checkout/src/test/java/com/mercadopago/sdk/android/checkout/di/DataModuleTest.kt
+  s_efcb2c0ca45f9d::t_020b947e2cdccd 11
+  s_efcb2c0ca45f9d::t_c8f67b67099d66 16
+  s_efcb2c0ca45f9d::t_317432a3b2b1ff 87
+  s_efcb2c0ca45f9d::t_84e81a63169b18 101
+  s_efcb2c0ca45f9d::t_6d869cca32d155 109
+checkout/src/main/java/com/mercadopago/sdk/android/checkout/data/remote/service/OrderService.kt
+  s_efcb2c0ca45f9d::t_1bcf295a5eb374 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "1b65e2e17623cc500d572eb0ad8c25db7f6abacb",
+  "prompts": {},
+  "humans": {
+    "h_6960b1a5f865cc": {
+      "author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  },
+  "sessions": {
+    "s_00dd747b7728cc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5699d96c-828b-46e9-a58c-aa7307d63c91",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    },
+    "s_efcb2c0ca45f9d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4e0c8f2a-cc83-41a4-863e-8222f375d215",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "salbanez_meli <samanta.albanez@mercadolivre.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+.pre-commit-config.yaml
+  s_b4d337e4ab0698::t_20ff6daf47237d 19-24
+.github/workflows/mirror-ci-status.yml
+  s_b4d337e4ab0698::t_0c67cdb86051ef 78-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "f6b9737dbd55a145a8f8375e09a2672f52dd36b3",
+  "prompts": {},
+  "sessions": {
+    "s_b4d337e4ab0698": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3642e8a6-ca5f-4dab-b6bd-c42574500f4c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Guilherme Oliveira Carvalho <guilherme.ocarvalho@mercadolivre.com>"
+    }
+  }
+}
