@@ -216,6 +216,7 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
+    resource_class: large
     steps:
       - setup-android
       - run:
@@ -266,19 +267,9 @@ workflows:
       - publish-maven:
           requires:
             - verify-artifacts
-            - verify-version-consistency
-          filters:
-            branches:
-              only: main
       - documentation-write:
           requires:
             - publish-maven
-          filters:
-            branches:
-              only: main
       - documentation-deploy:
           requires:
             - documentation-write
-          filters:
-            branches:
-              only: main
