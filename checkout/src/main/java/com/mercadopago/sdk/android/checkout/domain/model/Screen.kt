@@ -18,4 +18,7 @@ enum class Screen {
 
     /** The offline payment method selector screen (boleto, ticket, etc.). */
     OFFLINE_METHOD_SELECTOR,
+
+    /** The security code (CVV) screen shown for a saved card before tokenization. */
+    SECURITY_CODE,
 }

@@ -107,7 +107,8 @@ internal class PaymentBrickViewModel(
     fun onOptionSelected(
         optionId: String,
     ) {
-        val cardData = findMethodByOptionId(optionId)?.cardData
+        val method = findMethodByOptionId(optionId)
+        val cardData = method?.cardData
         if (cardData != null) {
             val result = getSecurityCodeScreenUseCase(cardData.securityCode)
             if (result != null) {
@@ -122,6 +123,9 @@ internal class PaymentBrickViewModel(
                         isVisible = true,
                     ),
                     cardId = cardData.id,
+                    cardTitle = method.title,
+                    cardDescription = method.subtitle,
+                    cardImageUrl = method.iconUrl,
                 )
                 _viewEvent.value = PaymentBrickViewEvent.OnSecurityCodeRequired(config)
                 return

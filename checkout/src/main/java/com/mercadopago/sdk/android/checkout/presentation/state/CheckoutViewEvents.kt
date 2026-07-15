@@ -28,6 +28,21 @@ internal sealed interface CardPaymentViewEvent {
     data class OnBackPressed(val context: MPUserCancelledContext) : CardPaymentViewEvent
 }
 
+internal sealed interface SecurityCodeViewEvent {
+    data class OnTokenSuccess(
+        val cardId: String,
+        val token: String,
+    ) : SecurityCodeViewEvent
+
+    data class OnUserCancelled(
+        val context: MPUserCancelledContext.Payment,
+    ) : SecurityCodeViewEvent
+
+    data class OnTokenError(
+        val error: MercadoPagoCheckoutError,
+    ) : SecurityCodeViewEvent
+}
+
 internal sealed interface InstallmentViewEvent {
     data class OnSuccess(val installment: Int) : InstallmentViewEvent
 

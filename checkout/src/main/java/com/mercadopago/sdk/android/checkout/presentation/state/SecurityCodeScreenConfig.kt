@@ -8,4 +8,7 @@ internal data class SecurityCodeScreenConfig(
     val securityCodeState: SecurityCodeState,
     val footerState: FooterState,
     val cardId: String,
+    val cardTitle: String,
+    val cardDescription: String? = null,
+    val cardImageUrl: String? = null,
 )

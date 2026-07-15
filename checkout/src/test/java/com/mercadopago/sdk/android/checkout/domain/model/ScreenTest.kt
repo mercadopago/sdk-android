@@ -13,11 +13,12 @@ internal class ScreenTest {
         assertTrue(values.contains(Screen.CARD_FORM))
         assertTrue(values.contains(Screen.PAYMENT_METHOD_SELECTOR))
         assertTrue(values.contains(Screen.OFFLINE_METHOD_SELECTOR))
+        assertTrue(values.contains(Screen.SECURITY_CODE))
     }
 
     @Test
-    fun `given Screen enum then has exactly four entries`() {
-        assertEquals(4, Screen.entries.size)
+    fun `given Screen enum then has exactly five entries`() {
+        assertEquals(5, Screen.entries.size)
     }
 
     @Test
@@ -26,5 +27,6 @@ internal class ScreenTest {
         assertEquals(Screen.CARD_FORM, Screen.valueOf("CARD_FORM"))
         assertEquals(Screen.PAYMENT_METHOD_SELECTOR, Screen.valueOf("PAYMENT_METHOD_SELECTOR"))
         assertEquals(Screen.OFFLINE_METHOD_SELECTOR, Screen.valueOf("OFFLINE_METHOD_SELECTOR"))
+        assertEquals(Screen.SECURITY_CODE, Screen.valueOf("SECURITY_CODE"))
     }
 }
