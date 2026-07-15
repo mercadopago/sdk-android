@@ -29,7 +29,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
@@ -202,7 +202,7 @@ private fun InstallmentsFooter(
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,
-                isLoading = footerState.isButtonLoading,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onPayClick,
             )
         },

@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonLoading
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
@@ -47,7 +48,7 @@ internal class InstallmentsViewModel(
     ) { selected, loading ->
         installmentData.copy(selectedInstallment = selected)
             .toInstallmentsScreenState()
-            .run { copy(footerState = footerState.copy(isButtonLoading = loading)) }
+            .run { copy(footerState = footerState.withButtonLoading(loading)) }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
