@@ -5,18 +5,11 @@ All notable changes to the Mercado Pago SDK Android will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Unreleased
-
-### Changed
-- All modules bumped to `1.0.0`: `core`, `analytics`, `sdk-android`, `core-methods`, `mp-extended`, `checkout`, `components`, `foundation`, `sdk-android-bom`
-- BOM (`sdk-android-bom`) now includes `checkout`, `components`, and `foundation` in its dependency constraints — consumers no longer need to specify versions for these modules when using the BOM
 ### Removed
 - Paparazzi snapshot images removed from git tracking — LFS objects were missing on the server (404); directory added to `.gitignore`
 
 ### Added
-- `MPCheckoutType.CardTransaction` — initiates a card payment against an existing order via `MPOrder(orderId, clientToken, amount, payer)`
-- `MPPaymentData.CardTransaction` — success result carrying `orderId`, `orderStatus`, and `paymentMethodId`
-- `MPUserCancelledContext.CardTransaction` — cancellation context with `fields` (list of `MPCancelledFieldState`) and `screens` visited
-- `Screen` enum values `CARD_FORM` and `INSTALLMENTS` — identify which screens the user visited before cancelling
+- Add `CardSave` and `CardTransaction` in `Builder` and `Callback`
 - `koverVerify` step added to CI pipeline to enforce 80% overall coverage threshold
 - `AndroidManifest.xml` added to `core-methods` test source set — enables Robolectric-based unit tests that require an `Activity` context
 

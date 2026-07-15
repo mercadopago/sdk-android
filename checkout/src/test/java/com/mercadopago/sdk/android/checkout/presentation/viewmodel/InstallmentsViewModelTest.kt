@@ -167,7 +167,7 @@ internal class InstallmentsViewModelTest {
 
         viewModel.onPayClicked()
 
-        kotlin.test.assertTrue(viewModel.viewState.value.footerState.isButtonLoading)
+        kotlin.test.assertTrue(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 
     @Test
@@ -186,7 +186,7 @@ internal class InstallmentsViewModelTest {
     fun `isButtonLoading is false before onPayClicked`() = runTest {
         val viewModel = makeViewModel()
 
-        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+        assertFalse(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 
     @Test
@@ -198,6 +198,6 @@ internal class InstallmentsViewModelTest {
 
         viewModel.onViewEventConsumed()
 
-        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+        assertFalse(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 }

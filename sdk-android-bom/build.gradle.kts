@@ -12,9 +12,6 @@ dependencies {
         api(projects.sdkAndroid)
         api(projects.coreMethods)
         api(projects.mpExtended)
-        api(projects.components)
-        api(projects.foundation)
-        api(projects.checkout)
     }
 }
 
