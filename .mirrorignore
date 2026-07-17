@@ -4,4 +4,11 @@
 ux-reference/
 Flowbook/
 .github/workflows/
+
+# Claude
+.meli
+meli
+CLAUDE.md
 .claude
+docs
+.docs
