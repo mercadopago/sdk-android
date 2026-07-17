@@ -1,3 +1,6 @@
+# specjudge run artifacts
+.specjudge/runs/
+
 # Paparazzi snapshot images
 showkase/src/test/snapshots/images/
 
@@ -42,5 +45,5 @@ google-services.json
 .meli
 meli
 CLAUDE.md
-.claude
+.claude/private/
 docs
