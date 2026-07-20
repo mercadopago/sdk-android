@@ -20,6 +20,18 @@ internal val SampleFeaturesNavigationList: List<SampleFeature> = listOf(
         destination = SampleDestination.Checkout,
         isEnabled = true,
     ),
+    SampleFeature(
+        title = R.string.card_transaction_feature_title,
+        description = R.string.card_transaction_feature_description,
+        destination = SampleDestination.CardTransaction,
+        isEnabled = true,
+    ),
+    SampleFeature(
+        title = R.string.payment_feature_title,
+        description = R.string.payment_feature_description,
+        destination = SampleDestination.Payment,
+        isEnabled = true,
+    ),
 )
 
 internal data class SampleFeature(

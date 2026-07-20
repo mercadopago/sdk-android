@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 
@@ -25,7 +26,6 @@ internal data class CardPaymentScreenState(
     val installmentsState: InstallmentsState = InstallmentsState(),
     val paymentState: PaymentState = PaymentState(),
     val footerState: FooterState = FooterState(),
-    val fixedFooterState: FixedFooterState = FixedFooterState(),
     val cardIssuers: List<CardIssuer> = emptyList(),
     val messageError: MessageError = MessageError(),
     val isLoading: Boolean = false,
@@ -128,17 +128,6 @@ internal data class InstallmentsState(
 internal data class MessageError(
     val title: String = "",
     val description: String = "",
-)
-
-internal data class FixedFooterState(
-    val title: String = "",
-    val currencySymbol: String = "",
-    val amountIntegerPart: String = "",
-    val amountDecimalPart: String = "",
-    val subtitle: String? = null,
-    val buttonText: String = "",
-    val isVisible: Boolean = false,
-    val isButtonLoading: Boolean = false,
 )
 
 internal data class PaymentState(

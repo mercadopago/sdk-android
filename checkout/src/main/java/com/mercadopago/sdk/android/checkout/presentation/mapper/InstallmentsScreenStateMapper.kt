@@ -7,8 +7,8 @@ import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toAmountParts
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toBrandLabel
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
