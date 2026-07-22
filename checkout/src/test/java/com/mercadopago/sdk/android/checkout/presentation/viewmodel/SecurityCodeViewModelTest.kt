@@ -1,19 +1,38 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
+import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.usecase.GenerateTokenWithCardIdUseCase
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeViewEvent
+import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
+import com.mercadopago.sdk.android.coremethods.domain.utils.Result
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeState as SecurityCodeConfigState
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class SecurityCodeViewModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val fieldError = "Completá los 3 dígitos"
+    private val generateTokenUseCase = mockk<GenerateTokenWithCardIdUseCase>(relaxed = true)
+    private val securityCodePCIState = mockk<PCIFieldState>(relaxed = true)
 
     private fun makeConfig(
         maxLength: Int = MAX_LENGTH,
@@ -34,9 +53,15 @@ internal class SecurityCodeViewModelTest {
         cardImageUrl = "https://example.com/card.png",
     )
 
+    @Before
+    fun setUp() {
+        // Default stub so non-runTest tests that pass validation don't leave uncaught coroutine exceptions.
+        coEvery { generateTokenUseCase(any(), any()) } returns Result.Success("default-token")
+    }
+
     private fun makeViewModel(
         config: SecurityCodeScreenConfig = makeConfig(),
-    ) = SecurityCodeViewModel(config = config)
+    ) = SecurityCodeViewModel(config = config, generateTokenUseCase = generateTokenUseCase)
 
     @Test
     fun `initial state maps config`() {
@@ -58,7 +83,7 @@ internal class SecurityCodeViewModelTest {
     fun `onContinue with empty field publishes field error`() {
         val viewModel = makeViewModel()
 
-        viewModel.onContinue()
+        viewModel.onContinue(securityCodePCIState)
 
         assertEquals(fieldError, viewModel.viewState.value.fieldError)
         assertNull(viewModel.viewEvent.value)
@@ -69,7 +94,7 @@ internal class SecurityCodeViewModelTest {
         val viewModel = makeViewModel()
 
         viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 1))
-        viewModel.onContinue()
+        viewModel.onContinue(securityCodePCIState)
 
         assertEquals(fieldError, viewModel.viewState.value.fieldError)
     }
@@ -79,7 +104,7 @@ internal class SecurityCodeViewModelTest {
         val viewModel = makeViewModel()
 
         viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = MAX_LENGTH))
-        viewModel.onContinue()
+        viewModel.onContinue(securityCodePCIState)
 
         assertNull(viewModel.viewState.value.fieldError)
     }
@@ -87,7 +112,7 @@ internal class SecurityCodeViewModelTest {
     @Test
     fun `length change clears previous field error`() {
         val viewModel = makeViewModel()
-        viewModel.onContinue()
+        viewModel.onContinue(securityCodePCIState)
         assertEquals(fieldError, viewModel.viewState.value.fieldError)
 
         viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = 1))
@@ -148,6 +173,64 @@ internal class SecurityCodeViewModelTest {
         viewModel.onViewEventConsumed()
 
         assertNull(viewModel.viewEvent.value)
+    }
+
+    @Test
+    fun `onContinue with valid CVV calls tokenization and emits OnTokenSuccess`() = runTest {
+        val expectedToken = "token-success-xyz"
+        coEvery {
+            generateTokenUseCase("card-123", securityCodePCIState)
+        } returns Result.Success(expectedToken)
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = MAX_LENGTH))
+
+        viewModel.onContinue(securityCodePCIState)
+
+        coVerify { generateTokenUseCase("card-123", securityCodePCIState) }
+        val event = viewModel.viewEvent.value
+        assertIs<SecurityCodeViewEvent.OnTokenSuccess>(event)
+        assertEquals("card-123", event.cardId)
+        assertEquals(expectedToken, event.token)
+    }
+
+    @Test
+    fun `onContinue with valid CVV on token error emits OnTokenError`() = runTest {
+        val checkoutError = mockk<MercadoPagoCheckoutError>(relaxed = true)
+        coEvery {
+            generateTokenUseCase("card-123", securityCodePCIState)
+        } returns Result.Error(checkoutError)
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = MAX_LENGTH))
+
+        viewModel.onContinue(securityCodePCIState)
+
+        val event = viewModel.viewEvent.value
+        assertIs<SecurityCodeViewEvent.OnTokenError>(event)
+        assertEquals(checkoutError, event.error)
+    }
+
+    @Test
+    fun `onContinue with invalid CVV does not call tokenization`() = runTest {
+        val viewModel = makeViewModel()
+
+        viewModel.onContinue(securityCodePCIState)
+
+        coVerify(exactly = 0) { generateTokenUseCase(any(), any()) }
+        assertNull(viewModel.viewEvent.value)
+        assertEquals(fieldError, viewModel.viewState.value.fieldError)
+    }
+
+    @Test
+    fun `onContinue sets button loading before tokenization and resets after`() = runTest {
+        coEvery {
+            generateTokenUseCase("card-123", securityCodePCIState)
+        } returns Result.Success("token-abc")
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = MAX_LENGTH))
+
+        viewModel.onContinue(securityCodePCIState)
+
+        assertTrue(viewModel.viewState.value.footerState.buttonState?.isLoading == false)
     }
 
     private companion object {

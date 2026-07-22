@@ -26,6 +26,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
+import com.mercadopago.sdk.android.checkout.presentation.cvv.SecurityCodeScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.paymentbrick.PaymentBrickScreen
@@ -33,9 +34,12 @@ import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEv
 import com.mercadopago.sdk.android.checkout.presentation.state.CheckoutDestination
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.SecurityCodeViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -47,6 +51,7 @@ internal fun CheckoutController(
 ) {
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
+    var pendingSecurityCodeConfig by remember { mutableStateOf<SecurityCodeScreenConfig?>(null) }
 
     val startDestination: CheckoutDestination =
         if (checkoutConfiguration.startsWithPayment()) {
@@ -71,10 +76,40 @@ internal fun CheckoutController(
             }
         }
 
-        composable<CheckoutDestination.Payment> {
+        composable<CheckoutDestination.Payment> { backStackEntry ->
+            val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
+            val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
+                viewModelStoreOwner = graphEntry,
+            ) { parametersOf(checkoutConfiguration) }
             PaymentBrickScreenDestination(
-                checkoutConfiguration = checkoutConfiguration,
+                paymentBrickViewModel = paymentBrickViewModel,
                 onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
+                onNavigateToSecurityCode = { config ->
+                    pendingSecurityCodeConfig = config
+                    navController.navigate(CheckoutDestination.SecurityCode)
+                },
+            )
+        }
+
+        composable<CheckoutDestination.SecurityCode> { backStackEntry ->
+            val config = pendingSecurityCodeConfig ?: return@composable
+            val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
+            val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
+                viewModelStoreOwner = graphEntry,
+            ) { parametersOf(checkoutConfiguration) }
+            SecurityCodeScreenDestination(
+                config = config,
+                onTokenSuccess = { cardId, token ->
+                    navController.popBackStack()
+                    paymentBrickViewModel.processPaymentMethodWithToken(cardId, token)
+                },
+                onTokenError = {
+                    navController.popBackStack()
+                    paymentBrickViewModel.onTokenError()
+                },
+                onUserCancelled = { context ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+                },
             )
         }
 
@@ -119,12 +154,10 @@ internal fun CheckoutController(
 
 @Composable
 private fun PaymentBrickScreenDestination(
-    checkoutConfiguration: CheckoutConfiguration?,
+    paymentBrickViewModel: PaymentBrickViewModel,
     onNavigateToForm: () -> Unit,
+    onNavigateToSecurityCode: (SecurityCodeScreenConfig) -> Unit,
 ) {
-    val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
-        parametersOf(checkoutConfiguration)
-    }
     val viewEvent by paymentBrickViewModel.viewEvent.collectAsState()
 
     LaunchedEffect(viewEvent) {
@@ -136,6 +169,7 @@ private fun PaymentBrickScreenDestination(
 
             is PaymentBrickViewEvent.OnSecurityCodeRequired -> {
                 paymentBrickViewModel.onViewEventConsumed()
+                onNavigateToSecurityCode(event.config)
             }
 
             is PaymentBrickViewEvent.OnFailure -> {
@@ -153,6 +187,40 @@ private fun PaymentBrickScreenDestination(
     }
 
     PaymentBrickScreen(viewModel = paymentBrickViewModel)
+}
+
+@Composable
+private fun SecurityCodeScreenDestination(
+    config: SecurityCodeScreenConfig,
+    onTokenSuccess: (cardId: String, token: String) -> Unit,
+    onTokenError: () -> Unit,
+    onUserCancelled: (com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext.Payment) -> Unit,
+) {
+    val viewModel: SecurityCodeViewModel = koinViewModel { parametersOf(config) }
+    val viewEvent by viewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is SecurityCodeViewEvent.OnTokenSuccess -> {
+                viewModel.onViewEventConsumed()
+                onTokenSuccess(event.cardId, event.token)
+            }
+
+            is SecurityCodeViewEvent.OnTokenError -> {
+                viewModel.onViewEventConsumed()
+                onTokenError()
+            }
+
+            is SecurityCodeViewEvent.OnUserCancelled -> {
+                viewModel.onViewEventConsumed()
+                onUserCancelled(event.context)
+            }
+
+            null -> Unit
+        }
+    }
+
+    SecurityCodeScreen(viewModel = viewModel)
 }
 
 @Composable

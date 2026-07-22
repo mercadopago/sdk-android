@@ -15,9 +15,12 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
@@ -58,20 +61,23 @@ internal class DataModuleTest {
         unmockkAll()
     }
 
+    private fun createMockContext(): Application {
+        val configuration = mockk<Configuration>(relaxed = true)
+        every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
+        val resources = mockk<android.content.res.Resources>(relaxed = true)
+        every { resources.configuration } returns configuration
+        return mockk<Application>(relaxed = true).also { ctx ->
+            every { ctx.applicationInfo } returns mockk(relaxed = true)
+            every { ctx.applicationContext } returns ctx
+            every { ctx.resources } returns resources
+            every { ctx.createConfigurationContext(any()) } returns ctx
+        }
+    }
+
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideDataModule is called then bindings should be verified`() {
-        val configuration = mockk<Configuration>(relaxed = true)
-        every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
-
-        val resources = mockk<android.content.res.Resources>(relaxed = true)
-        every { resources.configuration } returns configuration
-
-        val context = mockk<Application>(relaxed = true)
-        every { context.applicationInfo } returns mockk(relaxed = true)
-        every { context.applicationContext } returns context
-        every { context.resources } returns resources
-        every { context.createConfigurationContext(any()) } returns context
+        val context = createMockContext()
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
@@ -113,6 +119,9 @@ internal class DataModuleTest {
                 String::class,
                 InstallmentsAnalyticsTracker::class,
                 ProcessOrderUseCase::class,
+                SecurityCodeScreenConfig::class,
+                CoreMethods::class,
+                SecurityCodeVerifier::class,
             ),
         )
 
@@ -122,6 +131,7 @@ internal class DataModuleTest {
             withInstance<MPInstallmentData>(mockk(relaxed = true))
             withInstance<MPPaymentData>(mockk(relaxed = true))
             withInstance<String>("card_form")
+            withInstance<SecurityCodeScreenConfig>(mockk(relaxed = true))
         }
     }
 }

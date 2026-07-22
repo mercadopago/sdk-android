@@ -30,6 +30,7 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_INSTALLMENTS = 1
 
+@Suppress("TooManyFunctions")
 internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val fetchInitializationUseCase: FetchPaymentBrickInitializationUseCase,
@@ -148,6 +149,47 @@ internal class PaymentBrickViewModel(
         cancelledPaymentContextUseCase.markScreenPresented(screen)
     }
 
+    fun processPaymentMethodWithToken(
+        cardId: String,
+        token: String,
+    ) {
+        val method = findMethodByCardId(cardId) ?: return
+        val paymentType = checkoutConfiguration?.checkoutType as? MPCheckoutType.Payment ?: return
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            processOrderUseCase(
+                ProcessOrderParams(
+                    orderId = paymentType.order.orderId,
+                    clientToken = paymentType.order.clientToken,
+                    amount = "",
+                    paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                    paymentMethodType = method.cardData?.paymentTypeId.orEmpty(),
+                    token = token,
+                    installments = DEFAULT_INSTALLMENTS,
+                ),
+            ).fold(
+                onSuccess = { orderOutput ->
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                    val paymentData = MPPaymentData.Payment(
+                        orderId = orderOutput.id,
+                        orderStatus = orderOutput.status,
+                        paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                        paymentTypeId = method.cardData?.paymentTypeId.orEmpty(),
+                    )
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                },
+                onError = { error ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                },
+            )
+        }
+    }
+
+    fun onTokenError() {
+        _viewState.value = _viewState.value.copy(isLoading = false)
+    }
+
     private fun findMethodByOptionId(
         optionId: String,
     ): PaymentMethodOutput? =
@@ -156,6 +198,13 @@ internal class PaymentBrickViewModel(
             ?.firstOrNull { method ->
                 if (method.cardData != null) method.cardData.id == optionId else method.type == optionId
             }
+
+    private fun findMethodByCardId(
+        cardId: String,
+    ): PaymentMethodOutput? =
+        initializationOutput?.sections
+            ?.flatMap { it.methods }
+            ?.firstOrNull { method -> method.cardData?.id == cardId }
 
     private fun CheckoutConfiguration.buildInitializationParams(): FetchPaymentBrickInitializationParams? {
         val paymentType = checkoutType as? MPCheckoutType.Payment ?: return null
