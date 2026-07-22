@@ -1,13 +1,14 @@
 package com.mercadopago.sdk.android.checkout.presentation.cvv
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenState
@@ -28,8 +28,13 @@ import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
+import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.MPTooltip
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
+import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
+import com.mercadopago.sdk.android.components.model.MPListItemLeading
+import com.mercadopago.sdk.android.components.model.MPListSizeType
+import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -50,10 +55,13 @@ internal fun SecurityCodeScreen(
 
     BackHandler { viewModel.onUserCancelled() }
 
+    val securityCodePCIState = rememberPCIFieldState()
+
     SecurityCodeScreenContent(
         viewState = viewState,
+        securityCodePCIState = securityCodePCIState,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
-        onContinueClick = viewModel::onContinue,
+        onContinueClick = { viewModel.onContinue(securityCodePCIState) },
         onBackClick = viewModel::onUserCancelled,
     )
 }
@@ -61,13 +69,11 @@ internal fun SecurityCodeScreen(
 @Composable
 private fun SecurityCodeScreenContent(
     viewState: SecurityCodeScreenState,
+    securityCodePCIState: PCIFieldState,
     onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit = {},
     onContinueClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
-    val securityCodePCIState = rememberPCIFieldState()
-    var showTooltip by remember { mutableStateOf(false) }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -79,40 +85,14 @@ private fun SecurityCodeScreenContent(
             title = viewState.title,
             onBackClick = onBackClick,
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp),
-            ) {
-                Box {
-                    MPSecurityCodeTextField(
-                        state = securityCodePCIState,
-                        securityCodeSize = viewState.securityCodeState.maxLength,
-                        isFocused = viewState.securityCodeState.isFocused,
-                        showPlaceHolder = viewState.securityCodeState.showPlaceHolder,
-                        error = viewState.fieldError.orEmpty(),
-                        enabled = viewState.securityCodeState.enabled,
-                        label = viewState.securityCodeState.label,
-                        helper = viewState.securityCodeState.helper,
-                        placeHolder = viewState.securityCodeState.placeHolder,
-                        onClickTooltip = { showTooltip = !showTooltip },
-                        onEvent = onSecurityCodeEvent,
-                    )
-                    if (showTooltip) {
-                        MPTooltip(
-                            modifier = Modifier
-                                .align(Alignment.TopCenter)
-                                .layout { measurable, constraints ->
-                                    val placeable = measurable.measure(constraints)
-                                    layout(placeable.width, 0) {
-                                        placeable.placeRelative(0, -placeable.height)
-                                    }
-                                },
-                            text = viewState.securityCodeState.messageTooltip,
-                        )
-                    }
-                }
+            if (viewState.cardTitle.isNotEmpty()) {
+                SecurityCodeCardInfo(viewState)
             }
+            SecurityCodeField(
+                viewState = viewState,
+                securityCodePCIState = securityCodePCIState,
+                onSecurityCodeEvent = onSecurityCodeEvent,
+            )
         }
 
         if (viewState.footerState.isVisible) {
@@ -120,6 +100,76 @@ private fun SecurityCodeScreenContent(
                 footerState = viewState.footerState,
                 onContinueClick = onContinueClick,
                 modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SecurityCodeCardInfo(
+    viewState: SecurityCodeScreenState,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MercadoPagoTheme.spacing.paddings.xnano)
+            .background(
+                color = MercadoPagoTheme.color.surface.primaryIdle,
+                shape = RoundedCornerShape(MercadoPagoTheme.radius.small),
+            ),
+    ) {
+        MPListItem(
+            contentInfo = MPListItemContentInfo(
+                title = viewState.cardTitle,
+                description = viewState.cardDescription,
+            ),
+            leftImage = viewState.cardImageUrl?.let { MPListItemLeading.Thumbnail(it) },
+            sizeType = MPListSizeType.Medium,
+        )
+    }
+}
+
+@Composable
+private fun SecurityCodeField(
+    viewState: SecurityCodeScreenState,
+    securityCodePCIState: PCIFieldState,
+    onSecurityCodeEvent: (SecurityCodeTextFieldEvent) -> Unit,
+) {
+    var showTooltip by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = MercadoPagoTheme.spacing.paddings.xtiny,
+                end = MercadoPagoTheme.spacing.paddings.xtiny,
+                top = MercadoPagoTheme.spacing.paddings.xmicro,
+            ),
+    ) {
+        MPSecurityCodeTextField(
+            state = securityCodePCIState,
+            securityCodeSize = viewState.securityCodeState.maxLength,
+            isFocused = viewState.securityCodeState.isFocused,
+            showPlaceHolder = viewState.securityCodeState.showPlaceHolder,
+            error = viewState.fieldError.orEmpty(),
+            enabled = viewState.securityCodeState.enabled,
+            label = viewState.securityCodeState.label,
+            helper = viewState.securityCodeState.helper,
+            placeHolder = viewState.securityCodeState.placeHolder,
+            onClickTooltip = { showTooltip = !showTooltip },
+            onEvent = onSecurityCodeEvent,
+        )
+        if (showTooltip) {
+            MPTooltip(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .layout { measurable, constraints ->
+                        val placeable = measurable.measure(constraints)
+                        layout(placeable.width, 0) {
+                            placeable.placeRelative(0, -placeable.height)
+                        }
+                    },
+                text = viewState.securityCodeState.messageTooltip,
             )
         }
     }
@@ -156,8 +206,12 @@ private fun SecurityCodeFooter(
 private fun SecurityCodeScreenPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         SecurityCodeScreenContent(
+            securityCodePCIState = rememberPCIFieldState(),
             viewState = SecurityCodeScreenState(
                 title = "Digite o código de segurança",
+                cardTitle = "Banco •••• 1234",
+                cardDescription = "Visa Crédito",
+                cardImageUrl = "https://http.cat/200",
                 securityCodeState = SecurityCodeState(
                     label = "Código de segurança",
                     placeHolder = "123",
@@ -185,8 +239,12 @@ private fun SecurityCodeScreenPreview() {
 private fun SecurityCodeScreenErrorPreview() {
     MercadoPagoTheme(theme = MercadoPagoThemes.Default) {
         SecurityCodeScreenContent(
+            securityCodePCIState = rememberPCIFieldState(),
             viewState = SecurityCodeScreenState(
                 title = "Digite o código de segurança",
+                cardTitle = "Banco •••• 1234",
+                cardDescription = "Visa Crédito",
+                cardImageUrl = "https://http.cat/200",
                 securityCodeState = SecurityCodeState(
                     label = "Código de segurança",
                     placeHolder = "123",
