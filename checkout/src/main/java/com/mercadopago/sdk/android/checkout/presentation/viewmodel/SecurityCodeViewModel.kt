@@ -37,11 +37,24 @@ internal class SecurityCodeViewModel(
     private val generateTokenUseCase: GenerateTokenWithCardIdUseCase,
     private val securityCodeVerifier: SecurityCodeVerifier = SecurityCodeVerifier(),
 ) : ViewModel() {
+    // Kept as a body property (not a constructor param) so Koin's verify never treats it as a
+    // required binding — same pattern used by CardPaymentViewModel for CardFormAnalyticsTracker.
+    private val analyticsTracker = SecurityCodeAnalyticsTracker(
+        paymentMethodId = config.paymentMethodId,
+        paymentTypeId = config.paymentTypeId,
+        issuerId = config.issuerId,
+        cardId = config.cardId,
+    )
+
     private val _viewState = MutableStateFlow(config.toInitialState())
     val viewState: StateFlow<SecurityCodeScreenState> = _viewState.asStateFlow()
 
     private val _viewEvent = MutableStateFlow<SecurityCodeViewEvent?>(null)
     val viewEvent: StateFlow<SecurityCodeViewEvent?> = _viewEvent.asStateFlow()
+
+    init {
+        analyticsTracker.trackView()
+    }
 
     fun onSecurityCodeEvent(
         event: SecurityCodeTextFieldEvent,
@@ -80,6 +93,7 @@ internal class SecurityCodeViewModel(
         securityCodeState: PCIFieldState,
     ) {
         if (!validate()) return
+        analyticsTracker.trackContinue()
         _viewState.value = _viewState.value.copy(
             footerState = _viewState.value.footerState.withButtonLoading(true),
         )
@@ -102,6 +116,7 @@ internal class SecurityCodeViewModel(
     }
 
     fun onUserCancelled() {
+        analyticsTracker.trackBack()
         _viewEvent.value = SecurityCodeViewEvent.OnUserCancelled(
             MPUserCancelledContext.Payment(screens = listOf(Screen.SECURITY_CODE)),
         )

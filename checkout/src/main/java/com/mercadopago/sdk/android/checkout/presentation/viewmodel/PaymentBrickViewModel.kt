@@ -127,6 +127,9 @@ internal class PaymentBrickViewModel(
                     cardTitle = method.title,
                     cardDescription = method.subtitle,
                     cardImageUrl = method.iconUrl,
+                    paymentMethodId = cardData.paymentMethodId,
+                    paymentTypeId = cardData.paymentTypeId,
+                    issuerId = cardData.issuerId.toString(),
                 )
                 _viewEvent.value = PaymentBrickViewEvent.OnSecurityCodeRequired(config)
                 return

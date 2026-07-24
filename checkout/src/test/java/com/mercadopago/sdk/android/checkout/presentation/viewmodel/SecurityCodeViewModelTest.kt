@@ -233,6 +233,30 @@ internal class SecurityCodeViewModelTest {
         assertTrue(viewModel.viewState.value.footerState.buttonState?.isLoading == false)
     }
 
+    // region Analytics — smoke tests (MPAnalytics unavailable in unit tests; calls are no-ops)
+
+    @Test
+    fun `init does not throw when analytics engine is unavailable`() {
+        makeViewModel() // analyticsTracker.trackView() fires in init block
+    }
+
+    @Test
+    fun `onContinue with valid CVV does not throw during tracking`() {
+        val viewModel = makeViewModel()
+        viewModel.onSecurityCodeEvent(SecurityCodeTextFieldEvent.OnLengthChanged(length = MAX_LENGTH))
+
+        viewModel.onContinue(securityCodePCIState) // trackContinue() fires; must not throw
+    }
+
+    @Test
+    fun `onUserCancelled does not throw during tracking`() {
+        val viewModel = makeViewModel()
+
+        viewModel.onUserCancelled() // trackBack() fires; must not throw
+    }
+
+    // endregion
+
     private companion object {
         const val MAX_LENGTH = 3
     }
