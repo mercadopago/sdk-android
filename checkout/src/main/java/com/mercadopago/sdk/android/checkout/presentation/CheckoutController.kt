@@ -16,21 +16,26 @@ import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
+import com.mercadopago.sdk.android.checkout.core.model.internal.startsWithPayment
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
+import com.mercadopago.sdk.android.checkout.presentation.paymentbrick.PaymentBrickScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.CheckoutDestination
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -43,13 +48,26 @@ internal fun CheckoutController(
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
 
+    val startDestination: CheckoutDestination = if (checkoutConfiguration.startsWithPayment()) {
+        CheckoutDestination.PaymentBrick
+    } else {
+        CheckoutDestination.Form
+    }
+
     NavHost(
         navController = navController,
-        startDestination = CheckoutDestination.Form,
+        startDestination = startDestination,
         route = CheckoutGraph::class,
         enterTransition = { slideInHorizontally { it } },
         exitTransition = { slideOutHorizontally { it } },
     ) {
+        composable<CheckoutDestination.PaymentBrick> {
+            PaymentBrickScreenDestination(
+                checkoutConfiguration = checkoutConfiguration,
+                onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
+            )
+        }
+
         composable<CheckoutDestination.Form> { backStackEntry ->
             val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
             val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
@@ -87,6 +105,42 @@ internal fun CheckoutController(
             )
         }
     }
+}
+
+@Composable
+private fun PaymentBrickScreenDestination(
+    checkoutConfiguration: CheckoutConfiguration?,
+    onNavigateToForm: () -> Unit,
+) {
+    val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel {
+        parametersOf(checkoutConfiguration)
+    }
+    val viewEvent by paymentBrickViewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is PaymentBrickViewEvent.OnOptionSelected -> {
+                onNavigateToForm()
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.OnFailure -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
+            }
+
+            is PaymentBrickViewEvent.OnUserCancelled -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                CheckoutCallbackHolder.notify(
+                    MercadoPagoCheckoutResult.UserCancelled(event.context as MPUserCancelledContext),
+                )
+            }
+
+            null -> Unit
+        }
+    }
+
+    PaymentBrickScreen(viewModel = paymentBrickViewModel)
 }
 
 @Composable
@@ -185,6 +239,7 @@ private fun InstallmentsScreenDestination(
                     is MPPaymentData.CardSave -> {
                         CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                     }
+                    is MPPaymentData.Payment -> onInstallmentConfirmed(event.installment)
                 }
             }
 

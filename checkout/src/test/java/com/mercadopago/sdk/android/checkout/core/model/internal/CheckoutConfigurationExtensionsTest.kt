@@ -29,8 +29,59 @@ internal class CheckoutConfigurationExtensionsTest {
     }
 
     @Test
+    fun `given payment when toCheckoutType then returns payment`() {
+        val checkoutType = MPCheckoutType.Payment(order = order)
+
+        assertEquals(PAYMENT, configWith(checkoutType).toCheckoutType())
+    }
+
+    @Test
     fun `given null configuration when toCheckoutType then returns empty`() {
         assertEquals("", configWith(null).toCheckoutType())
+    }
+
+    @Test
+    fun `given card transaction when getCardFormAmount then returns order amount`() {
+        val config = configWith(MPCheckoutType.CardTransaction(order))!!
+
+        assertEquals(order.amount, config.getCardFormAmount())
+        assertEquals("188000.00", config.getCardFormAmountOrZero())
+    }
+
+    @Test
+    fun `given payment when getCardFormAmount then returns null and zero default`() {
+        val config = configWith(MPCheckoutType.Payment(order = order))!!
+
+        assertNull(config.getCardFormAmount())
+        assertEquals(AMOUNT_DEFAULT, config.getCardFormAmountOrZero())
+    }
+
+    @Test
+    fun `given payment then exposes order`() {
+        val checkoutType = MPCheckoutType.Payment(order = order)
+
+        assertEquals(order, checkoutType.order)
+    }
+
+    @Test
+    fun `given payment when copying with new order then keeps type`() {
+        val original = MPCheckoutType.Payment(order = order)
+        val newOrder = order.copy(amount = BigDecimal("500.00"))
+
+        val updated = original.copy(order = newOrder)
+
+        assertEquals(newOrder, updated.order)
+        assertTrue(original != updated)
+    }
+
+    @Test
+    fun `given payment then toString and hashCode reflect its content`() {
+        val checkoutType = MPCheckoutType.Payment(order = order)
+        val same = MPCheckoutType.Payment(order = order)
+
+        assertTrue(checkoutType.toString().contains("Payment"))
+        assertEquals(same.hashCode(), checkoutType.hashCode())
+        assertEquals(order, checkoutType.component1())
     }
 
     @Test
@@ -52,7 +103,32 @@ internal class CheckoutConfigurationExtensionsTest {
     }
 
     @Test
+    fun `given payment when showsInstallments then returns false`() {
+        assertFalse(configWith(MPCheckoutType.Payment(order = order)).isCardTransaction())
+    }
+
+    @Test
     fun `given null configuration when showsInstallments then returns false`() {
         assertFalse(configWith(null).isCardTransaction())
+    }
+
+    @Test
+    fun `given payment when startsWithPayment then returns true`() {
+        assertTrue(configWith(MPCheckoutType.Payment(order = order)).startsWithPayment())
+    }
+
+    @Test
+    fun `given card transaction when startsWithPayment then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardTransaction(order)).startsWithPayment())
+    }
+
+    @Test
+    fun `given card save when startsWithPayment then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardSave).startsWithPayment())
+    }
+
+    @Test
+    fun `given null configuration when startsWithPayment then returns false`() {
+        assertFalse(configWith(null).startsWithPayment())
     }
 }

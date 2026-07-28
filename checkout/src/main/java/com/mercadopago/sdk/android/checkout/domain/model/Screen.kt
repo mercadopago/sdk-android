@@ -12,4 +12,10 @@ enum class Screen {
 
     /** The new card form screen. */
     CARD_FORM,
+
+    /** The new card form screen. */
+    PAYMENT_METHOD_SELECTOR,
+
+    /** The offline payment method selector screen (boleto, ticket, etc.). */
+    OFFLINE_METHOD_SELECTOR,
 }

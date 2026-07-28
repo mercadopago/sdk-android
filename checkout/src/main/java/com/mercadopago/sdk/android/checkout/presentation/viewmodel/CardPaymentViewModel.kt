@@ -35,6 +35,7 @@ import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScre
 import com.mercadopago.sdk.android.checkout.presentation.mapper.applyCardBinData
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toCardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonLoading
 import com.mercadopago.sdk.android.checkout.presentation.state.CARD_NUMBER_BIN_LENGTH
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
@@ -328,6 +329,7 @@ internal class CardPaymentViewModel(
                 fields = result.fields,
                 screens = result.screens,
             )
+            else -> MPUserCancelledContext.Payment(screens = result.screens)
         }
         _viewEvent.value = CardPaymentViewEvent.OnUserCancelled(context)
     }
@@ -474,7 +476,7 @@ internal class CardPaymentViewModel(
     ) {
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(
-                footerState = _viewState.value.footerState.copy(isButtonLoading = true),
+                footerState = _viewState.value.footerState.withButtonLoading(true),
             )
             val payer = Payer(
                 documentType = buyerIdentification.type,
@@ -493,7 +495,7 @@ internal class CardPaymentViewModel(
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(
-                    footerState = _viewState.value.footerState.copy(isButtonLoading = false),
+                    footerState = _viewState.value.footerState.withButtonLoading(false),
                 )
             }
         }
