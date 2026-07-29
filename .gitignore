@@ -47,3 +47,7 @@ meli
 CLAUDE.md
 .claude/private/
 docs
+
+# Guard rails (backups/junk gerados pelos hooks)
+*.bak
+**/__pycache__/

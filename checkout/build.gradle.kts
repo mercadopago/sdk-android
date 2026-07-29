@@ -93,19 +93,6 @@ android {
     lint {
         disable += "NullSafeMutableLiveData"
     }
-    apply(plugin = "org.jetbrains.dokka")
-}
-
-tasks.named(MercadoPagoSDKConfig.DOKKA_HTML, org.jetbrains.dokka.gradle.DokkaTask::class).configure {
-    outputDirectory.set(layout.buildDirectory.dir(MercadoPagoSDKConfig.DOKKA_DIR))
-    dokkaSourceSets {
-        configureEach {
-            perPackageOption {
-                matchingRegex.set(MercadoPagoSDKConfig.DOKKA_IGNORE_PACKAGES)
-                suppress.set(true)
-            }
-        }
-    }
 }
 
 ksp {
@@ -139,6 +126,13 @@ dependencies {
     kspDebug(libs.showkase.processor)
     implementation(libs.androidx.annotation)
 
+    // guard rails
+    testImplementation(libs.konsist) // fitness functions de arquitetura (JUnit4)
+    testImplementation(libs.kotest.runner.junit5) // BDD/property (requer useJUnitPlatform — ver VALIDATION)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.cucumber.java)
+    testImplementation(libs.cucumber.junit)
     testImplementation(libs.kotlin.mockk)
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
