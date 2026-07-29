@@ -9,6 +9,15 @@ plugins {
     alias(libs.plugins.kotlin.kover) apply true
     alias(libs.plugins.cashapp.paparazzi) apply false
     id("org.jetbrains.dokka") version "2.0.0"
+    // guard rails: binary compatibility (protege a API publica do BOM)
+    alias(libs.plugins.kotlinx.binary.compatibility.validator) apply true
+}
+
+// guard rails: `./gradlew apiDump` gera os .api; `apiCheck` falha se a API publica
+// mudar sem dump. Modulos sem API publica distribuivel ficam de fora.
+apiValidation {
+    ignoredProjects.addAll(listOf("example", "showkase", "sdk-android-bom"))
+    nonPublicMarkers.add("com.mercadopago.sdk.android.foundation.annotations.InternalMpApi")
 }
 
 tasks.withType<Detekt>().configureEach {

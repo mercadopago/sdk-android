@@ -219,7 +219,7 @@ internal fun CardPaymentScreenContent(
                 enabled = viewState.footerState.isButtonEnabled,
                 isLoading = viewState.footerState.isButtonLoading,
                 onClick = onFooterButtonClick,
-                onHeightChanged = { overlayButtonHeightPx = it },
+                onHeightChange = { overlayButtonHeightPx = it },
             )
         }
 
@@ -601,13 +601,13 @@ private fun CardPaymentFooterButtonOverlay(
     enabled: Boolean,
     isLoading: Boolean,
     onClick: () -> Unit,
-    onHeightChanged: (Int) -> Unit,
+    onHeightChange: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier
             .imePadding()
-            .onGloballyPositioned { onHeightChanged(it.size.height) },
+            .onGloballyPositioned { onHeightChange(it.size.height) },
         shadowElevation = 8.dp,
         tonalElevation = 0.dp,
     ) {
