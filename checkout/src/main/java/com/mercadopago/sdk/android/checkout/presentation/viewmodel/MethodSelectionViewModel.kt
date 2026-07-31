@@ -1,0 +1,64 @@
+package com.mercadopago.sdk.android.checkout.presentation.viewmodel
+
+import androidx.lifecycle.ViewModel
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
+import com.mercadopago.sdk.android.checkout.domain.model.isArrowLayout
+import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonEnabled
+import com.mercadopago.sdk.android.checkout.presentation.state.MethodSelectionScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.MethodSelectionViewEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+internal class MethodSelectionViewModel(
+    private val screenData: MethodSelectionScreenData,
+) : ViewModel() {
+    private val _screenState = MutableStateFlow(buildInitialState())
+    val screenState: StateFlow<MethodSelectionScreenState> = _screenState.asStateFlow()
+
+    private val _viewEvent = MutableStateFlow<MethodSelectionViewEvent?>(null)
+    val viewEvent: StateFlow<MethodSelectionViewEvent?> = _viewEvent.asStateFlow()
+
+    fun selectOption(
+        optionId: String,
+    ) {
+        val currentState = _screenState.value
+        _screenState.value = currentState.copy(
+            selectedOptionId = optionId,
+            footerState = currentState.footerState.withButtonEnabled(true),
+        )
+    }
+
+    fun confirmSelection() {
+        val selectedId = _screenState.value.selectedOptionId ?: return
+        val option = _screenState.value.options.find { it.id == selectedId } ?: return
+        _viewEvent.value = MethodSelectionViewEvent.OnOptionSelected(option)
+    }
+
+    fun goBack() {
+        // navigation delegated to caller; tracking placeholder
+    }
+
+    fun onViewEventConsumed() {
+        _viewEvent.value = null
+    }
+
+    private fun buildInitialState(): MethodSelectionScreenState {
+        val ctaButtonState = screenData.footer.button?.let { ButtonState(enabled = false, isLoading = false) }
+        return MethodSelectionScreenState(
+            headerTitle = screenData.headerTitle,
+            options = screenData.options,
+            selectedOptionId = null,
+            footerState = FooterState(
+                title = screenData.footer.totalLabel,
+                subtitle = screenData.footer.totalAmount,
+                buttonLabel = screenData.footer.button?.label,
+                isVisible = true,
+                buttonState = ctaButtonState,
+            ),
+            isArrowLayout = screenData.selectionType.isArrowLayout,
+        )
+    }
+}

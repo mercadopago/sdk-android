@@ -20,6 +20,7 @@ internal data class PaymentMethodOutput(
     val iconUrl: String? = null,
     val cardData: CardDataOutput? = null,
     val options: List<TicketOptionOutput>? = null,
+    val screen: MethodSelectionScreenData? = null,
 )
 
 internal data class CardDataOutput(

@@ -21,6 +21,7 @@ internal data class PaymentMethod(
     @SerializedName("icon_url") val iconUrl: String? = null,
     @SerializedName("card_data") val cardData: CardData? = null,
     @SerializedName("options") val options: List<TicketOption>? = null,
+    @SerializedName("screen") val screen: MethodSelectionScreenResponse? = null,
 )
 
 internal data class CardData(
@@ -91,4 +92,28 @@ internal data class TicketOption(
 internal data class PaymentBrickFooter(
     @SerializedName("total_label") val totalLabel: String,
     @SerializedName("total_amount") val totalAmount: String,
+)
+
+internal data class MethodSelectionScreenResponse(
+    @SerializedName("header_title") val headerTitle: String,
+    @SerializedName("selection_type") val selectionType: String,
+    @SerializedName("footer") val footer: MethodSelectionScreenFooterResponse,
+    @SerializedName("options") val options: List<MethodSelectionOptionResponse>,
+)
+
+internal data class MethodSelectionScreenFooterResponse(
+    @SerializedName("total_label") val totalLabel: String,
+    @SerializedName("total_amount") val totalAmount: String,
+    @SerializedName("button") val button: MethodSelectionScreenButtonResponse? = null,
+)
+
+internal data class MethodSelectionScreenButtonResponse(
+    @SerializedName("label") val label: String,
+)
+
+internal data class MethodSelectionOptionResponse(
+    @SerializedName("id") val id: String,
+    @SerializedName("name") val name: String,
+    @SerializedName("subtitle") val subtitle: String,
+    @SerializedName("icon_url") val iconUrl: String,
 )
