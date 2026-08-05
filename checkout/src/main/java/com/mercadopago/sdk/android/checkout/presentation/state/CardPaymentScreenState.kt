@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19
 import com.mercadopago.sdk.android.checkout.domain.extensions.CARD_LENGTH_19_MASK
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -122,7 +123,7 @@ internal data class InstallmentsState(
     val title: String = "",
     val totalLabel: String = "",
     val buttonLabel: String = "",
-    val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+    val displayType: SelectionDisplayType = SelectionDisplayType.RadioButton,
 )
 
 internal data class MessageError(
