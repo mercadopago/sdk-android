@@ -21,6 +21,7 @@ internal data class PaymentMethod(
     @SerializedName("icon_url") val iconUrl: String? = null,
     @SerializedName("card_data") val cardData: CardData? = null,
     @SerializedName("options") val options: List<TicketOption>? = null,
+    @SerializedName("screen") val screen: MethodSelectionScreenResponse? = null,
 )
 
 internal data class CardData(

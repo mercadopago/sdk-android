@@ -18,4 +18,10 @@ internal sealed interface CheckoutDestination {
 
     @Serializable
     data object PaymentBrick : CheckoutDestination
+
+    @Serializable
+    data object SecurityCode : CheckoutDestination
+
+    @Serializable
+    data object OfflineMethodSelector : CheckoutDestination
 }

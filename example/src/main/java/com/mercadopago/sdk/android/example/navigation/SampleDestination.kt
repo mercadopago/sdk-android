@@ -18,10 +18,7 @@ internal sealed interface SampleDestination {
     object Checkout : SampleDestination
 
     @Serializable
-    object CardTransaction : SampleDestination
-
-    @Serializable
-    object Payment : SampleDestination
+    data class CheckoutFlow(val type: String) : SampleDestination
 }
 
 internal fun SampleDestination.isRoute(route: String?): Boolean {

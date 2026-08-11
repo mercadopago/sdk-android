@@ -11,4 +11,8 @@ internal data class SecurityCodeScreenConfig(
     val cardTitle: String,
     val cardDescription: String? = null,
     val cardImageUrl: String? = null,
+    // Analytics fields — sourced from CardDataOutput
+    val paymentMethodId: String = "",
+    val paymentTypeId: String = "",
+    val issuerId: String = "",
 )

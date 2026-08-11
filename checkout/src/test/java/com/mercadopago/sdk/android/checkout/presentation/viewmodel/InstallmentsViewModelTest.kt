@@ -4,8 +4,8 @@ import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import io.mockk.mockk
 import io.mockk.verify
@@ -40,7 +40,7 @@ internal class InstallmentsViewModelTest {
     )
 
     private fun makeData(
-        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+        displayType: SelectionDisplayType = SelectionDisplayType.RadioButton,
     ) = MPInstallmentData(
         quotas = quotas,
         display = MPInstallmentData.InstallmentDisplay(
@@ -82,7 +82,7 @@ internal class InstallmentsViewModelTest {
 
     @Test
     fun `Chevron mode does not pre-select`() = runTest {
-        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
+        val viewModel = makeViewModel(makeData(SelectionDisplayType.Chevron))
 
         assertFalse(viewModel.viewState.value.items.any { it.isSelected })
     }
@@ -100,7 +100,7 @@ internal class InstallmentsViewModelTest {
 
     @Test
     fun `onInstallmentSelected ignored in Chevron mode keeps no selection`() = runTest {
-        val viewModel = makeViewModel(makeData(InstallmentsDisplayType.Chevron))
+        val viewModel = makeViewModel(makeData(SelectionDisplayType.Chevron))
 
         viewModel.onInstallmentSelected(installment = 3)
 
@@ -130,7 +130,7 @@ internal class InstallmentsViewModelTest {
     fun `Chevron onInstallmentSelected tracks submit`() = runTest {
         val tracker = mockk<InstallmentsAnalyticsTracker>(relaxed = true)
         val viewModel = makeViewModel(
-            installmentData = makeData(InstallmentsDisplayType.Chevron),
+            installmentData = makeData(SelectionDisplayType.Chevron),
             tracker = tracker,
         )
 

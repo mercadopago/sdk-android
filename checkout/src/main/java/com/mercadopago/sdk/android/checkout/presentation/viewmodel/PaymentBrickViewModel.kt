@@ -8,11 +8,15 @@ import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHold
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.extensions.fold
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickFooterOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentMethodOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeState
+import com.mercadopago.sdk.android.checkout.domain.model.isTicket
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchMethodSelectionScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetSecurityCodeScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -30,11 +34,13 @@ import kotlinx.coroutines.launch
 
 private const val DEFAULT_INSTALLMENTS = 1
 
+@Suppress("TooManyFunctions")
 internal class PaymentBrickViewModel(
     private val checkoutConfiguration: CheckoutConfiguration?,
     private val fetchInitializationUseCase: FetchPaymentBrickInitializationUseCase,
     private val processOrderUseCase: ProcessOrderUseCase,
     private val getSecurityCodeScreenUseCase: GetSecurityCodeScreenUseCase,
+    private val fetchMethodSelectionScreenUseCase: FetchMethodSelectionScreenUseCase,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(PaymentBrickScreenState(isLoading = true))
     val viewState: StateFlow<PaymentBrickScreenState> = _viewState.asStateFlow()
@@ -112,26 +118,46 @@ internal class PaymentBrickViewModel(
         if (cardData != null) {
             val result = getSecurityCodeScreenUseCase(cardData.securityCode)
             if (result != null) {
-                val footer = initializationOutput?.footer
-                val config = SecurityCodeScreenConfig(
-                    title = result.first,
-                    securityCodeState = result.second,
-                    footerState = FooterState(
-                        title = footer?.totalLabel.orEmpty(),
-                        subtitle = footer?.totalAmount,
-                        buttonLabel = cardData.securityCode.screen?.buttonLabel,
-                        isVisible = true,
-                    ),
-                    cardId = cardData.id,
-                    cardTitle = method.title,
-                    cardDescription = method.subtitle,
-                    cardImageUrl = method.iconUrl,
+                val config = method.toSecurityCodeScreenConfig(
+                    footer = initializationOutput?.footer,
+                    result = result,
                 )
                 _viewEvent.value = PaymentBrickViewEvent.OnSecurityCodeRequired(config)
                 return
             }
         }
+        if (method?.isTicket == true) {
+            val screenData = fetchMethodSelectionScreenUseCase(method)
+            if (screenData != null) {
+                _viewEvent.value = PaymentBrickViewEvent.OnOfflineMethodSelected(screenData)
+                return
+            }
+        }
         _viewEvent.value = PaymentBrickViewEvent.OnOptionSelected(optionId)
+    }
+
+    internal fun processOrder(
+        params: ProcessOrderParams,
+    ) {
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            processOrderUseCase(params).fold(
+                onSuccess = { orderOutput ->
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                    val paymentData = MPPaymentData.Payment(
+                        orderId = orderOutput.id,
+                        orderStatus = orderOutput.status,
+                        paymentMethodId = params.paymentMethodId,
+                        paymentTypeId = params.paymentMethodType,
+                    )
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                },
+                onError = { error ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                },
+            )
+        }
     }
 
     fun onViewEventConsumed() {
@@ -148,6 +174,47 @@ internal class PaymentBrickViewModel(
         cancelledPaymentContextUseCase.markScreenPresented(screen)
     }
 
+    fun processPaymentMethodWithToken(
+        cardId: String,
+        token: String,
+    ) {
+        val method = findMethodByCardId(cardId) ?: return
+        val paymentType = checkoutConfiguration?.checkoutType as? MPCheckoutType.Payment ?: return
+        viewModelScope.launch {
+            _viewState.value = _viewState.value.copy(isLoading = true)
+            processOrderUseCase(
+                ProcessOrderParams(
+                    orderId = paymentType.order.orderId,
+                    clientToken = paymentType.order.clientToken,
+                    amount = "",
+                    paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                    paymentMethodType = method.cardData?.paymentTypeId.orEmpty(),
+                    token = token,
+                    installments = DEFAULT_INSTALLMENTS,
+                ),
+            ).fold(
+                onSuccess = { orderOutput ->
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                    val paymentData = MPPaymentData.Payment(
+                        orderId = orderOutput.id,
+                        orderStatus = orderOutput.status,
+                        paymentMethodId = method.cardData?.paymentMethodId.orEmpty(),
+                        paymentTypeId = method.cardData?.paymentTypeId.orEmpty(),
+                    )
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
+                },
+                onError = { error ->
+                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                    _viewState.value = _viewState.value.copy(isLoading = false)
+                },
+            )
+        }
+    }
+
+    fun onTokenError() {
+        _viewState.value = _viewState.value.copy(isLoading = false)
+    }
+
     private fun findMethodByOptionId(
         optionId: String,
     ): PaymentMethodOutput? =
@@ -156,6 +223,37 @@ internal class PaymentBrickViewModel(
             ?.firstOrNull { method ->
                 if (method.cardData != null) method.cardData.id == optionId else method.type == optionId
             }
+
+    private fun findMethodByCardId(
+        cardId: String,
+    ): PaymentMethodOutput? =
+        initializationOutput?.sections
+            ?.flatMap { it.methods }
+            ?.firstOrNull { method -> method.cardData?.id == cardId }
+
+    private fun PaymentMethodOutput.toSecurityCodeScreenConfig(
+        footer: PaymentBrickFooterOutput?,
+        result: Pair<String, SecurityCodeState>,
+    ): SecurityCodeScreenConfig {
+        val cardData = requireNotNull(cardData)
+        return SecurityCodeScreenConfig(
+            title = result.first,
+            securityCodeState = result.second,
+            footerState = FooterState(
+                title = footer?.totalLabel.orEmpty(),
+                subtitle = footer?.totalAmount,
+                buttonLabel = cardData.securityCode.screen?.buttonLabel,
+                isVisible = true,
+            ),
+            cardId = cardData.id,
+            cardTitle = title,
+            cardDescription = subtitle,
+            cardImageUrl = iconUrl,
+            paymentMethodId = cardData.paymentMethodId,
+            paymentTypeId = cardData.paymentTypeId,
+            issuerId = cardData.issuerId.toString(),
+        )
+    }
 
     private fun CheckoutConfiguration.buildInitializationParams(): FetchPaymentBrickInitializationParams? {
         val paymentType = checkoutType as? MPCheckoutType.Payment ?: return null

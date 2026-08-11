@@ -8,6 +8,9 @@ import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutR
 import com.mercadopago.sdk.android.checkout.domain.model.CardDataOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionOption
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenFooter
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickFooterOutput
 import com.mercadopago.sdk.android.checkout.domain.model.PaymentBrickInitializationOutput
@@ -17,7 +20,9 @@ import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeFieldOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeOutput
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeScreenOutput
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchMethodSelectionScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetSecurityCodeScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
@@ -72,12 +77,14 @@ internal class PaymentBrickViewModelTest {
 
     private fun viewModel(
         config: CheckoutConfiguration? = paymentConfig(),
+        fetchMethodSelectionScreenUseCase: FetchMethodSelectionScreenUseCase = FetchMethodSelectionScreenUseCase(),
     ) =
         PaymentBrickViewModel(
             checkoutConfiguration = config,
             fetchInitializationUseCase = fetchUseCase,
             processOrderUseCase = processUseCase,
             getSecurityCodeScreenUseCase = GetSecurityCodeScreenUseCase(),
+            fetchMethodSelectionScreenUseCase = fetchMethodSelectionScreenUseCase,
         )
 
     private fun savedCardWithCvuMethod(
@@ -177,7 +184,14 @@ internal class PaymentBrickViewModelTest {
 
     @Test
     fun `given null checkoutConfiguration then isLoading is false and no fetch is called`() = runTest {
-        val vm = PaymentBrickViewModel(null, fetchUseCase, processUseCase, GetSecurityCodeScreenUseCase())
+        val vm =
+            PaymentBrickViewModel(
+                null,
+                fetchUseCase,
+                processUseCase,
+                GetSecurityCodeScreenUseCase(),
+                FetchMethodSelectionScreenUseCase(),
+            )
 
         assertEquals(false, vm.viewState.value.isLoading)
         coVerify(exactly = 0) { fetchUseCase(any()) }
@@ -484,11 +498,43 @@ internal class PaymentBrickViewModelTest {
     fun `given card requiring CVV but initialization not loaded yet then emits OnOptionSelected`() = runTest {
         coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(emptyList()))
         val vm = viewModel()
-        // Do NOT advance - initialization not loaded
 
         vm.onOptionSelected("CVV_CARD")
 
         assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
         assertEquals("CVV_CARD", (vm.viewEvent.value as PaymentBrickViewEvent.OnOptionSelected).optionId)
+    }
+
+    @Test
+    fun `given ticket method with screen when onOptionSelected then emits OnOfflineMethodSelected`() = runTest {
+        val screenData = MethodSelectionScreenData(
+            headerTitle = "Escolha o boleto",
+            selectionType = SelectionDisplayType.Chevron,
+            footer = MethodSelectionScreenFooter(totalLabel = "Total", totalAmount = "R$ 100"),
+            options = listOf(
+                MethodSelectionOption(id = "boleto", name = "Boleto", subtitle = "3 dias", iconUrl = "url"),
+            ),
+        )
+        val ticketMethod = PaymentMethodOutput(type = "ticket", title = "Boleto", screen = screenData)
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(ticketMethod)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("ticket")
+
+        assertIs<PaymentBrickViewEvent.OnOfflineMethodSelected>(vm.viewEvent.value)
+        assertEquals(screenData, (vm.viewEvent.value as PaymentBrickViewEvent.OnOfflineMethodSelected).screenData)
+    }
+
+    @Test
+    fun `given ticket method without screen when onOptionSelected then emits OnOptionSelected`() = runTest {
+        val ticketMethod = PaymentMethodOutput(type = "ticket", title = "Boleto", screen = null)
+        coEvery { fetchUseCase(any()) } returns Result.Success(minimalOutput(listOf(ticketMethod)))
+        val vm = viewModel()
+        advanceUntilIdle()
+
+        vm.onOptionSelected("ticket")
+
+        assertIs<PaymentBrickViewEvent.OnOptionSelected>(vm.viewEvent.value)
     }
 }
