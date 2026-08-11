@@ -20,13 +20,16 @@ internal fun String.toBrandLabel(): String =
         .filter { it.isNotEmpty() }
         .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
 
+internal fun String.extractAmountDigits(): String =
+    replace(".", "")
+        .replace(",", "")
+        .filter { it.isDigit() }
+
 internal fun String.toAmountParts(
     currencySymbol: String,
 ): AmountParts {
     val numeric = removePrefix(currencySymbol).trim()
     val lastSeparator = numeric.lastIndexOfAny(charArrayOf('.', ','))
-    // Assumes exactly 2 decimal digits, which covers BRL/ARS/MXN/PEN/UYU.
-    // CLP/COP have 0 decimal digits and are handled by the else branch (after.length != 2).
     val hasDecimal = lastSeparator > 0 &&
         lastSeparator < numeric.length - 1 &&
         numeric.substring(lastSeparator + 1).let { after -> after.all(Char::isDigit) && after.length == 2 }

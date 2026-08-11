@@ -9,15 +9,21 @@ import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfigur
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.data.remote.service.OrderService
 import com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickInitializationService
+import com.mercadopago.sdk.android.checkout.data.remote.service.ReviewConfirmService
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
+import com.mercadopago.sdk.android.checkout.domain.model.ReviewConfirmRequest
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
+import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import io.mockk.every
 import io.mockk.mockk
@@ -58,20 +64,24 @@ internal class DataModuleTest {
         unmockkAll()
     }
 
+    private fun createMockContext(): Application {
+        val configuration = mockk<Configuration>(relaxed = true)
+        every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
+        val resources = mockk<android.content.res.Resources>(relaxed = true)
+        every { resources.configuration } returns configuration
+        return mockk<Application>(relaxed = true).also { ctx ->
+            every { ctx.applicationInfo } returns mockk(relaxed = true)
+            every { ctx.applicationContext } returns ctx
+            every { ctx.resources } returns resources
+            every { ctx.createConfigurationContext(any()) } returns ctx
+        }
+    }
+
+    @Suppress("LongMethod")
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideDataModule is called then bindings should be verified`() {
-        val configuration = mockk<Configuration>(relaxed = true)
-        every { anyConstructed<Configuration>().setLocale(any()) } returns Unit
-
-        val resources = mockk<android.content.res.Resources>(relaxed = true)
-        every { resources.configuration } returns configuration
-
-        val context = mockk<Application>(relaxed = true)
-        every { context.applicationInfo } returns mockk(relaxed = true)
-        every { context.applicationContext } returns context
-        every { context.resources } returns resources
-        every { context.createConfigurationContext(any()) } returns context
+        val context = createMockContext()
 
         val checkoutConfiguration = CheckoutConfiguration(
             checkoutType = MPCheckoutType.CardTransaction(
@@ -89,6 +99,7 @@ internal class DataModuleTest {
             single { mockk<CardFormService>(relaxed = true) }
             single { mockk<OrderService>(relaxed = true) }
             single { mockk<PaymentBrickInitializationService>(relaxed = true) }
+            single { mockk<ReviewConfirmService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -104,7 +115,9 @@ internal class DataModuleTest {
                 CardFormService::class,
                 OrderService::class,
                 PaymentBrickInitializationService::class,
+                ReviewConfirmService::class,
                 PaymentBrickInitializationRepository::class,
+                ReviewConfirmRequest::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
@@ -113,6 +126,10 @@ internal class DataModuleTest {
                 String::class,
                 InstallmentsAnalyticsTracker::class,
                 ProcessOrderUseCase::class,
+                SecurityCodeScreenConfig::class,
+                CoreMethods::class,
+                SecurityCodeVerifier::class,
+                MethodSelectionScreenData::class,
             ),
         )
 
@@ -122,6 +139,9 @@ internal class DataModuleTest {
             withInstance<MPInstallmentData>(mockk(relaxed = true))
             withInstance<MPPaymentData>(mockk(relaxed = true))
             withInstance<String>("card_form")
+            withInstance<SecurityCodeScreenConfig>(mockk(relaxed = true))
+            withInstance<MethodSelectionScreenData>(mockk(relaxed = true))
+            withInstance<ReviewConfirmRequest>(mockk(relaxed = true))
         }
     }
 }
