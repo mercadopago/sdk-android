@@ -3,18 +3,6 @@ package com.mercadopago.sdk.android.checkout.data.remote.response
 import com.google.gson.annotations.SerializedName
 import java.math.BigDecimal
 
-/**
- * Response of `GET /cho-off/v1/payment_brick/initialization`.
- *
- * Carries everything the SDK needs to render the payment-method selector screen.
- *
- * Fields are mapped with explicit [SerializedName] so the snake_case contract survives R8
- * minification in release builds — the checkout module ships with `isMinifyEnabled = true`,
- * and `proguard-rules.pro` keeps `@SerializedName` fields. See SMFINTECH-32897.
- *
- * Nullability follows the contract presence rules: fields documented as "Sempre" are
- * non-null; "Opcional"/conditional fields are nullable.
- */
 internal data class PaymentBrickInitializationResponse(
     @SerializedName("header_title") val headerTitle: String,
     @SerializedName("sections") val sections: List<PaymentSection>,
@@ -26,13 +14,6 @@ internal data class PaymentSection(
     @SerializedName("methods") val methods: List<PaymentMethod>,
 )
 
-/**
- * A single payment option inside a section.
- *
- * [type] is `saved_card` | `new_card` | `ticket` | `wallet` | `credits`. The optional
- * blocks are mutually exclusive by type: [cardData] only for `saved_card`, [options] only
- * for `ticket`; `new_card` carries neither.
- */
 internal data class PaymentMethod(
     @SerializedName("type") val type: String,
     @SerializedName("title") val title: String,
@@ -40,6 +21,7 @@ internal data class PaymentMethod(
     @SerializedName("icon_url") val iconUrl: String? = null,
     @SerializedName("card_data") val cardData: CardData? = null,
     @SerializedName("options") val options: List<TicketOption>? = null,
+    @SerializedName("screen") val screen: MethodSelectionScreenResponse? = null,
 )
 
 internal data class CardData(
@@ -53,27 +35,30 @@ internal data class CardData(
     @SerializedName("installments") val installments: Installments? = null,
 )
 
-/**
- * CVV configuration for a saved card.
- *
- * [screen] present = SDK shows the CVV screen; absent = SDK skips it
- * (`has_preapproval_scope=true` or `length=0`).
- */
 internal data class SecurityCode(
     @SerializedName("length") val length: Int,
     @SerializedName("screen") val screen: SecurityCodeScreen? = null,
 )
 
 internal data class SecurityCodeScreen(
-    @SerializedName("header_title") val headerTitle: String,
+    @SerializedName("header") val header: SecurityCodeHeader,
     @SerializedName("field") val field: SecurityCodeField,
-    @SerializedName("continue_button_label") val buttonLabel: String,
+    @SerializedName("button") val button: SecurityCodeButton,
+)
+
+internal data class SecurityCodeHeader(
+    @SerializedName("title") val title: String,
 )
 
 internal data class SecurityCodeField(
     @SerializedName("label") val label: String,
     @SerializedName("placeholder") val placeholder: String,
     @SerializedName("helper") val helper: String,
+    @SerializedName("error") val error: String? = null,
+)
+
+internal data class SecurityCodeButton(
+    @SerializedName("label") val label: String,
 )
 
 internal data class Installments(
@@ -95,6 +80,7 @@ internal data class Quota(
     @SerializedName("primary_label") val primaryLabel: String,
     @SerializedName("secondary_label") val secondaryLabel: String,
     @SerializedName("state") val state: String,
+    @SerializedName("accessibility_label") val accessibilityLabel: String? = null,
 )
 
 internal data class TicketOption(

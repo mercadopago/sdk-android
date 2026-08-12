@@ -8,4 +8,5 @@ internal data class ProcessOrderParams(
     val token: String,
     val installments: Int,
     val amount: String,
+    val bin: String? = null,
 )

@@ -126,4 +126,39 @@ internal class StringExtensionsTest {
         assertEquals("1.000,500", parts.integerPart)
         assertEquals("", parts.decimalPart)
     }
+
+    @Test
+    fun `given amount with decimal then extractAmountDigits returns centavos digits`() {
+        assertEquals("10050", "R$ 100,50".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with zero cents then extractAmountDigits returns zero-padded centavos`() {
+        assertEquals("50000", "R$ 500,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with thousands separator then extractAmountDigits strips it`() {
+        assertEquals("123456", "R$ 1.234,56".extractAmountDigits())
+    }
+
+    @Test
+    fun `given large amount with multiple thousands separators then extractAmountDigits returns centavos digits`() {
+        assertEquals("100000000", "R$ 1.000.000,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given dollar sign symbol then extractAmountDigits returns centavos digits`() {
+        assertEquals("20000", "$ 200,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount without decimal digits then extractAmountDigits returns only integer digits`() {
+        assertEquals("500", "R$ 500".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with period as decimal separator then extractAmountDigits returns digits`() {
+        assertEquals("10050", "R$ 100.50".extractAmountDigits())
+    }
 }
