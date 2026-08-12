@@ -9,7 +9,9 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentMethod
 import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentSection
 import com.mercadopago.sdk.android.checkout.data.remote.response.Quota
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCode
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeButton
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeHeader
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeScreen
 import com.mercadopago.sdk.android.checkout.data.remote.response.TicketOption
 import java.math.BigDecimal
@@ -50,13 +52,13 @@ internal class PaymentBrickInitializationResponseMapperTest {
             securityCode = SecurityCode(
                 length = 3,
                 screen = SecurityCodeScreen(
-                    headerTitle = "Ingresá el código de seguridad",
+                    header = SecurityCodeHeader(title = "Ingresá el código de seguridad"),
                     field = SecurityCodeField(
                         label = "Código de seguridad",
                         placeholder = "Ej.: 123",
                         helper = "Está en el reverso de tu tarjeta.",
                     ),
-                    buttonLabel = "Continuar",
+                    button = SecurityCodeButton(label = "Continuar"),
                 ),
             ),
             installments = Installments(
