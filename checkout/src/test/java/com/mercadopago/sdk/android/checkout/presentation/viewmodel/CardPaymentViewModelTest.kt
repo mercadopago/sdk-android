@@ -583,7 +583,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+        assertFalse(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 
     @Test
