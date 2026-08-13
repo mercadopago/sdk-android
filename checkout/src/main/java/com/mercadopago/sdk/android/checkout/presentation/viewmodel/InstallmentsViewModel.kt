@@ -6,9 +6,10 @@ import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toInstallmentsScreenState
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonLoading
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,7 @@ internal class InstallmentsViewModel(
         ?: installmentData.quotas
             .firstOrNull()
             ?.installments
-            ?.takeIf { installmentData.display.displayType == InstallmentsDisplayType.RadioButton }
+            ?.takeIf { installmentData.display.displayType == SelectionDisplayType.RadioButton }
     private val selectedNumber = MutableStateFlow(initialSelection)
     private val buttonLoadingFlow = MutableStateFlow(false)
     private var cancelTracked = false
@@ -47,7 +48,7 @@ internal class InstallmentsViewModel(
     ) { selected, loading ->
         installmentData.copy(selectedInstallment = selected)
             .toInstallmentsScreenState()
-            .run { copy(footerState = footerState.copy(isButtonLoading = loading)) }
+            .run { copy(footerState = footerState.withButtonLoading(loading)) }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
@@ -72,11 +73,11 @@ internal class InstallmentsViewModel(
     ) {
         val quota = installmentData.quotas.firstOrNull { it.installments == installment } ?: return
         when (installmentData.display.displayType) {
-            InstallmentsDisplayType.RadioButton -> {
+            SelectionDisplayType.RadioButton -> {
                 analyticsTracker.trackSelected(installment)
                 selectedNumber.value = installment
             }
-            InstallmentsDisplayType.Chevron -> {
+            SelectionDisplayType.Chevron -> {
                 analyticsTracker.trackSubmit(quota)
                 _viewEvent.value = InstallmentViewEvent.OnSuccess(installment)
             }
@@ -84,7 +85,7 @@ internal class InstallmentsViewModel(
     }
 
     fun onPayClicked() {
-        if (installmentData.display.displayType != InstallmentsDisplayType.RadioButton) return
+        if (installmentData.display.displayType != SelectionDisplayType.RadioButton) return
         val number = selectedNumber.value ?: return
         installmentData.quotas
             .firstOrNull { it.installments == number }

@@ -1,10 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
+
 internal data class InstallmentsScreenState(
     val title: String = "",
     val items: List<InstallmentState> = emptyList(),
     val footerState: FooterState = FooterState(),
-    val displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+    val displayType: SelectionDisplayType = SelectionDisplayType.RadioButton,
 )
 
 internal data class InstallmentState(

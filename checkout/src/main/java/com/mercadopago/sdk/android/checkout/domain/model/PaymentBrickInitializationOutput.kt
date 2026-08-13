@@ -20,6 +20,7 @@ internal data class PaymentMethodOutput(
     val iconUrl: String? = null,
     val cardData: CardDataOutput? = null,
     val options: List<TicketOptionOutput>? = null,
+    val screen: MethodSelectionScreenData? = null,
 )
 
 internal data class CardDataOutput(
@@ -48,6 +49,7 @@ internal data class SecurityCodeFieldOutput(
     val label: String,
     val placeholder: String,
     val helper: String,
+    val error: String? = null,
 )
 
 internal data class InstallmentsOutput(
@@ -69,6 +71,7 @@ internal data class QuotaOutput(
     val primaryLabel: String,
     val secondaryLabel: String,
     val state: String,
+    val accessibilityLabel: String? = null,
 )
 
 internal data class TicketOptionOutput(
