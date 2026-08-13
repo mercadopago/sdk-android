@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mercadopago.sdk.android.checkout.domain.extensions.toAnalyticsErrorType
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.usecase.GenerateTokenWithCardIdUseCase
@@ -107,6 +108,7 @@ internal class SecurityCodeViewModel(
                     )
                 }
                 is Result.Error -> {
+                    analyticsTracker.trackContinueError(result.error.toAnalyticsErrorType())
                     _viewEvent.value = SecurityCodeViewEvent.OnTokenError(error = result.error)
                 }
             }

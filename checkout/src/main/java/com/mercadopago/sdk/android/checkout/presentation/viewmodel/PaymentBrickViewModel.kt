@@ -20,6 +20,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.FetchMethodSelectionS
 import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetSecurityCodeScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
+import com.mercadopago.sdk.android.checkout.presentation.extensions.parseFormattedAmount
 import com.mercadopago.sdk.android.checkout.presentation.mapper.toScreenState
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
@@ -239,12 +240,17 @@ internal class PaymentBrickViewModel(
         return SecurityCodeScreenConfig(
             title = result.first,
             securityCodeState = result.second,
-            footerState = FooterState(
-                title = footer?.totalLabel.orEmpty(),
-                subtitle = footer?.totalAmount,
-                buttonLabel = cardData.securityCode.screen?.buttonLabel,
-                isVisible = true,
-            ),
+            footerState = run {
+                val amount = footer?.totalAmount?.parseFormattedAmount()
+                FooterState(
+                    title = footer?.totalLabel.orEmpty(),
+                    currencySymbol = amount?.currencySymbol.orEmpty(),
+                    amountIntegerPart = amount?.integerPart.orEmpty(),
+                    amountDecimalPart = amount?.decimalPart.orEmpty(),
+                    buttonLabel = cardData.securityCode.screen?.buttonLabel,
+                    isVisible = true,
+                )
+            },
             cardId = cardData.id,
             cardTitle = title,
             cardDescription = subtitle,

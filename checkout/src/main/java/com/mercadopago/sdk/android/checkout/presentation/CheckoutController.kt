@@ -108,6 +108,9 @@ internal fun CheckoutController(
             val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
                 viewModelStoreOwner = graphEntry,
             ) { parametersOf(checkoutConfiguration) }
+            LaunchedEffect(Unit) {
+                paymentBrickViewModel.markScreenPresented(Screen.SECURITY_CODE)
+            }
             SecurityCodeScreenDestination(
                 config = config,
                 onTokenSuccess = { cardId, token ->
@@ -118,8 +121,8 @@ internal fun CheckoutController(
                     navController.popBackStack()
                     paymentBrickViewModel.onTokenError()
                 },
-                onUserCancelled = { context ->
-                    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(context))
+                onUserCancelled = {
+                    navController.popBackStack()
                 },
             )
         }
@@ -254,7 +257,7 @@ private fun SecurityCodeScreenDestination(
     config: SecurityCodeScreenConfig,
     onTokenSuccess: (cardId: String, token: String) -> Unit,
     onTokenError: () -> Unit,
-    onUserCancelled: (com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext.Payment) -> Unit,
+    onUserCancelled: () -> Unit,
 ) {
     val viewModel: SecurityCodeViewModel = koinViewModel { parametersOf(config) }
     val viewEvent by viewModel.viewEvent.collectAsState()
@@ -273,7 +276,7 @@ private fun SecurityCodeScreenDestination(
 
             is SecurityCodeViewEvent.OnUserCancelled -> {
                 viewModel.onViewEventConsumed()
-                onUserCancelled(event.context)
+                onUserCancelled()
             }
 
             null -> Unit

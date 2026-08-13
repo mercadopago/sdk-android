@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
 private const val CVV_PATH = "/cvv"
 private const val CVV_CONTINUE_PATH = "/cvv_continue"
+private const val CVV_CONTINUE_ERROR_PATH = "/cvv_continue_error"
 private const val CVV_BACK_PATH = "/cvv_back"
 
 internal fun metricSecurityCodeView(
@@ -34,11 +35,19 @@ internal fun metricSecurityCodeContinue() =
         data = null,
     )
 
+internal fun metricSecurityCodeContinueError(
+    errorType: String,
+) = Metric(
+    path = "$SDK_NATIVE_PATH$CHECKOUT_PAYMENT_BRICK_PATH$CVV_CONTINUE_ERROR_PATH",
+    type = TrackType.EVENT,
+    data = SecurityCodeErrorEventData(errorType = errorType),
+)
+
 internal fun metricSecurityCodeBack() =
     Metric(
         path = "$SDK_NATIVE_PATH$CHECKOUT_PAYMENT_BRICK_PATH$CVV_BACK_PATH",
         type = TrackType.EVENT,
-        data = null,
+        data = SecurityCodeErrorEventData(errorType = "back_pressed"),
     )
 
 internal data class SecurityCodeViewEventData(
@@ -50,4 +59,9 @@ internal data class SecurityCodeViewEventData(
     val issuerId: String,
     @SerializedName("card_id")
     val cardId: String,
+) : EventData
+
+internal data class SecurityCodeErrorEventData(
+    @SerializedName("error_type")
+    val errorType: String,
 ) : EventData

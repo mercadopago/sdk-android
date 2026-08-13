@@ -59,11 +59,22 @@ internal class SecurityCodeAnalyticsTest {
     }
 
     @Test
-    fun `metricSecurityCodeBack returns EVENT type with cvv_back path and no data`() {
+    fun `metricSecurityCodeBack returns EVENT type with cvv_back path and back_pressed error_type`() {
         val metric = metricSecurityCodeBack()
 
         assertEquals("/checkout_api_native/checkout/payment_brick/cvv_back", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        assertNull(metric.data)
+        val data = assertIs<SecurityCodeErrorEventData>(metric.data)
+        assertEquals("back_pressed", data.errorType)
+    }
+
+    @Test
+    fun `metricSecurityCodeContinueError returns EVENT type with cvv_continue_error path and error_type`() {
+        val metric = metricSecurityCodeContinueError("network_error")
+
+        assertEquals("/checkout_api_native/checkout/payment_brick/cvv_continue_error", metric.path)
+        assertEquals(TrackType.EVENT, metric.type)
+        val data = assertIs<SecurityCodeErrorEventData>(metric.data)
+        assertEquals("network_error", data.errorType)
     }
 }

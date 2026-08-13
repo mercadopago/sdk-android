@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.checkout.analytics.metricSecurityCodeBack
 import com.mercadopago.sdk.android.checkout.analytics.metricSecurityCodeContinue
+import com.mercadopago.sdk.android.checkout.analytics.metricSecurityCodeContinueError
 import com.mercadopago.sdk.android.checkout.analytics.metricSecurityCodeView
 
 /**
@@ -38,6 +39,12 @@ internal class SecurityCodeAnalyticsTracker(
     fun trackContinue() {
         if (isLoading()) return
         MPAnalytics.tryGetInstance()?.trackMetric(metricSecurityCodeContinue())
+    }
+
+    fun trackContinueError(
+        errorType: String,
+    ) {
+        MPAnalytics.tryGetInstance()?.trackMetric(metricSecurityCodeContinueError(errorType))
     }
 
     fun trackBack() {
