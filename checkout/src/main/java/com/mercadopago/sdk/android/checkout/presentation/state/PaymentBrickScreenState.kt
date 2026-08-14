@@ -5,7 +5,6 @@ internal data class PaymentBrickScreenState(
     val sections: List<PaymentSectionState> = emptyList(),
     val footerState: PaymentBrickFooterState? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
 )
 
 internal data class PaymentSectionState(
