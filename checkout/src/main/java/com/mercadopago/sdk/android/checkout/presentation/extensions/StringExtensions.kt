@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
 import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
+import com.mercadopago.sdk.android.components.MPAmountData
 
 internal const val ZERO = "0"
 
@@ -20,13 +21,16 @@ internal fun String.toBrandLabel(): String =
         .filter { it.isNotEmpty() }
         .joinToString(separator = " ") { it.replaceFirstChar(Char::uppercaseChar) }
 
+internal fun String.extractAmountDigits(): String =
+    replace(".", "")
+        .replace(",", "")
+        .filter { it.isDigit() }
+
 internal fun String.toAmountParts(
     currencySymbol: String,
 ): AmountParts {
     val numeric = removePrefix(currencySymbol).trim()
     val lastSeparator = numeric.lastIndexOfAny(charArrayOf('.', ','))
-    // Assumes exactly 2 decimal digits, which covers BRL/ARS/MXN/PEN/UYU.
-    // CLP/COP have 0 decimal digits and are handled by the else branch (after.length != 2).
     val hasDecimal = lastSeparator > 0 &&
         lastSeparator < numeric.length - 1 &&
         numeric.substring(lastSeparator + 1).let { after -> after.all(Char::isDigit) && after.length == 2 }
@@ -40,3 +44,16 @@ internal fun String.toAmountParts(
         AmountParts(currencySymbol = currencySymbol, integerPart = numeric, decimalPart = "")
     }
 }
+
+internal fun String.toAmountParts(): AmountParts {
+    val trimmed = trim()
+    val currencySymbol = trimmed.takeWhile { !it.isDigit() }.trim().ifEmpty { "$" }
+    return toAmountParts(currencySymbol)
+}
+
+internal fun AmountParts.toMPAmountData(): MPAmountData =
+    MPAmountData(
+        currencySymbol = currencySymbol,
+        integerPart = integerPart,
+        decimalPart = decimalPart,
+    )

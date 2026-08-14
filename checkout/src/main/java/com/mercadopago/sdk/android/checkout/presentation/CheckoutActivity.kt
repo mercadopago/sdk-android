@@ -13,6 +13,7 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_SAVE
 import com.mercadopago.sdk.android.checkout.core.model.internal.CARD_TRANSACTION
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.PAYMENT
 import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -66,6 +67,7 @@ internal class CheckoutActivity : ComponentActivity() {
         val checkoutType = when (checkoutConfiguration?.checkoutType) {
             is MPCheckoutType.CardSave -> CARD_SAVE
             is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
+            is MPCheckoutType.Payment -> PAYMENT
             null -> ""
         }
         MPAnalytics.tryGetInstance()?.trackMetric(
