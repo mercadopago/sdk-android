@@ -24,7 +24,6 @@ import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutR
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
@@ -32,6 +31,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
 import com.mercadopago.sdk.android.checkout.presentation.cvv.SecurityCodeScreen
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toPlainAmountString
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
 import com.mercadopago.sdk.android.checkout.presentation.methodselection.MethodSelectionScreenDestination
@@ -179,30 +179,21 @@ internal fun CheckoutController(
                     } else {
                         paymentBrickViewModel.processOrder(
                             ProcessOrderParams(
-                                orderId = checkoutConfiguration?.toCheckoutType()?.let {
-                                    (it as? MPCheckoutType.Payment)?.order?.orderId
-                                }.orEmpty(),
-                                clientToken = checkoutConfiguration?.toCheckoutType()?.let {
-                                    (it as? MPCheckoutType.Payment)?.order?.clientToken
-                                }.orEmpty(),
+                                orderId = (checkoutConfiguration?.checkoutType as? MPCheckoutType.Payment)
+                                    ?.order?.orderId.orEmpty(),
+                                clientToken = (checkoutConfiguration?.checkoutType as? MPCheckoutType.Payment)
+                                    ?.order?.clientToken.orEmpty(),
                                 paymentMethodId = option.id,
                                 paymentMethodType = "ticket",
                                 token = "",
                                 installments = 0,
-                                amount = currentData.footer?.totalAmount.orEmpty(),
+                                amount = currentData.footer?.totalAmount.orEmpty().toPlainAmountString(),
                             ),
                         )
                     }
                 },
                 onBackClick = {
                     navController.popBackStack()
-                    CheckoutCallbackHolder.notify(
-                        MercadoPagoCheckoutResult.UserCancelled(
-                            MPUserCancelledContext.Payment(
-                                screens = listOf(Screen.OFFLINE_METHOD_SELECTOR),
-                            ),
-                        ),
-                    )
                 },
             )
         }
@@ -242,6 +233,7 @@ private fun PaymentBrickScreenDestination(
 
             is PaymentBrickViewEvent.OnOfflineMethodSelected -> {
                 paymentBrickViewModel.onViewEventConsumed()
+                paymentBrickViewModel.markScreenPresented(Screen.OFFLINE_METHOD_SELECTOR)
                 onNavigateToOfflineSelector(event.screenData)
             }
 

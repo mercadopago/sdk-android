@@ -36,6 +36,12 @@ internal fun String.parseFormattedAmount(): AmountParts {
     }
 }
 
+internal fun String.toPlainAmountString(): String {
+    val parts = parseFormattedAmount()
+    val integer = parts.integerPart.filter { it.isDigit() }
+    return if (parts.decimalPart.isNotEmpty()) "$integer.${parts.decimalPart}" else integer
+}
+
 internal fun String.toBrandLabel(): String =
     split('_')
         .filter { it.isNotEmpty() }
