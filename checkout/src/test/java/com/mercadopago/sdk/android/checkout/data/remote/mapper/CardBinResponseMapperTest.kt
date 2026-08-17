@@ -14,7 +14,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.QuotaResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeConfig
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeTranslations
 import com.mercadopago.sdk.android.checkout.data.remote.response.Translations
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals
@@ -275,7 +275,7 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(InstallmentsDisplayType.RadioButton, domain.installmentData.display.displayType)
+        assertEquals(SelectionDisplayType.RadioButton, domain.installmentData.display.displayType)
     }
 
     @Test
@@ -286,14 +286,14 @@ internal class CardBinResponseMapperTest {
 
         val domain = response.toDomain()
 
-        assertEquals(InstallmentsDisplayType.Chevron, domain.installmentData.display.displayType)
+        assertEquals(SelectionDisplayType.Chevron, domain.installmentData.display.displayType)
     }
 
     @Test
     fun `toDomain defaults to RadioButton displayType when installment is null`() {
         val domain = minimalResponse().copy(installment = null).toDomain()
 
-        assertEquals(InstallmentsDisplayType.RadioButton, domain.installmentData.display.displayType)
+        assertEquals(SelectionDisplayType.RadioButton, domain.installmentData.display.displayType)
     }
 
     @Test

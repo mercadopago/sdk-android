@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
+import android.util.Log
 import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
 
 internal const val ZERO = "0"
@@ -14,6 +15,32 @@ internal fun String.isBeingCleared(
 ): Boolean = this.length < previousValue.length
 
 internal fun String?.getOrZero() = this ?: ZERO
+
+internal fun String.parseFormattedAmount(): AmountParts {
+    val firstDigitIndex = indexOfFirst { it.isDigit() }
+    if (firstDigitIndex == -1) {
+        Log.w("StringExtensions", "parseFormattedAmount: no digits found in '$this'")
+        return AmountParts(currencySymbol = "", integerPart = "", decimalPart = "")
+    }
+    val currencySymbol = substring(0, firstDigitIndex).trim()
+    val amountPart = substring(firstDigitIndex)
+    val decimalMatch = Regex("[,.](\\d{2})$").find(amountPart)
+    return if (decimalMatch != null) {
+        AmountParts(
+            currencySymbol = currencySymbol,
+            integerPart = amountPart.substring(0, decimalMatch.range.first),
+            decimalPart = decimalMatch.groupValues[1],
+        )
+    } else {
+        AmountParts(currencySymbol = currencySymbol, integerPart = amountPart, decimalPart = "")
+    }
+}
+
+internal fun String.toPlainAmountString(): String {
+    val parts = parseFormattedAmount()
+    val integer = parts.integerPart.filter { it.isDigit() }
+    return if (parts.decimalPart.isNotEmpty()) "$integer.${parts.decimalPart}" else integer
+}
 
 internal fun String.toBrandLabel(): String =
     split('_')
