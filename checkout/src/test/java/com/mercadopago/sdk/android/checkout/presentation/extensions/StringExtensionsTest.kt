@@ -1,10 +1,14 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
+import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@RunWith(RobolectricTestRunner::class)
 internal class StringExtensionsTest {
     @Test
     fun `given string with all same digits then hasAllSameDigits returns true`() {
@@ -125,5 +129,40 @@ internal class StringExtensionsTest {
         assertEquals("R$", parts.currencySymbol)
         assertEquals("1.000,500", parts.integerPart)
         assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `parseFormattedAmount splits BRL formatted string`() {
+        val result = "R$ 1.096,40".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "R$", integerPart = "1.096", decimalPart = "40"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount splits USD formatted string with dot decimal`() {
+        val result = "US$ 1,096.40".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "US$", integerPart = "1,096", decimalPart = "40"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount returns empty AmountParts when string has no digits`() {
+        val result = "R$".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "", integerPart = "", decimalPart = ""), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount returns empty decimal when no decimal separator`() {
+        val result = "$ 1000".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "$", integerPart = "1000", decimalPart = ""), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount handles symbol without space before digits`() {
+        val result = "R\$1.000,00".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "R\$", integerPart = "1.000", decimalPart = "00"), result)
     }
 }
