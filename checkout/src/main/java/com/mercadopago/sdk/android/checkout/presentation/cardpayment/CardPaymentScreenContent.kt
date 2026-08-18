@@ -35,11 +35,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -216,8 +217,8 @@ internal fun CardPaymentScreenContent(
             CardPaymentFooterButtonOverlay(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 buttonLabel = viewState.footerState.buttonLabel.orEmpty(),
-                enabled = viewState.footerState.isButtonEnabled,
-                isLoading = viewState.footerState.isButtonLoading,
+                enabled = viewState.footerState.buttonState?.enabled ?: false,
+                isLoading = viewState.footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
                 onHeightChanged = { overlayButtonHeightPx = it },
             )
@@ -305,7 +306,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -354,7 +355,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonLabel = "Continuar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -425,7 +426,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = false,
+                    buttonState = ButtonState(enabled = false),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -586,8 +587,8 @@ private fun CardPaymentFooter(
             subtitle = footerState.subtitle,
             button = MPFixedFooterButtonData(
                 text = footerState.buttonLabel.orEmpty(),
-                enabled = footerState.isButtonEnabled,
-                isLoading = footerState.isButtonLoading,
+                enabled = footerState.buttonState?.enabled ?: false,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
             ),
         )

@@ -8,20 +8,33 @@ import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemot
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.CardFormRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSource
 import com.mercadopago.sdk.android.checkout.data.remote.datasource.OrderRemoteDataSourceImpl
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSource
+import com.mercadopago.sdk.android.checkout.data.remote.datasource.PaymentBrickInitializationRemoteDataSourceImpl
 import com.mercadopago.sdk.android.checkout.data.repository.CardFormRepositoryImpl
 import com.mercadopago.sdk.android.checkout.data.repository.OrderRepositoryImpl
+import com.mercadopago.sdk.android.checkout.data.repository.PaymentBrickInitializationRepositoryImpl
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
 import com.mercadopago.sdk.android.checkout.domain.provider.StringProvider
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
 import com.mercadopago.sdk.android.checkout.domain.repository.OrderRepository
+import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchMethodSelectionScreenUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchPaymentBrickInitializationUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GenerateTokenWithCardIdUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
+import com.mercadopago.sdk.android.checkout.domain.usecase.GetSecurityCodeScreenUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
 import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.MethodSelectionViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.SecurityCodeViewModel
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -53,6 +66,27 @@ internal fun provideDataModule() =
         factory<OrderRepository> {
             OrderRepositoryImpl(dataSource = get())
         }
+        factory<PaymentBrickInitializationRemoteDataSource> {
+            PaymentBrickInitializationRemoteDataSourceImpl(service = get())
+        }
+        factory<PaymentBrickInitializationRepository> {
+            PaymentBrickInitializationRepositoryImpl(dataSource = get())
+        }
+        factory {
+            FetchPaymentBrickInitializationUseCase(repository = get())
+        }
+        factory {
+            GetSecurityCodeScreenUseCase()
+        }
+        factory {
+            FetchMethodSelectionScreenUseCase()
+        }
+        viewModel { (screenData: MethodSelectionScreenData) ->
+            MethodSelectionViewModel(screenData = screenData)
+        }
+        factory {
+            GenerateTokenWithCardIdUseCase()
+        }
         factory {
             CardPaymentScreenStateFactory(stringProvider = get())
         }
@@ -64,6 +98,21 @@ internal fun provideDataModule() =
                 generateTokenUseCase = GenerateTokenUseCase(),
                 processOrderUseCase = ProcessOrderUseCase(repository = get()),
                 cardPaymentScreenStateFactory = get(),
+            )
+        }
+        viewModel { (checkoutConfiguration: CheckoutConfiguration?) ->
+            PaymentBrickViewModel(
+                checkoutConfiguration = checkoutConfiguration,
+                fetchInitializationUseCase = get(),
+                processOrderUseCase = ProcessOrderUseCase(repository = get()),
+                getSecurityCodeScreenUseCase = get(),
+                fetchMethodSelectionScreenUseCase = get(),
+            )
+        }
+        viewModel { (config: SecurityCodeScreenConfig) ->
+            SecurityCodeViewModel(
+                config = config,
+                generateTokenUseCase = get(),
             )
         }
         viewModel { params ->

@@ -31,4 +31,14 @@ sealed class MPCheckoutType<out T : MPPaymentData, out C : MPUserCancelledContex
     data class CardTransaction(
         val order: MPOrder,
     ) : MPCheckoutType<MPPaymentData.CardTransaction, MPUserCancelledContext.CardTransaction>()
+
+    /**
+     * PaymentSelection class, used to configure the payment-method selection flow.
+     * On success, delivers [MPPaymentData.Payment].
+     * @param order MPOrder
+     */
+    @Parcelize
+    data class Payment(
+        val order: MPOrder,
+    ) : MPCheckoutType<MPPaymentData.Payment, MPUserCancelledContext.Payment>()
 }
