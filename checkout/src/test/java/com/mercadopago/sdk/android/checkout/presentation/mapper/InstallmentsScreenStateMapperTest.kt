@@ -3,7 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,7 +56,7 @@ internal class InstallmentsScreenStateMapperTest {
                 quota(installments = 2, totalAmount = BigDecimal("1096.40")),
             ),
             selectedInstallment = null,
-            displayType = InstallmentsDisplayType.RadioButton,
+            displayType = SelectionDisplayType.RadioButton,
         ).toInstallmentsScreenState()
 
         assertEquals("1000", state.footerState.amountIntegerPart)
@@ -83,7 +83,7 @@ internal class InstallmentsScreenStateMapperTest {
     fun `footer pay button label is null in Chevron mode`() {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
-            displayType = InstallmentsDisplayType.Chevron,
+            displayType = SelectionDisplayType.Chevron,
             buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
@@ -94,7 +94,7 @@ internal class InstallmentsScreenStateMapperTest {
     fun `footer pay button label present in RadioButton mode`() {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
-            displayType = InstallmentsDisplayType.RadioButton,
+            displayType = SelectionDisplayType.RadioButton,
             buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
@@ -194,7 +194,7 @@ internal class InstallmentsScreenStateMapperTest {
     private fun installmentDataWith(
         quotas: List<Quota>,
         selectedInstallment: Int? = null,
-        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+        displayType: SelectionDisplayType = SelectionDisplayType.RadioButton,
         buttonLabel: String = "",
         currencySymbol: String = "",
     ): MPInstallmentData = MPInstallmentData(
