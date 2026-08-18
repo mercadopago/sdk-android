@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.components.extensions.isGreaterThan
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -36,6 +37,7 @@ data class MPAmountData(
  * Data class representing the button configuration
  *
  * @property text The button label text
+ * @property icon Optional icon to display in the button (e.g., lock icon for secure actions)
  * @property style The button style (default: Loud)
  * @property enabled Whether the button is enabled
  * @property isLoading When true, shows a loading animation inside the button and disables interaction
@@ -43,6 +45,7 @@ data class MPAmountData(
  */
 data class MPFixedFooterButtonData(
     val text: String,
+    val icon: ImageVector? = null,
     val style: MPButtonStyle = MPButtonStyle.Loud,
     val enabled: Boolean = true,
     val isLoading: Boolean = false,
@@ -88,6 +91,7 @@ fun MPFixedFooter(
         button?.let {
             MPButton(
                 text = it.text,
+                icon = it.icon,
                 modifier = Modifier.fillMaxWidth(),
                 style = it.style,
                 enabled = it.enabled,
