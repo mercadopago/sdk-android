@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.mercadopago.sdk.android.example.navigation.SampleDestination
-import com.mercadopago.sdk.android.example.presentation.checkout.CheckoutExampleScreen
+import com.mercadopago.sdk.android.example.presentation.checkout.CheckoutFlowScreen
+import com.mercadopago.sdk.android.example.presentation.checkout.CheckoutMenuScreen
 import com.mercadopago.sdk.android.example.presentation.coremethods.PaymentExampleScreen
 import com.mercadopago.sdk.android.example.presentation.features.SampleFeaturesScreen
 import com.mercadopago.sdk.android.example.presentation.sdkinitializer.SdkInitializerScreen
@@ -39,7 +41,15 @@ internal fun SampleNavHost(
             PaymentExampleScreen()
         }
         composable<SampleDestination.Checkout> {
-            CheckoutExampleScreen()
+            CheckoutMenuScreen(
+                onFlowSelected = { type ->
+                    navController.navigate(SampleDestination.CheckoutFlow(type))
+                },
+            )
+        }
+        composable<SampleDestination.CheckoutFlow> { backStackEntry ->
+            val flow = backStackEntry.toRoute<SampleDestination.CheckoutFlow>()
+            CheckoutFlowScreen(type = flow.type)
         }
     }
 }
