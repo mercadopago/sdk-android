@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
+private const val BEARER_PREFIX = "Bearer "
+
 internal class PaymentBrickInitializationRemoteDataSourceImpl(
     private val service: PaymentBrickInitializationService,
 ) : PaymentBrickInitializationRemoteDataSource {
@@ -15,8 +17,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImpl(
     ): Result<PaymentBrickInitializationResponse, ResponseError> =
         service.fetch(
             orderId = params.orderId,
-            totalAmount = params.totalAmount,
-            customerId = params.customerId,
-            cardIds = params.cardIds,
+            screens = params.screens,
+            clientToken = "$BEARER_PREFIX${params.clientToken}",
         ).toInternalResponse()
 }
