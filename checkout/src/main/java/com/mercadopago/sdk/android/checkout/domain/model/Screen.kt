@@ -10,6 +10,18 @@ enum class Screen {
     /** The installments selection screen. */
     INSTALLMENTS,
 
+    /** The payment method selector screen (PaymentBrick entry). */
+    PAYMENT_METHOD_SELECTOR,
+
     /** The new card form screen. */
     CARD_FORM,
+
+    /** The offline payment method selector screen (boleto, ticket, etc.). */
+    OFFLINE_METHOD_SELECTOR,
+
+    /** The security code (CVV) screen shown for a saved card before tokenization. */
+    SECURITY_CODE,
+
+    /** The review and confirm screen shown before payment processing. */
+    REVIEW_AND_CONFIRM,
 }

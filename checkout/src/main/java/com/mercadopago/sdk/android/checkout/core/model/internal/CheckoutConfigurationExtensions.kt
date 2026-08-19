@@ -5,15 +5,20 @@ import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
+import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import java.math.BigDecimal
 
 internal const val CARD_TRANSACTION = "card_transaction"
 internal const val CARD_SAVE = "card_save"
+internal const val PAYMENT = "payment"
 private const val UNSUPPORTED = "Unsupported checkout type"
 
 internal fun CheckoutConfiguration?.toCheckoutType(): String =
     when (this?.checkoutType) {
         is MPCheckoutType.CardSave -> CARD_SAVE
         is MPCheckoutType.CardTransaction -> CARD_TRANSACTION
+        is MPCheckoutType.Payment -> PAYMENT
         null -> ""
     }
 
@@ -26,6 +31,16 @@ internal fun CheckoutConfiguration?.asCardTransaction(): MPCheckoutType.CardTran
 
 internal fun CheckoutConfiguration?.isCardTransaction(): Boolean = this?.checkoutType is MPCheckoutType.CardTransaction
 
+internal fun CheckoutConfiguration?.startsWithPayment(): Boolean = this?.checkoutType is MPCheckoutType.Payment
+
+internal fun CheckoutConfiguration?.hasReviewAndConfirm(): Boolean =
+    this?.screenConfigs?.any { it is ScreenConfig.ReviewAndConfirm } == true
+
+internal fun CheckoutConfiguration.buildScreensParam(): String? {
+    val hasReviewAndConfirm = screenConfigs.any { it is ScreenConfig.ReviewAndConfirm }
+    return if (hasReviewAndConfirm) "review_and_confirm" else null
+}
+
 internal fun MPCheckoutType<*, *>?.unsupportedTypeError(
     localized: ErrorLocalized,
 ): MercadoPagoCheckoutError.ConfigurationError =
@@ -33,4 +48,21 @@ internal fun MPCheckoutType<*, *>?.unsupportedTypeError(
         code = ErrorCode.INTEGRATION_ERROR,
         messageError = "$UNSUPPORTED: $this",
         localized = localized.name,
+    )
+
+internal fun CheckoutConfiguration?.toProcessOrderParams(
+    screenState: CardPaymentScreenState,
+    installment: Int,
+    token: String,
+    amount: BigDecimal,
+): ProcessOrderParams =
+    ProcessOrderParams(
+        orderId = this.getOrder()?.orderId.orEmpty(),
+        clientToken = this.getOrder()?.clientToken.orEmpty(),
+        paymentMethodId = screenState.paymentState.paymentMethodId.orEmpty(),
+        paymentMethodType = screenState.paymentState.paymentTypeId.orEmpty(),
+        token = token,
+        installments = installment,
+        amount = amount.toPlainString(),
+        bin = screenState.cardNumberState.cardBin.orEmpty(),
     )
