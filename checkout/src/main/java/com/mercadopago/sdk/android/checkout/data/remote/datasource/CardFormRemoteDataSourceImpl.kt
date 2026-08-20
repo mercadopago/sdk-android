@@ -15,11 +15,13 @@ internal class CardFormRemoteDataSourceImpl(
         orderId: String?,
         clientToken: String?,
         checkoutType: String,
+        screens: String?,
     ): Result<CardFormInitResponse, ResponseError> =
         service.initialization(
             authorization = clientToken?.let { "Bearer $it" },
             orderId = orderId,
             checkoutType = checkoutType,
+            screens = screens,
         ).toInternalResponse()
 
     override suspend fun getCardBin(
