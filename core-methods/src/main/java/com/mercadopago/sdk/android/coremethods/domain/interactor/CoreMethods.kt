@@ -575,6 +575,55 @@ class CoreMethods internal constructor(
     }
 
     /**
+     * Generates a card token for a saved card using only the security code.
+     * Intended for the CVV re-entry flow where the card data is already on file and only the
+     * security code needs to be re-confirmed. No expiration date or buyer identification required.
+     *
+     * @param cardId [String] The id of the saved card
+     * @param securityCodeState [PCIFieldState] containing the card security code
+     * @return [Result]: On Success [CardToken], On Error [ResultError]
+     */
+    suspend fun generateCardTokenWithSecurityCode(
+        cardId: String,
+        securityCodeState: PCIFieldState,
+    ): Result<CardToken, ResultError> {
+        val result = koin.get<GenerateCardIdTokenUseCase>().invoke(
+            cardId = cardId,
+            securityCode = securityCodeState.input,
+            expirationDate = null,
+            buyerIdentification = null,
+        )
+        when (result) {
+            is Result.Error -> {
+                when (result.error) {
+                    is ResultError.Request -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                                identityType = null,
+                            ),
+                        )
+                    }
+                    is ResultError.Validation -> {
+                        MPAnalytics.getInstance().trackMetric(
+                            metricGenerateCardTokenCallError(
+                                error = result.error.message,
+                                identityType = null,
+                            ),
+                        )
+                    }
+                }
+            }
+            is Result.Success -> {
+                MPAnalytics.getInstance().trackMetric(
+                    metricGenerateCardTokenCallSuccess(isSavedCard = true),
+                )
+            }
+        }
+        return result
+    }
+
+    /**
      * Companion object for the [CoreMethods] class.
      */
     companion object {

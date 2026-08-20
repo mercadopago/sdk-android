@@ -14,23 +14,45 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
+import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.ScreenConfig
+import com.mercadopago.sdk.android.checkout.core.model.internal.buildProcessOrderParamsForMethodSelection
 import com.mercadopago.sdk.android.checkout.core.model.internal.getOrderId
+import com.mercadopago.sdk.android.checkout.core.model.internal.isCardTransaction
+import com.mercadopago.sdk.android.checkout.core.model.internal.startsWithPayment
 import com.mercadopago.sdk.android.checkout.core.model.internal.toCheckoutType
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.presentation.cardpayment.CardPaymentScreen
+import com.mercadopago.sdk.android.checkout.presentation.cvv.SecurityCodeScreen
+import com.mercadopago.sdk.android.checkout.presentation.extensions.toPlainAmountString
 import com.mercadopago.sdk.android.checkout.presentation.installments.InstallmentsScreen
+import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
+import com.mercadopago.sdk.android.checkout.presentation.methodselection.MethodSelectionScreenDestination
+import com.mercadopago.sdk.android.checkout.presentation.paymentbrick.PaymentBrickScreen
+import com.mercadopago.sdk.android.checkout.presentation.reviewconfirm.ReviewConfirmScreen
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.CheckoutDestination
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.ReviewConfirmViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.ReviewConfirmViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.SecurityCodeViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -42,14 +64,81 @@ internal fun CheckoutController(
 ) {
     var pendingInstallmentData by remember { mutableStateOf<MPInstallmentData?>(null) }
     var pendingPaymentData by remember { mutableStateOf<MPPaymentData?>(null) }
+    var pendingSecurityCodeConfig by remember { mutableStateOf<SecurityCodeScreenConfig?>(null) }
+    var pendingReviewConfirmParams by remember { mutableStateOf<ProcessOrderParams?>(null) }
+    var pendingMethodSelectionData by remember { mutableStateOf<MethodSelectionScreenData?>(null) }
+
+    val startDestination: CheckoutDestination =
+        if (checkoutConfiguration.startsWithPayment()) {
+            CheckoutDestination.Payment
+        } else {
+            CheckoutDestination.Form
+        }
 
     NavHost(
         navController = navController,
-        startDestination = CheckoutDestination.Form,
+        startDestination = startDestination,
         route = CheckoutGraph::class,
         enterTransition = { slideInHorizontally { it } },
         exitTransition = { slideOutHorizontally { it } },
     ) {
+        composable<CheckoutDestination.Loading> {
+            LoadingScreen()
+            LaunchedEffect(Unit) {
+                navController.navigate(CheckoutDestination.PaymentBrick) {
+                    popUpTo(CheckoutDestination.Loading) { inclusive = true }
+                }
+            }
+        }
+
+        composable<CheckoutDestination.Payment> { backStackEntry ->
+            val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
+            val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
+                viewModelStoreOwner = graphEntry,
+            ) { parametersOf(checkoutConfiguration) }
+            PaymentBrickScreenDestination(
+                paymentBrickViewModel = paymentBrickViewModel,
+                onNavigateToForm = { navController.navigate(CheckoutDestination.Form) },
+                onNavigateToSecurityCode = { config ->
+                    pendingSecurityCodeConfig = config
+                    navController.navigate(CheckoutDestination.SecurityCode)
+                },
+                onNavigateToReviewConfirm = { params ->
+                    pendingReviewConfirmParams = params
+                    navController.navigate(CheckoutDestination.ReviewConfirm)
+                },
+                onNavigateToOfflineSelector = { screenData ->
+                    pendingMethodSelectionData = screenData
+                    navController.navigate(CheckoutDestination.OfflineMethodSelector)
+                },
+            )
+        }
+
+        composable<CheckoutDestination.SecurityCode> { backStackEntry ->
+            val config = pendingSecurityCodeConfig ?: return@composable
+            val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
+            val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
+                viewModelStoreOwner = graphEntry,
+            ) { parametersOf(checkoutConfiguration) }
+            LaunchedEffect(Unit) {
+                paymentBrickViewModel.markScreenPresented(Screen.SECURITY_CODE)
+            }
+            SecurityCodeScreenDestination(
+                config = config,
+                onTokenSuccess = { cardId, token ->
+                    navController.popBackStack()
+                    paymentBrickViewModel.processOrder(cardId = cardId, token = token)
+                },
+                onTokenError = {
+                    navController.popBackStack()
+                    paymentBrickViewModel.onTokenError()
+                },
+                onUserCancelled = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
         composable<CheckoutDestination.Form> { backStackEntry ->
             val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
             val cardPaymentViewModel: CardPaymentViewModel = koinViewModel(
@@ -62,6 +151,38 @@ internal fun CheckoutController(
                     pendingPaymentData = paymentData
                     navController.navigate(CheckoutDestination.Installment)
                 },
+                onNavigateToReviewConfirm = { params ->
+                    pendingReviewConfirmParams = params
+                    navController.navigate(CheckoutDestination.ReviewConfirm)
+                },
+            )
+        }
+
+        composable<CheckoutDestination.ReviewConfirm> {
+            val params = pendingReviewConfirmParams ?: run {
+                navController.popBackStack()
+                return@composable
+            }
+            ReviewConfirmScreenDestination(
+                params = params,
+                checkoutConfiguration = checkoutConfiguration,
+                onBackClick = {
+                    pendingReviewConfirmParams = null
+                    navController.popBackStack()
+                    CheckoutCallbackHolder.notify(
+                        MercadoPagoCheckoutResult.UserCancelled(
+                            MPUserCancelledContext.Payment(screens = listOf(Screen.REVIEW_AND_CONFIRM)),
+                        ),
+                    )
+                },
+                onDismiss = {
+                    pendingReviewConfirmParams = null
+                    navController.popBackStack()
+                },
+                onNavigateBack = {
+                    pendingReviewConfirmParams = null
+                    navController.popBackStack()
+                },
             )
         }
 
@@ -73,6 +194,19 @@ internal fun CheckoutController(
                 viewModelStoreOwner = graphEntry,
             ) { parametersOf(checkoutConfiguration) }
             val cardPaymentViewState by cardPaymentViewModel.viewState.collectAsState()
+            val cardPaymentViewEvent by cardPaymentViewModel.viewEvent.collectAsState()
+
+            LaunchedEffect(cardPaymentViewEvent) {
+                when (val event = cardPaymentViewEvent) {
+                    is CardPaymentViewEvent.OnPaymentConfirmed -> {
+                        cardPaymentViewModel.onViewEventConsumed()
+                        cardPaymentViewModel.markScreenPresented(Screen.CARD_FORM)
+                        pendingReviewConfirmParams = event.params
+                        navController.navigate(CheckoutDestination.ReviewConfirm)
+                    }
+                    else -> Unit
+                }
+            }
 
             InstallmentsScreenDestination(
                 installmentData = installmentData,
@@ -86,13 +220,128 @@ internal fun CheckoutController(
                 onBackClick = { navController.popBackStack() },
             )
         }
+
+        composable<CheckoutDestination.OfflineMethodSelector> { backStackEntry ->
+            val screenData = pendingMethodSelectionData ?: return@composable
+            val graphEntry = remember(backStackEntry) { navController.getBackStackEntry<CheckoutGraph>() }
+            val paymentBrickViewModel: PaymentBrickViewModel = koinViewModel(
+                viewModelStoreOwner = graphEntry,
+            ) { parametersOf(checkoutConfiguration) }
+            MethodSelectionScreenDestination(
+                screenData = screenData,
+                onOptionSelected = { option ->
+                    pendingMethodSelectionData?.let { currentData ->
+                        val totalAmount = currentData.footer?.totalAmount.orEmpty().toPlainAmountString()
+                        checkoutConfiguration.buildProcessOrderParamsForMethodSelection(
+                            option = option,
+                            amount = totalAmount,
+                        )?.let { params ->
+                            if (currentData.selectionType == SelectionDisplayType.Chevron) {
+                                pendingReviewConfirmParams = params
+                                navController.navigate(CheckoutDestination.ReviewConfirm)
+                            } else {
+                                paymentBrickViewModel.processOrder(params)
+                            }
+                        }
+                    }
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+            )
+        }
     }
+}
+
+@Composable
+private fun PaymentBrickScreenDestination(
+    paymentBrickViewModel: PaymentBrickViewModel,
+    onNavigateToForm: () -> Unit,
+    onNavigateToSecurityCode: (SecurityCodeScreenConfig) -> Unit,
+    onNavigateToReviewConfirm: (ProcessOrderParams) -> Unit,
+    onNavigateToOfflineSelector: (MethodSelectionScreenData) -> Unit,
+) {
+    val viewEvent by paymentBrickViewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is PaymentBrickViewEvent.OnOptionSelected -> {
+                onNavigateToForm()
+                paymentBrickViewModel.onViewEventConsumed()
+            }
+
+            is PaymentBrickViewEvent.OnSecurityCodeRequired -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                onNavigateToSecurityCode(event.config)
+            }
+
+            is PaymentBrickViewEvent.OnPaymentReadyForReview -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                onNavigateToReviewConfirm(event.params)
+            }
+
+            is PaymentBrickViewEvent.OnFailure -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
+            }
+
+            is PaymentBrickViewEvent.OnUserCancelled -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+            }
+
+            is PaymentBrickViewEvent.OnOfflineMethodSelected -> {
+                paymentBrickViewModel.onViewEventConsumed()
+                paymentBrickViewModel.markScreenPresented(Screen.OFFLINE_METHOD_SELECTOR)
+                onNavigateToOfflineSelector(event.screenData)
+            }
+
+            null -> Unit
+        }
+    }
+
+    PaymentBrickScreen(viewModel = paymentBrickViewModel)
+}
+
+@Composable
+private fun SecurityCodeScreenDestination(
+    config: SecurityCodeScreenConfig,
+    onTokenSuccess: (cardId: String, token: String) -> Unit,
+    onTokenError: () -> Unit,
+    onUserCancelled: () -> Unit,
+) {
+    val viewModel: SecurityCodeViewModel = koinViewModel { parametersOf(config) }
+    val viewEvent by viewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is SecurityCodeViewEvent.OnTokenSuccess -> {
+                viewModel.onViewEventConsumed()
+                onTokenSuccess(event.cardId, event.token)
+            }
+
+            is SecurityCodeViewEvent.OnTokenError -> {
+                viewModel.onViewEventConsumed()
+                onTokenError()
+            }
+
+            is SecurityCodeViewEvent.OnUserCancelled -> {
+                viewModel.onViewEventConsumed()
+                onUserCancelled()
+            }
+
+            null -> Unit
+        }
+    }
+
+    SecurityCodeScreen(viewModel = viewModel)
 }
 
 @Composable
 private fun CardFormScreenDestination(
     cardPaymentViewModel: CardPaymentViewModel,
     onNavigateToInstallments: (MPInstallmentData, MPPaymentData) -> Unit,
+    onNavigateToReviewConfirm: (ProcessOrderParams) -> Unit = {},
 ) {
     val viewEvent by cardPaymentViewModel.viewEvent.collectAsState()
 
@@ -101,6 +350,12 @@ private fun CardFormScreenDestination(
             is CardPaymentViewEvent.OnSuccess -> {
                 cardPaymentViewModel.onViewEventConsumed()
                 handleCardPaymentSuccess(event, cardPaymentViewModel, onNavigateToInstallments)
+            }
+
+            is CardPaymentViewEvent.OnPaymentConfirmed -> {
+                cardPaymentViewModel.onViewEventConsumed()
+                cardPaymentViewModel.markScreenPresented(Screen.CARD_FORM)
+                onNavigateToReviewConfirm(event.params)
             }
 
             is CardPaymentViewEvent.OnFailure -> {
@@ -160,6 +415,93 @@ private fun handleCardPaymentSuccess(
     }
 }
 
+@Composable
+private fun ReviewConfirmScreenDestination(
+    params: ProcessOrderParams,
+    checkoutConfiguration: CheckoutConfiguration?,
+    onBackClick: () -> Unit,
+    onDismiss: () -> Unit,
+    onNavigateBack: () -> Unit,
+) {
+    val viewModel: ReviewConfirmViewModel = koinViewModel {
+        parametersOf(params, checkoutConfiguration)
+    }
+    val viewEvent by viewModel.viewEvent.collectAsState()
+
+    LaunchedEffect(viewEvent) {
+        when (val event = viewEvent) {
+            is ReviewConfirmViewEvent.OnPaymentSuccess -> {
+                viewModel.onViewEventConsumed()
+                onDismiss()
+                val payment = event.toPaymentData(params, checkoutConfiguration.isCardTransaction())
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(payment))
+            }
+            is ReviewConfirmViewEvent.OnPaymentError -> {
+                viewModel.onViewEventConsumed()
+                onDismiss()
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
+            }
+            is ReviewConfirmViewEvent.OnModifyPaymentMethod -> {
+                viewModel.onViewEventConsumed()
+                when (checkoutConfiguration?.checkoutType) {
+                    is MPCheckoutType.CardTransaction -> {
+                        onNavigateBack()
+                        CheckoutCallbackHolder.notify(
+                            MercadoPagoCheckoutResult.UserCancelled(
+                                MPUserCancelledContext.Payment(screens = listOf(Screen.REVIEW_AND_CONFIRM)),
+                            ),
+                        )
+                    }
+                    is MPCheckoutType.Payment -> {
+                        onDismiss()
+                    }
+                    else -> onDismiss()
+                }
+            }
+            is ReviewConfirmViewEvent.OnModifyEmail -> {
+                viewModel.onViewEventConsumed()
+                checkoutConfiguration?.screenConfigs
+                    ?.filterIsInstance<ScreenConfig.ReviewAndConfirm>()
+                    ?.firstOrNull()
+                    ?.onEmailChangeRequested
+                    ?.invoke()
+                onDismiss()
+            }
+            is ReviewConfirmViewEvent.OnUserCancelled -> {
+                viewModel.onViewEventConsumed()
+                onDismiss()
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.UserCancelled(event.context))
+            }
+            null -> Unit
+        }
+    }
+
+    ReviewConfirmScreen(
+        viewModel = viewModel,
+        onBackClick = onBackClick,
+    )
+}
+
+private fun ReviewConfirmViewEvent.OnPaymentSuccess.toPaymentData(
+    params: ProcessOrderParams,
+    isCardTransaction: Boolean,
+): MPPaymentData =
+    if (isCardTransaction) {
+        MPPaymentData.CardTransaction(
+            orderId = orderId,
+            orderStatus = orderStatus,
+            paymentMethodId = params.paymentMethodId,
+            paymentTypeId = params.paymentMethodType,
+        )
+    } else {
+        MPPaymentData.Payment(
+            orderId = orderId,
+            orderStatus = orderStatus,
+            paymentMethodId = params.paymentMethodId,
+            paymentTypeId = params.paymentMethodType,
+        )
+    }
+
 @Suppress("LongParameterList")
 @Composable
 private fun InstallmentsScreenDestination(
@@ -185,6 +527,7 @@ private fun InstallmentsScreenDestination(
                     is MPPaymentData.CardSave -> {
                         CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Success(paymentData))
                     }
+                    is MPPaymentData.Payment -> onInstallmentConfirmed(event.installment)
                 }
             }
 
