@@ -2,9 +2,11 @@ package com.mercadopago.sdk.android.checkout.core.model.internal
 
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CheckoutConfigurationExtensionsTest {
@@ -26,6 +28,13 @@ internal class CheckoutConfigurationExtensionsTest {
     @Test
     fun `given card transaction when toCheckoutType then returns card_transaction`() {
         assertEquals(CARD_TRANSACTION, configWith(MPCheckoutType.CardTransaction(order)).toCheckoutType())
+    }
+
+    @Test
+    fun `given payment when toCheckoutType then returns payment`() {
+        val checkoutType = MPCheckoutType.Payment(order = order)
+
+        assertEquals(PAYMENT, configWith(checkoutType).toCheckoutType())
     }
 
     @Test
@@ -52,7 +61,59 @@ internal class CheckoutConfigurationExtensionsTest {
     }
 
     @Test
+    fun `given payment when showsInstallments then returns false`() {
+        assertFalse(configWith(MPCheckoutType.Payment(order = order)).isCardTransaction())
+    }
+
+    @Test
     fun `given null configuration when showsInstallments then returns false`() {
         assertFalse(configWith(null).isCardTransaction())
+    }
+
+    @Test
+    fun `given payment when startsWithPayment then returns true`() {
+        assertTrue(configWith(MPCheckoutType.Payment(order = order)).startsWithPayment())
+    }
+
+    @Test
+    fun `given card transaction when startsWithPayment then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardTransaction(order)).startsWithPayment())
+    }
+
+    @Test
+    fun `given card save when startsWithPayment then returns false`() {
+        assertFalse(configWith(MPCheckoutType.CardSave).startsWithPayment())
+    }
+
+    @Test
+    fun `given null configuration when startsWithPayment then returns false`() {
+        assertFalse(configWith(null).startsWithPayment())
+    }
+
+    @Test
+    fun `given payment with sellerInfo when getSellerInfo then returns seller`() {
+        val seller = MPSellerInfo(name = "Adidas Store")
+
+        assertEquals(seller, configWith(MPCheckoutType.Payment(order, sellerInfo = seller)).getSellerInfo())
+    }
+
+    @Test
+    fun `given card transaction with sellerInfo when getSellerInfo then returns seller`() {
+        val seller = MPSellerInfo(name = "Nike Store")
+
+        assertEquals(
+            seller,
+            configWith(MPCheckoutType.CardTransaction(order, sellerInfo = seller)).getSellerInfo(),
+        )
+    }
+
+    @Test
+    fun `given card save when getSellerInfo then returns null`() {
+        assertNull(configWith(MPCheckoutType.CardSave).getSellerInfo())
+    }
+
+    @Test
+    fun `given null configuration when getSellerInfo then returns null`() {
+        assertNull(configWith(null).getSellerInfo())
     }
 }

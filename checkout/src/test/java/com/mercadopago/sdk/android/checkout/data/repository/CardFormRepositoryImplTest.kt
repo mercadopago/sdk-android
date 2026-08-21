@@ -31,6 +31,7 @@ internal class CardFormRepositoryImplTest {
         orderId = "order-123",
         clientToken = "token-abc",
         checkoutType = "card_payment",
+        screens = null,
     )
 
     private val binParams = GetCardBinParams(
@@ -49,6 +50,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         } returns Result.Success(response)
 
@@ -61,7 +63,7 @@ internal class CardFormRepositoryImplTest {
     fun `given dataSource returns error then fetchInitialization returns Result Error`() = runTest {
         val error = ResponseError(code = "404", message = "Not Found", httpStatus = 404)
         coEvery {
-            dataSource.fetchInitialization(any(), any(), any())
+            dataSource.fetchInitialization(any(), any(), any(), any())
         } returns Result.Error(error)
 
         val result = repository.fetchInitialization(initParams)
@@ -72,7 +74,7 @@ internal class CardFormRepositoryImplTest {
     @Test
     fun `given dataSource throws then fetchInitialization returns Result Error`() = runTest {
         coEvery {
-            dataSource.fetchInitialization(any(), any(), any())
+            dataSource.fetchInitialization(any(), any(), any(), any())
         } throws RuntimeException("Network failure")
 
         val result = repository.fetchInitialization(initParams)
@@ -88,6 +90,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         } returns Result.Success(response)
 
@@ -98,6 +101,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         }
     }
