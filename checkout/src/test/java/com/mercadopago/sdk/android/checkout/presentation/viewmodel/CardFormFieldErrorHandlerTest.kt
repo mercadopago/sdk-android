@@ -317,7 +317,7 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertTrue(result.footerState.isButtonEnabled)
+        assertTrue(result.footerState.buttonState?.enabled == true)
     }
 
     @Test
@@ -328,7 +328,7 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertFalse(result.footerState.isButtonEnabled)
+        assertFalse(result.footerState.buttonState?.enabled == true)
     }
 
     @Test

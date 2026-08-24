@@ -18,6 +18,7 @@ internal interface CardFormService {
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("order_id") orderId: String?,
         @Query("checkout_type") checkoutType: String,
+        @Query("screens") screens: String? = null,
     ): Response<CardFormInitResponse>
 
     @Suppress("LongParameterList")
