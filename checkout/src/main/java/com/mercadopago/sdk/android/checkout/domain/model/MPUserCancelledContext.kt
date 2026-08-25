@@ -29,4 +29,13 @@ sealed class MPUserCancelledContext {
         val fields: List<MPCancelledFieldState>,
         val screens: List<Screen>,
     ) : MPUserCancelledContext()
+
+    /**
+     * Cancellation context for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.Payment] checkout.
+     *
+     * @property screens Ordered list of screens the user visited before cancelling.
+     */
+    data class Payment(
+        val screens: List<Screen>,
+    ) : MPUserCancelledContext()
 }

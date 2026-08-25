@@ -446,6 +446,17 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when onReviewConfirmLoadFailure then showMessage is true with generic error description`() = runTest {
+        every { cardPaymentScreenStateFactory.getGenericErrorMessage() } returns "Ocorreu um erro"
+        val viewModel = makeViewModel()
+
+        viewModel.onReviewConfirmLoadFailure()
+
+        assertTrue(viewModel.viewState.value.showMessage)
+        assertEquals("Ocorreu um erro", viewModel.viewState.value.messageError.description)
+    }
+
+    @Test
     fun `when onBackPressed then emits OnUserCancelled view event`() = runTest {
         val viewModel = makeViewModel()
 
@@ -583,7 +594,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+        assertFalse(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 
     @Test
