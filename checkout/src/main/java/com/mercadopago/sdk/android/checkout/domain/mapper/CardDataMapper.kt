@@ -35,9 +35,9 @@ internal fun SecurityCode.toDomain(): SecurityCodeOutput =
 
 internal fun SecurityCodeScreen.toDomain(): SecurityCodeScreenOutput =
     SecurityCodeScreenOutput(
-        headerTitle = headerTitle,
+        headerTitle = header.title,
         field = field.toDomain(),
-        buttonLabel = buttonLabel,
+        buttonLabel = button.label,
     )
 
 internal fun SecurityCodeField.toDomain(): SecurityCodeFieldOutput =
@@ -45,6 +45,7 @@ internal fun SecurityCodeField.toDomain(): SecurityCodeFieldOutput =
         label = label,
         placeholder = placeholder,
         helper = helper,
+        error = error,
     )
 
 internal fun Installments.toDomain(): InstallmentsOutput =
@@ -66,4 +67,5 @@ internal fun Quota.toDomain(): QuotaOutput =
         primaryLabel = primaryLabel,
         secondaryLabel = secondaryLabel,
         state = state,
+        accessibilityLabel = accessibilityLabel,
     )

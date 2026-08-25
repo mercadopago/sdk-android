@@ -53,8 +53,8 @@ internal class PaymentBrickInitializationResponseTest {
         assertEquals(3, card.securityCode.length)
 
         val screen = assertNotNull(card.securityCode.screen)
-        assertEquals("Ingresá el código de seguridad", screen.headerTitle)
-        assertEquals("Continuar", screen.buttonLabel)
+        assertEquals("Ingresá el código de seguridad", screen.header.title)
+        assertEquals("Continuar", screen.button.label)
         assertEquals("Código de seguridad", screen.field.label)
         assertEquals("Ej.: 123", screen.field.placeholder)
         assertEquals("Está en el reverso de tu tarjeta.", screen.field.helper)
@@ -146,13 +146,13 @@ internal class PaymentBrickInitializationResponseTest {
                         "security_code": {
                           "length": 3,
                           "screen": {
-                            "header_title": "Ingresá el código de seguridad",
+                            "header": { "title": "Ingresá el código de seguridad" },
                             "field": {
                               "label": "Código de seguridad",
                               "placeholder": "Ej.: 123",
                               "helper": "Está en el reverso de tu tarjeta."
                             },
-                            "continue_button_label": "Continuar"
+                            "button": { "label": "Continuar" }
                           }
                         },
                         "installments": {
