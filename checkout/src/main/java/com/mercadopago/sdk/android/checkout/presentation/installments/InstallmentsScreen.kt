@@ -29,9 +29,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
@@ -43,6 +43,7 @@ import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -98,11 +99,11 @@ private fun InstallmentsScreenContent(
             ) {
                 viewState.items.forEach { item ->
                     when (viewState.displayType) {
-                        InstallmentsDisplayType.Chevron -> ChevronInstallmentItem(
+                        SelectionDisplayType.Chevron -> ChevronInstallmentItem(
                             item = item,
                             onItemClick = onItemClick,
                         )
-                        InstallmentsDisplayType.RadioButton -> RadioButtonInstallmentItem(
+                        SelectionDisplayType.RadioButton -> RadioButtonInstallmentItem(
                             item = item,
                             onItemClick = onItemClick,
                         )
@@ -198,11 +199,11 @@ private fun InstallmentsFooter(
             integerPart = footerState.amountIntegerPart,
             decimalPart = footerState.amountDecimalPart,
         ),
-        subtitle = footerState.subtitle,
+        subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,
-                isLoading = footerState.isButtonLoading,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onPayClick,
             )
         },
@@ -217,7 +218,7 @@ private fun InstallmentsScreenChevronPreview() {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
-                displayType = InstallmentsDisplayType.Chevron,
+                displayType = SelectionDisplayType.Chevron,
                 items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
@@ -256,7 +257,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
-                displayType = InstallmentsDisplayType.RadioButton,
+                displayType = SelectionDisplayType.RadioButton,
                 items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
