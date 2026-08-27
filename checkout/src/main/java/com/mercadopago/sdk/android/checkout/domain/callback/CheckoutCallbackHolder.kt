@@ -28,6 +28,11 @@ internal object CheckoutCallbackHolder {
         clear()
     }
 
+    fun dismiss() {
+        activityCallback?.invoke()
+        clear()
+    }
+
     private fun clear() {
         callback = null
         activityCallback = null

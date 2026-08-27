@@ -2,7 +2,9 @@ package com.mercadopago.sdk.android.checkout.di
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.mercadopago.sdk.android.checkout.data.remote.interceptor.ProductIdInterceptor
 import com.mercadopago.sdk.android.checkout.data.remote.interceptor.PublicKeyInterceptor
+import com.mercadopago.sdk.android.checkout.data.remote.utils.PRODUCT_ID
 import com.mercadopago.sdk.android.core.BuildConfig
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import okhttp3.OkHttpClient
@@ -29,6 +31,7 @@ internal class RetrofitFactory(
         }
         OkHttpClient.Builder()
             .addInterceptor(PublicKeyInterceptor { PublicKeyStore.publicKey })
+            .addInterceptor(ProductIdInterceptor { PRODUCT_ID })
             .addInterceptor(loggingInterceptor)
             .build()
     }

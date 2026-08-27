@@ -78,6 +78,38 @@ internal class CheckoutCallbackHolderTest {
     }
 
     @Test
+    fun `given dismiss is called then only activity callback is invoked`() {
+        val resultCallback: (
+            MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>,
+        ) -> Unit =
+            mockk(relaxed = true)
+        val activityCallback = mockk<() -> Unit>(relaxed = true)
+        CheckoutCallbackHolder.setCallback(resultCallback)
+        CheckoutCallbackHolder.setActivityCallback(activityCallback)
+
+        CheckoutCallbackHolder.dismiss()
+
+        verify { activityCallback() }
+        verify(exactly = 0) { resultCallback(any()) }
+    }
+
+    @Test
+    fun `given dismiss is called then callbacks are cleared`() {
+        var activityInvokeCount = 0
+        var resultInvokeCount = 0
+        CheckoutCallbackHolder.setActivityCallback { activityInvokeCount++ }
+        CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave> {
+            resultInvokeCount++
+        }
+
+        CheckoutCallbackHolder.dismiss()
+        CheckoutCallbackHolder.notify(mockk())
+
+        assertEquals(1, activityInvokeCount)
+        assertEquals(0, resultInvokeCount)
+    }
+
+    @Test
     fun `given setCallback with null then previous callback is not invoked on notify`() {
         val callback: (MercadoPagoCheckoutResult<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>) -> Unit =
             mockk(relaxed = true)
