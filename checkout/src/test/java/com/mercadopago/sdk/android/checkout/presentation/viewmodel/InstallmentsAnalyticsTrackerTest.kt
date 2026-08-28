@@ -4,7 +4,7 @@ import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import java.math.BigDecimal
 import kotlin.test.Test
 
@@ -25,7 +25,7 @@ internal class InstallmentsAnalyticsTrackerTest {
             ),
         ),
         display = MPInstallmentData.InstallmentDisplay(
-            displayType = InstallmentsDisplayType.RadioButton,
+            displayType = SelectionDisplayType.RadioButton,
         ),
     )
 

@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.state
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -226,27 +227,6 @@ internal class CardPaymentStateTest {
         val copy = state.copy(showList = false)
         assertFalse(copy.showList)
         assertNotEquals(state, copy)
-    }
-
-    @Test
-    fun `given FooterState explicit values then properties are assigned`() {
-        val state = FooterState(
-            title = "Total",
-            currencySymbol = "R$",
-            amountIntegerPart = "100",
-            amountDecimalPart = "00",
-            subtitle = "subtitle",
-            buttonLabel = "Pay",
-            isVisible = true,
-        )
-
-        assertEquals("Total", state.title)
-        assertEquals("R$", state.currencySymbol)
-        assertEquals("100", state.amountIntegerPart)
-        assertEquals("00", state.amountDecimalPart)
-        assertEquals("subtitle", state.subtitle)
-        assertEquals("Pay", state.buttonLabel)
-        assertTrue(state.isVisible)
     }
 
     @Test

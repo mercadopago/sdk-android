@@ -22,9 +22,11 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
@@ -63,6 +65,7 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
@@ -475,6 +478,33 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when building review confirm cancellation then preserves fields and previous screens`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.markScreenPresented(Screen.CARD_FORM)
+        viewModel.markScreenPresented(Screen.INSTALLMENTS)
+        viewModel.onBackPressed()
+        val previousEvent = assertIs<CardPaymentViewEvent.OnUserCancelled>(viewModel.viewEvent.value)
+        val previousContext = assertIs<MPUserCancelledContext.CardTransaction>(previousEvent.context)
+
+        val context = viewModel.reviewConfirmCancellationContext()
+
+        assertEquals(previousContext.fields, context.fields)
+        assertEquals(previousContext.screens + Screen.REVIEW_AND_CONFIRM, context.screens)
+    }
+
+    @Test
+    fun `when building review confirm cancellation repeatedly then review screen is included once`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.markScreenPresented(Screen.CARD_FORM)
+
+        val firstContext = viewModel.reviewConfirmCancellationContext()
+        val secondContext = viewModel.reviewConfirmCancellationContext()
+
+        assertEquals(firstContext, secondContext)
+        assertEquals(1, secondContext.screens.count { it == Screen.REVIEW_AND_CONFIRM })
+    }
+
+    @Test
     fun `when onSubmit with no errors then calls generateTokenUseCase`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
@@ -583,7 +613,7 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        assertFalse(viewModel.viewState.value.footerState.isButtonLoading)
+        assertFalse(viewModel.viewState.value.footerState.buttonState?.isLoading == true)
     }
 
     @Test

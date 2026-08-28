@@ -1,26 +1,29 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 internal class CheckoutDestinationTest {
-    @Test
-    fun `all destinations are checkout destinations`() {
-        val destinations = listOf(
-            CheckoutDestination.Form,
-            CheckoutDestination.Installment,
-        )
+    private val destinations = listOf<CheckoutDestination>(
+        CheckoutDestination.Payment,
+        CheckoutDestination.Form,
+        CheckoutDestination.SecurityCode,
+        CheckoutDestination.Installment,
+        CheckoutDestination.OfflineMethodSelector,
+        CheckoutDestination.ReviewConfirm,
+    )
 
-        assertTrue(destinations.all { it is CheckoutDestination })
+    @Test
+    fun `fixture contains every declared checkout destination`() {
+        val declaredDestinations = CheckoutDestination::class.sealedSubclasses
+            .mapNotNull { it.objectInstance }
+            .toSet()
+
+        assertEquals(declaredDestinations, destinations.toSet())
     }
 
     @Test
     fun `destinations are distinct singletons`() {
-        val destinations = setOf(
-            CheckoutDestination.Form,
-            CheckoutDestination.Installment,
-        )
-
-        assertTrue(destinations.size == 2)
+        assertEquals(destinations.size, destinations.toSet().size)
     }
 }
