@@ -16,20 +16,38 @@ import kotlinx.coroutines.flow.update
 internal class MethodSelectionViewModel(
     private val screenData: MethodSelectionScreenData,
 ) : ViewModel() {
+    private val analyticsTracker = MethodSelectionAnalyticsTracker()
+    private var confirmationTracked = false
     private val _screenState = MutableStateFlow(buildInitialState())
     val screenState: StateFlow<MethodSelectionScreenState> = _screenState.asStateFlow()
 
     private val _viewEvent = MutableStateFlow<MethodSelectionViewEvent?>(null)
     val viewEvent: StateFlow<MethodSelectionViewEvent?> = _viewEvent.asStateFlow()
 
+    init {
+        analyticsTracker.trackView(
+            optionsCount = screenData.options.size,
+            selectionType = screenData.selectionType,
+        )
+    }
+
     fun selectOption(
         optionId: String,
     ) {
-        _screenState.update { currentState ->
-            currentState.copy(
-                selectedOptionId = optionId,
-                footerState = currentState.footerState.withButtonEnabled(true),
-            )
+        if (_screenState.value.isArrowLayout) {
+            val option = screenData.options.find { it.id == optionId } ?: return
+            analyticsTracker.trackSelect(option.id, screenData.selectionType)
+            _viewEvent.value = MethodSelectionViewEvent.OnOptionSelected(option)
+        } else {
+            if (optionId != _screenState.value.selectedOptionId) {
+                confirmationTracked = false
+            }
+            _screenState.update { currentState ->
+                currentState.copy(
+                    selectedOptionId = optionId,
+                    footerState = currentState.footerState.withButtonEnabled(true),
+                )
+            }
         }
     }
 
@@ -37,11 +55,15 @@ internal class MethodSelectionViewModel(
         val state = _screenState.value
         val selectedId = state.selectedOptionId ?: return
         val option = state.options.find { it.id == selectedId } ?: return
+        if (!confirmationTracked) {
+            confirmationTracked = true
+            analyticsTracker.trackSelect(option.id, screenData.selectionType)
+        }
         _viewEvent.value = MethodSelectionViewEvent.OnOptionSelected(option)
     }
 
     fun goBack() {
-        // navigation delegated to caller; tracking placeholder
+        analyticsTracker.trackBack()
     }
 
     fun onViewEventConsumed() {
@@ -49,7 +71,12 @@ internal class MethodSelectionViewModel(
     }
 
     private fun buildInitialState(): MethodSelectionScreenState {
-        val ctaButtonState = screenData.footer?.button?.let { ButtonState(enabled = false, isLoading = false) }
+        val isArrowLayout = screenData.selectionType == SelectionDisplayType.Chevron
+        val ctaButtonState = if (isArrowLayout) {
+            null
+        } else {
+            screenData.footer?.button?.let { ButtonState(enabled = false, isLoading = false) }
+        }
         return MethodSelectionScreenState(
             headerTitle = screenData.headerTitle,
             options = screenData.options,
@@ -57,11 +84,11 @@ internal class MethodSelectionViewModel(
             footerState = FooterState(
                 title = screenData.footer?.totalLabel.orEmpty(),
                 subtitle = screenData.footer?.totalAmount.orEmpty(),
-                buttonLabel = screenData.footer?.button?.label,
+                buttonLabel = if (isArrowLayout) null else screenData.footer?.button?.label,
                 isVisible = true,
                 buttonState = ctaButtonState,
             ),
-            isArrowLayout = screenData.selectionType == SelectionDisplayType.Chevron,
+            isArrowLayout = isArrowLayout,
         )
     }
 }

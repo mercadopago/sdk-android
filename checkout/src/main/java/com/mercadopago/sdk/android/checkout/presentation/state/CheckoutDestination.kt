@@ -5,9 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal sealed interface CheckoutDestination {
     @Serializable
-    data object Loading : CheckoutDestination
-
-    @Serializable
     data object Payment : CheckoutDestination
 
     @Serializable
@@ -17,10 +14,10 @@ internal sealed interface CheckoutDestination {
     data object Installment : CheckoutDestination
 
     @Serializable
-    data object PaymentBrick : CheckoutDestination
+    data object SecurityCode : CheckoutDestination
 
     @Serializable
-    data object SecurityCode : CheckoutDestination
+    data object ReviewConfirm : CheckoutDestination
 
     @Serializable
     data object OfflineMethodSelector : CheckoutDestination

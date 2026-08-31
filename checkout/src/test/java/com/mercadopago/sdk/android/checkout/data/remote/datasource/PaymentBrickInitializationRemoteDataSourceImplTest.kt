@@ -24,7 +24,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
     @Test
     fun `given service returns successful response then fetch returns Result Success`() = runTest {
         val body = mockk<PaymentBrickInitializationResponse>(relaxed = true)
-        coEvery { service.fetch(any(), any(), any()) } returns Response.success(body)
+        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.success(body)
 
         val result = dataSource.fetch(params)
 
@@ -35,7 +35,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then fetch returns Result Error with http status`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.fetch(any(), any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.error(404, errorBody)
 
         val result = dataSource.fetch(params)
 
@@ -46,10 +46,16 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
 
     @Test
     fun `given fetch is called then passes orderId and clientToken with Bearer prefix to service`() = runTest {
-        coEvery { service.fetch(any(), any(), any()) } returns Response.success(mockk(relaxed = true))
+        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.success(mockk(relaxed = true))
 
         dataSource.fetch(params)
 
-        coVerify { service.fetch(orderId = params.orderId, clientToken = "Bearer ${params.clientToken}") }
+        coVerify {
+            service.fetch(
+                orderId = params.orderId,
+                screens = params.screens,
+                clientToken = "Bearer ${params.clientToken}",
+            )
+        }
     }
 }

@@ -17,6 +17,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImpl(
     ): Result<PaymentBrickInitializationResponse, ResponseError> =
         service.fetch(
             orderId = params.orderId,
+            screens = params.screens,
             clientToken = "$BEARER_PREFIX${params.clientToken}",
         ).toInternalResponse()
 }

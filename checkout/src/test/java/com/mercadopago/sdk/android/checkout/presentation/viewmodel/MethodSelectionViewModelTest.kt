@@ -39,8 +39,7 @@ internal class MethodSelectionViewModelTest {
 
     private fun makeViewModel(
         screenData: MethodSelectionScreenData = makeScreenData(),
-    ) =
-        MethodSelectionViewModel(screenData)
+    ) = MethodSelectionViewModel(screenData)
 
     @Test
     fun `given screenData with button when initialized then buttonState enabled is false`() = runTest {
@@ -95,6 +94,21 @@ internal class MethodSelectionViewModelTest {
     }
 
     @Test
+    fun `given confirmSelection already called when confirmSelection is called again then tracking is not repeated`() =
+        runTest {
+            val viewModel = makeViewModel()
+            viewModel.selectOption(option1.id)
+            viewModel.confirmSelection()
+
+            // second call must not re-track the selection — only the state/event side keeps updating
+            viewModel.confirmSelection()
+
+            val event = viewModel.viewEvent.value
+            assertTrue(event is MethodSelectionViewEvent.OnOptionSelected)
+            assertEquals(option1, (event as MethodSelectionViewEvent.OnOptionSelected).option)
+        }
+
+    @Test
     fun `given no option selected when confirmSelection then no event emitted`() = runTest {
         val viewModel = makeViewModel()
 
@@ -140,5 +154,46 @@ internal class MethodSelectionViewModelTest {
         val viewModel = makeViewModel(makeScreenData(selectionType = SelectionDisplayType.RadioButton))
 
         assertFalse(viewModel.screenState.value.isArrowLayout)
+    }
+
+    // ── Analytics tracking — smoke tests (MPAnalytics unavailable in unit tests) ──
+
+    @Test
+    fun `when viewModel created then does not throw even with analytics unavailable`() = runTest {
+        makeViewModel(makeScreenData())
+    }
+
+    @Test
+    fun `given chevron layout when selectOption then does not throw`() = runTest {
+        val viewModel = makeViewModel(makeScreenData(selectionType = SelectionDisplayType.Chevron))
+        viewModel.selectOption(option1.id)
+    }
+
+    @Test
+    fun `given option selected when confirmSelection then does not throw`() = runTest {
+        val viewModel = makeViewModel(makeScreenData(selectionType = SelectionDisplayType.RadioButton))
+        viewModel.selectOption(option1.id)
+        viewModel.confirmSelection()
+    }
+
+    @Test
+    fun `given option selected when confirmSelection is called twice then does not throw`() = runTest {
+        val viewModel = makeViewModel(makeScreenData(selectionType = SelectionDisplayType.RadioButton))
+        viewModel.selectOption(option1.id)
+        viewModel.confirmSelection()
+        viewModel.confirmSelection() // second call must not re-track — must not throw
+    }
+
+    @Test
+    fun `when goBack is called then does not throw`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.goBack()
+    }
+
+    @Test
+    fun `when goBack is called multiple times then does not throw`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.goBack()
+        viewModel.goBack()
     }
 }

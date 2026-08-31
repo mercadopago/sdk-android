@@ -62,9 +62,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
+import com.mercadopago.sdk.android.checkout.core.extensions.withReviewAndConfirm
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 
@@ -336,8 +338,12 @@ internal fun CheckoutExampleScreen(
                 val order = MPOrder(orderId = orderId.trim(), clientToken = clientToken.trim())
                 val onPayClick: (() -> Unit)? = when (flowType) {
                     "card_transaction" -> ({
-                        MercadoPagoCheckout.Builder(context, MPCheckoutType.CardTransaction(order))
+                        MercadoPagoCheckout.Builder(
+                            context,
+                            MPCheckoutType.CardTransaction(order, sellerInfo = MPSellerInfo(name = "Adidas")),
+                        )
                             .setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+                            .withReviewAndConfirm()
                             .build()
                             .show { result ->
                                 when (result) {

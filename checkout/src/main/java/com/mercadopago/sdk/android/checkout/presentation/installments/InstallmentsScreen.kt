@@ -43,6 +43,7 @@ import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -54,12 +55,18 @@ internal fun InstallmentsScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
-    BackHandler(enabled = isLoading) { }
+    val handleBack: () -> Unit = {
+        if (!isLoading) {
+            onBackClick()
+        }
+    }
+
+    BackHandler(onBack = handleBack)
 
     InstallmentsScreenContent(
         viewState = viewState,
         isLoading = isLoading,
-        onBackClick = onBackClick,
+        onBackClick = handleBack,
         onItemClick = viewModel::onInstallmentSelected,
         onPayClick = viewModel::onPayClicked,
     )
@@ -198,7 +205,7 @@ private fun InstallmentsFooter(
             integerPart = footerState.amountIntegerPart,
             decimalPart = footerState.amountDecimalPart,
         ),
-        subtitle = footerState.subtitle,
+        subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,

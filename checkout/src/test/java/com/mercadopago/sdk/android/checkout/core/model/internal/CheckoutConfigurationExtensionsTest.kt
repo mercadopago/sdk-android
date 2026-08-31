@@ -2,9 +2,11 @@ package com.mercadopago.sdk.android.checkout.core.model.internal
 
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CheckoutConfigurationExtensionsTest {
@@ -86,5 +88,61 @@ internal class CheckoutConfigurationExtensionsTest {
     @Test
     fun `given null configuration when startsWithPayment then returns false`() {
         assertFalse(configWith(null).startsWithPayment())
+    }
+
+    @Test
+    fun `given payment with sellerInfo when getSellerInfo then returns seller`() {
+        val seller = MPSellerInfo(name = "Adidas Store")
+
+        assertEquals(seller, configWith(MPCheckoutType.Payment(order, sellerInfo = seller)).getSellerInfo())
+    }
+
+    @Test
+    fun `given card transaction with sellerInfo when getSellerInfo then returns seller`() {
+        val seller = MPSellerInfo(name = "Nike Store")
+
+        assertEquals(
+            seller,
+            configWith(MPCheckoutType.CardTransaction(order, sellerInfo = seller)).getSellerInfo(),
+        )
+    }
+
+    @Test
+    fun `given card save when getSellerInfo then returns null`() {
+        assertNull(configWith(MPCheckoutType.CardSave).getSellerInfo())
+    }
+
+    @Test
+    fun `given null configuration when getSellerInfo then returns null`() {
+        assertNull(configWith(null).getSellerInfo())
+    }
+
+    @Test
+    fun `given payment with onEmailChangeRequested when getOnEmailChangeRequested then returns callback`() {
+        var called = false
+        val config = CheckoutConfiguration(
+            checkoutType = MPCheckoutType.Payment(order = order),
+            paymentMethodConfigs = emptyList(),
+            screenConfigs = listOf(ScreenConfig.ReviewAndConfirm(onEmailChangeRequested = { called = true })),
+        )
+
+        config.getOnEmailChangeRequested()?.invoke()
+
+        assertTrue(called)
+    }
+
+    @Test
+    fun `given payment without ReviewAndConfirm config when getOnEmailChangeRequested then returns null`() {
+        val config = CheckoutConfiguration(
+            checkoutType = MPCheckoutType.Payment(order = order),
+            paymentMethodConfigs = emptyList(),
+        )
+
+        assertNull(config.getOnEmailChangeRequested())
+    }
+
+    @Test
+    fun `given null configuration when getOnEmailChangeRequested then returns null`() {
+        assertNull(configWith(null).getOnEmailChangeRequested())
     }
 }

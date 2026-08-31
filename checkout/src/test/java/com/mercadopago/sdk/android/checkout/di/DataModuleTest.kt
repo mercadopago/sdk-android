@@ -6,20 +6,27 @@ import android.content.res.Configuration
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.data.remote.request.ReviewConfirmRequest
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.data.remote.service.OrderService
 import com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickInitializationService
+import com.mercadopago.sdk.android.checkout.data.remote.service.ReviewConfirmService
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
 import com.mercadopago.sdk.android.checkout.domain.repository.PaymentBrickInitializationRepository
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchReviewConfirmUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
+import com.mercadopago.sdk.android.checkout.presentation.state.ReviewConfirmScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledPaymentContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.ReviewConfirmAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.initializer.MercadoPagoSDK
@@ -75,6 +82,7 @@ internal class DataModuleTest {
         }
     }
 
+    @Suppress("LongMethod")
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun `when provideDataModule is called then bindings should be verified`() {
@@ -96,6 +104,7 @@ internal class DataModuleTest {
             single { mockk<CardFormService>(relaxed = true) }
             single { mockk<OrderService>(relaxed = true) }
             single { mockk<PaymentBrickInitializationService>(relaxed = true) }
+            single { mockk<ReviewConfirmService>(relaxed = true) }
         }
 
         val koin = koinApplication {
@@ -111,7 +120,11 @@ internal class DataModuleTest {
                 CardFormService::class,
                 OrderService::class,
                 PaymentBrickInitializationService::class,
+                ReviewConfirmService::class,
                 PaymentBrickInitializationRepository::class,
+                ReviewConfirmRequest::class,
+                ProcessOrderParams::class,
+                FetchReviewConfirmUseCase::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 CardFormInitializationOutput::class,
@@ -124,6 +137,9 @@ internal class DataModuleTest {
                 CoreMethods::class,
                 SecurityCodeVerifier::class,
                 MethodSelectionScreenData::class,
+                CancelledPaymentContextUseCase::class,
+                ReviewConfirmScreenConfig::class,
+                ReviewConfirmAnalyticsTracker::class,
             ),
         )
 
@@ -135,6 +151,8 @@ internal class DataModuleTest {
             withInstance<String>("card_form")
             withInstance<SecurityCodeScreenConfig>(mockk(relaxed = true))
             withInstance<MethodSelectionScreenData>(mockk(relaxed = true))
+            withInstance<ReviewConfirmRequest>(mockk(relaxed = true))
+            withInstance<ProcessOrderParams>(mockk(relaxed = true))
         }
     }
 }

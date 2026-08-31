@@ -3,8 +3,10 @@ package com.mercadopago.sdk.android.checkout.core
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import com.mercadopago.sdk.android.checkout.core.extensions.withReviewAndConfirm
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
+import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.di.CheckoutModulesProvider
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
@@ -42,6 +44,7 @@ internal class MercadoPagoCheckoutTest {
         every {
             CheckoutCallbackHolder.setCallback<MPPaymentData.CardSave, MPUserCancelledContext.CardSave>(any())
         } just Runs
+        every { CheckoutCallbackHolder.setEmailChangeCallback(any()) } just Runs
         every { anyConstructed<CheckoutModulesProvider>().koinApp } returns mockKoin
         every { mockKoin.get<CheckoutThemePreferences>() } returns mockThemePreferences
         every { anyConstructed<Intent>().putExtra(any<String>(), any<Parcelable>()) } returns mockk(relaxed = true)
@@ -78,6 +81,28 @@ internal class MercadoPagoCheckoutTest {
         checkout.show(callback)
 
         verify { CheckoutCallbackHolder.setCallback(callback) }
+    }
+
+    @Test
+    fun `when Payment with email callback is shown then callback is kept in holder`() {
+        val emailCallback = {}
+        val checkout = MercadoPagoCheckout.Builder(
+            context = context,
+            checkoutType = MPCheckoutType.Payment(MPOrder("order-id", "client-token")),
+        ).withReviewAndConfirm(emailCallback).build()
+
+        checkout.show {}
+
+        verify { CheckoutCallbackHolder.setEmailChangeCallback(emailCallback) }
+    }
+
+    @Test
+    fun `when checkout without email callback is shown then previous callback is cleared`() {
+        val checkout = buildCheckout()
+
+        checkout.show {}
+
+        verify { CheckoutCallbackHolder.setEmailChangeCallback(null) }
     }
 
     @Test

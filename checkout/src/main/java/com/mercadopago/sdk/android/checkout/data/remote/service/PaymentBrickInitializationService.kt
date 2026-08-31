@@ -15,6 +15,7 @@ internal interface PaymentBrickInitializationService {
     suspend fun fetch(
         @Query("order_id") orderId: String,
         @Query("product_id") productId: String? = PRODUCT_ID,
+        @Query("screens") screens: String? = null,
         @Header("authorization") clientToken: String,
     ): Response<PaymentBrickInitializationResponse>
 }

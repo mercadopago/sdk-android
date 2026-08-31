@@ -3,7 +3,6 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mercadopago.sdk.android.checkout.domain.extensions.toAnalyticsErrorType
-import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.usecase.GenerateTokenWithCardIdUseCase
 import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonEnabled
@@ -13,6 +12,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScree
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeViewEvent
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledPaymentContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -26,6 +26,7 @@ internal class SecurityCodeViewModel(
     config: SecurityCodeScreenConfig,
     private val cardId: String = config.cardId,
     private val generateTokenUseCase: GenerateTokenWithCardIdUseCase,
+    private val cancelledPaymentContextUseCase: CancelledPaymentContextUseCase,
     private val securityCodeVerifier: SecurityCodeVerifier = SecurityCodeVerifier(),
 ) : ViewModel() {
     private val analyticsTracker = SecurityCodeAnalyticsTracker(
@@ -43,6 +44,7 @@ internal class SecurityCodeViewModel(
     val viewEvent: StateFlow<SecurityCodeViewEvent?> = _viewEvent.asStateFlow()
 
     init {
+        markScreenPresented()
         analyticsTracker.trackView()
     }
 
@@ -103,7 +105,7 @@ internal class SecurityCodeViewModel(
     fun onUserCancelled() {
         analyticsTracker.trackBack()
         _viewEvent.value = SecurityCodeViewEvent.OnUserCancelled(
-            MPUserCancelledContext.Payment(screens = listOf(Screen.SECURITY_CODE)),
+            context = cancelledPaymentContextUseCase(),
         )
     }
 
@@ -149,4 +151,8 @@ internal class SecurityCodeViewModel(
             cardDescription = cardDescription,
             cardImageUrl = cardImageUrl,
         )
+
+    private fun markScreenPresented() {
+        cancelledPaymentContextUseCase.markScreenPresented(Screen.SECURITY_CODE)
+    }
 }

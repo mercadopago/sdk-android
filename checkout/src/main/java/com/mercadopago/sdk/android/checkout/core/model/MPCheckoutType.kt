@@ -26,19 +26,23 @@ sealed class MPCheckoutType<out T : MPPaymentData, out C : MPUserCancelledContex
      * On success, delivers [MPPaymentData.CardTransaction].
      * On cancellation, delivers [MPUserCancelledContext.CardTransaction].
      * @param order MPOrder
+     * @param sellerInfo Optional store details shown on the Review and Confirm screen.
      */
     @Parcelize
     data class CardTransaction(
         val order: MPOrder,
+        val sellerInfo: MPSellerInfo? = null,
     ) : MPCheckoutType<MPPaymentData.CardTransaction, MPUserCancelledContext.CardTransaction>()
 
     /**
      * PaymentSelection class, used to configure the payment-method selection flow.
      * On success, delivers [MPPaymentData.Payment].
      * @param order MPOrder
+     * @param sellerInfo Optional store details shown on the Review and Confirm screen.
      */
     @Parcelize
     data class Payment(
         val order: MPOrder,
+        val sellerInfo: MPSellerInfo? = null,
     ) : MPCheckoutType<MPPaymentData.Payment, MPUserCancelledContext.Payment>()
 }

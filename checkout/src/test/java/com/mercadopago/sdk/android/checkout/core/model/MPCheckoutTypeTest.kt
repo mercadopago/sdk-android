@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.core.model
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class MPCheckoutTypeTest {
@@ -16,6 +17,22 @@ internal class MPCheckoutTypeTest {
         val type = MPCheckoutType.CardTransaction(order = order)
 
         assertEquals(order, type.order)
+    }
+
+    @Test
+    fun `given card transaction without sellerInfo then sellerInfo is null`() {
+        val type = MPCheckoutType.CardTransaction(order = order)
+
+        assertNull(type.sellerInfo)
+    }
+
+    @Test
+    fun `given card transaction with sellerInfo then sellerInfo is exposed`() {
+        val seller = MPSellerInfo(name = "Nike Store")
+
+        val type = MPCheckoutType.CardTransaction(order = order, sellerInfo = seller)
+
+        assertEquals(seller, type.sellerInfo)
     }
 
     @Test
@@ -34,6 +51,22 @@ internal class MPCheckoutTypeTest {
         val type = MPCheckoutType.Payment(order = order)
 
         assertEquals(order, type.order)
+    }
+
+    @Test
+    fun `given payment without sellerInfo then sellerInfo is null`() {
+        val type = MPCheckoutType.Payment(order = order)
+
+        assertNull(type.sellerInfo)
+    }
+
+    @Test
+    fun `given payment with sellerInfo then sellerInfo is exposed`() {
+        val seller = MPSellerInfo(name = "Adidas Store", logoUrl = "https://logo.png")
+
+        val type = MPCheckoutType.Payment(order = order, sellerInfo = seller)
+
+        assertEquals(seller, type.sellerInfo)
     }
 
     @Test
