@@ -21,4 +21,7 @@ enum class Screen {
 
     /** The security code (CVV) screen shown for a saved card before tokenization. */
     SECURITY_CODE,
+
+    /** The review and confirm screen shown before payment processing. */
+    REVIEW_AND_CONFIRM,
 }

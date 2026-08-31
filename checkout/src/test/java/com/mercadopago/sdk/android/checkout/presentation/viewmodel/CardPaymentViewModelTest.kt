@@ -10,6 +10,7 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.ScreenConfig
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
@@ -22,9 +23,11 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
@@ -63,6 +66,7 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
@@ -126,7 +130,7 @@ internal class CardPaymentViewModelTest {
     private suspend fun CardPaymentViewModel.setupWithAmount(
         amount: java.math.BigDecimal = java.math.BigDecimal("100.00"),
     ) {
-        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns
+        coEvery { initializeCardFormUseCase(any(), any(), any(), any()) } returns
             Result.Success(
                 mockk<CardFormInitializationOutput>(relaxed = true) {
                     every { this@mockk.amount } returns amount
@@ -144,6 +148,20 @@ internal class CardPaymentViewModelTest {
         viewModel.initialization()
 
         assertFalse(viewModel.viewState.value.isLoading)
+    }
+
+    @Test
+    fun `when initialization already succeeded then reentry keeps state without another request`() = runTest {
+        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns
+            Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
+        val viewModel = makeViewModel()
+        viewModel.initialization()
+        viewModel.onCardHolderEvent(SimpleTextFieldEvent.OnValueChanged("Card holder"))
+
+        viewModel.initialization()
+
+        assertEquals("Card holder", viewModel.viewState.value.cardHolderState.value)
+        coVerify(exactly = 1) { initializeCardFormUseCase(any(), any(), any()) }
     }
 
     @Test
@@ -176,6 +194,15 @@ internal class CardPaymentViewModelTest {
         val metricSlots = mutableListOf<Metric>()
         verify { mockMPAnalytics.trackMetric(capture(metricSlots)) }
         assertTrue(metricSlots.any { it.path.endsWith("/initialize_error") })
+    }
+
+    @Test
+    fun `when review confirm fails then emits generic error event`() {
+        val viewModel = makeViewModel()
+
+        viewModel.onReviewConfirmError()
+
+        assertEquals(CardPaymentViewEvent.OnReviewConfirmError, viewModel.viewEvent.value)
     }
 
     @Test
@@ -475,6 +502,33 @@ internal class CardPaymentViewModelTest {
     }
 
     @Test
+    fun `when building review confirm cancellation then preserves fields and previous screens`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.markScreenPresented(Screen.CARD_FORM)
+        viewModel.markScreenPresented(Screen.INSTALLMENTS)
+        viewModel.onBackPressed()
+        val previousEvent = assertIs<CardPaymentViewEvent.OnUserCancelled>(viewModel.viewEvent.value)
+        val previousContext = assertIs<MPUserCancelledContext.CardTransaction>(previousEvent.context)
+
+        val context = viewModel.reviewConfirmCancellationContext()
+
+        assertEquals(previousContext.fields, context.fields)
+        assertEquals(previousContext.screens + Screen.REVIEW_AND_CONFIRM, context.screens)
+    }
+
+    @Test
+    fun `when building review confirm cancellation repeatedly then review screen is included once`() = runTest {
+        val viewModel = makeViewModel()
+        viewModel.markScreenPresented(Screen.CARD_FORM)
+
+        val firstContext = viewModel.reviewConfirmCancellationContext()
+        val secondContext = viewModel.reviewConfirmCancellationContext()
+
+        assertEquals(firstContext, secondContext)
+        assertEquals(1, secondContext.screens.count { it == Screen.REVIEW_AND_CONFIRM })
+    }
+
+    @Test
     fun `when onSubmit with no errors then calls generateTokenUseCase`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
@@ -552,6 +606,32 @@ internal class CardPaymentViewModelTest {
         )
 
         assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnSuccess)
+    }
+
+    @Test
+    fun `when opening review confirm then preserves card id from tokenization`() = runTest {
+        coEvery {
+            generateTokenUseCase(any(), any(), any(), any())
+        } returns Result.Success(CardToken(token = "token_abc", cardId = "card_123"))
+        val viewModel = makeViewModel(
+            config = checkoutConfiguration.copy(
+                screenConfigs = listOf(ScreenConfig.ReviewAndConfirm()),
+            ),
+        )
+        viewModel.setupWithAmount()
+        viewModel.onSubmit(
+            cardNumberState = mockk<PCIFieldState>(relaxed = true),
+            expirationDateState = mockk<PCIFieldState>(relaxed = true),
+            securityCodeState = mockk<PCIFieldState>(relaxed = true),
+        )
+        viewModel.onViewEventConsumed()
+
+        viewModel.onInstallmentConfirmed(installment = 3)
+
+        val event = assertIs<CardPaymentViewEvent.OnPaymentConfirmed>(viewModel.viewEvent.value)
+        assertEquals("card_123", event.params.cardId)
+        assertEquals("token_abc", event.params.token)
+        assertEquals(3, event.params.installments)
     }
 
     @Test

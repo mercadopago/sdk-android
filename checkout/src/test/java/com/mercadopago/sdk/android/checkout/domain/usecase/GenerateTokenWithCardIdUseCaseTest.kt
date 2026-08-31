@@ -23,6 +23,33 @@ internal class GenerateTokenWithCardIdUseCaseTest {
     private val securityCodeState = mockk<PCIFieldState>(relaxed = true)
 
     @Test
+    fun `given saved card without security code then returns token string`() = runTest {
+        val expectedToken = "token-xyz-456"
+        coEvery {
+            coreMethods.generateCardToken(cardId)
+        } returns Result.Success(CardToken(token = expectedToken))
+
+        val result = useCase(cardId)
+
+        assertIs<Result.Success<String>>(result)
+        assertEquals(expectedToken, result.data)
+    }
+
+    @Test
+    fun `given saved card tokenization error then maps checkout error`() = runTest {
+        val requestError = ResultError.Request(message = "Connection failed", code = "NETWORK")
+        coEvery {
+            coreMethods.generateCardToken(cardId)
+        } returns Result.Error(requestError)
+
+        val result = useCase(cardId)
+
+        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        assertIs<MercadoPagoCheckoutError.NetworkError>(result.error)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+    }
+
+    @Test
     fun `given coreMethods returns success then returns token string`() = runTest {
         val expectedToken = "token-xyz-456"
         coEvery {

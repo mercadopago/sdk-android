@@ -34,6 +34,7 @@ import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemLeading
 import com.mercadopago.sdk.android.components.model.MPListSizeType
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.rememberPCIFieldState
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.securitycode.SecurityCodeTextFieldEvent
@@ -187,7 +188,7 @@ private fun SecurityCodeFooter(
             integerPart = footerState.amountIntegerPart,
             decimalPart = footerState.amountDecimalPart,
         ),
-        subtitle = footerState.subtitle,
+        subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,

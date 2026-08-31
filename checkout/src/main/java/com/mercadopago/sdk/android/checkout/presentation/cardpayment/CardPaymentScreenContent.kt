@@ -58,6 +58,7 @@ import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -75,11 +76,6 @@ internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberPCIState = rememberPCIFieldState()
-    val expirationDatePCIState = rememberPCIFieldState()
-    val securityCodePCIState = rememberPCIFieldState()
-    val cardHolderPCIState = rememberPCIFieldState()
-    val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
@@ -94,11 +90,11 @@ internal fun CardPaymentScreen(
 
     CardPaymentScreenContent(
         viewState = viewState,
-        cardNumberPCIState = cardNumberPCIState,
-        expirationDatePCIState = expirationDatePCIState,
-        securityCodePCIState = securityCodePCIState,
-        cardHolderPCIState = cardHolderPCIState,
-        identificationPCIState = identificationPCIState,
+        cardNumberPCIState = viewModel.cardNumberPCIState,
+        expirationDatePCIState = viewModel.expirationDatePCIState,
+        securityCodePCIState = viewModel.securityCodePCIState,
+        cardHolderPCIState = viewModel.cardHolderPCIState,
+        identificationPCIState = viewModel.identificationPCIState,
         onCardNumberEvent = viewModel::onCardNumberEvent,
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
@@ -110,9 +106,9 @@ internal fun CardPaymentScreen(
         onFooterButtonClick = {
             focusManager.clearFocus()
             viewModel.onSubmit(
-                cardNumberState = cardNumberPCIState,
-                expirationDateState = expirationDatePCIState,
-                securityCodeState = securityCodePCIState,
+                cardNumberState = viewModel.cardNumberPCIState,
+                expirationDateState = viewModel.expirationDatePCIState,
+                securityCodeState = viewModel.securityCodePCIState,
             )
         },
     )
@@ -584,7 +580,7 @@ private fun CardPaymentFooter(
         MPFixedFooter(
             title = footerState.title,
             amount = footerState.toAmountData(),
-            subtitle = footerState.subtitle,
+            subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
             button = MPFixedFooterButtonData(
                 text = footerState.buttonLabel.orEmpty(),
                 enabled = footerState.buttonState?.enabled ?: false,

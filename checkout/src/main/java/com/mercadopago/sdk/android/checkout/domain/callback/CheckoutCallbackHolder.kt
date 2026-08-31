@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
 internal object CheckoutCallbackHolder {
     private var callback: ((MercadoPagoCheckoutResult<*, *>) -> Unit)? = null
     private var activityCallback: (() -> Unit)? = null
+    private var emailChangeCallback: (() -> Unit)? = null
 
     fun <T : MPPaymentData, C : MPUserCancelledContext> setCallback(
         callback: ((MercadoPagoCheckoutResult<T, C>) -> Unit)?,
@@ -20,6 +21,14 @@ internal object CheckoutCallbackHolder {
         this.activityCallback = callback
     }
 
+    fun setEmailChangeCallback(
+        callback: (() -> Unit)?,
+    ) {
+        emailChangeCallback = callback
+    }
+
+    fun emailChangeCallbackOrNull(): (() -> Unit)? = emailChangeCallback
+
     fun notify(
         result: MercadoPagoCheckoutResult<*, *>,
     ) {
@@ -28,8 +37,14 @@ internal object CheckoutCallbackHolder {
         clear()
     }
 
+    fun dismiss() {
+        activityCallback?.invoke()
+        clear()
+    }
+
     private fun clear() {
         callback = null
         activityCallback = null
+        emailChangeCallback = null
     }
 }

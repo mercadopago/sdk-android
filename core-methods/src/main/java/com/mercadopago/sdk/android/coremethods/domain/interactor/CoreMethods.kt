@@ -587,9 +587,32 @@ class CoreMethods internal constructor(
         cardId: String,
         securityCodeState: PCIFieldState,
     ): Result<CardToken, ResultError> {
-        val result = koin.get<GenerateCardIdTokenUseCase>().invoke(
+        return generateSavedCardToken(
             cardId = cardId,
             securityCode = securityCodeState.input,
+        )
+    }
+
+    /**
+     * @suppress
+     * Generates a token for a saved card that does not require security code re-entry.
+     * Intended for internal checkout usage.
+     *
+     * @param cardId [String] The id of the saved card
+     * @return [Result]: On Success [CardToken], On Error [ResultError]
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    suspend fun generateCardToken(
+        cardId: String,
+    ): Result<CardToken, ResultError> = generateSavedCardToken(cardId = cardId, securityCode = null)
+
+    private suspend fun generateSavedCardToken(
+        cardId: String,
+        securityCode: String?,
+    ): Result<CardToken, ResultError> {
+        val result = koin.get<GenerateCardIdTokenUseCase>().invoke(
+            cardId = cardId,
+            securityCode = securityCode,
             expirationDate = null,
             buyerIdentification = null,
         )

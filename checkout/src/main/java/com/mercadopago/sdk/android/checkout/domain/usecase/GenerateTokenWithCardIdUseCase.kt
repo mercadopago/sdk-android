@@ -9,15 +9,23 @@ import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
 
 /**
- * Tokenizes a saved card using [CoreMethods.generateCardTokenWithSecurityCode].
- * Called by [com.mercadopago.sdk.android.checkout.presentation.viewmodel.SecurityCodeViewModel]
- * when the user taps "Continuar" with a valid CVV.
+ * Tokenizes a saved card with or without security code re-entry.
+ * The security code variant is used by
+ * [com.mercadopago.sdk.android.checkout.presentation.viewmodel.SecurityCodeViewModel].
  *
  * @return [Result.Success] with the token string, or [Result.Error] with [MercadoPagoCheckoutError].
  */
 internal class GenerateTokenWithCardIdUseCase(
     private val coreMethods: CoreMethods = CoreMethods.getInstance(),
 ) {
+    suspend operator fun invoke(
+        cardId: String,
+    ): Result<String, MercadoPagoCheckoutError> =
+        coreMethods
+            .generateCardToken(cardId)
+            .mapToCheckoutError(ErrorLocalized.TOKENIZATION)
+            .map { it.token }
+
     suspend operator fun invoke(
         cardId: String,
         securityCodeState: PCIFieldState,

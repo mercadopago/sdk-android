@@ -47,3 +47,5 @@ meli
 CLAUDE.md
 .claude/private/
 docs
+.agents
+AGENTS.md

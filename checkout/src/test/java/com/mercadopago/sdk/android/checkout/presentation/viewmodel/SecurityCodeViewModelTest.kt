@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.checkout.domain.usecase.GenerateTokenWithCard
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeViewEvent
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledPaymentContextUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.pcitextfield.PCIFieldState
@@ -61,7 +62,11 @@ internal class SecurityCodeViewModelTest {
 
     private fun makeViewModel(
         config: SecurityCodeScreenConfig = makeConfig(),
-    ) = SecurityCodeViewModel(config = config, generateTokenUseCase = generateTokenUseCase)
+    ) = SecurityCodeViewModel(
+        config = config,
+        generateTokenUseCase = generateTokenUseCase,
+        cancelledPaymentContextUseCase = CancelledPaymentContextUseCase(),
+    )
 
     @Test
     fun `initial state maps config`() {
@@ -160,7 +165,7 @@ internal class SecurityCodeViewModelTest {
         val event = viewModel.viewEvent.value
         assertTrue(event is SecurityCodeViewEvent.OnUserCancelled)
         assertEquals(
-            MPUserCancelledContext.Payment(screens = listOf(Screen.SECURITY_CODE)),
+            MPUserCancelledContext.Payment(screens = listOf(Screen.PAYMENT_METHOD_SELECTOR, Screen.SECURITY_CODE)),
             event.context,
         )
     }

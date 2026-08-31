@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.methodselection
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionOption
 import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
@@ -22,13 +23,14 @@ internal fun MethodSelectionOptionRow(
             title = option.name,
             description = option.subtitle,
         ),
-        leftImage = MPListItemLeading.Thumbnail(url = option.iconUrl.orEmpty()),
+        leftImage = MPListItemLeading.ThumbnailConstrained(url = option.iconUrl.orEmpty()),
         trailing = if (isArrowLayout) {
             MPListItemTrailing(type = MPListItemTrailing.Type.Icon(Icons.AutoMirrored.Sharp.KeyboardArrowRight))
         } else {
             null
         },
         type = if (!isArrowLayout) MPListItemType.RadioButton(selected = isSelected) else null,
+        verticalAlignment = if (!isArrowLayout) Alignment.CenterVertically else null,
         onClick = { onTap(option) },
     )
 }

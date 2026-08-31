@@ -299,6 +299,36 @@ internal class CoreMethodsTest {
         }
 
     @Test
+    fun `generateCardToken with saved card id should return success`() = runTest {
+        val cardId = "card-9999"
+        val expectedResult = Result.Success(CardToken("token_saved_123"))
+
+        coEvery {
+            koin.get<GenerateCardIdTokenUseCase>().invoke(cardId, isNull(), isNull(), isNull())
+        } returns expectedResult
+
+        val result = coreMethods.generateCardToken(cardId)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `generateCardToken with saved card id should return error`() = runTest {
+        val cardId = "card-9999"
+        val expectedResult: Result<CardToken, ResultError> = Result.Error(
+            ResultError.Request(code = "400", message = "Tokenization failed"),
+        )
+
+        coEvery {
+            koin.get<GenerateCardIdTokenUseCase>().invoke(cardId, isNull(), isNull(), isNull())
+        } returns expectedResult
+
+        val result = coreMethods.generateCardToken(cardId)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
     fun `generateCardToken with string should return success and track success metric`() =
         runTest {
             val cardNumber = "510000000"
