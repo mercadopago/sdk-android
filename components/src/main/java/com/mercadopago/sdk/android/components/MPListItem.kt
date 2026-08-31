@@ -1,16 +1,16 @@
 package com.mercadopago.sdk.android.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -42,6 +42,7 @@ private const val LIST_GROUP = "LIST_ITEM"
  * @param trailing component trailing content (text, icon, color)
  * @param leftImage component left image
  * @param type component type (RadioButton, etc.)
+ * @param verticalAlignment override for row vertical alignment; defaults to Top for RadioButton, CenterVertically otherwise
  * @param onClick component click action
  */
 @Composable
@@ -52,8 +53,11 @@ fun MPListItem(
     trailing: MPListItemTrailing? = null,
     leftImage: MPListItemLeading? = null,
     type: MPListItemType? = null,
+    verticalAlignment: Alignment.Vertical? = null,
     onClick: () -> Unit = {},
 ) {
+    val rowAlignment = verticalAlignment
+        ?: if (type is MPListItemType.RadioButton) Alignment.Top else Alignment.CenterVertically
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -62,7 +66,7 @@ fun MPListItem(
                 horizontal = MercadoPagoTheme.spacing.paddings.xmicro,
                 vertical = MercadoPagoTheme.spacing.paddings.xmicro,
             ),
-        verticalAlignment = if (type is MPListItemType.RadioButton) Alignment.Top else Alignment.CenterVertically,
+        verticalAlignment = rowAlignment,
         horizontalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xmicro),
     ) {
         if (type is MPListItemType.RadioButton) {
@@ -86,11 +90,10 @@ fun MPListItem(
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .width(44.dp)
-                    .height(32.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                modifier = Modifier.size(40.dp),
             )
+
+            is MPListItemLeading.ThumbnailConstrained -> MPListItemThumbnailConstrained(leftImage.url)
 
             null -> Unit
         }
@@ -107,6 +110,35 @@ fun MPListItem(
         ) {
             MPListItemTrailing(trailing = trailing)
         }
+    }
+}
+
+@Composable
+private fun MPListItemThumbnailConstrained(
+    url: String,
+) {
+    Box(
+        modifier = Modifier
+            .size(MercadoPagoTheme.spacing.paddings.large)
+            .clip(MercadoPagoTheme.shape.full)
+            .background(MercadoPagoTheme.color.background.primary)
+            .border(
+                width = MercadoPagoTheme.borderWidth.medium,
+                color = MercadoPagoTheme.color.border.primary,
+                shape = MercadoPagoTheme.shape.full,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(MercadoPagoTheme.spacing.paddings.micro),
+        )
     }
 }
 

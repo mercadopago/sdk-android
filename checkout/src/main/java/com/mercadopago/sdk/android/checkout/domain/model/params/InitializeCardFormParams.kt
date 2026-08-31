@@ -4,4 +4,5 @@ internal data class InitializeCardFormParams(
     val orderId: String?,
     val clientToken: String?,
     val checkoutType: String,
+    val screens: String? = null,
 )
