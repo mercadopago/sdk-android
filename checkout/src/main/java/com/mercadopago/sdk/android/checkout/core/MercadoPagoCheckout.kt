@@ -7,6 +7,8 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.ScreenConfig
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOnEmailChangeRequested
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -42,6 +44,7 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
         callback: (MercadoPagoCheckoutResult<T, C>) -> Unit,
     ) {
         CheckoutCallbackHolder.setCallback(callback)
+        CheckoutCallbackHolder.setEmailChangeCallback(checkoutConfiguration.getOnEmailChangeRequested())
         Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
             setCurrentStyle(
                 checkoutAppearance?.style ?: MercadoPagoUserInterfaceStyle.System,
@@ -70,6 +73,7 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
         ),
     ) {
         private var paymentMethodConfigs: List<MPPaymentMethodConfig> = emptyList()
+        internal val screenConfigs: LinkedHashSet<ScreenConfig> = linkedSetOf()
 
         /**
          * Sets the payment methods
@@ -89,6 +93,7 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
                 checkoutConfiguration = CheckoutConfiguration(
                     checkoutType = checkoutType,
                     paymentMethodConfigs = paymentMethodConfigs,
+                    screenConfigs = screenConfigs.toList(),
                 ),
             )
     }
