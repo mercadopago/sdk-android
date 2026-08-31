@@ -26,6 +26,7 @@ internal class CardFormRepositoryImpl(
                 orderId = params.orderId,
                 clientToken = params.clientToken,
                 checkoutType = params.checkoutType,
+                screens = params.screens,
             )
         }.map { it.toDomain() }
 

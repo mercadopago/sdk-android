@@ -35,11 +35,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
@@ -57,6 +58,7 @@ import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -74,11 +76,6 @@ internal fun CardPaymentScreen(
     viewModel: CardPaymentViewModel,
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberPCIState = rememberPCIFieldState()
-    val expirationDatePCIState = rememberPCIFieldState()
-    val securityCodePCIState = rememberPCIFieldState()
-    val cardHolderPCIState = rememberPCIFieldState()
-    val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
@@ -93,11 +90,11 @@ internal fun CardPaymentScreen(
 
     CardPaymentScreenContent(
         viewState = viewState,
-        cardNumberPCIState = cardNumberPCIState,
-        expirationDatePCIState = expirationDatePCIState,
-        securityCodePCIState = securityCodePCIState,
-        cardHolderPCIState = cardHolderPCIState,
-        identificationPCIState = identificationPCIState,
+        cardNumberPCIState = viewModel.cardNumberPCIState,
+        expirationDatePCIState = viewModel.expirationDatePCIState,
+        securityCodePCIState = viewModel.securityCodePCIState,
+        cardHolderPCIState = viewModel.cardHolderPCIState,
+        identificationPCIState = viewModel.identificationPCIState,
         onCardNumberEvent = viewModel::onCardNumberEvent,
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
@@ -109,9 +106,9 @@ internal fun CardPaymentScreen(
         onFooterButtonClick = {
             focusManager.clearFocus()
             viewModel.onSubmit(
-                cardNumberState = cardNumberPCIState,
-                expirationDateState = expirationDatePCIState,
-                securityCodeState = securityCodePCIState,
+                cardNumberState = viewModel.cardNumberPCIState,
+                expirationDateState = viewModel.expirationDatePCIState,
+                securityCodeState = viewModel.securityCodePCIState,
             )
         },
     )
@@ -216,8 +213,8 @@ internal fun CardPaymentScreenContent(
             CardPaymentFooterButtonOverlay(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 buttonLabel = viewState.footerState.buttonLabel.orEmpty(),
-                enabled = viewState.footerState.isButtonEnabled,
-                isLoading = viewState.footerState.isButtonLoading,
+                enabled = viewState.footerState.buttonState?.enabled ?: false,
+                isLoading = viewState.footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
                 onHeightChanged = { overlayButtonHeightPx = it },
             )
@@ -305,7 +302,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -354,7 +351,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonLabel = "Continuar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -425,7 +422,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = false,
+                    buttonState = ButtonState(enabled = false),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -583,11 +580,11 @@ private fun CardPaymentFooter(
         MPFixedFooter(
             title = footerState.title,
             amount = footerState.toAmountData(),
-            subtitle = footerState.subtitle,
+            subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
             button = MPFixedFooterButtonData(
                 text = footerState.buttonLabel.orEmpty(),
-                enabled = footerState.isButtonEnabled,
-                isLoading = footerState.isButtonLoading,
+                enabled = footerState.buttonState?.enabled ?: false,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
             ),
         )
