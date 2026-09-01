@@ -22,4 +22,11 @@ sealed class MPListItemLeading {
      * @param url Image URL
      */
     data class Thumbnail(val url: String) : MPListItemLeading()
+
+    /**
+     * Leading thumbnail loaded from a remote URL, displayed inside a circular container with padding.
+     * Use this for payment method icons (e.g. offline methods) that require a badge-style treatment.
+     * @param url Image URL
+     */
+    data class ThumbnailConstrained(val url: String) : MPListItemLeading()
 }
