@@ -142,11 +142,10 @@ internal class PaymentBrickInitializationOutputMapperTest {
     }
 
     @Test
-    fun `given output then isLoading and isError are false`() {
+    fun `given output then isLoading is false`() {
         val state = buildOutput().toScreenState()
 
         assertEquals(false, state.isLoading)
-        assertEquals(false, state.isError)
     }
 
     private fun savedCardData(

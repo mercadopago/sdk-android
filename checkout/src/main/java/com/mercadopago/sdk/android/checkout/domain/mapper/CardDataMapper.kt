@@ -2,12 +2,14 @@ package com.mercadopago.sdk.android.checkout.domain.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardData
 import com.mercadopago.sdk.android.checkout.data.remote.response.Installments
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsFooter
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeader
 import com.mercadopago.sdk.android.checkout.data.remote.response.Quota
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCode
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeScreen
 import com.mercadopago.sdk.android.checkout.domain.model.CardDataOutput
+import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsFooterOutput
 import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsHeaderOutput
 import com.mercadopago.sdk.android.checkout.domain.model.InstallmentsOutput
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaOutput
@@ -35,9 +37,9 @@ internal fun SecurityCode.toDomain(): SecurityCodeOutput =
 
 internal fun SecurityCodeScreen.toDomain(): SecurityCodeScreenOutput =
     SecurityCodeScreenOutput(
-        headerTitle = headerTitle,
+        headerTitle = header.title,
         field = field.toDomain(),
-        buttonLabel = buttonLabel,
+        buttonLabel = button.label,
     )
 
 internal fun SecurityCodeField.toDomain(): SecurityCodeFieldOutput =
@@ -45,18 +47,25 @@ internal fun SecurityCodeField.toDomain(): SecurityCodeFieldOutput =
         label = label,
         placeholder = placeholder,
         helper = helper,
+        error = error,
     )
 
 internal fun Installments.toDomain(): InstallmentsOutput =
     InstallmentsOutput(
         header = header.toDomain(),
-        totalLabel = totalLabel,
-        payButtonLabel = payButtonLabel,
+        footer = footer.toDomain(),
         selectionType = selectionType,
         quotas = quotas.map { it.toDomain() },
     )
 
 internal fun InstallmentsHeader.toDomain(): InstallmentsHeaderOutput = InstallmentsHeaderOutput(title = title)
+
+internal fun InstallmentsFooter.toDomain(): InstallmentsFooterOutput =
+    InstallmentsFooterOutput(
+        totalLabel = totalLabel,
+        buttonLabel = button.label,
+        currencySymbol = currencySymbol,
+    )
 
 internal fun Quota.toDomain(): QuotaOutput =
     QuotaOutput(
@@ -65,5 +74,7 @@ internal fun Quota.toDomain(): QuotaOutput =
         totalAmount = totalAmount,
         primaryLabel = primaryLabel,
         secondaryLabel = secondaryLabel,
+        tertiaryLabel = tertiaryLabel,
         state = state,
+        accessibilityLabel = accessibilityLabel,
     )

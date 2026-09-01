@@ -62,9 +62,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
+import com.mercadopago.sdk.android.checkout.core.extensions.withReviewAndConfirm
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 
@@ -72,12 +74,15 @@ private sealed interface CheckoutState {
     data object Idle : CheckoutState
     data class CardSaveSuccess(val token: String) : CheckoutState
     data class CardTransactionSuccess(val orderStatus: String) : CheckoutState
+    data class PaymentSuccess(val orderStatus: String) : CheckoutState
 }
 
 @Composable
 internal fun CheckoutExampleScreen(
+    flowType: String = "card_save",
     modifier: Modifier = Modifier,
 ) {
+    val showOrderFields = flowType != "card_save"
     val context = LocalContext.current
     var state by remember { mutableStateOf<CheckoutState>(CheckoutState.Idle) }
     var orderId by remember { mutableStateOf("") }
@@ -263,37 +268,39 @@ internal fun CheckoutExampleScreen(
             }
 
             // ── Order config section ──
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text(
-                    text = "CONFIGURAÇÃO DO PEDIDO",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    letterSpacing = 1.sp,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    OutlinedTextField(
-                        value = orderId,
-                        onValueChange = { orderId = it },
-                        label = { Text("Order ID", fontSize = 10.sp) },
-                        modifier = Modifier.weight(1f).testTag("checkout.orderId"),
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.labelSmall,
-                        shape = RoundedCornerShape(10.dp),
+            if (showOrderFields) {
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Text(
+                        text = "CONFIGURAÇÃO DO PEDIDO",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                        letterSpacing = 1.sp,
                     )
-                    OutlinedTextField(
-                        value = clientToken,
-                        onValueChange = { clientToken = it },
-                        label = { Text("Client Token", fontSize = 10.sp) },
-                        modifier = Modifier.weight(1f).testTag("checkout.clientToken"),
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.labelSmall,
-                        shape = RoundedCornerShape(10.dp),
-                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        OutlinedTextField(
+                            value = orderId,
+                            onValueChange = { orderId = it },
+                            label = { Text("Order ID", fontSize = 10.sp) },
+                            modifier = Modifier.weight(1f).testTag("checkout.orderId"),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.labelSmall,
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                        OutlinedTextField(
+                            value = clientToken,
+                            onValueChange = { clientToken = it },
+                            label = { Text("Client Token", fontSize = 10.sp) },
+                            modifier = Modifier.weight(1f).testTag("checkout.clientToken"),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.labelSmall,
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                    }
                 }
             }
 
@@ -328,17 +335,15 @@ internal fun CheckoutExampleScreen(
 
             // ── Action buttons ──
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Button(
-                    onClick = {
+                val order = MPOrder(orderId = orderId.trim(), clientToken = clientToken.trim())
+                val onPayClick: (() -> Unit)? = when (flowType) {
+                    "card_transaction" -> ({
                         MercadoPagoCheckout.Builder(
-                            context = context,
-                            checkoutType = MPCheckoutType.CardTransaction(
-                                order = MPOrder(
-                                    orderId = orderId.trim(),
-                                    clientToken = clientToken.trim(),
-                                ),
-                            ),
-                        ).setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+                            context,
+                            MPCheckoutType.CardTransaction(order, sellerInfo = MPSellerInfo(name = "Adidas")),
+                        )
+                            .setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+                            .withReviewAndConfirm()
                             .build()
                             .show { result ->
                                 when (result) {
@@ -350,42 +355,61 @@ internal fun CheckoutExampleScreen(
                                         Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                    },
-                    enabled = orderId.isNotBlank() && clientToken.isNotBlank(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .testTag("checkout.payNow"),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text("Pagar agora", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                OutlinedButton(
-                    onClick = {
-                        MercadoPagoCheckout.Builder(
-                            context = context,
-                            checkoutType = MPCheckoutType.CardSave,
-                        ).build().show { result ->
-                            when (result) {
-                                is MercadoPagoCheckoutResult.Success ->
-                                    state = CheckoutState.CardSaveSuccess(result.paymentData.token)
-                                is MercadoPagoCheckoutResult.Error ->
-                                    Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
-                                is MercadoPagoCheckoutResult.UserCancelled ->
-                                    Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                    })
+                    "payment" -> ({
+                        MercadoPagoCheckout.Builder(context, MPCheckoutType.Payment(order))
+                            .setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+                            .build()
+                            .show { result ->
+                                when (result) {
+                                    is MercadoPagoCheckoutResult.Success ->
+                                        state = CheckoutState.PaymentSuccess(result.paymentData.orderStatus)
+                                    is MercadoPagoCheckoutResult.Error ->
+                                        Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
+                                    is MercadoPagoCheckoutResult.UserCancelled ->
+                                        Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .testTag("checkout.saveCard"),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text("Salvar cartão", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    })
+                    else -> null
+                }
+                if (onPayClick != null) {
+                    Button(
+                        onClick = onPayClick,
+                        enabled = orderId.isNotBlank() && clientToken.isNotBlank(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .testTag("checkout.payNow"),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Text("Pagar agora", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = {
+                            MercadoPagoCheckout.Builder(
+                                context = context,
+                                checkoutType = MPCheckoutType.CardSave,
+                            ).build().show { result ->
+                                when (result) {
+                                    is MercadoPagoCheckoutResult.Success ->
+                                        state = CheckoutState.CardSaveSuccess(result.paymentData.token)
+                                    is MercadoPagoCheckoutResult.Error ->
+                                        Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
+                                    is MercadoPagoCheckoutResult.UserCancelled ->
+                                        Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .testTag("checkout.saveCard"),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Text("Salvar cartão", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
 
@@ -394,6 +418,11 @@ internal fun CheckoutExampleScreen(
 
         when (val current = state) {
             is CheckoutState.CardTransactionSuccess -> PaymentSuccessScreen(
+                orderStatus = current.orderStatus,
+                onNewPayment = { state = CheckoutState.Idle },
+                modifier = Modifier.fillMaxSize(),
+            )
+            is CheckoutState.PaymentSuccess -> PaymentSuccessScreen(
                 orderStatus = current.orderStatus,
                 onNewPayment = { state = CheckoutState.Idle },
                 modifier = Modifier.fillMaxSize(),
