@@ -16,6 +16,7 @@ internal class InitializeCardFormUseCase(
         orderId: String?,
         clientToken: String?,
         checkoutType: String,
+        screens: String? = null,
     ): Result<CardFormInitializationOutput, MercadoPagoCheckoutError> =
         withServiceRetry {
             repository.fetchInitialization(
@@ -23,6 +24,7 @@ internal class InitializeCardFormUseCase(
                     orderId = orderId,
                     clientToken = clientToken,
                     checkoutType = checkoutType,
+                    screens = screens,
                 ),
             )
         }.mapError(ErrorLocalized.CARD_FORM_INITIALIZATION)
