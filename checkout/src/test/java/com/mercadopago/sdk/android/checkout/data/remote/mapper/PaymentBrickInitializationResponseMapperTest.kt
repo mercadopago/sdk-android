@@ -2,6 +2,8 @@ package com.mercadopago.sdk.android.checkout.data.remote.mapper
 
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardData
 import com.mercadopago.sdk.android.checkout.data.remote.response.Installments
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsFooter
+import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsFooterButton
 import com.mercadopago.sdk.android.checkout.data.remote.response.InstallmentsHeader
 import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentBrickFooter
 import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentBrickInitializationResponse
@@ -9,7 +11,9 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentMethod
 import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentSection
 import com.mercadopago.sdk.android.checkout.data.remote.response.Quota
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCode
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeButton
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeHeader
 import com.mercadopago.sdk.android.checkout.data.remote.response.SecurityCodeScreen
 import com.mercadopago.sdk.android.checkout.data.remote.response.TicketOption
 import java.math.BigDecimal
@@ -50,19 +54,22 @@ internal class PaymentBrickInitializationResponseMapperTest {
             securityCode = SecurityCode(
                 length = 3,
                 screen = SecurityCodeScreen(
-                    headerTitle = "Ingresá el código de seguridad",
+                    header = SecurityCodeHeader(title = "Ingresá el código de seguridad"),
                     field = SecurityCodeField(
                         label = "Código de seguridad",
                         placeholder = "Ej.: 123",
                         helper = "Está en el reverso de tu tarjeta.",
                     ),
-                    buttonLabel = "Continuar",
+                    button = SecurityCodeButton(label = "Continuar"),
                 ),
             ),
             installments = Installments(
                 header = InstallmentsHeader(title = "Elegí las cuotas"),
-                totalLabel = "Total",
-                payButtonLabel = "Pagar",
+                footer = InstallmentsFooter(
+                    button = InstallmentsFooterButton(label = "Pagar"),
+                    totalLabel = "Total",
+                    currencySymbol = "$",
+                ),
                 selectionType = "radio_button",
                 quotas = listOf(
                     Quota(
@@ -79,6 +86,7 @@ internal class PaymentBrickInitializationResponseMapperTest {
                         totalAmount = BigDecimal("510.00"),
                         primaryLabel = "3x $ 170,00",
                         secondaryLabel = "$ 510,00",
+                        tertiaryLabel = "Costo financiero total: 0%",
                         state = "interest_free",
                     ),
                 ),
@@ -177,10 +185,12 @@ internal class PaymentBrickInitializationResponseMapperTest {
         val installments = assertNotNull(card.installments)
 
         assertEquals("Elegí las cuotas", installments.header.title)
-        assertEquals("Total", installments.totalLabel)
-        assertEquals("Pagar", installments.payButtonLabel)
+        assertEquals("Total", installments.footer.totalLabel)
+        assertEquals("Pagar", installments.footer.buttonLabel)
+        assertEquals("$", installments.footer.currencySymbol)
         assertEquals("radio_button", installments.selectionType)
         assertEquals(2, installments.quotas.size)
+        assertNull(installments.quotas.first().tertiaryLabel)
 
         val quota = installments.quotas[1]
         assertEquals(3, quota.installments)
@@ -188,6 +198,7 @@ internal class PaymentBrickInitializationResponseMapperTest {
         assertEquals(BigDecimal("510.00"), quota.totalAmount)
         assertEquals("3x $ 170,00", quota.primaryLabel)
         assertEquals("$ 510,00", quota.secondaryLabel)
+        assertEquals("Costo financiero total: 0%", quota.tertiaryLabel)
         assertEquals("interest_free", quota.state)
     }
 

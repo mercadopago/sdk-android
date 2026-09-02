@@ -11,7 +11,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 
 internal fun CardBinResponse.toDomain(): CardBinData {
     val paymentMethod = paymentMethods?.firstOrNull()
@@ -57,9 +57,9 @@ private fun String?.toQuotaState(): QuotaState =
         else -> QuotaState.None
     }
 
-private fun String?.toDisplayType(): InstallmentsDisplayType =
+private fun String?.toDisplayType(): SelectionDisplayType =
     if (equals("chevron", ignoreCase = true)) {
-        InstallmentsDisplayType.Chevron
+        SelectionDisplayType.Chevron
     } else {
-        InstallmentsDisplayType.RadioButton
+        SelectionDisplayType.RadioButton
     }
