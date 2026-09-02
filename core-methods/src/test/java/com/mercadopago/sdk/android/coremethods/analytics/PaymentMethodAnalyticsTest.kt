@@ -43,6 +43,7 @@ internal class PaymentMethodAnalyticsTest {
     fun `error metric carries card_brand and issuer alongside error_type`() {
         val metric = metricPaymentMethodCallError(
             error = "NETWORK_ERROR",
+            observabilityEventId = "event-id",
             issuer = "24",
             cardBrand = "master",
         )
@@ -51,13 +52,17 @@ internal class PaymentMethodAnalyticsTest {
         assertEquals(TrackType.EVENT, metric.type)
         val data = assertIs<PaymentMethodErrorData>(metric.data)
         assertEquals("NETWORK_ERROR", data.errorType)
+        assertEquals("event-id", data.observabilityEventId)
         assertEquals("24", data.issuer)
         assertEquals("master", data.cardBrand)
     }
 
     @Test
     fun `error metric defaults card_brand and issuer to empty when omitted`() {
-        val metric = metricPaymentMethodCallError(error = "NETWORK_ERROR")
+        val metric = metricPaymentMethodCallError(
+            error = "NETWORK_ERROR",
+            observabilityEventId = "event-id",
+        )
         val data = assertIs<PaymentMethodErrorData>(metric.data)
         assertEquals("", data.issuer)
         assertEquals("", data.cardBrand)

@@ -30,6 +30,7 @@ internal fun metricGenerateCardTokenCallSuccess(
 @KoverIgnore("in development")
 internal fun metricGenerateCardTokenCallError(
     error: String,
+    observabilityEventId: String,
     identityType: String? = null,
     typeWallet: String = TYPE_WALLET_CORE_METHODS,
 ) = Metric(
@@ -37,6 +38,7 @@ internal fun metricGenerateCardTokenCallError(
     type = TrackType.EVENT,
     data = GenerateCardTokenErrorData(
         errorType = error,
+        observabilityEventId = observabilityEventId,
         identityType = identityType,
         typeWallet = typeWallet,
     ),
@@ -56,6 +58,8 @@ internal data class GenerateCardAnalyticsData(
 internal data class GenerateCardTokenErrorData(
     @SerializedName("error_type")
     val errorType: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String,
     @SerializedName("identity_document_type")
     val identityType: String?,
     @SerializedName("type_wallet")

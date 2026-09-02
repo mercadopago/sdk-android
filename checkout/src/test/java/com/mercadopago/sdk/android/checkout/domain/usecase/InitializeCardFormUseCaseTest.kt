@@ -4,6 +4,7 @@ import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.InitializeCardFormParams
 import com.mercadopago.sdk.android.checkout.domain.repository.CardFormRepository
@@ -51,8 +52,8 @@ internal class InitializeCardFormUseCaseTest {
 
         val result = useCase(orderId, clientToken, checkoutType)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        val checkoutError = result.error
+        val observedError = assertIs<Result.Error<ObservedCheckoutError>>(result).error
+        val checkoutError = observedError.publicError
         assertIs<MercadoPagoCheckoutError.ServiceError>(checkoutError)
         assertEquals(ErrorCode.SERVICE_ERROR, checkoutError.errorCode)
         assertEquals(ErrorLocalized.CARD_FORM_INITIALIZATION.name, checkoutError.errorLocalized)
@@ -65,8 +66,8 @@ internal class InitializeCardFormUseCaseTest {
 
         val result = useCase(orderId, clientToken, checkoutType)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        val checkoutError = result.error
+        val observedError = assertIs<Result.Error<ObservedCheckoutError>>(result).error
+        val checkoutError = observedError.publicError
         assertIs<MercadoPagoCheckoutError.NetworkError>(checkoutError)
         assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, checkoutError.errorCode)
         assertEquals(ErrorLocalized.CARD_FORM_INITIALIZATION.name, checkoutError.errorLocalized)
@@ -80,7 +81,8 @@ internal class InitializeCardFormUseCaseTest {
 
         val result = useCase(orderId, clientToken, checkoutType)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        val observedError = assertIs<Result.Error<ObservedCheckoutError>>(result).error
+        assertIs<MercadoPagoCheckoutError.ServiceError>(observedError.publicError)
     }
 
     @Test

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Paparazzi snapshot images removed from git tracking — LFS objects were missing on the server (404); directory added to `.gitignore`
 
 ### Added
+- Best-effort native error observability for the existing CoreMethods and Checkout error seams. Reports use a closed, privacy-safe catalog, a bounded single-worker queue, and a credential-free transport; existing Melidata events share the same correlation ID.
+- Native error delivery is compiled in `DUAL_WRITE` mode for migration validation. The public SDK API and Checkout callbacks remain unchanged, and source gates must stay disabled until trusted-signal corroboration, privacy/security approval, and the rollout checks are complete.
 - `MPCheckoutType.CardTransaction` — initiates a card payment against an existing order via `MPOrder(orderId, clientToken, amount, payer)`
 - `MPPaymentData.CardTransaction` — success result carrying `orderId`, `orderStatus`, and `paymentMethodId`
 - `MPUserCancelledContext.CardTransaction` — cancellation context with `fields` (list of `MPCancelledFieldState`) and `screens` visited

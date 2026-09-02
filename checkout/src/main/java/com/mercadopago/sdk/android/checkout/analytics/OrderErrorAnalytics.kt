@@ -12,12 +12,14 @@ private const val ERROR_PATH = "/error"
 internal fun metricOrderError(
     errorType: String,
     orderId: String,
+    observabilityEventId: String,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$ORDER_PATH$ERROR_PATH",
     type = TrackType.EVENT,
     data = OrderErrorEventData(
         errorType = errorType,
         orderId = orderId,
+        observabilityEventId = observabilityEventId,
     ),
 )
 
@@ -26,4 +28,6 @@ internal data class OrderErrorEventData(
     val errorType: String,
     @SerializedName("order_id")
     val orderId: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String,
 ) : EventData

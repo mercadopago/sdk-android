@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.checkout.presentation.usecase
 
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
-import com.mercadopago.sdk.android.checkout.domain.exception.ExceptionFactory.mapToCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.exception.ObservedCheckoutErrorFactory.mapResultObserved
 import com.mercadopago.sdk.android.checkout.domain.extensions.withResultErrorHandling
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.interactor.coreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
@@ -20,7 +20,7 @@ internal class GenerateTokenUseCase(
         expirationDateState: PCIFieldState,
         securityCodeState: PCIFieldState,
         buyerIdentification: BuyerIdentification,
-    ): Result<CardToken, MercadoPagoCheckoutError> =
+    ): Result<CardToken, ObservedCheckoutError> =
         withResultErrorHandling {
             coreMethods.generateCardToken(
                 cardNumberState = cardNumberState,
@@ -28,5 +28,5 @@ internal class GenerateTokenUseCase(
                 securityCodeState = securityCodeState,
                 buyerIdentification = buyerIdentification,
             )
-        }.mapToCheckoutError(ErrorLocalized.TOKENIZATION)
+        }.mapResultObserved(ErrorLocalized.TOKENIZATION)
 }

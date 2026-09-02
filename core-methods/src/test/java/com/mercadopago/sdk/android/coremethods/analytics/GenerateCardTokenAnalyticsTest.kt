@@ -36,6 +36,7 @@ internal class GenerateCardTokenAnalyticsTest {
     fun `error metric uses error path with error_type, identity_document_type and type_wallet`() {
         val metric = metricGenerateCardTokenCallError(
             error = "INVALID_DATA",
+            observabilityEventId = "event-id",
             identityType = "CPF",
             typeWallet = "coremethods",
         )
@@ -44,13 +45,17 @@ internal class GenerateCardTokenAnalyticsTest {
         assertEquals(TrackType.EVENT, metric.type)
         val data = assertIs<GenerateCardTokenErrorData>(metric.data)
         assertEquals("INVALID_DATA", data.errorType)
+        assertEquals("event-id", data.observabilityEventId)
         assertEquals("CPF", data.identityType)
         assertEquals("coremethods", data.typeWallet)
     }
 
     @Test
     fun `error metric defaults type_wallet to coremethods when omitted`() {
-        val metric = metricGenerateCardTokenCallError(error = "NETWORK_ERROR")
+        val metric = metricGenerateCardTokenCallError(
+            error = "NETWORK_ERROR",
+            observabilityEventId = "event-id",
+        )
         val data = assertIs<GenerateCardTokenErrorData>(metric.data)
         assertNull(data.identityType)
         assertEquals("coremethods", data.typeWallet)

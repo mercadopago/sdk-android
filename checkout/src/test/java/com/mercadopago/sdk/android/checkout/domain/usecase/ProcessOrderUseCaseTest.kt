@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.domain.usecase
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
@@ -49,7 +50,7 @@ internal class ProcessOrderUseCaseTest {
 
         val result = useCase(params)
 
-        val checkoutError = assertIs<Result.Error<MercadoPagoCheckoutError>>(result).error
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
         assertIs<MercadoPagoCheckoutError.ServiceError>(checkoutError)
         assertEquals(ErrorCode.SERVICE_ERROR, checkoutError.errorCode)
         assertEquals(ErrorLocalized.ORDER_PROCESS.name, checkoutError.errorLocalized)
@@ -62,7 +63,7 @@ internal class ProcessOrderUseCaseTest {
 
         val result = useCase(params)
 
-        val checkoutError = assertIs<Result.Error<MercadoPagoCheckoutError>>(result).error
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
         assertIs<MercadoPagoCheckoutError.NetworkError>(checkoutError)
         assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, checkoutError.errorCode)
         assertEquals(ErrorLocalized.ORDER_PROCESS.name, checkoutError.errorLocalized)
@@ -74,7 +75,8 @@ internal class ProcessOrderUseCaseTest {
 
         val result = useCase(params)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
+        val observedError = assertIs<Result.Error<ObservedCheckoutError>>(result).error
+        assertIs<MercadoPagoCheckoutError.ServiceError>(observedError.publicError)
     }
 
     @Test

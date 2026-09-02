@@ -10,6 +10,7 @@ import org.koin.core.module.Module
 internal class AnalyticsModulesProvider(
     val context: Context,
     val getSiteIdFlow: Flow<String>,
+    val nativeSiteId: String,
 ) : CoreKoinModuleProvider {
 
     override val koinApp: Koin = CoreKoinFactory.createKoinApp(
@@ -22,5 +23,6 @@ internal class AnalyticsModulesProvider(
         provideDataSourceModule(),
         provideRepositoryModule(getSiteIdFlow),
         provideUseCaseModule(),
+        provideReporterModule(nativeSiteId),
     )
 }

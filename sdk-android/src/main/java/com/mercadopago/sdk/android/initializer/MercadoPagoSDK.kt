@@ -5,6 +5,7 @@ package com.mercadopago.sdk.android.initializer
 import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
@@ -32,7 +33,7 @@ class MercadoPagoSDK private constructor(
     val koin: Koin,
     internal var publicKey: String,
     internal var countryCode: CountryCode,
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    @get:RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     internal val sessionId: String,
     private val applicationContext: Context,
 ) {
@@ -168,6 +169,7 @@ class MercadoPagoSDK private constructor(
         fun clearInstance() {
             val instanceToClose = sdkInstance
             sdkInstance = null
+            MPAnalytics.clearInstance()
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 instanceToClose?.koin?.close()
             }

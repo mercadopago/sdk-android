@@ -6,6 +6,7 @@ import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
 import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
@@ -35,6 +36,7 @@ const val MP_ANALYTICS_TAG = "MPAnalytics"
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class MPAnalytics internal constructor(
     private val koin: Koin,
+    private val errorReporter: MPErrorReporter,
 ) {
 
     /**
@@ -63,20 +65,35 @@ class MPAnalytics internal constructor(
         /** Call this method to initialize the analytics instance.
          * @param context application context.
          * @param getSiteIdFlow a flow that emits the current siteId.
+         * @param nativeSiteId synchronously configured site used by native error reports.
          * */
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         @Synchronized
         fun initialize(
             context: Context,
             getSiteIdFlow: Flow<String>,
+            nativeSiteId: String,
         ) {
+            clearInstance()
             val modulesProvider = AnalyticsModulesProvider(
                 getSiteIdFlow = getSiteIdFlow,
                 context = context,
+                nativeSiteId = nativeSiteId,
             )
             instance = MPAnalytics(
                 koin = modulesProvider.koinApp,
+                errorReporter = modulesProvider.koinApp.get(),
             )
+        }
+
+        /** Closes the reporter and dependency graph, then clears the analytics instance. */
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        @Synchronized
+        fun clearInstance() {
+            val previous = instance
+            instance = null
+            previous?.errorReporter?.close()
+            previous?.koin?.close()
         }
     }
 
@@ -96,6 +113,26 @@ class MPAnalytics internal constructor(
                         Log.e(MP_ANALYTICS_TAG, "Error while tracking metric", it)
                     }
                 }.firstOrNull()
+        }
+    }
+
+    /**
+     * Offers a classified error to the bounded reporter and correlates its legacy metric.
+     * Reporting failures are contained and never replace a product result.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    fun trackError(
+        error: NativeError,
+        legacyMetricFactory: (String) -> Metric,
+    ) {
+        try {
+            errorReporter.track(
+                error = error,
+                legacyMetricFactory = legacyMetricFactory,
+                legacyMetricSender = ::trackMetric,
+            )
+        } catch (_: Throwable) {
+            // Observability must never replace an SDK product result.
         }
     }
 }

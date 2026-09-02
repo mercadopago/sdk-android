@@ -31,6 +31,7 @@ internal fun metricPaymentMethodCallSuccess(
 @KoverIgnore("in development")
 internal fun metricPaymentMethodCallError(
     error: String,
+    observabilityEventId: String,
     issuer: String = "",
     cardBrand: String = "",
 ) = Metric(
@@ -38,6 +39,7 @@ internal fun metricPaymentMethodCallError(
     type = TrackType.EVENT,
     data = PaymentMethodErrorData(
         errorType = error,
+        observabilityEventId = observabilityEventId,
         issuer = issuer,
         cardBrand = cardBrand,
     ),
@@ -57,6 +59,8 @@ internal data class PaymentMethodEventData(
 internal data class PaymentMethodErrorData(
     @SerializedName("error_type")
     val errorType: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String,
     @SerializedName("issuer")
     val issuer: String,
     @SerializedName("card_brand")

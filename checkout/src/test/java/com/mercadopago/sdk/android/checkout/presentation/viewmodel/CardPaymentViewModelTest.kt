@@ -4,6 +4,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.checkout.analytics.OrderSubmitEventData
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
@@ -23,6 +24,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
@@ -63,6 +65,7 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @Suppress("LargeClass")
@@ -94,11 +97,18 @@ internal class CardPaymentViewModelTest {
         localized = "checkout",
         throwable = null,
     )
+    private val observedNetworkError = ObservedCheckoutError(
+        publicError = networkError,
+        nativeCode = NativeErrorCode.CONNECTION_UNAVAILABLE,
+    )
 
     @Before
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
+        every { mockMPAnalytics.trackError(any(), any()) } answers {
+            mockMPAnalytics.trackMetric(secondArg<(String) -> Metric>().invoke("event-id"))
+        }
         mockkObject(MercadoPagoSDK.Companion)
         every { MercadoPagoSDK.countryCode } returns null
         mockkObject(CheckoutCallbackHolder)
@@ -148,7 +158,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization fails then isLoading is false`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
@@ -158,17 +168,18 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when initialization fails then emits OnFailure view event`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
 
-        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnFailure
+        assertSame(networkError, event.error)
     }
 
     @Test
     fun `when initialization fails then tracks initialize_error event`() = runTest {
-        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(networkError)
+        coEvery { initializeCardFormUseCase(any(), any(), any()) } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
 
         viewModel.initialization()
@@ -558,7 +569,7 @@ internal class CardPaymentViewModelTest {
     fun `when onSubmit fails then emits OnFailure view event`() = runTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
-        } returns Result.Error(networkError)
+        } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
 
         viewModel.onSubmit(
@@ -567,7 +578,8 @@ internal class CardPaymentViewModelTest {
             securityCodeState = mockk<PCIFieldState>(relaxed = true),
         )
 
-        assertTrue(viewModel.viewEvent.value is CardPaymentViewEvent.OnFailure)
+        val event = viewModel.viewEvent.value as CardPaymentViewEvent.OnFailure
+        assertSame(networkError, event.error)
     }
 
     @Test
@@ -659,7 +671,7 @@ internal class CardPaymentViewModelTest {
 
     @Test
     fun `when processOrder fails without prior submit then notifies callback with error`() = runTest {
-        coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
+        coEvery { processOrderUseCase(any()) } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
         viewModel.setupWithAmount()
 
@@ -667,7 +679,8 @@ internal class CardPaymentViewModelTest {
 
         val notifySlot = slot<MercadoPagoCheckoutResult<*, *>>()
         verify(exactly = 1) { CheckoutCallbackHolder.notify(capture(notifySlot)) }
-        assertTrue(notifySlot.captured is MercadoPagoCheckoutResult.Error)
+        val result = notifySlot.captured as MercadoPagoCheckoutResult.Error
+        assertSame(networkError, result.error)
     }
 
     @Test
@@ -771,7 +784,7 @@ internal class CardPaymentViewModelTest {
         coEvery {
             generateTokenUseCase(any(), any(), any(), any())
         } returns Result.Success(CardToken(token = "token_abc"))
-        coEvery { processOrderUseCase(any()) } returns Result.Error(networkError)
+        coEvery { processOrderUseCase(any()) } returns Result.Error(observedNetworkError)
         val viewModel = makeViewModel()
         viewModel.setupWithAmount()
         viewModel.onSubmit(
