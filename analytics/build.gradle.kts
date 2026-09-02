@@ -39,6 +39,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "NATIVE_ERROR_DELIVERY_MODE", "\"DUAL_WRITE\"")
     }
 
     buildTypes {
@@ -57,6 +58,9 @@ android {
     kotlinOptions {
         jvmTarget = MercadoPagoSDKConfig.JVM_TARGET
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -68,6 +72,9 @@ dependencies {
 
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.kotlin.coroutines.core)
 
     api(libs.androidx.datastore)
 
@@ -77,6 +84,7 @@ dependencies {
     testImplementation(libs.koin.test.junit4)
     testImplementation(libs.cashapp.turbine)
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.okhttp.mockWebServer)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
