@@ -375,7 +375,7 @@ internal class CardPaymentViewModel(
                 },
                 onError = { error ->
                     analyticsTracker.trackInitializeError(error)
-                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error)
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(error.publicError)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(isLoading = false)
@@ -489,7 +489,7 @@ internal class CardPaymentViewModel(
                 onSuccess = { cardToken -> handleToken(token = cardToken.token, payer = payer) },
                 onError = { checkoutError ->
                     analyticsTracker.trackSubmitError(checkoutError)
-                    _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError)
+                    _viewEvent.value = CardPaymentViewEvent.OnFailure(checkoutError.publicError)
                 },
             ).apply {
                 _viewState.value = _viewState.value.copy(
@@ -596,7 +596,7 @@ internal class CardPaymentViewModel(
             },
             onError = { error ->
                 analyticsTracker.trackOrderError(error = error, orderId = orderId)
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error))
+                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(error.publicError))
                 _viewState.value = _viewState.value.copy(isLoading = false)
                 pendingOrderData = null
             },

@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.checkout.analytics.CheckoutErrorObservability
 import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.analytics.InstallmentsInitializeEventData
 import com.mercadopago.sdk.android.checkout.analytics.metricInstallmentsInitialize
@@ -17,6 +19,7 @@ internal class InstallmentsAnalyticsTracker(
     private val paymentData: MPPaymentData,
     private val installmentData: MPInstallmentData,
     private val orderId: String,
+    private val errorObservability: CheckoutErrorObservability = CheckoutErrorObservability(),
 ) {
     private var terminated = false
 
@@ -70,8 +73,11 @@ internal class InstallmentsAnalyticsTracker(
     ) {
         if (terminated) return
         terminated = true
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricInstallmentsUserCanceledError(errorType = reason.analyticsValue),
-        )
+        errorObservability.trackCancellation(NativeErrorOperation.INSTALLMENTS_CANCELLATION) { eventId ->
+            metricInstallmentsUserCanceledError(
+                errorType = reason.analyticsValue,
+                observabilityEventId = eventId,
+            )
+        }
     }
 }

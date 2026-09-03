@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
@@ -47,10 +48,10 @@ internal class GenerateTokenUseCaseTest {
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.NetworkError>(result.error)
-        assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val publicError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.NetworkError>(publicError)
+        assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, publicError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, publicError.errorLocalized)
     }
 
     @Test
@@ -62,10 +63,10 @@ internal class GenerateTokenUseCaseTest {
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.NetworkError>(result.error)
-        assertEquals(ErrorCode.NETWORK_TIMEOUT, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val publicError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.NetworkError>(publicError)
+        assertEquals(ErrorCode.NETWORK_TIMEOUT, publicError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, publicError.errorLocalized)
     }
 
     @Test
@@ -77,10 +78,10 @@ internal class GenerateTokenUseCaseTest {
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.ServiceError>(result.error)
-        assertEquals(ErrorCode.SERVICE_ERROR, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val publicError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.ServiceError>(publicError)
+        assertEquals(ErrorCode.SERVICE_ERROR, publicError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, publicError.errorLocalized)
     }
 
     @Test
@@ -92,9 +93,9 @@ internal class GenerateTokenUseCaseTest {
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.ServiceError>(result.error)
-        assertEquals(ErrorCode.SERVICE_ERROR, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val publicError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.ServiceError>(publicError)
+        assertEquals(ErrorCode.SERVICE_ERROR, publicError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, publicError.errorLocalized)
     }
 }

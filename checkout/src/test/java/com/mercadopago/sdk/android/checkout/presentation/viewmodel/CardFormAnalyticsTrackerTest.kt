@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import io.mockk.mockk
 import kotlin.test.Test
@@ -104,14 +106,24 @@ internal class CardFormAnalyticsTrackerTest {
     fun `given error then trackInitializeError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackInitializeError(mockk<MercadoPagoCheckoutError>(relaxed = true))
+        tracker.trackInitializeError(
+            ObservedCheckoutError(
+                mockk<MercadoPagoCheckoutError>(relaxed = true),
+                NativeErrorCode.OPERATION_FAILED,
+            ),
+        )
     }
 
     @Test
     fun `given error then trackSubmitError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackSubmitError(mockk<MercadoPagoCheckoutError>(relaxed = true))
+        tracker.trackSubmitError(
+            ObservedCheckoutError(
+                mockk<MercadoPagoCheckoutError>(relaxed = true),
+                NativeErrorCode.OPERATION_FAILED,
+            ),
+        )
     }
 
     @Test

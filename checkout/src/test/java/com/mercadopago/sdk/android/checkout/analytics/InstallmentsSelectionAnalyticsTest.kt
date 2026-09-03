@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
-import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,19 +34,25 @@ internal class InstallmentsSelectionAnalyticsTest {
 
     @Test
     fun `when metricInstallmentsUserCanceledError called with back_pressed then returns error data`() {
-        val metric = metricInstallmentsUserCanceledError(errorType = "back_pressed")
+        val metric = metricInstallmentsUserCanceledError(
+            errorType = "back_pressed",
+            observabilityEventId = "event-id",
+        )
 
         assertEquals("/checkout_api_native/checkout/installments/user_canceled_error", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("back_pressed", data.errorType)
     }
 
     @Test
     fun `when metricInstallmentsUserCanceledError called with user_dismissed then returns error data`() {
-        val metric = metricInstallmentsUserCanceledError(errorType = "user_dismissed")
+        val metric = metricInstallmentsUserCanceledError(
+            errorType = "user_dismissed",
+            observabilityEventId = "event-id",
+        )
 
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("user_dismissed", data.errorType)
     }
 

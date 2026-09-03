@@ -1,6 +1,8 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.checkout.analytics.CheckoutErrorObservability
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormDropdownSelection
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInitializeError
 import com.mercadopago.sdk.android.checkout.analytics.metricCardFormInputValidation
@@ -12,20 +14,24 @@ import com.mercadopago.sdk.android.checkout.analytics.metricOrderSubmit
 import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.analytics.toErrorTypeString
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 
 internal class CardFormAnalyticsTracker(
     private val isLoading: () -> Boolean,
+    private val errorObservability: CheckoutErrorObservability = CheckoutErrorObservability(),
 ) {
     private var canceled = false
 
     fun trackInitializeError(
-        error: MercadoPagoCheckoutError,
+        error: ObservedCheckoutError,
     ) {
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricCardFormInitializeError(errorType = error.toErrorTypeString()),
-        )
+        errorObservability.track(error, NativeErrorOperation.CARD_FORM_INITIALIZATION) { eventId ->
+            metricCardFormInitializeError(
+                errorType = error.publicError.toErrorTypeString(),
+                observabilityEventId = eventId,
+            )
+        }
     }
 
     fun trackInputValidation(
@@ -76,31 +82,38 @@ internal class CardFormAnalyticsTracker(
     }
 
     fun trackSubmitError(
-        error: MercadoPagoCheckoutError,
+        error: ObservedCheckoutError,
     ) {
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricCardFormSubmitError(errorType = error.toErrorTypeString()),
-        )
+        errorObservability.track(error, NativeErrorOperation.CARD_FORM_SUBMISSION) { eventId ->
+            metricCardFormSubmitError(
+                errorType = error.publicError.toErrorTypeString(),
+                observabilityEventId = eventId,
+            )
+        }
     }
 
     fun trackOrderError(
-        error: MercadoPagoCheckoutError,
+        error: ObservedCheckoutError,
         orderId: String,
     ) {
-        MPAnalytics.tryGetInstance()?.trackMetric(
+        errorObservability.track(error, NativeErrorOperation.ORDER_SUBMISSION) { eventId ->
             metricOrderError(
-                errorType = error.toErrorTypeString(),
+                errorType = error.publicError.toErrorTypeString(),
                 orderId = orderId,
-            ),
-        )
+                observabilityEventId = eventId,
+            )
+        }
     }
 
     fun trackUserCanceled(
         reason: CancelReason,
     ) {
         canceled = true
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricCardFormUserCanceledError(errorType = reason.analyticsValue),
-        )
+        errorObservability.trackCancellation(NativeErrorOperation.CARD_FORM_CANCELLATION) { eventId ->
+            metricCardFormUserCanceledError(
+                errorType = reason.analyticsValue,
+                observabilityEventId = eventId,
+            )
+        }
     }
 }
