@@ -40,6 +40,23 @@ internal class CoreMethodsErrorObservabilityTest {
     }
 
     @Test
+    fun `classification is stable in a Turkish default locale`() {
+        val previous = java.util.Locale.getDefault()
+        try {
+            java.util.Locale.setDefault(java.util.Locale("tr", "TR"))
+
+            assertEquals(
+                NativeErrorCode.REQUEST_TIMEOUT,
+                with(observability) {
+                    ResultError.Request("raw", "timeoUt").toNativeErrorCode()
+                },
+            )
+        } finally {
+            java.util.Locale.setDefault(previous)
+        }
+    }
+
+    @Test
     fun `passes classified error and shared id without status or raw detail`() {
         val nativeError = slot<NativeError>()
         val factory = slot<(String) -> Metric>()

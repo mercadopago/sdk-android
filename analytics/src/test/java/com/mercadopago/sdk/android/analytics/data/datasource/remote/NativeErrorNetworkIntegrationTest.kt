@@ -61,6 +61,7 @@ internal class NativeErrorNetworkIntegrationTest {
         assertEquals("/op-frontend-metrics/v2/error-metric", recorded.path)
         assertEquals("POST", recorded.method)
         assertNull(recorded.getHeader("Authorization"))
+        assertNull(recorded.getHeader("Cookie"))
         assertFalse(recorded.path.orEmpty().contains("public_key"))
         assertFalse(recorded.body.readUtf8().contains("public_key"))
     }

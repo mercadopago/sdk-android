@@ -82,12 +82,15 @@ internal class MPErrorReporter(
 
     private companion object {
         const val REPORT_BUFFER_CAPACITY = 64
+        val UTC_TIMESTAMP_FORMATTER = object : ThreadLocal<SimpleDateFormat>() {
+            override fun initialValue(): SimpleDateFormat = SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                Locale.US,
+            ).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
+        }
 
-        fun utcTimestamp(): String = SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            Locale.US,
-        ).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.format(Date())
+        fun utcTimestamp(): String = checkNotNull(UTC_TIMESTAMP_FORMATTER.get()).format(Date())
     }
 }

@@ -84,10 +84,9 @@ internal class NativeErrorRequestMapperTest {
         assertFalse(json.contains("status_code"))
         assertFalse(json.contains("request_correlation_id"))
         assertFalse(json.contains("service_target"))
-        assertFalse(json.contains("message"))
-        assertFalse(json.contains("public_key"))
-        assertFalse(json.contains("package"))
-        assertFalse(json.contains("url"))
+        FORBIDDEN_JSON_KEYS.forEach { key ->
+            assertFalse(json.contains("\"$key\""), "Forbidden key was serialized: $key")
+        }
     }
 
     @Test
@@ -115,5 +114,29 @@ internal class NativeErrorRequestMapperTest {
         val expectedJson = checkNotNull(javaClass.getResource("/fixtures/native_error_android_checkout.json"))
             .readText()
         assertEquals(JsonParser().parse(expectedJson), actual)
+    }
+
+    private companion object {
+        val FORBIDDEN_JSON_KEYS = setOf(
+            "authorization",
+            "cookie",
+            "public_key",
+            "access_token",
+            "pan",
+            "bin",
+            "cvv",
+            "payer",
+            "email",
+            "order_id",
+            "payment_id",
+            "package",
+            "device_id",
+            "url",
+            "request_body",
+            "response_body",
+            "raw_error",
+            "message",
+            "detail",
+        )
     }
 }

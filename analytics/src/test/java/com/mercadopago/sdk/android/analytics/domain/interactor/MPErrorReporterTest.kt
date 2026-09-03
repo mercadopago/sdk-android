@@ -17,6 +17,7 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class MPErrorReporterTest {
     private val repository = mockk<NativeErrorRepository>()
@@ -124,6 +125,32 @@ internal class MPErrorReporterTest {
         reporter.close()
     }
 
+    @Test
+    fun `caller path p95 stays below one millisecond under queue pressure`() {
+        coEvery { repository.report(any()) } returns true
+        val reporter = MPErrorReporter(
+            reportNativeError = useCase,
+            deliveryMode = NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
+            dispatcher = StandardTestDispatcher(TestCoroutineScheduler()),
+        )
+
+        repeat(PERFORMANCE_WARMUP_ITERATIONS) {
+            reporter.track(error, { metric() }, {})
+        }
+        val samples = List(PERFORMANCE_SAMPLE_COUNT) {
+            val startedAt = System.nanoTime()
+            reporter.track(error, { metric() }, {})
+            System.nanoTime() - startedAt
+        }.sorted()
+        val p95Nanos = samples[(samples.size * 95 / 100) - 1]
+
+        assertTrue(
+            p95Nanos < CALLER_PATH_P95_LIMIT_NANOS,
+            "Expected p95 below 1ms but was ${p95Nanos / NANOS_PER_MILLISECOND.toDouble()}ms",
+        )
+        reporter.close()
+    }
+
     private fun reporter(mode: NativeErrorDeliveryMode) = MPErrorReporter(
         reportNativeError = useCase,
         deliveryMode = mode,
@@ -146,5 +173,9 @@ internal class MPErrorReporterTest {
     private companion object {
         const val EVENT_ID = "3f6fd694-4ba8-4f45-ae7c-871c4698aace"
         const val TIMESTAMP = "2026-08-27T12:00:00.000Z"
+        const val PERFORMANCE_WARMUP_ITERATIONS = 200
+        const val PERFORMANCE_SAMPLE_COUNT = 2_000
+        const val NANOS_PER_MILLISECOND = 1_000_000L
+        const val CALLER_PATH_P95_LIMIT_NANOS = NANOS_PER_MILLISECOND
     }
 }
