@@ -25,12 +25,14 @@ internal fun metricCardIssuersCallSuccess(
 @KoverIgnore("in development")
 internal fun metricCardIssuersCallError(
     error: String,
+    observabilityEventId: String,
     issuers: List<String> = emptyList(),
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$ISSUERS_PATH$ERROR_PATH",
     type = TrackType.EVENT,
     data = CardIssuersErrorData(
         errorType = error,
+        observabilityEventId = observabilityEventId,
         issuers = issuers,
     ),
 )
@@ -43,6 +45,8 @@ internal data class CardIssuersAnalyticsEventData(
 internal data class CardIssuersErrorData(
     @SerializedName("error_type")
     val errorType: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String,
     @SerializedName("issuers")
     val issuers: List<String>,
 ) : EventData

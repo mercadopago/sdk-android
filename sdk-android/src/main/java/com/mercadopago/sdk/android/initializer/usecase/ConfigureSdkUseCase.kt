@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.initializer.usecase
 import android.content.Context
 import android.util.Log
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.data.local.mapper.toSiteId
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
@@ -27,6 +28,7 @@ internal class ConfigureSdkUseCase(
         MPAnalytics.initialize(
             context = params.context,
             getSiteIdFlow = getSiteIdUseCase(params.publicKey).map { siteId -> siteId.siteId },
+            nativeSiteId = params.countryCode.toSiteId(),
         )
         return setSiteIdUseCase(params.publicKey, params.countryCode)
             .onEach {

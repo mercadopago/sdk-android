@@ -56,7 +56,8 @@ internal class MercadoPagoSDKTest {
         mockkObject(SdkCoroutineProvider)
         mockkStatic(MPAnalytics::class)
         mockkObject(MPAnalytics.Companion)
-        every { MPAnalytics.initialize(any(), any()) } returns Unit
+        every { MPAnalytics.initialize(any(), any(), any()) } returns Unit
+        every { MPAnalytics.clearInstance() } returns Unit
         every { SdkInitializerAnalytics.buildSdkInitializerEvent(any(), any()) } answers { callOriginal() }
         mockkStatic(DeviceSDK::class)
         mockkStatic(Log::class)

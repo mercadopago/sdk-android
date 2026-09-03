@@ -53,11 +53,14 @@ internal fun provideReporterModule(nativeSiteId: String) = module {
     factory<NativeErrorRepository> { NativeErrorRepositoryImpl(get(), get()) }
     factory { ReportNativeErrorUseCase(get()) }
     single {
+        NativeErrorDeliveryMode.from(
+            com.mercadopago.sdk.android.analytics.BuildConfig.NATIVE_ERROR_DELIVERY_MODE
+        )
+    }
+    single {
         MPErrorReporter(
             reportNativeError = get(),
-            deliveryMode = NativeErrorDeliveryMode.from(
-                com.mercadopago.sdk.android.analytics.BuildConfig.NATIVE_ERROR_DELIVERY_MODE
-            ),
+            deliveryMode = get(),
         )
     }
 }
