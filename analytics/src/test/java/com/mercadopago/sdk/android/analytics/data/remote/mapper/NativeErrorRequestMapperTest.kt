@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.analytics.data.remote.mapper
 
 import android.content.Context
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDiagnostic
@@ -87,5 +88,32 @@ internal class NativeErrorRequestMapperTest {
         assertFalse(json.contains("public_key"))
         assertFalse(json.contains("package"))
         assertFalse(json.contains("url"))
+    }
+
+    @Test
+    fun `android checkout request matches the shared contract fixture`() {
+        val mapper = NativeErrorRequestMapper(
+            context = context,
+            siteId = "MLB",
+            sdkVersion = "1.2.3",
+            osVersion = { "14" },
+            networkType = { NetworkType.WIFI },
+        )
+        val request = mapper.map(
+            PendingNativeError(
+                eventId = "3f6fd694-4ba8-4f45-ae7c-871c4698aace",
+                occurredAt = "2026-08-27T12:00:00.000Z",
+                error = NativeError(
+                    operation = NativeErrorOperation.ORDER_SUBMISSION,
+                    code = NativeErrorCode.UPSTREAM_REJECTED,
+                    statusCode = 503,
+                ),
+            ),
+        )
+
+        val actual = JsonParser().parse(GsonBuilder().create().toJson(request))
+        val expectedJson = checkNotNull(javaClass.getResource("/fixtures/native_error_android_checkout.json"))
+            .readText()
+        assertEquals(JsonParser().parse(expectedJson), actual)
     }
 }

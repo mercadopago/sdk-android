@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.SocketPolicy
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -67,6 +68,25 @@ internal class NativeErrorNetworkIntegrationTest {
     @Test
     fun `non 202 redirect is rejected without retry`() = runBlocking {
         server.enqueue(MockResponse().setResponseCode(302).setHeader("Location", "/other"))
+
+        assertFalse(dataSource.report(request()))
+        assertEquals(1, server.requestCount)
+    }
+
+    @Test
+    fun `every non accepted status is contained without retry`() = runBlocking {
+        listOf(200, 400, 401, 422, 429, 500, 503).forEach { status ->
+            server.enqueue(MockResponse().setResponseCode(status))
+
+            assertFalse(dataSource.report(request()), status.toString())
+        }
+
+        assertEquals(7, server.requestCount)
+    }
+
+    @Test
+    fun `transport disconnect is contained without retry`() = runBlocking {
+        server.enqueue(MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START))
 
         assertFalse(dataSource.report(request()))
         assertEquals(1, server.requestCount)
