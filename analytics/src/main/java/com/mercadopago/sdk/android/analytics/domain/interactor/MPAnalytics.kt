@@ -8,7 +8,6 @@ import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorClassi
 import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
 import com.mercadopago.sdk.android.core.utils.isDebugApp
@@ -134,26 +133,6 @@ class MPAnalytics internal constructor(
         try {
             errorReporter.track(
                 error = errorClassifier.classify(operation, input),
-                legacyMetricFactory = legacyMetricFactory,
-                legacyMetricSender = ::trackMetric,
-            )
-        } catch (_: Throwable) {
-            // Observability must never replace an SDK product result.
-        }
-    }
-
-    /**
-     * Transitional bridge for modules that still classify errors before reporting them.
-     */
-    @Deprecated("Pass neutral evidence to trackError(operation, input, legacyMetricFactory)")
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    fun trackError(
-        error: NativeError,
-        legacyMetricFactory: (String) -> Metric,
-    ) {
-        try {
-            errorReporter.track(
-                error = error,
                 legacyMetricFactory = legacyMetricFactory,
                 legacyMetricSender = ::trackMetric,
             )

@@ -1,7 +1,9 @@
 package com.mercadopago.sdk.android.checkout.domain.exception
 
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDiagnostic
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorEvidenceCode
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorResponseState
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
@@ -16,8 +18,10 @@ internal object ObservedCheckoutErrorFactory {
     ): ObservedCheckoutError {
         val publicError = ExceptionFactory.mapRequestError(error, localized)
         val retainedCode = error.errorCode ?: error.code
-        val status = error.httpStatus?.takeIf { it in MIN_HTTP_STATUS..MAX_HTTP_STATUS }
-        return observed(publicError, retainedCode, status, isValidation = false)
+        return ObservedCheckoutError(
+            publicError,
+            neutralInput(publicError, retainedCode, error.httpStatus),
+        )
     }
 
     fun from(
@@ -29,67 +33,53 @@ internal object ObservedCheckoutErrorFactory {
             is ResultError.Validation -> ResponseError(code = null, message = error.message)
         }
         val publicError = ExceptionFactory.mapRequestError(responseError, localized)
-        return observed(
-            publicError = publicError,
-            retainedCode = (error as? ResultError.Request)?.code,
-            status = null,
-            isValidation = error is ResultError.Validation,
+        return ObservedCheckoutError(
+            publicError,
+            neutralInput(
+                publicError = publicError,
+                retainedCode = (error as? ResultError.Request)?.code,
+                isValidation = error is ResultError.Validation,
+                isEmptyBody = error is ResultError.Request &&
+                    error.code == EMPTY_BODY_STATUS && error.message == EMPTY_BODY_MESSAGE,
+            ),
         )
     }
 
-    private fun observed(
-        publicError: MercadoPagoCheckoutError,
-        retainedCode: String?,
-        status: Int?,
-        isValidation: Boolean,
-    ): ObservedCheckoutError {
-        val normalizedCode = retainedCode?.uppercase(Locale.ROOT)
-        val nativeCode = classify(publicError, normalizedCode, status, isValidation)
-        val diagnostic = diagnostic(normalizedCode, status, isValidation)
-        return ObservedCheckoutError(publicError, nativeCode, status, diagnostic)
-    }
-
     @Suppress("CyclomaticComplexMethod")
-    private fun classify(
+    private fun neutralInput(
         publicError: MercadoPagoCheckoutError,
-        normalizedCode: String?,
-        status: Int?,
-        isValidation: Boolean,
-    ): NativeErrorCode =
-        when {
-            publicError is MercadoPagoCheckoutError.ConfigurationError -> NativeErrorCode.SDK_CONFIGURATION_INVALID
-            normalizedCode in CONFIGURATION_CODES -> NativeErrorCode.SDK_CONFIGURATION_INVALID
-            status == HTTP_UNAUTHORIZED || status == HTTP_FORBIDDEN -> NativeErrorCode.SDK_CONFIGURATION_INVALID
-            isValidation -> NativeErrorCode.INPUT_VALIDATION_FAILED
-            normalizedCode in CONNECTION_CODES ||
-                publicError.errorCode == ErrorCode.NETWORK_CONNECTION_FAILED ->
-                NativeErrorCode.CONNECTION_UNAVAILABLE
-            normalizedCode in TIMEOUT_CODES ||
-                publicError.errorCode == ErrorCode.NETWORK_TIMEOUT ||
-                status == HTTP_REQUEST_TIMEOUT || status == HTTP_GATEWAY_TIMEOUT -> NativeErrorCode.REQUEST_TIMEOUT
-            normalizedCode == EMPTY_BODY -> NativeErrorCode.RESPONSE_CONTRACT_INVALID
+        retainedCode: String? = null,
+        httpStatus: Int? = null,
+        isValidation: Boolean = false,
+        isEmptyBody: Boolean = false,
+    ): NativeErrorInput {
+        val normalizedCode = retainedCode?.uppercase(Locale.ROOT)
+        val type = when {
+            isValidation -> NativeErrorType.VALIDATION
             publicError is MercadoPagoCheckoutError.UnknownError || normalizedCode in UNKNOWN_CODES ->
-                NativeErrorCode.OPERATION_FAILED
-            publicError is MercadoPagoCheckoutError.ServiceError -> NativeErrorCode.UPSTREAM_REJECTED
-            else -> NativeErrorCode.OPERATION_FAILED
+                NativeErrorType.UNKNOWN
+            publicError is MercadoPagoCheckoutError.ServiceError -> NativeErrorType.SERVICE
+            else -> NativeErrorType.REQUEST
         }
-
-    private fun diagnostic(
-        normalizedCode: String?,
-        status: Int?,
-        isValidation: Boolean,
-    ): NativeErrorDiagnostic? =
-        when {
-            status == HTTP_UNAUTHORIZED -> NativeErrorDiagnostic.HTTP_UNAUTHORIZED
-            status == HTTP_FORBIDDEN -> NativeErrorDiagnostic.HTTP_FORBIDDEN
-            isValidation -> NativeErrorDiagnostic.VALIDATION
-            normalizedCode in CONNECTION_CODES -> NativeErrorDiagnostic.OFFLINE
+        val code = when {
+            publicError is MercadoPagoCheckoutError.ConfigurationError -> NativeErrorEvidenceCode.CONFIGURATION
+            normalizedCode == CONFIGURATION_ERROR -> NativeErrorEvidenceCode.CONFIGURATION
+            normalizedCode == INTEGRATION_ERROR -> NativeErrorEvidenceCode.INTEGRATION
+            normalizedCode == HTTP_UNAUTHORIZED_CODE -> NativeErrorEvidenceCode.HTTP_UNAUTHORIZED
+            normalizedCode == HTTP_FORBIDDEN_CODE -> NativeErrorEvidenceCode.HTTP_FORBIDDEN
+            normalizedCode in CONNECTION_CODES ||
+                publicError.errorCode == ErrorCode.NETWORK_CONNECTION_FAILED -> NativeErrorEvidenceCode.OFFLINE
             normalizedCode in TIMEOUT_CODES ||
-                status == HTTP_REQUEST_TIMEOUT ||
-                status == HTTP_GATEWAY_TIMEOUT -> NativeErrorDiagnostic.TIMEOUT
-            normalizedCode == EMPTY_BODY -> NativeErrorDiagnostic.EMPTY_BODY
+                publicError.errorCode == ErrorCode.NETWORK_TIMEOUT -> NativeErrorEvidenceCode.TIMEOUT
+            normalizedCode == EXCEPTION -> NativeErrorEvidenceCode.EXCEPTION
+            normalizedCode == UNKNOWN_ERROR -> NativeErrorEvidenceCode.UNKNOWN_ERROR
             else -> null
         }
+        val responseState = NativeErrorResponseState.EMPTY_BODY.takeIf {
+            normalizedCode == EMPTY_BODY || isEmptyBody
+        }
+        return NativeErrorInput.create(type, code, httpStatus, responseState)
+    }
 
     internal fun <T> Result<T, ResponseError>.mapResponseObserved(
         localized: ErrorLocalized,
@@ -108,14 +98,15 @@ internal object ObservedCheckoutErrorFactory {
         }
 
     private const val EMPTY_BODY = "EMPTY_BODY"
-    private const val MIN_HTTP_STATUS = 100
-    private const val MAX_HTTP_STATUS = 599
-    private const val HTTP_UNAUTHORIZED = 401
-    private const val HTTP_FORBIDDEN = 403
-    private const val HTTP_REQUEST_TIMEOUT = 408
-    private const val HTTP_GATEWAY_TIMEOUT = 504
-    private val CONFIGURATION_CODES = setOf("CONFIGURATION_ERROR", "INTEGRATION_ERROR")
-    private val UNKNOWN_CODES = setOf("EXCEPTION", "UNKNOWN_ERROR")
+    private const val EMPTY_BODY_STATUS = "200"
+    private const val EMPTY_BODY_MESSAGE = "empty body"
+    private const val CONFIGURATION_ERROR = "CONFIGURATION_ERROR"
+    private const val INTEGRATION_ERROR = "INTEGRATION_ERROR"
+    private const val EXCEPTION = "EXCEPTION"
+    private const val UNKNOWN_ERROR = "UNKNOWN_ERROR"
+    private const val HTTP_UNAUTHORIZED_CODE = "401"
+    private const val HTTP_FORBIDDEN_CODE = "403"
+    private val UNKNOWN_CODES = setOf(EXCEPTION, UNKNOWN_ERROR)
     private val CONNECTION_CODES = setOf(
         "NETWORK_CONNECTION_FAILED",
         "NO_INTERNET",
@@ -123,5 +114,5 @@ internal object ObservedCheckoutErrorFactory {
         "NETWORK",
         "UNREACHABLE",
     )
-    private val TIMEOUT_CODES = setOf("NETWORK_TIMEOUT", "TIMEOUT")
+    private val TIMEOUT_CODES = setOf("NETWORK_TIMEOUT", "TIMEOUT", "408", "504")
 }

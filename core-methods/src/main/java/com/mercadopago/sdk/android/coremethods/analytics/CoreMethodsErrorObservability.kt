@@ -1,10 +1,11 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorEvidenceCode
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorResponseState
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.NativeError
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDiagnostic
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import java.util.Locale
@@ -19,11 +20,8 @@ internal class CoreMethodsErrorObservability(
     ) {
         try {
             analyticsProvider()?.trackError(
-                error = NativeError(
-                    operation = operation,
-                    code = error.toNativeErrorCode(),
-                    diagnostic = error.toDiagnostic(),
-                ),
+                operation = operation,
+                input = error.toNativeErrorInput(),
                 legacyMetricFactory = legacyMetricFactory,
             )
         } catch (_: Throwable) {
@@ -31,40 +29,42 @@ internal class CoreMethodsErrorObservability(
         }
     }
 
-    internal fun ResultError.toNativeErrorCode(): NativeErrorCode =
+    internal fun ResultError.toNativeErrorInput(): NativeErrorInput =
         when (this) {
-            is ResultError.Validation -> NativeErrorCode.INPUT_VALIDATION_FAILED
+            is ResultError.Validation -> NativeErrorInput.create(NativeErrorType.VALIDATION)
             is ResultError.Request -> when {
-                code.uppercase(Locale.ROOT) in TIMEOUT_CODES -> NativeErrorCode.REQUEST_TIMEOUT
-                code.uppercase(Locale.ROOT) in CONNECTION_CODES -> NativeErrorCode.CONNECTION_UNAVAILABLE
-                code == EMPTY_BODY_STATUS && message == EMPTY_BODY_MESSAGE -> {
-                    NativeErrorCode.RESPONSE_CONTRACT_INVALID
-                }
-                code in CONFIGURATION_STATUS_CODES -> NativeErrorCode.SDK_CONFIGURATION_INVALID
-                code == UNKNOWN_ERROR_CODE -> NativeErrorCode.OPERATION_FAILED
-                else -> NativeErrorCode.UPSTREAM_REJECTED
+                normalizedCode in TIMEOUT_CODES -> request(NativeErrorEvidenceCode.TIMEOUT)
+                normalizedCode in CONNECTION_CODES -> request(NativeErrorEvidenceCode.OFFLINE)
+                code == EMPTY_BODY_STATUS && message == EMPTY_BODY_MESSAGE -> NativeErrorInput.create(
+                    type = NativeErrorType.REQUEST,
+                    responseState = NativeErrorResponseState.EMPTY_BODY,
+                )
+                normalizedCode == HTTP_UNAUTHORIZED -> request(NativeErrorEvidenceCode.HTTP_UNAUTHORIZED)
+                normalizedCode == HTTP_FORBIDDEN -> request(NativeErrorEvidenceCode.HTTP_FORBIDDEN)
+                normalizedCode == UNKNOWN_ERROR_CODE -> NativeErrorInput.create(
+                    type = NativeErrorType.UNKNOWN,
+                    code = NativeErrorEvidenceCode.UNKNOWN_ERROR,
+                )
+                else -> request()
             }
         }
 
-    private fun ResultError.toDiagnostic(): NativeErrorDiagnostic? =
-        when (this) {
-            is ResultError.Validation -> NativeErrorDiagnostic.VALIDATION
-            is ResultError.Request -> when {
-                code.uppercase(Locale.ROOT) in TIMEOUT_CODES -> NativeErrorDiagnostic.TIMEOUT
-                code.uppercase(Locale.ROOT) in CONNECTION_CODES -> NativeErrorDiagnostic.OFFLINE
-                code == EMPTY_BODY_STATUS && message == EMPTY_BODY_MESSAGE -> NativeErrorDiagnostic.EMPTY_BODY
-                code == "401" -> NativeErrorDiagnostic.HTTP_UNAUTHORIZED
-                code == "403" -> NativeErrorDiagnostic.HTTP_FORBIDDEN
-                else -> null
-            }
-        }
+    private val ResultError.Request.normalizedCode get() = code.uppercase(Locale.ROOT)
+
+    private fun request(
+        code: NativeErrorEvidenceCode? = null,
+    ) = NativeErrorInput.create(
+        type = NativeErrorType.REQUEST,
+        code = code,
+    )
 
     private companion object {
         const val EMPTY_BODY_STATUS = "200"
         const val EMPTY_BODY_MESSAGE = "empty body"
         const val UNKNOWN_ERROR_CODE = "UNKNOWN_ERROR"
+        const val HTTP_UNAUTHORIZED = "401"
+        const val HTTP_FORBIDDEN = "403"
         val TIMEOUT_CODES = setOf("TIMEOUT", "NETWORK_TIMEOUT", "408", "504")
         val CONNECTION_CODES = setOf("NETWORK", "CONNECTION", "NO_INTERNET", "UNREACHABLE")
-        val CONFIGURATION_STATUS_CODES = setOf("401", "403")
     }
 }

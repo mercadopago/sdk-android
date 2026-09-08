@@ -1,6 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
 import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
@@ -10,6 +11,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class CardFormAnalyticsTrackerTest {
+    private val observedError = ObservedCheckoutError(
+        publicError = mockk<MercadoPagoCheckoutError>(relaxed = true),
+        nativeErrorInput = NativeErrorInput.create(NativeErrorType.UNKNOWN),
+    )
+
     @Test
     fun `given trackUserCanceled was called then trackInputValidation short-circuits before isLoading`() {
         var isLoadingCalled = false
@@ -106,24 +112,14 @@ internal class CardFormAnalyticsTrackerTest {
     fun `given error then trackInitializeError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackInitializeError(
-            ObservedCheckoutError(
-                mockk<MercadoPagoCheckoutError>(relaxed = true),
-                NativeErrorCode.OPERATION_FAILED,
-            ),
-        )
+        tracker.trackInitializeError(observedError)
     }
 
     @Test
     fun `given error then trackSubmitError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackSubmitError(
-            ObservedCheckoutError(
-                mockk<MercadoPagoCheckoutError>(relaxed = true),
-                NativeErrorCode.OPERATION_FAILED,
-            ),
-        )
+        tracker.trackSubmitError(observedError)
     }
 
     @Test

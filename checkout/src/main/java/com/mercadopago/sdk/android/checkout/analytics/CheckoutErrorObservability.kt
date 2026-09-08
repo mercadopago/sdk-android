@@ -1,10 +1,9 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.NativeError
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDiagnostic
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 
@@ -16,37 +15,23 @@ internal class CheckoutErrorObservability(
         operation: NativeErrorOperation,
         legacyMetricFactory: (String) -> Metric,
     ) {
-        send(
-            NativeError(
-                operation = operation,
-                code = error.nativeCode,
-                statusCode = error.httpStatus,
-                diagnostic = error.diagnostic,
-            ),
-            legacyMetricFactory,
-        )
+        send(operation, error.nativeErrorInput, legacyMetricFactory)
     }
 
     fun trackCancellation(
         operation: NativeErrorOperation,
         legacyMetricFactory: (String) -> Metric,
     ) {
-        send(
-            NativeError(
-                operation = operation,
-                code = NativeErrorCode.USER_CANCELLED,
-                diagnostic = NativeErrorDiagnostic.CANCELLED,
-            ),
-            legacyMetricFactory,
-        )
+        send(operation, NativeErrorInput.create(NativeErrorType.USER_CANCELLATION), legacyMetricFactory)
     }
 
     private fun send(
-        error: NativeError,
+        operation: NativeErrorOperation,
+        input: NativeErrorInput,
         legacyMetricFactory: (String) -> Metric,
     ) {
         try {
-            analyticsProvider()?.trackError(error, legacyMetricFactory)
+            analyticsProvider()?.trackError(operation, input, legacyMetricFactory)
         } catch (_: Throwable) {
             // Reporting cannot change Checkout callbacks or public errors.
         }

@@ -2,9 +2,11 @@
 
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorEvidenceCode
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.checkout.analytics.OrderSubmitEventData
 import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCardType
@@ -98,16 +100,16 @@ internal class CardPaymentViewModelTest {
         throwable = null,
     )
     private val observedNetworkError = ObservedCheckoutError(
-        publicError = networkError,
-        nativeCode = NativeErrorCode.CONNECTION_UNAVAILABLE,
+        networkError,
+        NativeErrorInput.create(NativeErrorType.REQUEST, NativeErrorEvidenceCode.OFFLINE),
     )
 
     @Before
     fun setup() {
         mockkObject(MPAnalytics.Companion)
         every { MPAnalytics.tryGetInstance() } returns mockMPAnalytics
-        every { mockMPAnalytics.trackError(any(), any()) } answers {
-            mockMPAnalytics.trackMetric(secondArg<(String) -> Metric>().invoke("event-id"))
+        every { mockMPAnalytics.trackError(any(), any(), any()) } answers {
+            mockMPAnalytics.trackMetric(thirdArg<(String) -> Metric>().invoke("event-id"))
         }
         mockkObject(MercadoPagoSDK.Companion)
         every { MercadoPagoSDK.countryCode } returns null

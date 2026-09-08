@@ -1,10 +1,11 @@
 package com.mercadopago.sdk.android.coremethods.analytics
 
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorEvidenceCode
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorResponseState
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
-import com.mercadopago.sdk.android.analytics.domain.models.NativeError
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
-import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDiagnostic
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -12,6 +13,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import java.util.Locale
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -23,19 +25,29 @@ internal class CoreMethodsErrorObservabilityTest {
     @Test
     fun `classification is closed and never copies raw messages`() {
         val cases = listOf(
-            ResultError.Validation("PAN must not leave this object") to NativeErrorCode.INPUT_VALIDATION_FAILED,
-            ResultError.Request("raw", "TIMEOUT") to NativeErrorCode.REQUEST_TIMEOUT,
-            ResultError.Request("raw", "504") to NativeErrorCode.REQUEST_TIMEOUT,
-            ResultError.Request("raw", "NO_INTERNET") to NativeErrorCode.CONNECTION_UNAVAILABLE,
-            ResultError.Request("empty body", "200") to NativeErrorCode.RESPONSE_CONTRACT_INVALID,
-            ResultError.Request("raw", "401") to NativeErrorCode.SDK_CONFIGURATION_INVALID,
-            ResultError.Request("raw", "403") to NativeErrorCode.SDK_CONFIGURATION_INVALID,
-            ResultError.Request("raw", "422") to NativeErrorCode.UPSTREAM_REJECTED,
-            ResultError.Request("raw", "UNKNOWN_ERROR") to NativeErrorCode.OPERATION_FAILED,
+            Case(ResultError.Validation("private"), NativeErrorType.VALIDATION),
+            Case(ResultError.Request("raw", "TIMEOUT"), code = NativeErrorEvidenceCode.TIMEOUT),
+            Case(ResultError.Request("raw", "504"), code = NativeErrorEvidenceCode.TIMEOUT),
+            Case(ResultError.Request("raw", "NO_INTERNET"), code = NativeErrorEvidenceCode.OFFLINE),
+            Case(
+                ResultError.Request("empty body", "200"),
+                responseState = NativeErrorResponseState.EMPTY_BODY,
+            ),
+            Case(ResultError.Request("raw", "401"), code = NativeErrorEvidenceCode.HTTP_UNAUTHORIZED),
+            Case(ResultError.Request("raw", "403"), code = NativeErrorEvidenceCode.HTTP_FORBIDDEN),
+            Case(ResultError.Request("raw", "422")),
+            Case(
+                ResultError.Request("raw", "UNKNOWN_ERROR"),
+                type = NativeErrorType.UNKNOWN,
+                code = NativeErrorEvidenceCode.UNKNOWN_ERROR,
+            ),
         )
 
-        cases.forEach { (error, expected) ->
-            assertEquals(expected, with(observability) { error.toNativeErrorCode() })
+        cases.forEach { case ->
+            val input = with(observability) { case.error.toNativeErrorInput() }
+            assertEquals(case.type, input.type)
+            assertEquals(case.code, input.code)
+            assertEquals(case.responseState, input.responseState)
         }
     }
 
@@ -46,10 +58,10 @@ internal class CoreMethodsErrorObservabilityTest {
             java.util.Locale.setDefault(java.util.Locale("tr", "TR"))
 
             assertEquals(
-                NativeErrorCode.REQUEST_TIMEOUT,
+                NativeErrorEvidenceCode.TIMEOUT,
                 with(observability) {
-                    ResultError.Request("raw", "timeoUt").toNativeErrorCode()
-                },
+                    ResultError.Request("raw", "timeoUt").toNativeErrorInput()
+                }.code,
             )
         } finally {
             java.util.Locale.setDefault(previous)
@@ -58,20 +70,41 @@ internal class CoreMethodsErrorObservabilityTest {
 
     @Test
     fun `passes classified error and shared id without status or raw detail`() {
-        val nativeError = slot<NativeError>()
+        val operation = slot<NativeErrorOperation>()
+        val input = slot<NativeErrorInput>()
         val factory = slot<(String) -> Metric>()
-        every { analytics.trackError(capture(nativeError), capture(factory)) } returns Unit
+        every { analytics.trackError(capture(operation), capture(input), capture(factory)) } returns Unit
 
         observability.track(
             error = ResultError.Request(message = "secret raw message", code = "504"),
             operation = NativeErrorOperation.ISSUERS,
         ) { id -> Metric(TrackType.EVENT, "/legacy/$id") }
 
-        assertEquals(NativeErrorCode.REQUEST_TIMEOUT, nativeError.captured.code)
-        assertEquals(NativeErrorDiagnostic.TIMEOUT, nativeError.captured.diagnostic)
-        assertNull(nativeError.captured.statusCode)
-        assertNull(nativeError.captured.requestCorrelationId)
+        assertEquals(NativeErrorOperation.ISSUERS, operation.captured)
+        assertEquals(NativeErrorEvidenceCode.TIMEOUT, input.captured.code)
+        assertNull(input.captured.httpStatus)
+        assertNull(input.captured.requestCorrelationId)
         assertEquals("/legacy/shared-id", factory.captured("shared-id").path)
+    }
+
+    @Test
+    fun `classification is locale independent`() {
+        val originalLocale = Locale.getDefault()
+        val input = slot<NativeErrorInput>()
+        every { analytics.trackError(any(), capture(input), any()) } returns Unit
+
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr-TR"))
+
+            observability.track(
+                error = ResultError.Request(message = "raw", code = "timeout"),
+                operation = NativeErrorOperation.ISSUERS,
+            ) { id -> Metric(TrackType.EVENT, "/legacy/$id") }
+
+            assertEquals(NativeErrorEvidenceCode.TIMEOUT, input.captured.code)
+        } finally {
+            Locale.setDefault(originalLocale)
+        }
     }
 
     @Test
@@ -80,13 +113,20 @@ internal class CoreMethodsErrorObservabilityTest {
             ResultError.Validation("raw"),
             NativeErrorOperation.CARD_TOKENIZATION,
         ) { mockk() }
-        every { analytics.trackError(any(), any()) } throws IllegalStateException("failed")
+        every { analytics.trackError(any(), any(), any()) } throws IllegalStateException("failed")
 
         observability.track(
             ResultError.Request("raw", "500"),
             NativeErrorOperation.ISSUERS,
         ) { mockk() }
 
-        verify(exactly = 1) { analytics.trackError(any(), any()) }
+        verify(exactly = 1) { analytics.trackError(any(), any(), any()) }
     }
+
+    private data class Case(
+        val error: ResultError,
+        val type: NativeErrorType = NativeErrorType.REQUEST,
+        val code: NativeErrorEvidenceCode? = null,
+        val responseState: NativeErrorResponseState? = null,
+    )
 }
