@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.analytics.data.datasource.remote.NativeErrorR
 import com.mercadopago.sdk.android.analytics.data.remote.mapper.NativeErrorRequestMapper
 import com.mercadopago.sdk.android.analytics.data.remote.service.NativeErrorService
 import com.mercadopago.sdk.android.analytics.data.repository.NativeErrorRepositoryImpl
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorClassifier
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPErrorReporter
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryMode
 import com.mercadopago.sdk.android.analytics.domain.repository.NativeErrorRepository
@@ -26,6 +27,7 @@ private const val TRANSPORT_TIMEOUT_SECONDS = 2L
 private const val CALL_TIMEOUT_SECONDS = 3L
 
 internal fun provideReporterModule(nativeSiteId: String) = module {
+    factory { NativeErrorClassifier() }
     single(named(NATIVE_ERROR_GSON)) { GsonBuilder().create() }
     single(named(NATIVE_ERROR_HTTP_CLIENT)) {
         OkHttpClient.Builder()

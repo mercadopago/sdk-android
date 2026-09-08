@@ -2,9 +2,11 @@ package com.mercadopago.sdk.android.analytics
 
 import android.content.Context
 import android.util.Log
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorClassifier
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorType
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPErrorReporter
-import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
@@ -29,6 +31,7 @@ internal class MPAnalyticsTest {
     private val koin = mockk<Koin>(relaxed = true)
     private val trackMetricUseCase = mockk<TrackMetricUseCase>(relaxed = true)
     private val errorReporter = mockk<MPErrorReporter>(relaxed = true)
+    private val errorClassifier = NativeErrorClassifier()
 
     @Before
     fun setup() {
@@ -42,6 +45,7 @@ internal class MPAnalyticsTest {
             koin.get<TrackMetricUseCase>()
         } returns trackMetricUseCase
         every { koin.get<MPErrorReporter>() } returns errorReporter
+        every { koin.get<NativeErrorClassifier>() } returns errorClassifier
     }
 
     @Test
@@ -114,15 +118,16 @@ internal class MPAnalyticsTest {
 
     @Test
     fun `track error delegates to the bounded reporter`() {
-        val error = NativeError(
-            operation = NativeErrorOperation.ISSUERS,
-            code = NativeErrorCode.REQUEST_TIMEOUT,
-        )
         MPAnalytics.initialize(context, flowOf("MLA"), "MLA")
 
-        MPAnalytics.getInstance().trackError(error) { mockMetric() }
+        MPAnalytics.getInstance().trackError(
+            NativeErrorOperation.ISSUERS,
+            NativeErrorInput.create(NativeErrorType.REQUEST),
+        ) { mockMetric() }
 
-        verify(exactly = 1) { errorReporter.track(error, any(), any()) }
+        verify(exactly = 1) {
+            errorReporter.track(match { it.code == NativeErrorCode.UPSTREAM_REJECTED }, any(), any())
+        }
     }
 
     @Test

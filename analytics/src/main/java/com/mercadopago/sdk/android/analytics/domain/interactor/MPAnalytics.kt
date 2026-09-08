@@ -4,9 +4,12 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorClassifier
+import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorInput
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.NativeError
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
 import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
@@ -37,6 +40,7 @@ const val MP_ANALYTICS_TAG = "MPAnalytics"
 class MPAnalytics internal constructor(
     private val koin: Koin,
     private val errorReporter: MPErrorReporter,
+    private val errorClassifier: NativeErrorClassifier,
 ) {
 
     /**
@@ -83,6 +87,7 @@ class MPAnalytics internal constructor(
             instance = MPAnalytics(
                 koin = modulesProvider.koinApp,
                 errorReporter = modulesProvider.koinApp.get(),
+                errorClassifier = modulesProvider.koinApp.get(),
             )
         }
 
@@ -117,9 +122,30 @@ class MPAnalytics internal constructor(
     }
 
     /**
-     * Offers a classified error to the bounded reporter and correlates its legacy metric.
+     * Classifies neutral evidence once, then offers it to the bounded reporter.
      * Reporting failures are contained and never replace a product result.
      */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    fun trackError(
+        operation: NativeErrorOperation,
+        input: NativeErrorInput,
+        legacyMetricFactory: (String) -> Metric,
+    ) {
+        try {
+            errorReporter.track(
+                error = errorClassifier.classify(operation, input),
+                legacyMetricFactory = legacyMetricFactory,
+                legacyMetricSender = ::trackMetric,
+            )
+        } catch (_: Throwable) {
+            // Observability must never replace an SDK product result.
+        }
+    }
+
+    /**
+     * Transitional bridge for modules that still classify errors before reporting them.
+     */
+    @Deprecated("Pass neutral evidence to trackError(operation, input, legacyMetricFactory)")
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     fun trackError(
         error: NativeError,
