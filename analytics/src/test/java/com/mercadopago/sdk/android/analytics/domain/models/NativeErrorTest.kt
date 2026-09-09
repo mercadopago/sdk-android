@@ -27,4 +27,18 @@ internal class NativeErrorTest {
             NativeErrorDeliveryMode.from("unexpected")
         )
     }
+
+    @Test
+    fun `delivery policy defaults both modules to dual write`() {
+        val policy = NativeErrorDeliveryPolicy()
+
+        assertEquals(
+            NativeErrorDeliveryMode.DUAL_WRITE,
+            policy.modeFor(NativeErrorModule.CORE_METHODS),
+        )
+        assertEquals(
+            NativeErrorDeliveryMode.DUAL_WRITE,
+            policy.modeFor(NativeErrorModule.CHECKOUT),
+        )
+    }
 }

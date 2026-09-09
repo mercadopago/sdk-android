@@ -9,6 +9,7 @@ import com.mercadopago.sdk.android.analytics.data.repository.NativeErrorReposito
 import com.mercadopago.sdk.android.analytics.domain.classifier.NativeErrorClassifier
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPErrorReporter
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryMode
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryPolicy
 import com.mercadopago.sdk.android.analytics.domain.repository.NativeErrorRepository
 import com.mercadopago.sdk.android.analytics.domain.usecase.ReportNativeErrorUseCase
 import com.mercadopago.sdk.android.core.BuildConfig
@@ -55,14 +56,19 @@ internal fun provideReporterModule(nativeSiteId: String) = module {
     factory<NativeErrorRepository> { NativeErrorRepositoryImpl(get(), get()) }
     factory { ReportNativeErrorUseCase(get()) }
     single {
-        NativeErrorDeliveryMode.from(
-            com.mercadopago.sdk.android.analytics.BuildConfig.NATIVE_ERROR_DELIVERY_MODE
+        NativeErrorDeliveryPolicy(
+            coreMethods = NativeErrorDeliveryMode.from(
+                com.mercadopago.sdk.android.analytics.BuildConfig.NATIVE_ERROR_CORE_METHODS_DELIVERY_MODE
+            ),
+            checkout = NativeErrorDeliveryMode.from(
+                com.mercadopago.sdk.android.analytics.BuildConfig.NATIVE_ERROR_CHECKOUT_DELIVERY_MODE
+            ),
         )
     }
     single {
         MPErrorReporter(
             reportNativeError = get(),
-            deliveryMode = get(),
+            deliveryPolicy = get(),
         )
     }
 }

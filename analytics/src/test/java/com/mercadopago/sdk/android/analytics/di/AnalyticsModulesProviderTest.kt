@@ -3,6 +3,9 @@ package com.mercadopago.sdk.android.analytics.di
 import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryMode
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryPolicy
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorModule
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import io.mockk.every
 import io.mockk.mockk
@@ -16,6 +19,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.dsl.koinApplication
 import org.koin.test.check.checkModules
 import org.koin.test.verify.verify
+import kotlin.test.assertEquals
 
 internal class AnalyticsModulesProviderTest {
 
@@ -53,10 +57,20 @@ internal class AnalyticsModulesProviderTest {
             extraTypes = listOf(
                 CoroutineDispatcher::class,
                 Context::class,
+                NativeErrorDeliveryMode::class,
                 String::class,
                 Function0::class,
                 Function1::class,
             )
+        )
+        val policy = koin.koin.get<NativeErrorDeliveryPolicy>()
+        assertEquals(
+            NativeErrorDeliveryMode.DUAL_WRITE,
+            policy.modeFor(NativeErrorModule.CORE_METHODS),
+        )
+        assertEquals(
+            NativeErrorDeliveryMode.DUAL_WRITE,
+            policy.modeFor(NativeErrorModule.CHECKOUT),
         )
         koin.checkModules()
     }

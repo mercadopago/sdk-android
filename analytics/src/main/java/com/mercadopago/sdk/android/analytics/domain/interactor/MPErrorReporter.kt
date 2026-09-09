@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.analytics.domain.interactor
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryMode
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryPolicy
 import com.mercadopago.sdk.android.analytics.domain.models.PendingNativeError
 import com.mercadopago.sdk.android.analytics.domain.usecase.ReportNativeErrorUseCase
 import kotlinx.coroutines.CancellationException
@@ -22,7 +23,7 @@ import java.util.UUID
 @Suppress("DEPRECATION", "DEPRECATION_ERROR")
 internal class MPErrorReporter(
     private val reportNativeError: ReportNativeErrorUseCase,
-    private val deliveryMode: NativeErrorDeliveryMode,
+    private val deliveryPolicy: NativeErrorDeliveryPolicy,
     dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val eventIdProvider: () -> String = { UUID.randomUUID().toString() },
     private val timestampProvider: () -> String = ::utcTimestamp,
@@ -50,6 +51,7 @@ internal class MPErrorReporter(
         legacyMetricSender: (Metric) -> Unit,
     ) {
         try {
+            val deliveryMode = deliveryPolicy.modeFor(error.operation.module)
             val eventId = eventIdProvider()
             val pending = PendingNativeError(
                 eventId = eventId,

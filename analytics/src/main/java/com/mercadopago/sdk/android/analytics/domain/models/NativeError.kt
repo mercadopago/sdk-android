@@ -60,17 +60,6 @@ enum class NativeErrorDiagnostic(val value: String) {
     HTTP_FORBIDDEN("http_forbidden"),
 }
 
-internal enum class NativeErrorDeliveryMode {
-    MELIDATA_ONLY,
-    DUAL_WRITE,
-    OBSERVABILITY_ONLY;
-
-    companion object {
-        fun from(value: String): NativeErrorDeliveryMode =
-            values().firstOrNull { it.name == value } ?: MELIDATA_ONLY
-    }
-}
-
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 data class NativeError(
     val operation: NativeErrorOperation,

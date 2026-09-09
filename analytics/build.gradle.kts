@@ -39,7 +39,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-        buildConfigField("String", "NATIVE_ERROR_DELIVERY_MODE", "\"DUAL_WRITE\"")
+        buildConfigField("String", "NATIVE_ERROR_CORE_METHODS_DELIVERY_MODE", "\"DUAL_WRITE\"")
+        buildConfigField("String", "NATIVE_ERROR_CHECKOUT_DELIVERY_MODE", "\"DUAL_WRITE\"")
     }
 
     buildTypes {

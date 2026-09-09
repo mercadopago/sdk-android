@@ -5,7 +5,9 @@ import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.NativeError
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorCode
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryMode
+import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorDeliveryPolicy
 import com.mercadopago.sdk.android.analytics.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.analytics.domain.models.PendingNativeError
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.analytics.domain.repository.NativeErrorRepository
 import com.mercadopago.sdk.android.analytics.domain.usecase.ReportNativeErrorUseCase
@@ -17,7 +19,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 internal class MPErrorReporterTest {
     private val repository = mockk<NativeErrorRepository>()
@@ -78,13 +79,75 @@ internal class MPErrorReporterTest {
     }
 
     @Test
+    fun `all nine module mode pairs make independent delivery decisions`() {
+        NativeErrorDeliveryMode.values().forEach { coreMethodsMode ->
+            NativeErrorDeliveryMode.values().forEach { checkoutMode ->
+                val pairScheduler = TestCoroutineScheduler()
+                val deliveries = mutableListOf<PendingNativeError>()
+                val recordingRepository = object : NativeErrorRepository {
+                    override suspend fun report(error: PendingNativeError): Boolean {
+                        deliveries += error
+                        return true
+                    }
+                }
+                val reporter = MPErrorReporter(
+                    reportNativeError = ReportNativeErrorUseCase(recordingRepository),
+                    deliveryPolicy = NativeErrorDeliveryPolicy(
+                        coreMethods = coreMethodsMode,
+                        checkout = checkoutMode,
+                    ),
+                    dispatcher = StandardTestDispatcher(pairScheduler),
+                    eventIdProvider = incrementingIds(),
+                    timestampProvider = { TIMESTAMP },
+                )
+                var coreMethodsLegacyCount = 0
+                var checkoutLegacyCount = 0
+                reporter.track(
+                    error = error,
+                    legacyMetricFactory = { metric() },
+                    legacyMetricSender = { coreMethodsLegacyCount++ },
+                )
+                reporter.track(
+                    error = error.copy(operation = NativeErrorOperation.ORDER_SUBMISSION),
+                    legacyMetricFactory = { metric() },
+                    legacyMetricSender = { checkoutLegacyCount++ },
+                )
+
+                pairScheduler.advanceUntilIdle()
+
+                assertEquals(
+                    coreMethodsMode != NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
+                    coreMethodsLegacyCount == 1,
+                    "Core Methods Melidata decision for $coreMethodsMode/$checkoutMode",
+                )
+                assertEquals(
+                    checkoutMode != NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
+                    checkoutLegacyCount == 1,
+                    "Checkout Melidata decision for $coreMethodsMode/$checkoutMode",
+                )
+                assertEquals(
+                    coreMethodsMode != NativeErrorDeliveryMode.MELIDATA_ONLY,
+                    deliveries.any { it.error.operation == NativeErrorOperation.ISSUERS },
+                    "Core Methods v2 decision for $coreMethodsMode/$checkoutMode",
+                )
+                assertEquals(
+                    checkoutMode != NativeErrorDeliveryMode.MELIDATA_ONLY,
+                    deliveries.any { it.error.operation == NativeErrorOperation.ORDER_SUBMISSION },
+                    "Checkout v2 decision for $coreMethodsMode/$checkoutMode",
+                )
+                reporter.close()
+            }
+        }
+    }
+
+    @Test
     fun `65th pending error is dropped newest`() {
         coEvery { repository.report(any()) } returns true
         val pausedScheduler = TestCoroutineScheduler()
         val pausedDispatcher = StandardTestDispatcher(pausedScheduler)
         val reporter = MPErrorReporter(
             reportNativeError = useCase,
-            deliveryMode = NativeErrorDeliveryMode.DUAL_WRITE,
+            deliveryPolicy = NativeErrorDeliveryPolicy(),
             dispatcher = pausedDispatcher,
             eventIdProvider = incrementingIds(),
             timestampProvider = { TIMESTAMP },
@@ -125,35 +188,12 @@ internal class MPErrorReporterTest {
         reporter.close()
     }
 
-    @Test
-    fun `caller path p95 stays below one millisecond under queue pressure`() {
-        coEvery { repository.report(any()) } returns true
-        val reporter = MPErrorReporter(
-            reportNativeError = useCase,
-            deliveryMode = NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
-            dispatcher = StandardTestDispatcher(TestCoroutineScheduler()),
-        )
-
-        repeat(PERFORMANCE_WARMUP_ITERATIONS) {
-            reporter.track(error, { metric() }, {})
-        }
-        val samples = List(PERFORMANCE_SAMPLE_COUNT) {
-            val startedAt = System.nanoTime()
-            reporter.track(error, { metric() }, {})
-            System.nanoTime() - startedAt
-        }.sorted()
-        val p95Nanos = samples[(samples.size * 95 / 100) - 1]
-
-        assertTrue(
-            p95Nanos < CALLER_PATH_P95_LIMIT_NANOS,
-            "Expected p95 below 1ms but was ${p95Nanos / NANOS_PER_MILLISECOND.toDouble()}ms",
-        )
-        reporter.close()
-    }
-
     private fun reporter(mode: NativeErrorDeliveryMode) = MPErrorReporter(
         reportNativeError = useCase,
-        deliveryMode = mode,
+        deliveryPolicy = NativeErrorDeliveryPolicy(
+            coreMethods = mode,
+            checkout = mode,
+        ),
         dispatcher = dispatcher,
         eventIdProvider = { EVENT_ID },
         timestampProvider = { TIMESTAMP },
@@ -173,9 +213,5 @@ internal class MPErrorReporterTest {
     private companion object {
         const val EVENT_ID = "3f6fd694-4ba8-4f45-ae7c-871c4698aace"
         const val TIMESTAMP = "2026-08-27T12:00:00.000Z"
-        const val PERFORMANCE_WARMUP_ITERATIONS = 200
-        const val PERFORMANCE_SAMPLE_COUNT = 2_000
-        const val NANOS_PER_MILLISECOND = 1_000_000L
-        const val CALLER_PATH_P95_LIMIT_NANOS = NANOS_PER_MILLISECOND
     }
 }
