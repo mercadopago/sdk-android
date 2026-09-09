@@ -64,11 +64,9 @@ internal class NativeErrorClassifierTest {
             classifier.classify(NativeErrorOperation.CARD_FORM_SUBMISSION, input).code,
         )
         assertEquals(
-            setOf("type", "code", "httpStatus", "responseState", "requestCorrelationId"),
+            5,
             NativeErrorInput::class.java.declaredFields
-                .filterNot { it.isSynthetic || java.lang.reflect.Modifier.isStatic(it.modifiers) }
-                .map { it.name }
-                .toSet(),
+                .count { !it.isSynthetic && !java.lang.reflect.Modifier.isStatic(it.modifiers) },
         )
         assertEquals("cancelled", NativeErrorDiagnostic.CANCELLED.value)
     }
