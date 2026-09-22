@@ -48,7 +48,7 @@ internal fun provideDataModule() =
             InitializeCardFormUseCase(repository = get())
         }
         factory<OrderRemoteDataSource> {
-            OrderRemoteDataSourceImpl(service = get())
+            OrderRemoteDataSourceImpl(service = get(), context = get())
         }
         factory<OrderRepository> {
             OrderRepositoryImpl(dataSource = get())

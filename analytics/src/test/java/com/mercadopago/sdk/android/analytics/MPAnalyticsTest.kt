@@ -3,9 +3,11 @@ package com.mercadopago.sdk.android.analytics
 import android.content.Context
 import android.util.Log
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.domain.usecase.GetSessionIdUseCase
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -18,12 +20,14 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.Koin
+import kotlin.test.assertEquals
 
 internal class MPAnalyticsTest {
 
     private val context = mockk<Context>(relaxed = true)
     private val koin = mockk<Koin>(relaxed = true)
     private val trackMetricUseCase = mockk<TrackMetricUseCase>(relaxed = true)
+    private val getSessionIdUseCase = mockk<GetSessionIdUseCase>(relaxed = true)
 
     @Before
     fun setup() {
@@ -36,6 +40,9 @@ internal class MPAnalyticsTest {
         every {
             koin.get<TrackMetricUseCase>()
         } returns trackMetricUseCase
+        every {
+            koin.get<GetSessionIdUseCase>()
+        } returns getSessionIdUseCase
     }
 
     @Test
@@ -101,5 +108,22 @@ internal class MPAnalyticsTest {
         verify {
             trackMetricUseCase(metric)
         }
+    }
+
+    @Test
+    fun `when getSessionId is called Then return the use case value`() = runTest {
+        // Given
+        val getSiteIdFlow = flowOf("MLA")
+        coEvery { getSessionIdUseCase() } returns "session-abc-123"
+
+        // When
+        MPAnalytics.initialize(
+            context = context,
+            getSiteIdFlow = getSiteIdFlow,
+        )
+        val result = MPAnalytics.getInstance().getSessionId()
+
+        // Then
+        assertEquals("session-abc-123", result)
     }
 }
