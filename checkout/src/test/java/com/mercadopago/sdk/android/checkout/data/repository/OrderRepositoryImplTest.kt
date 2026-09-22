@@ -34,13 +34,10 @@ internal class OrderRepositoryImplTest {
         val response = OrderProcessResponse(
             id = "ORD_456",
             status = "approved",
-            productId = null, processingMode = null, externalReference = null,
-            description = null, totalAmount = null, totalPaidAmount = null,
-            expirationTime = null, checkoutAvailableAt = null, siteId = null,
-            userId = null, createdDate = null, lastUpdatedDate = null, type = null,
-            statusDetail = null, captureMode = null, currency = null, config = null,
-            integrationData = null, payer = null, shipment = null, transactions = null,
-            items = null,
+            statusDetail = null,
+            totalAmount = null,
+            retryPossible = null,
+            paymentProcessed = null,
         )
         coEvery { dataSource.process(params) } returns Result.Success(response)
 
