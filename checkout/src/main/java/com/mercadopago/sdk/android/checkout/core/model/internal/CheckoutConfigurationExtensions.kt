@@ -31,6 +31,6 @@ internal fun MPCheckoutType<*, *>?.unsupportedTypeError(
 ): MercadoPagoCheckoutError.ConfigurationError =
     MercadoPagoCheckoutError.ConfigurationError(
         code = ErrorCode.INTEGRATION_ERROR,
-        messageError = "$UNSUPPORTED: $this",
+        messageError = "$UNSUPPORTED: ${this?.let { it::class.simpleName } ?: "null"}",
         localized = localized.name,
     )
