@@ -32,6 +32,7 @@ internal fun metricGenerateCardTokenCallError(
     error: String,
     identityType: String? = null,
     typeWallet: String = TYPE_WALLET_CORE_METHODS,
+    observabilityEventId: String? = null,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$GENERATE_CARD_TOKEN_PATH$ERROR_PATH",
     type = TrackType.EVENT,
@@ -39,6 +40,7 @@ internal fun metricGenerateCardTokenCallError(
         errorType = error,
         identityType = identityType,
         typeWallet = typeWallet,
+        observabilityEventId = observabilityEventId,
     ),
 )
 
@@ -60,4 +62,6 @@ internal data class GenerateCardTokenErrorData(
     val identityType: String?,
     @SerializedName("type_wallet")
     val typeWallet: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String? = null,
 ) : EventData

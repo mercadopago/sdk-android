@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
-import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -58,12 +57,13 @@ internal class CardFormInitAnalyticsTest {
     }
 
     @Test
-    fun `when metricCardFormInitializeError called then returns error path with MetricErrorData`() {
+    fun `when metricCardFormInitializeError called then returns error path with checkout error data`() {
         val metric = metricCardFormInitializeError(errorType = "network_error")
 
         assertEquals("/checkout_api_native/checkout/card_form/initialize_error", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("network_error", data.errorType)
+        assertEquals(null, data.observabilityEventId)
     }
 }

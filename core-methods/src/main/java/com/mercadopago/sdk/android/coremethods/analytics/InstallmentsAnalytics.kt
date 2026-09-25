@@ -29,12 +29,14 @@ internal fun metricInstallmentsCallSuccess(
 internal fun metricInstallmentsCallError(
     error: String,
     transactionAmount: BigDecimal,
+    observabilityEventId: String? = null,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$INSTALLMENTS_PATH$ERROR_PATH",
     type = TrackType.EVENT,
     data = InstallmentsErrorData(
         errorType = error,
         transactionAmount = transactionAmount,
+        observabilityEventId = observabilityEventId,
     ),
 )
 
@@ -52,4 +54,6 @@ internal data class InstallmentsErrorData(
     val errorType: String,
     @SerializedName("transaction_amount")
     val transactionAmount: BigDecimal,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String? = null,
 ) : EventData

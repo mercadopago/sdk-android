@@ -138,6 +138,74 @@ internal class MPErrorReporterTest {
     }
 
     @Test
+    fun `capture after close falls back to Melidata when observability only`() {
+        coEvery { repository.report(any()) } returns true
+        val reporter = reporter(NativeErrorDeliveryMode.OBSERVABILITY_ONLY)
+        reporter.close()
+
+        val receipt = reporter.capture(NativeErrorOperation.ISSUERS, input)
+        scheduler.advanceUntilIdle()
+
+        assertEquals(null, receipt.eventId)
+        assertTrue(receipt.shouldSendMelidata)
+        coVerify(exactly = 0) { repository.report(any()) }
+    }
+
+    @Test
+    fun `melidata only returns no event id and queues nothing`() {
+        coEvery { repository.report(any()) } returns true
+        val reporter = reporter(NativeErrorDeliveryMode.MELIDATA_ONLY)
+
+        val receipt = reporter.capture(NativeErrorOperation.ISSUERS, input)
+        scheduler.advanceUntilIdle()
+
+        assertEquals(null, receipt.eventId)
+        assertTrue(receipt.shouldSendMelidata)
+        coVerify(exactly = 0) { repository.report(any()) }
+        reporter.close()
+    }
+
+    @Test
+    fun `reporter provider failure falls back without evaluating input`() {
+        val reporterProvider: () -> NativeErrorReporting? = { error("provider failure") }
+        var inputEvaluated = false
+
+        val receipt = reporterProvider.captureOrFallback(NativeErrorOperation.ISSUERS) {
+            inputEvaluated = true
+            input
+        }
+
+        assertEquals(null, receipt.eventId)
+        assertTrue(receipt.shouldSendMelidata)
+        assertFalse(inputEvaluated)
+    }
+
+    @Test
+    fun `full observability buffer falls back to Melidata for dropped newest error`() {
+        coEvery { repository.report(any()) } returns true
+        val pausedScheduler = TestCoroutineScheduler()
+        val reporter = MPErrorReporter(
+            reportNativeError = useCase,
+            deliveryPolicy = NativeErrorDeliveryPolicy(
+                coreMethods = NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
+                checkout = NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
+            ),
+            dispatcher = StandardTestDispatcher(pausedScheduler),
+            eventIdProvider = incrementingIds(),
+            timestampProvider = { TIMESTAMP },
+        )
+
+        repeat(64) { reporter.capture(NativeErrorOperation.ISSUERS, input) }
+        val receipt = reporter.capture(NativeErrorOperation.ISSUERS, input)
+        pausedScheduler.advanceUntilIdle()
+
+        assertEquals(null, receipt.eventId)
+        assertTrue(receipt.shouldSendMelidata)
+        coVerify(exactly = 64) { repository.report(any()) }
+        reporter.close()
+    }
+
+    @Test
     fun `worker cancellation is not converted into a delivery failure`() {
         coEvery { repository.report(any()) } throws CancellationException("stop")
         val reporter = reporter(NativeErrorDeliveryMode.OBSERVABILITY_ONLY)

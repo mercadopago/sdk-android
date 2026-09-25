@@ -1,6 +1,5 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
-import com.mercadopago.sdk.android.analytics.domain.constants.MetricErrorData
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -56,13 +55,14 @@ internal class CardFormSubmitAnalyticsTest {
     }
 
     @Test
-    fun `when metricCardFormSubmitError called then returns error path with MetricErrorData`() {
+    fun `when metricCardFormSubmitError called then returns error path with checkout error data`() {
         val metric = metricCardFormSubmitError(errorType = "network_error")
 
         assertEquals("/checkout_api_native/checkout/card_form/submit_error", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("network_error", data.errorType)
+        assertNull(data.observabilityEventId)
     }
 
     @Test
@@ -71,15 +71,17 @@ internal class CardFormSubmitAnalyticsTest {
 
         assertEquals("/checkout_api_native/checkout/card_form/user_canceled_error", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("", data.errorType)
+        assertNull(data.observabilityEventId)
     }
 
     @Test
     fun `when metricCardFormUserCanceledError called with error then data contains it`() {
         val metric = metricCardFormUserCanceledError(errorType = "network_error")
 
-        val data = assertIs<MetricErrorData>(metric.data)
+        val data = assertIs<CheckoutErrorEventData>(metric.data)
         assertEquals("network_error", data.errorType)
+        assertNull(data.observabilityEventId)
     }
 }

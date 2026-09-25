@@ -52,17 +52,21 @@ internal class MPErrorReporter(
         input: NativeErrorInput,
     ): NativeErrorReceipt = try {
         val error = errorFactory.from(operation, input)
-        val deliveryMode = deliveryPolicy.modeFor(operation.module)
-        val eventId = eventIdProvider()
-        if (deliveryMode != NativeErrorDeliveryMode.MELIDATA_ONLY) {
-            enqueue(PendingNativeError(eventId, timestampProvider(), error))
+        when (deliveryPolicy.modeFor(operation.module)) {
+            NativeErrorDeliveryMode.MELIDATA_ONLY -> NativeErrorReceipt.MELIDATA_FALLBACK
+            NativeErrorDeliveryMode.DUAL_WRITE -> NativeErrorReceipt(
+                eventId = enqueueOrNull(PendingNativeError(eventIdProvider(), timestampProvider(), error)),
+                shouldSendMelidata = true,
+            )
+
+            NativeErrorDeliveryMode.OBSERVABILITY_ONLY -> {
+                val eventId = enqueueOrNull(PendingNativeError(eventIdProvider(), timestampProvider(), error))
+                // If the queue rejects the error, preserve delivery through Melidata.
+                NativeErrorReceipt(eventId = eventId, shouldSendMelidata = eventId == null)
+            }
         }
-        NativeErrorReceipt(
-            eventId = eventId,
-            shouldSendMelidata = deliveryMode != NativeErrorDeliveryMode.OBSERVABILITY_ONLY,
-        )
     } catch (_: Throwable) {
-        NativeErrorReceipt(eventId = "", shouldSendMelidata = true)
+        NativeErrorReceipt.MELIDATA_FALLBACK
     }
 
     override fun close() {
@@ -70,9 +74,8 @@ internal class MPErrorReporter(
         scope.cancel()
     }
 
-    private fun enqueue(error: PendingNativeError) {
-        channel.trySend(error)
-    }
+    private fun enqueueOrNull(error: PendingNativeError): String? =
+        error.eventId.takeIf { channel.trySend(error).isSuccess }
 
     private companion object {
         const val REPORT_BUFFER_CAPACITY = 64
