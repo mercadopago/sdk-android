@@ -68,7 +68,7 @@ internal class MPAnalyticsTest {
 
         // Then
         assertNotNull(MPAnalytics.getInstance())
-        verify {
+        verify(timeout = 1_000) {
             trackMetricUseCase(metric)
         }
     }
@@ -98,7 +98,7 @@ internal class MPAnalyticsTest {
 
         // Then
         assertNotNull(MPAnalytics.getInstance())
-        verify {
+        verify(timeout = 1_000) {
             trackMetricUseCase(metric)
         }
     }

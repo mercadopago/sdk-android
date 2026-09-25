@@ -24,12 +24,14 @@ internal fun metricIdentificationCallSuccess(
 internal fun metricIdentificationCallError(
     error: String,
     documentTypes: List<String> = emptyList(),
+    observabilityEventId: String? = null,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$IDENTIFICATION_TYPES_PATH$ERROR_PATH",
     type = TrackType.EVENT,
     data = IdentificationTypesErrorData(
         errorType = error,
         documentTypes = documentTypes,
+        observabilityEventId = observabilityEventId,
     ),
 )
 
@@ -43,4 +45,6 @@ internal data class IdentificationTypesErrorData(
     val errorType: String,
     @SerializedName("document_types")
     val documentTypes: List<String>,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String? = null,
 ) : EventData

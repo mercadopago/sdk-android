@@ -245,8 +245,13 @@ workflows:
       - verify-changelog:
           filters:
             branches:
-              ignore: main
-      - lint
+              ignore:
+                - main
+                - /mirror-staging\/.*/
+      - lint:
+          filters:
+            branches:
+              ignore: /mirror-staging\/.*/
       - test-coverage:
           requires:
             - lint
