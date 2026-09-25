@@ -1,9 +1,14 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
-import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.analytics.observability.domain.classifier.NativeErrorInput
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.NativeErrorReceipt
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.NativeErrorReporting
+import com.mercadopago.sdk.android.analytics.observability.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
 import io.mockk.mockk
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -104,14 +109,14 @@ internal class CardFormAnalyticsTrackerTest {
     fun `given error then trackInitializeError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackInitializeError(mockk<MercadoPagoCheckoutError>(relaxed = true))
+        tracker.trackInitializeError(mockk<ObservedCheckoutError>(relaxed = true))
     }
 
     @Test
     fun `given error then trackSubmitError does not throw`() {
         val tracker = CardFormAnalyticsTracker(isLoading = { false })
 
-        tracker.trackSubmitError(mockk<MercadoPagoCheckoutError>(relaxed = true))
+        tracker.trackSubmitError(mockk<ObservedCheckoutError>(relaxed = true))
     }
 
     @Test
@@ -124,5 +129,32 @@ internal class CardFormAnalyticsTrackerTest {
             issuer = "issuer_1",
             paymentTypeId = "credit_card",
         )
+    }
+
+    @Test
+    fun `given card form cancellation then it is reported through the restricted boundary once`() {
+        val reporter = RecordingReporter()
+        val tracker = CardFormAnalyticsTracker(
+            isLoading = { false },
+            nativeErrorReporter = { reporter },
+        )
+
+        tracker.trackUserCanceled(CancelReason.SystemBack)
+
+        assertEquals(listOf(NativeErrorOperation.CARD_FORM_CANCELLATION), reporter.operations)
+    }
+
+    private class RecordingReporter : NativeErrorReporting {
+        val operations = mutableListOf<NativeErrorOperation>()
+
+        override fun capture(
+            operation: NativeErrorOperation,
+            input: NativeErrorInput,
+        ): NativeErrorReceipt {
+            operations += operation
+            return NativeErrorReceipt(eventId = "event-1", shouldSendMelidata = true)
+        }
+
+        override fun close() = Unit
     }
 }

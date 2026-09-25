@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.usecase
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorCode
 import com.mercadopago.sdk.android.checkout.domain.exception.ErrorLocalized
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
+import com.mercadopago.sdk.android.checkout.domain.model.ObservedCheckoutError
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
 import com.mercadopago.sdk.android.coremethods.domain.model.BuyerIdentification
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
@@ -29,7 +30,12 @@ internal class GenerateTokenUseCaseTest {
     fun `given coreMethods returns success then returns card token`() = runTest {
         val token = CardToken(token = "token-abc-123")
         coEvery {
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
+            coreMethods.generateCardTokenForCheckout(
+                cardNumberState,
+                expirationDateState,
+                securityCodeState,
+                buyerIdentification,
+            )
         } returns Result.Success(token)
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
@@ -42,59 +48,79 @@ internal class GenerateTokenUseCaseTest {
     fun `given coreMethods returns request network error then returns NetworkError`() = runTest {
         val requestError = ResultError.Request(message = "Connection failed", code = "NETWORK")
         coEvery {
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
+            coreMethods.generateCardTokenForCheckout(
+                cardNumberState,
+                expirationDateState,
+                securityCodeState,
+                buyerIdentification,
+            )
         } returns Result.Error(requestError)
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.NetworkError>(result.error)
-        assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.NetworkError>(checkoutError)
+        assertEquals(ErrorCode.NETWORK_CONNECTION_FAILED, checkoutError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, checkoutError.errorLocalized)
     }
 
     @Test
     fun `given coreMethods returns request timeout error then returns NetworkError with timeout code`() = runTest {
         val requestError = ResultError.Request(message = "Timeout", code = "TIMEOUT")
         coEvery {
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
+            coreMethods.generateCardTokenForCheckout(
+                cardNumberState,
+                expirationDateState,
+                securityCodeState,
+                buyerIdentification,
+            )
         } returns Result.Error(requestError)
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.NetworkError>(result.error)
-        assertEquals(ErrorCode.NETWORK_TIMEOUT, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.NetworkError>(checkoutError)
+        assertEquals(ErrorCode.NETWORK_TIMEOUT, checkoutError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, checkoutError.errorLocalized)
     }
 
     @Test
     fun `given coreMethods returns generic request error then returns ServiceError`() = runTest {
         val requestError = ResultError.Request(message = "Server error", code = "SERVER_ERROR")
         coEvery {
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
+            coreMethods.generateCardTokenForCheckout(
+                cardNumberState,
+                expirationDateState,
+                securityCodeState,
+                buyerIdentification,
+            )
         } returns Result.Error(requestError)
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.ServiceError>(result.error)
-        assertEquals(ErrorCode.SERVICE_ERROR, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.ServiceError>(checkoutError)
+        assertEquals(ErrorCode.SERVICE_ERROR, checkoutError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, checkoutError.errorLocalized)
     }
 
     @Test
     fun `given coreMethods returns validation error then returns ServiceError`() = runTest {
         val validationError = ResultError.Validation(message = "Invalid card data")
         coEvery {
-            coreMethods.generateCardToken(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
+            coreMethods.generateCardTokenForCheckout(
+                cardNumberState,
+                expirationDateState,
+                securityCodeState,
+                buyerIdentification,
+            )
         } returns Result.Error(validationError)
 
         val result = useCase(cardNumberState, expirationDateState, securityCodeState, buyerIdentification)
 
-        assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
-        assertIs<MercadoPagoCheckoutError.ServiceError>(result.error)
-        assertEquals(ErrorCode.SERVICE_ERROR, result.error.errorCode)
-        assertEquals(ErrorLocalized.TOKENIZATION.name, result.error.errorLocalized)
+        val checkoutError = assertIs<Result.Error<ObservedCheckoutError>>(result).error.publicError
+        assertIs<MercadoPagoCheckoutError.ServiceError>(checkoutError)
+        assertEquals(ErrorCode.SERVICE_ERROR, checkoutError.errorCode)
+        assertEquals(ErrorLocalized.TOKENIZATION.name, checkoutError.errorLocalized)
     }
 }

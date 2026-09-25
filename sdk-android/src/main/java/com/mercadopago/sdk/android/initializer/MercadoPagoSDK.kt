@@ -5,6 +5,7 @@ package com.mercadopago.sdk.android.initializer
 import android.content.Context
 import androidx.annotation.RestrictTo
 import com.mercadolibre.android.device.sdk.DeviceSDK
+import com.mercadopago.sdk.android.analytics.observability.runtime.NativeErrorReporterProvider
 import com.mercadopago.sdk.android.core.utils.PublicKeyStore
 import com.mercadopago.sdk.android.di.MercadoPagoSdkModulesProvider
 import com.mercadopago.sdk.android.domain.model.CountryCode
@@ -91,17 +92,17 @@ class MercadoPagoSDK private constructor(
                 applicationContext = context.applicationContext,
             )
             PublicKeyStore.publicKey = publicKey
+            val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
+            val configureSdkParams = ConfigureSdkParams(
+                context = context,
+                publicKey = publicKey,
+                countryCode = countryCode,
+            )
+            configureSdkUseCase.configureObservability(configureSdkParams)
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 val instance = getInstance()
                 DeviceSDK.getInstance().execute(instance.applicationContext)
-                val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
-                configureSdkUseCase(
-                    ConfigureSdkParams(
-                        context = context,
-                        publicKey = publicKey,
-                        countryCode = countryCode,
-                    )
-                ).collect { _ -> }
+                configureSdkUseCase(configureSdkParams).collect { _ -> }
             }
         }
 
@@ -146,16 +147,16 @@ class MercadoPagoSDK private constructor(
             instance.publicKey = publicKey
             instance.countryCode = countryCode
             PublicKeyStore.publicKey = publicKey
+            val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
+            val configureSdkParams = ConfigureSdkParams(
+                context = instance.applicationContext,
+                publicKey = publicKey,
+                countryCode = countryCode,
+            )
+            configureSdkUseCase.configureObservability(configureSdkParams)
 
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
-                val configureSdkUseCase: ConfigureSdkUseCase = modulesProvider.koinApp.get()
-                configureSdkUseCase(
-                    ConfigureSdkParams(
-                        context = instance.applicationContext,
-                        publicKey = publicKey,
-                        countryCode = countryCode,
-                    )
-                ).collect { _ -> }
+                configureSdkUseCase(configureSdkParams).collect { _ -> }
             }
         }
 
@@ -168,6 +169,7 @@ class MercadoPagoSDK private constructor(
         fun clearInstance() {
             val instanceToClose = sdkInstance
             sdkInstance = null
+            NativeErrorReporterProvider.clear()
             SdkCoroutineProvider.provideSDKCoroutineScope().launch {
                 instanceToClose?.koin?.close()
             }
