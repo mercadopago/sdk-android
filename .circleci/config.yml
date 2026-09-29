@@ -258,6 +258,7 @@ workflows:
               only:
                 - main
                 - /release\/.*/
+                - /chore\/release.*/
       - build-artifacts:
           requires:
             - test-coverage

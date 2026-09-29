@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## Unreleased
 
+### Fixed
+- CircleCI's `verify-version-consistency` job branch filter now also matches `chore/release-*` (in addition to `main` and `release/*`) — this repo's release branches are named `chore/release-X.Y.Z`, so the check never actually ran before a release PR was merged into `main`, only after
+
 ### Changed
 - `core`, `core-methods`, `mp-extended`, and `checkout` bumped to `1.0.1` — network-crash fix (`safeApiCall`); `analytics` and `sdk-android` bumped to `1.0.1` (depend on `core`), `components` bumped to `1.0.1` (depends on `core-methods`) to keep published dependency versions consistent; `sdk-android-bom` bumped to `1.0.1` to republish pointing at the new module versions
 - All modules bumped to `1.0.0`: `core`, `analytics`, `sdk-android`, `core-methods`, `mp-extended`, `checkout`, `components`, `foundation`, `sdk-android-bom`
