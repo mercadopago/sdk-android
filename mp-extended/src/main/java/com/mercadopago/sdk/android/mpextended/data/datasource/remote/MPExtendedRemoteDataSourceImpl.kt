@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.mpextended.data.datasource.remote
 
+import com.mercadopago.sdk.android.core.utils.safeApiCall
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 import com.mercadopago.sdk.android.mpextended.data.datasource.mappers.mapSuccess
@@ -15,7 +16,7 @@ internal class MPExtendedRemoteDataSourceImpl(
     override suspend fun getDeviceSessionId(
         request: MPDeviceSessionIdRequest,
     ): Result<MPDeviceSession, ResultError> {
-        return service.getDeviceSession(request).toInternalResponse().mapSuccess {
+        return safeApiCall { service.getDeviceSession(request) }.toInternalResponse().mapSuccess {
             this.toModel()
         }
     }

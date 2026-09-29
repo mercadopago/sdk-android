@@ -6,6 +6,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.CardBinResponse
 import com.mercadopago.sdk.android.checkout.data.remote.response.CardFormInitResponse
 import com.mercadopago.sdk.android.checkout.data.remote.service.CardFormService
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
+import com.mercadopago.sdk.android.core.utils.safeApiCall
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class CardFormRemoteDataSourceImpl(
@@ -16,23 +17,27 @@ internal class CardFormRemoteDataSourceImpl(
         clientToken: String?,
         checkoutType: String,
     ): Result<CardFormInitResponse, ResponseError> =
-        service.initialization(
-            authorization = clientToken?.let { "Bearer $it" },
-            orderId = orderId,
-            checkoutType = checkoutType,
-        ).toInternalResponse()
+        safeApiCall {
+            service.initialization(
+                authorization = clientToken?.let { "Bearer $it" },
+                orderId = orderId,
+                checkoutType = checkoutType,
+            )
+        }.toInternalResponse()
 
     override suspend fun getCardBin(
         request: CardBinRequest,
     ): Result<CardBinResponse, ResponseError> =
         with(request) {
-            service.getCardBin(
-                bin = bin,
-                amount = amount,
-                checkoutType = checkoutType,
-                processingMode = processingMode,
-                excludedPaymentTypes = excludedPaymentTypes,
-                excludedPaymentMethods = excludedPaymentMethods,
-            ).toInternalResponse()
+            safeApiCall {
+                service.getCardBin(
+                    bin = bin,
+                    amount = amount,
+                    checkoutType = checkoutType,
+                    processingMode = processingMode,
+                    excludedPaymentTypes = excludedPaymentTypes,
+                    excludedPaymentMethods = excludedPaymentMethods,
+                )
+            }.toInternalResponse()
         }
 }

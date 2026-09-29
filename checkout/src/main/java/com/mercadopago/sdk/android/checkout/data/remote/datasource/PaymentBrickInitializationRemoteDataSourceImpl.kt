@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.checkout.data.remote.response.PaymentBrickIni
 import com.mercadopago.sdk.android.checkout.data.remote.service.PaymentBrickInitializationService
 import com.mercadopago.sdk.android.checkout.domain.model.ResponseError
 import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBrickInitializationParams
+import com.mercadopago.sdk.android.core.utils.safeApiCall
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
 internal class PaymentBrickInitializationRemoteDataSourceImpl(
@@ -13,10 +14,12 @@ internal class PaymentBrickInitializationRemoteDataSourceImpl(
     override suspend fun fetch(
         params: FetchPaymentBrickInitializationParams,
     ): Result<PaymentBrickInitializationResponse, ResponseError> =
-        service.fetch(
-            orderId = params.orderId,
-            totalAmount = params.totalAmount,
-            customerId = params.customerId,
-            cardIds = params.cardIds,
-        ).toInternalResponse()
+        safeApiCall {
+            service.fetch(
+                orderId = params.orderId,
+                totalAmount = params.totalAmount,
+                customerId = params.customerId,
+                cardIds = params.cardIds,
+            )
+        }.toInternalResponse()
 }

@@ -15,6 +15,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 
 internal class MPExtendedRemoteDataSourceImplTest {
@@ -55,6 +56,17 @@ internal class MPExtendedRemoteDataSourceImplTest {
 
         assertTrue(result is Result.Error)
         assertEquals("EMPTY_BODY", ((result as Result.Error).error as ResultError.Request).code)
+    }
+
+    @Test
+    fun `when service throws SocketTimeoutException then returns Error instead of crashing`() = runBlocking {
+        val request = MPDeviceSessionIdRequest(fingerprint = null, siteId = "MLB")
+        coEvery { service.getDeviceSession(request) } throws SocketTimeoutException("timeout")
+
+        val result = dataSource.getDeviceSessionId(request)
+
+        assertTrue(result is Result.Error)
+        assertEquals("TIMEOUT", ((result as Result.Error).error as ResultError.Request).code)
     }
 
     private data class ErrorBody(val code: Int, val message: String)

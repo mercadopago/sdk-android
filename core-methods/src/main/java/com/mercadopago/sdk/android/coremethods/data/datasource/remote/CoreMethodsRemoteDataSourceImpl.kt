@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.data.datasource.remote
 
+import com.mercadopago.sdk.android.core.utils.safeApiCall
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.mapSuccess
 import com.mercadopago.sdk.android.coremethods.data.datasource.mappers.toInternalResponse
 import com.mercadopago.sdk.android.coremethods.data.datasource.remote.mapper.toModel
@@ -23,11 +24,13 @@ internal class CoreMethodsRemoteDataSourceImpl(
     override suspend fun generateCardToken(
         request: CardTokenBodyRequest,
     ): Result<CardToken, ResultError> {
-        return service.createToken(
-            request,
-            session = request.session,
-            sdkVersion = request.sdkVersion,
-        ).toInternalResponse().mapSuccess {
+        return safeApiCall {
+            service.createToken(
+                request,
+                session = request.session,
+                sdkVersion = request.sdkVersion,
+            )
+        }.toInternalResponse().mapSuccess {
             this.toModel()
         }
     }
@@ -35,15 +38,17 @@ internal class CoreMethodsRemoteDataSourceImpl(
     override suspend fun getInstallments(
         request: InstallmentsRequest,
     ): Result<List<Installment>, ResultError> {
-        return service.getInstallments(
-            bin = request.bin,
-            processingMode = request.processingMode,
-            amount = request.amount,
-        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
+        return safeApiCall {
+            service.getInstallments(
+                bin = request.bin,
+                processingMode = request.processingMode,
+                amount = request.amount,
+            )
+        }.toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
     override suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
-        return service.getIdentificationTypes().toInternalResponse().mapSuccess {
+        return safeApiCall { service.getIdentificationTypes() }.toInternalResponse().mapSuccess {
             this.map { it.toModel() }
         }
     }
@@ -51,17 +56,21 @@ internal class CoreMethodsRemoteDataSourceImpl(
     override suspend fun getCardIssuers(
         request: CardIssuersRequest,
     ): Result<List<CardIssuer>, ResultError> {
-        return service.getCardIssuers(
-            bin = request.bin,
-            paymentMethodId = request.paymentMethodId,
-        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
+        return safeApiCall {
+            service.getCardIssuers(
+                bin = request.bin,
+                paymentMethodId = request.paymentMethodId,
+            )
+        }.toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 
     override suspend fun getPaymentMethods(
         request: PaymentMethodsRequest,
     ): Result<List<PaymentMethod>, ResultError> {
-        return service.getPaymentMethods(
-            bin = request.bin,
-        ).toInternalResponse().mapSuccess { this.map { it.toModel() } }
+        return safeApiCall {
+            service.getPaymentMethods(
+                bin = request.bin,
+            )
+        }.toInternalResponse().mapSuccess { this.map { it.toModel() } }
     }
 }
