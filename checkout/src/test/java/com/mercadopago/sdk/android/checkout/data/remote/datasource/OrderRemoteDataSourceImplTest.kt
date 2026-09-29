@@ -13,6 +13,7 @@ import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -53,6 +54,17 @@ internal class OrderRemoteDataSourceImplTest {
         assertEquals("404", error.error.code)
         assertEquals(404, error.error.httpStatus)
     }
+
+    @Test
+    fun `given service throws SocketTimeoutException then process returns Result Error instead of crashing`() =
+        runTest {
+            coEvery { service.process(any(), any(), any()) } throws SocketTimeoutException("timeout")
+
+            val result = dataSource.process(params)
+
+            val error = assertIs<Result.Error<ResponseError>>(result)
+            assertEquals("TIMEOUT", error.error.code)
+        }
 
     @Test
     fun `given process is called then passes orderId to service`() = runTest {

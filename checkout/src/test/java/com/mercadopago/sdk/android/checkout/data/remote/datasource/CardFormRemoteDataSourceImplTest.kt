@@ -12,6 +12,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -55,6 +56,28 @@ internal class CardFormRemoteDataSourceImplTest {
         val error = assertIs<Result.Error<ResponseError>>(result)
         assertEquals("404", error.error.code)
         assertEquals(404, error.error.httpStatus)
+    }
+
+    @Test
+    fun `given service throws SocketTimeoutException then fetchInitialization returns Result Error`() = runTest {
+        coEvery { service.initialization(any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
+
+        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType)
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("TIMEOUT", error.error.code)
+    }
+
+    @Test
+    fun `given service throws SocketTimeoutException then getCardBin returns Result Error`() = runTest {
+        coEvery {
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any())
+        } throws SocketTimeoutException("timeout")
+
+        val result = dataSource.getCardBin(cardBinRequest)
+
+        val error = assertIs<Result.Error<ResponseError>>(result)
+        assertEquals("TIMEOUT", error.error.code)
     }
 
     @Test

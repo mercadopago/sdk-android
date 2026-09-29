@@ -23,6 +23,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 
 internal class CoreMethodsRemoteDataSourceTest {
@@ -235,6 +236,32 @@ internal class CoreMethodsRemoteDataSourceTest {
                 "Bad Request",
                 ((result as Result.Error).error as ResultError.Request).message,
             )
+        }
+
+    @Test
+    fun `test generateCardToken when service throws SocketTimeoutException returns Error instead of crashing`() =
+        runBlocking {
+            val cardTokenRequest = CardTokenBodyRequest(cardId = "card_123")
+
+            coEvery { service.createToken(any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
+
+            val result = remoteDataSource.generateCardToken(cardTokenRequest)
+
+            assertTrue(result is Result.Error)
+            assertEquals("TIMEOUT", ((result as Result.Error).error as ResultError.Request).code)
+        }
+
+    @Test
+    fun `test getPaymentMethods when service throws IOException returns Error instead of crashing`() =
+        runBlocking {
+            val request = PaymentMethodsRequest()
+
+            coEvery { service.getPaymentMethods(any(), any()) } throws java.net.UnknownHostException("no dns")
+
+            val result = remoteDataSource.getPaymentMethods(request)
+
+            assertTrue(result is Result.Error)
+            assertEquals("NO_INTERNET", ((result as Result.Error).error as ResultError.Request).code)
         }
 
     data class ErrorBody(

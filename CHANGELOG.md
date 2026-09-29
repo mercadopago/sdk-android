@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ProGuard rule added for `checkout`'s `ResponseError` — prevents member stripping in release builds
 - ProGuard rules added for `core-methods`' `ResultError.Request` and `ResultError.Validation` — prevents member stripping in release builds
+- Host app no longer crashes on a network call with no connectivity — `CoreMethodsRemoteDataSourceImpl`, `MPExtendedRemoteDataSourceImpl`, and checkout's `CardForm`/`Order`/`PaymentBrickInitialization` datasources now go through `:core`'s new `safeApiCall` wrapper, which converts a transport-level `IOException` (DNS failure, timeout, no connectivity) into a synthetic error `Response` instead of letting it escape uncaught; `TransportFailureBody`'s fields use `@SerializedName` so the JSON keys survive R8 minification
 
 ### Changed
 - `PaymentMethod.Card` fields renamed from `allowedTypes`/`allowedBrands` to `excludedPaymentTypes`/`excludedPaymentMethods` — filter semantics changed from allowlist to excludelist;

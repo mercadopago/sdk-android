@@ -11,6 +11,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
+import java.net.SocketTimeoutException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -48,6 +49,17 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
         assertEquals("404", error.error.code)
         assertEquals(404, error.error.httpStatus)
     }
+
+    @Test
+    fun `given service throws SocketTimeoutException then fetch returns Result Error instead of crashing`() =
+        runTest {
+            coEvery { service.fetch(any(), any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
+
+            val result = dataSource.fetch(params)
+
+            val error = assertIs<Result.Error<ResponseError>>(result)
+            assertEquals("TIMEOUT", error.error.code)
+        }
 
     @Test
     fun `given fetch is called then passes orderId and totalAmount to service`() = runTest {
