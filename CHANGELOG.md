@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
+- `core`, `core-methods`, `mp-extended`, and `checkout` bumped to `1.0.1` — network-crash fix (`safeApiCall`); `sdk-android-bom` bumped to `1.0.1` to republish pointing at the new module versions
 - All modules bumped to `1.0.0`: `core`, `analytics`, `sdk-android`, `core-methods`, `mp-extended`, `checkout`, `components`, `foundation`, `sdk-android-bom`
 - BOM (`sdk-android-bom`) now includes `checkout`, `components`, and `foundation` in its dependency constraints — consumers no longer need to specify versions for these modules when using the BOM
 ### Removed
