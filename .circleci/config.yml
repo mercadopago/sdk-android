@@ -51,20 +51,14 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Run Detekt
           command: ./gradlew detekt
       - run:
           name: Run KtLint Check
           command: ./gradlew ktlintCheck
-      - save_cache:
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          when: always
 
   test-coverage:
     circleci_ip_ranges: true
@@ -76,8 +70,8 @@ jobs:
       - setup-android
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Clean Test Cache
           command: ./gradlew cleanTest
@@ -104,6 +98,12 @@ jobs:
       - run:
           name: Archive Reports
           command: .circleci/scripts/archive-reports.sh
+      - save_cache:
+          key: v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          when: always
 
   documentation-write:
     circleci_ip_ranges: true
@@ -115,11 +115,18 @@ jobs:
       - setup-android
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-gradle-documentation-write-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Update Dokka Documentation
           command: ./gradlew dokkaHtmlMultiModule
+      - save_cache:
+          key: v2-gradle-documentation-write-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+          when: always
       - persist_to_workspace:
           root: build/dokka/
           paths:
@@ -178,8 +185,8 @@ jobs:
       - setup-android
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Build Debug and Release AARs
           command: ./gradlew assembleDebug assembleRelease --parallel
@@ -224,16 +231,11 @@ jobs:
           command: java -version
       - restore_cache:
           keys:
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
-            - v1-gradle-{{ checksum "gradle/libs.versions.toml" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "settings.gradle.kts" }}
+            - v2-gradle-{{ checksum "gradle/libs.versions.toml" }}
       - run:
           name: Install Dependencies
           command: ./gradlew dependencies
-      - save_cache:
-          paths:
-            - ~/.gradle/caches
-            - ~/.gradle/wrapper
-          key: v1-gradle-{{ checksum "gradle/libs.versions.toml" }}-{{ checksum "build.gradle.kts" }}-{{ checksum "settings.gradle.kts" }}
       - run:
           name: Publish to Maven
           command: .circleci/scripts/publish-maven.sh
