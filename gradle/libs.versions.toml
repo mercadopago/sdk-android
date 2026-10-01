@@ -46,6 +46,14 @@ constraintlayout-compose = "1.1.0"
 desugarJdkLibs = "2.0.4"
 usdk = "6.6.81"
 
+# --- guard rails (validar versoes vs AGP 8.7.3 / Kotlin 2.0.0 antes do commit) ---
+konsist = "0.17.3"
+kotest = "5.9.1"
+cucumber = "7.18.1"
+binaryCompat = "0.16.3"
+pitest = "0.2.15"            # pl.droidsonroids.pitest (Android). Confirmar compat AGP.
+pitestJunit5 = "1.2.1"       # plugin de mutation p/ JUnit5 (Kotest)
+
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -107,6 +115,13 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugarJdkLibs" }
 usdk = { module = "com.usdk.android:usdk", version.ref = "usdk" }
+# --- guard rails ---
+konsist = { module = "com.lemonappdev:konsist", version.ref = "konsist" }
+kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-junit = { module = "io.cucumber:cucumber-junit", version.ref = "cucumber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -120,3 +135,7 @@ cashapp-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 # KLIN
 klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+
+# --- guard rails ---
+kotlinx-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompat" }
+droidsonroids-pitest = { id = "pl.droidsonroids.pitest", version.ref = "pitest" }
