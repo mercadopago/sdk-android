@@ -1,6 +1,11 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.NativeErrorReporting
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.captureOrFallback
+import com.mercadopago.sdk.android.analytics.observability.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.analytics.observability.runtime.NativeErrorReporterProvider
+import com.mercadopago.sdk.android.checkout.analytics.CheckoutErrorObservability
 import com.mercadopago.sdk.android.checkout.analytics.InstallmentsCancelReason
 import com.mercadopago.sdk.android.checkout.analytics.InstallmentsInitializeEventData
 import com.mercadopago.sdk.android.checkout.analytics.metricInstallmentsInitialize
@@ -17,6 +22,8 @@ internal class InstallmentsAnalyticsTracker(
     private val paymentData: MPPaymentData,
     private val installmentData: MPInstallmentData,
     private val orderId: String,
+    private val nativeErrorReporter: () -> NativeErrorReporting? = NativeErrorReporterProvider::getOrNull,
+    private val errorObservability: CheckoutErrorObservability = CheckoutErrorObservability(),
 ) {
     private var terminated = false
 
@@ -70,8 +77,16 @@ internal class InstallmentsAnalyticsTracker(
     ) {
         if (terminated) return
         terminated = true
-        MPAnalytics.tryGetInstance()?.trackMetric(
-            metricInstallmentsUserCanceledError(errorType = reason.analyticsValue),
-        )
+        val receipt = nativeErrorReporter.captureOrFallback(NativeErrorOperation.INSTALLMENTS_CANCELLATION) {
+            errorObservability.cancellationInput()
+        }
+        if (receipt.shouldSendMelidata) {
+            MPAnalytics.tryGetInstance()?.trackMetric(
+                metricInstallmentsUserCanceledError(
+                    errorType = reason.analyticsValue,
+                    observabilityEventId = receipt.eventId,
+                ),
+            )
+        }
     }
 }

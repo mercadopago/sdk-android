@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "vectors": [
+    {
+      "id": "user-cancellation",
+      "operation": "card_form_cancellation",
+      "input": { "type": "user_cancellation" },
+      "expected": { "code": "user_cancelled", "category": "cancellation", "critical": false, "diagnostic_code": "cancelled" }
+    },
+    {
+      "id": "request-cancellation",
+      "operation": "payment_methods",
+      "input": { "type": "request_cancellation", "code": "cancelled" },
+      "expected": { "code": "request_cancelled", "category": "cancellation", "critical": false, "service_target": "payment_methods", "diagnostic_code": "cancelled" }
+    },
+    {
+      "id": "integration-precedes-validation",
+      "operation": "card_form_initialization",
+      "input": { "type": "validation", "code": "integration" },
+      "expected": { "code": "sdk_configuration_invalid", "category": "integration", "critical": true, "service_target": "checkout_initialization" }
+    },
+    {
+      "id": "validation",
+      "operation": "installments",
+      "input": { "type": "validation" },
+      "expected": { "code": "input_validation_failed", "category": "input_validation", "critical": false, "service_target": "installments", "diagnostic_code": "validation" }
+    },
+    {
+      "id": "invalid-url",
+      "operation": "identification_types",
+      "input": { "type": "request", "code": "invalid_url" },
+      "expected": { "code": "sdk_configuration_invalid", "category": "integration", "critical": true, "service_target": "identification_types", "diagnostic_code": "invalid_url" }
+    },
+    {
+      "id": "http-unauthorized",
+      "operation": "order_submission",
+      "input": { "type": "service", "http_status": 401 },
+      "expected": { "code": "sdk_configuration_invalid", "category": "integration", "critical": true, "status_code": 401, "service_target": "orders", "diagnostic_code": "http_unauthorized" }
+    },
+    {
+      "id": "http-forbidden-without-retained-status",
+      "operation": "card_tokenization",
+      "input": { "type": "request", "code": "http_forbidden" },
+      "expected": { "code": "sdk_configuration_invalid", "category": "integration", "critical": true, "diagnostic_code": "http_forbidden" }
+    },
+    {
+      "id": "empty-body",
+      "operation": "card_form_submission",
+      "input": { "type": "request", "response_state": "empty_body" },
+      "expected": { "code": "response_contract_invalid", "category": "integration", "critical": true, "diagnostic_code": "empty_body" }
+    },
+    {
+      "id": "decode-failure",
+      "operation": "order_submission",
+      "input": { "type": "service", "response_state": "decode_failure" },
+      "expected": { "code": "response_contract_invalid", "category": "integration", "critical": true, "service_target": "orders", "diagnostic_code": "decode_failure" }
+    },
+    {
+      "id": "offline",
+      "operation": "payment_methods",
+      "input": { "type": "request", "code": "offline" },
+      "expected": { "code": "connection_unavailable", "category": "network", "critical": false, "service_target": "payment_methods", "diagnostic_code": "offline" }
+    },
+    {
+      "id": "dns-failure",
+      "operation": "issuers",
+      "input": { "type": "request", "code": "dns_failure" },
+      "expected": { "code": "connection_unavailable", "category": "network", "critical": false, "service_target": "issuers", "diagnostic_code": "dns_failure" }
+    },
+    {
+      "id": "connection-lost",
+      "operation": "card_form_submission",
+      "input": { "type": "request", "code": "connection_lost" },
+      "expected": { "code": "connection_unavailable", "category": "network", "critical": false, "diagnostic_code": "connection_lost" }
+    },
+    {
+      "id": "timeout-signal",
+      "operation": "card_tokenization",
+      "input": { "type": "request", "code": "timeout" },
+      "expected": { "code": "request_timeout", "category": "service", "critical": true, "diagnostic_code": "timeout" }
+    },
+    {
+      "id": "timeout-status",
+      "operation": "order_submission",
+      "input": { "type": "service", "http_status": 504, "request_correlation_id": "req-5cc7f5" },
+      "expected": { "code": "request_timeout", "category": "service", "critical": true, "status_code": 504, "request_correlation_id": "req-5cc7f5", "service_target": "orders", "diagnostic_code": "timeout" }
+    },
+    {
+      "id": "upstream-rejection",
+      "operation": "card_form_initialization",
+      "input": { "type": "service", "http_status": 422 },
+      "expected": { "code": "upstream_rejected", "category": "service", "critical": true, "status_code": 422, "service_target": "checkout_initialization" }
+    },
+    {
+      "id": "unknown-fallback-sanitizes-optionals",
+      "operation": "card_form_submission",
+      "input": { "type": "unknown", "code": "exception", "http_status": 700, "request_correlation_id": "unsafe correlation" },
+      "expected": { "code": "operation_failed", "category": "unknown", "critical": true }
+    }
+  ]
+}

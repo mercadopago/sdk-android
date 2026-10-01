@@ -2,6 +2,12 @@ package com.mercadopago.sdk.android.coremethods.domain.interactor
 
 import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.NativeErrorReporting
+import com.mercadopago.sdk.android.analytics.observability.domain.interactor.captureOrFallback
+import com.mercadopago.sdk.android.analytics.observability.domain.models.NativeErrorOperation
+import com.mercadopago.sdk.android.analytics.observability.runtime.NativeErrorReporterProvider
+import com.mercadopago.sdk.android.coremethods.analytics.CoreMethodsErrorObservability
 import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallError
 import com.mercadopago.sdk.android.coremethods.analytics.metricCardIssuersCallSuccess
 import com.mercadopago.sdk.android.coremethods.analytics.metricGenerateCardTokenCallError
@@ -51,6 +57,8 @@ import java.math.BigDecimal
  */
 class CoreMethods internal constructor(
     internal val koin: Koin,
+    private val nativeErrorReporter: () -> NativeErrorReporting? = NativeErrorReporterProvider::getOrNull,
+    private val errorObservability: CoreMethodsErrorObservability = CoreMethodsErrorObservability(),
 ) {
     /**
      * Generates a secure card token from the provided card details.
@@ -107,25 +115,16 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.CARD_TOKENIZATION,
+                ) { eventId ->
+                    metricGenerateCardTokenCallError(
+                        error = error.legacyMessage(),
+                        identityType = buyerIdentification.type,
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -136,6 +135,33 @@ class CoreMethods internal constructor(
                     ),
                 )
             }
+        }
+        return result
+    }
+
+    /**
+     * Library-group bridge used only by Checkout's CardForm tokenization flow.
+     *
+     * This is public at the JVM/source level because Checkout and CoreMethods are separate Gradle
+     * modules. Host applications must use [generateCardToken] instead.
+     */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    suspend fun generateCardTokenForCheckout(
+        cardNumberState: PCIFieldState,
+        expirationDateState: PCIFieldState,
+        securityCodeState: PCIFieldState,
+        buyerIdentification: BuyerIdentification,
+    ): Result<CardToken, ResultError> {
+        val result = koin.get<GenerateCardTokenPCIUseCase>().invoke(
+            cardNumber = cardNumberState.input,
+            expirationDate = expirationDateState.input,
+            securityCode = securityCodeState.input,
+            buyerIdentification = buyerIdentification,
+        )
+        if (result is Result.Success) {
+            MPAnalytics.tryGetInstance()?.trackMetric(
+                metricGenerateCardTokenCallSuccess(identityType = buyerIdentification.type),
+            )
         }
         return result
     }
@@ -193,25 +219,16 @@ class CoreMethods internal constructor(
             buyerIdentification = buyerIdentification,
         )
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.CARD_TOKENIZATION,
+                ) { eventId ->
+                    metricGenerateCardTokenCallError(
+                        error = error.legacyMessage(),
+                        identityType = buyerIdentification.type,
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -273,25 +290,16 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricInstallmentsCallError(
-                                error = result.error.message,
-                                transactionAmount = amount,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricInstallmentsCallError(
-                                error = result.error.message,
-                                transactionAmount = amount,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.INSTALLMENTS,
+                ) { eventId ->
+                    metricInstallmentsCallError(
+                        error = error.legacyMessage(),
+                        transactionAmount = amount,
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -337,23 +345,15 @@ class CoreMethods internal constructor(
     suspend fun getIdentificationTypes(): Result<List<IdentificationType>, ResultError> {
         val result = koin.get<GetIdentificationTypesUseCase>().invoke()
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricIdentificationCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricIdentificationCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.IDENTIFICATION_TYPES,
+                ) { eventId ->
+                    metricIdentificationCallError(
+                        error = error.legacyMessage(),
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -410,23 +410,12 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricCardIssuersCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricCardIssuersCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(error, NativeErrorOperation.ISSUERS) { eventId ->
+                    metricCardIssuersCallError(
+                        error = error.legacyMessage(),
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -480,23 +469,15 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricPaymentMethodCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricPaymentMethodCallError(
-                                error = result.error.message,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.PAYMENT_METHODS,
+                ) { eventId ->
+                    metricPaymentMethodCallError(
+                        error = error.legacyMessage(),
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -543,25 +524,16 @@ class CoreMethods internal constructor(
         )
 
         when (result) {
-            is Result.Error -> {
-                when (result.error) {
-                    is ResultError.Request -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
-
-                    is ResultError.Validation -> {
-                        MPAnalytics.getInstance().trackMetric(
-                            metricGenerateCardTokenCallError(
-                                error = result.error.message,
-                                identityType = buyerIdentification.type,
-                            ),
-                        )
-                    }
+            is Result.Error -> result.error.let { error ->
+                trackError(
+                    error,
+                    NativeErrorOperation.CARD_TOKENIZATION,
+                ) { eventId ->
+                    metricGenerateCardTokenCallError(
+                        error = error.legacyMessage(),
+                        identityType = buyerIdentification.type,
+                        observabilityEventId = eventId,
+                    )
                 }
             }
 
@@ -573,6 +545,23 @@ class CoreMethods internal constructor(
         }
         return result
     }
+
+    private fun trackError(
+        error: ResultError,
+        operation: NativeErrorOperation,
+        legacyMetric: (String?) -> Metric,
+    ) {
+        val receipt = nativeErrorReporter.captureOrFallback(operation) { errorObservability.input(error) }
+        if (receipt.shouldSendMelidata) {
+            MPAnalytics.tryGetInstance()?.trackMetric(legacyMetric(receipt.eventId))
+        }
+    }
+
+    private fun ResultError.legacyMessage(): String =
+        when (this) {
+            is ResultError.Request -> message
+            is ResultError.Validation -> message
+        }
 
     /**
      * Companion object for the [CoreMethods] class.

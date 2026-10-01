@@ -104,8 +104,7 @@ private fun CardFormScreenDestination(
             }
 
             is CardPaymentViewEvent.OnFailure -> {
-                cardPaymentViewModel.onViewEventConsumed()
-                CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
+                handleCardFormFailure(event, cardPaymentViewModel)
             }
 
             is CardPaymentViewEvent.OnUserCancelled -> {
@@ -123,6 +122,14 @@ private fun CardFormScreenDestination(
     }
 
     CardPaymentScreen(viewModel = cardPaymentViewModel)
+}
+
+internal fun handleCardFormFailure(
+    event: CardPaymentViewEvent.OnFailure,
+    viewModel: CardPaymentViewModel,
+) {
+    viewModel.onViewEventConsumed()
+    CheckoutCallbackHolder.notify(MercadoPagoCheckoutResult.Error(event.error))
 }
 
 private fun handleCardPaymentSuccess(
