@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -89,6 +91,7 @@ enum class MPMessageDuration(val durationMillis: kotlin.Long?) {
  * @param modifier: Component modifier
  * @param type: Message type (Informative, Positive, Caution, or Negative)
  * @param duration: Duration for auto-dismiss behavior (Short: 3s, Medium: 6s, Long: 10s, Indefinite: no auto-dismiss)
+ * @param showCloseButton: Whether the close button is displayed; hide it for persistent, non-dismissible messages
  * @param onDismiss: Callback function executed when close button is clicked or when auto-dismiss timer expires
  */
 @Composable
@@ -97,6 +100,7 @@ fun MPMessage(
     modifier: Modifier = Modifier,
     type: MPMessageType = MPMessageType.Informative,
     duration: MPMessageDuration = MPMessageDuration.Short,
+    showCloseButton: Boolean = true,
     onDismiss: () -> Unit = {},
 ) {
     val defaults = getMessageDefaults(type = type)
@@ -133,21 +137,23 @@ fun MPMessage(
             color = defaults.colors.textColor,
             modifier = Modifier.weight(1f),
         )
-        Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
-        Box(
-            modifier = Modifier
-                .size(defaults.spacing.closeIconSize)
-                .clickable(onClick = onDismiss),
-            contentAlignment = Alignment.TopEnd,
-        ) {
-            Icon(
-                painterResource(R.drawable.mp_icon_close_x),
-                "",
-                tint = defaults.colors.closeIconColor,
-                modifier = Modifier.size(
-                    MercadoPagoTheme.spacing.paddings.xtiny,
-                ).padding(start = defaults.spacing.closeIconPadding),
-            )
+        if (showCloseButton) {
+            Spacer(modifier = Modifier.size(defaults.spacing.iconTextSpacing))
+            Box(
+                modifier = Modifier
+                    .size(defaults.spacing.closeIconSize)
+                    .clickable(role = Role.Button, onClick = onDismiss),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Icon(
+                    painterResource(R.drawable.mp_icon_close_x),
+                    stringResource(R.string.mp_message_close_description),
+                    tint = defaults.colors.closeIconColor,
+                    modifier = Modifier.size(
+                        MercadoPagoTheme.spacing.paddings.xtiny,
+                    ).padding(start = defaults.spacing.closeIconPadding),
+                )
+            }
         }
     }
 }
