@@ -2,7 +2,12 @@ package com.mercadopago.sdk.android.initializer.usecase
 
 import android.content.Context
 import android.util.Log
+import com.mercadopago.sdk.android.BuildConfig
 import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.analytics.observability.domain.models.NativeErrorDeliveryPolicy
+import com.mercadopago.sdk.android.analytics.observability.domain.models.NativeObservabilityConfiguration
+import com.mercadopago.sdk.android.analytics.observability.runtime.NativeErrorReporterProvider
+import com.mercadopago.sdk.android.data.local.mapper.toSiteId
 import com.mercadopago.sdk.android.domain.model.CountryCode
 import com.mercadopago.sdk.android.domain.usecase.GetSiteIdUseCase
 import com.mercadopago.sdk.android.domain.usecase.SetSiteIdUseCase
@@ -22,6 +27,18 @@ internal class ConfigureSdkUseCase(
     private val getSiteIdUseCase: GetSiteIdUseCase,
     private val setSiteIdUseCase: SetSiteIdUseCase,
 ) {
+
+    fun configureObservability(params: ConfigureSdkParams) {
+        NativeErrorReporterProvider.configure(
+            context = params.context,
+            configuration = NativeObservabilityConfiguration(
+                sdkName = OPENPLATFORM_SDK_ANDROID,
+                sdkVersion = BuildConfig.SdkVersion,
+                siteId = params.countryCode.toSiteId(),
+                deliveryPolicy = NativeErrorDeliveryPolicy(),
+            ),
+        )
+    }
 
     operator fun invoke(params: ConfigureSdkParams): Flow<Unit> {
         MPAnalytics.initialize(
@@ -45,5 +62,6 @@ internal class ConfigureSdkUseCase(
 
     private companion object {
         private const val TAG: String = "ReconfigureSdkUseCase"
+        private const val OPENPLATFORM_SDK_ANDROID = "openplatform_sdk_android"
     }
 }
