@@ -33,6 +33,7 @@ internal fun metricPaymentMethodCallError(
     error: String,
     issuer: String = "",
     cardBrand: String = "",
+    observabilityEventId: String? = null,
 ) = Metric(
     path = "$SDK_NATIVE_PATH$CORE_METHODS_PATH$PAYMENT_METHODS_PATH$ERROR_PATH",
     type = TrackType.EVENT,
@@ -40,6 +41,7 @@ internal fun metricPaymentMethodCallError(
         errorType = error,
         issuer = issuer,
         cardBrand = cardBrand,
+        observabilityEventId = observabilityEventId,
     ),
 )
 
@@ -61,4 +63,6 @@ internal data class PaymentMethodErrorData(
     val issuer: String,
     @SerializedName("card_brand")
     val cardBrand: String,
+    @SerializedName("observability_event_id")
+    val observabilityEventId: String? = null,
 ) : EventData
