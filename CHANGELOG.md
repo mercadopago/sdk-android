@@ -35,6 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PaymentMethod.Card` renamed to `MPPaymentMethodConfig.Card`
 - defaults changed from full lists to empty lists (breaking change for callers using named parameters)
 
+## [1.0.2] - 2026-10-06
+
+### Added
+- Privacy-safe native error observability for CoreMethods and Checkout while preserving existing public SDK behavior and legacy Melidata reporting
+
+### Changed
+- `analytics`, `sdk-android`, `core-methods`, `checkout`, `components`, `mp-extended`, and `sdk-android-bom` bumped to `1.0.2` for the observability release
+
 ## [0.2.2] - 2026-05-21
 ### Added
 - `core-methods` error tracks now carry domain-specific context through dedicated event-data classes: `CardIssuersErrorData`, `IdentificationTypesErrorData`, `InstallmentsErrorData`, `PaymentMethodErrorData`, and `GenerateCardTokenErrorData`
