@@ -52,7 +52,7 @@ internal class CancelledFormContextUseCase {
         val cardNumberState = screenState.cardNumberState
         val error = cardNumberState.errorTypes.firstOrNull()
         val state = if (error == null) {
-            State.Valid
+            if (cardNumberState.length == 0) State.Empty else State.Valid
         } else {
             when (error) {
                 is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(error.brand)

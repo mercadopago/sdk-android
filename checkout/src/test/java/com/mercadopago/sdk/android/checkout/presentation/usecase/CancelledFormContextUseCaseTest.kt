@@ -55,6 +55,24 @@ internal class CancelledFormContextUseCaseTest {
     }
 
     @Test
+    fun `given card number is empty and has no errors then cardNumber state is Empty`() {
+        // Given
+        val state = makeState(
+            cardNumberState = CardNumberState(
+                length = 0,
+                errorTypes = emptyList(),
+            ),
+        )
+
+        // When
+        val fields = invoke(state)
+
+        // Then
+        val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
+        assertEquals(State.Empty, cardNumberField.state)
+    }
+
+    @Test
     fun `given card number length is less than maxLength then cardNumber state is Incomplete`() {
         val state = makeState(
             cardNumberState = CardNumberState(
