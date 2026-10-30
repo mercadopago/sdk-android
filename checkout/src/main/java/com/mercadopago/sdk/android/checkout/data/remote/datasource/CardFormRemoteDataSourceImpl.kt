@@ -16,12 +16,14 @@ internal class CardFormRemoteDataSourceImpl(
         orderId: String?,
         clientToken: String?,
         checkoutType: String,
+        screens: String?,
     ): Result<CardFormInitResponse, ResponseError> =
         safeApiCall {
             service.initialization(
                 authorization = clientToken?.let { "Bearer $it" },
                 orderId = orderId,
                 checkoutType = checkoutType,
+                screens = screens,
             )
         }.toInternalResponse()
 
@@ -31,12 +33,15 @@ internal class CardFormRemoteDataSourceImpl(
         with(request) {
             safeApiCall {
                 service.getCardBin(
+                    authorization = clientToken?.let { "Bearer $it" },
                     bin = bin,
+                    orderId = orderId,
                     amount = amount,
                     checkoutType = checkoutType,
                     processingMode = processingMode,
                     excludedPaymentTypes = excludedPaymentTypes,
                     excludedPaymentMethods = excludedPaymentMethods,
+                    screens = screens,
                 )
             }.toInternalResponse()
         }
