@@ -18,17 +18,21 @@ internal interface CardFormService {
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("order_id") orderId: String?,
         @Query("checkout_type") checkoutType: String,
+        @Query("screens") screens: String? = null,
     ): Response<CardFormInitResponse>
 
     @Suppress("LongParameterList")
     @GET("$BRICKS_API/$VERSION/card_payment_brick/card")
     suspend fun getCardBin(
+        @Header("Authorization") authorization: String?,
         @Query("product_id") productId: String? = PRODUCT_ID,
         @Query("bin") bin: String,
+        @Query("order_id") orderId: String,
         @Query("checkout_type") checkoutType: String,
         @Query("processing_mode") processingMode: String,
         @Query("amount") amount: String,
         @Query("excluded_payment_types") excludedPaymentTypes: String?,
         @Query("excluded_payment_methods") excludedPaymentMethods: String?,
+        @Query("screens") screens: String? = null,
     ): Response<CardBinResponse>
 }
