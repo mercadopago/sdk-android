@@ -28,6 +28,8 @@ internal class CardFormRemoteDataSourceImplTest {
 
     private val cardBinRequest = CardBinRequest(
         bin = "503175",
+        orderId = "",
+        clientToken = clientToken,
         amount = amount,
         checkoutType = checkoutType,
         processingMode = "aggregator",
@@ -38,9 +40,9 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service returns successful response then fetchInitialization returns Success`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any(), any(), any(), any()) } returns Response.success(body)
 
-        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType)
+        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType, screens = null)
 
         assertIs<Result.Success<CardFormInitResponse>>(result)
         assertEquals(body, result.data)
@@ -49,9 +51,9 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then fetchInitialization returns Error`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.initialization(any(), any(), any(), any(), any()) } returns Response.error(404, errorBody)
 
-        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType)
+        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType, screens = null)
 
         val error = assertIs<Result.Error<ResponseError>>(result)
         assertEquals("404", error.error.code)
@@ -60,9 +62,9 @@ internal class CardFormRemoteDataSourceImplTest {
 
     @Test
     fun `given service throws SocketTimeoutException then fetchInitialization returns Result Error`() = runTest {
-        coEvery { service.initialization(any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
+        coEvery { service.initialization(any(), any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
 
-        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType)
+        val result = dataSource.fetchInitialization(orderId, clientToken, checkoutType, screens = null)
 
         val error = assertIs<Result.Error<ResponseError>>(result)
         assertEquals("TIMEOUT", error.error.code)
@@ -71,7 +73,7 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given service throws SocketTimeoutException then getCardBin returns Result Error`() = runTest {
         coEvery {
-            service.getCardBin(any(), any(), any(), any(), any(), any(), any())
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
         } throws SocketTimeoutException("timeout")
 
         val result = dataSource.getCardBin(cardBinRequest)
@@ -83,12 +85,13 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given card transaction then sends authorization and orderId`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any(), any(), any(), any()) } returns Response.success(body)
 
         dataSource.fetchInitialization(
             orderId = orderId,
             clientToken = clientToken,
             checkoutType = checkoutType,
+            screens = null,
         )
 
         coVerify {
@@ -96,6 +99,7 @@ internal class CardFormRemoteDataSourceImplTest {
                 authorization = "Bearer $clientToken",
                 orderId = orderId,
                 checkoutType = checkoutType,
+                screens = null,
             )
         }
     }
@@ -103,15 +107,16 @@ internal class CardFormRemoteDataSourceImplTest {
     @Test
     fun `given card save then sends no authorization and no orderId`() = runTest {
         val body = mockk<CardFormInitResponse>(relaxed = true)
-        coEvery { service.initialization(any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.initialization(any(), any(), any(), any(), any()) } returns Response.success(body)
 
-        dataSource.fetchInitialization(orderId = null, clientToken = null, checkoutType = "card_save")
+        dataSource.fetchInitialization(orderId = null, clientToken = null, checkoutType = "card_save", screens = null)
 
         coVerify {
             service.initialization(
                 authorization = null,
                 orderId = null,
                 checkoutType = "card_save",
+                screens = null,
             )
         }
     }
@@ -120,7 +125,7 @@ internal class CardFormRemoteDataSourceImplTest {
     fun `given service returns successful response then getCardBin returns Success`() = runTest {
         val body = mockk<CardBinResponse>(relaxed = true)
         coEvery {
-            service.getCardBin(any(), any(), any(), any(), any(), any(), any())
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns Response.success(body)
 
         val result = dataSource.getCardBin(cardBinRequest)
@@ -133,7 +138,7 @@ internal class CardFormRemoteDataSourceImplTest {
     fun `given service returns error response then getCardBin returns Error`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
         coEvery {
-            service.getCardBin(any(), any(), any(), any(), any(), any(), any())
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns Response.error(404, errorBody)
 
         val result = dataSource.getCardBin(cardBinRequest)
@@ -147,20 +152,104 @@ internal class CardFormRemoteDataSourceImplTest {
     fun `given getCardBin is called then passes all request fields to service`() = runTest {
         val body = mockk<CardBinResponse>(relaxed = true)
         coEvery {
-            service.getCardBin(any(), any(), any(), any(), any(), any(), any())
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any())
         } returns Response.success(body)
 
         dataSource.getCardBin(cardBinRequest)
 
         coVerify {
             service.getCardBin(
-                any(),
+                authorization = "Bearer $clientToken",
                 bin = cardBinRequest.bin,
+                orderId = "",
                 amount = cardBinRequest.amount,
                 checkoutType = cardBinRequest.checkoutType,
                 processingMode = cardBinRequest.processingMode,
                 excludedPaymentTypes = cardBinRequest.excludedPaymentTypes,
                 excludedPaymentMethods = cardBinRequest.excludedPaymentMethods,
+            )
+        }
+    }
+
+    @Test
+    fun `given request has no order id then getCardBin sends an empty order id to the service`() = runTest {
+        // Given
+        val body = mockk<CardBinResponse>(relaxed = true)
+        coEvery {
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns Response.success(body)
+
+        // When
+        dataSource.getCardBin(cardBinRequest)
+
+        // Then
+        coVerify(exactly = 1) {
+            service.getCardBin(
+                authorization = "Bearer $clientToken",
+                bin = cardBinRequest.bin,
+                orderId = "",
+                checkoutType = cardBinRequest.checkoutType,
+                processingMode = cardBinRequest.processingMode,
+                amount = cardBinRequest.amount,
+                excludedPaymentTypes = cardBinRequest.excludedPaymentTypes,
+                excludedPaymentMethods = cardBinRequest.excludedPaymentMethods,
+            )
+        }
+    }
+
+    @Test
+    fun `given request has screens then getCardBin sends it to the service`() = runTest {
+        // Given
+        val body = mockk<CardBinResponse>(relaxed = true)
+        coEvery {
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns Response.success(body)
+        val requestWithScreens = cardBinRequest.copy(screens = "REVIEW_AND_CONFIRM")
+
+        // When
+        dataSource.getCardBin(requestWithScreens)
+
+        // Then
+        coVerify(exactly = 1) {
+            service.getCardBin(
+                authorization = "Bearer $clientToken",
+                bin = requestWithScreens.bin,
+                orderId = "",
+                checkoutType = requestWithScreens.checkoutType,
+                processingMode = requestWithScreens.processingMode,
+                amount = requestWithScreens.amount,
+                excludedPaymentTypes = requestWithScreens.excludedPaymentTypes,
+                excludedPaymentMethods = requestWithScreens.excludedPaymentMethods,
+                screens = "REVIEW_AND_CONFIRM",
+            )
+        }
+    }
+
+    @Test
+    fun `given request has an order id then getCardBin sends it to the service`() = runTest {
+        // Given
+        val body = mockk<CardBinResponse>(relaxed = true)
+        coEvery {
+            service.getCardBin(any(), any(), any(), any(), any(), any(), any(), any(), any())
+        } returns Response.success(body)
+        val requestWithOrderId = cardBinRequest.copy(orderId = "ORDER_123")
+
+        // When
+        val result = dataSource.getCardBin(requestWithOrderId)
+
+        // Then
+        assertIs<Result.Success<CardBinResponse>>(result)
+        assertEquals(body, result.data)
+        coVerify(exactly = 1) {
+            service.getCardBin(
+                authorization = "Bearer $clientToken",
+                bin = requestWithOrderId.bin,
+                orderId = "ORDER_123",
+                checkoutType = requestWithOrderId.checkoutType,
+                processingMode = requestWithOrderId.processingMode,
+                amount = requestWithOrderId.amount,
+                excludedPaymentTypes = requestWithOrderId.excludedPaymentTypes,
+                excludedPaymentMethods = requestWithOrderId.excludedPaymentMethods,
             )
         }
     }
