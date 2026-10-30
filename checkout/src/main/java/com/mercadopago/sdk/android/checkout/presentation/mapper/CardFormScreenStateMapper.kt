@@ -14,22 +14,22 @@ import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import java.math.BigDecimal
 
-internal fun CardFormInitializationOutput.toCardPaymentScreenState(
+internal fun CardFormInitializationOutput.toCardFormScreenState(
     totalAmount: BigDecimal? = null,
 ) = with(fields) {
     val positiveAmount = totalAmount?.takeIf { it.signum() > 0 }
-    CardPaymentScreenState(
+    CardFormScreenState(
         title = title,
         currencySymbol = currencySymbol,
         cardNumberState = cardNumber.toCardNumberState(),
