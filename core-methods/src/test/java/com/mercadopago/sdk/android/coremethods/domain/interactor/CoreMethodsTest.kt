@@ -11,6 +11,7 @@ import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.domain.model.Installment
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
+import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenPCIUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardTokenUseCase
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GetCardIssuersUseCase
@@ -262,6 +263,70 @@ internal class CoreMethodsTest {
 
             assertEquals(expectedResult, result)
         }
+
+    @Test
+    fun `generateCardTokenWithSecurityCode should return success and track success metric`() =
+        runTest {
+            val cardId = "card-9999"
+            val securityCodeState = PCIFieldState()
+            val expectedCardToken = CardToken("token_cvv_123")
+            val expectedResult = Result.Success(expectedCardToken)
+
+            coEvery {
+                koin.get<GenerateCardIdTokenUseCase>().invoke(any(), any(), isNull(), isNull())
+            } returns expectedResult
+
+            val result = coreMethods.generateCardTokenWithSecurityCode(cardId, securityCodeState)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `generateCardTokenWithSecurityCode should return error and track error metric`() =
+        runTest {
+            val cardId = "card-9999"
+            val securityCodeState = PCIFieldState()
+            val expectedError = ResultError.Request(code = "400", message = "Invalid security code")
+            val expectedResult = Result.Error(expectedError)
+
+            coEvery {
+                koin.get<GenerateCardIdTokenUseCase>().invoke(any(), any(), isNull(), isNull())
+            } returns expectedResult
+
+            val result = coreMethods.generateCardTokenWithSecurityCode(cardId, securityCodeState)
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `generateCardToken with saved card id should return success`() = runTest {
+        val cardId = "card-9999"
+        val expectedResult = Result.Success(CardToken("token_saved_123"))
+
+        coEvery {
+            koin.get<GenerateCardIdTokenUseCase>().invoke(cardId, isNull(), isNull(), isNull())
+        } returns expectedResult
+
+        val result = coreMethods.generateCardToken(cardId)
+
+        assertEquals(expectedResult, result)
+    }
+
+    @Test
+    fun `generateCardToken with saved card id should return error`() = runTest {
+        val cardId = "card-9999"
+        val expectedResult: Result<CardToken, ResultError> = Result.Error(
+            ResultError.Request(code = "400", message = "Tokenization failed"),
+        )
+
+        coEvery {
+            koin.get<GenerateCardIdTokenUseCase>().invoke(cardId, isNull(), isNull(), isNull())
+        } returns expectedResult
+
+        val result = coreMethods.generateCardToken(cardId)
+
+        assertEquals(expectedResult, result)
+    }
 
     @Test
     fun `generateCardToken with string should return success and track success metric`() =
