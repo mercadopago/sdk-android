@@ -39,6 +39,7 @@ android {
     defaultConfig {
         minSdk = MercadoPagoSDKConfig.MIN_SDK
         version = ComponentsSDKConfig.VERSION_NAME
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
