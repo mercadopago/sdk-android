@@ -1,0 +1,19 @@
+# Known consumer-rules.pro gaps (classes reached by Gson/Retrofit reflection without a keep rule).
+# Checked by .circleci/scripts/check-consumer-rules.sh: new gaps fail CI, entries below are only reported.
+# Fix the module's consumer-rules.pro, validate an integrator release build with minify, then remove the entry.
+analytics:keepattributes *Annotation*
+analytics:keepattributes Signature
+analytics:keep com.mercadopago.sdk.android.analytics.data.remote.models.request
+analytics:keep com.mercadopago.sdk.android.analytics.data.remote.models.response
+analytics:keep com.mercadopago.sdk.android.analytics.data.remote.service
+analytics:keep com.mercadopago.sdk.android.analytics.domain.constants
+analytics:keep com.mercadopago.sdk.android.analytics.observability.data.remote.models.request
+analytics:keep com.mercadopago.sdk.android.analytics.observability.data.remote.service
+core:keepattributes *Annotation*
+core:keepattributes Signature
+core:keep com.mercadopago.sdk.android.core.utils
+sdk-android:keepattributes *Annotation*
+sdk-android:keepattributes Signature
+sdk-android:keep com.mercadopago.sdk.android.data.remote.response
+sdk-android:keep com.mercadopago.sdk.android.data.remote.service
+sdk-android:keep com.mercadopago.sdk.android.initializer.analytics

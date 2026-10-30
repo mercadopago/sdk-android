@@ -74,14 +74,70 @@ Follow the established patterns in this SDK. Deviations require a justification 
 ```
 sdk-android       ← initialization, top-level DI
 core              ← networking, base DI infrastructure
-core-methods      ← API layer (identification, installments, tokenization)
+core-methods      ← PCI-safe card operations, Secure Fields, tokenization
 checkout          ← card payment UI (Compose), ViewModel, checkout flow
 components        ← reusable Compose UI components
-foundation        ← design system, theme, Material3 base
+foundation        ← design system, theme tokens
 analytics         ← event tracking
+mp-extended       ← device session (fraud prevention)
 ```
 
-**Dependency direction is strict:** `checkout` and `core-methods` depend on `core` + `sdk-android`; they must not depend on each other. `components` depends only on `foundation`. Do not introduce circular dependencies.
+**Dependency direction is strict.** The allowed dependencies per module are listed in the table below. A dependency that is not in the table is a design change: discuss it first.
+
+| Module | May depend on |
+|--------|---------------|
+| `core`, `foundation` | nothing |
+| `analytics` | `core` |
+| `sdk-android` | `core`, `analytics` |
+| `core-methods` | `core`, `sdk-android`, `analytics` |
+| `components` | `foundation`, `core-methods` |
+| `mp-extended` | `core-methods`, `core`, `sdk-android`, `analytics` |
+| `checkout` | `core`, `sdk-android`, `analytics`, `core-methods`, `foundation`, `components` |
+
+`core-methods` must never depend on `checkout`, `components` or `mp-extended`. Do not introduce circular dependencies.
+
+### Creating modules
+
+- A new module is a public artifact and a graph change. Discuss it in an issue before implementing.
+- Versions live only in `buildSrc`, never in a module's `build.gradle.kts`.
+- Use the publishing block and the Koin provider pattern of an existing module, such as `mp-extended`.
+- A new module needs: a `buildSrc` config, a `settings.gradle.kts` entry, a BOM constraint (if published), unit tests, KDoc on the public API, and an update to the dependency table above.
+
+### Creating classes
+
+- Put the class in the layer that owns the rule. The layers, from the screen down to the network, are:
+  - **View**: composables (`presentation`).
+  - **ViewModel**: screen state and events (`presentation`).
+  - **Model**: domain models and sealed results (`domain/model`).
+  - **UseCase**: one business operation (`domain/usecase`).
+  - **Repository**: interface in `domain/repository`, implementation in `data/repository`.
+  - **DataSource**: interface and implementation in `data/datasource` (`remote` or `local`).
+  - **Service**: Retrofit interface in `data/remote/service`, annotations only.
+- A call goes View → ViewModel → UseCase → Repository → DataSource → Service. Skipping a layer is a violation.
+- The SDK does not store data offline by default. Any local storage needs a security review first, and card data is never stored.
+- Domain code does not depend on `data` or `presentation`, and does not import `android.*` or Compose.
+- Use `internal` by default. Use `sealed` types for results, errors and screen states.
+- Screen state is immutable and updated with `.copy()`. ViewModels expose `StateFlow`; the `MutableStateFlow` stays private.
+- Inject dispatchers and dependencies through the constructor.
+- Name use cases `<Verb><Noun>UseCase`, repository interfaces `<Module><Noun>Repository`, and implementations `...Impl`.
+
+### Layer rules (strict)
+
+The domain, data and presentation layers follow SOLID and Clean Architecture. The rules below are required, not preferences.
+
+- **Domain** imports nothing from `data`, `presentation`, `android.*`, `androidx.*`, Compose, Retrofit, Gson or OkHttp. It depends only on interfaces it defines.
+- **Data** implements domain interfaces and never exposes DTOs or HTTP types above itself. Errors are mapped to domain errors at the boundary. Repositories depend on data source interfaces; data sources depend on services; services hold no logic.
+- **ViewModels** hold state and call use cases. They do not reference `Context`, `Activity`, `Intent`, repositories or Retrofit types.
+- **Every class** has one reason to change (SRP). Extend behaviour through interfaces or sealed types, not through growing flags (OCP). Keep interfaces small (ISP). Inject collaborators through the constructor (DIP).
+- A violation found in existing code is tracked as an issue. Do not fix it silently inside an unrelated change.
+
+### Reusing code
+
+- Before writing a helper, extension, base class or component, search the codebase for an existing one. Most generic needs are already covered by `core` (networking, DI, public key), `core-methods` (`Result`, card validation), `foundation` (tokens), and `components` (UI).
+- If a block is used by two or more classes or modules, put it in the lowest module that all users can depend on, and keep it generic.
+- Do not copy a helper into another module. Move it to a shared module or extend the existing one.
+- Prefer a named extension function to a long expression repeated in several places. A name that explains intent (`isValidEmailFormat()`) reads better than the inline regex or API call. Put extensions next to the module that owns the receiver type.
+- Do not create an extension for a single use that only hides a line. Keep that line inline.
 
 ### State management
 
@@ -137,15 +193,17 @@ All public API must have KDoc. This includes public classes, interfaces, functio
 ## Testing Guidelines
 
 - **Unit tests are mandatory** for all production code. No production code is merged without tests.
+- **Test rules, not lines.** Each test must assert an outcome of a business rule or a flow, and must fail if that rule is removed. A test that only calls code to raise coverage is not accepted.
+- **Cover the flow.** For ViewModels, assert the sequence of states and events. For use cases, assert each success and error path, and that invalid input never reaches the repository.
 - **No instrumented tests** (`androidTest` / `connectedDebugAndroidTest`) — this project uses Robolectric for UI tests without an emulator.
-- **Minimum coverage: 80%** line coverage, enforced by Kover. Check before submitting:
+- **Minimum coverage: 80%** line coverage, enforced by Kover. The threshold is a floor; new code should meet it with meaningful assertions. Check before submitting:
 
 ```bash
 ./gradlew koverBinaryReportDebug
 ```
 
 - Use **JUnit4 + MockK + Turbine** for unit tests. Use `flow.test { ... }` (Turbine) for `StateFlow` and `Flow` assertions — never use `collect` in tests.
-- Use **Fakes over Mocks** when possible. If you must mock, add `unmockkAll()` in `@After`.
+- Mock only the Retrofit service (MockK: `mockk`, `coEvery`, `coVerify`). Every other class in the flow runs for real, so tests exercise the behaviour the product runs. Service mocks must stay in line with the real service: the service has a contract test on MockWebServer. Add `unmockkAll()` in `@After`.
 - For Koin in tests: `stopKoin()` in `@After` + `startKoin {}` in `@Before`.
 
 ---
@@ -154,13 +212,15 @@ All public API must have KDoc. This includes public classes, interfaces, functio
 
 `main` is the only long-term branch. Short-lived branches follow this naming convention:
 
+Every branch carries a ticket number as its second segment, for example `fix/3795/card-number-error`.
+
 | Pattern | Use case |
 |---------|----------|
-| `feature/TICKET-description` | New feature or behavioral change |
-| `fix/TICKET-description` | Bug fix |
-| `hotfix/description` | Critical patch on production |
-| `doc/description` | Documentation-only change, no source impact |
-| `refactor/description` | Code refactor with no functional change |
+| `feature/<ticket>/short-description` | New feature or behavioral change |
+| `fix/<ticket>/short-description` | Bug fix |
+| `hotfix/<ticket>/short-description` | Critical patch on production |
+| `docs/<ticket>/short-description` | Documentation-only change, no source impact |
+| `refactor/<ticket>/short-description` | Code refactor with no functional change |
 
 Always branch from `main` and keep your branch short-lived. Rebase before opening a PR to avoid reverse merge commits.
 

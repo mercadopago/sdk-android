@@ -12,7 +12,7 @@ list_classes() {
   temp_dir=$(mktemp -d)
   unzip -q "$aar" classes.jar -d "$temp_dir" 2>/dev/null || true
   if [ -f "$temp_dir/classes.jar" ]; then
-    unzip -l "$temp_dir/classes.jar" 2>/dev/null | grep '\.class$' | awk '{print $NF}' | sort
+    unzip -l "$temp_dir/classes.jar" 2>/dev/null | grep '\.class$' | awk '{print $NF}' | sort || true
   fi
   rm -rf "$temp_dir"
 }
