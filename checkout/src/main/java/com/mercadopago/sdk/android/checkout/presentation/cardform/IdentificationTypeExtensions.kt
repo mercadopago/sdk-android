@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.checkout.presentation.cardpayment
+package com.mercadopago.sdk.android.checkout.presentation.cardform
 
 import com.mercadopago.sdk.android.components.model.MPBottomSheetListItem
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType

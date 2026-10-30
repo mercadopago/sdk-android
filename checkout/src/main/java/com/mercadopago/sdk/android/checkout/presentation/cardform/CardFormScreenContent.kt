@@ -1,4 +1,4 @@
-package com.mercadopago.sdk.android.checkout.presentation.cardpayment
+package com.mercadopago.sdk.android.checkout.presentation.cardform
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -35,14 +35,15 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.presentation.model.CancelReason
+import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardFormViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPButton
 import com.mercadopago.sdk.android.components.MPFixedFooter
@@ -57,6 +58,7 @@ import com.mercadopago.sdk.android.components.inputs.MPExpirationDateTextField
 import com.mercadopago.sdk.android.components.inputs.MPIdentificationTextField
 import com.mercadopago.sdk.android.components.inputs.MPSecurityCodeTextField
 import com.mercadopago.sdk.android.components.inputs.MPSimpleTextField
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.cardnumber.CardNumberTextFieldEvent
 import com.mercadopago.sdk.android.coremethods.ui.components.textfield.expirationdate.ExpirationDateTextFieldEvent
@@ -70,15 +72,10 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
 @Composable
-internal fun CardPaymentScreen(
-    viewModel: CardPaymentViewModel,
+internal fun CardFormScreen(
+    viewModel: CardFormViewModel,
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val cardNumberPCIState = rememberPCIFieldState()
-    val expirationDatePCIState = rememberPCIFieldState()
-    val securityCodePCIState = rememberPCIFieldState()
-    val cardHolderPCIState = rememberPCIFieldState()
-    val identificationPCIState = rememberPCIFieldState()
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
@@ -91,13 +88,13 @@ internal fun CardPaymentScreen(
         }
     }
 
-    CardPaymentScreenContent(
+    CardFormScreenContent(
         viewState = viewState,
-        cardNumberPCIState = cardNumberPCIState,
-        expirationDatePCIState = expirationDatePCIState,
-        securityCodePCIState = securityCodePCIState,
-        cardHolderPCIState = cardHolderPCIState,
-        identificationPCIState = identificationPCIState,
+        cardNumberPCIState = viewModel.cardNumberPCIState,
+        expirationDatePCIState = viewModel.expirationDatePCIState,
+        securityCodePCIState = viewModel.securityCodePCIState,
+        cardHolderPCIState = viewModel.cardHolderPCIState,
+        identificationPCIState = viewModel.identificationPCIState,
         onCardNumberEvent = viewModel::onCardNumberEvent,
         onExpirationDateEvent = viewModel::onExpirationDateEvent,
         onSecurityCodeEvent = viewModel::onSecurityCodeEvent,
@@ -109,9 +106,9 @@ internal fun CardPaymentScreen(
         onFooterButtonClick = {
             focusManager.clearFocus()
             viewModel.onSubmit(
-                cardNumberState = cardNumberPCIState,
-                expirationDateState = expirationDatePCIState,
-                securityCodeState = securityCodePCIState,
+                cardNumberState = viewModel.cardNumberPCIState,
+                expirationDateState = viewModel.expirationDatePCIState,
+                securityCodeState = viewModel.securityCodePCIState,
             )
         },
     )
@@ -119,8 +116,8 @@ internal fun CardPaymentScreen(
 
 @Suppress("LongParameterList", "LongMethod")
 @Composable
-internal fun CardPaymentScreenContent(
-    viewState: CardPaymentScreenState,
+internal fun CardFormScreenContent(
+    viewState: CardFormScreenState,
     cardNumberPCIState: PCIFieldState,
     expirationDatePCIState: PCIFieldState,
     securityCodePCIState: PCIFieldState,
@@ -170,7 +167,7 @@ internal fun CardPaymentScreenContent(
                         onBackPressed()
                     },
                 ) {
-                    CardPaymentFormFields(
+                    CardFormFields(
                         viewState = viewState,
                         cardNumberPCIState = cardNumberPCIState,
                         expirationDatePCIState = expirationDatePCIState,
@@ -205,7 +202,7 @@ internal fun CardPaymentScreenContent(
             }
 
             if (!isImeVisible) {
-                CardPaymentFooter(
+                CardFormFooter(
                     footerState = viewState.footerState,
                     onFooterButtonClick = onFooterButtonClick,
                 )
@@ -213,11 +210,11 @@ internal fun CardPaymentScreenContent(
         }
 
         if (isImeVisible) {
-            CardPaymentFooterButtonOverlay(
+            CardFormFooterButtonOverlay(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 buttonLabel = viewState.footerState.buttonLabel.orEmpty(),
-                enabled = viewState.footerState.isButtonEnabled,
-                isLoading = viewState.footerState.isButtonLoading,
+                enabled = viewState.footerState.buttonState?.enabled ?: false,
+                isLoading = viewState.footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
                 onHeightChanged = { overlayButtonHeightPx = it },
             )
@@ -260,12 +257,12 @@ internal fun CardPaymentScreenContent(
 @Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - Default")
 @Composable
-private fun CardPaymentScreenContentPreview() {
+private fun CardFormScreenContentPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Default,
     ) {
-        CardPaymentScreenContent(
-            viewState = CardPaymentScreenState(
+        CardFormScreenContent(
+            viewState = CardFormScreenState(
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
                     placeHolder = "MM/AA",
@@ -305,7 +302,7 @@ private fun CardPaymentScreenContentPreview() {
                     amountDecimalPart = "00",
                     subtitle = "em até 12x sem juros",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -327,12 +324,12 @@ private fun CardPaymentScreenContentPreview() {
 @Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - Without Card Holder")
 @Composable
-private fun CardPaymentScreenContentWithoutCardHolderPreview() {
+private fun CardFormScreenContentWithoutCardHolderPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Default,
     ) {
-        CardPaymentScreenContent(
-            viewState = CardPaymentScreenState(
+        CardFormScreenContent(
+            viewState = CardFormScreenState(
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
                     placeHolder = "MM/AA",
@@ -354,7 +351,7 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
                     amountIntegerPart = "500",
                     amountDecimalPart = "00",
                     buttonLabel = "Continuar",
-                    isButtonEnabled = true,
+                    buttonState = ButtonState(enabled = true),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -376,12 +373,12 @@ private fun CardPaymentScreenContentWithoutCardHolderPreview() {
 @Suppress("LongMethod")
 @Preview(showBackground = true, name = "Card Payment Screen - With Error")
 @Composable
-private fun CardPaymentScreenContentWithErrorPreview() {
+private fun CardFormScreenContentWithErrorPreview() {
     MercadoPagoTheme(
         theme = MercadoPagoThemes.Default,
     ) {
-        CardPaymentScreenContent(
-            viewState = CardPaymentScreenState(
+        CardFormScreenContent(
+            viewState = CardFormScreenState(
                 expirationDateState = ExpirationDateState(
                     label = "Vencimiento",
                     placeHolder = "MM/AA",
@@ -425,7 +422,7 @@ private fun CardPaymentScreenContentWithErrorPreview() {
                     amountDecimalPart = "50",
                     subtitle = "em até 12x",
                     buttonLabel = "Pagar",
-                    isButtonEnabled = false,
+                    buttonState = ButtonState(enabled = false),
                 ),
             ),
             cardNumberPCIState = rememberPCIFieldState(),
@@ -446,8 +443,8 @@ private fun CardPaymentScreenContentWithErrorPreview() {
 
 @Suppress("LongParameterList", "LongMethod")
 @Composable
-private fun CardPaymentFormFields(
-    viewState: CardPaymentScreenState,
+private fun CardFormFields(
+    viewState: CardFormScreenState,
     cardNumberPCIState: PCIFieldState,
     expirationDatePCIState: PCIFieldState,
     securityCodePCIState: PCIFieldState,
@@ -572,7 +569,7 @@ private fun CardPaymentFormFields(
 
 @Suppress("UnusedPrivateMember")
 @Composable
-private fun CardPaymentFooter(
+private fun CardFormFooter(
     footerState: FooterState,
     onFooterButtonClick: () -> Unit,
 ) {
@@ -583,11 +580,11 @@ private fun CardPaymentFooter(
         MPFixedFooter(
             title = footerState.title,
             amount = footerState.toAmountData(),
-            subtitle = footerState.subtitle,
+            subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
             button = MPFixedFooterButtonData(
                 text = footerState.buttonLabel.orEmpty(),
-                enabled = footerState.isButtonEnabled,
-                isLoading = footerState.isButtonLoading,
+                enabled = footerState.buttonState?.enabled ?: false,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onFooterButtonClick,
             ),
         )
@@ -596,7 +593,7 @@ private fun CardPaymentFooter(
 
 @Suppress("UnusedPrivateMember")
 @Composable
-private fun CardPaymentFooterButtonOverlay(
+private fun CardFormFooterButtonOverlay(
     buttonLabel: String,
     enabled: Boolean,
     isLoading: Boolean,
