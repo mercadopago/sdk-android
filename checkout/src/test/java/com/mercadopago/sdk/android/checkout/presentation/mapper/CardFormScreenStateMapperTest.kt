@@ -18,7 +18,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-internal class CardPaymentScreenStateMapperTest {
+internal class CardFormScreenStateMapperTest {
     private val defaultConfig = CardFieldConfig(type = "text", length = LengthRange(min = 0, max = 0))
     private val defaultValidation = Validation(
         errorEmpty = "empty",
@@ -85,7 +85,7 @@ internal class CardPaymentScreenStateMapperTest {
     fun `given output then title is mapped to screen state title`() {
         val output = buildOutput(title = "My Title")
 
-        val state = output.toCardPaymentScreenState()
+        val state = output.toCardFormScreenState()
 
         assertEquals("My Title", state.title)
     }
@@ -94,7 +94,7 @@ internal class CardPaymentScreenStateMapperTest {
     fun `given output then buttonLabel is mapped to footerState buttonLabel`() {
         val output = buildOutput(button = "Confirm")
 
-        val state = output.toCardPaymentScreenState()
+        val state = output.toCardFormScreenState()
 
         assertEquals("Confirm", state.footerState.buttonLabel)
     }
@@ -110,7 +110,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().cardNumberState
+        val state = output.toCardFormScreenState().cardNumberState
 
         assertEquals("Número do cartão", state.label)
         assertEquals("#### #### #### ####", state.placeHolder)
@@ -133,7 +133,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val validation = output.toCardPaymentScreenState().cardNumberState.validation
+        val validation = output.toCardFormScreenState().cardNumberState.validation
 
         assertEquals("req", validation.errorEmpty)
         assertEquals("inc", validation.errorIncomplete)
@@ -152,7 +152,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().cardHolderState
+        val state = output.toCardFormScreenState().cardHolderState
 
         assertEquals("Titular", state.label)
         assertEquals("Nome", state.placeHolder)
@@ -172,7 +172,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().expirationDateState
+        val state = output.toCardFormScreenState().expirationDateState
 
         assertEquals("Validade", state.label)
         assertEquals("MM/AA", state.placeHolder)
@@ -196,7 +196,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().cardNumberState
+        val state = output.toCardFormScreenState().cardNumberState
 
         assertEquals(15, state.maxLength)
         assertEquals("#### ###### #####", state.mask)
@@ -217,7 +217,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().cardNumberState
+        val state = output.toCardFormScreenState().cardNumberState
 
         assertEquals(16, state.maxLength)
         assertEquals("#### #### #### ####", state.mask)
@@ -239,7 +239,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().secureCodeState
+        val state = output.toCardFormScreenState().secureCodeState
 
         assertTrue(state.optional)
     }
@@ -260,7 +260,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().secureCodeState
+        val state = output.toCardFormScreenState().secureCodeState
 
         assertEquals(4, state.maxLength)
         assertFalse(state.optional)
@@ -279,7 +279,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().secureCodeState
+        val state = output.toCardFormScreenState().secureCodeState
 
         assertEquals("CVV", state.label)
         assertEquals("000", state.placeHolder)
@@ -294,7 +294,7 @@ internal class CardPaymentScreenStateMapperTest {
     fun `given empty identificationTypes then show is false and selected is null`() {
         val output = buildOutput(identificationTypes = emptyList())
 
-        val state = output.toCardPaymentScreenState().identificationTypeState
+        val state = output.toCardFormScreenState().identificationTypeState
 
         assertFalse(state.show)
         assertNull(state.selected)
@@ -315,7 +315,7 @@ internal class CardPaymentScreenStateMapperTest {
         )
         val output = buildOutput(identificationTypes = listOf(item))
 
-        val state = output.toCardPaymentScreenState().identificationTypeState
+        val state = output.toCardFormScreenState().identificationTypeState
 
         assertTrue(state.show)
         assertEquals("CPF", state.selected?.id)
@@ -330,7 +330,7 @@ internal class CardPaymentScreenStateMapperTest {
         )
         val output = buildOutput(identificationTypes = items)
 
-        val types = output.toCardPaymentScreenState().identificationTypeState.identificationTypes
+        val types = output.toCardFormScreenState().identificationTypeState.identificationTypes
 
         assertEquals(2, types?.size)
         assertEquals("CPF", types?.get(0)?.id)
@@ -351,7 +351,7 @@ internal class CardPaymentScreenStateMapperTest {
         )
         val output = buildOutput(identificationTypes = listOf(item))
 
-        val coreType = output.toCardPaymentScreenState()
+        val coreType = output.toCardFormScreenState()
             .identificationTypeState.identificationTypes?.first()
 
         assertEquals("RG", coreType?.id)
@@ -371,7 +371,7 @@ internal class CardPaymentScreenStateMapperTest {
             ),
         )
 
-        val state = output.toCardPaymentScreenState().identificationTypeState
+        val state = output.toCardFormScreenState().identificationTypeState
 
         assertEquals("CPF", state.label)
         assertEquals("empty", state.validation.errorEmpty)

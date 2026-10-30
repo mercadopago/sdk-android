@@ -7,14 +7,15 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.model.FooterData
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.SecurityCodeField
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.domain.model.Validation
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import java.math.BigDecimal
@@ -25,7 +26,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class CardBinStateMapperTest {
-    private val baseState = CardPaymentScreenState(
+    private val baseState = CardFormScreenState(
         cardNumberState = CardNumberState(
             label = "Número",
             placeHolder = "0000",
@@ -46,6 +47,7 @@ internal class CardBinStateMapperTest {
         expirationDate = null,
         issuers = emptyList(),
         installmentData = MPInstallmentData(),
+        footer = FooterData(buttonLabel = ""),
     )
 
     @Test
@@ -235,14 +237,14 @@ internal class CardBinStateMapperTest {
         val data = emptyBinData.copy(
             installmentData = MPInstallmentData(
                 display = MPInstallmentData.InstallmentDisplay(
-                    displayType = InstallmentsDisplayType.RadioButton,
+                    displayType = SelectionDisplayType.RadioButton,
                 ),
             ),
         )
 
         val result = baseState.applyCardBinData(data)
 
-        assertEquals(InstallmentsDisplayType.RadioButton, result.installmentsState.displayType)
+        assertEquals(SelectionDisplayType.RadioButton, result.installmentsState.displayType)
     }
 
     @Test
@@ -250,14 +252,14 @@ internal class CardBinStateMapperTest {
         val data = emptyBinData.copy(
             installmentData = MPInstallmentData(
                 display = MPInstallmentData.InstallmentDisplay(
-                    displayType = InstallmentsDisplayType.Chevron,
+                    displayType = SelectionDisplayType.Chevron,
                 ),
             ),
         )
 
         val result = baseState.applyCardBinData(data)
 
-        assertEquals(InstallmentsDisplayType.Chevron, result.installmentsState.displayType)
+        assertEquals(SelectionDisplayType.Chevron, result.installmentsState.displayType)
     }
 
     @Test
@@ -434,6 +436,32 @@ internal class CardBinStateMapperTest {
         assertEquals("empty-exp", result.expirationDateState.validation.errorEmpty)
         assertEquals("incomplete-exp", result.expirationDateState.validation.errorIncomplete)
         assertEquals("invalid-exp", result.expirationDateState.validation.errorInvalid)
+    }
+
+    @Test
+    fun `given buttonLabel from BIN response when applied then updates footer button label`() {
+        // Given
+        val data = emptyBinData.copy(footer = FooterData(buttonLabel = "Pagar"))
+
+        // When
+        val result = baseState.applyCardBinData(data)
+
+        // Then
+        assertEquals("Pagar", result.footerState.buttonLabel)
+    }
+
+    @Test
+    fun `given empty buttonLabel when applied then keeps current footer button label`() {
+        // Given
+        val state = baseState.copy(
+            footerState = baseState.footerState.copy(buttonLabel = "Continuar"),
+        )
+
+        // When
+        val result = state.applyCardBinData(emptyBinData)
+
+        // Then
+        assertEquals("Continuar", result.footerState.buttonLabel)
     }
 
     @Test

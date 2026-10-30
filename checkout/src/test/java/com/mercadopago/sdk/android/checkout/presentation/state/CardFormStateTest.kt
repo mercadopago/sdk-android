@@ -1,8 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
-import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
-import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.MPUserCancelledContext
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +9,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-internal class CardPaymentStateTest {
+internal class CardFormStateTest {
     @Test
     fun `given defaults then CardHolderState has expected values`() {
         val state = CardHolderState()
@@ -116,8 +115,8 @@ internal class CardPaymentStateTest {
     }
 
     @Test
-    fun `given default CardPaymentScreenState then nested states use defaults`() {
-        val state = CardPaymentScreenState()
+    fun `given default CardFormScreenState then nested states use defaults`() {
+        val state = CardFormScreenState()
 
         assertEquals("", state.title)
         assertEquals(ExpirationDateState(), state.expirationDateState)
@@ -136,8 +135,8 @@ internal class CardPaymentStateTest {
     }
 
     @Test
-    fun `given copy on CardPaymentScreenState then flags change`() {
-        val state = CardPaymentScreenState()
+    fun `given copy on CardFormScreenState then flags change`() {
+        val state = CardFormScreenState()
 
         val copy = state.copy(isLoading = true, showTooltip = true, showMessage = true)
 
@@ -229,27 +228,6 @@ internal class CardPaymentStateTest {
     }
 
     @Test
-    fun `given FooterState explicit values then properties are assigned`() {
-        val state = FooterState(
-            title = "Total",
-            currencySymbol = "R$",
-            amountIntegerPart = "100",
-            amountDecimalPart = "00",
-            subtitle = "subtitle",
-            buttonLabel = "Pay",
-            isVisible = true,
-        )
-
-        assertEquals("Total", state.title)
-        assertEquals("R$", state.currencySymbol)
-        assertEquals("100", state.amountIntegerPart)
-        assertEquals("00", state.amountDecimalPart)
-        assertEquals("subtitle", state.subtitle)
-        assertEquals("Pay", state.buttonLabel)
-        assertTrue(state.isVisible)
-    }
-
-    @Test
     fun `given PaymentState explicit values then properties are assigned`() {
         val state = PaymentState(paymentMethodId = "visa", paymentTypeId = "credit_card")
 
@@ -262,37 +240,29 @@ internal class CardPaymentStateTest {
         val fieldValidation = CardNumberErrorType.FieldValidation(message = "field")
         val notFound = CardNumberErrorType.PaymentMethodNotFound(message = "not found")
         val luhn = CardNumberErrorType.LuhnValidation
-        val brandNotAccepted = CardNumberErrorType.CardBrandNotAccepted(brand = MPCardBrand.Visa)
-        val typeNotAccepted = CardNumberErrorType.CardTypeNotAccepted(cardType = MPCardType.CREDIT)
 
         assertEquals("field", fieldValidation.message)
         assertEquals("not found", notFound.message)
-        assertEquals(MPCardBrand.Visa, brandNotAccepted.brand)
-        assertEquals(MPCardType.CREDIT, typeNotAccepted.cardType)
 
         val errors = listOf<CardNumberErrorType>(
             fieldValidation,
             notFound,
             luhn,
-            brandNotAccepted,
-            typeNotAccepted,
         )
         errors.forEach { error ->
             val described: String = when (error) {
                 is CardNumberErrorType.FieldValidation -> error.message
                 is CardNumberErrorType.PaymentMethodNotFound -> error.message
                 CardNumberErrorType.LuhnValidation -> "luhn"
-                is CardNumberErrorType.CardBrandNotAccepted -> error.brand.toString()
-                is CardNumberErrorType.CardTypeNotAccepted -> error.cardType?.name.orEmpty()
             }
             assertTrue(described.isNotEmpty())
         }
     }
 
     @Test
-    fun `given CardPaymentViewEvent OnBackPressed then it carries the user cancelled context`() {
+    fun `given CardFormViewEvent OnBackPressed then it carries the user cancelled context`() {
         val context = MPUserCancelledContext.CardSave(emptyList())
-        val event = CardPaymentViewEvent.OnBackPressed(context)
+        val event = CardFormViewEvent.OnBackPressed(context)
 
         assertEquals(context, event.context)
     }

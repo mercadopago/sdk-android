@@ -1,9 +1,11 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class InstallmentsScreenStateTest {
@@ -25,6 +27,7 @@ internal class InstallmentsScreenStateTest {
             isSelected = true,
             number = 3,
             accessibilityLabel = "3x of R$ 33,33",
+            secondaryLabelColor = InstallmentTextColor.Positive,
         )
         val footer = FooterState(
             title = "Total",
@@ -43,6 +46,7 @@ internal class InstallmentsScreenStateTest {
         assertEquals("Installments", state.title)
         assertEquals(listOf(installment), state.items)
         assertEquals(footer, state.footerState)
+        assertEquals(InstallmentTextColor.Positive, state.items.first().secondaryLabelColor)
     }
 
     @Test
@@ -73,6 +77,7 @@ internal class InstallmentsScreenStateTest {
         assertEquals("R$ 120,00", installment.trailing)
         assertFalse(installment.isSelected)
         assertEquals(6, installment.number)
+        assertNull(installment.secondaryLabelColor)
     }
 
     @Test
