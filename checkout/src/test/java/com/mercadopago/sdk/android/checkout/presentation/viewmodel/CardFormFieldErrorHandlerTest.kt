@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
@@ -25,7 +25,7 @@ internal class CardFormFieldErrorHandlerTest {
         errorInvalid = "Número inválido",
     )
 
-    private val baseState = CardPaymentScreenState(
+    private val baseState = CardFormScreenState(
         cardNumberState = CardNumberState(
             length = 16,
             maxLength = 16,
@@ -317,7 +317,7 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertTrue(result.footerState.isButtonEnabled)
+        assertTrue(result.footerState.buttonState?.enabled == true)
     }
 
     @Test
@@ -328,7 +328,7 @@ internal class CardFormFieldErrorHandlerTest {
             isValid = true,
         )
 
-        assertFalse(result.footerState.isButtonEnabled)
+        assertFalse(result.footerState.buttonState?.enabled == true)
     }
 
     @Test

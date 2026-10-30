@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.CardHolderField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberField
 import com.mercadopago.sdk.android.checkout.domain.model.CardNumberValidation
 import com.mercadopago.sdk.android.checkout.domain.model.ExpirationDateField
+import com.mercadopago.sdk.android.checkout.domain.model.FooterData
 import com.mercadopago.sdk.android.checkout.domain.model.LengthRange
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MercadoPagoCheckoutError
@@ -24,7 +25,7 @@ import com.mercadopago.sdk.android.checkout.domain.model.Validation
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.InitializeCardFormUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardFormScreenStateFactory
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
@@ -54,7 +55,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class CardPaymentViewModelFieldEventTest {
+internal class CardFormViewModelFieldEventTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -63,7 +64,7 @@ internal class CardPaymentViewModelFieldEventTest {
     private val initializeCardFormUseCase = mockk<InitializeCardFormUseCase>(relaxed = true)
     private val generateTokenUseCase = mockk<GenerateTokenUseCase>(relaxed = true)
     private val processOrderUseCase = mockk<ProcessOrderUseCase>(relaxed = true)
-    private val cardPaymentScreenStateFactory = mockk<CardPaymentScreenStateFactory>(relaxed = true)
+    private val cardPaymentScreenStateFactory = mockk<CardFormScreenStateFactory>(relaxed = true)
 
     private val checkoutConfiguration = CheckoutConfiguration(
         checkoutType = mockk<MPCheckoutType.CardTransaction>(relaxed = true),
@@ -101,7 +102,7 @@ internal class CardPaymentViewModelFieldEventTest {
 
     private fun makeViewModel(
         config: CheckoutConfiguration? = checkoutConfiguration,
-    ) = CardPaymentViewModel(
+    ) = CardFormViewModel(
         checkoutConfiguration = config,
         getCardBinUseCase = getCardBinUseCase,
         initializeCardFormUseCase = initializeCardFormUseCase,
@@ -116,7 +117,7 @@ internal class CardPaymentViewModelFieldEventTest {
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("12345"))
 
-        coVerify(exactly = 0) { getCardBinUseCase(any(), any(), any(), any(), any()) }
+        coVerify(exactly = 0) { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) }
     }
 
     @Test
@@ -137,8 +138,9 @@ internal class CardPaymentViewModelFieldEventTest {
             expirationDate = null,
             issuers = emptyList(),
             installmentData = MPInstallmentData(),
+            footer = FooterData(buttonLabel = ""),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
@@ -158,8 +160,9 @@ internal class CardPaymentViewModelFieldEventTest {
             expirationDate = null,
             issuers = emptyList(),
             installmentData = MPInstallmentData(),
+            footer = FooterData(buttonLabel = ""),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
@@ -207,8 +210,9 @@ internal class CardPaymentViewModelFieldEventTest {
             ),
             issuers = emptyList(),
             installmentData = MPInstallmentData(),
+            footer = FooterData(buttonLabel = ""),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
@@ -231,8 +235,9 @@ internal class CardPaymentViewModelFieldEventTest {
             expirationDate = null,
             issuers = emptyList(),
             installmentData = MPInstallmentData(),
+            footer = FooterData(buttonLabel = ""),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
@@ -243,7 +248,9 @@ internal class CardPaymentViewModelFieldEventTest {
 
     @Test
     fun `when BIN call fails then state is not changed by error`() = runTest {
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Error(networkError)
+        coEvery {
+            getCardBinUseCase(any(), any(), any(), any(), any(), any(), any())
+        } returns Result.Error(networkError)
         val viewModel = makeViewModel()
         val stateBefore = viewModel.viewState.value
 
@@ -263,8 +270,9 @@ internal class CardPaymentViewModelFieldEventTest {
             expirationDate = null,
             issuers = listOf(BinIssuer(id = "1", name = "Banco do Brasil")),
             installmentData = MPInstallmentData(),
+            footer = FooterData(buttonLabel = ""),
         )
-        coEvery { getCardBinUseCase(any(), any(), any(), any(), any()) } returns Result.Success(data)
+        coEvery { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) } returns Result.Success(data)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
@@ -380,6 +388,40 @@ internal class CardPaymentViewModelFieldEventTest {
         assertEquals(identificationType, viewModel.viewState.value.identificationTypeState.selected)
         assertEquals("", viewModel.viewState.value.identificationTypeState.placeHolder)
     }
+
+    @Test
+    fun `given typed document when Identification OnTypeSelected with a different type then clears the document`() =
+        runTest {
+            // Given
+            val viewModel = makeViewModel()
+            val cpf = mockk<IdentificationType>(relaxed = true) { every { id } returns "CPF" }
+            val dni = mockk<IdentificationType>(relaxed = true) { every { id } returns "DNI" }
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(cpf))
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678901"))
+
+            // When
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(dni))
+
+            // Then
+            assertEquals("", viewModel.viewState.value.identificationTypeState.value)
+            assertEquals("", viewModel.viewState.value.identificationTypeState.error)
+        }
+
+    @Test
+    fun `given typed document when Identification OnTypeSelected with the same type then keeps the document`() =
+        runTest {
+            // Given
+            val viewModel = makeViewModel()
+            val cpf = mockk<IdentificationType>(relaxed = true) { every { id } returns "CPF" }
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(cpf))
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnValueChanged("12345678901"))
+
+            // When
+            viewModel.onIdentificationEvent(IdentificationTextFieldEvent.OnTypeSelected(cpf))
+
+            // Then
+            assertEquals("12345678901", viewModel.viewState.value.identificationTypeState.value)
+        }
 
     @Test
     fun `when ExpirationDate OnFocusChanged false then isFocused is false`() = runTest {
@@ -531,13 +573,13 @@ internal class CardPaymentViewModelFieldEventTest {
             throwable = null,
         )
         coEvery {
-            getCardBinUseCase(any(), any(), any(), any(), any())
+            getCardBinUseCase(any(), any(), any(), any(), any(), any(), any())
         } returns Result.Error(serviceError)
         val viewModel = makeViewModel()
 
         viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnBinChanged("123456"))
 
-        coVerify { getCardBinUseCase(any(), any(), any(), any(), any()) }
+        coVerify { getCardBinUseCase(any(), any(), any(), any(), any(), any(), any()) }
         assertEquals("123456", viewModel.viewState.value.cardNumberState.cardBin)
     }
 }
