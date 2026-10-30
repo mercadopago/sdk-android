@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.components.extensions.isGreaterThan
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 
 private const val FIXED_FOOTER_GROUP = "FixedFooter"
@@ -36,6 +40,7 @@ data class MPAmountData(
  * Data class representing the button configuration
  *
  * @property text The button label text
+ * @property icon Optional icon to display in the button (e.g., lock icon for secure actions)
  * @property style The button style (default: Loud)
  * @property enabled Whether the button is enabled
  * @property isLoading When true, shows a loading animation inside the button and disables interaction
@@ -43,6 +48,7 @@ data class MPAmountData(
  */
 data class MPFixedFooterButtonData(
     val text: String,
+    val icon: ImageVector? = null,
     val style: MPButtonStyle = MPButtonStyle.Loud,
     val enabled: Boolean = true,
     val isLoading: Boolean = false,
@@ -57,43 +63,58 @@ data class MPFixedFooterButtonData(
  * @param title The title text displayed on the left side
  * @param modifier The modifier to apply to this component
  * @param amount The amount data containing currency symbol, integer and decimal parts
- * @param subtitle Optional subtitle text displayed below the amount
+ * @param subtitle Optional subtitle configuration
  * @param button Optional button configuration. When null, no button is displayed
+ * @param showDivider Whether to show a divider at the top
  */
 @Composable
 fun MPFixedFooter(
     title: String,
     modifier: Modifier = Modifier,
     amount: MPAmountData? = null,
-    subtitle: String? = null,
+    subtitle: MPSubtitle? = null,
     button: MPFixedFooterButtonData? = null,
+    showDivider: Boolean = false,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MercadoPagoTheme.color.background.primary)
-            .padding(
+            .background(MercadoPagoTheme.color.background.primary),
+    ) {
+        if (showDivider) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MercadoPagoTheme.color.border.primary),
+            )
+        }
+        Column(
+            modifier = Modifier.padding(
                 horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
                 vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
-    ) {
-        if (amount?.integerPart?.isGreaterThan() == true) {
-            HeaderSection(
-                title = title,
-                amount = amount,
-                subtitle = subtitle,
-            )
-            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
-        }
-        button?.let {
-            MPButton(
-                text = it.text,
-                modifier = Modifier.fillMaxWidth(),
-                style = it.style,
-                enabled = it.enabled,
-                isLoading = it.isLoading,
-                onClick = it.onClick,
-            )
+        ) {
+            if (amount?.integerPart?.isGreaterThan() == true) {
+                HeaderSection(
+                    title = title,
+                    amount = amount,
+                    subtitle = subtitle,
+                )
+                Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
+            }
+            button?.let {
+                MPButton(
+                    text = it.text,
+                    icon = it.icon,
+                    iconType = if (it.icon != null) MPButtonIconType.Left else MPButtonIconType.None,
+                    modifier = Modifier.fillMaxWidth(),
+                    style = it.style,
+                    enabled = it.enabled,
+                    isLoading = it.isLoading,
+                    onClick = it.onClick,
+                )
+            }
         }
     }
 }
@@ -102,7 +123,7 @@ fun MPFixedFooter(
 private fun HeaderSection(
     title: String,
     amount: MPAmountData,
-    subtitle: String?,
+    subtitle: MPSubtitle?,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -114,19 +135,23 @@ private fun HeaderSection(
         ) {
             MPText(
                 text = title,
-                style = MercadoPagoTheme.typography.body.emphasis.large,
+                style = MercadoPagoTheme.typography.heading.default.small,
                 color = MercadoPagoTheme.color.text.primary,
             )
             Column(
                 horizontalAlignment = Alignment.End,
             ) {
                 AmountText(amount = amount)
-                if (subtitle != null) {
-                    MPText(
-                        text = subtitle,
-                        style = MercadoPagoTheme.typography.body.default.medium,
-                        color = MercadoPagoTheme.color.text.secondary,
-                    )
+                subtitle?.let {
+                    if (it.content != null) {
+                        it.content.invoke()
+                    } else if (it.text != null) {
+                        MPText(
+                            text = it.text,
+                            style = MercadoPagoTheme.typography.body.default.medium,
+                            color = it.color ?: MercadoPagoTheme.color.text.secondary,
+                        )
+                    }
                 }
             }
         }
@@ -138,17 +163,20 @@ private fun AmountText(
     amount: MPAmountData,
 ) {
     Row {
-        MPText(
-            text = amount.currencySymbol,
-            style = MercadoPagoTheme.typography.heading.default.medium,
-            color = MercadoPagoTheme.color.text.primary,
-        )
+        if (amount.currencySymbol.isNotBlank()) {
+            MPText(
+                text = amount.currencySymbol,
+                style = MercadoPagoTheme.typography.heading.default.medium,
+                color = MercadoPagoTheme.color.text.primary,
+            )
+            Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
+        }
         MPText(
             text = amount.integerPart,
             style = MercadoPagoTheme.typography.heading.default.medium,
             color = MercadoPagoTheme.color.text.primary,
         )
-        if (amount.decimalPart.isGreaterThan()) {
+        if (amount.decimalPart.isNotBlank()) {
             Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xnano))
             MPText(
                 text = amount.decimalPart,
@@ -170,7 +198,7 @@ private fun MPFixedFooterWithButtonPreview() {
                 integerPart = "1.000",
                 decimalPart = "00",
             ),
-            subtitle = "Text",
+            subtitle = MPSubtitle(text = "Text"),
             button = MPFixedFooterButtonData(
                 text = "Label",
                 onClick = {},
@@ -190,7 +218,7 @@ private fun MPFixedFooterWithoutButtonPreview() {
                 integerPart = "1.000",
                 decimalPart = "00",
             ),
-            subtitle = "Text",
+            subtitle = MPSubtitle(text = "Text"),
             button = null,
         )
     }
@@ -231,7 +259,7 @@ private fun MPFixedFooterDisabledButtonPreview() {
                 integerPart = "150",
                 decimalPart = "99",
             ),
-            subtitle = "em até 12x",
+            subtitle = MPSubtitle(text = "em até 12x"),
             button = MPFixedFooterButtonData(
                 text = "Continuar",
                 enabled = false,

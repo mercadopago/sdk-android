@@ -1,7 +1,7 @@
 package com.mercadopago.sdk.android.checkout.analytics
 
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -64,12 +64,12 @@ internal class InstallmentsInitializeAnalyticsTest {
     }
 
     @Test
-    fun `InstallmentsDisplayType RadioButton maps to radio_button`() {
-        assertEquals("radio_button", InstallmentsDisplayType.RadioButton.toAnalyticsString())
+    fun `SelectionDisplayType RadioButton maps to radio_button`() {
+        assertEquals("radio_button", SelectionDisplayType.RadioButton.toAnalyticsString())
     }
 
     @Test
-    fun `InstallmentsDisplayType Chevron maps to chevron`() {
-        assertEquals("chevron", InstallmentsDisplayType.Chevron.toAnalyticsString())
+    fun `SelectionDisplayType Chevron maps to chevron`() {
+        assertEquals("chevron", SelectionDisplayType.Chevron.toAnalyticsString())
     }
 }

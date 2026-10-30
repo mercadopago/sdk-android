@@ -3,7 +3,8 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentTextColor
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -48,6 +49,59 @@ internal class InstallmentsScreenStateMapperTest {
     }
 
     @Test
+    fun `footer falls back to totalAmount when secondaryLabel is a non-monetary text`() {
+        val state = installmentDataWith(
+            currencySymbol = "$",
+            quotas = listOf(
+                quota(
+                    installments = 2,
+                    totalAmount = BigDecimal("1167.50"),
+                    secondary = "Sin interés",
+                    state = QuotaState.Success,
+                ),
+            ),
+            selectedInstallment = null,
+        ).toInstallmentsScreenState()
+
+        assertEquals("1167", state.footerState.amountIntegerPart)
+        assertEquals("50", state.footerState.amountDecimalPart)
+    }
+
+    @Test
+    fun `footer falls back to totalAmount when secondaryLabel has digits but is not monetary`() {
+        val state = installmentDataWith(
+            currencySymbol = "$",
+            quotas = listOf(
+                quota(
+                    installments = 2,
+                    totalAmount = BigDecimal("1167.50"),
+                    secondary = "Hasta 12 cuotas sin interés",
+                    state = QuotaState.Success,
+                ),
+            ),
+            selectedInstallment = null,
+        ).toInstallmentsScreenState()
+
+        assertEquals("1167", state.footerState.amountIntegerPart)
+        assertEquals("50", state.footerState.amountDecimalPart)
+    }
+
+    @Test
+    fun `effectiveSelectedQuota ignores quotas with null installments when nothing is selected`() {
+        val state = installmentDataWith(
+            currencySymbol = "$",
+            quotas = listOf(
+                Quota(installments = null, totalAmount = BigDecimal("1.00")),
+                quota(installments = 3, totalAmount = BigDecimal("1112.30"), state = QuotaState.Success),
+            ),
+            selectedInstallment = null,
+        ).toInstallmentsScreenState()
+
+        assertEquals("1112", state.footerState.amountIntegerPart)
+        assertEquals("30", state.footerState.amountDecimalPart)
+    }
+
+    @Test
     fun `footer falls back to first quota when no selection and RadioButton`() {
         val state = installmentDataWith(
             currencySymbol = "R$",
@@ -56,7 +110,23 @@ internal class InstallmentsScreenStateMapperTest {
                 quota(installments = 2, totalAmount = BigDecimal("1096.40")),
             ),
             selectedInstallment = null,
-            displayType = InstallmentsDisplayType.RadioButton,
+            displayType = SelectionDisplayType.RadioButton,
+        ).toInstallmentsScreenState()
+
+        assertEquals("1000", state.footerState.amountIntegerPart)
+        assertEquals("00", state.footerState.amountDecimalPart)
+    }
+
+    @Test
+    fun `footer falls back to first quota when no selection and Chevron`() {
+        val state = installmentDataWith(
+            currencySymbol = "R$",
+            quotas = listOf(
+                quota(installments = 1, totalAmount = BigDecimal("1000.00"), primary = "1x R$ 1.000,00"),
+                quota(installments = 2, totalAmount = BigDecimal("1096.40")),
+            ),
+            selectedInstallment = null,
+            displayType = SelectionDisplayType.Chevron,
         ).toInstallmentsScreenState()
 
         assertEquals("1000", state.footerState.amountIntegerPart)
@@ -83,7 +153,7 @@ internal class InstallmentsScreenStateMapperTest {
     fun `footer pay button label is null in Chevron mode`() {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
-            displayType = InstallmentsDisplayType.Chevron,
+            displayType = SelectionDisplayType.Chevron,
             buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
@@ -94,7 +164,7 @@ internal class InstallmentsScreenStateMapperTest {
     fun `footer pay button label present in RadioButton mode`() {
         val state = installmentDataWith(
             quotas = listOf(quota(installments = 1, totalAmount = BigDecimal("100"))),
-            displayType = InstallmentsDisplayType.RadioButton,
+            displayType = SelectionDisplayType.RadioButton,
             buttonLabel = "Pagar",
         ).toInstallmentsScreenState()
 
@@ -112,6 +182,88 @@ internal class InstallmentsScreenStateMapperTest {
         val item = state.items.first()
         assertEquals("2x R$ 548,20", item.text)
         assertEquals("R$ 1.096,40", item.trailing)
+    }
+
+    @Test
+    fun `given success quota when mapped then secondary label color is positive`() {
+        val installmentData = installmentDataWith(
+            quotas = listOf(
+                quota(
+                    secondary = "Sem juros",
+                    state = QuotaState.Success,
+                ),
+            ),
+        )
+
+        val state = installmentData.toInstallmentsScreenState()
+
+        assertEquals(InstallmentTextColor.Positive, state.items.first().secondaryLabelColor)
+    }
+
+    @Test
+    fun `given default quota when mapped then secondary label color is null`() {
+        val installmentData = installmentDataWith(
+            quotas = listOf(quota(secondary = "Com juros")),
+        )
+
+        val state = installmentData.toInstallmentsScreenState()
+
+        assertNull(state.items.first().secondaryLabelColor)
+    }
+
+    @Test
+    fun `given default installments matching a quota when mapped then preselects it`() {
+        // Given
+        val data = installmentDataWith(
+            quotas = listOf(
+                quota(installments = 1, primary = "1x"),
+                quota(installments = 3, primary = "3x", state = QuotaState.Success),
+            ),
+            defaultInstallments = 1,
+        )
+
+        // When
+        val state = data.toInstallmentsScreenState()
+
+        // Then
+        assertEquals(listOf(true, false), state.items.map { it.isSelected })
+    }
+
+    @Test
+    fun `given default installments not in quotas when mapped then falls back to success quota`() {
+        // Given
+        val data = installmentDataWith(
+            quotas = listOf(
+                quota(installments = 1, primary = "1x"),
+                quota(installments = 3, primary = "3x", state = QuotaState.Success),
+            ),
+            defaultInstallments = 6,
+        )
+
+        // When
+        val state = data.toInstallmentsScreenState()
+
+        // Then
+        assertEquals(listOf(false, true), state.items.map { it.isSelected })
+    }
+
+    @Test
+    fun `given selected installment and default when mapped then selected installment wins`() {
+        // Given
+        val data = installmentDataWith(
+            quotas = listOf(
+                quota(installments = 1, primary = "1x"),
+                quota(installments = 3, primary = "3x"),
+            ),
+            selectedInstallment = 3,
+            defaultInstallments = 1,
+        )
+
+        // When
+        val state = data.toInstallmentsScreenState()
+
+        // Then
+        assertEquals(listOf(false, true), state.items.map { it.isSelected })
     }
 
     @Test
@@ -194,12 +346,14 @@ internal class InstallmentsScreenStateMapperTest {
     private fun installmentDataWith(
         quotas: List<Quota>,
         selectedInstallment: Int? = null,
-        displayType: InstallmentsDisplayType = InstallmentsDisplayType.RadioButton,
+        defaultInstallments: Int? = null,
+        displayType: SelectionDisplayType = SelectionDisplayType.RadioButton,
         buttonLabel: String = "",
         currencySymbol: String = "",
     ): MPInstallmentData = MPInstallmentData(
         quotas = quotas,
         selectedInstallment = selectedInstallment,
+        defaultInstallments = defaultInstallments,
         display = MPInstallmentData.InstallmentDisplay(
             title = "Escolha o parcelamento",
             currencySymbol = currencySymbol,

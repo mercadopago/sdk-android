@@ -3,6 +3,8 @@ package com.mercadopago.sdk.android.checkout.domain.exception
 private const val CODE_NETWORK_CONNECTION_FAILED = -1009
 private const val CODE_NETWORK_TIMEOUT = -1001
 private const val CODE_SERVICE_ERROR = 2000
+private const val CODE_PAYMENT_REJECTED = 2001
+private const val CODE_PAYMENT_WAITING_RETRY = 2002
 private const val CODE_INTEGRATION_ERROR = 3000
 private const val CODE_UNKNOWN = 999
 
@@ -50,6 +52,23 @@ enum class ErrorCode(val value: Int) {
      * - Business logic errors returned by the service
      */
     SERVICE_ERROR(CODE_SERVICE_ERROR),
+
+    /**
+     * Payment rejected.
+     *
+     * Indicates that the order was processed and Orders reported the payment attempt as rejected.
+     * When the Status Screen is enabled, it shows the rejection and may offer a retry with another
+     * payment method.
+     */
+    PAYMENT_REJECTED(CODE_PAYMENT_REJECTED),
+
+    /**
+     * Payment waiting for the buyer to retry.
+     *
+     * Indicates that the Orders API answered with `WAITING_RETRY`: the payment attempt is pending and
+     * the buyer must retry it.
+     */
+    PAYMENT_WAITING_RETRY(CODE_PAYMENT_WAITING_RETRY),
 
     /**
      * SDK integration error.

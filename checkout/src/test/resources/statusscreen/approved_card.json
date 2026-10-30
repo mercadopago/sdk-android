@@ -1,0 +1,38 @@
+{
+  "status_type": "approved",
+  "header": {
+    "title": "Pagaste ($ 900)",
+    "icon": "https://http2.mlstatic.com/storage/mobile-on-demand-resources/image/cho_off-feedback-sucess"
+  },
+  "body": [
+    {
+      "component": "MPListItem",
+      "data": {
+        "title": "Seller name",
+        "image_url": "https://http2.mlstatic.com/storage/mobile-on-demand-resources/image/cho_off-store-default_xxxhdpi"
+      }
+    },
+    {
+      "component": "MPListItem",
+      "data": {
+        "title": "Visa Crédito •••• 1234 · 3x $ 300",
+        "subtitle": "$ 900 sin interés",
+        "leading_type": "icon",
+        "leading_value": "card"
+      }
+    }
+  ],
+  "footer": {
+    "buttons": [
+      {
+        "label": "Volver",
+        "action": "back_action"
+      },
+      {
+        "label": "Ver factura",
+        "action": "open_pdf",
+        "receipt_url": "https://www.mercadopago.com/receipt/abc"
+      }
+    ]
+  }
+}

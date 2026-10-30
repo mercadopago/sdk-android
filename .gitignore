@@ -47,3 +47,7 @@ meli
 CLAUDE.md
 .claude/private/
 docs
+AGENTS.md
+
+# Skill execution logs (local automation history, not project content)
+.agents/skill-history/

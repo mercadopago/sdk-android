@@ -7,6 +7,7 @@ import com.mercadopago.sdk.android.analytics.domain.repository.AnalyticsReposito
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 
 internal class AnalyticsRepositoryImpl(
     private val remoteDataSource: AnalyticsRemoteDataSource,
@@ -27,5 +28,9 @@ internal class AnalyticsRepositoryImpl(
                 uid = uid,
             ).firstOrNull()
         }
+    }
+
+    override fun getCurrentSessionId(): Flow<String> {
+        return localDataSource.getSessionId().map { it.sessionId }
     }
 }

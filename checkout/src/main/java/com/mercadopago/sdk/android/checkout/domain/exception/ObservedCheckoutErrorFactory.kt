@@ -24,6 +24,7 @@ internal object ObservedCheckoutErrorFactory {
         return ObservedCheckoutError(
             publicError,
             neutralInput(publicError, retainedCode, error.httpStatus),
+            statusDetail = error.statusDetail,
         )
     }
 
@@ -58,7 +59,7 @@ internal object ObservedCheckoutErrorFactory {
     ): NativeErrorInput {
         val normalizedCode = retainedCode?.uppercase(Locale.ROOT)
         val type = when {
-            isValidation -> NativeErrorType.VALIDATION
+            isValidation || normalizedCode == ERROR_CODE_WAITING_RETRY -> NativeErrorType.VALIDATION
             publicError is MercadoPagoCheckoutError.UnknownError || normalizedCode in UNKNOWN_CODES ->
                 NativeErrorType.UNKNOWN
             publicError is MercadoPagoCheckoutError.ServiceError -> NativeErrorType.SERVICE

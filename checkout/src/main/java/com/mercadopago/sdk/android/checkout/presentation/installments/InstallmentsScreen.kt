@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,9 +30,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentTextColor
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsViewModel
 import com.mercadopago.sdk.android.components.MPAmountData
@@ -43,6 +45,7 @@ import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
 import com.mercadopago.sdk.android.components.model.MPListItemType
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
 
@@ -54,12 +57,18 @@ internal fun InstallmentsScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
-    BackHandler(enabled = isLoading) { }
+    val handleBack: () -> Unit = {
+        if (!isLoading) {
+            onBackClick()
+        }
+    }
+
+    BackHandler(onBack = handleBack)
 
     InstallmentsScreenContent(
         viewState = viewState,
         isLoading = isLoading,
-        onBackClick = onBackClick,
+        onBackClick = handleBack,
         onItemClick = viewModel::onInstallmentSelected,
         onPayClick = viewModel::onPayClicked,
     )
@@ -98,11 +107,11 @@ private fun InstallmentsScreenContent(
             ) {
                 viewState.items.forEach { item ->
                     when (viewState.displayType) {
-                        InstallmentsDisplayType.Chevron -> ChevronInstallmentItem(
+                        SelectionDisplayType.Chevron -> ChevronInstallmentItem(
                             item = item,
                             onItemClick = onItemClick,
                         )
-                        InstallmentsDisplayType.RadioButton -> RadioButtonInstallmentItem(
+                        SelectionDisplayType.RadioButton -> RadioButtonInstallmentItem(
                             item = item,
                             onItemClick = onItemClick,
                         )
@@ -151,6 +160,7 @@ private fun ChevronInstallmentItem(
             },
         trailing = MPListItemTrailing(
             text = item.trailing,
+            textColor = item.secondaryLabelColor.toColor(),
             type = MPListItemTrailing.Type.Icon(
                 icon = Icons.AutoMirrored.Sharp.KeyboardArrowRight,
             ),
@@ -177,7 +187,10 @@ private fun RadioButtonInstallmentItem(
             },
         type = MPListItemType.RadioButton(selected = item.isSelected),
         trailing = if (item.trailing.isNotEmpty()) {
-            MPListItemTrailing(text = item.trailing)
+            MPListItemTrailing(
+                text = item.trailing,
+                textColor = item.secondaryLabelColor.toColor(),
+            )
         } else {
             null
         },
@@ -198,11 +211,13 @@ private fun InstallmentsFooter(
             integerPart = footerState.amountIntegerPart,
             decimalPart = footerState.amountDecimalPart,
         ),
-        subtitle = footerState.subtitle,
+        subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
+        showDivider = true,
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,
-                isLoading = footerState.isButtonLoading,
+                icon = Icons.Filled.Lock,
+                isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onPayClick,
             )
         },
@@ -217,7 +232,7 @@ private fun InstallmentsScreenChevronPreview() {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
-                displayType = InstallmentsDisplayType.Chevron,
+                displayType = SelectionDisplayType.Chevron,
                 items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
@@ -234,6 +249,7 @@ private fun InstallmentsScreenChevronPreview() {
                         isSelected = false,
                         number = 2,
                         accessibilityLabel = "2x R$ 190,00",
+                        secondaryLabelColor = InstallmentTextColor.Positive,
                     ),
                 ),
                 footerState = FooterState(
@@ -256,7 +272,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
         InstallmentsScreenContent(
             viewState = InstallmentsScreenState(
                 title = "Escolha o parcelamento",
-                displayType = InstallmentsDisplayType.RadioButton,
+                displayType = SelectionDisplayType.RadioButton,
                 items = listOf(
                     InstallmentState(
                         text = "1x R$ 300,00",
@@ -273,6 +289,7 @@ private fun InstallmentsScreenRadioButtonPreview() {
                         isSelected = false,
                         number = 2,
                         accessibilityLabel = "2x R$ 190,00",
+                        secondaryLabelColor = InstallmentTextColor.Positive,
                     ),
                 ),
                 footerState = FooterState(

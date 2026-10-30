@@ -58,6 +58,7 @@ internal data class MPButtonColorDefaults(
     val fillPrimary: Color,
     val textInverse: Color,
     val textAccent: Color,
+    val textDisabled: Color,
 )
 
 internal data class MPButtonSpacingDefaults(
@@ -104,6 +105,7 @@ private fun getMPButtonDefaults(): MPButtonDefaults {
             fillPrimary = MercadoPagoTheme.color.fill.primary,
             textInverse = MercadoPagoTheme.color.text.inverse,
             textAccent = MercadoPagoTheme.color.text.accent,
+            textDisabled = MercadoPagoTheme.color.text.disabled,
         ),
         spacing = MPButtonSpacingDefaults(
             horizontalLarge = MercadoPagoTheme.spacing.paddings.xsmall,
@@ -219,8 +221,10 @@ private fun getButtonBackgroundColor(
 @Composable
 private fun getTextColor(
     style: MPButtonStyle,
+    enabled: Boolean,
     defaults: MPButtonDefaults,
 ): Color {
+    if (!enabled) return defaults.colors.textDisabled
     return when (style) {
         MPButtonStyle.Loud -> defaults.colors.textInverse
         MPButtonStyle.Quiet -> defaults.colors.textAccent
@@ -377,7 +381,7 @@ fun MPButton(
 
     val isClickable = enabled && !isLoading
     val backgroundColor = getButtonBackgroundColor(style, enabled, isPressed, defaults)
-    val textColor = getTextColor(style, defaults)
+    val textColor = getTextColor(style, enabled, defaults)
     val iconColor = getIconColor(style, defaults)
     val contentPaddingHorizontal = getHorizontalPadding(size, defaults)
     val buttonHeight = getButtonHeight(size, defaults)
