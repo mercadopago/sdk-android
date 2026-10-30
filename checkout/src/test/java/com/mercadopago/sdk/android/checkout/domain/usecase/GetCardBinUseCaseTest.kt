@@ -27,11 +27,26 @@ internal class GetCardBinUseCaseTest {
     private val cardBinData = mockk<CardBinData>()
     private val error = ResponseError(code = "ERROR", message = "Error")
 
+    private suspend fun invokeUseCase(
+        orderId: String = "",
+        clientToken: String? = null,
+        screens: String? = null,
+    ) = useCase(
+        bin = bin,
+        orderId = orderId,
+        clientToken = clientToken,
+        amount = amount,
+        checkoutType = checkoutType,
+        processingMode = processingMode,
+        filter = filter,
+        screens = screens,
+    )
+
     @Test
     fun `given repository returns success then returns Result Success`() = runTest {
         coEvery { repository.getCardBin(any()) } returns Result.Success(cardBinData)
 
-        val result = useCase(bin, amount, checkoutType, processingMode, filter)
+        val result = invokeUseCase()
 
         assertIs<Result.Success<CardBinData>>(result)
         assertEquals(cardBinData, result.data)
@@ -41,7 +56,7 @@ internal class GetCardBinUseCaseTest {
     fun `given repository returns error then returns Result Error`() = runTest {
         coEvery { repository.getCardBin(any()) } returns Result.Error(error)
 
-        val result = useCase(bin, amount, checkoutType, processingMode, filter)
+        val result = invokeUseCase()
 
         assertIs<Result.Error<MercadoPagoCheckoutError>>(result)
     }
@@ -51,9 +66,49 @@ internal class GetCardBinUseCaseTest {
         val paramsSlot = slot<GetCardBinParams>()
         coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
 
-        useCase(bin, null, checkoutType, processingMode, filter)
+        useCase(bin = bin, amount = null, checkoutType = checkoutType, processingMode = processingMode, filter = filter)
 
         assertEquals("0", paramsSlot.captured.amount)
+    }
+
+    @Test
+    fun `given no order id then passes an empty order id to the repository`() = runTest {
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        invokeUseCase()
+
+        assertEquals("", paramsSlot.captured.orderId)
+    }
+
+    @Test
+    fun `given order id then passes it to the repository`() = runTest {
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        invokeUseCase(orderId = "ORDER_123")
+
+        assertEquals("ORDER_123", paramsSlot.captured.orderId)
+    }
+
+    @Test
+    fun `given no client token then passes null to the repository`() = runTest {
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        invokeUseCase()
+
+        assertEquals(null, paramsSlot.captured.clientToken)
+    }
+
+    @Test
+    fun `given client token then passes it to the repository`() = runTest {
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        invokeUseCase(clientToken = "token-abc")
+
+        assertEquals("token-abc", paramsSlot.captured.clientToken)
     }
 
     @Test
@@ -61,7 +116,7 @@ internal class GetCardBinUseCaseTest {
         val paramsSlot = slot<GetCardBinParams>()
         coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
 
-        useCase(bin, amount, checkoutType, processingMode, filter)
+        invokeUseCase()
 
         with(paramsSlot.captured) {
             assertEquals(bin, this.bin)
@@ -76,8 +131,34 @@ internal class GetCardBinUseCaseTest {
     fun `given invoke then delegates to repository exactly once`() = runTest {
         coEvery { repository.getCardBin(any()) } returns Result.Success(cardBinData)
 
-        useCase(bin, amount, checkoutType, processingMode, filter)
+        invokeUseCase()
 
         coVerify(exactly = 1) { repository.getCardBin(any()) }
+    }
+
+    @Test
+    fun `given screens then passes it to the repository`() = runTest {
+        // Given
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        // When
+        invokeUseCase(screens = "REVIEW_AND_CONFIRM")
+
+        // Then
+        assertEquals("REVIEW_AND_CONFIRM", paramsSlot.captured.screens)
+    }
+
+    @Test
+    fun `given no screens then passes null to the repository`() = runTest {
+        // Given
+        val paramsSlot = slot<GetCardBinParams>()
+        coEvery { repository.getCardBin(capture(paramsSlot)) } returns Result.Success(cardBinData)
+
+        // When
+        invokeUseCase()
+
+        // Then
+        assertEquals(null, paramsSlot.captured.screens)
     }
 }
