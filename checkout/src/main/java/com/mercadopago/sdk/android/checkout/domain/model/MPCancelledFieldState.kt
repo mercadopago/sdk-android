@@ -1,8 +1,5 @@
 package com.mercadopago.sdk.android.checkout.domain.model
 
-import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
-import com.mercadopago.sdk.android.checkout.core.model.MPCardType
-
 /**
  * Represents the state of a form field at a specific point in time.
  *
@@ -61,16 +58,4 @@ sealed class State {
      * The field contained an invalid value.
      */
     data object Invalid : State()
-
-    /**
-     * The card brand is not accepted by the seller.
-     * @property brand The card brand that is not accepted
-     */
-    data class CardBrandNotAccepted(val brand: MPCardBrand) : State()
-
-    /**
-     * The card type is not accepted by the seller.
-     * @property cardType The card type that is not accepted (e.g., credit card, debit card)
-     */
-    data class CardTypeNotAccepted(val cardType: MPCardType?) : State()
 }

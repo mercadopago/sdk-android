@@ -10,6 +10,7 @@ internal const val ERROR_CODE_CONNECTION = "CONNECTION"
 internal const val ERROR_CODE_NO_INTERNET = "NO_INTERNET"
 internal const val ERROR_CODE_UNREACHABLE = "UNREACHABLE"
 internal const val ERROR_CODE_TIMEOUT = "TIMEOUT"
+internal const val ERROR_CODE_WAITING_RETRY = "WAITING_RETRY"
 
 internal object ExceptionFactory {
     fun mapRequestError(
@@ -30,6 +31,14 @@ internal object ExceptionFactory {
             isNetworkError(errorCode) ->
                 MercadoPagoCheckoutError.NetworkError(
                     code = ErrorCode.NETWORK_CONNECTION_FAILED,
+                    messageError = message,
+                    localized = localized.name,
+                    throwable = null,
+                )
+
+            isWaitingRetryError(errorCode) ->
+                MercadoPagoCheckoutError.ServiceError(
+                    code = ErrorCode.PAYMENT_WAITING_RETRY,
                     messageError = message,
                     localized = localized.name,
                     throwable = null,
@@ -88,4 +97,8 @@ internal object ExceptionFactory {
     private fun isTimeoutError(
         code: String?,
     ): Boolean = code == ERROR_CODE_TIMEOUT
+
+    private fun isWaitingRetryError(
+        code: String?,
+    ): Boolean = code == ERROR_CODE_WAITING_RETRY
 }

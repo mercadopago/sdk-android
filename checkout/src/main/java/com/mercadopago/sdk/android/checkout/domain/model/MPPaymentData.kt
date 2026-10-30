@@ -37,15 +37,34 @@ sealed class MPPaymentData {
         val paymentMethodId: String,
         val paymentTypeId: String,
     ) : MPPaymentData()
+
+    /**
+     * Payment data for a [com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType.Payment] checkout.
+     *
+     * @property orderId Identifier of the processed order.
+     * @property orderStatus Status of the processed order.
+     * @property paymentMethodId Identifier of the selected payment method.
+     * @property paymentTypeId Identifier of the selected payment type.
+     * @property orderStatusDetail Optional processor/business detail for the order status.
+     */
+    data class Payment
+        @JvmOverloads
+        constructor(
+            val orderId: String,
+            val orderStatus: String,
+            val paymentMethodId: String,
+            val paymentTypeId: String,
+            val orderStatusDetail: String? = null,
+        ) : MPPaymentData()
 }
 
 /**
  * Represents the payer information for a payment.
  *
- * @property documentType Optional type of identification document (e.g. DNI, CPF).
- * @property documentNumber Optional identification document number.
+ * @property documentType Type of identification document (e.g. DNI, CPF).
+ * @property documentNumber Identification document number.
  */
 data class Payer(
-    val documentType: String? = null,
-    val documentNumber: String? = null,
+    val documentType: String,
+    val documentNumber: String,
 )
