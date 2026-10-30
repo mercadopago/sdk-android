@@ -1,9 +1,9 @@
 package com.mercadopago.sdk.android.example.presentation.checkout
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -17,19 +17,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,46 +43,50 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
+import com.mercadopago.sdk.android.checkout.core.extensions.setPaymentMethodConfiguration
+import com.mercadopago.sdk.android.checkout.core.extensions.withReviewAndConfirm
+import com.mercadopago.sdk.android.checkout.core.extensions.withStatusScreen
+import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
+import com.mercadopago.sdk.android.example.BuildConfig
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 
 private sealed interface CheckoutState {
     data object Idle : CheckoutState
     data class CardSaveSuccess(val token: String) : CheckoutState
     data class CardTransactionSuccess(val orderStatus: String) : CheckoutState
+    data class PaymentSuccess(val orderStatus: String) : CheckoutState
 }
 
 @Composable
 internal fun CheckoutExampleScreen(
+    flowType: String = "card_save",
     modifier: Modifier = Modifier,
 ) {
+    val showOrderFields = flowType != "card_save"
     val context = LocalContext.current
     var state by remember { mutableStateOf<CheckoutState>(CheckoutState.Idle) }
-    var orderId by remember { mutableStateOf("") }
-    var clientToken by remember { mutableStateOf("") }
-    var priceInput by remember { mutableStateOf("15.00") }
-    var isEditingPrice by remember { mutableStateOf(false) }
+    var orderId by remember { mutableStateOf(BuildConfig.TEST_ORDER_ID) }
+    var clientToken by remember { mutableStateOf(BuildConfig.TEST_CLIENT_TOKEN) }
+    var reviewAndConfirmEnabled by remember { mutableStateOf(true) }
+    var statusScreenEnabled by remember { mutableStateOf(true) }
 
     ExampleScreenWrapper(modifier = modifier.fillMaxSize()) {
         Column(
@@ -92,253 +95,77 @@ internal fun CheckoutExampleScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(top = 30.dp),
         ) {
-            // ── Store header ──
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            // ── Skeleton ──
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .background(Color(0xFF009EE3), CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp),
-                    )
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "Demo Store",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = "Simulação de checkout",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    )
-                }
-            }
-
-            HorizontalDivider()
-
-            // ── Product card ──
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                tonalElevation = 2.dp,
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(72.dp)
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(Color(0xFF009EE3), Color(0xFF006FA8)),
-                                    ),
-                                    RoundedCornerShape(12.dp),
-                                ),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(36.dp),
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column {
-                            Text(
-                                text = "Produto de Demonstração",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = "Código: DEMO-001",
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Surface(
-                                shape = RoundedCornerShape(4.dp),
-                                color = Color(0xFF009EE3).copy(alpha = 0.1f),
-                            ) {
-                                Text(
-                                    text = "Disponível",
-                                    fontSize = 10.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Color(0xFF009EE3),
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    HorizontalDivider()
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Price — display or edit
-                    if (isEditingPrice) {
-                        val focusRequester = remember { FocusRequester() }
-                        LaunchedEffect(Unit) { focusRequester.requestFocus() }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            OutlinedTextField(
-                                value = priceInput,
-                                onValueChange = { priceInput = it.filter { c -> c.isDigit() || c == '.' } },
-                                label = { Text("Valor (R$)") },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .focusRequester(focusRequester)
-                                    .testTag("checkout.priceInput"),
-                                singleLine = true,
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Decimal,
-                                    imeAction = ImeAction.Done,
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onDone = { isEditingPrice = false },
-                                ),
-                                shape = RoundedCornerShape(10.dp),
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            IconButton(
-                                onClick = { isEditingPrice = false },
-                                modifier = Modifier.testTag("checkout.priceConfirm"),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CheckCircle,
-                                    contentDescription = "Confirmar",
-                                    tint = Color(0xFF00A650),
-                                    modifier = Modifier.size(32.dp),
-                                )
-                            }
-                        }
-                    } else {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("checkout.priceDisplay")
-                                .clickable { isEditingPrice = true },
-                        ) {
-                            Text(
-                                text = "R$ $priceInput",
-                                fontSize = 36.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(11.dp),
-                                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "toque para editar",
-                                    fontSize = 11.sp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
-                                )
-                            }
-                        }
-                    }
-                }
+                SkeletonBlock(modifier = Modifier.fillMaxWidth().height(120.dp))
+                SkeletonBlock(modifier = Modifier.fillMaxWidth(0.7f).height(16.dp))
+                SkeletonBlock(modifier = Modifier.fillMaxWidth(0.4f).height(16.dp))
             }
 
             // ── Order config section ──
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text(
-                    text = "CONFIGURAÇÃO DO PEDIDO",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    letterSpacing = 1.sp,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    OutlinedTextField(
-                        value = orderId,
-                        onValueChange = { orderId = it },
-                        label = { Text("Order ID", fontSize = 10.sp) },
-                        modifier = Modifier.weight(1f).testTag("checkout.orderId"),
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.labelSmall,
-                        shape = RoundedCornerShape(10.dp),
-                    )
-                    OutlinedTextField(
-                        value = clientToken,
-                        onValueChange = { clientToken = it },
-                        label = { Text("Client Token", fontSize = 10.sp) },
-                        modifier = Modifier.weight(1f).testTag("checkout.clientToken"),
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.labelSmall,
-                        shape = RoundedCornerShape(10.dp),
-                    )
+            if (showOrderFields) {
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        OutlinedTextField(
+                            value = orderId,
+                            onValueChange = { orderId = it },
+                            label = { Text("Order ID", fontSize = 10.sp) },
+                            modifier = Modifier.weight(1f).testTag("checkout.orderId"),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.labelSmall,
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                        OutlinedTextField(
+                            value = clientToken,
+                            onValueChange = { clientToken = it },
+                            label = { Text("Client Token", fontSize = 10.sp) },
+                            modifier = Modifier.weight(1f).testTag("checkout.clientToken"),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.labelSmall,
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        LabeledCheckbox(
+                            label = "Revisa e confirma",
+                            checked = reviewAndConfirmEnabled,
+                            onCheckedChange = { reviewAndConfirmEnabled = it },
+                            modifier = Modifier.weight(1f).testTag("checkout.reviewAndConfirmToggle"),
+                        )
+                        LabeledCheckbox(
+                            label = "Status screen",
+                            checked = statusScreenEnabled,
+                            onCheckedChange = { statusScreenEnabled = it },
+                            modifier = Modifier.weight(1f).testTag("checkout.statusScreenToggle"),
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── Order summary ──
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(12.dp),
-                tonalElevation = 1.dp,
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(text = "Total", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    Text(
-                        text = "R$ $priceInput",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             // ── Action buttons ──
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Button(
-                    onClick = {
+                val order = MPOrder(orderId = orderId.trim(), clientToken = clientToken.trim())
+                val onPayClick: (() -> Unit)? = when (flowType) {
+                    "card_transaction" -> ({
                         MercadoPagoCheckout.Builder(
-                            context = context,
-                            checkoutType = MPCheckoutType.CardTransaction(
-                                order = MPOrder(
-                                    orderId = orderId.trim(),
-                                    clientToken = clientToken.trim(),
-                                ),
-                            ),
-                        ).setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+                            context,
+                            MPCheckoutType.CardTransaction(order, sellerInfo = MPSellerInfo(name = "Adidas")),
+                        )
+                            .apply {
+                                if (reviewAndConfirmEnabled) withReviewAndConfirm()
+                                if (statusScreenEnabled) withStatusScreen {
+                                    Log.i("onExit", "onExit")
+                                }
+                            }
                             .build()
                             .show { result ->
                                 when (result) {
@@ -350,42 +177,75 @@ internal fun CheckoutExampleScreen(
                                         Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                    },
-                    enabled = orderId.isNotBlank() && clientToken.isNotBlank(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .testTag("checkout.payNow"),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text("Pagar agora", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                OutlinedButton(
-                    onClick = {
+                    })
+                    "payment" -> ({
                         MercadoPagoCheckout.Builder(
-                            context = context,
-                            checkoutType = MPCheckoutType.CardSave,
-                        ).build().show { result ->
-                            when (result) {
-                                is MercadoPagoCheckoutResult.Success ->
-                                    state = CheckoutState.CardSaveSuccess(result.paymentData.token)
-                                is MercadoPagoCheckoutResult.Error ->
-                                    Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
-                                is MercadoPagoCheckoutResult.UserCancelled ->
-                                    Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                            context,
+                            MPCheckoutType.Payment(order, sellerInfo = MPSellerInfo(name = "Adidas")),
+                        )
+                            .apply {
+                                if (reviewAndConfirmEnabled) withReviewAndConfirm()
+                                if (statusScreenEnabled) withStatusScreen {
+                                    Log.i("onExit", "onExit")
+                                }
                             }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp)
-                        .testTag("checkout.saveCard"),
-                    shape = RoundedCornerShape(14.dp),
-                ) {
-                    Text("Salvar cartão", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                            .build()
+                            .show { result ->
+                                when (result) {
+                                    is MercadoPagoCheckoutResult.Success ->
+                                        state = CheckoutState.PaymentSuccess(result.paymentData.orderStatus)
+                                    is MercadoPagoCheckoutResult.Error ->
+                                        Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
+                                    is MercadoPagoCheckoutResult.UserCancelled ->
+                                        Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                    })
+                    else -> null
+                }
+                if (onPayClick != null) {
+                    Button(
+                        onClick = onPayClick,
+                        enabled = orderId.isNotBlank() && clientToken.isNotBlank(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .testTag("checkout.payNow"),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Text("Pagar agora", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                } else {
+                    OutlinedButton(
+                        onClick = {
+                            MercadoPagoCheckout.Builder(
+                                context = context,
+                                checkoutType = MPCheckoutType.CardSave,
+                            ).setPaymentMethodConfiguration(
+                                paymentMethodConfigs = listOf(
+                                    MPPaymentMethodConfig.Card(excludedPaymentMethods = listOf(
+                                    MPCardBrand.Visa))
+                                )
+                            )
+                                .build().show { result ->
+                                when (result) {
+                                    is MercadoPagoCheckoutResult.Success ->
+                                        state = CheckoutState.CardSaveSuccess(result.paymentData.token)
+                                    is MercadoPagoCheckoutResult.Error ->
+                                        Toast.makeText(context, "Erro ${result.error.errorCode}", Toast.LENGTH_LONG).show()
+                                    is MercadoPagoCheckoutResult.UserCancelled ->
+                                        Toast.makeText(context, "Cancelado", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                            .testTag("checkout.saveCard"),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Text("Salvar cartão", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
 
@@ -394,6 +254,11 @@ internal fun CheckoutExampleScreen(
 
         when (val current = state) {
             is CheckoutState.CardTransactionSuccess -> PaymentSuccessScreen(
+                orderStatus = current.orderStatus,
+                onNewPayment = { state = CheckoutState.Idle },
+                modifier = Modifier.fillMaxSize(),
+            )
+            is CheckoutState.PaymentSuccess -> PaymentSuccessScreen(
                 orderStatus = current.orderStatus,
                 onNewPayment = { state = CheckoutState.Idle },
                 modifier = Modifier.fillMaxSize(),
@@ -646,6 +511,34 @@ private fun CardSaveSuccessScreen(
                 Text("Novo cadastro", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
         }
+    }
+}
+
+@Composable
+private fun SkeletonBlock(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.background(
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+            RoundedCornerShape(8.dp),
+        ),
+    )
+}
+
+@Composable
+private fun LabeledCheckbox(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .toggleable(value = checked, role = Role.Checkbox, onValueChange = onCheckedChange),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = checked, onCheckedChange = null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = label, fontSize = 14.sp)
     }
 }
 

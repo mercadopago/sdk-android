@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import com.mercadopago.sdk.android.checkout.core.MercadoPagoCheckout
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
-import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
 import com.mercadopago.sdk.android.example.presentation.theme.MercadoPagoSampleTheme
 import kotlinx.coroutines.launch
@@ -73,7 +72,7 @@ internal fun CardTransactionExampleScreen(
                     clientToken = "f30f8688-a2bf-4558-ba79-ddf108bece11",
                 ),
             ),
-        ).setPaymentMethodConfiguration(listOf(MPPaymentMethodConfig.Card()))
+        )
             .build()
     }
 
