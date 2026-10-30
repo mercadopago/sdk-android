@@ -19,12 +19,7 @@ internal class PaymentBrickInitializationRepositoryImplTest {
     private val dataSource = mockk<PaymentBrickInitializationRemoteDataSource>()
     private val repository = PaymentBrickInitializationRepositoryImpl(dataSource)
 
-    private val params = FetchPaymentBrickInitializationParams(
-        orderId = "ORDER_123",
-        totalAmount = "500.00",
-        customerId = null,
-        cardIds = null,
-    )
+    private val params = FetchPaymentBrickInitializationParams(orderId = "ORDER_123", clientToken = "token")
 
     private fun minimalResponse() = PaymentBrickInitializationResponse(
         headerTitle = "Elegí cómo pagar",

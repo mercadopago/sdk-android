@@ -31,14 +31,18 @@ internal class CardFormRepositoryImplTest {
         orderId = "order-123",
         clientToken = "token-abc",
         checkoutType = "card_payment",
+        screens = null,
     )
 
     private val binParams = GetCardBinParams(
         bin = "412345",
+        orderId = "",
+        clientToken = "token-abc",
         amount = "150.00",
         checkoutType = "card_payment",
         processingMode = "aggregator",
         filter = CardBinFilter(excludedPaymentTypes = emptyList(), excludedPaymentMethods = emptyList()),
+        screens = null,
     )
 
     @Test
@@ -49,6 +53,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         } returns Result.Success(response)
 
@@ -61,7 +66,7 @@ internal class CardFormRepositoryImplTest {
     fun `given dataSource returns error then fetchInitialization returns Result Error`() = runTest {
         val error = ResponseError(code = "404", message = "Not Found", httpStatus = 404)
         coEvery {
-            dataSource.fetchInitialization(any(), any(), any())
+            dataSource.fetchInitialization(any(), any(), any(), any())
         } returns Result.Error(error)
 
         val result = repository.fetchInitialization(initParams)
@@ -72,7 +77,7 @@ internal class CardFormRepositoryImplTest {
     @Test
     fun `given dataSource throws then fetchInitialization returns Result Error`() = runTest {
         coEvery {
-            dataSource.fetchInitialization(any(), any(), any())
+            dataSource.fetchInitialization(any(), any(), any(), any())
         } throws RuntimeException("Network failure")
 
         val result = repository.fetchInitialization(initParams)
@@ -88,6 +93,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         } returns Result.Success(response)
 
@@ -98,6 +104,7 @@ internal class CardFormRepositoryImplTest {
                 orderId = initParams.orderId,
                 clientToken = initParams.clientToken,
                 checkoutType = initParams.checkoutType,
+                screens = initParams.screens,
             )
         }
     }
@@ -173,8 +180,25 @@ internal class CardFormRepositoryImplTest {
         repository.getCardBin(binParams)
 
         assertEquals(binParams.bin, requestSlot.captured.bin)
+        assertEquals(binParams.clientToken, requestSlot.captured.clientToken)
         assertEquals(binParams.amount, requestSlot.captured.amount)
         assertEquals(binParams.checkoutType, requestSlot.captured.checkoutType)
         assertEquals(binParams.processingMode, requestSlot.captured.processingMode)
+    }
+
+    @Test
+    fun `given params with screens then getCardBin delegates screens to dataSource`() = runTest {
+        // Given
+        val requestSlot = slot<CardBinRequest>()
+        coEvery { dataSource.getCardBin(capture(requestSlot)) } returns Result.Success(
+            mockk(relaxed = true),
+        )
+        val params = binParams.copy(screens = "REVIEW_AND_CONFIRM")
+
+        // When
+        repository.getCardBin(params)
+
+        // Then
+        assertEquals("REVIEW_AND_CONFIRM", requestSlot.captured.screens)
     }
 }
