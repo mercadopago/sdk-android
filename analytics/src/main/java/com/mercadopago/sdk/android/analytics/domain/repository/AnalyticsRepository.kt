@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 internal interface AnalyticsRepository {
 
     fun trackMetric(metric: Metric): Flow<Unit>
+
+    fun getCurrentSessionId(): Flow<String>
 }

@@ -9,5 +9,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/MercadoPago.Checkout"
             android:windowSoftInputMode="adjustResize"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.mercadopago.checkout.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/mp_checkout_file_paths"/>
+        </provider>
     </application>
 </manifest>

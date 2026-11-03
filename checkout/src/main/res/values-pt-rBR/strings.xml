@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="card_form_generic_error">Ocorreu um erro. Por favor, tente novamente.</string>
+    <string name="status_screen_fallback_back">Voltar</string>
+    <string name="status_screen_fallback_open_url">Ver fatura</string>
+    <string name="status_screen_fallback_barcode_label">Código de pagamento</string>
+    <string name="status_screen_fallback_barcode_copy">Copiar código</string>
+    <string name="status_screen_fallback_barcode_copied">Código copiado</string>
+    <string name="status_screen_fallback_rejected_title">Não conseguimos processar seu pagamento</string>
+    <string name="status_screen_fallback_error_title">Não foi possível concluir o seu pagamento</string>
+    <string name="status_screen_fallback_pending_title">Estamos processando o seu pagamento</string>
+    <string name="status_screen_fallback_approved_title">Você pagou %1$s</string>
+    <string name="status_screen_fallback_amount">R$ %1$s</string>
+    <string name="status_screen_fallback_installments_no_interest">%1$s (%2$dx %3$s sem acréscimo)</string>
+    <string name="status_screen_fallback_installments_with_interest">%1$s (%2$dx %3$s)</string>
+    <string name="status_screen_fallback_ticket_title">Pague %1$s com %2$s</string>
 </resources>

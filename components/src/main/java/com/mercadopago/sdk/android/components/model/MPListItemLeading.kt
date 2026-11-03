@@ -2,6 +2,7 @@ package com.mercadopago.sdk.android.components.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.Dp
 
 /**
  * Represents the leading content type for components that support an optional leading area.
@@ -14,12 +15,24 @@ sealed class MPListItemLeading {
      * @param icon Icon vector drawable
      * @param tint Tint color applied to the icon. Use [Color.Unspecified] (default) to preserve
      * the original drawable colors, or pass an explicit color for monochrome icons.
+     * @param size Icon size. When `null` (default) the standard leading size is used.
      */
-    data class Icon(val icon: ImageVector, val tint: Color = Color.Unspecified) : MPListItemLeading()
+    data class Icon(
+        val icon: ImageVector,
+        val tint: Color = Color.Unspecified,
+        val size: Dp? = null,
+    ) : MPListItemLeading()
 
     /**
      * Leading thumbnail loaded from a remote URL.
      * @param url Image URL
      */
     data class Thumbnail(val url: String) : MPListItemLeading()
+
+    /**
+     * Leading thumbnail loaded from a remote URL, displayed inside a circular container with padding.
+     * Use this for payment method icons (e.g. offline methods) that require a badge-style treatment.
+     * @param url Image URL
+     */
+    data class ThumbnailConstrained(val url: String) : MPListItemLeading()
 }

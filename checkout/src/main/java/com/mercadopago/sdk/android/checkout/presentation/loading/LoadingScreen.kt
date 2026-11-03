@@ -22,7 +22,7 @@ internal fun LoadingScreen(
             .background(MercadoPagoTheme.color.background.primary),
         contentAlignment = Alignment.Center,
     ) {
-        MPProgressIndicator(size = MPProgressIndicatorSize.Large)
+        MPProgressIndicator(size = MPProgressIndicatorSize.XLarge)
     }
 }
 

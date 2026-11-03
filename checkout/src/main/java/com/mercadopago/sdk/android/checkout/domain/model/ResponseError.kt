@@ -6,4 +6,5 @@ internal data class ResponseError(
     val message: String?,
     val userErrorMessage: String? = null,
     val httpStatus: Int? = null,
+    val statusDetail: String? = null,
 )

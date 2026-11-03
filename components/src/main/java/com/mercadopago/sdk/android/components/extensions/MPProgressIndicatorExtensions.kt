@@ -10,7 +10,7 @@ internal val MPProgressIndicatorSize.strokeWidth: Dp
         MPProgressIndicatorSize.Small -> 2.dp
         MPProgressIndicatorSize.Medium -> 4.dp
         MPProgressIndicatorSize.Large -> 6.dp
-        MPProgressIndicatorSize.XLarge -> 8.dp
+        MPProgressIndicatorSize.XLarge -> 3.dp
     }
 
 internal val MPProgressIndicatorSize.circularSize: Dp
@@ -19,5 +19,5 @@ internal val MPProgressIndicatorSize.circularSize: Dp
         MPProgressIndicatorSize.Small -> 24.dp
         MPProgressIndicatorSize.Medium -> 40.dp
         MPProgressIndicatorSize.Large -> 56.dp
-        MPProgressIndicatorSize.XLarge -> 72.dp
+        MPProgressIndicatorSize.XLarge -> 64.dp
     }

@@ -1,8 +1,9 @@
 package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 
 import com.mercadopago.sdk.android.checkout.domain.extensions.isComplete
+import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonEnabled
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.MessageError
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardNumberVerifier
@@ -15,9 +16,9 @@ internal class CardFormFieldErrorHandler(
     private val analyticsTracker: CardFormAnalyticsTracker,
 ) {
     fun applyLuhnValidation(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         isValid: Boolean,
-    ): CardPaymentScreenState =
+    ): CardFormScreenState =
         updateCardNumberError<CardNumberErrorType.LuhnValidation>(
             state = state,
             shouldShowError = state.cardNumberState.isComplete(),
@@ -26,20 +27,20 @@ internal class CardFormFieldErrorHandler(
         }
 
     fun applyCardNumberFieldError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldShowError: Boolean = true,
-    ): CardPaymentScreenState =
+    ): CardFormScreenState =
         updateCardNumberError<CardNumberErrorType.FieldValidation>(state, shouldShowError) {
             val error = CardNumberVerifier().verify(state.cardNumberState)
             if (error.isNotEmpty()) CardNumberErrorType.FieldValidation(error) else null
         }
 
     fun applyCardNumberErrorState(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         errors: List<CardNumberErrorType>,
         isValid: Boolean,
         shouldShowError: Boolean = true,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val cardNumberState = state.cardNumberState
         val errorMessage: String = when {
             errors.any { it is CardNumberErrorType.LuhnValidation && cardNumberState.isComplete() } ->
@@ -67,8 +68,8 @@ internal class CardFormFieldErrorHandler(
     }
 
     fun clearCardNumberErrors(
-        state: CardPaymentScreenState,
-    ): CardPaymentScreenState =
+        state: CardFormScreenState,
+    ): CardFormScreenState =
         applyCardNumberErrorState(
             state = state,
             errors = emptyList(),
@@ -76,18 +77,18 @@ internal class CardFormFieldErrorHandler(
         )
 
     fun applyPaymentMethodNotFoundError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         message: String,
-    ): CardPaymentScreenState =
+    ): CardFormScreenState =
         updateCardNumberError<CardNumberErrorType.PaymentMethodNotFound>(state, true) {
             CardNumberErrorType.PaymentMethodNotFound(message)
         }
 
     fun handleResultError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         message: String,
         genericErrorMessage: String,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val isCardNumberFocused = state.cardNumberState.isFocused
         return state.copy(
             messageError = MessageError(
@@ -99,9 +100,9 @@ internal class CardFormFieldErrorHandler(
     }
 
     fun applyExpirationDateError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldUpdateError: Boolean = true,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val error = ExpirationDateVerifier().verify(state.expirationDateState)
         return computeFooterVisibility(
             state.copy(
@@ -114,9 +115,9 @@ internal class CardFormFieldErrorHandler(
     }
 
     fun applySecurityCodeError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldUpdateError: Boolean = true,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         if (state.secureCodeState.optional) return computeFooterVisibility(state)
         val error = SecurityCodeVerifier().verify(state.secureCodeState)
         if (shouldUpdateError) analyticsTracker.trackInputValidation("cvv", error.isEmpty())
@@ -131,9 +132,9 @@ internal class CardFormFieldErrorHandler(
     }
 
     fun applyCardHolderError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldUpdateError: Boolean = true,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val error = CardHolderVerifier().verify(state.cardHolderState)
         if (shouldUpdateError) analyticsTracker.trackInputValidation("card_holder", error.isEmpty())
         return computeFooterVisibility(
@@ -147,9 +148,9 @@ internal class CardFormFieldErrorHandler(
     }
 
     fun applyIdentificationTypeError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldUpdateError: Boolean = true,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val error = IdentificationTypeVerifier().verify(state.identificationTypeState)
         if (shouldUpdateError) analyticsTracker.trackInputValidation("document", error.isEmpty())
         return computeFooterVisibility(
@@ -163,8 +164,8 @@ internal class CardFormFieldErrorHandler(
     }
 
     private fun computeFooterVisibility(
-        state: CardPaymentScreenState,
-    ): CardPaymentScreenState {
+        state: CardFormScreenState,
+    ): CardFormScreenState {
         val isIdentificationValid = !state.identificationTypeState.show ||
             (state.identificationTypeState.error.isEmpty() && state.identificationTypeState.isValid)
         val isFormValid = state.cardNumberState.error.isEmpty() &&
@@ -178,15 +179,15 @@ internal class CardFormFieldErrorHandler(
             state.cardHolderState.isValid &&
             isIdentificationValid
         return state.copy(
-            footerState = state.footerState.copy(isButtonEnabled = isFormValid),
+            footerState = state.footerState.withButtonEnabled(isFormValid),
         )
     }
 
     private inline fun <reified T : CardNumberErrorType> updateCardNumberError(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
         shouldShowError: Boolean,
         errorFactory: () -> T?,
-    ): CardPaymentScreenState {
+    ): CardFormScreenState {
         val errors = state.cardNumberState.errorTypes.toMutableList()
         errors.removeAll { it is T }
         errorFactory()?.let { errors.add(it) }

@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 internal class AnalyticsRepositoryImplTest {
@@ -82,6 +83,24 @@ internal class AnalyticsRepositoryImplTest {
         // Then
         result.test {
             assertTrue(awaitError() is Exception)
+        }
+    }
+
+    @Test
+    fun `when getCurrentSessionId is called Then emit the local data source session id`() = runTest {
+        // Given
+        val sessionId = SessionId(sessionId = "123", lastUpdate = 123)
+        every {
+            localDataSource.getSessionId()
+        } returns flowOf(sessionId)
+
+        // When
+        val result = repository.getCurrentSessionId()
+
+        // Then
+        result.test {
+            assertEquals(sessionId.sessionId, awaitItem())
+            awaitComplete()
         }
     }
 }

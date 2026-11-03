@@ -15,4 +15,6 @@
     <string name="payment_button_text">Pay</string>
     <string name="card_transaction_feature_title">Card Transaction</string>
     <string name="card_transaction_feature_description">Demonstrates MPCheckoutType.CardTransaction, which processes a card payment linked to an existing order.</string>
+    <string name="payment_feature_title">Payment</string>
+    <string name="payment_feature_description">Demonstrates MPCheckoutType.Payment, the full payment flow with method selection, installments and order processing.</string>
 </resources>

@@ -20,17 +20,12 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
     private val service = mockk<PaymentBrickInitializationService>()
     private val dataSource = PaymentBrickInitializationRemoteDataSourceImpl(service)
 
-    private val params = FetchPaymentBrickInitializationParams(
-        orderId = "ORDER_123",
-        totalAmount = "500.00",
-        customerId = "CUSTOMER_456",
-        cardIds = "CARD_1,CARD_2",
-    )
+    private val params = FetchPaymentBrickInitializationParams(orderId = "ORDER_123", clientToken = "token")
 
     @Test
     fun `given service returns successful response then fetch returns Result Success`() = runTest {
         val body = mockk<PaymentBrickInitializationResponse>(relaxed = true)
-        coEvery { service.fetch(any(), any(), any(), any(), any()) } returns Response.success(body)
+        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.success(body)
 
         val result = dataSource.fetch(params)
 
@@ -41,7 +36,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
     @Test
     fun `given service returns error response then fetch returns Result Error with http status`() = runTest {
         val errorBody = """{"message":"Not Found","code":"404"}""".toResponseBody()
-        coEvery { service.fetch(any(), any(), any(), any(), any()) } returns Response.error(404, errorBody)
+        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.error(404, errorBody)
 
         val result = dataSource.fetch(params)
 
@@ -53,7 +48,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
     @Test
     fun `given service throws SocketTimeoutException then fetch returns Result Error instead of crashing`() =
         runTest {
-            coEvery { service.fetch(any(), any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
+            coEvery { service.fetch(any(), any(), any(), any()) } throws SocketTimeoutException("timeout")
 
             val result = dataSource.fetch(params)
 
@@ -62,7 +57,7 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
         }
 
     @Test
-    fun `given fetch is called then passes orderId and totalAmount to service`() = runTest {
+    fun `given fetch is called then passes orderId and clientToken with Bearer prefix to service`() = runTest {
         coEvery { service.fetch(any(), any(), any(), any()) } returns Response.success(mockk(relaxed = true))
 
         dataSource.fetch(params)
@@ -70,29 +65,8 @@ internal class PaymentBrickInitializationRemoteDataSourceImplTest {
         coVerify {
             service.fetch(
                 orderId = params.orderId,
-                totalAmount = params.totalAmount,
-                customerId = params.customerId,
-                cardIds = params.cardIds,
-            )
-        }
-    }
-
-    @Test
-    fun `given params without customer id then passes null customerId and cardIds to service`() = runTest {
-        val paramsWithoutCustomer = FetchPaymentBrickInitializationParams(
-            orderId = "ORDER_789",
-            totalAmount = "100.00",
-        )
-        coEvery { service.fetch(any(), any(), any(), any()) } returns Response.success(mockk(relaxed = true))
-
-        dataSource.fetch(paramsWithoutCustomer)
-
-        coVerify {
-            service.fetch(
-                orderId = paramsWithoutCustomer.orderId,
-                totalAmount = paramsWithoutCustomer.totalAmount,
-                customerId = null,
-                cardIds = null,
+                screens = params.screens,
+                clientToken = "Bearer ${params.clientToken}",
             )
         }
     }

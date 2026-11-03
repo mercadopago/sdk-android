@@ -141,4 +141,19 @@ internal class ObservedCheckoutErrorFactoryTest {
             ),
             ErrorLocalized.CARD_FORM_INITIALIZATION,
         )
+
+    @Test
+    fun `status detail from the response error is kept internally on the observed error`() {
+        val observed = ObservedCheckoutErrorFactory.from(
+            ResponseError(
+                code = "payment_required",
+                message = "Unable to process requested order_process.",
+                httpStatus = 402,
+                statusDetail = "cc_rejected_insufficient_amount",
+            ),
+            ErrorLocalized.ORDER_PROCESS,
+        )
+
+        assertEquals("cc_rejected_insufficient_amount", observed.statusDetail)
+    }
 }

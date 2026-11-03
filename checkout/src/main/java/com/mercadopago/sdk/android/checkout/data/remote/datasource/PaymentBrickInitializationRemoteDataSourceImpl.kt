@@ -8,6 +8,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.params.FetchPaymentBric
 import com.mercadopago.sdk.android.core.utils.safeApiCall
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
 
+private const val BEARER_PREFIX = "Bearer "
+
 internal class PaymentBrickInitializationRemoteDataSourceImpl(
     private val service: PaymentBrickInitializationService,
 ) : PaymentBrickInitializationRemoteDataSource {
@@ -17,9 +19,8 @@ internal class PaymentBrickInitializationRemoteDataSourceImpl(
         safeApiCall {
             service.fetch(
                 orderId = params.orderId,
-                totalAmount = params.totalAmount,
-                customerId = params.customerId,
-                cardIds = params.cardIds,
+                screens = params.screens,
+                clientToken = "$BEARER_PREFIX${params.clientToken}",
             )
         }.toInternalResponse()
 }

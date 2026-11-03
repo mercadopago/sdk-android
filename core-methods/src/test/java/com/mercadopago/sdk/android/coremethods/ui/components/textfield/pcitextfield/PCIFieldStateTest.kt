@@ -33,6 +33,16 @@ class PCIFieldStateTest {
     }
 
     @Test
+    fun `clear resets input to empty`() {
+        val state = PCIFieldState()
+        state.input = "123"
+
+        state.clear()
+
+        assertTrue(state.isEmpty)
+    }
+
+    @Test
     fun `PCIFieldState does not contain Saver companion`() {
         val companionMembers = PCIFieldState.Companion::class.members.map { it.name }
         assertFalse(

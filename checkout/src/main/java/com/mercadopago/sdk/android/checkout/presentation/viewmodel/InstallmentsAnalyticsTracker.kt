@@ -16,6 +16,7 @@ import com.mercadopago.sdk.android.checkout.analytics.toAnalyticsString
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
+import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
 
 internal class InstallmentsAnalyticsTracker(
     private val checkoutType: String,
@@ -28,16 +29,24 @@ internal class InstallmentsAnalyticsTracker(
     private var terminated = false
 
     fun trackInitialize() {
-        val transaction = paymentData as? MPPaymentData.CardTransaction
+        val (paymentMethodId, paymentType) = when (val data = paymentData) {
+            is MPPaymentData.CardSave -> data.paymentMethodId to data.paymentTypeId
+            is MPPaymentData.CardTransaction -> data.paymentMethodId to data.paymentTypeId
+            is MPPaymentData.Payment -> data.paymentMethodId to data.paymentTypeId
+        }
+        val selectedQuota = installmentData.selectedInstallment
+            ?.let { selected -> installmentData.quotas.firstOrNull { it.installments == selected } }
+            ?: installmentData.quotas.firstOrNull { it.state == QuotaState.Success }
+            ?: installmentData.quotas.firstOrNull()
         MPAnalytics.tryGetInstance()?.trackMetric(
             metricInstallmentsInitialize(
                 InstallmentsInitializeEventData(
                     checkoutType = checkoutType,
-                    paymentMethodId = transaction?.paymentMethodId.orEmpty(),
-                    paymentType = transaction?.paymentTypeId.orEmpty(),
+                    paymentMethodId = paymentMethodId,
+                    paymentType = paymentType,
                     selectionType = installmentData.display.displayType.toAnalyticsString(),
                     quotasCount = installmentData.quotas.size,
-                    transactionAmount = 0.0,
+                    transactionAmount = selectedQuota?.totalAmount?.toDouble() ?: 0.0,
                     orderId = orderId,
                 ),
             ),

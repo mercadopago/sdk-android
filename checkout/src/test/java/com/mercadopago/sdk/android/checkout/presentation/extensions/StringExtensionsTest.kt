@@ -1,10 +1,14 @@
 package com.mercadopago.sdk.android.checkout.presentation.extensions
 
+import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
+@RunWith(RobolectricTestRunner::class)
 internal class StringExtensionsTest {
     @Test
     fun `given string with all same digits then hasAllSameDigits returns true`() {
@@ -125,5 +129,75 @@ internal class StringExtensionsTest {
         assertEquals("R$", parts.currencySymbol)
         assertEquals("1.000,500", parts.integerPart)
         assertEquals("", parts.decimalPart)
+    }
+
+    @Test
+    fun `given amount with decimal then extractAmountDigits returns centavos digits`() {
+        assertEquals("10050", "R$ 100,50".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with zero cents then extractAmountDigits returns zero-padded centavos`() {
+        assertEquals("50000", "R$ 500,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with thousands separator then extractAmountDigits strips it`() {
+        assertEquals("123456", "R$ 1.234,56".extractAmountDigits())
+    }
+
+    @Test
+    fun `given large amount with multiple thousands separators then extractAmountDigits returns centavos digits`() {
+        assertEquals("100000000", "R$ 1.000.000,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given dollar sign symbol then extractAmountDigits returns centavos digits`() {
+        assertEquals("20000", "$ 200,00".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount without decimal digits then extractAmountDigits returns only integer digits`() {
+        assertEquals("500", "R$ 500".extractAmountDigits())
+    }
+
+    @Test
+    fun `given amount with period as decimal separator then extractAmountDigits returns digits`() {
+        assertEquals("10050", "R$ 100.50".extractAmountDigits())
+    }
+
+    @Test
+    fun `parseFormattedAmount splits BRL formatted string`() {
+        val result = "R$ 1.096,40".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "R$", integerPart = "1.096", decimalPart = "40"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount splits USD formatted string with dot decimal`() {
+        val result = "US$ 1,096.40".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "US$", integerPart = "1,096", decimalPart = "40"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount returns empty AmountParts when string has no digits`() {
+        val result = "R$".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "", integerPart = "", decimalPart = ""), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount returns empty decimal when no decimal separator`() {
+        val result = "$ 1000".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "$", integerPart = "1000", decimalPart = ""), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount handles symbol without space before digits`() {
+        val result = "R\$1.000,00".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "R\$", integerPart = "1.000", decimalPart = "00"), result)
     }
 }

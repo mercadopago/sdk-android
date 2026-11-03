@@ -20,10 +20,7 @@ internal class FetchPaymentBrickInitializationUseCaseTest {
     private val repository = mockk<PaymentBrickInitializationRepository>()
     private val useCase = FetchPaymentBrickInitializationUseCase(repository)
 
-    private val params = FetchPaymentBrickInitializationParams(
-        orderId = "ORDER_123",
-        totalAmount = "500.00",
-    )
+    private val params = FetchPaymentBrickInitializationParams(orderId = "ORDER_123", "token")
 
     @Test
     fun `given repository returns success then returns Result Success`() = runTest {

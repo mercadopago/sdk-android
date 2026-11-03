@@ -93,19 +93,6 @@ android {
     lint {
         disable += "NullSafeMutableLiveData"
     }
-    apply(plugin = "org.jetbrains.dokka")
-}
-
-tasks.named(MercadoPagoSDKConfig.DOKKA_HTML, org.jetbrains.dokka.gradle.DokkaTask::class).configure {
-    outputDirectory.set(layout.buildDirectory.dir(MercadoPagoSDKConfig.DOKKA_DIR))
-    dokkaSourceSets {
-        configureEach {
-            perPackageOption {
-                matchingRegex.set(MercadoPagoSDKConfig.DOKKA_IGNORE_PACKAGES)
-                suppress.set(true)
-            }
-        }
-    }
 }
 
 ksp {
@@ -144,6 +131,8 @@ dependencies {
     testImplementation(libs.koin.test.junit4)
     testImplementation(libs.junit)
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.okhttp.mockWebServer)
+    testImplementation(libs.okhttp.tls)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.compose.test)
     debugImplementation(libs.androidx.compose.test.manifest)

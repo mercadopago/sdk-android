@@ -28,7 +28,7 @@ internal class GenerateCardIdTokenUseCase(
 ) {
     suspend operator fun invoke(
         cardId: String,
-        securityCode: String = "",
+        securityCode: String? = null,
         expirationDate: String?,
         buyerIdentification: BuyerIdentification? = null,
     ): Result<CardToken, ResultError> {
@@ -36,11 +36,13 @@ internal class GenerateCardIdTokenUseCase(
             return Result.Error(ResultError.Validation("card id cannot be empty"))
         }
 
-        val securityCodeLength =
-            securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
+        if (securityCode != null) {
+            val securityCodeLength =
+                securityCodeLengthProvider.getExpectedLength() ?: SECURITY_CODE_MIN_LENGTH
 
-        if (!isSecurityCodeValidUseCase(securityCode.length, securityCodeLength)) {
-            return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+            if (!isSecurityCodeValidUseCase(securityCode.length, securityCodeLength)) {
+                return Result.Error(ResultError.Validation(ERROR_SECURITY_CODE_MIN_LENGTH))
+            }
         }
 
         var expirationMonth: Int? = null

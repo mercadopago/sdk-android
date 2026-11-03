@@ -6,6 +6,7 @@ import androidx.annotation.RestrictTo
 import com.mercadopago.sdk.android.analytics.di.AnalyticsModulesProvider
 import com.mercadopago.sdk.android.analytics.domain.exception.AnalyticsInitializationException
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
+import com.mercadopago.sdk.android.analytics.domain.usecase.GetSessionIdUseCase
 import com.mercadopago.sdk.android.analytics.domain.usecase.TrackMetricUseCase
 import com.mercadopago.sdk.android.core.utils.isDebugApp
 import com.mercadopago.sdk.android.core.utils.isSameLibraryGroup
@@ -97,5 +98,14 @@ class MPAnalytics internal constructor(
                     }
                 }.firstOrNull()
         }
+    }
+
+    /** Returns the SDK's current analytics session id — the exact same value used to tag this
+     * session's Melidata tracking events, so callers outside `:analytics` can correlate their own
+     * requests with the same session. */
+    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+    suspend fun getSessionId(): String {
+        val getSessionIdUseCase = koin.get<GetSessionIdUseCase>()
+        return getSessionIdUseCase()
     }
 }

@@ -4,8 +4,8 @@ import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.State
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.validation.CardHolderVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.ExpirationDateVerifier
 import com.mercadopago.sdk.android.checkout.presentation.validation.IdentificationTypeVerifier
@@ -28,7 +28,7 @@ internal class CancelledFormContextUseCase {
     }
 
     operator fun invoke(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): CancelledFormContext {
         val fields = buildList<MPCancelledFieldState> {
             add(buildCardNumberFieldState(screenState))
@@ -47,16 +47,14 @@ internal class CancelledFormContextUseCase {
     }
 
     private fun buildCardNumberFieldState(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): MPCancelledFieldState {
         val cardNumberState = screenState.cardNumberState
         val error = cardNumberState.errorTypes.firstOrNull()
         val state = if (error == null) {
-            State.Valid
+            if (cardNumberState.length == 0) State.Empty else State.Valid
         } else {
             when (error) {
-                is CardNumberErrorType.CardBrandNotAccepted -> State.CardBrandNotAccepted(error.brand)
-                is CardNumberErrorType.CardTypeNotAccepted -> State.CardTypeNotAccepted(error.cardType)
                 is CardNumberErrorType.FieldValidation -> {
                     when {
                         cardNumberState.length == 0 -> State.Empty
@@ -72,7 +70,7 @@ internal class CancelledFormContextUseCase {
     }
 
     private fun buildCardHolderFieldState(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): MPCancelledFieldState {
         val verifier = CardHolderVerifier()
         val cardHolderState = screenState.cardHolderState
@@ -86,7 +84,7 @@ internal class CancelledFormContextUseCase {
     }
 
     private fun buildExpirationDateFieldState(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): MPCancelledFieldState {
         val verifier = ExpirationDateVerifier()
         val expirationDateState = screenState.expirationDateState
@@ -100,7 +98,7 @@ internal class CancelledFormContextUseCase {
     }
 
     private fun buildSecurityCodeFieldState(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): MPCancelledFieldState {
         val verifier = SecurityCodeVerifier()
         val secureCodeState = screenState.secureCodeState
@@ -113,7 +111,7 @@ internal class CancelledFormContextUseCase {
     }
 
     private fun buildDocumentFieldState(
-        screenState: CardPaymentScreenState,
+        screenState: CardFormScreenState,
     ): MPCancelledFieldState {
         val verifier = IdentificationTypeVerifier()
         val identificationTypeState = screenState.identificationTypeState

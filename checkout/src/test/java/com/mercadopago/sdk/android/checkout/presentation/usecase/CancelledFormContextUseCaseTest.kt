@@ -1,22 +1,19 @@
 package com.mercadopago.sdk.android.checkout.presentation.usecase
 
-import com.mercadopago.sdk.android.checkout.core.model.MPCardBrand
-import com.mercadopago.sdk.android.checkout.core.model.MPCardType
 import com.mercadopago.sdk.android.checkout.domain.model.Field
 import com.mercadopago.sdk.android.checkout.domain.model.MPCancelledFieldState
 import com.mercadopago.sdk.android.checkout.domain.model.Screen
 import com.mercadopago.sdk.android.checkout.domain.model.State
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardHolderState
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberErrorType
 import com.mercadopago.sdk.android.checkout.presentation.state.CardNumberState
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.ExpirationDateState
 import com.mercadopago.sdk.android.checkout.presentation.state.IdentificationTypeState
 import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeState
 import com.mercadopago.sdk.android.checkout.presentation.state.ValidationState
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 
 internal class CancelledFormContextUseCaseTest {
     private val useCase = CancelledFormContextUseCase()
@@ -27,7 +24,7 @@ internal class CancelledFormContextUseCaseTest {
         expirationDateState: ExpirationDateState = ExpirationDateState(),
         secureCodeState: SecurityCodeState = SecurityCodeState(),
         identificationTypeState: IdentificationTypeState = IdentificationTypeState(),
-    ) = CardPaymentScreenState(
+    ) = CardFormScreenState(
         cardNumberState = cardNumberState,
         cardHolderState = cardHolderState,
         expirationDateState = expirationDateState,
@@ -36,7 +33,7 @@ internal class CancelledFormContextUseCaseTest {
     )
 
     private fun invoke(
-        state: CardPaymentScreenState,
+        state: CardFormScreenState,
     ): List<MPCancelledFieldState> = useCase(state).fields
 
     @Test
@@ -50,6 +47,24 @@ internal class CancelledFormContextUseCaseTest {
 
         val fields = invoke(state)
 
+        val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
+        assertEquals(State.Empty, cardNumberField.state)
+    }
+
+    @Test
+    fun `given card number is empty and has no errors then cardNumber state is Empty`() {
+        // Given
+        val state = makeState(
+            cardNumberState = CardNumberState(
+                length = 0,
+                errorTypes = emptyList(),
+            ),
+        )
+
+        // When
+        val fields = invoke(state)
+
+        // Then
         val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
         assertEquals(State.Empty, cardNumberField.state)
     }
@@ -84,30 +99,6 @@ internal class CancelledFormContextUseCaseTest {
 
         val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
         assertEquals(State.Invalid, cardNumberField.state)
-    }
-
-    @Test
-    fun `given card number has CardBrandNotAccepted error then state is CardBrandNotAccepted`() {
-        val errorType = CardNumberErrorType.CardBrandNotAccepted(MPCardBrand.Visa)
-        val state = makeState(cardNumberState = CardNumberState(errorTypes = listOf(errorType)))
-
-        val fields = invoke(state)
-
-        val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
-        assertIs<State.CardBrandNotAccepted>(cardNumberField.state)
-        assertEquals(MPCardBrand.Visa, cardNumberField.state.brand)
-    }
-
-    @Test
-    fun `given card number has CardTypeNotAccepted error then state is CardTypeNotAccepted`() {
-        val errorType = CardNumberErrorType.CardTypeNotAccepted(MPCardType.CREDIT)
-        val state = makeState(cardNumberState = CardNumberState(errorTypes = listOf(errorType)))
-
-        val fields = invoke(state)
-
-        val cardNumberField = fields.first { it.field == Field.CARD_NUMBER }
-        assertIs<State.CardTypeNotAccepted>(cardNumberField.state)
-        assertEquals(MPCardType.CREDIT, cardNumberField.state.cardType)
     }
 
     @Test

@@ -5,7 +5,7 @@ import com.mercadopago.sdk.android.analytics.domain.models.EventData
 import com.mercadopago.sdk.android.analytics.domain.models.Metric
 import com.mercadopago.sdk.android.analytics.domain.models.TrackType
 import com.mercadopago.sdk.android.checkout.analytics.CheckoutAnalyticsConstants.CHECKOUT_INSTALLMENTS_PATH
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.core.utils.KoverIgnore
 import com.mercadopago.sdk.android.initializer.analytics.SDK_NATIVE_PATH
 
@@ -38,8 +38,8 @@ internal data class InstallmentsInitializeEventData(
     val orderId: String,
 ) : EventData
 
-internal fun InstallmentsDisplayType.toAnalyticsString(): String =
+internal fun SelectionDisplayType.toAnalyticsString(): String =
     when (this) {
-        InstallmentsDisplayType.RadioButton -> "radio_button"
-        InstallmentsDisplayType.Chevron -> "chevron"
+        SelectionDisplayType.RadioButton -> "radio_button"
+        SelectionDisplayType.Chevron -> "chevron"
     }

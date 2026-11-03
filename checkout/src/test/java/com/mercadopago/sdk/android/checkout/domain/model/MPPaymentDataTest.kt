@@ -77,14 +77,6 @@ internal class MPPaymentDataTest {
     }
 
     @Test
-    fun `given payer with default args then both documents are null`() {
-        val emptyPayer = Payer()
-
-        assertNull(emptyPayer.documentType)
-        assertNull(emptyPayer.documentNumber)
-    }
-
-    @Test
     fun `given payer then exposes document fields and equality`() {
         assertEquals("CPF", payer.documentType)
         assertEquals("12345678909", payer.documentNumber)
@@ -113,5 +105,21 @@ internal class MPPaymentDataTest {
 
         assertNull(data.payer)
         assertNull(data.issuerId)
+    }
+
+    @Test
+    fun `given payment data constructed with only the four required args then new fields default to null`() {
+        val data = MPPaymentData.Payment(
+            orderId = "ORD_123",
+            orderStatus = "processed",
+            paymentMethodId = "visa",
+            paymentTypeId = "credit_card",
+        )
+
+        assertEquals("ORD_123", data.orderId)
+        assertEquals("processed", data.orderStatus)
+        assertEquals("visa", data.paymentMethodId)
+        assertEquals("credit_card", data.paymentTypeId)
+        assertNull(data.orderStatusDetail)
     }
 }

@@ -209,4 +209,18 @@ internal class ExceptionFactoryTest {
         val error = assertIs<Result.Error<MercadoPagoCheckoutError>>(mapped)
         assertIs<MercadoPagoCheckoutError.ServiceError>(error.error)
     }
+
+    @Test
+    fun `given a WAITING_RETRY error code when mapRequestError then returns ServiceError with PAYMENT_WAITING_RETRY`() {
+        // Given
+        val error = ResponseError(code = "402", errorCode = ERROR_CODE_WAITING_RETRY, message = message)
+
+        // When
+        val result = ExceptionFactory.mapRequestError(error = error, localized = localized)
+
+        // Then
+        val serviceError = assertIs<MercadoPagoCheckoutError.ServiceError>(result)
+        assertEquals(ErrorCode.PAYMENT_WAITING_RETRY, serviceError.code)
+        assertEquals(message, serviceError.messageError)
+    }
 }

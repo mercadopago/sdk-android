@@ -43,6 +43,16 @@ android {
             "DEFAULT_PUBLIC_KEY_LIST",
             "\"$publicKeyListString\"",
         )
+        buildConfigField(
+            "String",
+            "TEST_ORDER_ID",
+            secretProperties.getProperty("checkout.test.orderId", "\"\""),
+        )
+        buildConfigField(
+            "String",
+            "TEST_CLIENT_TOKEN",
+            secretProperties.getProperty("checkout.test.clientToken", "\"\""),
+        )
     }
 
     buildTypes {
@@ -87,6 +97,7 @@ dependencies {
     implementation(projects.foundation)
     implementation(projects.coreMethods)
     implementation(projects.checkout)
+    implementation(projects.mpExtended)
     api(platform(libs.koin.bom))
     api(libs.koin.core)
     api(libs.koin.android)

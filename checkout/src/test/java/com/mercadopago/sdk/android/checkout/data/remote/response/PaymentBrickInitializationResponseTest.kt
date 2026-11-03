@@ -53,18 +53,20 @@ internal class PaymentBrickInitializationResponseTest {
         assertEquals(3, card.securityCode.length)
 
         val screen = assertNotNull(card.securityCode.screen)
-        assertEquals("Ingresá el código de seguridad", screen.headerTitle)
-        assertEquals("Continuar", screen.buttonLabel)
+        assertEquals("Ingresá el código de seguridad", screen.header.title)
+        assertEquals("Continuar", screen.button.label)
         assertEquals("Código de seguridad", screen.field.label)
         assertEquals("Ej.: 123", screen.field.placeholder)
         assertEquals("Está en el reverso de tu tarjeta.", screen.field.helper)
 
         val installments = assertNotNull(card.installments)
         assertEquals("Elegí las cuotas", installments.header.title)
-        assertEquals("Total", installments.totalLabel)
-        assertEquals("Pagar", installments.payButtonLabel)
+        assertEquals("Total", installments.footer.totalLabel)
+        assertEquals("Pagar", installments.footer.button.label)
+        assertEquals("$", installments.footer.currencySymbol)
         assertEquals("radio_button", installments.selectionType)
         assertEquals(2, installments.quotas.size)
+        assertNull(installments.quotas.first().tertiaryLabel)
 
         val quota = installments.quotas[1]
         assertEquals(3, quota.installments)
@@ -72,6 +74,7 @@ internal class PaymentBrickInitializationResponseTest {
         assertEquals(BigDecimal("510.00"), quota.totalAmount)
         assertEquals("3x $ 170,00", quota.primaryLabel)
         assertEquals("$ 510,00", quota.secondaryLabel)
+        assertEquals("Costo financiero total: 0%", quota.tertiaryLabel)
         assertEquals("interest_free", quota.state)
     }
 
@@ -112,6 +115,23 @@ internal class PaymentBrickInitializationResponseTest {
     }
 
     @Test
+    fun `given new card method without config then config is null`() {
+        val method = parse(FULL_RESPONSE_JSON).sections.first().methods[3]
+
+        assertNull(method.config)
+    }
+
+    @Test
+    fun `given new card method with config then not allowed ids and types are mapped`() {
+        val method = parse(NEW_CARD_WITH_CONFIG_JSON).sections.first().methods.first()
+
+        val config = assertNotNull(method.config)
+        val paymentMethod = assertNotNull(config.paymentMethod)
+        assertEquals(listOf("visa"), paymentMethod.notAllowedIds)
+        assertEquals(listOf("debit_card", "atm", "ticket", "bank_transfer"), paymentMethod.notAllowedTypes)
+    }
+
+    @Test
     fun `given data classes then equality and copy behave as value types`() {
         val footer = PaymentBrickFooter(totalLabel = "Total", totalAmount = "$ 10")
 
@@ -146,19 +166,22 @@ internal class PaymentBrickInitializationResponseTest {
                         "security_code": {
                           "length": 3,
                           "screen": {
-                            "header_title": "Ingresá el código de seguridad",
+                            "header": { "title": "Ingresá el código de seguridad" },
                             "field": {
                               "label": "Código de seguridad",
                               "placeholder": "Ej.: 123",
                               "helper": "Está en el reverso de tu tarjeta."
                             },
-                            "continue_button_label": "Continuar"
+                            "button": { "label": "Continuar" }
                           }
                         },
                         "installments": {
                           "header": { "title": "Elegí las cuotas" },
-                          "total_label": "Total",
-                          "pay_button_label": "Pagar",
+                          "footer": {
+                            "button": { "label": "Pagar" },
+                            "total_label": "Total",
+                            "currency_symbol": "$"
+                          },
                           "selection_type": "radio_button",
                           "quotas": [
                             {
@@ -175,6 +198,7 @@ internal class PaymentBrickInitializationResponseTest {
                               "total_amount": 510.00,
                               "primary_label": "3x $ 170,00",
                               "secondary_label": "$ 510,00",
+                              "tertiary_label": "Costo financiero total: 0%",
                               "state": "interest_free"
                             }
                           ]
@@ -217,6 +241,33 @@ internal class PaymentBrickInitializationResponseTest {
               "footer": {
                 "total_label": "Total",
                 "total_amount": "$ 188.000"
+              }
+            }
+        """.trimIndent()
+
+        val NEW_CARD_WITH_CONFIG_JSON = """
+            {
+              "header_title": "Elegí cómo pagar",
+              "sections": [
+                {
+                  "title": "Otros medios de pago",
+                  "methods": [
+                    {
+                      "type": "new_card",
+                      "title": "Nueva tarjeta",
+                      "config": {
+                        "payment_method": {
+                          "not_allowed_ids": ["visa"],
+                          "not_allowed_types": ["debit_card", "atm", "ticket", "bank_transfer"]
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "footer": {
+                "total_label": "Total",
+                "total_amount": "$ 0"
               }
             }
         """.trimIndent()

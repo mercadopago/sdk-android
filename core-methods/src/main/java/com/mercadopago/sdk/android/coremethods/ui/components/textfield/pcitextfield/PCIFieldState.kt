@@ -41,6 +41,11 @@ class PCIFieldState internal constructor() {
     val isEmpty: Boolean
         get() = input.isEmpty()
 
+    /** Resets the field to an empty input, without exposing the value being discarded. */
+    fun clear() {
+        input = ""
+    }
+
     /** Factory methods for creating [PCIFieldState] instances outside of a Composable context. */
     companion object {
         /**

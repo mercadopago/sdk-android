@@ -3,19 +3,20 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.Quota
 import com.mercadopago.sdk.android.checkout.domain.model.QuotaState
+import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotal
 import com.mercadopago.sdk.android.checkout.presentation.extensions.getTotalDecimalPart
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toAmountParts
 import com.mercadopago.sdk.android.checkout.presentation.extensions.toBrandLabel
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
-import com.mercadopago.sdk.android.checkout.presentation.state.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
-import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentTextColor
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentsScreenState
 import java.math.BigDecimal
 
 internal fun MPInstallmentData.toInstallmentsScreenState(): InstallmentsScreenState {
-    val selectedNumber = selectedInstallment ?: quotas.preselected()
+    val selectedNumber = selectedInstallment ?: defaultQuotaNumber() ?: quotas.preselected()
     val items = quotas
         .toInstallmentStates()
         .applySelection(displayType = display.displayType, selectedNumber = selectedNumber)
@@ -31,7 +32,7 @@ internal fun MPInstallmentData.toInstallmentsScreenState(): InstallmentsScreenSt
             amountDecimalPart = amount.decimalPart,
             subtitle = toSubtitle(),
             buttonLabel = display.footer.buttonLabel.takeIf {
-                display.displayType == InstallmentsDisplayType.RadioButton && it.isNotEmpty()
+                display.displayType == SelectionDisplayType.RadioButton && it.isNotEmpty()
             },
             isVisible = true,
         ),
@@ -47,15 +48,19 @@ private fun List<Quota>.toInstallmentStates(): List<InstallmentState> =
             isSelected = false,
             number = quota.installments ?: 1,
             accessibilityLabel = quota.accessibilityLabel ?: quota.primaryLabel.orEmpty(),
+            secondaryLabelColor = when (quota.state) {
+                QuotaState.Success -> InstallmentTextColor.Positive
+                QuotaState.None -> null
+            },
         )
     }
 
 private fun List<InstallmentState>.applySelection(
-    displayType: InstallmentsDisplayType,
+    displayType: SelectionDisplayType,
     selectedNumber: Int?,
 ): List<InstallmentState> =
     when {
-        displayType != InstallmentsDisplayType.RadioButton -> this
+        displayType != SelectionDisplayType.RadioButton -> this
         selectedNumber != null -> map { it.copy(isSelected = it.number == selectedNumber) }
         else -> mapIndexed { index, item -> item.copy(isSelected = index == 0) }
     }
@@ -65,15 +70,15 @@ private fun List<Quota>.preselected(): Int? = firstOrNull { it.state == QuotaSta
 private fun MPInstallmentData.effectiveSelectedQuota(
     selectedNumber: Int?,
 ): Quota? =
-    quotas.firstOrNull { it.installments == selectedNumber }
-        ?: quotas.firstOrNull().takeIf { display.displayType == InstallmentsDisplayType.RadioButton }
+    selectedNumber?.let { number -> quotas.firstOrNull { it.installments == number } }
+        ?: quotas.firstOrNull()
 
 private fun MPInstallmentData.footerAmount(
     selectedQuota: Quota?,
 ): AmountParts {
     val symbol = display.currencySymbol
     selectedQuota?.secondaryLabel
-        ?.takeIf { it.isNotEmpty() }
+        ?.takeIf { it.isMonetaryAmount(symbol) }
         ?.let { return it.toAmountParts(symbol) }
     val total = selectedQuota?.totalAmount ?: BigDecimal.ZERO
     return AmountParts(
@@ -81,6 +86,13 @@ private fun MPInstallmentData.footerAmount(
         integerPart = total.getTotal(),
         decimalPart = total.getTotalDecimalPart(),
     )
+}
+
+private fun String.isMonetaryAmount(
+    currencySymbol: String,
+): Boolean {
+    val withoutSymbol = removePrefix(currencySymbol).trim()
+    return withoutSymbol.isNotEmpty() && withoutSymbol.none(Char::isLetter)
 }
 
 private fun MPInstallmentData.toSubtitle(): String =

@@ -11,6 +11,7 @@ internal interface CardFormRemoteDataSource {
         orderId: String?,
         clientToken: String?,
         checkoutType: String,
+        screens: String?,
     ): Result<CardFormInitResponse, ResponseError>
 
     suspend fun getCardBin(

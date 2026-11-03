@@ -4,5 +4,6 @@ import com.mercadopago.sdk.android.checkout.domain.model.Payer
 
 internal data class PendingOrderData(
     val token: String,
-    val payer: Payer,
+    val cardId: String?,
+    val payer: Payer?,
 )

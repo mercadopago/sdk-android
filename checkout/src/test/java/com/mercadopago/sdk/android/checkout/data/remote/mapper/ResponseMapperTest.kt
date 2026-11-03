@@ -107,4 +107,26 @@ internal class ResponseMapperTest {
         assertNull(result.errorCode)
         assertNull(result.userErrorMessage)
     }
+
+    @Test
+    fun `given a rejected payment 402 with status_detail then it is parsed into the response error`() {
+        val json = """{"code":"payment_required","message":"Unable to process requested order_process.",""" +
+            """"user_error_message":"El pago fue rechazado.","status_detail":"cc_rejected_insufficient_amount"}"""
+        val responseBody = json.toResponseBody("application/json".toMediaType())
+
+        val result = responseBody.toResultError(httpStatus = 402)
+
+        assertEquals("payment_required", result.code)
+        assertEquals("cc_rejected_insufficient_amount", result.statusDetail)
+        assertEquals(402, result.httpStatus)
+    }
+
+    @Test
+    fun `given an error without status_detail then statusDetail is null`() {
+        val json = """{"code":"bad_request","message":"Bad request"}"""
+
+        val result = json.toResponseBody("application/json".toMediaType()).toResultError(httpStatus = 400)
+
+        assertNull(result.statusDetail)
+    }
 }

@@ -9,9 +9,14 @@ internal data class CardBinData(
     val expirationDate: ExpirationDateField?,
     val issuers: List<BinIssuer>,
     val installmentData: MPInstallmentData,
+    val footer: FooterData,
 )
 
 internal data class BinIssuer(
     val id: String?,
     val name: String?,
+)
+
+internal data class FooterData(
+    val buttonLabel: String,
 )

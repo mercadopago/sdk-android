@@ -1,11 +1,13 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
+
 internal data class PaymentBrickScreenState(
     val title: String = "",
     val sections: List<PaymentSectionState> = emptyList(),
     val footerState: PaymentBrickFooterState? = null,
+    val pendingInstallmentData: MPInstallmentData? = null,
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
 )
 
 internal data class PaymentSectionState(

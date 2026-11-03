@@ -5,4 +5,5 @@ import com.mercadopago.sdk.android.analytics.observability.domain.classifier.Nat
 internal data class ObservedCheckoutError(
     val publicError: MercadoPagoCheckoutError,
     val nativeErrorInput: NativeErrorInput,
+    val statusDetail: String? = null,
 )

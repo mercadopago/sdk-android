@@ -6,18 +6,30 @@ import android.content.res.Configuration
 import com.google.gson.Gson
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPOrder
+import com.mercadopago.sdk.android.checkout.core.model.MPSellerInfo
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
+import com.mercadopago.sdk.android.checkout.data.remote.request.ReviewConfirmRequest
 import com.mercadopago.sdk.android.checkout.domain.model.CardFormInitializationOutput
 import com.mercadopago.sdk.android.checkout.domain.model.MPInstallmentData
 import com.mercadopago.sdk.android.checkout.domain.model.MPPaymentData
+import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
+import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
+import com.mercadopago.sdk.android.checkout.domain.model.params.ProcessOrderParams
+import com.mercadopago.sdk.android.checkout.domain.usecase.FetchReviewConfirmUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.GetCardBinUseCase
 import com.mercadopago.sdk.android.checkout.domain.usecase.ProcessOrderUseCase
-import com.mercadopago.sdk.android.checkout.presentation.factory.CardPaymentScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.factory.CardFormScreenStateFactory
+import com.mercadopago.sdk.android.checkout.presentation.navigation.StatusScreenContext
+import com.mercadopago.sdk.android.checkout.presentation.state.ReviewConfirmScreenConfig
+import com.mercadopago.sdk.android.checkout.presentation.state.SecurityCodeScreenConfig
 import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledFormContextUseCase
+import com.mercadopago.sdk.android.checkout.presentation.usecase.CancelledPaymentContextUseCase
 import com.mercadopago.sdk.android.checkout.presentation.usecase.GenerateTokenUseCase
-import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardPaymentViewModel
+import com.mercadopago.sdk.android.checkout.presentation.validation.SecurityCodeVerifier
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.CardFormViewModel
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.InstallmentsAnalyticsTracker
+import com.mercadopago.sdk.android.checkout.presentation.viewmodel.ReviewConfirmAnalyticsTracker
 import com.mercadopago.sdk.android.checkout.utils.MainDispatcherRule
 import com.mercadopago.sdk.android.core.di.CoreKoinFactory
 import com.mercadopago.sdk.android.coremethods.domain.interactor.CoreMethods
@@ -52,7 +64,7 @@ internal class CheckoutModulesProviderTest {
         mockkStatic(ApplicationInfo::class)
         mockkObject(CoreKoinFactory)
         mockkObject(MPCheckoutType::class)
-        mockkObject(CardPaymentScreenStateFactory::class)
+        mockkObject(CardFormScreenStateFactory::class)
         mockkConstructor(Configuration::class)
     }
 
@@ -72,6 +84,7 @@ internal class CheckoutModulesProviderTest {
 
     @OptIn(KoinExperimentalAPI::class)
     @Test
+    @Suppress("LongMethod")
     fun `when provideModules is called Then modules should be verified`() {
         val context = createMockContext()
         every { MercadoPagoSDK.getInstance() } returns mockk<MercadoPagoSDK>(relaxed = true)
@@ -108,7 +121,7 @@ internal class CheckoutModulesProviderTest {
                 List::class,
                 CheckoutConfiguration::class,
                 CheckoutThemePreferences::class,
-                CardPaymentViewModel::class,
+                CardFormViewModel::class,
                 GetCardBinUseCase::class,
                 GenerateTokenUseCase::class,
                 ProcessOrderUseCase::class,
@@ -119,6 +132,18 @@ internal class CheckoutModulesProviderTest {
                 MPPaymentData::class,
                 String::class,
                 InstallmentsAnalyticsTracker::class,
+                SecurityCodeScreenConfig::class,
+                SecurityCodeVerifier::class,
+                MethodSelectionScreenData::class,
+                ReviewConfirmRequest::class,
+                ProcessOrderParams::class,
+                FetchReviewConfirmUseCase::class,
+                CancelledPaymentContextUseCase::class,
+                ReviewConfirmScreenConfig::class,
+                ReviewConfirmAnalyticsTracker::class,
+                MPSellerInfo::class,
+                OrderProcessOutput.PaymentProcessed::class,
+                StatusScreenContext::class,
             ),
         )
         koin.checkModules {
@@ -127,6 +152,11 @@ internal class CheckoutModulesProviderTest {
             withInstance<MPInstallmentData>(mockk(relaxed = true))
             withInstance<MPPaymentData>(mockk(relaxed = true))
             withInstance<String>("card_form")
+            withInstance<SecurityCodeScreenConfig>(mockk(relaxed = true))
+            withInstance<MethodSelectionScreenData>(mockk(relaxed = true))
+            withInstance<ReviewConfirmRequest>(mockk(relaxed = true))
+            withInstance<ProcessOrderParams>(mockk(relaxed = true))
+            withInstance<StatusScreenContext>(mockk(relaxed = true))
         }
     }
 }

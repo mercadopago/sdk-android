@@ -2,7 +2,6 @@ package com.mercadopago.sdk.android.coremethods.data.remote.mappers
 
 import com.mercadopago.sdk.android.coremethods.data.remote.response.IdentificationTypesResponse
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
-import com.mercadopago.sdk.android.coremethods.ui.components.textfield.identificationtextfield.getMask
 
 internal fun IdentificationTypesResponse.toModel(): IdentificationType =
     IdentificationType(
@@ -11,5 +10,4 @@ internal fun IdentificationTypesResponse.toModel(): IdentificationType =
         type = this.type,
         minLength = this.minLength,
         maxLength = this.maxLength,
-        mask = this.getMask(),
     )

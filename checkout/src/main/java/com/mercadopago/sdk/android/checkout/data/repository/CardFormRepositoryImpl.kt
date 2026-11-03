@@ -26,6 +26,7 @@ internal class CardFormRepositoryImpl(
                 orderId = params.orderId,
                 clientToken = params.clientToken,
                 checkoutType = params.checkoutType,
+                screens = params.screens,
             )
         }.map { it.toDomain() }
 
@@ -36,11 +37,14 @@ internal class CardFormRepositoryImpl(
             dataSource.getCardBin(
                 CardBinRequest(
                     bin = params.bin,
+                    orderId = params.orderId,
+                    clientToken = params.clientToken,
                     amount = params.amount,
                     checkoutType = params.checkoutType,
                     processingMode = params.processingMode,
                     excludedPaymentTypes = params.filter.excludedPaymentTypes.joinOrNull { it.value },
                     excludedPaymentMethods = params.filter.excludedPaymentMethods.joinOrNull { it.name },
+                    screens = params.screens,
                 ),
             )
         }.map { it.toDomain() }

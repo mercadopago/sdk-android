@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,30 @@ fun MPText(
         color = color,
         modifier = modifier,
         fontWeight = fontWeight,
+    )
+}
+
+/**
+ * Text component for styled text: same as [MPText] but the text carries its own spans
+ * (e.g. a colored word inside a sentence).
+ *
+ * @param text: styled label text
+ * @param modifier: label modifier
+ * @param style: TextStyle to use
+ * @param color: default Color for the parts without their own color
+ */
+@Composable
+fun MPText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MercadoPagoTheme.typography.body.default.small,
+    color: Color = MercadoPagoTheme.color.text.primary,
+) {
+    Text(
+        text = text,
+        style = style,
+        color = color,
+        modifier = modifier,
     )
 }
 

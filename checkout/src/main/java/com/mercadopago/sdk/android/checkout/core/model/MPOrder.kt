@@ -13,4 +13,6 @@ import kotlinx.parcelize.Parcelize
 data class MPOrder(
     val orderId: String,
     val clientToken: String,
-) : CheckoutTypeConfiguration, Parcelable
+) : CheckoutTypeConfiguration, Parcelable {
+    override fun toString(): String = "MPOrder(orderId=$orderId, clientToken=***)"
+}

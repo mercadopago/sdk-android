@@ -15,19 +15,25 @@ internal class GetCardBinUseCase(
 ) {
     suspend operator fun invoke(
         bin: String,
+        orderId: String = "",
+        clientToken: String? = null,
         amount: String?,
         checkoutType: String,
         processingMode: String,
         filter: CardBinFilter,
+        screens: String? = null,
     ): Result<CardBinData, MercadoPagoCheckoutError> =
         withServiceRetry {
             repository.getCardBin(
                 GetCardBinParams(
                     bin = bin,
+                    orderId = orderId,
+                    clientToken = clientToken,
                     amount = amount.getOrZero(),
                     checkoutType = checkoutType,
                     processingMode = processingMode,
                     filter = filter,
+                    screens = screens,
                 ),
             )
         }.mapError(ErrorLocalized.CARD_BIN)

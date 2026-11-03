@@ -3,16 +3,19 @@ package com.mercadopago.sdk.android.checkout.presentation.mapper
 import com.mercadopago.sdk.android.checkout.domain.extensions.maskOrFallback
 import com.mercadopago.sdk.android.checkout.domain.extensions.toMask
 import com.mercadopago.sdk.android.checkout.domain.model.CardBinData
-import com.mercadopago.sdk.android.checkout.presentation.state.CardPaymentScreenState
+import com.mercadopago.sdk.android.checkout.presentation.state.CardFormScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentState
 import com.mercadopago.sdk.android.coremethods.domain.model.CardIssuer
 
-internal fun CardPaymentScreenState.applyCardBinData(
+internal fun CardFormScreenState.applyCardBinData(
     data: CardBinData,
-): CardPaymentScreenState {
+): CardFormScreenState {
     val cardNumberMaxLength = data.cardNumber?.config?.length?.max ?: cardNumberState.maxLength
     val installmentDisplay = data.installmentData.display
     return copy(
+        footerState = footerState.copy(
+            buttonLabel = data.footer.buttonLabel.orCurrent(footerState.buttonLabel.orEmpty()),
+        ),
         currencySymbol = installmentDisplay.currencySymbol.orCurrent(currencySymbol),
         cardNumberState = cardNumberState.copy(
             maxLength = cardNumberMaxLength,

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
+- `core-methods` and `checkout` bumped to `1.0.3` — consumer R8 rules fix (see Fixed below); `components` bumped to `1.0.3` (depends on `core-methods`) to keep published dependency versions consistent; `mp-extended` `1.0.3` and `sdk-android-bom` `1.0.3` are still unpublished and will ship pointing at these versions
+
+### Fixed
+- `core-methods` and `checkout` consumer ProGuard/R8 rules now keep annotation/`Signature` attributes, request/response DTOs, Retrofit services and Gson-mapped analytics/domain models; `core-methods` also keeps `ResultError` (parsed by Gson by field name — without it, BIN lookup errors such as a 404 from `payment_methods`/`installments` crashed integrator release builds with a `NullPointerException` in the error analytics) and the Device SDK `domain` package, so the `device` sent in `card_tokens` keeps its field names even without `mp-extended`
+- `mp-extended` bumped to `1.0.3` and `sdk-android-bom` bumped to `1.0.3` — device session request now sends the public key in the `X-Public-Key` header via an OkHttp interceptor (as `checkout` does) instead of an empty `@Headers` value; consumer ProGuard/R8 rules now keep annotation/`Signature` attributes, the `mp-extended` request/response DTOs and Retrofit service, and the Device SDK `domain` package (`Fingerprint` and nested types), fixing the fingerprint payload and a `ClassCastException` on the device session response in integrator release builds with minify
+- CircleCI's `verify-version-consistency` job branch filter now also matches `chore/release-*` (in addition to `main` and `release/*`) — this repo's release branches are named `chore/release-X.Y.Z`, so the check never actually ran before a release PR was merged into `main`, only after
+
+### Changed
 - `core`, `core-methods`, `mp-extended`, and `checkout` bumped to `1.0.1` — network-crash fix (`safeApiCall`); `analytics` and `sdk-android` bumped to `1.0.1` (depend on `core`), `components` bumped to `1.0.1` (depends on `core-methods`) to keep published dependency versions consistent; `sdk-android-bom` bumped to `1.0.1` to republish pointing at the new module versions
 - All modules bumped to `1.0.0`: `core`, `analytics`, `sdk-android`, `core-methods`, `mp-extended`, `checkout`, `components`, `foundation`, `sdk-android-bom`
 - BOM (`sdk-android-bom`) now includes `checkout`, `components`, and `foundation` in its dependency constraints — consumers no longer need to specify versions for these modules when using the BOM
@@ -14,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Paparazzi snapshot images removed from git tracking — LFS objects were missing on the server (404); directory added to `.gitignore`
 
 ### Added
+- CI `lint` job runs `.circleci/scripts/check-consumer-rules.sh`: fails when a module has Gson DTOs (`@SerializedName`) or Retrofit services without a package-wide keep and `-keepattributes *Annotation*, Signature` in its `consumer-rules.pro` (the file R8 applies in integrator release builds); existing gaps are tracked in `.circleci/consumer-rules-baseline.txt`
+- `example` app now depends on `mp-extended`, so its consumer rules go through R8 in the minified `example` release build that CI already runs (`assembleRelease`)
 - `MPCheckoutType.CardTransaction` — initiates a card payment against an existing order via `MPOrder(orderId, clientToken, amount, payer)`
 - `MPPaymentData.CardTransaction` — success result carrying `orderId`, `orderStatus`, and `paymentMethodId`
 - `MPUserCancelledContext.CardTransaction` — cancellation context with `fields` (list of `MPCancelledFieldState`) and `screens` visited

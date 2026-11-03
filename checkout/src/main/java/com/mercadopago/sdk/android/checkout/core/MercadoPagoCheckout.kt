@@ -7,6 +7,9 @@ import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutAppearance
 import com.mercadopago.sdk.android.checkout.core.model.MPCheckoutType
 import com.mercadopago.sdk.android.checkout.core.model.MPPaymentMethodConfig
 import com.mercadopago.sdk.android.checkout.core.model.internal.CheckoutConfiguration
+import com.mercadopago.sdk.android.checkout.core.model.internal.ScreenConfig
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOnEmailChangeRequested
+import com.mercadopago.sdk.android.checkout.core.model.internal.getOnStatusScreenExit
 import com.mercadopago.sdk.android.checkout.data.preferences.CheckoutThemePreferences
 import com.mercadopago.sdk.android.checkout.domain.callback.CheckoutCallbackHolder
 import com.mercadopago.sdk.android.checkout.domain.callback.MercadoPagoCheckoutResult
@@ -42,6 +45,8 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
         callback: (MercadoPagoCheckoutResult<T, C>) -> Unit,
     ) {
         CheckoutCallbackHolder.setCallback(callback)
+        CheckoutCallbackHolder.setEmailChangeCallback(checkoutConfiguration.getOnEmailChangeRequested())
+        CheckoutCallbackHolder.setStatusScreenExitCallback(checkoutConfiguration.getOnStatusScreenExit())
         Checkout.getInstance(context).koin.get<CheckoutThemePreferences>().apply {
             setCurrentStyle(
                 checkoutAppearance?.style ?: MercadoPagoUserInterfaceStyle.System,
@@ -69,15 +74,8 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
             style = MercadoPagoUserInterfaceStyle.System,
         ),
     ) {
-        private var paymentMethodConfigs: List<MPPaymentMethodConfig> = emptyList()
-
-        /**
-         * Sets the payment methods
-         * @param paymentMethodConfigs List of payment methods
-         */
-        fun setPaymentMethodConfiguration(
-            paymentMethodConfigs: List<MPPaymentMethodConfig> = MPPaymentMethodConfig.defaults,
-        ) = apply { this.paymentMethodConfigs = paymentMethodConfigs }
+        internal var paymentMethodConfigs: List<MPPaymentMethodConfig> = emptyList()
+        internal val screenConfigs: LinkedHashSet<ScreenConfig> = linkedSetOf()
 
         /**
          * Builds the MercadoPagoCheckout
@@ -89,6 +87,7 @@ class MercadoPagoCheckout<T : MPPaymentData, C : MPUserCancelledContext> private
                 checkoutConfiguration = CheckoutConfiguration(
                     checkoutType = checkoutType,
                     paymentMethodConfigs = paymentMethodConfigs,
+                    screenConfigs = screenConfigs.toList(),
                 ),
             )
     }
