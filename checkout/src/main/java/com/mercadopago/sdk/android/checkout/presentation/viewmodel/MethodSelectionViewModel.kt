@@ -3,6 +3,7 @@ package com.mercadopago.sdk.android.checkout.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionScreenData
 import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
+import com.mercadopago.sdk.android.checkout.presentation.extensions.parseFormattedAmount
 import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.shared.withButtonEnabled
@@ -77,13 +78,16 @@ internal class MethodSelectionViewModel(
         } else {
             screenData.footer?.button?.let { ButtonState(enabled = false, isLoading = false) }
         }
+        val amount = screenData.footer?.totalAmount?.takeIf { it.isNotBlank() }?.parseFormattedAmount()
         return MethodSelectionScreenState(
             headerTitle = screenData.headerTitle,
             options = screenData.options,
             selectedOptionId = null,
             footerState = FooterState(
                 title = screenData.footer?.totalLabel.orEmpty(),
-                subtitle = screenData.footer?.totalAmount.orEmpty(),
+                currencySymbol = amount?.currencySymbol.orEmpty(),
+                amountIntegerPart = amount?.integerPart.orEmpty(),
+                amountDecimalPart = amount?.decimalPart.orEmpty(),
                 buttonLabel = if (isArrowLayout) null else screenData.footer?.button?.label,
                 isVisible = true,
                 buttonState = ctaButtonState,

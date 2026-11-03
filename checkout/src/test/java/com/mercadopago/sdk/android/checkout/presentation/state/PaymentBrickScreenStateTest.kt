@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.checkout.presentation.state
 
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -22,7 +23,7 @@ internal class PaymentBrickScreenStateTest {
     fun `given explicit values then PaymentBrickScreenState properties are assigned`() {
         val option = PaymentOptionState(id = "card", title = "Credit card")
         val section = PaymentSectionState(title = "Cards", options = listOf(option))
-        val footer = PaymentBrickFooterState(totalLabel = "Total", totalAmount = "$ 100")
+        val footer = FooterState(title = "Total", currencySymbol = "$", amountIntegerPart = "100", isVisible = true)
 
         val state = PaymentBrickScreenState(
             title = "How do you want to pay?",
@@ -85,18 +86,5 @@ internal class PaymentBrickScreenStateTest {
         assertEquals("New desc", copy.description)
         assertEquals(option.id, copy.id)
         assertEquals(option.title, copy.title)
-    }
-
-    @Test
-    fun `given PaymentBrickFooterState with values then properties are assigned and copy works`() {
-        val footer = PaymentBrickFooterState(totalLabel = "Total", totalAmount = "$ 250,50")
-
-        assertEquals("Total", footer.totalLabel)
-        assertEquals("$ 250,50", footer.totalAmount)
-
-        val copy = footer.copy(totalAmount = "$ 300,00")
-        assertEquals("$ 300,00", copy.totalAmount)
-        assertEquals(footer.totalLabel, copy.totalLabel)
-        assertNotEquals(footer, copy)
     }
 }

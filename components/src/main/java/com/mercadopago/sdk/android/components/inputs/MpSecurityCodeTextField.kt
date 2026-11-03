@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +40,10 @@ import com.mercadopago.sdk.android.foundation.theme.MercadoPagoThemes
  * @param label Optional label text displayed above the field.
  * @param helper Optional helper text displayed below the field.
  * @param onClickTooltip tooltip of secure code text field
+ * @param tooltip optional tooltip anchored to the info icon, centered above it
  * @param placeHolder Field place holder.
+ * @param focusRequester Optional requester attached to the inner input, used to request focus programmatically
+ * (e.g., autofocus on screen entry).
  * @param onEvent Callback invoked when security code events occur (e.g., value changes, validation).
  */
 @Composable
@@ -53,7 +58,9 @@ fun MPSecurityCodeTextField(
     label: String = "",
     helper: String = "",
     onClickTooltip: () -> Unit,
+    tooltip: (@Composable () -> Unit)? = null,
     placeHolder: String = MP_EMPTY_STRING,
+    focusRequester: FocusRequester? = null,
     onEvent: (SecurityCodeTextFieldEvent) -> Unit,
 ) {
     val defaults = getMPInputDefaults()
@@ -63,12 +70,15 @@ fun MPSecurityCodeTextField(
         helper = helper,
         error = error,
         onClickTooltip = onClickTooltip,
+        tooltip = tooltip,
         showTooltipIcon = true,
         defaults = defaults,
     ) {
         SecurityCodeTextField(
             state = state,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier),
             onEvent = onEvent,
             enabled = enabled,
             textStyle = MercadoPagoTheme.typography.body.default.medium,

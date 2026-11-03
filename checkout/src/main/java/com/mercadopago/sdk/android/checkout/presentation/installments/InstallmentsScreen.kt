@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +40,7 @@ import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
+import com.mercadopago.sdk.android.components.MPPadlockCloseIcon
 import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
@@ -216,7 +216,7 @@ private fun InstallmentsFooter(
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,
-                icon = Icons.Filled.Lock,
+                icon = MPPadlockCloseIcon,
                 isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onPayClick,
             )

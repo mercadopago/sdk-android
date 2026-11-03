@@ -50,6 +50,17 @@ internal class MethodSelectionViewModelTest {
     }
 
     @Test
+    fun `given formatted total amount when initialized then footer amount is split into parts`() = runTest {
+        val footerState = makeViewModel().screenState.value.footerState
+
+        assertEquals("Total", footerState.title)
+        assertEquals("R$", footerState.currencySymbol)
+        assertEquals("100", footerState.amountIntegerPart)
+        assertEquals("00", footerState.amountDecimalPart)
+        assertNull(footerState.subtitle)
+    }
+
+    @Test
     fun `given screenData without button when initialized then buttonState is null`() = runTest {
         val viewModel = makeViewModel(makeScreenData(hasButton = false))
 

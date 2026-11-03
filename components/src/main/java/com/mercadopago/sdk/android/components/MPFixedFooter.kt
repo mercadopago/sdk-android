@@ -95,7 +95,7 @@ fun MPFixedFooter(
                 vertical = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
         ) {
-            if (amount?.integerPart?.isGreaterThan() == true) {
+            if (amount?.hasPositiveValue() == true) {
                 HeaderSection(
                     title = title,
                     amount = amount,
@@ -118,6 +118,8 @@ fun MPFixedFooter(
         }
     }
 }
+
+private fun MPAmountData.hasPositiveValue(): Boolean = (integerPart + decimalPart).isGreaterThan()
 
 @Composable
 private fun HeaderSection(
