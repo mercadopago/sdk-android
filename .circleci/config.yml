@@ -228,6 +228,9 @@ jobs:
     docker:
       - image: cimg/openjdk:17.0.13
     working_directory: ~/repo
+    resource_class: xlarge
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError"
     steps:
       - setup-android
       - run:
