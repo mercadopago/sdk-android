@@ -1,9 +1,5 @@
 package com.mercadopago.sdk.android.checkout.statusscreen.presentation
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
-import android.view.WindowManager
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.ConfigurationCompat
@@ -26,6 +21,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import com.mercadopago.android.sdk.checkout.R
 import com.mercadopago.sdk.android.checkout.analytics.StatusScreenCloseSource
 import com.mercadopago.sdk.android.checkout.domain.model.OrderProcessOutput
+import com.mercadopago.sdk.android.checkout.presentation.shared.SecureWhileVisible
 import com.mercadopago.sdk.android.checkout.statusscreen.data.remote.mapper.toStatusScreenViewData
 import com.mercadopago.sdk.android.checkout.statusscreen.domain.model.StatusScreenFallbackCopy
 import com.mercadopago.sdk.android.checkout.statusscreen.domain.model.StatusScreenHeader
@@ -230,21 +226,3 @@ private fun TrackCloseOnBackStackExit(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 }
-
-@Composable
-private fun SecureWhileVisible() {
-    val activity = LocalContext.current.findActivity() ?: return
-    DisposableEffect(activity) {
-        activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        onDispose {
-            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
-    }
-}
-
-private tailrec fun Context.findActivity(): Activity? =
-    when (this) {
-        is Activity -> this
-        is ContextWrapper -> baseContext.findActivity()
-        else -> null
-    }

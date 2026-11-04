@@ -5,6 +5,7 @@ import com.mercadopago.sdk.android.checkout.presentation.state.AmountParts
 import com.mercadopago.sdk.android.components.MPAmountData
 
 internal const val ZERO = "0"
+private const val ZERO_DECIMAL_PART = "00"
 
 internal fun String.hasAllSameDigits(): Boolean {
     val digits = this.filter { it.isDigit() }
@@ -33,7 +34,7 @@ internal fun String.parseFormattedAmount(): AmountParts {
             decimalPart = decimalMatch.groupValues[1],
         )
     } else {
-        AmountParts(currencySymbol = currencySymbol, integerPart = amountPart, decimalPart = "")
+        AmountParts(currencySymbol = currencySymbol, integerPart = amountPart, decimalPart = ZERO_DECIMAL_PART)
     }
 }
 

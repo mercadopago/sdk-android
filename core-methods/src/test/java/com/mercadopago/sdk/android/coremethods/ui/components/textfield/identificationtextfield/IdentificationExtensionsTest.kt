@@ -3,6 +3,8 @@ package com.mercadopago.sdk.android.coremethods.ui.components.textfield.identifi
 import androidx.compose.ui.text.AnnotatedString
 import com.mercadopago.sdk.android.coremethods.domain.model.IdentificationType
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class IdentificationExtensionsTest {
@@ -64,5 +66,65 @@ internal class IdentificationExtensionsTest {
 
         // Then
         assertEquals("12345678901", result)
+    }
+
+    @Test
+    fun `given lowercase string type then isNumeric returns false`() {
+        // Given
+        val identificationType = IdentificationType(id = "CNPJ", type = "string")
+
+        // When
+        val result = identificationType.isNumeric()
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `given capitalized String type then isNumeric returns false`() {
+        // Given
+        val identificationType = IdentificationType(id = "CNPJ", type = "String")
+
+        // When
+        val result = identificationType.isNumeric()
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `given capitalized Number type then isNumeric returns true`() {
+        // Given
+        val identificationType = IdentificationType(id = "CPF", type = "Number")
+
+        // When
+        val result = identificationType.isNumeric()
+
+        // Then
+        assertTrue(result)
+    }
+
+    @Test
+    fun `given unknown type then isNumeric returns false`() {
+        // Given
+        val identificationType = IdentificationType(id = "RG", type = "rg")
+
+        // When
+        val result = identificationType.isNumeric()
+
+        // Then
+        assertFalse(result)
+    }
+
+    @Test
+    fun `given null identification type then isNumeric returns false`() {
+        // Given
+        val identificationType: IdentificationType? = null
+
+        // When
+        val result = identificationType.isNumeric()
+
+        // Then
+        assertFalse(result)
     }
 }

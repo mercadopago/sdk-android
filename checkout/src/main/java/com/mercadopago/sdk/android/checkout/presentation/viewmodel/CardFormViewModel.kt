@@ -442,7 +442,7 @@ internal class CardFormViewModel(
                     transactionAmount = data.amount
                     _viewState.value = data.toCardFormScreenState(
                         totalAmount = transactionAmount,
-                    )
+                    ).keepFocusFrom(_viewState.value)
                 },
                 onError = { error ->
                     isInitializationStarted = false
@@ -752,4 +752,16 @@ internal class CardFormViewModel(
 
             else -> null
         }
+
+    private fun CardFormScreenState.keepFocusFrom(
+        previous: CardFormScreenState,
+    ) = copy(
+        cardNumberState = cardNumberState.copy(isFocused = previous.cardNumberState.isFocused),
+        cardHolderState = cardHolderState.copy(isFocused = previous.cardHolderState.isFocused),
+        expirationDateState = expirationDateState.copy(isFocused = previous.expirationDateState.isFocused),
+        secureCodeState = secureCodeState.copy(isFocused = previous.secureCodeState.isFocused),
+        identificationTypeState = identificationTypeState.copy(
+            isFocused = previous.identificationTypeState.isFocused,
+        ),
+    )
 }
