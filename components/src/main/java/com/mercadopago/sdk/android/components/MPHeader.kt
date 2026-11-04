@@ -4,13 +4,13 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,31 +62,21 @@ fun MPHeader(
     content: @Composable () -> Unit,
 ) {
     var titleBlockHeightPx by remember { mutableFloatStateOf(0f) }
+    var collapsedBarHeightPx by remember { mutableFloatStateOf(0f) }
     val scrollOffset = scrollState.value.toFloat()
     val progress = scrollOffset.scrollProgressRatio(titleBlockHeightPx)
-    Column(
+    val inlineTitleOpacity = ((progress - INLINE_TITLE_THRESHOLD) / (1f - INLINE_TITLE_THRESHOLD)).coerceIn(0f, 1f)
+    val collapsedBarHeight = with(LocalDensity.current) { collapsedBarHeightPx.toDp() }
+    Box(
         modifier = modifier.background(color = MercadoPagoTheme.color.background.primary),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MercadoPagoTheme.color.background.primary)
-                .padding(
-                    horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                    vertical = MercadoPagoTheme.spacing.paddings.micro,
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            HeaderBackButton(onClick = onBackClick)
-            MPHeaderCollapsedTitle(title = title, progress = progress)
-        }
-
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .verticalScroll(scrollState)
                 .padding(bottom = MercadoPagoTheme.spacing.paddings.xsmall),
         ) {
+            Spacer(modifier = Modifier.height(collapsedBarHeight))
             MPHeaderExpandedTitle(
                 title = title,
                 subtitle = subtitle,
@@ -92,6 +84,47 @@ fun MPHeader(
             )
             content.invoke()
         }
+        MPHeaderCollapsedBar(
+            title = title,
+            titleOpacity = inlineTitleOpacity,
+            isScrolled = scrollState.value > 0,
+            onBackClick = onBackClick,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .onGloballyPositioned { coordinates ->
+                    collapsedBarHeightPx = coordinates.size.height.toFloat()
+                },
+        )
+    }
+}
+
+@Composable
+private fun MPHeaderCollapsedBar(
+    title: String,
+    titleOpacity: Float,
+    isScrolled: Boolean,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val defaults = getMPHeaderDefaults()
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = if (isScrolled) defaults.colors.fillOnScroll else Color.Transparent)
+            .padding(
+                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+                vertical = MercadoPagoTheme.spacing.paddings.micro,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HeaderBackButton(onClick = onBackClick)
+        MPHeaderCollapsedTitle(
+            title = title,
+            opacity = titleOpacity,
+            modifier = Modifier.weight(1f),
+        )
+        // Mirrors the back button width so the title stays centered in the bar.
+        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.gap.medium))
     }
 }
 
@@ -129,20 +162,22 @@ private fun MPHeaderExpandedTitle(
 @Composable
 private fun MPHeaderCollapsedTitle(
     title: String,
-    progress: Float,
+    opacity: Float,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(progress),
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
     ) {
-        Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xmicro))
         MPText(
             text = title,
             style = MercadoPagoTheme.typography.heading.default.small,
+            modifier = Modifier.alpha(opacity),
         )
     }
 }
+
+private const val INLINE_TITLE_THRESHOLD = 0.75f
 
 @Composable
 private fun HeaderBackButton(

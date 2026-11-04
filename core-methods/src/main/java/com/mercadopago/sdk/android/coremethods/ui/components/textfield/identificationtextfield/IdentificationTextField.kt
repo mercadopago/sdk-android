@@ -99,7 +99,7 @@ fun IdentificationTextField(
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
 ) {
     val maxLength = identificationType?.maxLength ?: Int.MAX_VALUE
-    val isNumeric = (identificationType?.type == "number")
+    val isNumeric = identificationType.isNumeric()
     val keyboardType = if (isNumeric) KeyboardType.Number else KeyboardType.Text
 
     PCITextField(

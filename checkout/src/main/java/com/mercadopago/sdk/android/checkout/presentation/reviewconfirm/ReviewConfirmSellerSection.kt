@@ -38,7 +38,7 @@ internal fun ReviewConfirmSellerSection(
 
             MPText(
                 text = it,
-                style = MercadoPagoTheme.typography.body.emphasis.large,
+                style = MercadoPagoTheme.typography.heading.default.small,
                 color = MercadoPagoTheme.color.text.primary,
             )
         }

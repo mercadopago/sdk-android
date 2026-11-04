@@ -166,6 +166,24 @@ internal class CardFormViewModelTest {
     }
 
     @Test
+    fun `given card number focused while loading when initialization succeeds then keeps card number focused`() =
+        runTest {
+            // Given
+            lateinit var viewModel: CardFormViewModel
+            coEvery { initializeCardFormUseCase(any(), any(), any(), any()) } coAnswers {
+                viewModel.onCardNumberEvent(CardNumberTextFieldEvent.OnFocusChanged(isFocused = true))
+                Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
+            }
+            viewModel = makeViewModel()
+
+            // When
+            viewModel.initialization()
+
+            // Then
+            assertTrue(viewModel.viewState.value.cardNumberState.isFocused)
+        }
+
+    @Test
     fun `when initialization already succeeded then reentry keeps state without another request`() = runTest {
         coEvery { initializeCardFormUseCase(any(), any(), any()) } returns
             Result.Success(mockk<CardFormInitializationOutput>(relaxed = true))
