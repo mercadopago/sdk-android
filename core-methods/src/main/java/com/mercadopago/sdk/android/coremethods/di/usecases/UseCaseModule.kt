@@ -1,5 +1,8 @@
 package com.mercadopago.sdk.android.coremethods.di.usecases
 
+import com.mercadopago.sdk.android.analytics.domain.interactor.MPAnalytics
+import com.mercadopago.sdk.android.coremethods.di.MelidataSessionIdProvider
+import com.mercadopago.sdk.android.coremethods.di.MelidataSessionIdProviderImpl
 import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
 import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProviderImpl
 import com.mercadopago.sdk.android.coremethods.domain.usecase.GenerateCardIdTokenUseCase
@@ -18,17 +21,23 @@ import org.koin.dsl.module
 internal fun provideUseCaseModule(): Module =
     module {
         single { SecurityCodeLengthProviderImpl() } bind SecurityCodeLengthProvider::class
+        single<MelidataSessionIdProvider> {
+            MelidataSessionIdProviderImpl(
+                analytics = { MPAnalytics.tryGetInstance() },
+                fallbackSessionIdProvider = get<SessionIdProvider>(),
+            )
+        }
         factory { GetInstallmentsUseCase(get()) }
         factory { GetIdentificationTypesUseCase(get()) }
         factory { GetCardIssuersUseCase(get()) }
         factory { GetPaymentMethodsUseCase(get()) }
         factory { IsSecurityCodeValidUseCase() }
-        factory { GenerateCardTokenUseCase(get(), get(), get<SessionIdProvider>(), get()) }
-        factory { GenerateCardTokenPCIUseCase(get(), get(), get<SessionIdProvider>(), get()) }
+        factory { GenerateCardTokenUseCase(get(), get(), get<MelidataSessionIdProvider>(), get()) }
+        factory { GenerateCardTokenPCIUseCase(get(), get(), get<MelidataSessionIdProvider>(), get()) }
         factory {
             GenerateCardIdTokenUseCase(
                 get(),
-                get<SessionIdProvider>(),
+                get<MelidataSessionIdProvider>(),
                 get<SecurityCodeLengthProvider>(),
                 get(),
             )

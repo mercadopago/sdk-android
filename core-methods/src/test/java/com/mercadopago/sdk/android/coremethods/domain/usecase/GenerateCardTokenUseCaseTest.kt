@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadopago.sdk.android.coremethods.di.MelidataSessionIdProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardModel
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.PaymentMethod
@@ -8,7 +9,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.SecurityCodeModel
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
-import com.mercadopago.sdk.android.di.SessionIdProvider
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -19,14 +19,14 @@ import org.junit.Test
 
 internal class GenerateCardTokenUseCaseTest {
     private val repository: CoreMethodsRepository = mockk()
-    private val sessionIdProvider: SessionIdProvider = mockk()
+    private val sessionIdProvider: MelidataSessionIdProvider = mockk()
     private val paymentMethodsUseCase: GetPaymentMethodsUseCase = mockk()
     private val isSecurityCodeValidUseCase: IsSecurityCodeValidUseCase = mockk()
     private val generateCardTokenUseCase =
         GenerateCardTokenUseCase(repository, paymentMethodsUseCase, sessionIdProvider, isSecurityCodeValidUseCase)
 
     init {
-        every { sessionIdProvider.getSessionId() } returns "test-session-id"
+        coEvery { sessionIdProvider.getSessionId() } returns "test-session-id"
     }
 
     @Test
