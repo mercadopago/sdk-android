@@ -47,7 +47,7 @@ internal fun metricSecurityCodeBack() =
     Metric(
         path = "$SDK_NATIVE_PATH$CHECKOUT_PAYMENT_BRICK_PATH$CVV_BACK_PATH",
         type = TrackType.EVENT,
-        data = SecurityCodeErrorEventData(errorType = "back_pressed"),
+        data = null,
     )
 
 internal data class SecurityCodeViewEventData(

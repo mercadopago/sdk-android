@@ -59,13 +59,12 @@ internal class SecurityCodeAnalyticsTest {
     }
 
     @Test
-    fun `metricSecurityCodeBack returns EVENT type with cvv_back path and back_pressed error_type`() {
+    fun `metricSecurityCodeBack returns EVENT type with cvv_back path and no data`() {
         val metric = metricSecurityCodeBack()
 
         assertEquals("/checkout_api_native/checkout/payment_brick/cvv_back", metric.path)
         assertEquals(TrackType.EVENT, metric.type)
-        val data = assertIs<SecurityCodeErrorEventData>(metric.data)
-        assertEquals("back_pressed", data.errorType)
+        assertNull(metric.data)
     }
 
     @Test
