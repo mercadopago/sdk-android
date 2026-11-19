@@ -93,7 +93,7 @@ private fun MPFeedbackLayout(
             MPText(
                 text = title,
                 modifier = Modifier.fillMaxWidth(),
-                style = MercadoPagoTheme.typography.heading.default.medium.copy(textAlign = TextAlign.Start),
+                style = MercadoPagoTheme.typography.heading.default.huge.copy(textAlign = TextAlign.Start),
                 color = MercadoPagoTheme.color.text.primary,
             )
         }

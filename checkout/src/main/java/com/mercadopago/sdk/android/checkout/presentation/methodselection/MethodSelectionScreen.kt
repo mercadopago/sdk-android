@@ -1,27 +1,29 @@
 package com.mercadopago.sdk.android.checkout.presentation.methodselection
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.checkout.domain.model.MethodSelectionOption
+import com.mercadopago.sdk.android.checkout.presentation.shared.ButtonState
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.MethodSelectionScreenState
-import com.mercadopago.sdk.android.components.MPButton
+import com.mercadopago.sdk.android.components.MPAmountData
+import com.mercadopago.sdk.android.components.MPFixedFooter
+import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
-import com.mercadopago.sdk.android.components.MPText
+import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
+
+private const val METHOD_SELECTION_GROUP = "METHOD_SELECTION"
 
 @Composable
 internal fun MethodSelectionScreen(
@@ -42,7 +44,13 @@ internal fun MethodSelectionScreen(
             title = screenState.headerTitle,
             onBackClick = onBack,
         ) {
-            Column {
+            Spacer(modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xsmall))
+            Column(
+                modifier = Modifier.padding(
+                    horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+                ),
+                verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.micro),
+            ) {
                 screenState.options.forEach { option ->
                     MethodSelectionOptionRow(
                         option = option,
@@ -67,44 +75,92 @@ private fun MethodSelectionFooter(
     footerState: FooterState,
     onCtaTap: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MercadoPagoTheme.color.background.primary)
-            .padding(
-                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                vertical = MercadoPagoTheme.spacing.paddings.xtiny,
-            ),
-    ) {
-        if (footerState.title.isNotEmpty() || footerState.subtitle != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                MPText(
-                    text = footerState.title,
-                    style = MercadoPagoTheme.typography.body.emphasis.large,
-                    color = MercadoPagoTheme.color.text.primary,
-                )
-                footerState.subtitle?.let { amount ->
-                    MPText(
-                        text = amount,
-                        style = MercadoPagoTheme.typography.heading.default.medium,
-                        color = MercadoPagoTheme.color.text.primary,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
-        }
-        footerState.buttonLabel?.let { label ->
-            MPButton(
+    MPFixedFooter(
+        title = footerState.title,
+        amount = MPAmountData(
+            currencySymbol = footerState.currencySymbol,
+            integerPart = footerState.amountIntegerPart,
+            decimalPart = footerState.amountDecimalPart,
+        ),
+        subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
+        button = footerState.buttonLabel?.let { label ->
+            MPFixedFooterButtonData(
                 text = label,
-                modifier = Modifier.fillMaxWidth(),
                 enabled = footerState.buttonState?.enabled ?: false,
                 isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onCtaTap,
             )
-        }
+        },
+    )
+}
+
+private val previewOptions = listOf(
+    MethodSelectionOption(
+        id = "pagofacil",
+        name = "Pago Fácil",
+        subtitle = "Vence en 3 días",
+        iconUrl = "",
+    ),
+    MethodSelectionOption(
+        id = "rapipago",
+        name = "Rapipago",
+        subtitle = "Vence en 3 días",
+        iconUrl = "",
+    ),
+)
+
+@Preview(
+    name = "MethodSelection Radio Button",
+    group = METHOD_SELECTION_GROUP,
+    showBackground = true,
+)
+@Composable
+private fun MethodSelectionRadioButtonPreview() {
+    MercadoPagoTheme {
+        MethodSelectionScreen(
+            screenState = MethodSelectionScreenState(
+                headerTitle = "¿Dónde quieres pagar?",
+                options = previewOptions,
+                selectedOptionId = "pagofacil",
+                footerState = FooterState(
+                    title = "Total",
+                    currencySymbol = "$",
+                    amountIntegerPart = "1.000",
+                    amountDecimalPart = "00",
+                    buttonLabel = "Generar código de pago",
+                    isVisible = true,
+                    buttonState = ButtonState(enabled = true),
+                ),
+                isArrowLayout = false,
+            ),
+            onOptionTap = {},
+            onCtaTap = {},
+            onBack = {},
+        )
+    }
+}
+
+@Preview(name = "MethodSelection Chevron", group = METHOD_SELECTION_GROUP, showBackground = true)
+@Composable
+private fun MethodSelectionChevronPreview() {
+    MercadoPagoTheme {
+        MethodSelectionScreen(
+            screenState = MethodSelectionScreenState(
+                headerTitle = "¿Dónde quieres pagar?",
+                options = previewOptions,
+                selectedOptionId = null,
+                footerState = FooterState(
+                    title = "Total",
+                    currencySymbol = "$",
+                    amountIntegerPart = "1.000",
+                    amountDecimalPart = "00",
+                    isVisible = true,
+                ),
+                isArrowLayout = true,
+            ),
+            onOptionTap = {},
+            onCtaTap = {},
+            onBack = {},
+        )
     }
 }

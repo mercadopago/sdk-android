@@ -1,9 +1,7 @@
 package com.mercadopago.sdk.android.checkout.presentation.paymentbrick
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,15 +14,16 @@ import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mercadopago.sdk.android.checkout.presentation.loading.LoadingScreen
-import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickFooterState
+import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentBrickScreenState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentOptionState
 import com.mercadopago.sdk.android.checkout.presentation.state.PaymentSectionState
 import com.mercadopago.sdk.android.checkout.presentation.viewmodel.PaymentBrickViewModel
+import com.mercadopago.sdk.android.components.MPAmountData
+import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
 import com.mercadopago.sdk.android.components.MPText
@@ -97,29 +96,16 @@ private fun PaymentBrickMainContent(
 
 @Composable
 private fun PaymentBrickFooter(
-    footer: PaymentBrickFooterState,
+    footer: FooterState,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                vertical = MercadoPagoTheme.spacing.paddings.xtiny,
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        MPText(
-            text = footer.totalLabel,
-            style = MercadoPagoTheme.typography.body.emphasis.large,
-            color = MercadoPagoTheme.color.text.primary,
-        )
-        MPText(
-            text = footer.totalAmount,
-            style = MercadoPagoTheme.typography.heading.default.medium,
-            color = MercadoPagoTheme.color.text.primary,
-        )
-    }
+    MPFixedFooter(
+        title = footer.title,
+        amount = MPAmountData(
+            currencySymbol = footer.currencySymbol,
+            integerPart = footer.amountIntegerPart,
+            decimalPart = footer.amountDecimalPart,
+        ),
+    )
 }
 
 @Composable
@@ -127,7 +113,11 @@ private fun PaymentSectionsList(
     sections: List<PaymentSectionState>,
     onOptionClick: (String) -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(
+            horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
+        ),
+    ) {
         sections.forEach { section ->
             SectionTitle(section.title)
             section.options.forEach { option ->
@@ -209,9 +199,12 @@ private fun PaymentBrickScreenContentPreview() {
                         ),
                     ),
                 ),
-                footerState = PaymentBrickFooterState(
-                    totalLabel = "Total",
-                    totalAmount = "$ 500,00",
+                footerState = FooterState(
+                    title = "Total",
+                    currencySymbol = "$",
+                    amountIntegerPart = "500",
+                    amountDecimalPart = "00",
+                    isVisible = true,
                 ),
             ),
         )

@@ -91,17 +91,20 @@ fun MPFixedFooter(
         }
         Column(
             modifier = Modifier.padding(
-                horizontal = MercadoPagoTheme.spacing.paddings.xtiny,
-                vertical = MercadoPagoTheme.spacing.paddings.xtiny,
+                start = MercadoPagoTheme.spacing.paddings.xtiny,
+                top = MercadoPagoTheme.spacing.paddings.xtiny,
+                end = MercadoPagoTheme.spacing.paddings.xtiny,
+                bottom = MercadoPagoTheme.spacing.paddings.xtiny,
             ),
         ) {
-            if (amount?.integerPart?.isGreaterThan() == true) {
+            if (amount?.hasPositiveValue() == true) {
+                Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.xnano))
                 HeaderSection(
                     title = title,
                     amount = amount,
                     subtitle = subtitle,
                 )
-                Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.micro))
+                Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.xmicro))
             }
             button?.let {
                 MPButton(
@@ -118,6 +121,8 @@ fun MPFixedFooter(
         }
     }
 }
+
+private fun MPAmountData.hasPositiveValue(): Boolean = (integerPart + decimalPart).isGreaterThan()
 
 @Composable
 private fun HeaderSection(

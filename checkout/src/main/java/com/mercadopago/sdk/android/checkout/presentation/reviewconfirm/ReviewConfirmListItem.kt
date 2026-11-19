@@ -33,14 +33,14 @@ internal fun ReviewConfirmListItem(
         ) {
             MPText(
                 text = item.label,
-                style = MercadoPagoTheme.typography.body.emphasis.medium,
-                color = MercadoPagoTheme.color.text.primary,
+                style = MercadoPagoTheme.typography.body.default.medium,
+                color = MercadoPagoTheme.color.text.secondary,
             )
             item.value?.let { value ->
                 MPText(
                     text = value,
-                    style = MercadoPagoTheme.typography.body.default.large,
-                    color = MercadoPagoTheme.color.text.secondary,
+                    style = MercadoPagoTheme.typography.body.emphasis.medium,
+                    color = MercadoPagoTheme.color.text.primary,
                 )
             }
         }
