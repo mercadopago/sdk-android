@@ -120,6 +120,25 @@ MercadoPagoSDK.initialize(
 
 Sensitive card data is tokenized server-side via the Mercado Pago API before any payment processing. The SDK never stores raw card data beyond the active UI session.
 
+### Device fingerprint
+
+The SDK attaches a device fingerprint, built by the MercadoLibre Device SDK (`com.mercadolibre.android.device:sdk`, version 4.0.1), to two requests. It is used for fraud prevention.
+
+- **Card tokenization** (`POST https://api.mercadopago.com/v1/card_tokens`, used by `core-methods` and `checkout`): sent in the `device` field as `{"fingerprint": {...}}`, with camelCase keys (`systemVersion`, `vendorIds`, `vendorSpecificAttributes`, ...).
+- **Device session** (`PUT https://api.mercadopago.com/cho-off/v1/devices/session`, `mp-extended`, only when `MPExtended.deviceSession()` is called): sent in the `finger_print` field next to `site_id`, with snake_case keys (`system_version`, `vendor_ids`, ...).
+
+Collection starts in the background when `MercadoPagoSDK.initialize(...)` is called, whether or not either request is made later. The values are kept in memory and read when a request is built; a request sent before collection finishes carries a partial fingerprint. The fingerprint contains:
+
+- **Device data**: model (`Build.MODEL`), brand, manufacturer, product (`Build.PRODUCT`), device codename (`Build.DEVICE`), OS (`android`), OS version (`Build.VERSION.RELEASE`), CPU ABI (`ro.product.cpu.abi`), screen resolution (width x height in pixels) and density, total RAM in bytes, and total and free space of the data partition in MiB.
+- **Hardware features** (`PackageManager.hasSystemFeature`): camera, front camera, camera flash, accelerometer, gyroscope, compass, GPS, Bluetooth, NFC, microphone, telephony and touchscreen.
+- **Vendor IDs** (a list of `name` / `value` pairs):
+  - `widevine_id`: the Widevine `MediaDrm` device unique ID (`PROPERTY_DEVICE_UNIQUE_ID`), Base64-encoded, not hashed. Omitted when Widevine is not available.
+  - `advertising_id`: the Google advertising ID, read through Google Play services (`AdvertisingIdClient`) on a background thread. The Device SDK does not check the limit-ad-tracking setting. Omitted when Google Play services is not available.
+
+The Device SDK makes no network calls of its own and writes nothing to disk (no SharedPreferences, files or databases).
+
+The Device SDK depends on `play-services-ads-identifier` 17.1.0 (compile scope), so that library ships in the integrator's app even when the advertising ID is not needed. Its manifest declares `com.google.android.gms.permission.AD_ID`, which is merged into the app manifest. An integrator who does not want the permission can remove it with `<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />`.
+
 ### Network security
 
 All API communication uses HTTPS. The SDK enforces TLS and does not allow cleartext traffic.
