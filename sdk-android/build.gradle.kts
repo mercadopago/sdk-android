@@ -93,7 +93,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.okhttp.mockWebServer)
     api(libs.androidx.datastore)
     api(libs.device.sdk)
 
