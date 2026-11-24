@@ -4,6 +4,8 @@
 ux-reference/
 Flowbook/
 .github/workflows/
+.github/native-sdk-credential-*.json
+.github/scripts/*native_sdk_*_v2.py
 
 # Claude
 .meli
