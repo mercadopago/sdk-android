@@ -3,8 +3,6 @@ package com.mercadopago.sdk.android.checkout.presentation.reviewconfirm
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,6 +12,7 @@ import com.mercadopago.sdk.android.checkout.presentation.model.ReviewConfirmFoot
 import com.mercadopago.sdk.android.components.MPAmountData
 import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
+import com.mercadopago.sdk.android.components.MPPadlockCloseIcon
 import com.mercadopago.sdk.android.components.MPText
 import com.mercadopago.sdk.android.components.model.MPSubtitle
 import com.mercadopago.sdk.android.foundation.theme.MercadoPagoTheme
@@ -59,7 +58,7 @@ internal fun ReviewConfirmFixedFooter(
         showDivider = true,
         button = MPFixedFooterButtonData(
             text = footer.buttonLabel,
-            icon = Icons.Filled.Lock,
+            icon = MPPadlockCloseIcon,
             isLoading = isLoading,
             onClick = onConfirmClick,
         ),

@@ -188,10 +188,38 @@ internal class StringExtensionsTest {
     }
 
     @Test
-    fun `parseFormattedAmount returns empty decimal when no decimal separator`() {
+    fun `parseFormattedAmount returns zero decimal when no decimal separator`() {
         val result = "$ 1000".parseFormattedAmount()
 
-        assertEquals(AmountParts(currencySymbol = "$", integerPart = "1000", decimalPart = ""), result)
+        assertEquals(AmountParts(currencySymbol = "$", integerPart = "1000", decimalPart = "00"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount keeps thousand separator and returns zero decimal`() {
+        val result = "$ 188.000".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "$", integerPart = "188.000", decimalPart = "00"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount returns plain digits as integer part and zero decimal`() {
+        val result = "100000".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "", integerPart = "100000", decimalPart = "00"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount splits amount without symbol and with zero cents`() {
+        val result = "1,00".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "", integerPart = "1", decimalPart = "00"), result)
+    }
+
+    @Test
+    fun `parseFormattedAmount keeps leading zeros in integer and decimal parts`() {
+        val result = "01,01".parseFormattedAmount()
+
+        assertEquals(AmountParts(currencySymbol = "", integerPart = "01", decimalPart = "01"), result)
     }
 
     @Test
