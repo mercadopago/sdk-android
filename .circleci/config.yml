@@ -61,7 +61,7 @@ jobs:
           command: ./gradlew ktlintCheck
       - run:
           name: Check consumer R8 rules
-          command: bash .circleci/scripts/check-consumer-rules.sh
+          command: .circleci/scripts/check-consumer-rules.sh
 
   test-coverage:
     circleci_ip_ranges: true

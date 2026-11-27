@@ -1,5 +1,6 @@
 package com.mercadopago.sdk.android.coremethods.domain.usecase
 
+import com.mercadopago.sdk.android.coremethods.di.MelidataSessionIdProvider
 import com.mercadopago.sdk.android.coremethods.di.SecurityCodeLengthProvider
 import com.mercadopago.sdk.android.coremethods.domain.model.CardToken
 import com.mercadopago.sdk.android.coremethods.domain.model.ResultError
@@ -7,7 +8,6 @@ import com.mercadopago.sdk.android.coremethods.domain.model.params.GenerateCardT
 import com.mercadopago.sdk.android.coremethods.domain.repository.CoreMethodsRepository
 import com.mercadopago.sdk.android.coremethods.domain.usecase.validations.IsSecurityCodeValidUseCase
 import com.mercadopago.sdk.android.coremethods.domain.utils.Result
-import com.mercadopago.sdk.android.di.SessionIdProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -22,7 +22,7 @@ import kotlin.test.assertNull
 
 internal class GenerateCardIdTokenUseCaseTest {
     private val repository = mockk<CoreMethodsRepository>()
-    private val sessionIdProvider = mockk<SessionIdProvider>()
+    private val sessionIdProvider = mockk<MelidataSessionIdProvider>()
     private val securityCodeLengthProvider = mockk<SecurityCodeLengthProvider>()
     private val isSecurityCodeValidUseCase = mockk<IsSecurityCodeValidUseCase>()
     private val useCase = GenerateCardIdTokenUseCase(
@@ -36,7 +36,7 @@ internal class GenerateCardIdTokenUseCaseTest {
     fun `given security code is null then tokenizes saved card without validating CVV`() = runTest {
         val params = slot<GenerateCardTokenParams>()
         val expectedToken = CardToken("token_saved_123")
-        every { sessionIdProvider.getSessionId() } returns "session-id"
+        coEvery { sessionIdProvider.getSessionId() } returns "session-id"
         coEvery { repository.generateCardToken(capture(params)) } returns Result.Success(expectedToken)
 
         val result = useCase(
@@ -48,6 +48,7 @@ internal class GenerateCardIdTokenUseCaseTest {
         assertIs<Result.Success<CardToken>>(result)
         assertEquals(expectedToken, result.data)
         assertEquals("card-123", params.captured.cardId)
+        assertEquals("session-id", params.captured.session)
         assertNull(params.captured.securityCode)
         verify(exactly = 0) { securityCodeLengthProvider.getExpectedLength() }
         verify(exactly = 0) { isSecurityCodeValidUseCase(any(), any()) }
@@ -89,7 +90,7 @@ internal class GenerateCardIdTokenUseCaseTest {
         val expectedToken = CardToken("token_saved_123")
         every { securityCodeLengthProvider.getExpectedLength() } returns 3
         every { isSecurityCodeValidUseCase(3, 3) } returns true
-        every { sessionIdProvider.getSessionId() } returns "session-id"
+        coEvery { sessionIdProvider.getSessionId() } returns "session-id"
         coEvery { repository.generateCardToken(capture(params)) } returns Result.Success(expectedToken)
 
         val result = useCase(

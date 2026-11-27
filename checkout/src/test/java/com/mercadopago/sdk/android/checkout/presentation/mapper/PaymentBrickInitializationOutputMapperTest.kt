@@ -137,8 +137,11 @@ internal class PaymentBrickInitializationOutputMapperTest {
         val state = buildOutput().toScreenState()
 
         val footer = assertNotNull(state.footerState)
-        assertEquals("Total", footer.totalLabel)
-        assertEquals("$ 500", footer.totalAmount)
+        assertEquals("Total", footer.title)
+        assertEquals("$", footer.currencySymbol)
+        assertEquals("500", footer.amountIntegerPart)
+        assertEquals("00", footer.amountDecimalPart)
+        assertEquals(true, footer.isVisible)
     }
 
     @Test

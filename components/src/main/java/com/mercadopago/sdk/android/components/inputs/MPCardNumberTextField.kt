@@ -69,7 +69,7 @@ fun MPCardNumberTextField(
             state = state,
             modifier = Modifier.fillMaxWidth(),
             onEvent = onEvent,
-            textStyle = MercadoPagoTheme.typography.body.default.medium,
+            textStyle = MercadoPagoTheme.typography.body.default.large,
             enabled = enabled,
             visualTransformation = visualTransformation,
             maxLength = maxLength,
