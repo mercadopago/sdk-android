@@ -5,14 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.sharp.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +30,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.mercadopago.sdk.android.checkout.domain.model.SelectionDisplayType
 import com.mercadopago.sdk.android.checkout.presentation.shared.FooterState
 import com.mercadopago.sdk.android.checkout.presentation.state.InstallmentState
@@ -41,6 +41,7 @@ import com.mercadopago.sdk.android.components.MPFixedFooter
 import com.mercadopago.sdk.android.components.MPFixedFooterButtonData
 import com.mercadopago.sdk.android.components.MPHeader
 import com.mercadopago.sdk.android.components.MPListItem
+import com.mercadopago.sdk.android.components.MPPadlockCloseIcon
 import com.mercadopago.sdk.android.components.MPProgressIndicator
 import com.mercadopago.sdk.android.components.model.MPListItemContentInfo
 import com.mercadopago.sdk.android.components.model.MPListItemTrailing
@@ -98,12 +99,18 @@ private fun InstallmentsScreenContent(
             title = viewState.title,
             onBackClick = onBackClick,
         ) {
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.xmicro))
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.xsmall))
+            Spacer(modifier = Modifier.height(MercadoPagoTheme.spacing.paddings.xtiny))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .padding(
+                        horizontal = MercadoPagoTheme.spacing.paddings.xmicro,
+                        vertical = MercadoPagoTheme.spacing.paddings.xnano,
+                    )
                     .padding(bottom = footerHeightDp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(MercadoPagoTheme.spacing.paddings.xtiny),
             ) {
                 viewState.items.forEach { item ->
                     when (viewState.displayType) {
@@ -212,11 +219,10 @@ private fun InstallmentsFooter(
             decimalPart = footerState.amountDecimalPart,
         ),
         subtitle = footerState.subtitle?.let { MPSubtitle(text = it) },
-        showDivider = true,
         button = footerState.buttonLabel?.let { label ->
             MPFixedFooterButtonData(
                 text = label,
-                icon = Icons.Filled.Lock,
+                icon = MPPadlockCloseIcon,
                 isLoading = footerState.buttonState?.isLoading ?: false,
                 onClick = onPayClick,
             )

@@ -109,8 +109,8 @@ fun MPBarcode(
                 Icon(
                     painter = painterResource(safeIcon),
                     contentDescription = if (justCopied) copyFeedback else copyLabel,
-                    tint = MercadoPagoTheme.color.icon.primary,
-                    modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xtiny).clickable {
+                    tint = MercadoPagoTheme.color.icon.accent,
+                    modifier = Modifier.size(MercadoPagoTheme.spacing.paddings.xsmall).clickable {
                         clipboardManager.setText(AnnotatedString(content))
                         copyRequestId++
                         onCopy()

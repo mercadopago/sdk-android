@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -134,6 +134,8 @@ internal fun CardFormScreenContent(
     onMessageClick: () -> Unit = {},
 ) {
     val cardNumberFocusRequester = remember { FocusRequester() }
+    val headerScrollState = rememberScrollState()
+    val isSecurityCodeFocused = viewState.secureCodeState.isFocused
     var showIdentificationBottomSheet by remember { mutableStateOf(false) }
     val density = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(density) > 0
@@ -142,6 +144,12 @@ internal fun CardFormScreenContent(
 
     LaunchedEffect(Unit) {
         cardNumberFocusRequester.requestFocus()
+    }
+
+    LaunchedEffect(isSecurityCodeFocused) {
+        if (isSecurityCodeFocused) {
+            headerScrollState.animateScrollTo(headerScrollState.maxValue)
+        }
     }
 
     Box(
@@ -162,6 +170,7 @@ internal fun CardFormScreenContent(
             ) {
                 MPHeader(
                     modifier = Modifier.fillMaxSize(),
+                    scrollState = headerScrollState,
                     title = viewState.title,
                     onBackClick = {
                         onBackPressed()
@@ -513,34 +522,24 @@ private fun CardFormFields(
 
         if (!viewState.secureCodeState.optional) {
             Spacer(Modifier.size(MercadoPagoTheme.spacing.gap.xsmall))
-            Box {
-                MPSecurityCodeTextField(
-                    state = securityCodePCIState,
-                    securityCodeSize = viewState.secureCodeState.maxLength,
-                    isFocused = viewState.secureCodeState.isFocused,
-                    showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
-                    error = viewState.secureCodeState.error,
-                    enabled = viewState.secureCodeState.enabled,
-                    label = viewState.secureCodeState.label,
-                    helper = viewState.secureCodeState.helper,
-                    placeHolder = viewState.secureCodeState.placeHolder,
-                    onClickTooltip = onTooltipClick,
-                    onEvent = onSecurityCodeEvent,
-                )
-                if (viewState.showTooltip) {
-                    MPTooltip(
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(constraints)
-                                layout(placeable.width, 0) {
-                                    placeable.placeRelative(0, -placeable.height)
-                                }
-                            },
-                        text = viewState.secureCodeState.messageTooltip,
-                    )
-                }
-            }
+            MPSecurityCodeTextField(
+                state = securityCodePCIState,
+                securityCodeSize = viewState.secureCodeState.maxLength,
+                isFocused = viewState.secureCodeState.isFocused,
+                showPlaceHolder = viewState.secureCodeState.showPlaceHolder,
+                error = viewState.secureCodeState.error,
+                enabled = viewState.secureCodeState.enabled,
+                label = viewState.secureCodeState.label,
+                helper = viewState.secureCodeState.helper,
+                placeHolder = viewState.secureCodeState.placeHolder,
+                onClickTooltip = onTooltipClick,
+                tooltip = if (viewState.showTooltip) {
+                    { MPTooltip(text = viewState.secureCodeState.messageTooltip) }
+                } else {
+                    null
+                },
+                onEvent = onSecurityCodeEvent,
+            )
         }
 
         if (viewState.identificationTypeState.show) {
@@ -574,7 +573,7 @@ private fun CardFormFooter(
     onFooterButtonClick: () -> Unit,
 ) {
     Surface(
-        shadowElevation = 8.dp,
+        shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
         MPFixedFooter(

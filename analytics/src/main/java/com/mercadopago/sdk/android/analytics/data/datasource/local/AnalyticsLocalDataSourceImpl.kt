@@ -7,57 +7,57 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.google.gson.Gson
 import com.mercadopago.sdk.android.analytics.data.local.model.SessionId
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import java.util.Calendar
 import java.util.UUID
 import kotlin.time.Duration.Companion.minutes
 
 internal const val SESSION_ID_PREFERENCE_KEY = "session_id"
 internal const val UID_PREFERENCE_KEY = "uid"
+private val SESSION_DURATION = 30.minutes
 
 internal class AnalyticsLocalDataSourceImpl(
     private val dataStore: DataStore<Preferences>,
     private val gson: Gson,
 ) : AnalyticsLocalDataSource {
 
+    // Read, validate and rotate inside a single edit transaction so concurrent readers
+    // agree on the same session instead of each generating its own UUID.
     override fun getSessionId(): Flow<SessionId> {
-        return dataStore.data.map { preferences ->
-            val sessionId = try {
-                gson.fromJson(
-                    preferences[stringPreferencesKey(SESSION_ID_PREFERENCE_KEY)],
-                    SessionId::class.java,
-                )
-            } catch (_: Exception) {
-                SessionId(
-                    sessionId = UUID.randomUUID().toString(),
-                    lastUpdate = Calendar.getInstance().timeInMillis,
-                )
+        return flow {
+            val key = stringPreferencesKey(SESSION_ID_PREFERENCE_KEY)
+            val preferences = dataStore.edit { mutablePreferences ->
+                val stored = mutablePreferences[key]?.toSessionIdOrNull()
+                if (stored == null || stored.isExpired()) {
+                    mutablePreferences[key] = gson.toJson(
+                        SessionId(
+                            sessionId = UUID.randomUUID().toString(),
+                            lastUpdate = Calendar.getInstance().timeInMillis,
+                        ),
+                    )
+                }
             }
-            val thirtyMinutesInMillis: Long = 30.minutes.inWholeMilliseconds
-            if (Calendar.getInstance().timeInMillis - (sessionId?.lastUpdate ?: 0L) > thirtyMinutesInMillis) {
-                val newSessionId = SessionId(
-                    sessionId = UUID.randomUUID().toString(),
-                    lastUpdate = Calendar.getInstance().timeInMillis,
-                )
-                setSessionId(newSessionId).firstOrNull()
-                newSessionId
-            } else {
-                sessionId
-            }
+            emit(checkNotNull(preferences[key]?.toSessionIdOrNull()))
         }
     }
 
     override fun getUid(): Flow<String> {
-        return dataStore.data.map { preferences ->
-            preferences[stringPreferencesKey(UID_PREFERENCE_KEY)].orEmpty().takeIf {
-                it.isNotEmpty()
-            } ?: UUID.randomUUID().toString().also { newUid ->
-                setUid(newUid.toString()).firstOrNull()
-            }.toString()
+        return flow {
+            val key = stringPreferencesKey(UID_PREFERENCE_KEY)
+            val preferences = dataStore.edit { mutablePreferences ->
+                if (mutablePreferences[key].isNullOrEmpty()) {
+                    mutablePreferences[key] = UUID.randomUUID().toString()
+                }
+            }
+            emit(preferences[key].orEmpty())
         }
     }
+
+    private fun String.toSessionIdOrNull(): SessionId? =
+        runCatching { gson.fromJson(this, SessionId::class.java) }.getOrNull()
+
+    private fun SessionId.isExpired(): Boolean =
+        Calendar.getInstance().timeInMillis - lastUpdate > SESSION_DURATION.inWholeMilliseconds
 
     override fun setSessionId(sessionId: SessionId): Flow<Unit> {
         return flow {

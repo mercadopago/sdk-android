@@ -63,12 +63,12 @@ private fun FooterSummaryRow(
     ) {
         MPText(
             text = label,
-            style = MercadoPagoTheme.typography.body.default.medium,
+            style = MercadoPagoTheme.typography.body.default.small,
             color = MercadoPagoTheme.color.text.primary,
         )
         MPText(
             text = amount,
-            style = MercadoPagoTheme.typography.body.default.medium,
+            style = MercadoPagoTheme.typography.body.default.small,
             color = amountColor,
         )
     }

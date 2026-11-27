@@ -32,8 +32,24 @@ internal class MPFixedFooterTest {
         assertTrue(composeTestRule.onAllNodesWithText("00").fetchSemanticsNodes().isEmpty())
     }
 
+    @Test
+    fun `given amount below one unit then displays the total`() {
+        setFooter(integerPart = "0", decimalPart = "50")
+
+        composeTestRule.onNodeWithText("Total").assertIsDisplayed()
+        composeTestRule.onNodeWithText("50").assertIsDisplayed()
+    }
+
+    @Test
+    fun `given zero amount then hides the total`() {
+        setFooter(integerPart = "0", decimalPart = "00")
+
+        assertTrue(composeTestRule.onAllNodesWithText("Total").fetchSemanticsNodes().isEmpty())
+    }
+
     private fun setFooter(
         decimalPart: String,
+        integerPart: String = "15",
     ) {
         composeTestRule.setContent {
             MercadoPagoTheme {
@@ -41,7 +57,7 @@ internal class MPFixedFooterTest {
                     title = "Total",
                     amount = MPAmountData(
                         currencySymbol = "$",
-                        integerPart = "15",
+                        integerPart = integerPart,
                         decimalPart = decimalPart,
                     ),
                 )

@@ -16,6 +16,7 @@ internal data class MPHeaderDefaults(
 
 internal data class MPHeaderColorDefaults(
     val backgroundPrimary: Color,
+    val fillOnScroll: Color,
     val backButtonBackground: Color,
     val backButtonIcon: Color,
     val titleText: Color,
@@ -41,6 +42,7 @@ internal fun getMPHeaderDefaults(): MPHeaderDefaults {
     return MPHeaderDefaults(
         colors = MPHeaderColorDefaults(
             backgroundPrimary = MercadoPagoTheme.color.background.primary,
+            fillOnScroll = MercadoPagoTheme.color.fill.defaultOnScroll,
             backButtonBackground = MercadoPagoTheme.color.interactive.fillQuiet.idle,
             backButtonIcon = MercadoPagoTheme.color.icon.accent,
             titleText = MercadoPagoTheme.color.text.primary,
