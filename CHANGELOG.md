@@ -46,6 +46,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `PaymentMethod.Card` renamed to `MPPaymentMethodConfig.Card`
 - defaults changed from full lists to empty lists (breaking change for callers using named parameters)
 
+## [1.0.4] - 2026-11-27
+
+### Added
+- `components`: `MPPadlockCloseIcon` — padlock artwork matching the iOS Padlock-Close asset, used on the review & confirm and installments footers instead of the Material Lock icon
+
+### Fixed
+- `checkout`: UX findings for the checkout screens (CHOBK-5344) — Payment Brick and Method Selection now use `MPFixedFooter` like the other screens; `MPFixedFooter` shows totals below one unit (e.g. `$ 0,50`) and the formatted total defaults the decimal part to `00` when the BFF omits it; card form fields keep their focus styling after the initialization response arrives; `MPHeader` collapses into an inline bar on scroll; review & confirm typography aligned with iOS; CVV tooltip sized to the screen and anchored to its icon
+- `checkout`: the CVV screen is protected with `FLAG_SECURE` while visible, so card data does not show up in screenshots or the recent-apps preview
+- `checkout`: the `cvv_back` event is emitted without error data, matching the Melidata catalog (CHOBK-5479)
+- `checkout`: `android:allowBackup="true"` removed from the library manifest, so it no longer merges into the integrator app's manifest
+- `core-methods`: the `Meli-Session-id` header sent on tokenization now uses the Melidata session (`MPAnalytics`) instead of the per-`initialize()` SDK id, falling back to the SDK id when analytics is unavailable — the backend can now correlate tokenization with analytics events
+- `core-methods`: identification types are compared case-insensitively (the BFF sends e.g. `Number`), so the numeric keyboard and digit filter apply correctly; unknown types stay as text
+- `analytics`: session rotation and uid creation now run inside a single `DataStore.edit`, so concurrent readers get the same session and uid, and a corrupted session is replaced and persisted
+- `sdk-android`: `mockwebserver` (a test library) removed from the module's published dependencies
+
+### Changed
+- `analytics`, `sdk-android`, `core-methods`, `components`, and `checkout` bumped to `1.0.4` for the fixes above; `mp-extended` bumped to `1.0.4` (depends on `analytics`, `sdk-android`, and `core-methods`) and `sdk-android-bom` bumped to `1.0.4` to republish pointing at the new module versions; `core` (`1.0.1`) and `foundation` (`1.0.0`) are unchanged
+
 ## [1.0.2] - 2026-10-06
 
 ### Added
